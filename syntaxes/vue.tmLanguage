@@ -557,7 +557,7 @@
 			<key>end</key>
 			<string>(&lt;/)((?i:style))(&gt;)(?:\s*\n)?</string>
 			<key>name</key>
-			<string>source.scss.embedded.html</string>
+			<string>source.css.scss.embedded.html</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -581,7 +581,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.scss</string>
+							<string>source.css.scss</string>
 						</dict>
 					</array>
 				</dict>
@@ -611,7 +611,7 @@
 			<key>end</key>
 			<string>(&lt;/)((?i:style))(&gt;)(?:\s*\n)?</string>
 			<key>name</key>
-			<string>source.less.embedded.html</string>
+			<string>source.css.less.embedded.html</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -635,7 +635,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.less</string>
+							<string>source.css.less</string>
 						</dict>
 					</array>
 				</dict>

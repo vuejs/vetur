@@ -17,19 +17,25 @@
             "extensions": [".vue"],
             "configuration": "./language-configuration.json"
         }, {
-            "id": "scss",
-            "aliases": ["SCSS", "Scss", "scss"],
-            "extensions": [".scss"],
+            "id": "sass",
+            "aliases": ["SASS", "Sass", "sass"],
+            "extensions": [".sass"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{
             "language": "vue",
             "scopeName": "text.html.vue",
-            "path": "./syntaxes/vue.tmLanguage"
+            "path": "./syntaxes/vue.tmLanguage",
+            "embeddedLanguages": {
+				"text.html": "html",
+				"source.js": "javascript",
+				"source.json": "json",
+				"source.css": "css"
+            }
         }, {
-            "language": "scss",
-            "scopeName": "source.scss",
-            "path": "./syntaxes/scss.tmLanguage"
+            "language": "sass",
+            "scopeName": "source.sass",
+            "path": "./syntaxes/sass.json"
         }]
     }
 }
