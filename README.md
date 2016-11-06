@@ -6,7 +6,7 @@ Vue tooling for VSCode.
 
 - Syntax highlighting for:
   - jade/html
-  - css/sass/scss/less/stylus/
+  - css/sass/scss/less/stylus
   - js
 - emmet for html in `<template>`
 
@@ -20,11 +20,13 @@ Try for your self on this file: [demo/vetur.vue](https://github.com/octref/vetur
 
 - Install [vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 - In your user settings, set
+
   ```json
   "files.associations": {
     "*.vue": "vue"
   }
   ```
+
 - Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support.
 
 ## Roadmap
