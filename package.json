@@ -19,7 +19,6 @@
         }, {
             "id": "sass",
             "aliases": ["SASS", "Sass", "sass"],
-            "extensions": [".sass"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{
