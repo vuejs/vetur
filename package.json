@@ -25,13 +25,7 @@
         "grammars": [{
             "language": "vue",
             "scopeName": "text.html.vue",
-            "path": "./syntaxes/vue.tmLanguage",
-            "embeddedLanguages": {
-				"text.html": "html",
-				"source.js": "javascript",
-				"source.json": "json",
-				"source.css": "css"
-            }
+            "path": "./syntaxes/vue.tmLanguage"
         }, {
             "language": "sass",
             "scopeName": "source.sass",
