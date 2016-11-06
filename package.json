@@ -5,6 +5,7 @@
   "icon": "asset/vue.png",
   "version": "0.1.0",
   "publisher": "octref",
+  "repository": "octref/vetur",
   "engines": {
     "vscode": "^1.5.0"
   },
