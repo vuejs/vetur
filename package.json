@@ -27,7 +27,7 @@
         "extensions": [
           ".vue"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./languages/vue.json"
       },
       {
         "id": "sass",
@@ -36,7 +36,7 @@
           "Sass",
           "sass"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./languages/sass.json"
       }
     ],
     "grammars": [
