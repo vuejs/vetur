@@ -28,7 +28,6 @@ const hey: string = "Hello vetur";
 div.test
   ul
     list-style: none
-
 </style>
 
 <style lang="scss">
@@ -42,7 +41,7 @@ div.test {
 <style lang="less">
 div.test {
   ul {
-    list-style: none
+    list-style: none;
   }
 }
 </style>
