@@ -27,7 +27,7 @@ Try for your self on this file: [demo/vetur.vue](https://github.com/octref/vetur
   }
   ```
 
-- Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support.
+- Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support
 
 ## Roadmap
 
