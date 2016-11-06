@@ -20,6 +20,10 @@ export default {
 }
 </script>
 
+<script lang="ts">
+const hey: string = "Hello vetur";
+</script>
+
 <style lang="sass">
 div.test
   ul

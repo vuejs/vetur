@@ -5,9 +5,9 @@ Vue tooling for VSCode.
 ## Implemented Features
 
 - Syntax highlighting for:
-  - jade/html
+  - html/jade
   - css/sass/scss/less/stylus
-  - js
+  - js/ts
 - emmet for html in `<template>`
 
 ## Demo
