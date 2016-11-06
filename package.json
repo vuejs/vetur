@@ -1,34 +1,49 @@
 {
-    "name": "vetur",
-    "displayName": "vetur",
-    "description": "Vue tooling for VSCode",
-    "version": "0.0.1",
-    "publisher": "octref",
-    "engines": {
-        "vscode": "^1.5.0"
-    },
-    "categories": [
-        "Languages"
+  "name": "vetur",
+  "displayName": "vetur",
+  "description": "Vue tooling for VSCode",
+  "version": "0.0.1",
+  "publisher": "octref",
+  "engines": {
+    "vscode": "^1.5.0"
+  },
+  "categories": [
+    "Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "vue",
+        "aliases": [
+          "Vue",
+          "vue"
+        ],
+        "extensions": [
+          ".vue"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "sass",
+        "aliases": [
+          "SASS",
+          "Sass",
+          "sass"
+        ],
+        "configuration": "./language-configuration.json"
+      }
     ],
-    "contributes": {
-        "languages": [{
-            "id": "vue",
-            "aliases": ["Vue", "vue"],
-            "extensions": [".vue"],
-            "configuration": "./language-configuration.json"
-        }, {
-            "id": "sass",
-            "aliases": ["SASS", "Sass", "sass"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "vue",
-            "scopeName": "text.html.vue",
-            "path": "./syntaxes/vue.tmLanguage"
-        }, {
-            "language": "sass",
-            "scopeName": "source.css.sass",
-            "path": "./syntaxes/sass.json"
-        }]
-    }
+    "grammars": [
+      {
+        "language": "vue",
+        "scopeName": "text.html.vue",
+        "path": "./syntaxes/vue.tmLanguage"
+      },
+      {
+        "language": "sass",
+        "scopeName": "source.css.sass",
+        "path": "./syntaxes/sass.json"
+      }
+    ]
+  }
 }
