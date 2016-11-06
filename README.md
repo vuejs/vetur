@@ -12,7 +12,7 @@ Vue tooling for VSCode.
 
 ## Demo
 
-Try for your self on this file: [demo/vetur.vue](https://github.com/octref/vetur/blob/master/demo/vetur.vue).
+Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/blob/master/demo/vetur.vue).
 
 ![demo](./asset/demo.png)
 
