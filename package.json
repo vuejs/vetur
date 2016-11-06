@@ -3,7 +3,7 @@
   "displayName": "vetur",
   "description": "Vue tooling for VSCode",
   "icon": "asset/vue.png",
-  "version": "0.1.3",
+  "version": "0.1.0",
   "publisher": "octref",
   "repository": {
     "type": "git",
