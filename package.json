@@ -27,7 +27,7 @@
             "path": "./syntaxes/vue.tmLanguage"
         }, {
             "language": "sass",
-            "scopeName": "source.sass",
+            "scopeName": "source.css.sass",
             "path": "./syntaxes/sass.json"
         }]
     }

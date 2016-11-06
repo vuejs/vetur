@@ -503,7 +503,7 @@
 			<key>end</key>
 			<string>(&lt;/)((?i:style))(&gt;)(?:\s*\n)?</string>
 			<key>name</key>
-			<string>source.sass.embedded.html</string>
+			<string>source.css.sass.embedded.html</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -527,7 +527,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.sass</string>
+							<string>source.css.sass</string>
 						</dict>
 					</array>
 				</dict>
