@@ -14,7 +14,7 @@ Vue tooling for VSCode.
 
 Try for your self on this file: [demo/vetur.vue](https://github.com/octref/vetur/blob/master/demo/vetur.vue).
 
-![demo](./demo/demo.png)
+![demo](./asset/demo.png)
 
 ## Setup
 
@@ -42,6 +42,7 @@ Try for your self on this file: [demo/vetur.vue](https://github.com/octref/vetur
 
 ## Credits
 
+- Logo from [vuejs/vuejs.org](https://github.com/vuejs/vuejs.org)
 - Grammar based on [vuejs/vue-syntax-highlight](https://github.com/vuejs/vue-syntax-highlight)
 - Sass based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
 
