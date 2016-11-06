@@ -14,7 +14,7 @@ Vue tooling for VSCode.
 
 Try for your self on this file: [demo/vetur.vue](https://github.com/octref/vetur/blob/master/demo/vetur.vue).
 
-![demo](./asset/demo.png)
+![demo](https://raw.githubusercontent.com/octref/vscode-jmespath/master/media/json-transform.gif)
 
 ## Setup
 
