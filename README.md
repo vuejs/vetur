@@ -44,7 +44,8 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 
 - Logo from [vuejs/vuejs.org](https://github.com/vuejs/vuejs.org)
 - Grammar based on [vuejs/vue-syntax-highlight](https://github.com/vuejs/vue-syntax-highlight)
-- Sass based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
+- Sass grammar based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
+- JS grammar based on [atom/language-javascript](https://github.com/atom/language-javascript)
 
 ## License
 

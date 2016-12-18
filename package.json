@@ -1,59 +1,64 @@
 {
-  "name": "vetur",
-  "displayName": "vetur",
-  "description": "Vue tooling for VSCode",
-  "icon": "asset/vue.png",
-  "version": "0.1.0",
-  "publisher": "octref",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/octref/vetur.git"
-  },
-  "keywords": ["vetur", "Vue", "vue", "vuejs"],
-  "engines": {
-    "vscode": "^1.5.0"
-  },
-  "categories": [
-    "Languages"
-  ],
-  "contributes": {
-    "languages": [
-      {
-        "id": "vue",
-        "aliases": [
-          "Vue",
-          "vue"
-        ],
-        "extensions": [
-          ".vue"
-        ],
-        "configuration": "./languages/vue.json"
-      },
-      {
-        "id": "sass",
-        "aliases": [
-          "SASS",
-          "Sass",
-          "sass"
-        ],
-        "configuration": "./languages/sass.json"
-      }
+    "name": "vetur",
+    "displayName": "vetur",
+    "description": "Vue tooling for VSCode",
+    "icon": "asset/vue.png",
+    "version": "0.1.1",
+    "publisher": "octref",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/octref/vetur.git"
+    },
+    "keywords": [
+        "vetur",
+        "Vue",
+        "vue",
+        "vuejs"
     ],
-    "grammars": [
-      {
-        "language": "vue",
-        "scopeName": "text.html.vue",
-        "path": "./syntaxes/vue.tmLanguage"
-      },
-      {
-        "language": "sass",
-        "scopeName": "source.css.sass",
-        "path": "./syntaxes/sass.json"
-      },
-      {
-        "scopeName": "source.vue-js",
-        "path": "./syntaxes/vue-js.json"
-      }
-    ]
-  }
+    "engines": {
+        "vscode": "^1.5.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "vue",
+                "aliases": [
+                    "Vue",
+                    "vue"
+                ],
+                "extensions": [
+                    ".vue"
+                ],
+                "configuration": "./languages/vue.json"
+            },
+            {
+                "id": "sass",
+                "aliases": [
+                    "SASS",
+                    "Sass",
+                    "sass"
+                ],
+                "configuration": "./languages/sass.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "vue",
+                "scopeName": "text.html.vue",
+                "path": "./syntaxes/vue.tmLanguage"
+            },
+            {
+                "language": "sass",
+                "scopeName": "source.css.sass",
+                "path": "./syntaxes/sass.json"
+            },
+            {
+                "scopeName": "source.vue-js",
+                "path": "./syntaxes/vue-js.json"
+            }
+        ]
+    }
 }
