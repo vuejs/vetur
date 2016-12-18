@@ -49,6 +49,10 @@
         "language": "sass",
         "scopeName": "source.css.sass",
         "path": "./syntaxes/sass.json"
+      },
+      {
+        "scopeName": "source.vue-js",
+        "path": "./syntaxes/vue-js.json"
       }
     ]
   }
