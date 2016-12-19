@@ -265,7 +265,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:template))\b(?=[^&gt;]*lang="jade(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:template))\b(?=[^&gt;]*lang="(jade|pug)(?:\?[^"]*)?")</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
