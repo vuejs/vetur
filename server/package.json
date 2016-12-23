@@ -1,0 +1,24 @@
+{
+  "name": "vscode-html-languageserver",
+  "description": "HTML language server",
+  "version": "1.0.0",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "vscode-css-languageservice": "^2.0.0-next.6",
+    "vscode-html-languageservice": "^2.0.0-next.3",
+    "vscode-languageserver": "3.0.1-alpha.2",
+    "vscode-uri": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^6.0.51",
+    "typescript": "^2.1.4"
+  },
+  "scripts": {
+    "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
+    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p ."
+  }
+}

@@ -1,6 +1,5 @@
-// A launch configuration that launches the extension inside a new window
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "configurations": [
     {
       "name": "Launch Extension",
@@ -10,7 +9,9 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceRoot}"
       ],
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "preLaunchTask": "npm"
     }
   ]
 }
