@@ -1,10 +1,10 @@
 {
-	"compilerOptions": {
-		"target": "es5",
-		"module": "commonjs",
-		"outDir": "../client/server",
-		"lib": [
-			"es5", "es2015.promise", "dom"
-		]
-	}
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "outDir": "../client/server",
+    "lib": [
+      "es5", "es2015.promise", "dom"
+    ]
+  }
 }

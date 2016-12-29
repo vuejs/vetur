@@ -1,15 +1,15 @@
 {
-	"compilerOptions": {
-		"target": "es5",
-		"module": "commonjs",
-		"outDir": "./out",
-		"lib": [
-			"es5", "es2015.promise"
-		],
-		"sourceMap": true
-	},
-	"exclude": [
-		"node_modules",
-		"server"
-	]
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "outDir": "./out",
+    "lib": [
+      "es5", "es2015.promise"
+    ],
+    "sourceMap": true
+  },
+  "exclude": [
+    "node_modules",
+    "server"
+  ]
 }
