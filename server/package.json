@@ -14,8 +14,11 @@
     "vscode-uri": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^6.0.51",
+    "@types/node": "^6.0.54",
     "typescript": "^2.1.4"
+  },
+  "peerDependencies": {
+    "vscode-jsonrpc": "3.0.1-alpha.2"
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",

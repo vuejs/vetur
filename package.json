@@ -22,7 +22,7 @@
     "Languages"
   ],
   "engines": {
-    "vscode": "^1.5.0"
+    "vscode": "^1.8.0"
   },
   "activationEvents": [
     "onLanguage:vue"

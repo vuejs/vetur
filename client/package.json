@@ -8,12 +8,10 @@
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "dependencies": {
-    "vscode-extension-telemetry": "0.0.5",
     "vscode-languageclient": "3.0.1-alpha.2",
     "vscode-languageserver-types": "3.0.1-alpha.2"
   },
   "devDependencies": {
-    "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.51",
     "typescript": "^2.1.4",
     "vscode": "^1.0.3"
