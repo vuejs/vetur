@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Extension",
+      "name": "client",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
@@ -11,7 +11,16 @@
       ],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
+      "outFiles": ["${workspaceRoot}/client/out/**/*.js"],
       "preLaunchTask": "npm"
+    },
+    {
+      "name": "server",
+      "type": "node",
+      "request": "attach",
+      "port": 6004,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceRoot}/client/server/**/*.js"]
     }
   ]
 }

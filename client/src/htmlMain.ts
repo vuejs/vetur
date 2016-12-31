@@ -12,7 +12,7 @@ namespace ColorSymbolRequest {
 export function activate(context: ExtensionContext) {
 
   // The server is implemented in node
-  let serverModule = context.asAbsolutePath(path.join('server', 'out', 'htmlServerMain.js'));
+  let serverModule = context.asAbsolutePath(path.join('client', 'server', 'htmlServerMain.js'));
   // The debug options for the server
   let debugOptions = { execArgv: ['--nolazy', '--debug=6004'] };
 
@@ -23,7 +23,7 @@ export function activate(context: ExtensionContext) {
     debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   };
 
-  let documentSelector = ['html', 'handlebars', 'razor'];
+  let documentSelector = ['vue'];
   let embeddedLanguages = { css: true, javascript: true };
 
   // Options to control the language client
@@ -39,7 +39,7 @@ export function activate(context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  let client = new LanguageClient('html', 'HTML Language Server', serverOptions, clientOptions, true);
+  let client = new LanguageClient('vue', 'Vue Language Server', serverOptions, clientOptions, true);
   let disposable = client.start();
   context.subscriptions.push(disposable);
   client.onReady().then(() => {
