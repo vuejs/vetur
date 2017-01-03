@@ -4,6 +4,7 @@ Vue tooling for VSCode.
 
 ## Implemented Features
 
+- IntelliSense for html/css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
   - css/sass/scss/less/stylus
@@ -31,14 +32,14 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 
 ## Roadmap
 
+- [x] Build a language server
+- [x] IntelliSense for css/scss
+- [x] Basic IntelliSense for js/es6 in `<script>`
 - [ ] Error checking for html
 - [ ] Error checking for css/scss
-- [ ] IntelliSense for css/scss
-- [ ] Basic IntelliSense for js/es6 in `<script>`, like suggesting props for `this.`
 - [ ] Jump to definition
-- [ ] Basic IntelliSense for js/es6 in `<template>`
-- [ ] Advanced IntelliSense, such as suggesting state/getters for `this.$store` 
-- [ ] Advanced features enabled through language server, such as hover
+- [ ] Advanced IntelliSense based on scope (using vscode-textmate), such as suggest js variables in `v-if` attributes
+- [ ] IntelliSense that understands API, such as suggesting state/getters for `this.$store` 
 
 ## Credits
 
@@ -46,6 +47,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - Grammar based on [vuejs/vue-syntax-highlight](https://github.com/vuejs/vue-syntax-highlight)
 - Sass grammar based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
 - JS grammar based on [atom/language-javascript](https://github.com/atom/language-javascript)
+- Language Server based on VSCode's [html extension](https://github.com/Microsoft/vscode/tree/master/extensions/html)
 
 ## License
 

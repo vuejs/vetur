@@ -1,3 +1,8 @@
+### 0.2.0 | 2017-01-03
+
+- Language server based on VSCode's html extension. #2.
+- Basic SCSS and LESS language features.
+
 ### 0.1.2 | 2016-12-19
 
 Allow `pug` as an alternative to `jade` in template. #9.
