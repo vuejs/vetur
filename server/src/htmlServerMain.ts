@@ -31,11 +31,10 @@ var settings: any = {};
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
 connection.onInitialize((params: InitializeParams): InitializeResult => {
-  let initializationOptions = params.initializationOptions;
 
   workspacePath = params.rootPath;
 
-  languageModes = getLanguageModes(initializationOptions ? initializationOptions.embeddedLanguages : { css: true, javascript: true });
+  languageModes = getLanguageModes();
   documents.onDidClose(e => {
     languageModes.onDocumentRemoved(e.document);
   });
@@ -50,7 +49,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] },
       hoverProvider: true,
       documentHighlightProvider: true,
-      documentRangeFormattingProvider: initializationOptions && initializationOptions['format.enable'],
+      documentRangeFormattingProvider: true,
       documentLinkProvider: true,
       documentSymbolProvider: true,
       definitionProvider: true,

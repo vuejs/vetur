@@ -1,3 +1,4 @@
+import { removeQuotes } from '../utils/strings';
 import { TextDocument, Position, LanguageService, TokenType, Range } from 'vscode-html-languageservice';
 
 export interface LanguageRange extends Range {
@@ -34,7 +35,11 @@ export function getDocumentRegions(languageService: LanguageService, document: T
         languageIdFromType = 'javascript';
         break;
       case TokenType.Styles:
-        regions.push({ languageId: 'css', start: scanner.getTokenOffset(), end: scanner.getTokenEnd() });
+        regions.push({
+          languageId: /^(scss|less)$/.test(languageIdFromType) ? languageIdFromType : 'css',
+          start: scanner.getTokenOffset(),
+          end: scanner.getTokenEnd()
+        });
         break;
       case TokenType.Script:
         regions.push({ languageId: languageIdFromType, start: scanner.getTokenOffset(), end: scanner.getTokenEnd() });
@@ -43,29 +48,33 @@ export function getDocumentRegions(languageService: LanguageService, document: T
         lastAttributeName = scanner.getTokenText();
         break;
       case TokenType.AttributeValue:
-        if (lastAttributeName === 'src' && lastTagName.toLowerCase() === 'script') {
-          let value = scanner.getTokenText();
-          if (value[0] === '\'' || value[0] === '"') {
-            value = value.substr(1, value.length - 1);
-          }
-          importedScripts.push(value);
-        } else if (lastAttributeName === 'type' && lastTagName.toLowerCase() === 'script') {
-          if (/["'](text|application)\/(java|ecma)script["']/.test(scanner.getTokenText())) {
-            languageIdFromType = 'javascript';
-          } else {
-            languageIdFromType = void 0;
-          }
+        if (lastAttributeName === 'lang') {
+          languageIdFromType = removeQuotes(scanner.getTokenText());
         } else {
-          let attributeLanguageId = getAttributeLanguage(lastAttributeName);
-          if (attributeLanguageId) {
-            let start = scanner.getTokenOffset();
-            let end = scanner.getTokenEnd();
-            let firstChar = document.getText()[start];
-            if (firstChar === '\'' || firstChar === '"') {
-              start++;
-              end--;
+          if (lastAttributeName === 'src' && lastTagName.toLowerCase() === 'script') {
+            let value = scanner.getTokenText();
+            if (value[0] === '\'' || value[0] === '"') {
+              value = value.substr(1, value.length - 1);
             }
-            regions.push({ languageId: attributeLanguageId, start, end, attributeValue: true });
+            importedScripts.push(value);
+          } else if (lastAttributeName === 'type' && lastTagName.toLowerCase() === 'script') {
+            if (/["'](text|application)\/(java|ecma)script["']/.test(scanner.getTokenText())) {
+              languageIdFromType = 'javascript';
+            } else {
+              languageIdFromType = void 0;
+            }
+          } else {
+            let attributeLanguageId = getAttributeLanguage(lastAttributeName);
+            if (attributeLanguageId) {
+              let start = scanner.getTokenOffset();
+              let end = scanner.getTokenEnd();
+              let firstChar = document.getText()[start];
+              if (firstChar === '\'' || firstChar === '"') {
+                start++;
+                end--;
+              }
+              regions.push({ languageId: attributeLanguageId, start, end, attributeValue: true });
+            }
           }
         }
         lastAttributeName = null;

@@ -31,10 +31,6 @@ export function activate(context: ExtensionContext) {
     documentSelector,
     synchronize: {
       configurationSection: ['html', 'css', 'javascript'], // the settings to synchronize
-    },
-    initializationOptions: {
-      embeddedLanguages,
-      ['format.enable']: workspace.getConfiguration('html').get('format.enable')
     }
   };
 

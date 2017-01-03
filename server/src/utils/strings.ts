@@ -51,6 +51,10 @@ export function isWhitespaceOnly(str: string) {
   return /^\s*$/.test(str);
 }
 
+export function removeQuotes(str: string) {
+  return str.replace(/["']/g, ''); 
+}
+
 
 const CR = '\r'.charCodeAt(0);
 const NL = '\n'.charCodeAt(0);
