@@ -17,7 +17,6 @@ export var CSS_STYLE_RULE = '__';
 
 interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; };
 
-
 export function getDocumentRegions(languageService: LanguageService, document: TextDocument): HTMLDocumentRegions {
   let regions: EmbeddedRegion[] = [];
   let scanner = languageService.createScanner(document.getText());
@@ -74,6 +73,7 @@ export function getDocumentRegions(languageService: LanguageService, document: T
     }
     token = scanner.scan();
   }
+
   return {
     getLanguageRanges: (range: Range) => getLanguageRanges(document, regions, range),
     getEmbeddedDocument: (languageId: string) => getEmbeddedDocument(document, regions, languageId),
