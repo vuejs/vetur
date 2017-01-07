@@ -2,6 +2,9 @@
 
 Vue tooling for VSCode.  
 
+This extension is in development and not stable yet.  
+You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or feature requests.
+
 ## Implemented Features
 
 - IntelliSense for html/css/scss/less/js
