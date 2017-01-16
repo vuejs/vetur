@@ -95,22 +95,6 @@ patterns:
     patterns:
     - include: text.jade
 
-- name: text.pug.embedded.html
-  begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang="pug(?:\?[^"]*)?")
-  end: (</)((?i:template))(>)(?:\s*\n)?
-  captures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.html}
-  patterns:
-  - include: '#tag-stuff'
-  - begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</(?i:template))
-    patterns:
-    - include: text.pug
-
 - name: source.stylus.embedded.html
   begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="stylus(?:\?[^"]*)?")
   end: (</)((?i:style))(>)(?:\s*\n)?

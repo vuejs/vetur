@@ -319,60 +319,6 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:template))\b(?=[^&gt;]*lang="pug(?:\?[^"]*)?")</string>
-			<key>captures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.begin.html</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.style.html</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.html</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>(&lt;/)((?i:template))(&gt;)(?:\s*\n)?</string>
-			<key>name</key>
-			<string>text.pug.embedded.html</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#tag-stuff</string>
-				</dict>
-				<dict>
-					<key>begin</key>
-					<string>(&gt;)</string>
-					<key>beginCaptures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition.tag.end.html</string>
-						</dict>
-					</dict>
-					<key>end</key>
-					<string>(?=&lt;/(?i:template))</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>include</key>
-							<string>text.pug</string>
-						</dict>
-					</array>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>begin</key>
 			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang="stylus(?:\?[^"]*)?")</string>
 			<key>captures</key>
 			<dict>
