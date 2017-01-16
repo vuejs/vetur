@@ -1,3 +1,8 @@
+### 0.2.1 | 2017-01-16
+
+- Adopted YAML for editing tmLanguage.
+- Fix syntax highlighting for TS. #19.
+
 ### 0.2.0 | 2017-01-03
 
 - Language server based on VSCode's html extension. #2.
