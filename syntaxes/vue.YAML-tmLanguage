@@ -80,7 +80,7 @@ patterns:
     - include: text.slm
 
 - name: text.jade.embedded.html
-  begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang="jade(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang="(jade|pug)(?:\?[^"]*)?")
   end: (</)((?i:template))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -110,7 +110,6 @@ patterns:
     end: (?=</(?i:template))
     patterns:
     - include: text.pug
-
 
 - name: source.stylus.embedded.html
   begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="stylus(?:\?[^"]*)?")
@@ -144,7 +143,7 @@ patterns:
     patterns:
     - include: source.postcss
 
-- name: source.sass.embedded.html
+- name: source.css.sass.embedded.html
   begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="(?:sass)(?:\?[^"]*)?")
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
@@ -158,10 +157,9 @@ patterns:
       '1': {name: punctuation.definition.tag.end.html}
     end: (?=</(?i:style))
     patterns:
-    - include: source.sass
-    - include: source.scss
+    - include: source.css.sass
 
-- name: source.scss.embedded.html
+- name: source.css.scss.embedded.html
   begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="(?:scss)(?:\?[^"]*)?")
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
@@ -175,11 +173,9 @@ patterns:
       '1': {name: punctuation.definition.tag.end.html}
     end: (?=</(?i:style))
     patterns:
-    - include: source.sass
-    - include: source.scss
+    - include: source.css.scss
 
-
-- name: source.less.embedded.html
+- name: source.css.less.embedded.html
   begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="less(?:\?[^"]*)?")
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
@@ -193,7 +189,7 @@ patterns:
       '1': {name: punctuation.definition.tag.end.html}
     end: (?=</(?i:style))
     patterns:
-    - include: source.less
+    - include: source.css.less
 
 - name: source.css.embedded.html
   begin: (?:^\s+)?(<)((?i:style))\b(?![^>]*/>)
@@ -331,13 +327,13 @@ repository:
     patterns:
     - name: expression.embbeded.vue
       begin: \{\{\{?
-      end: \}\}\}?
       beginCaptures:
         '0': {name: punctuation.definition.generic.begin.html}
+      end: \}\}\}?
       endCaptures:
         '0': {name: punctuation.definition.generic.end.html}
       patterns:
-      - include: source.js
+      - include: source.vue-js
 
   vue-directives:
     name: meta.directive.vue
@@ -359,7 +355,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: source.js
+      - include: source.vue-js
     - name: source.directive.vue
       begin: ''''
       beginCaptures:
@@ -368,7 +364,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: source.js
+      - include: source.vue-js
 
   entities:
     patterns:
