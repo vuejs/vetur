@@ -227,6 +227,24 @@ patterns:
     patterns:
     - include: source.livescript
 
+- name: source.ts.embedded.html
+  begin: (?:^\s+)?(<)((?i:script))\b(?=[^>]*lang="ts(?:\?[^"]*)?")
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.script.html}
+  end: (?<=</(script|SCRIPT))(>)(?:\s*\n)?
+  endCaptures:
+    '2': {name: punctuation.definition.tag.html}
+  patterns:
+  - include: '#tag-stuff'
+  - begin: (?<!</(?:script|SCRIPT))(>)
+    end: (</)((?i:script))
+    captures:
+      '1': {name: punctuation.definition.tag.begin.html}
+      '2': {name: entity.name.tag.script.html}
+    patterns:
+    - include: source.ts
+
 - name: source.js.embedded.html
   begin: (<)((?i:script))\b(?![^>]*/>)(?![^>]*(?i:type.?=.?text/((?!javascript|babel).*)))
   beginCaptures:

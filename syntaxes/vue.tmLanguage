@@ -767,6 +767,68 @@
 		</dict>
 		<dict>
 			<key>begin</key>
+			<string>(?:^\s+)?(&lt;)((?i:script))\b(?=[^&gt;]*lang="ts(?:\?[^"]*)?")</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.tag.begin.html</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>entity.name.tag.script.html</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>(?&lt;=&lt;/(script|SCRIPT))(&gt;)(?:\s*\n)?</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.tag.html</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>source.ts.embedded.html</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#tag-stuff</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?&lt;!&lt;/(?:script|SCRIPT))(&gt;)</string>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.begin.html</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>entity.name.tag.script.html</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(&lt;/)((?i:script))</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>source.ts</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
 			<string>(&lt;)((?i:script))\b(?![^&gt;]*/&gt;)(?![^&gt;]*(?i:type.?=.?text/((?!javascript|babel).*)))</string>
 			<key>beginCaptures</key>
 			<dict>
