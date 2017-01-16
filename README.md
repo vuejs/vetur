@@ -40,6 +40,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Basic IntelliSense for js/es6 in `<script>`
 - [ ] Error checking for html
 - [ ] Error checking for css/scss
+- [ ] Embedded formatter support
 - [ ] Jump to definition
 - [ ] Advanced IntelliSense based on scope (using vscode-textmate), such as suggest js variables in `v-if` attributes
 - [ ] IntelliSense that understands API, such as suggesting state/getters for `this.$store` 
