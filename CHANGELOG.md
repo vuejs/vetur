@@ -1,3 +1,7 @@
+### 0.2.2 | 2017-02-1
+
+- Fix comment-toggling for embedded language. #18.
+
 ### 0.2.1 | 2017-01-16
 
 - Adopted YAML for editing tmLanguage.
