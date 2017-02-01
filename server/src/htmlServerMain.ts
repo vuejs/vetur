@@ -8,7 +8,7 @@ import * as path from 'path';
 import uri from 'vscode-uri';
 
 namespace ColorSymbolRequest {
-  export const type: RequestType<string, Range[], any, any> = { get method() { return 'css/colorSymbols'; }, _: null };
+  export const type: RequestType<string, Range[], any, any> = new RequestType('css/colorSymbols');
 }
 
 // Create a connection for the server
