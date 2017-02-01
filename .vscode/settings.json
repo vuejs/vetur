@@ -1,0 +1,6 @@
+{
+  "tslint.enable": false,
+  "files.exclude": {
+    "client/server": true
+  }
+}
