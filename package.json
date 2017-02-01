@@ -55,7 +55,19 @@
       {
         "language": "vue",
         "scopeName": "text.html.vue",
-        "path": "./syntaxes/vue.tmLanguage"
+        "path": "./syntaxes/vue.tmLanguage",
+        "embeddedLanguages": {
+          "text.html": "html",
+          "text.jade": "jade",
+          "text.pug": "pug",
+          "source.css": "css",
+          "source.css.less": "less",
+          "source.css.scss": "scss",
+          "source.css.sass": "sass",
+          "source.stylus": "stylus",
+          "source.js": "javascript",
+          "source.ts": "typescript"
+        }
       },
       {
         "language": "sass",
