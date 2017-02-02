@@ -1,4 +1,8 @@
-### 0.2.2 | 2017-02-1
+### 0.3.0 | 2017-02-01
+
+- Error-checking / linting for css/scss/less/js. #16 and #24.
+
+### 0.2.2 | 2017-02-01
 
 - Fix comment-toggling for embedded language. #18.
 

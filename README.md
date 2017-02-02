@@ -8,6 +8,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 ## Implemented Features
 
 - IntelliSense for html/css/scss/less/js
+- Linting for css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
   - css/sass/scss/less/stylus
@@ -31,6 +32,23 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
   }
   ```
 
+### Optional Setup
+
+**ESLint** for linting `<script>` section:
+
+- Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- Add `vue` to your `eslint.validate` setting, for example:
+
+  ```json
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue"
+  ]
+  ```
+
+**Stylus**:
+
 - Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support
 
 ## Roadmap
@@ -38,11 +56,10 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Build a language server
 - [x] IntelliSense for css/scss
 - [x] Basic IntelliSense for js/es6 in `<script>`
-- [ ] Error checking for html
-- [ ] Error checking for css/scss
-- [ ] Embedded formatter support
-- [ ] Jump to definition
+- [x] Error checking for css/scss/less
+- [ ] Snippet for embedded languages
 - [ ] Advanced IntelliSense based on scope (using vscode-textmate), such as suggest js variables in `v-if` attributes
+- [ ] Jump to definition
 - [ ] IntelliSense that understands API, such as suggesting state/getters for `this.$store` 
 
 ## Credits
