@@ -67,10 +67,8 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] IntelliSense for css/scss
 - [x] Basic IntelliSense for js/es6 in `<script>`
 - [x] Error checking for css/scss/less
-- [ ] Snippet for embedded languages
-- [ ] Advanced IntelliSense based on scope (using vscode-textmate), such as suggest js variables in `v-if` attributes
+- [ ] Advanced IntelliSense #26
 - [ ] Jump to definition
-- [ ] IntelliSense that understands API, such as suggesting state/getters for `this.$store` 
 
 ## Credits
 
