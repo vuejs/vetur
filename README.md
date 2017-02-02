@@ -47,6 +47,16 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
   ]
   ```
 
+**Emmet** for css/less/scss:
+
+- Add the following to your settings:
+
+  ```json
+  "emmet.syntaxProfiles": {
+    "vue": "css"
+  }
+  ```
+
 **Stylus**:
 
 - Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support
