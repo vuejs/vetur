@@ -13,13 +13,13 @@
       "resolved": "https://registry.npmjs.org/vscode-html-languageservice/-/vscode-html-languageservice-2.0.0-next.6.tgz"
     },
     "vscode-jsonrpc": {
-      "version": "3.0.3",
+      "version": "3.0.4",
       "from": "vscode-jsonrpc@>=3.0.3 <4.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-3.0.3.tgz"
+      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-3.0.4.tgz"
     },
     "vscode-languageserver": {
       "version": "3.0.4",
-      "from": "vscode-languageserver@>=3.0.2-beta.5 <4.0.0",
+      "from": "vscode-languageserver@>=3.0.4 <4.0.0",
       "resolved": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-3.0.4.tgz",
       "dependencies": {
         "vscode-languageserver-types": {
