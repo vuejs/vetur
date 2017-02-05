@@ -1,3 +1,7 @@
+### 0.3.1 | 2017-02-04
+
+- Mark sass and stylus region so linting is disabled on them. #25.
+
 ### 0.3.0 | 2017-02-01
 
 - Error-checking / linting for css/scss/less/js. #16 and #24.
