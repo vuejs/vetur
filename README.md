@@ -35,6 +35,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 **ESLint** for linting `<script>` section:
 
 - Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- Install [HTML plugin](https://www.npmjs.com/package/eslint-plugin-html)
 - Add `vue` to your `eslint.validate` setting, for example:
 
   ```json
@@ -43,6 +44,11 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
     "javascriptreact",
     "vue"
   ]
+  ```
+- Add `html` to the eslint plugins list (content of `.eslintrc`):
+
+  ```json
+  "plugins": ["html"]
   ```
 
 **Emmet** for css/less/scss:
