@@ -1,3 +1,7 @@
+### 0.3.2 | 2017-02-10
+
+- Allow single quote for lang attr. #31.
+
 ### 0.3.1 | 2017-02-04
 
 - Mark sass and stylus region so linting is disabled on them. #25.
