@@ -64,7 +64,7 @@ patterns:
     match: (\s*)(?!--|>)\S(\s*)
 
 - name: text.slm.embedded.html
-  begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang="slm(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang=["']slm(?:\?[^"]*)?["'])
   end: (</)((?i:template))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -80,7 +80,7 @@ patterns:
     - include: text.slm
 
 - name: text.jade.embedded.html
-  begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang="(jade|pug)(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang=["'](jade|pug)(?:\?[^"]*)?["'])
   end: (</)((?i:template))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -96,7 +96,7 @@ patterns:
     - include: text.jade
 
 - name: source.stylus.embedded.html
-  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="stylus(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang=["']stylus(?:\?[^"]*)?["'])
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -112,7 +112,7 @@ patterns:
     - include: source.stylus
 
 - name: source.postcss.embedded.html
-  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="postcss(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang=["']postcss(?:\?[^"]*)?["'])
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -128,7 +128,7 @@ patterns:
     - include: source.postcss
 
 - name: source.css.sass.embedded.html
-  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="(?:sass)(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang=["'](?:sass)(?:\?[^"]*)?["'])
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -144,7 +144,7 @@ patterns:
     - include: source.css.sass
 
 - name: source.css.scss.embedded.html
-  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="(?:scss)(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang=["'](?:scss)(?:\?[^"]*)?["'])
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -160,7 +160,7 @@ patterns:
     - include: source.css.scss
 
 - name: source.css.less.embedded.html
-  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang="less(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:style))\b(?=[^>]*lang=["']less(?:\?[^"]*)?["'])
   end: (</)((?i:style))(>)(?:\s*\n)?
   captures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -192,7 +192,7 @@ patterns:
     - include: source.css
 
 - name: source.coffee.embedded.html
-  begin: (?:^\s+)?(<)((?i:script))\b(?=[^>]*lang="coffee(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:script))\b(?=[^>]*lang=["']coffee(?:\?[^"]*)?["'])
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.script.html}
@@ -210,7 +210,7 @@ patterns:
     - include: source.coffee
 
 - name: source.livescript.embedded.html
-  begin: (?:^\s+)?(<)((?i:script))\b(?=[^>]*lang="livescript(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:script))\b(?=[^>]*lang=["']livescript(?:\?[^"]*)?["'])
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.script.html}
@@ -228,7 +228,7 @@ patterns:
     - include: source.livescript
 
 - name: source.ts.embedded.html
-  begin: (?:^\s+)?(<)((?i:script))\b(?=[^>]*lang="ts(?:\?[^"]*)?")
+  begin: (?:^\s+)?(<)((?i:script))\b(?=[^>]*lang=["']ts(?:\?[^"]*)?["'])
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.script.html}

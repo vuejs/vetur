@@ -211,7 +211,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:template))\b(?=[^&gt;]*lang="slm(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:template))\b(?=[^&gt;]*lang=["']slm(?:\?[^"]*)?["'])</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -265,7 +265,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:template))\b(?=[^&gt;]*lang="(jade|pug)(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:template))\b(?=[^&gt;]*lang=["'](jade|pug)(?:\?[^"]*)?["'])</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -319,7 +319,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang="stylus(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang=["']stylus(?:\?[^"]*)?["'])</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -373,7 +373,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang="postcss(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang=["']postcss(?:\?[^"]*)?["'])</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -427,7 +427,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang="(?:sass)(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang=["'](?:sass)(?:\?[^"]*)?["'])</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -481,7 +481,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang="(?:scss)(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang=["'](?:scss)(?:\?[^"]*)?["'])</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -535,7 +535,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang="less(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:style))\b(?=[^&gt;]*lang=["']less(?:\?[^"]*)?["'])</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -643,7 +643,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:script))\b(?=[^&gt;]*lang="coffee(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:script))\b(?=[^&gt;]*lang=["']coffee(?:\?[^"]*)?["'])</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -705,7 +705,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:script))\b(?=[^&gt;]*lang="livescript(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:script))\b(?=[^&gt;]*lang=["']livescript(?:\?[^"]*)?["'])</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -767,7 +767,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?:^\s+)?(&lt;)((?i:script))\b(?=[^&gt;]*lang="ts(?:\?[^"]*)?")</string>
+			<string>(?:^\s+)?(&lt;)((?i:script))\b(?=[^&gt;]*lang=["']ts(?:\?[^"]*)?["'])</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
