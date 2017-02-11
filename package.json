@@ -54,16 +54,16 @@
     "grammars": [
       {
         "language": "vue",
-        "scopeName": "text.html.vue",
+        "scopeName": "source.vue",
         "path": "./syntaxes/vue.tmLanguage",
         "embeddedLanguages": {
-          "text.html": "html",
+          "text.html.basic": "html",
           "text.jade": "jade",
           "text.pug": "pug",
           "source.css": "css",
-          "source.css.less": "less",
-          "source.css.scss": "scss",
           "source.css.sass": "sass",
+          "source.css.scss": "scss",
+          "source.css.less": "less",
           "source.stylus": "stylus",
           "source.js": "javascript",
           "source.ts": "typescript"
