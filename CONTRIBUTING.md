@@ -18,6 +18,12 @@ $ cd client && npm install
 - F7 to compile yaml grammar to tmLanguage files
 - Run the `client` debug target in vetur project root
 
+### Tip: Inspecting Scopes
+
+In VSCode, use F1 -> Inspect TM Scopes:
+
+![scope](https://github.com/octref/vetur/blob/master/asset/scope.png)
+
 ## Language Client & Server
 
 - After running the prerequisite, you should have the server compiled and installed to `/client`
