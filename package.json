@@ -75,6 +75,10 @@
         "path": "./syntaxes/sass.json"
       },
       {
+        "scopeName": "text.vue-html",
+        "path": "./syntaxes/vue-html.tmLanguage"
+      },
+      {
         "scopeName": "source.vue-js",
         "path": "./syntaxes/vue-js.json"
       }

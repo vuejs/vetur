@@ -113,12 +113,12 @@
 				</dict>
 			</dict>
 			<key>name</key>
-			<string>text.html.basic.embedded.vue</string>
+			<string>text.vue-html.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>include</key>
-					<string>text.html.basic</string>
+					<string>text.vue-html</string>
 				</dict>
 			</array>
 		</dict>
@@ -475,57 +475,6 @@
 				<dict>
 					<key>include</key>
 					<string>source.ts</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>begin</key>
-			<string>(&lt;)(style)(&gt;)</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.begin.html</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.style.html</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.end.html</string>
-				</dict>
-			</dict>
-			<key>contentName</key>
-			<string>source.css.embedded.vue</string>
-			<key>end</key>
-			<string>(&lt;/)(style)(&gt;)</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.begin.html</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.style.html</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.end.html</string>
-				</dict>
-			</dict>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>source.css</string>
 				</dict>
 			</array>
 		</dict>

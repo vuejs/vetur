@@ -27,7 +27,7 @@ patterns:
 
 # html
 
-- name: text.html.basic.embedded.vue
+- name: text.vue-html.embedded.vue
   begin: (<)(template)(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -39,7 +39,7 @@ patterns:
     '2': {name: entity.name.tag.style.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
-  - include: text.html.basic
+  - include: text.vue-html
 
 # sass / scss
 
