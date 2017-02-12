@@ -18,10 +18,9 @@ $ cd client && npm install
 - F7 to compile yaml grammar to tmLanguage files
 - Run the `client` debug target in vetur project root
 
-## Language Client && Server
+## Language Client & Server
 
 - After running the prerequisite, you should have the server compiled and installed to `/client`
 - Run the `client` debug target. This should open a new VSCode window
 - Change the debug target to `server` and run it. This should attach the process to the running server (VSCode's multi-target debugging feature)
 - Set breakpoints in `/server/src` or `/client/src` and debug away!
-
