@@ -69,6 +69,10 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly
 
+## Contribution
+
+See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/CONTRIBUTING.md)
+
 ## Credits
 
 - Logo from [vuejs/vuejs.org](https://github.com/vuejs/vuejs.org)
