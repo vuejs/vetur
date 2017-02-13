@@ -496,16 +496,6 @@
 				<key>3</key>
 				<dict>
 					<key>name</key>
-					<string>entity.other.attribute-name.html</string>
-				</dict>
-				<key>4</key>
-				<dict>
-					<key>name</key>
-					<string>string.quoted.html</string>
-				</dict>
-				<key>5</key>
-				<dict>
-					<key>name</key>
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>

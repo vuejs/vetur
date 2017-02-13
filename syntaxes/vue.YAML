@@ -152,9 +152,7 @@ patterns:
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
-    '3': {name: entity.other.attribute-name.html}
-    '4': {name: string.quoted.html}
-    '5': {name: punctuation.definition.tag.end.html}
+    '3': {name: punctuation.definition.tag.end.html}
   end: (</)(script)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
