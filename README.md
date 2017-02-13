@@ -65,6 +65,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] IntelliSense for css/scss
 - [x] Basic IntelliSense for js/es6 in `<script>`
 - [x] Error checking for css/scss/less
+- [x] Snippet for embedded languages
 - [ ] Advanced IntelliSense [#26](https://github.com/octref/vetur/issues/26)
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly
