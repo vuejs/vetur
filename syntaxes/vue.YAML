@@ -9,7 +9,7 @@ patterns:
 
 # jade / pug
 
-- name: text.jade.embedded.vue
+- contentName: text.jade.embedded.vue
   begin: (<)(template) (lang)=(["'](?:jade|pug)["'])(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -27,7 +27,7 @@ patterns:
 
 # html
 
-- name: text.vue-html.embedded.vue
+- contentName: text.vue-html.embedded.vue
   begin: (<)(template)(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -43,7 +43,7 @@ patterns:
 
 # sass / scss
 
-- name: source.css.sass.embedded.vue
+- contentName: source.css.sass.embedded.vue
   begin: (<)(style) (lang)=(["']sass["'])(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -59,7 +59,7 @@ patterns:
   patterns:
   - include: source.css.sass
 
-- name: source.css.scss.embedded.vue
+- contentName: source.css.scss.embedded.vue
   begin: (<)(style) (lang)=(["']scss["'])(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -77,7 +77,7 @@ patterns:
 
 # less
 
-- name: source.css.less.embedded.vue
+- contentName: source.css.less.embedded.vue
   begin: (<)(style) (lang)=(["']less["'])(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -95,7 +95,7 @@ patterns:
 
 # stylus
 
-- name: source.stylus.embedded.vue
+- contentName: source.stylus.embedded.vue
   begin: (<)(style) (lang)=(["']stylus["'])(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -129,7 +129,7 @@ patterns:
 
 # ts
 
-- name: source.ts.embedded.vue
+- contentName: source.ts.embedded.vue
   begin: (<)(script) (lang)=(["']ts["'])(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -147,7 +147,7 @@ patterns:
 
 # js
 
-- name: source.js.embedded.vue
+- contentName: source.js.embedded.vue
   begin: (<)(script)(>)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}

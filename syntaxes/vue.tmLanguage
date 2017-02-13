@@ -41,6 +41,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>text.jade.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(template)(&gt;)</string>
 			<key>endCaptures</key>
@@ -61,8 +63,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>text.jade.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -92,6 +92,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>text.vue-html.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(template)(&gt;)</string>
 			<key>endCaptures</key>
@@ -112,8 +114,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>text.vue-html.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -153,6 +153,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.css.sass.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(style)(&gt;)</string>
 			<key>endCaptures</key>
@@ -173,8 +175,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>source.css.sass.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -214,6 +214,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.css.scss.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(style)(&gt;)</string>
 			<key>endCaptures</key>
@@ -234,8 +236,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>source.css.scss.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -275,6 +275,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.css.less.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(style)(&gt;)</string>
 			<key>endCaptures</key>
@@ -295,8 +297,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>source.css.less.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -336,6 +336,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.stylus.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(style)(&gt;)</string>
 			<key>endCaptures</key>
@@ -356,8 +358,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>source.stylus.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -448,6 +448,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.ts.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(script)(&gt;)</string>
 			<key>endCaptures</key>
@@ -468,8 +470,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>source.ts.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -499,6 +499,8 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
+			<key>contentName</key>
+			<string>source.js.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(script)(&gt;)</string>
 			<key>endCaptures</key>
@@ -519,8 +521,6 @@
 					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
-			<key>name</key>
-			<string>source.js.embedded.vue</string>
 			<key>patterns</key>
 			<array>
 				<dict>
