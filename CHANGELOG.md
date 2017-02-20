@@ -1,3 +1,7 @@
+### 0.3.5 | 2017-02-20
+
+- Add vue-html as a language. #44.
+
 ### 0.3.4 | 2017-02-19
 
 - Allow scope & module on css style tag. #43.
