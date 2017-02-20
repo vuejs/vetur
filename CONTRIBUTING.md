@@ -4,6 +4,9 @@ Vetur is still in heavy development. I don't think it's ready for taking externa
 However, I'll list the way you can run & debug the extension. This might be helpful if you are
 tweaking grammar or developing a VSCode language server.
 
+You are welcome to open issues for feature request or bug report.  
+**Please use English for communication.**
+
 ## Prerequisite
 
 ```bash
