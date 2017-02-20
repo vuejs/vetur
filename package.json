@@ -42,6 +42,13 @@
         "configuration": "./languages/vue.json"
       },
       {
+        "id": "vue-html",
+        "aliases": [
+          "Vue-html"
+        ],
+        "configuration": "./languages/vue-html.json"
+      },
+      {
         "id": "sass",
         "aliases": [
           "SASS",
@@ -58,6 +65,7 @@
         "path": "./syntaxes/vue.tmLanguage",
         "embeddedLanguages": {
           "text.html.basic": "html",
+          "text.vue-html": "vue-html",
           "text.jade": "jade",
           "text.pug": "pug",
           "source.css": "css",
