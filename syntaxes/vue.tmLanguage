@@ -398,7 +398,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(&lt;)(style)(&gt;)</string>
+			<string>(&lt;)(style)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -411,14 +411,7 @@
 					<key>name</key>
 					<string>entity.name.tag.style.html</string>
 				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.end.html</string>
-				</dict>
 			</dict>
-			<key>contentName</key>
-			<string>source.css.embedded.vue</string>
 			<key>end</key>
 			<string>(&lt;/)(style)(&gt;)</string>
 			<key>endCaptures</key>
@@ -443,7 +436,30 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#tag-stuff</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(&gt;)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.end.html</string>
+						</dict>
+					</dict>
+					<key>contentName</key>
 					<string>source.css</string>
+					<key>end</key>
+					<string>(?=&lt;/style&gt;)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>source.css</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>

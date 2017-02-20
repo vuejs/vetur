@@ -128,19 +128,24 @@ patterns:
 
 # css
 
-- contentName: source.css.embedded.vue
-  begin: (<)(style)(>)
+- begin: (<)(style)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
   end: (</)(style)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
-  - include: source.css
+  - include: '#tag-stuff'
+  - contentName: source.css
+    begin: (>)
+    beginCaptures:
+      '1': {name: punctuation.definition.tag.end.html}
+    end: (?=</style>)
+    patterns:
+      - include: source.css
 
 # ts
 
