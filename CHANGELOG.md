@@ -1,3 +1,5 @@
+- Use vue-html grammar for vue-html lang. #45.
+
 ### 0.3.5 | 2017-02-20
 
 - Add vue-html as a language. #44.

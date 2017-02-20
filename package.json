@@ -83,6 +83,7 @@
         "path": "./syntaxes/sass.json"
       },
       {
+        "language": "vue-html",
         "scopeName": "text.vue-html",
         "path": "./syntaxes/vue-html.tmLanguage",
         "embeddedLanguages": {
