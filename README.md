@@ -35,6 +35,16 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 
 ### Optional Setup
 
+**Emmet**:
+
+- In your user settings, set
+
+  ```json
+  "emmet.syntaxProfiles": {
+    "vue-html": "html"
+  }
+  ```
+
 **ESLint** for linting `<script>` section:
 
 - Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
