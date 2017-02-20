@@ -7,13 +7,16 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 ## Implemented Features
 
-- IntelliSense for html/css/scss/less/js
+- Basic IntelliSense for html/css/scss/less/js
 - Linting for css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
   - css/sass/scss/less/stylus
   - js/ts
-- emmet for `<template>`
+- Embedded snippet support
+  - Use vue snippet outside all regions
+  - Use each language's snippet inside its region
+- emmet for html/css/sass/scss/less
 
 ## Demo
 
@@ -43,16 +46,6 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
     "javascriptreact",
     "vue"
   ]
-  ```
-
-**Emmet** for css/less/scss:
-
-- Add the following to your settings:
-
-  ```json
-  "emmet.syntaxProfiles": {
-    "vue": "css"
-  }
   ```
 
 **Stylus**:

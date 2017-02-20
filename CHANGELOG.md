@@ -1,3 +1,8 @@
+### 0.3.9 | 2017-02-19
+
+- Split vue grammar into vue SFC and vue's html
+- Tweak language region boundry that enables correct snippet in each region. #35 and #36.
+
 ### 0.3.2 | 2017-02-10
 
 - Allow single quote for lang attr. #31.
