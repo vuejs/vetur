@@ -1,4 +1,8 @@
-### 0.3.9 | 2017-02-19
+### 0.3.4 | 2017-02-19
+
+- Allow scope & module on css style tag. #43.
+
+### 0.3.3 | 2017-02-19
 
 - Split vue grammar into vue SFC and vue's html
 - Tweak language region boundry that enables correct snippet in each region. #35 and #36.
