@@ -1,6 +1,7 @@
 ### 0.3.5 | 2017-02-20
 
 - Add vue-html as a language. #44.
+- Remove vue-js and use VSCode's javascript grammar.
 
 ### 0.3.4 | 2017-02-19
 

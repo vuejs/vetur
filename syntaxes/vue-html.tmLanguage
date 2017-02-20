@@ -655,7 +655,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.vue-js</string>
+							<string>source.js</string>
 						</dict>
 					</array>
 				</dict>
@@ -686,7 +686,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.vue-js</string>
+							<string>source.js</string>
 						</dict>
 					</array>
 				</dict>
@@ -723,7 +723,7 @@
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.vue-js</string>
+							<string>source.js</string>
 						</dict>
 					</array>
 				</dict>

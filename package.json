@@ -84,11 +84,10 @@
       },
       {
         "scopeName": "text.vue-html",
-        "path": "./syntaxes/vue-html.tmLanguage"
-      },
-      {
-        "scopeName": "source.vue-js",
-        "path": "./syntaxes/vue-js.json"
+        "path": "./syntaxes/vue-html.tmLanguage",
+        "embeddedLanguages": {
+          "source.js": "javascript"
+        }
       }
     ]
   }
