@@ -63,6 +63,19 @@ patterns:
   - name: invalid.illegal.bad-comments-or-CDATA.html
     match: (\s*)(?!--|>)\S(\s*)
 
+- begin: (<)(template)(>)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+    '3': {name: punctuation.definition.tag.end.html}
+  end: (</)(template)(>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+    '3': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: text.vue-html
+
 - name: meta.tag.structure.any.html
   begin: (</?)((?i:body|head|html)\b)
   end: (>)
