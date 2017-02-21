@@ -8,8 +8,8 @@
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "dependencies": {
-    "vscode-languageclient": "^3.0.2-beta.5",
-    "vscode-languageserver-types": "^3.0.2-beta.5"
+    "vscode-languageclient": "^3.0.4",
+    "vscode-languageserver-types": "^3.0.3"
   },
   "devDependencies": {
     "@types/node": "^6.0.51",

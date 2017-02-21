@@ -8,8 +8,8 @@
     "node": "*"
   },
   "dependencies": {
-    "vscode-css-languageservice": "^2.0.0-next.8",
-    "vscode-html-languageservice": "^2.0.0-next.6",
+    "vscode-css-languageservice": "^2.0.0",
+    "vscode-html-languageservice": "^2.0.0",
     "vscode-languageserver": "^3.0.4",
     "vscode-uri": "^1.0.0"
   },
@@ -18,7 +18,7 @@
     "typescript": "^2.1.5"
   },
   "peerDependencies": {
-    "vscode-jsonrpc": "3.0.1-alpha.2"
+    "vscode-jsonrpc": "^3.0.4"
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
