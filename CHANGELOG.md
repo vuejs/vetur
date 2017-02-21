@@ -1,3 +1,5 @@
+### 0.3.6 | 2017-02-21
+
 - Support nested `<template>`. #48.
 - Use vue-html grammar for vue-html lang. #45.
 
