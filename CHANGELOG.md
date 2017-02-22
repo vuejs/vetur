@@ -1,3 +1,6 @@
+- Syntax highlighting for coffee and postcss. #50 and #56.
+- Various grammar fixes.
+
 ### 0.3.6 | 2017-02-21
 
 - Support nested `<template>`. #48.

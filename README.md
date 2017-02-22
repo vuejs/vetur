@@ -11,7 +11,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 - Linting for css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
-  - css/sass/scss/less/stylus
+  - css/sass/scss/less/stylus/postcss
   - js/ts/coffee
 - Embedded snippet support
   - Use vue snippet outside all regions
@@ -83,6 +83,7 @@ See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/CONTRIBUTING.m
 - Logo from [vuejs/vuejs.org](https://github.com/vuejs/vuejs.org)
 - Grammar based on [vuejs/vue-syntax-highlight](https://github.com/vuejs/vue-syntax-highlight)
 - Sass grammar based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
+- PostCSS grammar based on [azat-io/atom-language-postcss](https://github.com/azat-io/atom-language-postcss)
 - Language Server based on VSCode's [html extension](https://github.com/Microsoft/vscode/tree/master/extensions/html)
 
 ## License

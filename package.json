@@ -56,6 +56,14 @@
           "sass"
         ],
         "configuration": "./languages/sass.json"
+      },
+      {
+        "id": "postcss",
+        "aliases": [
+          "PostCSS",
+          "POSTCSS"
+        ],
+        "configuration": "./languages/postcss.json"
       }
     ],
     "grammars": [
@@ -72,6 +80,7 @@
           "source.css.sass": "sass",
           "source.css.scss": "scss",
           "source.css.less": "less",
+          "source.css.postcss": "postcss",
           "source.stylus": "stylus",
           "source.js": "javascript",
           "source.ts": "typescript",
@@ -82,6 +91,11 @@
         "language": "sass",
         "scopeName": "source.css.sass",
         "path": "./syntaxes/sass.json"
+      },
+      {
+        "language": "postcss",
+        "scopeName": "source.css.postcss",
+        "path": "./syntaxes/postcss.json"
       },
       {
         "language": "vue-html",
