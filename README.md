@@ -41,7 +41,8 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 
   ```json
   "emmet.syntaxProfiles": {
-    "vue-html": "html"
+    "vue-html": "html",
+    "vue": "html"
   }
   ```
 
