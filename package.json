@@ -74,7 +74,8 @@
           "source.css.less": "less",
           "source.stylus": "stylus",
           "source.js": "javascript",
-          "source.ts": "typescript"
+          "source.ts": "typescript",
+          "source.coffee": "coffeescript"
         }
       },
       {

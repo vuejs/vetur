@@ -168,6 +168,27 @@ patterns:
     patterns:
       - include: source.ts
 
+# coffee
+
+- begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+  end: (</)(script)(>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+    '3': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+  - contentName: source.coffee
+    begin: (>)
+    beginCaptures:
+      '1': {name: punctuation.definition.tag.end.html}
+    end: (?=</script>)
+    patterns:
+      - include: source.coffee
+
 # js
 
 - contentName: source.js.embedded.vue

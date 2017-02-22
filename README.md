@@ -12,7 +12,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 - Syntax highlighting for:
   - html/jade/pug
   - css/sass/scss/less/stylus
-  - js/ts
+  - js/ts/coffee
 - Embedded snippet support
   - Use vue snippet outside all regions
   - Use each language's snippet inside its region
