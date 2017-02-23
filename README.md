@@ -16,7 +16,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 - Embedded snippet support
   - Use vue snippet outside all regions
   - Use each language's snippet inside its region
-- emmet for html/css/sass/scss/less
+- Emmet for html/css/sass/scss/less
 
 ## Demo
 
@@ -70,7 +70,8 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Basic IntelliSense for js/es6 in `<script>`
 - [x] Error checking for css/scss/less
 - [x] Snippet for embedded languages
-- [ ] Advanced IntelliSense [#26](https://github.com/octref/vetur/issues/26)
+- [ ] Embedded formatter | 0.4
+- [ ] Advanced IntelliSense [#26](https://github.com/octref/vetur/issues/26) | 0.5
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly
 
