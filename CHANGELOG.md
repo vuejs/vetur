@@ -1,3 +1,7 @@
+### 0.3.8 | 2017-02-23
+
+- Allow `<template lang="html">`. #52.
+
 ### 0.3.7 | 2017-02-23
 
 - Syntax highlighting for coffee and postcss. #50 and #56.
