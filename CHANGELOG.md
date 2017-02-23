@@ -1,3 +1,5 @@
+### 0.3.7 | 2017-02-23
+
 - Syntax highlighting for coffee and postcss. #50 and #56.
 - Various grammar fixes.
 
