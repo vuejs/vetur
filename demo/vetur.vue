@@ -1,9 +1,3 @@
-<template>
-  <div class="test">
-    <ul><li>Hello vetur</li></ul>
-  </div>
-</template>
-
 <style>
 div .test {
   list-style: none;
