@@ -1,3 +1,9 @@
+<template>
+  <div class="test" v-if="type in {};">
+    <ul><li>Hello vetur</li></ul>
+  </div>
+</template>
+
 <style>
 div .test {
   list-style: none;
