@@ -6,5 +6,4 @@ Solutions to try:
 
 - Disable other vue extensions
 - Check both your global and workspace setting against the latest setup guide in README
-
 -->
