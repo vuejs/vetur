@@ -260,7 +260,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.generic.end.html}
       patterns:
-      - include: source.vue-js
+      - include: source.js
 
   vue-directives:
     name: meta.directive.vue
@@ -282,7 +282,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: source.vue-js
+      - include: source.js
     - name: source.directive.vue
       begin: ''''
       beginCaptures:
@@ -291,7 +291,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: source.vue-js
+      - include: source.js
 
   entities:
     patterns:
