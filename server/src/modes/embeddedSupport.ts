@@ -106,7 +106,7 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
         result.push({
           start: currentPos,
           end: startPos,
-          languageId: 'html'
+          languageId: 'vue-html'
         });
       }
       let end = Math.min(region.end, endOffset);
@@ -128,7 +128,7 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
     result.push({
       start: currentPos,
       end: endPos,
-      languageId: 'html'
+      languageId: 'vue-html'
     });
   }
   return result;
@@ -144,7 +144,7 @@ function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[
       }
     }
   }
-  result.push('html');
+  result.push('vue-html');
   return result;
 }
 
@@ -159,7 +159,7 @@ function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[]
       break;
     }
   }
-  return 'html';
+  return 'vue-html';
 }
 
 function getEmbeddedDocument(document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {

@@ -40,7 +40,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 
   workspacePath = params.rootPath;
 
-  languageModes = getLanguageModes(initializationOptions ? initializationOptions.embeddedLanguages : { css: true, javascript: true });
+  languageModes = getLanguageModes();
   documents.onDidClose(e => {
     languageModes.onDocumentRemoved(e.document);
   });
@@ -76,6 +76,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 });
 
 let validation = {
+  'vue-html': true,
   html: true,
   css: true,
   javascript: true
@@ -102,7 +103,7 @@ connection.onDidChangeConfiguration((change) => {
     let enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
     if (enableFormatter) {
       if (!formatterRegistration) {
-        let documentSelector: DocumentSelector = [{ language: 'html' }, { language: 'handlebars' }]; // don't register razor, the formatter does more harm than good
+        let documentSelector: DocumentSelector = [{ language: 'vue-html' }];
         formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
       }
     } else if (formatterRegistration) {
@@ -146,7 +147,7 @@ function triggerValidation(textDocument: TextDocument): void {
 
 function validateTextDocument(textDocument: TextDocument): void {
   let diagnostics: Diagnostic[] = [];
-  if (textDocument.languageId === 'html') {
+  if (textDocument.languageId === 'vue-html') {
     languageModes.getAllModesInDocument(textDocument).forEach(mode => {
       if (mode.doValidation && validation[mode.getId()]) {
         pushAll(diagnostics, mode.doValidation(textDocument));
@@ -168,9 +169,6 @@ connection.onCompletion(textDocumentPosition => {
   let document = documents.get(textDocumentPosition.textDocument.uri);
   let mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
   if (mode && mode.doComplete) {
-    if (mode.getId() !== 'html') {
-      connection.telemetry.logEvent({ key: 'html.embbedded.complete', value: { languageId: mode.getId() } });
-    }
     return mode.doComplete(document, textDocumentPosition.position);
   }
   return { isIncomplete: true, items: [] };

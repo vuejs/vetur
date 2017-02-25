@@ -12,7 +12,7 @@ import {
 
 import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
 import { getDocumentRegions, HTMLDocumentRegions } from './embeddedSupport';
-import { getCSSMode } from './cssMode';
+import { getCSSMode, getSCSSMode, getLESSMode } from './cssMode';
 import { getJavascriptMode } from './javascriptMode';
 import { getHTMLMode } from './htmlMode';
 
@@ -50,7 +50,7 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(supportedLanguages: { [languageId: string]: boolean; }): LanguageModes {
+export function getLanguageModes(): LanguageModes {
 
   var htmlLanguageService = getHTMLLanguageService();
   let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(htmlLanguageService, document));
@@ -58,14 +58,14 @@ export function getLanguageModes(supportedLanguages: { [languageId: string]: boo
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
-  let modes = {};
-  modes['html'] = getHTMLMode(htmlLanguageService);
-  if (supportedLanguages['css']) {
-    modes['css'] = getCSSMode(documentRegions);
-  }
-  if (supportedLanguages['javascript']) {
-    modes['javascript'] = getJavascriptMode(documentRegions);
-  }
+  let modes = {
+    html: getHTMLMode(htmlLanguageService),
+    css: getCSSMode(documentRegions),
+    scss: getSCSSMode(documentRegions),
+    less: getLESSMode(documentRegions),
+    javascript: getJavascriptMode(documentRegions)
+  };
+
   return {
     getModeAtPosition(document: TextDocument, position: Position): LanguageMode {
       let languageId = documentRegions.get(document).getLanguageAtPosition(position);;
@@ -119,7 +119,7 @@ export function getLanguageModes(supportedLanguages: { [languageId: string]: boo
       for (let mode in modes) {
         modes[mode].dispose();
       }
-      modes = {};
+      modes = null;
     }
   };
 }
