@@ -36,7 +36,7 @@ export function getDocumentRegions(languageService: LanguageService, document: T
         break;
       case TokenType.Styles:
         regions.push({
-          languageId: /^(scss|less|sass|stylus)$/.test(languageIdFromType) ? languageIdFromType : 'css',
+          languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType) ? languageIdFromType : 'css',
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd()
         });

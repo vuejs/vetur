@@ -1,3 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+'use strict';
+
 import { getLanguageService as getHTMLLanguageService, DocumentContext } from 'vscode-html-languageservice';
 import {
   CompletionItem, Location, SignatureHelp, Definition, TextEdit, TextDocument, Diagnostic, DocumentLink, Range,
@@ -6,7 +12,7 @@ import {
 
 import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
 import { getDocumentRegions, HTMLDocumentRegions } from './embeddedSupport';
-import { getCSSMode, getSCSSMode, getLESSMode } from './cssMode';
+import { getCSSMode } from './cssMode';
 import { getJavascriptMode } from './javascriptMode';
 import { getHTMLMode } from './htmlMode';
 
@@ -44,22 +50,22 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(): LanguageModes {
+export function getLanguageModes(supportedLanguages: { [languageId: string]: boolean; }): LanguageModes {
 
-  const htmlLanguageService = getHTMLLanguageService();
-  const documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(htmlLanguageService, document));
+  var htmlLanguageService = getHTMLLanguageService();
+  let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(htmlLanguageService, document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
-  let modes = {
-    html: getHTMLMode(htmlLanguageService),
-    css: getCSSMode(documentRegions),
-    scss: getSCSSMode(documentRegions),
-    less: getLESSMode(documentRegions),
-    javascript: getJavascriptMode(documentRegions)
-  };
-
+  let modes = {};
+  modes['html'] = getHTMLMode(htmlLanguageService);
+  if (supportedLanguages['css']) {
+    modes['css'] = getCSSMode(documentRegions);
+  }
+  if (supportedLanguages['javascript']) {
+    modes['javascript'] = getJavascriptMode(documentRegions);
+  }
   return {
     getModeAtPosition(document: TextDocument, position: Position): LanguageMode {
       let languageId = documentRegions.get(document).getLanguageAtPosition(position);;
@@ -109,11 +115,11 @@ export function getLanguageModes(): LanguageModes {
     },
     dispose(): void {
       modelCaches.forEach(mc => mc.dispose());
-      modelCaches = null;
+      modelCaches = [];
       for (let mode in modes) {
         modes[mode].dispose();
       }
-      modes = null;
+      modes = {};
     }
   };
 }
