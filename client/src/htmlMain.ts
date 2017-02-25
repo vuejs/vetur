@@ -31,6 +31,9 @@ export function activate(context: ExtensionContext) {
     documentSelector,
     synchronize: {
       configurationSection: ['html', 'css', 'javascript'], // the settings to synchronize
+    },
+    initializationOptions: {
+      embeddedLanguages
     }
   };
 
@@ -42,7 +45,26 @@ export function activate(context: ExtensionContext) {
     let colorRequestor = (uri: string) => {
       return client.sendRequest(ColorSymbolRequest.type, uri).then(ranges => ranges.map(client.protocol2CodeConverter.asRange));
     };
-    let disposable = activateColorDecorations(colorRequestor, { html: true, handlebars: true, razor: true });
+    let isDecoratorEnabled = (languageId: string) => {
+      return workspace.getConfiguration().get<boolean>('css.colorDecorators.enable');
+    };
+    let disposable = activateColorDecorations(colorRequestor, { html: true, handlebars: true, razor: true }, isDecoratorEnabled);
     context.subscriptions.push(disposable);
   });
+
+  languages.setLanguageConfiguration('vue-html', {
+    wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
+    onEnterRules: [
+      {
+        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+        afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+        action: { indentAction: IndentAction.IndentOutdent }
+      },
+      {
+        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+        action: { indentAction: IndentAction.Indent }
+      }
+    ],
+  });
+
 }
