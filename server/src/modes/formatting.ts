@@ -17,7 +17,7 @@ export function format(languageModes: LanguageModes, document: TextDocument, for
 	//  - no worrying of overlapping edits
 
 	// perform a html format and apply changes to a new document
-	let htmlMode = languageModes.getMode('html');
+	let htmlMode = languageModes.getMode('vue-html');
 	let htmlEdits = htmlMode.format(document, formatRange, formattingOptions);
 	let htmlFormattedContent = applyEdits(document, htmlEdits);
 	let newDocument = TextDocument.create(document.uri + '.tmp', document.languageId, document.version, htmlFormattedContent);

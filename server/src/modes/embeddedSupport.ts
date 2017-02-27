@@ -1,5 +1,5 @@
 import { removeQuotes } from '../utils/strings';
-import { TextDocument, Position, LanguageService, TokenType, Range } from 'vscode-html-languageservice';
+import { Scanner, TextDocument, Position, LanguageService, TokenType, Range } from 'vscode-html-languageservice';
 
 export interface LanguageRange extends Range {
   languageId: string;
@@ -30,6 +30,12 @@ export function getDocumentRegions(languageService: LanguageService, document: T
   while (token !== TokenType.EOS) {
     switch (token) {
       case TokenType.StartTag:
+        if (scanner.getTokenText() === 'template') {
+          const vueHtmlRegion = scanTemplateRegion(scanner);
+          if (vueHtmlRegion) {
+            regions.push(vueHtmlRegion);
+          }
+        }
         lastTagName = scanner.getTokenText();
         lastAttributeName = null;
         languageIdFromType = 'javascript';
@@ -92,6 +98,39 @@ export function getDocumentRegions(languageService: LanguageService, document: T
   };
 }
 
+function scanTemplateRegion(scanner: Scanner): EmbeddedRegion {
+  let token: number;
+  let start: number;
+  let end: number;
+
+  // Scan until finding matching template EndTag
+  // Also record immediate next StartTagClose to find start
+  let unClosedTemplate = 1;
+  while (unClosedTemplate !== 0) {
+    token = scanner.scan();
+    if (token === TokenType.EOS) {
+      return null;
+    }
+
+    if (token === TokenType.StartTagClose && !start) {
+      start = scanner.getTokenEnd();
+    } else if (token === TokenType.StartTag && scanner.getTokenText() === 'template') {
+      unClosedTemplate++;
+    } else if (token === TokenType.EndTag && scanner.getTokenText() === 'template') {
+      unClosedTemplate--;
+    } 
+  }
+
+  // In EndTag, find end
+  // -2 for </
+  end =  scanner.getTokenOffset() - 2;
+
+  return {
+    languageId: 'vue-html',
+    start,
+    end
+  }
+}
 
 function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], range: Range): LanguageRange[] {
   let result: LanguageRange[] = [];
@@ -106,7 +145,7 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
         result.push({
           start: currentPos,
           end: startPos,
-          languageId: 'vue-html'
+          languageId: 'vue'
         });
       }
       let end = Math.min(region.end, endOffset);
@@ -128,7 +167,7 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
     result.push({
       start: currentPos,
       end: endPos,
-      languageId: 'vue-html'
+      languageId: 'vue'
     });
   }
   return result;
@@ -144,7 +183,7 @@ function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[
       }
     }
   }
-  result.push('vue-html');
+  result.push('vue');
   return result;
 }
 
@@ -159,7 +198,7 @@ function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[]
       break;
     }
   }
-  return 'vue-html';
+  return 'vue';
 }
 
 function getEmbeddedDocument(document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {

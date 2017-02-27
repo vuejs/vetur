@@ -103,7 +103,7 @@ connection.onDidChangeConfiguration((change) => {
     let enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
     if (enableFormatter) {
       if (!formatterRegistration) {
-        let documentSelector: DocumentSelector = [{ language: 'vue-html' }];
+        let documentSelector: DocumentSelector = [{ language: 'vue' }];
         formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
       }
     } else if (formatterRegistration) {

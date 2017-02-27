@@ -1,21 +1,24 @@
-import { getLanguageModelCache } from '../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { LanguageService as HTMLLanguageService, HTMLDocument, DocumentContext, FormattingOptions } from 'vscode-html-languageservice';
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
+import { HTMLDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
 
-export function getHTMLMode(htmlLanguageService: HTMLLanguageService): LanguageMode {
+export function getVueHTMLMode(htmlLanguageService: HTMLLanguageService, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
   let settings: any = {};
-  let htmlDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => htmlLanguageService.parseHTMLDocument(document));
+  const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
+  const htmlDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => htmlLanguageService.parseHTMLDocument(document));
+
   return {
     getId() {
-      return 'html';
+      return 'vue-html';
     },
     configure(options: any) {
       settings = options && options.html;
     },
     doComplete(document: TextDocument, position: Position) {
-      let options = settings && settings.suggest;
-      return htmlLanguageService.doComplete(document, position, htmlDocuments.get(document), options);
+      let embedded = embeddedDocuments.get(document);
+      return htmlLanguageService.doComplete(embedded, position, htmlDocuments.get(embedded), { html5: true});
     },
     doHover(document: TextDocument, position: Position) {
       return htmlLanguageService.doHover(document, position, htmlDocuments.get(document));

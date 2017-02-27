@@ -14,7 +14,7 @@ import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache
 import { getDocumentRegions, HTMLDocumentRegions } from './embeddedSupport';
 import { getCSSMode, getSCSSMode, getLESSMode } from './cssMode';
 import { getJavascriptMode } from './javascriptMode';
-import { getHTMLMode } from './htmlMode';
+import { getVueHTMLMode } from './htmlMode';
 
 export interface LanguageMode {
   getId();
@@ -59,7 +59,7 @@ export function getLanguageModes(): LanguageModes {
   modelCaches.push(documentRegions);
 
   let modes = {
-    html: getHTMLMode(htmlLanguageService),
+    'vue-html': getVueHTMLMode(htmlLanguageService, documentRegions),
     css: getCSSMode(documentRegions),
     scss: getSCSSMode(documentRegions),
     less: getLESSMode(documentRegions),
