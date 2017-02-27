@@ -9,13 +9,14 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 - Basic IntelliSense for html/css/scss/less/js
 - Linting for css/scss/less/js
+- Formatting for html/css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
   - css/sass/scss/less/stylus/postcss
   - js/ts/coffee
 - Embedded snippet support
   - Use vue snippet outside all regions
-  - Use each language's snippet inside its region
+  - Use each language's snippet inside its region (Only for self-defined snippet now, extension-contributed snippet will be available when [VSCode#21046](https://github.com/Microsoft/vscode/issues/21046) is resolved)
 - Emmet for html/css/sass/scss/less
 
 ## Demo
