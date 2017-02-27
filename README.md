@@ -70,7 +70,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Basic IntelliSense for js/es6 in `<script>`
 - [x] Error checking for css/scss/less
 - [x] Snippet for embedded languages
-- [ ] Embedded formatter | 0.4
+- [x] Embedded formatter for html/css/scss/less/js
 - [ ] Advanced IntelliSense [#26](https://github.com/octref/vetur/issues/26) | 0.5
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly

@@ -1,3 +1,9 @@
+### 0.4.0 | 2017-02-27
+
+- Port new changes from VSCode's html extension, which fixes
+  - Embedded formatter for html/css/scss/less/js
+  - IntelliSense for html
+
 ### 0.3.8 | 2017-02-23
 
 - Allow `<template lang="html">`. #52.
