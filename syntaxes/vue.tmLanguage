@@ -79,73 +79,6 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(&lt;)(template)\b(?=[^&gt;]*lang=('html'|"html"))</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.begin.html</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.style.html</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>(&lt;/)(template)(&gt;)</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.begin.html</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.style.html</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.end.html</string>
-				</dict>
-			</dict>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#tag-stuff</string>
-				</dict>
-				<dict>
-					<key>begin</key>
-					<string>(&gt;)</string>
-					<key>beginCaptures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition.tag.end.html</string>
-						</dict>
-					</dict>
-					<key>contentName</key>
-					<string>text.vue-html</string>
-					<key>end</key>
-					<string>(?=&lt;/template&gt;)</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>include</key>
-							<string>text.vue-html</string>
-						</dict>
-					</array>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>begin</key>
 			<string>(&lt;)(template)</string>
 			<key>beginCaptures</key>
 			<dict>
@@ -749,7 +682,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(&lt;)(script)(&gt;)</string>
+			<string>(&lt;)(script)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -761,11 +694,6 @@
 				<dict>
 					<key>name</key>
 					<string>entity.name.tag.style.html</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.end.html</string>
 				</dict>
 			</dict>
 			<key>contentName</key>
@@ -794,7 +722,30 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#tag-stuff</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(&gt;)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.end.html</string>
+						</dict>
+					</dict>
+					<key>contentName</key>
 					<string>source.js</string>
+					<key>end</key>
+					<string>(?=&lt;/script&gt;)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>source.js</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
