@@ -1,5 +1,5 @@
 <template>
-  <div class="test" v-if="type in {};">
+  <div class="test">
     <ul><li>Hello vetur</li></ul>
   </div>
 </template>
