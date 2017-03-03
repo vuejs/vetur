@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "vscode-css-languageservice": "^2.0.0",
-    "vscode-html-languageservice": "^2.0.1",
     "vscode-languageserver": "^3.0.5",
     "vscode-uri": "^1.0.0"
   },
