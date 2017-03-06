@@ -8,6 +8,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 ## Implemented Features
 
 - Basic IntelliSense for html/css/scss/less/js
+- Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as html attributes
 - Linting for css/scss/less/js
 - Formatting for html/css/scss/less/js
 - Syntax highlighting for:
@@ -75,9 +76,13 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Error checking for css/scss/less
 - [x] Snippet for embedded languages
 - [x] Embedded formatter for html/css/scss/less/js
-- [ ] Advanced IntelliSense [#26](https://github.com/octref/vetur/issues/26) | 0.5
+- [x] Advanced IntelliSense (In progress, see [#26](https://github.com/octref/vetur/issues/26))
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly
+
+## Related
+
+- [octref/vls](https://github.com/octref/vls): vue language server, used to provide advanced IntelliSense
 
 ## Contribution
 
