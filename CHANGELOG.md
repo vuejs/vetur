@@ -1,3 +1,7 @@
+### 0.5.1 | 2017-03-06
+
+- Temporarily disable formatter. Will enable once #82 is addressed.
+
 ### 0.5.0 | 2017-03-06
 
 - vetur now depends on https://github.com/octref/vls to provide some IntelliSense
