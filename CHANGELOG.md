@@ -3,6 +3,11 @@
 - vetur now depends on https://github.com/octref/vls to provide some IntelliSense
 - Provide IntelliSense for all `v-` directives and `key`, `ref`, `slot`, #26
 
+### 0.4.1 | 2017-03-02
+
+- Relax grammar to allow `<script type="text/babel">`. #70.
+- Move `files.associations` setup in README, as vue file is not associated with html by default in VSCode.
+
 ### 0.4.0 | 2017-02-27
 
 - Port new changes from VSCode's html extension, which fixes

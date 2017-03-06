@@ -30,27 +30,6 @@ patterns:
 
 # html
 
-- begin: (<)(template)\b(?=[^>]*lang=('html'|"html"))
-  beginCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-  end: (</)(template)(>)
-  endCaptures:
-    '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
-  patterns:
-  - include: '#tag-stuff'
-  - contentName: text.vue-html
-    begin: (>)
-    beginCaptures:
-      '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</template>)
-    patterns:
-      - include: text.vue-html
-
-# html (default)
-
 - begin: (<)(template)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -69,7 +48,6 @@ patterns:
     end: (?=</template>)
     patterns:
       - include: text.vue-html
-
 
 # sass / scss
 
@@ -239,18 +217,24 @@ patterns:
 # js
 
 - contentName: source.js.embedded.vue
-  begin: (<)(script)(>)
+  begin: (<)(script)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
-    '3': {name: punctuation.definition.tag.end.html}
   end: (</)(script)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
-  - include: source.js
+  - include: '#tag-stuff'
+  - contentName: source.js
+    begin: (>)
+    beginCaptures:
+      '1': {name: punctuation.definition.tag.end.html}
+    end: (?=</script>)
+    patterns:
+      - include: source.js
 
 # Repository
 

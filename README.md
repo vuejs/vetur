@@ -26,13 +26,6 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 ## Setup
 
 - Install [vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
-- In your user settings, set
-
-  ```json
-  "files.associations": {
-    "*.vue": "vue"
-  }
-  ```
 
 ### Optional Setup
 
@@ -63,6 +56,16 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 **Stylus**:
 
 - Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support
+
+**VSCode < 1.10**
+
+- In your user settings, set
+
+  ```json
+  "files.associations": {
+    "*.vue": "vue"
+  }
+  ```
 
 ## Roadmap
 
