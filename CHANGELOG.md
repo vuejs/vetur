@@ -1,3 +1,8 @@
+### 0.5.0 | 2017-03-06
+
+- vetur now depends on https://github.com/octref/vls to provide some IntelliSense
+- Provide IntelliSense for all `v-` directives and `key`, `ref`, `slot`, #26
+
 ### 0.4.0 | 2017-02-27
 
 - Port new changes from VSCode's html extension, which fixes
