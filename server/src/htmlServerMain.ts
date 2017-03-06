@@ -99,6 +99,8 @@ connection.onDidChangeConfiguration((change) => {
   documents.all().forEach(triggerValidation);
 
   // dynamically enable & disable the formatter
+  // Disable formatter temporarily. https://github.com/octref/vetur/issues/82
+  /*
   if (clientDynamicRegisterSupport) {
     let enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
     if (enableFormatter) {
@@ -111,6 +113,7 @@ connection.onDidChangeConfiguration((change) => {
       formatterRegistration = null;
     }
   }
+  */
 
 });
 
