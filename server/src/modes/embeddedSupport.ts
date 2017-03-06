@@ -1,5 +1,5 @@
 import { removeQuotes } from '../utils/strings';
-import { Scanner, TextDocument, Position, LanguageService, TokenType, Range } from 'vls';
+import { Scanner, TextDocument, Position, LanguageService, TokenType, Range } from 'vetur-vls';
 
 export interface LanguageRange extends Range {
   languageId: string;

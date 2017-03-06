@@ -1,5 +1,5 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { LanguageService as HTMLLanguageService, HTMLDocument, DocumentContext, FormattingOptions } from 'vls';
+import { LanguageService as HTMLLanguageService, HTMLDocument, DocumentContext, FormattingOptions } from 'vetur-vls';
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
 import { HTMLDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
