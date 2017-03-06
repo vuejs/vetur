@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "dependencies": {
     "vetur-vls": {
-      "version": "0.0.1",
-      "from": "vetur-vls@0.0.1",
-      "resolved": "https://registry.npmjs.org/vetur-vls/-/vetur-vls-0.0.1.tgz"
+      "version": "0.1.0",
+      "from": "vetur-vls@>=0.1.0 <0.2.0",
+      "resolved": "https://registry.npmjs.org/vetur-vls/-/vetur-vls-0.1.0.tgz"
     },
     "vscode-css-languageservice": {
       "version": "2.0.0",
