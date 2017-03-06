@@ -1,6 +1,8 @@
 <template>
   <div class="test">
-    <ul><li>Hello vetur</li></ul>
+    <ul>
+      <li>Hello vetur</li>
+    </ul>
   </div>
 </template>
 
