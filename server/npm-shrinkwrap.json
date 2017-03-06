@@ -2,25 +2,25 @@
   "name": "vscode-html-languageserver",
   "version": "1.0.0",
   "dependencies": {
+    "vetur-vls": {
+      "version": "0.1.1",
+      "from": "vetur-vls@0.1.1",
+      "resolved": "https://registry.npmjs.org/vetur-vls/-/vetur-vls-0.1.1.tgz"
+    },
     "vscode-css-languageservice": {
       "version": "2.0.0",
       "from": "vscode-css-languageservice@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/vscode-css-languageservice/-/vscode-css-languageservice-2.0.0.tgz"
     },
-    "vscode-html-languageservice": {
-      "version": "2.0.1",
-      "from": "vscode-html-languageservice@>=2.0.1 <3.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-html-languageservice/-/vscode-html-languageservice-2.0.1.tgz"
-    },
     "vscode-jsonrpc": {
-      "version": "3.0.4",
-      "from": "vscode-jsonrpc@>=3.0.3 <4.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-3.0.4.tgz"
+      "version": "3.1.0",
+      "from": "vscode-jsonrpc@>=3.1.0 <4.0.0",
+      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-3.1.0.tgz"
     },
     "vscode-languageserver": {
-      "version": "3.0.5",
-      "from": "vscode-languageserver@>=3.0.4 <4.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-3.0.5.tgz"
+      "version": "3.1.0",
+      "from": "vscode-languageserver@>=3.0.5 <4.0.0",
+      "resolved": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-3.1.0.tgz"
     },
     "vscode-languageserver-types": {
       "version": "3.0.3",
@@ -29,7 +29,7 @@
     },
     "vscode-nls": {
       "version": "2.0.2",
-      "from": "vscode-nls@>=2.0.1 <3.0.0",
+      "from": "vscode-nls@>=2.0.2 <3.0.0",
       "resolved": "https://registry.npmjs.org/vscode-nls/-/vscode-nls-2.0.2.tgz"
     },
     "vscode-uri": {

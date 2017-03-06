@@ -1,5 +1,5 @@
 import { createConnection, IConnection, TextDocuments, InitializeParams, InitializeResult, RequestType, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
-import { DocumentContext } from 'vscode-html-languageservice';
+import { DocumentContext } from 'vetur-vls';
 import { TextDocument, Diagnostic, DocumentLink, Range, SymbolInformation } from 'vscode-languageserver-types';
 import { getLanguageModes, LanguageModes } from './modes/languageModes';
 

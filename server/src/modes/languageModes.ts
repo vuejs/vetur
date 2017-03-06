@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { getLanguageService as getHTMLLanguageService, DocumentContext } from 'vscode-html-languageservice';
+import { getLanguageService as getHTMLLanguageService, DocumentContext } from 'vetur-vls';
 import {
   CompletionItem, Location, SignatureHelp, Definition, TextEdit, TextDocument, Diagnostic, DocumentLink, Range,
   Hover, DocumentHighlight, CompletionList, Position, FormattingOptions, SymbolInformation

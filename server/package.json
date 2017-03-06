@@ -8,17 +8,14 @@
     "node": "*"
   },
   "dependencies": {
+    "vetur-vls": "^0.1.1",
     "vscode-css-languageservice": "^2.0.0",
-    "vscode-html-languageservice": "^2.0.1",
     "vscode-languageserver": "^3.0.5",
     "vscode-uri": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^6.0.54",
     "typescript": "^2.1.5"
-  },
-  "peerDependencies": {
-    "vscode-jsonrpc": "^3.0.4"
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
