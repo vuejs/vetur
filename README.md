@@ -95,8 +95,6 @@ See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/CONTRIBUTING.m
 - Sass grammar based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
 - PostCSS grammar based on [azat-io/atom-language-postcss](https://github.com/azat-io/atom-language-postcss)
 - Language Server based on VSCode's [html extension](https://github.com/Microsoft/vscode/tree/master/extensions/html)
-- Formatter based on [beautify-web/js-beautify](https://github.com/beautify-web/js-beautify)
-- Formatter default options based on [victorporof/Sublime-HTMLPrettify](https://github.com/victorporof/Sublime-HTMLPrettify)
 
 ## License
 
