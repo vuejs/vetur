@@ -82,7 +82,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 
 ## Related
 
-- [octref/vls](https://github.com/octref/vls): vue language server, used to provide advanced IntelliSense
+- [octref/vls](https://github.com/octref/vls): vue language server, used to provide advanced IntelliSense, formatting and other language features.
 
 ## Contribution
 
