@@ -75,7 +75,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Basic IntelliSense for js/es6 in `<script>`
 - [x] Error checking for css/scss/less
 - [x] Snippet for embedded languages
-- [x] Embedded formatter for html/css/scss/less/js
+- [x] Embedded formatter for html/css/scss/less/js (Reworking, see [#82](https://github.com/octref/vetur/issues/82))
 - [x] Advanced IntelliSense (In progress, see [#26](https://github.com/octref/vetur/issues/26))
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly
@@ -95,6 +95,8 @@ See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/CONTRIBUTING.m
 - Sass grammar based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
 - PostCSS grammar based on [azat-io/atom-language-postcss](https://github.com/azat-io/atom-language-postcss)
 - Language Server based on VSCode's [html extension](https://github.com/Microsoft/vscode/tree/master/extensions/html)
+- Formatter based on [beautify-web/js-beautify](https://github.com/beautify-web/js-beautify)
+- Formatter default options based on [victorporof/Sublime-HTMLPrettify](https://github.com/victorporof/Sublime-HTMLPrettify)
 
 ## License
 
