@@ -1,5 +1,5 @@
 import { removeQuotes } from '../utils/strings';
-import { Scanner, TextDocument, Position, LanguageService, TokenType, Range } from 'vetur-vls';
+import { Scanner, TextDocument, Position, Vls, TokenType, Range } from 'vetur-vls';
 
 export interface LanguageRange extends Range {
   languageId: string;
@@ -18,7 +18,7 @@ export var CSS_STYLE_RULE = '__';
 
 interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; };
 
-export function getDocumentRegions(languageService: LanguageService, document: TextDocument): HTMLDocumentRegions {
+export function getDocumentRegions(languageService: Vls, document: TextDocument): HTMLDocumentRegions {
   let regions: EmbeddedRegion[] = [];
   let scanner = languageService.createScanner(document.getText());
   let lastTagName: string;
@@ -38,7 +38,7 @@ export function getDocumentRegions(languageService: LanguageService, document: T
         break;
       case TokenType.Script:
         regions.push({
-          languageId: languageIdFromType,
+          languageId: languageIdFromType ? languageIdFromType : 'javascript',
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd()
         });
@@ -57,7 +57,7 @@ export function getDocumentRegions(languageService: LanguageService, document: T
       case TokenType.AttributeName:
         lastAttributeName = scanner.getTokenText();
         break;
-      case TokenType.AttributeName:
+      case TokenType.AttributeValue:
         if (lastAttributeName === 'lang') {
           languageIdFromType = getLanguageIdFromLangAttr(scanner.getTokenText());
         } else {
