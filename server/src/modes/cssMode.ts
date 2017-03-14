@@ -1,24 +1,25 @@
+import { Vls, HTMLDocument, DocumentContext } from 'vetur-vls';
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { TextDocument, Position } from 'vscode-languageserver-types';
+import { TextDocument, Position, TextEdit, FormattingOptions, Range } from 'vscode-languageserver-types';
 import { getCSSLanguageService, getSCSSLanguageService, getLESSLanguageService, Stylesheet, LanguageService } from 'vscode-css-languageservice';
 import { LanguageMode } from './languageModes';
 import { HTMLDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
 
-export function getCSSMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getCSSMode(vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('css', languageService, documentRegions);
+  return getStyleMode('css', vls, languageService, documentRegions);
 }
 
-export function getSCSSMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getSCSSMode(vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
   const languageService = getSCSSLanguageService();
-  return getStyleMode('scss', languageService, documentRegions);
+  return getStyleMode('scss', vls, languageService, documentRegions);
 }
-export function getLESSMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getLESSMode(vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
   const languageService = getLESSLanguageService();
-  return getStyleMode('less', languageService, documentRegions);
+  return getStyleMode('less', vls, languageService, documentRegions);
 }
 
-function getStyleMode(languageId: string, languageService: LanguageService, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+function getStyleMode(languageId: string, vls: Vls, languageService: LanguageService, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
 
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument(languageId));
   const stylesheets = getLanguageModelCache<Stylesheet>(10, 60, document => languageService.parseStylesheet(document));
@@ -61,6 +62,9 @@ function getStyleMode(languageId: string, languageService: LanguageService, docu
     findColorSymbols(document: TextDocument) {
       let embedded = embeddedDocuments.get(document);
       return languageService.findColorSymbols(embedded, stylesheets.get(embedded));
+    },
+    format (document: TextDocument, range: Range, options: FormattingOptions): TextEdit[] {
+      return vls.cssFormat(document, range);
     },
     onDocumentRemoved(document: TextDocument) {
       embeddedDocuments.onDocumentRemoved(document);

@@ -1,13 +1,13 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { LanguageService as HTMLLanguageService, HTMLDocument, DocumentContext, FormattingOptions } from 'vetur-vls';
-import { TextDocument, Position, Range } from 'vscode-languageserver-types';
+import { Vls, HTMLDocument, DocumentContext } from 'vetur-vls';
+import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
 import { HTMLDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
 
-export function getVueHTMLMode(htmlLanguageService: HTMLLanguageService, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getVueHTMLMode(vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
   let settings: any = {};
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
-  const htmlDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => htmlLanguageService.parseHTMLDocument(document));
+  const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => vls.parseHTMLDocument(document));
 
   return {
     getId() {
@@ -18,34 +18,28 @@ export function getVueHTMLMode(htmlLanguageService: HTMLLanguageService, documen
     },
     doComplete(document: TextDocument, position: Position) {
       let embedded = embeddedDocuments.get(document);
-      return htmlLanguageService.doComplete(embedded, position, htmlDocuments.get(embedded), { html5: true, angular1: true });
+      return vls.doComplete(embedded, position, vueDocuments.get(embedded), { html5: true, angular1: true });
     },
     doHover(document: TextDocument, position: Position) {
-      return htmlLanguageService.doHover(document, position, htmlDocuments.get(document));
+      return vls.doHover(document, position, vueDocuments.get(document));
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
-      return htmlLanguageService.findDocumentHighlights(document, position, htmlDocuments.get(document));
+      return vls.findDocumentHighlights(document, position, vueDocuments.get(document));
     },
     findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
-      return htmlLanguageService.findDocumentLinks(document, documentContext);
+      return vls.findDocumentLinks(document, documentContext);
     },
     findDocumentSymbols(document: TextDocument) {
-      return htmlLanguageService.findDocumentSymbols(document, htmlDocuments.get(document));
+      return vls.findDocumentSymbols(document, vueDocuments.get(document));
     },
     format(document: TextDocument, range: Range, formatParams: FormattingOptions) {
-      let formatSettings = settings && settings.format;
-      if (!formatSettings) {
-        formatSettings = formatParams;
-      } else {
-        formatSettings = merge(formatParams, merge(formatSettings, {}));
-      }
-      return htmlLanguageService.format(document, range, formatSettings);
+      return vls.htmlFormat(document, range);
     },
     onDocumentRemoved(document: TextDocument) {
-      htmlDocuments.onDocumentRemoved(document);
+      vueDocuments.onDocumentRemoved(document);
     },
     dispose() {
-      htmlDocuments.dispose();
+      vueDocuments.dispose();
     }
   };
 };

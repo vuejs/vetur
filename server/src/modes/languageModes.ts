@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { getLanguageService as getHTMLLanguageService, DocumentContext } from 'vetur-vls';
+import { getVls, DocumentContext } from 'vetur-vls';
 import {
   CompletionItem, Location, SignatureHelp, Definition, TextEdit, TextDocument, Diagnostic, DocumentLink, Range,
   Hover, DocumentHighlight, CompletionList, Position, FormattingOptions, SymbolInformation
@@ -52,17 +52,17 @@ export interface LanguageModeRange extends Range {
 
 export function getLanguageModes(): LanguageModes {
 
-  var htmlLanguageService = getHTMLLanguageService();
-  let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(htmlLanguageService, document));
+  var vls = getVls();
+  let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(vls, document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
   let modes = {
-    'vue-html': getVueHTMLMode(htmlLanguageService, documentRegions),
-    css: getCSSMode(documentRegions),
-    scss: getSCSSMode(documentRegions),
-    less: getLESSMode(documentRegions),
+    'vue-html': getVueHTMLMode(vls, documentRegions),
+    css: getCSSMode(vls, documentRegions),
+    scss: getSCSSMode(vls, documentRegions),
+    less: getLESSMode(vls, documentRegions),
     javascript: getJavascriptMode(documentRegions)
   };
 
