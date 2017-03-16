@@ -40,7 +40,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 
   workspacePath = params.rootPath;
 
-  languageModes = getLanguageModes();
+  languageModes = getLanguageModes(workspacePath);
   documents.onDidClose(e => {
     languageModes.onDocumentRemoved(e.document);
   });
@@ -147,7 +147,7 @@ function triggerValidation(textDocument: TextDocument): void {
 
 function validateTextDocument(textDocument: TextDocument): void {
   let diagnostics: Diagnostic[] = [];
-  if (textDocument.languageId === 'vue-html') {
+  if (textDocument.languageId === 'vue') {
     languageModes.getAllModesInDocument(textDocument).forEach(mode => {
       if (mode.doValidation && validation[mode.getId()]) {
         pushAll(diagnostics, mode.doValidation(textDocument));
