@@ -32,8 +32,8 @@ export function getVueHTMLMode(vls: Vls, documentRegions: LanguageModelCache<HTM
     findDocumentSymbols(document: TextDocument) {
       return vls.findDocumentSymbols(document, vueDocuments.get(document));
     },
-    format(document: TextDocument, range: Range, formatParams: FormattingOptions) {
-      return vls.htmlFormat(document, range);
+    format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
+      return vls.htmlFormat(document, range, formattingOptions);
     },
     onDocumentRemoved(document: TextDocument) {
       vueDocuments.onDocumentRemoved(document);

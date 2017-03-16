@@ -63,8 +63,8 @@ function getStyleMode(languageId: string, vls: Vls, languageService: LanguageSer
       let embedded = embeddedDocuments.get(document);
       return languageService.findColorSymbols(embedded, stylesheets.get(embedded));
     },
-    format (document: TextDocument, range: Range, options: FormattingOptions): TextEdit[] {
-      return vls.cssFormat(document, range);
+    format (document: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[] {
+      return vls.cssFormat(document, range, formattingOptions);
     },
     onDocumentRemoved(document: TextDocument) {
       embeddedDocuments.onDocumentRemoved(document);
