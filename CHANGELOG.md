@@ -1,11 +1,15 @@
+### 0.5.2 | 2017-03-15
+
+- Re-enable formatter based on js-beautify. #82.
+
 ### 0.5.1 | 2017-03-06
 
 - Temporarily disable formatter. Will enable once #82 is addressed.
 
 ### 0.5.0 | 2017-03-06
 
-- vetur now depends on https://github.com/octref/vls to provide some IntelliSense
-- Provide IntelliSense for all `v-` directives and `key`, `ref`, `slot`, #26
+- vetur now depends on https://github.com/octref/vls to provide some IntelliSense.
+- Provide IntelliSense for all `v-` directives and `key`, `ref`, `slot`, #26.
 
 ### 0.4.1 | 2017-03-02
 

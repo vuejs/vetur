@@ -10,7 +10,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 - Basic IntelliSense for html/css/scss/less/js
 - Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as html attributes
 - Linting for css/scss/less/js
-- Formatting for html/css/scss/less/js (Temporarily disabled, see [#82](https://github.com/octref/vetur/issues/82))
+- Formatting for html/css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
   - css/sass/scss/less/stylus/postcss
@@ -75,7 +75,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Basic IntelliSense for js/es6 in `<script>`
 - [x] Error checking for css/scss/less
 - [x] Snippet for embedded languages
-- [x] Embedded formatter for html/css/scss/less/js (Reworking, see [#82](https://github.com/octref/vetur/issues/82))
+- [x] Embedded formatter for html/css/scss/less/js
 - [x] Advanced IntelliSense (In progress, see [#26](https://github.com/octref/vetur/issues/26))
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly

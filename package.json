@@ -3,7 +3,7 @@
   "displayName": "vetur",
   "description": "Vue tooling for VSCode",
   "icon": "asset/vue.png",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client"
