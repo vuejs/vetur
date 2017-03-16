@@ -178,16 +178,12 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
 }
 
 function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[]): string[] {
-  let result = [];
+  let result = ['vue'];
   for (let region of regions) {
     if (region.languageId && result.indexOf(region.languageId) === -1) {
       result.push(region.languageId);
-      if (result.length === 3) {
-        return result;
-      }
     }
   }
-  result.push('vue');
   return result;
 }
 

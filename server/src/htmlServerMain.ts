@@ -79,7 +79,9 @@ let validation = {
   'vue-html': true,
   html: true,
   css: true,
-  javascript: true
+  javascript: true,
+  scss: true,
+  less: true
 };
 
 let formatterRegistration: Thenable<Disposable> = null;
@@ -147,7 +149,7 @@ function triggerValidation(textDocument: TextDocument): void {
 
 function validateTextDocument(textDocument: TextDocument): void {
   let diagnostics: Diagnostic[] = [];
-  if (textDocument.languageId === 'vue-html') {
+  if (textDocument.languageId === 'vue') {
     languageModes.getAllModesInDocument(textDocument).forEach(mode => {
       if (mode.doValidation && validation[mode.getId()]) {
         pushAll(diagnostics, mode.doValidation(textDocument));
