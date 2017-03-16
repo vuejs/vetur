@@ -1,3 +1,9 @@
+### 0.5.4 | 2017-03-16
+
+- Change default formatting options to preserve new lines in html
+- Change default formatting options for html to force-align attributes. #77.
+- Re-enable scss/less error checking
+
 ### 0.5.3 | 2017-03-16
 
 - Hotfix to include correct dependencies in LanguageClient.
