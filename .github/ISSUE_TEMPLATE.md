@@ -2,8 +2,9 @@
 Please use English for communication.
 Please include screenshots if possible.
 
+Read README for Emmet/ESLint/Stylus setup.
+
 Solutions to try:
 
 - Disable other vue extensions
-- Check both your global and workspace setting against the latest setup guide in README
 -->
