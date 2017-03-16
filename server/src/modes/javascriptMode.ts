@@ -237,7 +237,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     format(document: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       updateCurrentTextDocument(document);
       let initialIndentLevel = computeInitialIndent(document, range, formatParams);
-      let formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel + 1);
+      let formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
       let start = currentTextDocument.offsetAt(range.start);
       let end = currentTextDocument.offsetAt(range.end);
       let lastLineRange = null;
