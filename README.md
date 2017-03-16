@@ -9,7 +9,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 - Basic IntelliSense for html/css/scss/less/js
 - Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as html attributes
-- Linting for css/scss/less/js
+- Linting for js via ESLint, basic error checking for css/scss/less
 - Formatting for html/css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
