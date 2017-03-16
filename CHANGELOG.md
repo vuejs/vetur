@@ -1,3 +1,7 @@
+### 0.5.3 | 2017-03-16
+
+- Hotfix to include correct dependencies in LanguageClient.
+
 ### 0.5.2 | 2017-03-15
 
 - Re-enable formatter based on js-beautify. #82.
