@@ -52,13 +52,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
   (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
-  const configFile = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
+  const configFilename = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
     ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
-  const parsedConfig = ts.parseJsonConfigFileContent({},
+  const configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {};
+  const parsedConfig = ts.parseJsonConfigFileContent(configJson,
     ts.sys,
     workspacePath,
     compilerOptions,
-    configFile,
+    configFilename,
     undefined,
     [{ extension: 'vue', isMixedContent: true }]);
   const files = parsedConfig.fileNames;
