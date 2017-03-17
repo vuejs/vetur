@@ -90,9 +90,9 @@
       "dev": true
     },
     "vetur-vls": {
-      "version": "0.2.2",
-      "from": "vetur-vls@>=0.2.2 <0.3.0",
-      "resolved": "https://registry.npmjs.org/vetur-vls/-/vetur-vls-0.2.2.tgz"
+      "version": "0.2.3",
+      "from": "vetur-vls@0.2.3",
+      "resolved": "https://registry.npmjs.org/vetur-vls/-/vetur-vls-0.2.3.tgz"
     },
     "vscode-css-languageservice": {
       "version": "2.0.0",
