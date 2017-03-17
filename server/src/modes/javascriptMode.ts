@@ -8,7 +8,6 @@ import * as ts from 'typescript';
 import { join } from 'path';
 
 const FILE_NAME = 'vscode://javascript/1';  // the same 'file' is used for all contents
-const JQUERY_D_TS = join(__dirname, '../../lib/jquery.d.ts');
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
@@ -26,7 +25,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   }
   let host = {
     getCompilationSettings: () => compilerOptions,
-    getScriptFileNames: () => [FILE_NAME, JQUERY_D_TS],
+    getScriptFileNames: () => [FILE_NAME],
     getScriptVersion: (fileName: string) => {
       if (fileName === FILE_NAME) {
         return String(scriptFileVersion);
