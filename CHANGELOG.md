@@ -1,3 +1,7 @@
+### 0.5.5 | 2017-03-17
+
+- Fix wrongly marked regions. #92.
+
 ### 0.5.4 | 2017-03-16
 
 - Change default formatting options to preserve new lines in html
