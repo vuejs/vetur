@@ -24,9 +24,10 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   let compilerOptions: ts.CompilerOptions = {
     allowNonTsExtensions: true,
     allowJs: true,
-    lib: ['lib.es6.d.ts'],
+    lib: ['lib.dom.d.ts', 'lib.es2017.d.ts'],
     target: ts.ScriptTarget.Latest,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
+    module: ts.ModuleKind.CommonJS,
     allowSyntheticDefaultImports: true
   };
   let currentTextDocument: TextDocument;
@@ -38,6 +39,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       const fileName = trimFileUri(currentTextDocument.uri);
       if (docs.has(fileName) && currentTextDocument.languageId !== docs.get(fileName).languageId) {
         // if languageId changed, we must restart the language service; it can't handle file type changes
+        compilerOptions.allowJs = docs.get(fileName).languageId !== 'typescript';
         jsLanguageService = ts.createLanguageService(host);
       }
       docs.set(fileName, currentTextDocument);
@@ -46,18 +48,22 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   }
 
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
+  // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
   (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
   const configFile = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
     ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
-  const files = ts.parseJsonConfigFileContent({},
+  const parsedConfig = ts.parseJsonConfigFileContent({},
     ts.sys,
     workspacePath,
     compilerOptions,
     configFile,
     undefined,
-    [{ extension: 'vue', isMixedContent: true }]).fileNames;
+    [{ extension: 'vue', isMixedContent: true }]);
+  const files = parsedConfig.fileNames;
+  compilerOptions = parsedConfig.options;
+  compilerOptions.allowNonTsExtensions = true;
 
   let host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
@@ -68,6 +74,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return docs.get(fileName).languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
       }
       else {
+        // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
         return (ts as any).getScriptKindFromFileName(fileName);
       } 
     },
