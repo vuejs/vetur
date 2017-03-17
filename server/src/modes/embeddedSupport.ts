@@ -35,6 +35,7 @@ export function getDocumentRegions(languageService: Vls, document: TextDocument)
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd()
         });
+        languageIdFromType = null;
         break;
       case TokenType.Script:
         regions.push({
@@ -42,6 +43,7 @@ export function getDocumentRegions(languageService: Vls, document: TextDocument)
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd()
         });
+        languageIdFromType = null;
         break;
       case TokenType.StartTag:
         const tagName = scanner.getTokenText();
