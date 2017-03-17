@@ -57,11 +57,7 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
     const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
     const vueImport = setZeroPos(ts.createImportDeclaration(undefined,
       undefined,
-      setZeroPos(ts.createImportClause(undefined,
-        setZeroPos(ts.createNamedImports([
-          setZeroPos(ts.createImportSpecifier(
-            setZeroPos(ts.createIdentifier('Vue')),
-            setZeroPos(ts.createIdentifier('Vue'))))])))),
+      setZeroPos(ts.createImportClause(ts.createIdentifier('Vue'), undefined)),
       setZeroPos(ts.createLiteral('vue'))));
     sourceFile.statements.unshift(vueImport);
 

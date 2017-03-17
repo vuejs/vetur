@@ -21,7 +21,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     return vueDocument.getEmbeddedDocument('javascript');
   });
 
-  let compilerOptions: ts.CompilerOptions = { allowNonTsExtensions: true, allowJs: true, lib: ['lib.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic };
+  let compilerOptions: ts.CompilerOptions = {
+    allowNonTsExtensions: true,
+    allowJs: true,
+    lib: ['lib.es6.d.ts'],
+    target: ts.ScriptTarget.Latest,
+    moduleResolution: ts.ModuleResolutionKind.NodeJs,
+    allowSyntheticDefaultImports: true
+  };
   let currentTextDocument: TextDocument;
   let versions: ts.MapLike<number> = {};
   let docs: ts.MapLike<TextDocument> = {};
