@@ -9,7 +9,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 - Basic IntelliSense for html/css/scss/less/js
 - Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as html attributes
-- Linting for css/scss/less/js
+- Linting for js via ESLint, basic error checking for css/scss/less
 - Formatting for html/css/scss/less/js
 - Syntax highlighting for:
   - html/jade/pug
@@ -17,7 +17,8 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
   - js/ts/coffee
 - Embedded snippet support
   - Use vue snippet outside all regions
-  - Use each language's snippet inside its region (Only for self-defined snippet now, extension-contributed snippet will be available when [VSCode#21046](https://github.com/Microsoft/vscode/issues/21046) is resolved)
+  - Use each language's snippet inside its region (Only for self-defined snippet. Extension-contributed snippet only works in insiders now, but
+    will be available in March release)
 - Emmet for html/css/sass/scss/less
 
 ## Demo

@@ -8,7 +8,11 @@ import url = require('url');
 
 import { createUpdater, parseVue, isVue } from './typescriptMode';
 
+<<<<<<< HEAD
 import * as ts from 'typescript';
+=======
+const FILE_NAME = 'vscode://javascript/1';  // the same 'file' is used for all contents
+>>>>>>> master
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 

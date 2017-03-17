@@ -79,7 +79,9 @@ let validation = {
   'vue-html': true,
   html: true,
   css: true,
-  javascript: true
+  javascript: true,
+  scss: true,
+  less: true
 };
 
 let formatterRegistration: Thenable<Disposable> = null;

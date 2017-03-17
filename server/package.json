@@ -8,7 +8,7 @@
     "node": "*"
   },
   "dependencies": {
-    "vetur-vls": "^0.2.0",
+    "vetur-vls": "^0.2.3",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-languageserver": "^3.0.5",
     "vscode-uri": "^1.0.0",
@@ -20,6 +20,8 @@
   },
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
-    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p ."
+    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p .",
+    "linkvls": "npm rm vetur-vls && npm ln vetur-vls && cd ../client/server && npm rm vetur-vls && npm ln vetur-vls",
+    "unlinkvls": "rm node_modules/vetur-vls && rm ../client/server/node_modules/vetur-vls && npm i"
   }
 }
