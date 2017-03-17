@@ -30,18 +30,18 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     allowSyntheticDefaultImports: true
   };
   let currentTextDocument: TextDocument;
-  let versions: ts.MapLike<number> = {};
-  let docs: ts.MapLike<TextDocument> = {};
+  let versions = new Map<string, number>();
+  let docs = new Map<string, TextDocument>();
   function updateCurrentTextDocument(doc: TextDocument) {
     if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
       currentTextDocument = jsDocuments.get(doc);
       const fileName = trimFileUri(currentTextDocument.uri);
-      if (docs[fileName] && currentTextDocument.languageId !== docs[fileName].languageId) {
+      if (docs.has(fileName) && currentTextDocument.languageId !== docs.get(fileName).languageId) {
         // if languageId changed, we must restart the language service; it can't handle file type changes
         jsLanguageService = ts.createLanguageService(host);
       }
-      docs[fileName] = currentTextDocument;
-      versions[fileName] = (versions[fileName] || 0) + 1;
+      docs.set(fileName, currentTextDocument);
+      versions.set(fileName, (versions.get(fileName) || 0) + 1);
     }
   }
 
@@ -62,10 +62,10 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   let host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
-    getScriptVersion: filename => filename in versions ? versions[filename].toString() : '1',
+    getScriptVersion: filename => versions.has(filename) ? versions.get(filename).toString() : '1',
     getScriptKind(fileName) { 
-      if(isVue(fileName) && docs[fileName]) {
-        return docs[fileName].languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
+      if(isVue(fileName) && docs.has(fileName)) {
+        return docs.get(fileName).languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
       }
       else {
         return (ts as any).getScriptKindFromFileName(fileName);
@@ -79,11 +79,11 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
           ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule : 
           {
             resolvedFileName: path.join(path.dirname(containingFile), name),
-            extension: docs[name] && docs[name].languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
+            extension: docs.has(name) && docs.get(name).languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
           })
     },
     getScriptSnapshot: (fileName: string) => {
-      let text = fileName in docs ? docs[fileName].getText() : (ts.sys.readFile(fileName) || '');
+      let text = docs.has(fileName) ? docs.get(fileName).getText() : (ts.sys.readFile(fileName) || '');
       if (isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.

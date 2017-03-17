@@ -5,7 +5,7 @@
     "outDir": "../client/server",
     "sourceMap": true,
     "lib": [
-      "es5", "es2015.promise", "dom"
+      "es5", "es2015.collection", "es2015.promise", "dom"
     ]
   }
 }
