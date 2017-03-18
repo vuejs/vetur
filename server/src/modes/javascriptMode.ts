@@ -69,10 +69,12 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   let host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
-    getScriptVersion: filename => versions.has(filename) ? versions.get(filename).toString() : '1',
+    getScriptVersion: filename => versions.has(filename) ? versions.get(filename).toString() : '0',
     getScriptKind(fileName) { 
-      if(isVue(fileName) && docs.has(fileName)) {
-        return docs.get(fileName).languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
+      if(isVue(fileName)) {
+        const doc = docs.get(fileName) ||
+          jsDocuments.get(TextDocument.create('file://' + fileName, 'vue', 0, ts.sys.readFile(fileName)));
+        return doc.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
       }
       else {
         // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
@@ -82,13 +84,20 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
       // in the normal case, delegate to ts.resolveModuleName
       // in the relative-imported.vue case, manually build a resolved filename
-      return moduleNames.map(name => 
-        path.isAbsolute(name) || !isVue(name) ? 
-          ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule : 
-          {
-            resolvedFileName: path.join(path.dirname(containingFile), name),
-            extension: docs.has(name) && docs.get(name).languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
-          })
+      return moduleNames.map(name => {
+        if (path.isAbsolute(name) || !isVue(name)) {
+          return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule;
+        }
+        else {
+          const resolvedFileName = path.join(path.dirname(containingFile), name);
+          const doc = docs.get(resolvedFileName) ||
+            jsDocuments.get(TextDocument.create('file://' + name, 'vue', 0, ts.sys.readFile(resolvedFileName)));
+          return {
+            resolvedFileName,
+            extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
+          };
+        }
+      });
     },
     getScriptSnapshot: (fileName: string) => {
       let text = docs.has(fileName) ? docs.get(fileName).getText() : (ts.sys.readFile(fileName) || '');
