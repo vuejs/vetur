@@ -3,11 +3,10 @@ import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp,
 import { LanguageMode } from './languageModes';
 import { getWordAtText, isWhitespaceOnly, repeat } from '../utils/strings';
 import { HTMLDocumentRegions } from './embeddedSupport';
-import path = require('path');
-import url = require('url');
-
 import { createUpdater, parseVue, isVue } from './typescriptMode';
 
+import Uri from 'vscode-uri';
+import path = require('path');
 import * as ts from 'typescript';
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
@@ -354,7 +353,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
 };
 
 function trimFileUri(uri: string): string {
-  return url.parse(uri).path;
+  return Uri.parse(uri).fsPath;
 }
 
 function convertRange(document: TextDocument, span: { start: number, length: number }): Range {
