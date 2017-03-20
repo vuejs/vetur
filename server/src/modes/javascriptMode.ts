@@ -3,11 +3,10 @@ import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp,
 import { LanguageMode } from './languageModes';
 import { getWordAtText, isWhitespaceOnly, repeat } from '../utils/strings';
 import { HTMLDocumentRegions } from './embeddedSupport';
-import Uri from 'vscode-uri';
-import path = require('path');
-
 import { createUpdater, parseVue, isVue } from './typescriptMode';
 
+import Uri from 'vscode-uri';
+import path = require('path');
 import * as ts from 'typescript';
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
