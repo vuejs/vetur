@@ -1,3 +1,7 @@
+### 0.5.6 | 2017-03-20
+
+- Update js-beautify to include `preserve_newlines` options for css/scss/less.
+
 ### 0.5.5 | 2017-03-17
 
 - Fix wrongly marked regions. #92.
