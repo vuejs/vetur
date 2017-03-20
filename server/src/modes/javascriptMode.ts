@@ -3,8 +3,8 @@ import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp,
 import { LanguageMode } from './languageModes';
 import { getWordAtText, isWhitespaceOnly, repeat } from '../utils/strings';
 import { HTMLDocumentRegions } from './embeddedSupport';
+import Uri from 'vscode-uri';
 import path = require('path');
-import url = require('url');
 
 import { createUpdater, parseVue, isVue } from './typescriptMode';
 
@@ -36,7 +36,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   function updateCurrentTextDocument(doc: TextDocument) {
     if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
       currentTextDocument = jsDocuments.get(doc);
-      const fileName = trimFileUri(currentTextDocument.uri);
+      const fileName = trimFileUri(doc.uri);
       if (docs.has(fileName) && currentTextDocument.languageId !== docs.get(fileName).languageId) {
         // if languageId changed, we must restart the language service; it can't handle file type changes
         compilerOptions.allowJs = docs.get(fileName).languageId !== 'typescript';
@@ -69,11 +69,16 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   let host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
-    getScriptVersion: filename => versions.has(filename) ? versions.get(filename).toString() : '0',
+    getScriptVersion(filename) { 
+      filename = normalizeFileName(filename);
+      return versions.has(filename) ? versions.get(filename).toString() : '0';
+    },
     getScriptKind(fileName) { 
       if(isVue(fileName)) {
+        const uri = Uri.file(fileName);
+        fileName = uri.fsPath;
         const doc = docs.get(fileName) ||
-          jsDocuments.get(TextDocument.create('file://' + fileName, 'vue', 0, ts.sys.readFile(fileName)));
+          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName)));
         return doc.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
       }
       else {
@@ -89,9 +94,10 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
           return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule;
         }
         else {
-          const resolvedFileName = path.join(path.dirname(containingFile), name);
+          const uri = Uri.file(path.join(path.dirname(containingFile), name));
+          const resolvedFileName = uri.fsPath;
           const doc = docs.get(resolvedFileName) ||
-            jsDocuments.get(TextDocument.create('file://' + name, 'vue', 0, ts.sys.readFile(resolvedFileName)));
+            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
           return {
             resolvedFileName,
             extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
@@ -100,6 +106,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       });
     },
     getScriptSnapshot: (fileName: string) => {
+      fileName = normalizeFileName(fileName);
       let text = docs.has(fileName) ? docs.get(fileName).getText() : (ts.sys.readFile(fileName) || '');
       if (isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
@@ -354,7 +361,11 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
 };
 
 function trimFileUri(uri: string): string {
-  return url.parse(uri).path;
+  return Uri.parse(uri).fsPath;
+}
+
+function normalizeFileName(fileName: string): string {
+  return Uri.file(fileName).fsPath;
 }
 
 function convertRange(document: TextDocument, span: { start: number, length: number }): Range {
