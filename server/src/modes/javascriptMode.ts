@@ -1,45 +1,116 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation, Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString, DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
-import { getWordAtText, startsWith, isWhitespaceOnly, repeat } from '../utils/strings';
+import { getWordAtText, isWhitespaceOnly, repeat } from '../utils/strings';
 import { HTMLDocumentRegions } from './embeddedSupport';
+import { createUpdater, parseVue, isVue } from './typescriptMode';
 
+import Uri from 'vscode-uri';
+import path = require('path');
 import * as ts from 'typescript';
-import { join } from 'path';
-
-const FILE_NAME = 'vscode://javascript/1';  // the same 'file' is used for all contents
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
-export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
-  let jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('javascript'));
+export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>, workspacePath: string): LanguageMode {
+  let jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => {
+    const vueDocument = documentRegions.get(document);
+    if (vueDocument.getLanguagesInDocument().indexOf('typescript') > -1) {
+      return vueDocument.getEmbeddedDocument('typescript');
+    }
+    return vueDocument.getEmbeddedDocument('javascript');
+  });
 
-  let compilerOptions: ts.CompilerOptions = { allowNonTsExtensions: true, allowJs: true, lib: ['lib.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic };
+  let compilerOptions: ts.CompilerOptions = {
+    allowNonTsExtensions: true,
+    allowJs: true,
+    lib: ['lib.dom.d.ts', 'lib.es2017.d.ts'],
+    target: ts.ScriptTarget.Latest,
+    moduleResolution: ts.ModuleResolutionKind.NodeJs,
+    module: ts.ModuleKind.CommonJS,
+    allowSyntheticDefaultImports: true
+  };
   let currentTextDocument: TextDocument;
-  let scriptFileVersion: number = 0;
+  let versions = new Map<string, number>();
+  let docs = new Map<string, TextDocument>();
   function updateCurrentTextDocument(doc: TextDocument) {
     if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
       currentTextDocument = jsDocuments.get(doc);
-      scriptFileVersion++;
+      const fileName = trimFileUri(doc.uri);
+      if (docs.has(fileName) && currentTextDocument.languageId !== docs.get(fileName).languageId) {
+        // if languageId changed, we must restart the language service; it can't handle file type changes
+        compilerOptions.allowJs = docs.get(fileName).languageId !== 'typescript';
+        jsLanguageService = ts.createLanguageService(host);
+      }
+      docs.set(fileName, currentTextDocument);
+      versions.set(fileName, (versions.get(fileName) || 0) + 1);
     }
   }
-  let host = {
+
+  // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
+  // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
+  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
+  (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
+  (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
+  const configFilename = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
+    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
+  const configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {};
+  const parsedConfig = ts.parseJsonConfigFileContent(configJson,
+    ts.sys,
+    workspacePath,
+    compilerOptions,
+    configFilename,
+    undefined,
+    [{ extension: 'vue', isMixedContent: true }]);
+  const files = parsedConfig.fileNames;
+  compilerOptions = parsedConfig.options;
+  compilerOptions.allowNonTsExtensions = true;
+
+  let host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
-    getScriptFileNames: () => [FILE_NAME],
-    getScriptVersion: (fileName: string) => {
-      if (fileName === FILE_NAME) {
-        return String(scriptFileVersion);
+    getScriptFileNames: () => files,
+    getScriptVersion(filename) { 
+      filename = normalizeFileName(filename);
+      return versions.has(filename) ? versions.get(filename).toString() : '0';
+    },
+    getScriptKind(fileName) { 
+      if(isVue(fileName)) {
+        const uri = Uri.file(fileName);
+        fileName = uri.fsPath;
+        const doc = docs.get(fileName) ||
+          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName)));
+        return doc.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
       }
-      return '1'; // default lib an jquery.d.ts are static
+      else {
+        // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
+        return (ts as any).getScriptKindFromFileName(fileName);
+      } 
+    },
+    resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
+      // in the normal case, delegate to ts.resolveModuleName
+      // in the relative-imported.vue case, manually build a resolved filename
+      return moduleNames.map(name => {
+        if (path.isAbsolute(name) || !isVue(name)) {
+          return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule;
+        }
+        else {
+          const uri = Uri.file(path.join(path.dirname(containingFile), name));
+          const resolvedFileName = uri.fsPath;
+          const doc = docs.get(resolvedFileName) ||
+            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
+          return {
+            resolvedFileName,
+            extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
+          };
+        }
+      });
     },
     getScriptSnapshot: (fileName: string) => {
-      let text = '';
-      if (startsWith(fileName, 'vscode:')) {
-        if (fileName === FILE_NAME) {
-          text = currentTextDocument.getText();
-        }
-      } else {
-        text = ts.sys.readFile(fileName) || '';
+      fileName = normalizeFileName(fileName);
+      let text = docs.has(fileName) ? docs.get(fileName).getText() : (ts.sys.readFile(fileName) || '');
+      if (isVue(fileName)) {
+        // Note: This is required in addition to the parsing in embeddedSupport because
+        // this works for .vue files that aren't even loaded by VS Code yet.
+        text = parseVue(text);
       }
       return {
         getText: (start, end) => text.substring(start, end),
@@ -47,9 +118,10 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         getChangeRange: () => void 0
       };
     },
-    getCurrentDirectory: () => '',
-    getDefaultLibFileName: (options) => ts.getDefaultLibFilePath(options)
+    getCurrentDirectory: () => workspacePath,
+    getDefaultLibFileName: ts.getDefaultLibFilePath,
   };
+
   let jsLanguageService = ts.createLanguageService(host);
 
   let settings: any = {};
@@ -63,8 +135,11 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     doValidation(document: TextDocument): Diagnostic[] {
       updateCurrentTextDocument(document);
-      const diagnostics = jsLanguageService.getSyntacticDiagnostics(FILE_NAME);
-      return diagnostics.map((diag): Diagnostic => {
+      const filename = trimFileUri(document.uri);
+      const diagnostics = [...jsLanguageService.getSyntacticDiagnostics(filename),
+                           ...jsLanguageService.getSemanticDiagnostics(filename)];
+      
+      return diagnostics.map(diag => {
         return {
           range: convertRange(currentTextDocument, diag),
           severity: DiagnosticSeverity.Error,
@@ -74,8 +149,9 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     doComplete(document: TextDocument, position: Position): CompletionList {
       updateCurrentTextDocument(document);
+      let filename = trimFileUri(document.uri);
       let offset = currentTextDocument.offsetAt(position);
-      let completions = jsLanguageService.getCompletionsAtPosition(FILE_NAME, offset);
+      let completions = jsLanguageService.getCompletionsAtPosition(filename, offset);
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -101,7 +177,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
       updateCurrentTextDocument(document);
-      let details = jsLanguageService.getCompletionEntryDetails(FILE_NAME, item.data.offset, item.label);
+      let filename = trimFileUri(document.uri);
+      let details = jsLanguageService.getCompletionEntryDetails(filename, item.data.offset, item.label);
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
@@ -111,7 +188,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     doHover(document: TextDocument, position: Position): Hover {
       updateCurrentTextDocument(document);
-      let info = jsLanguageService.getQuickInfoAtPosition(FILE_NAME, currentTextDocument.offsetAt(position));
+      let filename = trimFileUri(document.uri);
+      let info = jsLanguageService.getQuickInfoAtPosition(filename, currentTextDocument.offsetAt(position));
       if (info) {
         let contents = ts.displayPartsToString(info.displayParts);
         return {
@@ -123,7 +201,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     doSignatureHelp(document: TextDocument, position: Position): SignatureHelp {
       updateCurrentTextDocument(document);
-      let signHelp = jsLanguageService.getSignatureHelpItems(FILE_NAME, currentTextDocument.offsetAt(position));
+      let filename = trimFileUri(document.uri);
+      let signHelp = jsLanguageService.getSignatureHelpItems(filename, currentTextDocument.offsetAt(position));
       if (signHelp) {
         let ret: SignatureHelp = {
           activeSignature: signHelp.selectedItemIndex,
@@ -160,7 +239,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     findDocumentHighlight(document: TextDocument, position: Position): DocumentHighlight[] {
       updateCurrentTextDocument(document);
-      let occurrences = jsLanguageService.getOccurrencesAtPosition(FILE_NAME, currentTextDocument.offsetAt(position));
+      let filename = trimFileUri(document.uri);
+      let occurrences = jsLanguageService.getOccurrencesAtPosition(filename, currentTextDocument.offsetAt(position));
       if (occurrences) {
         return occurrences.map(entry => {
           return {
@@ -173,7 +253,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     findDocumentSymbols(document: TextDocument): SymbolInformation[] {
       updateCurrentTextDocument(document);
-      let items = jsLanguageService.getNavigationBarItems(FILE_NAME);
+      let filename = trimFileUri(document.uri);
+      let items = jsLanguageService.getNavigationBarItems(filename);
       if (items) {
         let result: SymbolInformation[] = [];
         let existing = {};
@@ -209,9 +290,10 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     findDefinition(document: TextDocument, position: Position): Definition {
       updateCurrentTextDocument(document);
-      let definition = jsLanguageService.getDefinitionAtPosition(FILE_NAME, currentTextDocument.offsetAt(position));
+      let filename = trimFileUri(document.uri);
+      let definition = jsLanguageService.getDefinitionAtPosition(filename, currentTextDocument.offsetAt(position));
       if (definition) {
-        return definition.filter(d => d.fileName === FILE_NAME).map(d => {
+        return definition.map(d => {
           return {
             uri: document.uri,
             range: convertRange(currentTextDocument, d.textSpan)
@@ -222,9 +304,10 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     findReferences(document: TextDocument, position: Position): Location[] {
       updateCurrentTextDocument(document);
-      let references = jsLanguageService.getReferencesAtPosition(FILE_NAME, currentTextDocument.offsetAt(position));
+      let filename = trimFileUri(document.uri);
+      let references = jsLanguageService.getReferencesAtPosition(filename, currentTextDocument.offsetAt(position));
       if (references) {
-        return references.filter(d => d.fileName === FILE_NAME).map(d => {
+        return references.map(d => {
           return {
             uri: document.uri,
             range: convertRange(currentTextDocument, d.textSpan)
@@ -244,7 +327,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         end -= range.end.character;
         lastLineRange = Range.create(Position.create(range.end.line, 0), range.end);
       }
-      let edits = jsLanguageService.getFormattingEditsForRange(FILE_NAME, start, end, formatSettings);
+      let filename = trimFileUri(document.uri);
+      let edits = jsLanguageService.getFormattingEditsForRange(filename, start, end, formatSettings);
       if (edits) {
         let result = [];
         for (let edit of edits) {
@@ -274,6 +358,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     }
   };
 };
+
+function trimFileUri(uri: string): string {
+  return Uri.parse(uri).fsPath;
+}
+
+function normalizeFileName(fileName: string): string {
+  return Uri.file(fileName).fsPath;
+}
 
 function convertRange(document: TextDocument, span: { start: number, length: number }): Range {
   let startPosition = document.positionAt(span.start);

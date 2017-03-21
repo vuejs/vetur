@@ -2,6 +2,16 @@
   "name": "vscode-html-languageserver",
   "version": "1.0.0",
   "dependencies": {
+    "de-indent": {
+      "version": "1.0.2",
+      "from": "de-indent@>=1.0.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/de-indent/-/de-indent-1.0.2.tgz"
+    },
+    "he": {
+      "version": "1.1.1",
+      "from": "he@>=1.1.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/he/-/he-1.1.1.tgz"
+    },
     "@types/node": {
       "version": "6.0.65",
       "from": "@types/node@>=6.0.54 <7.0.0",
@@ -123,6 +133,11 @@
       "version": "1.0.0",
       "from": "vscode-uri@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/vscode-uri/-/vscode-uri-1.0.0.tgz"
+    },
+    "vue-template-compiler": {
+      "version": "2.2.1",
+      "from": "vue-template-compiler@latest",
+      "resolved": "https://registry.npmjs.org/vue-template-compiler/-/vue-template-compiler-2.2.1.tgz"
     }
   }
 }

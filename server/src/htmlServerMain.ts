@@ -40,7 +40,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 
   workspacePath = params.rootPath;
 
-  languageModes = getLanguageModes();
+  languageModes = getLanguageModes(workspacePath);
   documents.onDidClose(e => {
     languageModes.onDocumentRemoved(e.document);
   });

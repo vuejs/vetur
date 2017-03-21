@@ -50,7 +50,7 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(): LanguageModes {
+export function getLanguageModes(workspacePath: string): LanguageModes {
 
   var vls = getVls();
   let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(vls, document));
@@ -63,8 +63,9 @@ export function getLanguageModes(): LanguageModes {
     css: getCSSMode(vls, documentRegions),
     scss: getSCSSMode(vls, documentRegions),
     less: getLESSMode(vls, documentRegions),
-    javascript: getJavascriptMode(documentRegions)
+    javascript: getJavascriptMode(documentRegions, workspacePath)
   };
+  modes['typescript'] = modes.javascript;
 
   return {
     getModeAtPosition(document: TextDocument, position: Position): LanguageMode {
