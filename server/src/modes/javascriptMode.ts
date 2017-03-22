@@ -6,7 +6,7 @@ import { HTMLDocumentRegions } from './embeddedSupport';
 import { createUpdater, parseVue, isVue } from './typescriptMode';
 
 import Uri from 'vscode-uri';
-import path = require('path');
+import * as path from 'path';
 import * as ts from 'typescript';
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
