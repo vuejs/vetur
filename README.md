@@ -19,6 +19,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
   - Use vue snippet outside all regions
   - Use each language's snippet inside its region (Only for self-defined snippet. Extension-contributed snippet only works in insiders now, but
     will be available in March release)
+  - Define html snippets you want to use inside `<template>` as `vue-html` snippet
 - Emmet for html/css/sass/scss/less
 
 ## Demo
