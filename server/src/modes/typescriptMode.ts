@@ -74,5 +74,4 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */
 function getWrapperRangeSetter(wrapped: ts.TextRange): <T extends ts.TextRange>(wrapperNode: T) => T {
   return <T extends ts.TextRange>(wrapperNode: T) => ts.setTextRange(wrapperNode, wrapped);
-
 }
