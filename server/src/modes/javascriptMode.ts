@@ -320,6 +320,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       let initialIndentLevel = computeInitialIndent(document, range, formatParams);
       let formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
+      formatSettings.InsertSpaceBeforeFunctionParenthesis = true;
       let start = currentTextDocument.offsetAt(range.start);
       let end = currentTextDocument.offsetAt(range.end);
       let lastLineRange = null;
