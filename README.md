@@ -94,7 +94,7 @@ See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/CONTRIBUTING.m
 
 - Logo from [vuejs/vuejs.org](https://github.com/vuejs/vuejs.org)
 - Grammar based on [vuejs/vue-syntax-highlight](https://github.com/vuejs/vue-syntax-highlight)
-- Sass grammar based on [P233/Syntax-highlighting-for-Sass](https://github.com/P233/Syntax-highlighting-for-Sass)
+- Sass grammar based on [robinbentley/vscode-sass-indented](https://github.com/robinbentley/vscode-sass-indented)
 - PostCSS grammar based on [azat-io/atom-language-postcss](https://github.com/azat-io/atom-language-postcss)
 - Language Server based on VSCode's [html extension](https://github.com/Microsoft/vscode/tree/master/extensions/html)
 

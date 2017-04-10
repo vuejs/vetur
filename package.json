@@ -90,7 +90,7 @@
       {
         "language": "sass",
         "scopeName": "source.css.sass",
-        "path": "./syntaxes/sass.json"
+        "path": "./syntaxes/sass.tmLanguage"
       },
       {
         "language": "postcss",
