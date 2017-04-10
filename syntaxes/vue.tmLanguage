@@ -198,14 +198,14 @@
 						</dict>
 					</dict>
 					<key>contentName</key>
-					<string>source.css.sass</string>
+					<string>source.sass</string>
 					<key>end</key>
 					<string>(?=&lt;/style&gt;)</string>
 					<key>patterns</key>
 					<array>
 						<dict>
 							<key>include</key>
-							<string>source.css.sass</string>
+							<string>source.sass</string>
 						</dict>
 					</array>
 				</dict>

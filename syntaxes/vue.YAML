@@ -62,13 +62,13 @@ patterns:
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
-  - contentName: source.css.sass
+  - contentName: source.sass
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
     end: (?=</style>)
     patterns:
-      - include: source.css.sass
+      - include: source.sass
 
 - begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))
   beginCaptures:

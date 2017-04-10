@@ -77,10 +77,10 @@
           "text.jade": "jade",
           "text.pug": "pug",
           "source.css": "css",
-          "source.css.sass": "sass",
           "source.css.scss": "scss",
           "source.css.less": "less",
           "source.css.postcss": "postcss",
+          "source.sass": "sass",
           "source.stylus": "stylus",
           "source.js": "javascript",
           "source.ts": "typescript",
@@ -89,7 +89,7 @@
       },
       {
         "language": "sass",
-        "scopeName": "source.css.sass",
+        "scopeName": "source.sass",
         "path": "./syntaxes/sass.tmLanguage"
       },
       {
