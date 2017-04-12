@@ -85,9 +85,12 @@ let formatterRegistration: Thenable<Disposable> = null;
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration((change) => {
   settings = change.settings;
+  /*
   let validationSettings = settings && settings.html && settings.html.validate || {};
   validation.css = validationSettings.styles !== false;
   validation.javascript = validationSettings.scripts !== false;
+  */
+  // Add vetur's own validation toggle setting later
 
   languageModes.getAllModes().forEach(m => {
     if (m.configure) {
@@ -99,7 +102,9 @@ connection.onDidChangeConfiguration((change) => {
   // dynamically enable & disable the formatter
   // Disable formatter temporarily. https://github.com/octref/vetur/issues/82
   if (clientDynamicRegisterSupport) {
-    let enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
+    // let enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
+    // Add vetur's own config later
+    let enableFormatter = true;
     if (enableFormatter) {
       if (!formatterRegistration) {
         let documentSelector: DocumentSelector = [{ language: 'vue' }];
