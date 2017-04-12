@@ -9,10 +9,6 @@ import * as url from 'url';
 import * as path from 'path';
 import uri from 'vscode-uri';
 
-namespace ColorSymbolRequest {
-  export const type: RequestType<string, Range[], any, any> = new RequestType('css/colorSymbols');
-}
-
 // Create a connection for the server
 let connection: IConnection = createConnection();
 
@@ -270,19 +266,6 @@ connection.onDocumentSymbol(documentSymbolParms => {
     }
   });
   return symbols;
-});
-
-connection.onRequest(ColorSymbolRequest.type, uri => {
-  let ranges: Range[] = [];
-  let document = documents.get(uri);
-  if (document) {
-    languageModes.getAllModesInDocument(document).forEach(m => {
-      if (m.findColorSymbols) {
-        pushAll(ranges, m.findColorSymbols(document));
-      }
-    });
-  }
-  return ranges;
 });
 
 // Listen on the connection
