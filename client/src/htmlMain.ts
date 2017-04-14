@@ -23,7 +23,6 @@ export function activate(context: ExtensionContext) {
   };
 
   let documentSelector = ['vue'];
-  let embeddedLanguages = { css: true, javascript: true };
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
@@ -32,7 +31,6 @@ export function activate(context: ExtensionContext) {
       configurationSection: ['html', 'css', 'javascript'], // the settings to synchronize
     },
     initializationOptions: {
-      embeddedLanguages
     }
   };
 
