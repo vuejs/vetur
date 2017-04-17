@@ -134,6 +134,8 @@ function getLanguageIdFromLangAttr(lang: string): string {
   let languageIdFromType = removeQuotes(lang);
   if (languageIdFromType === 'jade') {
     languageIdFromType = 'pug';
+  } if (languageIdFromType === 'ts') {
+    languageIdFromType = 'typescript';
   }
   return languageIdFromType;
 }
