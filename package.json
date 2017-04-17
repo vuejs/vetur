@@ -182,6 +182,11 @@
           "type": "boolean",
           "default": true,
           "description": "Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)"
+        },
+        "vetur.format.js.InsertSpaceBeforeFunctionParenthesis": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add a space before function parenthesis"
         }
       }
     }
