@@ -22,15 +22,17 @@ export function activate(context: ExtensionContext) {
     debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   };
 
-  let documentSelector = ['vue'];
+  const documentSelector = ['vue'];
+  const veturConfig = workspace.getConfiguration('vetur');
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      configurationSection: ['html', 'css', 'javascript'], // the settings to synchronize
+      configurationSection: ['vetur'], // the settings to synchronize
     },
     initializationOptions: {
+      veturConfig
     }
   };
 

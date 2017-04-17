@@ -29,6 +29,8 @@ var settings: any = {};
 let clientSnippetSupport = false;
 let clientDynamicRegisterSupport = false;
 
+let formatOptions: any = {};
+
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
 connection.onInitialize((params: InitializeParams): InitializeResult => {
@@ -54,6 +56,9 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 
   clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
   clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
+
+  formatOptions = initializationOptions.veturConfig.format;
+
   return {
     capabilities: {
       // Tell the client that the server works in FULL text document sync mode
@@ -84,6 +89,8 @@ let formatterRegistration: Thenable<Disposable> = null;
 
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration((change) => {
+  let f = formatOptions;
+
   settings = change.settings;
   /*
   let validationSettings = settings && settings.html && settings.html.validate || {};
