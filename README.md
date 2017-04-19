@@ -7,20 +7,20 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 ## Implemented Features
 
-- Basic IntelliSense for html/css/scss/less/js
-- Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as html attributes
-- Some advanced IntelliSense for js/ts
-- Linting for js via ESLint, basic error checking for css/scss/less
-- Formatting for html/css/scss/less/js/ts with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md)
+- Basic IntelliSense for `html/css/scss/less/js`
+- Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as `html` attributes
+- Some advanced IntelliSense for `js/ts`
+- Linting for `js` via ESLint, basic error checking for `css/scss/less`
+- Formatting for `html/css/scss/less/js/ts` with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md)
 - Syntax highlighting for:
-  - html/jade/pug
-  - css/sass/scss/less/stylus/postcss
-  - js/ts/coffee
+  - `html/jade/pug`
+  - `css/sass/scss/less/stylus/postcss`
+  - `js/ts/coffee`
 - Embedded snippet support
-  - Use vue snippet outside all regions
+  - Use `vue` snippet outside all regions
   - Use each language's snippet inside its region
-  - Define html snippets you want to use inside `<template>` as `vue-html` snippet
-- Emmet for html/css/sass/scss/less
+  - Define `html` snippets you want to use inside `<template>` as `vue-html` snippet
+- Emmet for `html/css/sass/scss/less`
 
 ## Demo
 
