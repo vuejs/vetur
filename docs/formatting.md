@@ -6,6 +6,7 @@ vetur have support for formatting embedded `html/css/scss/less/js/ts` and expose
 
 `tabSize` and `insertSpace` are read from VSCode config `editor.tabSize` and `editor.insertSpace`.
 
+
 ## `html/css/scss/less`
 
 `html` and `css/scss/less` formatting is powered by [js-beautify](https://github.com/beautify-web/js-beautify).
@@ -18,11 +19,12 @@ A subset of options are exposed:
 - `vetur.format.css.newline_between_rules`
 - `vetur.format.css.preserve_newlines`
 
-IntelliSense in VSCode's config editor should provide information about these settings.
+IntelliSense in VSCode's config editor should provide information about these settings.  
 For more info on each option, see: 
 
 - https://github.com/beautify-web/js-beautify
 - https://github.com/victorporof/Sublime-HTMLPrettify
+
 
 ## `js/ts`
 
@@ -52,7 +54,8 @@ interface FormatCodeSettings extends EditorSettings {
 }
 ```
 
+
 ## Adding Option
 
-If you'd like an option from `js-beautify` or TypeScript's language service exposed, open an issue for discussion.
+If you'd like an option from `js-beautify` or TypeScript's language service exposed, open an issue for discussion.  
 I'd like to keep vetur's options minimal.
