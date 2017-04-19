@@ -9,7 +9,9 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 - Basic IntelliSense for `html/css/scss/less/js`
 - Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as `html` attributes
-- Some advanced IntelliSense for `js/ts`
+- Some advanced IntelliSense for `js/ts`, including:
+  - Some IntelliSense for `this` in Vue Component
+  - Module Resolution for node libraries, some Module Resolution for Vue Component
 - Linting for `js` via ESLint, basic error checking for `css/scss/less`
 - Formatting for `html/css/scss/less/js/ts` with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md)
 - Syntax highlighting for:

@@ -1,3 +1,13 @@
+### 0.6.0 | 2017-04-19
+
+- Improved formatting support with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md) to fine-tune formatting style in `js-beautify` and TypeScript's language service.
+- Improved `sass` syntax highlighting based on grammar from [robinbentley/vscode-sass-indented](https://github.com/robinbentley/vscode-sass-indented). #41.
+
+Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/octref/vetur/pull/94):
+- Preliminary TypeScript support (try `<script lang="ts">`)
+- Improved IntelliSense for `js/ts` in Vue SFC.
+- Correct Module Resolution (try `npm i lodash @types/lodash` and use lodash in your Vue SFC).
+
 ### 0.5.6 | 2017-03-20
 
 - Update js-beautify to include `preserve_newlines` options for css/scss/less.
@@ -8,7 +18,7 @@
 
 ### 0.5.4 | 2017-03-16
 
-- Change default formatting options to preserve new lines in html
+- Change default formatting options to preserve new lines in html.
 - Change default formatting options for html to force-align attributes. #77.
 - Re-enable scss/less error checking
 
