@@ -109,16 +109,6 @@
     "configuration": {
       "title": "vetur configuration",
       "properties": {
-        "vetur.format.indent_size": {
-          "type": "number",
-          "default": 2,
-          "decription": "Indentation size"
-        },
-        "vetur.format.indent_with_tabs": {
-          "type": "boolean",
-          "default": false,
-          "decription": "Indent with tabs"
-        },
         "vetur.format.html.brace_style": {
           "type": "string",
           "default": "collapse",
