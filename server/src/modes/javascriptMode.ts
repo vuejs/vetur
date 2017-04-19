@@ -8,6 +8,7 @@ import { createUpdater, parseVue, isVue } from './typescriptMode';
 import Uri from 'vscode-uri';
 import * as path from 'path';
 import * as ts from 'typescript';
+import * as _ from 'lodash';
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
@@ -131,7 +132,9 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       return 'javascript';
     },
     configure(options: any) {
-      settings = options && options.javascript;
+      if (options.vetur) {
+        settings.format = options.vetur.format.js;
+      }
     },
     doValidation(document: TextDocument): Diagnostic[] {
       updateCurrentTextDocument(document);
@@ -320,7 +323,6 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       let initialIndentLevel = computeInitialIndent(document, range, formatParams);
       let formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
-      formatSettings.InsertSpaceBeforeFunctionParenthesis = true;
       let start = currentTextDocument.offsetAt(range.start);
       let end = currentTextDocument.offsetAt(range.end);
       let lastLineRange = null;
@@ -435,24 +437,27 @@ function convertSymbolKind(kind: string): SymbolKind {
 }
 
 function convertOptions(options: FormattingOptions, formatSettings: any, initialIndentLevel: number): ts.FormatCodeOptions {
-  return {
+  const defaultJsFormattingOptions = {
     ConvertTabsToSpaces: options.insertSpaces,
     TabSize: options.tabSize,
     IndentSize: options.tabSize,
     IndentStyle: ts.IndentStyle.Smart,
     NewLineCharacter: '\n',
     BaseIndentSize: options.tabSize * initialIndentLevel,
-    InsertSpaceAfterCommaDelimiter: Boolean(!formatSettings || formatSettings.insertSpaceAfterCommaDelimiter),
-    InsertSpaceAfterSemicolonInForStatements: Boolean(!formatSettings || formatSettings.insertSpaceAfterSemicolonInForStatements),
-    InsertSpaceBeforeAndAfterBinaryOperators: Boolean(!formatSettings || formatSettings.insertSpaceBeforeAndAfterBinaryOperators),
-    InsertSpaceAfterKeywordsInControlFlowStatements: Boolean(!formatSettings || formatSettings.insertSpaceAfterKeywordsInControlFlowStatements),
-    InsertSpaceAfterFunctionKeywordForAnonymousFunctions: Boolean(!formatSettings || formatSettings.insertSpaceAfterFunctionKeywordForAnonymousFunctions),
-    InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: Boolean(formatSettings && formatSettings.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis),
-    InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: Boolean(formatSettings && formatSettings.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets),
-    InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: Boolean(formatSettings && formatSettings.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces),
-    PlaceOpenBraceOnNewLineForControlBlocks: Boolean(formatSettings && formatSettings.placeOpenBraceOnNewLineForFunctions),
-    PlaceOpenBraceOnNewLineForFunctions: Boolean(formatSettings && formatSettings.placeOpenBraceOnNewLineForControlBlocks)
+    InsertSpaceAfterCommaDelimiter: true,
+    InsertSpaceAfterSemicolonInForStatements: true,
+    InsertSpaceAfterKeywordsInControlFlowStatements: true,
+    InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
+    InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
+    InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: false,
+    InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: false,
+    InsertSpaceBeforeFunctionParenthesis: true,
+    InsertSpaceBeforeAndAfterBinaryOperators: true,
+    PlaceOpenBraceOnNewLineForControlBlocks: false,
+    PlaceOpenBraceOnNewLineForFunctions: false
   };
+
+  return _.assign(defaultJsFormattingOptions, formatSettings);
 }
 
 function computeInitialIndent(document: TextDocument, range: Range, options: FormattingOptions) {
