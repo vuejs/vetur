@@ -109,28 +109,6 @@
     "configuration": {
       "title": "vetur configuration",
       "properties": {
-        "vetur.format.html.brace_style": {
-          "type": "string",
-          "default": "collapse",
-          "enum": [
-            "collapse",
-            "expand",
-            "end-expand",
-            "none"
-          ],
-          "enumDescriptions": [
-            "Put braces on the same line as control statement",
-            "Put braces on own line",
-            "Put end braces on own line",
-            "Keep braces where they are"
-          ],
-          "decription": "Where to put braces"
-        },
-        "vetur.format.html.indent_inner_html": {
-          "type": "boolean",
-          "default": true,
-          "decription": "Indent html inside <template>"
-        },
         "vetur.format.html.max_preserve_newlines": {
           "type": "number",
           "default": 1,

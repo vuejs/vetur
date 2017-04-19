@@ -3,8 +3,6 @@ import { TextDocument, Range, TextEdit, FormattingOptions } from 'vscode-languag
 import { LanguageModes } from './languageModes';
 
 export function format(languageModes: LanguageModes, document: TextDocument, formatRange: Range, formattingOptions: FormattingOptions) {
-  let htmlMode = languageModes.getMode('vue-html');
-
   let embeddedModeRanges = languageModes.getModesInRange(document, formatRange);
   let embeddedEdits: TextEdit[] = [];
 

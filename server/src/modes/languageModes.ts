@@ -1,14 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-'use strict';
-
-import { getVls, DocumentContext } from 'vetur-vls';
 import {
   CompletionItem, Location, SignatureHelp, Definition, TextEdit, TextDocument, Diagnostic, DocumentLink, Range,
   Hover, DocumentHighlight, CompletionList, Position, FormattingOptions, SymbolInformation
 } from 'vscode-languageserver-types';
+import { getVls, DocumentContext } from 'vetur-vls';
 
 import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
 import { getDocumentRegions, HTMLDocumentRegions } from './embeddedSupport';

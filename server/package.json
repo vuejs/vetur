@@ -8,6 +8,7 @@
     "node": "*"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
     "vetur-vls": "^0.2.5",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-languageserver": "^3.0.5",
@@ -15,6 +16,7 @@
     "vue-template-compiler": "^2.2.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.62",
     "@types/node": "^6.0.54",
     "typescript": "^2.1.5"
   },

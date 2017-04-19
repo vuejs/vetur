@@ -8,6 +8,7 @@ import { format } from './modes/formatting';
 import * as url from 'url';
 import * as path from 'path';
 import uri from 'vscode-uri';
+import * as _ from 'lodash';
 
 // Create a connection for the server
 let connection: IConnection = createConnection();
@@ -29,7 +30,7 @@ var settings: any = {};
 let clientSnippetSupport = false;
 let clientDynamicRegisterSupport = false;
 
-let formatOptions: any = {};
+let veturFormattingOptions: any = {};
 
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
@@ -57,7 +58,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
   clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
 
-  formatOptions = initializationOptions.veturConfig.format;
+  veturFormattingOptions = initializationOptions.veturConfig.format;
 
   return {
     capabilities: {
@@ -76,7 +77,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   };
 });
 
-let validation = {
+const validation = {
   'vue-html': true,
   html: true,
   css: true,
@@ -89,9 +90,11 @@ let formatterRegistration: Thenable<Disposable> = null;
 
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration((change) => {
-  let f = formatOptions;
-
   settings = change.settings;
+
+  // Update formatting setting
+  veturFormattingOptions = settings.vetur.format;
+
   /*
   let validationSettings = settings && settings.html && settings.html.validate || {};
   validation.css = validationSettings.styles !== false;
@@ -139,7 +142,7 @@ documents.onDidClose(event => {
 });
 
 function cleanPendingValidation(textDocument: TextDocument): void {
-  let request = pendingValidationRequests[textDocument.uri];
+  const request = pendingValidationRequests[textDocument.uri];
   if (request) {
     clearTimeout(request);
     delete pendingValidationRequests[textDocument.uri];
@@ -155,7 +158,7 @@ function triggerValidation(textDocument: TextDocument): void {
 }
 
 function validateTextDocument(textDocument: TextDocument): void {
-  let diagnostics: Diagnostic[] = [];
+  const diagnostics: Diagnostic[] = [];
   if (textDocument.languageId === 'vue') {
     languageModes.getAllModesInDocument(textDocument).forEach(mode => {
       if (mode.doValidation && validation[mode.getId()]) {
@@ -175,8 +178,8 @@ function pushAll<T>(to: T[], from: T[]) {
 }
 
 connection.onCompletion(textDocumentPosition => {
-  let document = documents.get(textDocumentPosition.textDocument.uri);
-  let mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
+  const document = documents.get(textDocumentPosition.textDocument.uri);
+  const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
   if (mode && mode.doComplete) {
     return mode.doComplete(document, textDocumentPosition.position);
   }
@@ -184,10 +187,10 @@ connection.onCompletion(textDocumentPosition => {
 });
 
 connection.onCompletionResolve(item => {
-  let data = item.data;
+  const data = item.data;
   if (data && data.languageId && data.uri) {
-    let mode = languageModes.getMode(data.languageId);
-    let document = documents.get(data.uri);
+    const mode = languageModes.getMode(data.languageId);
+    const document = documents.get(data.uri);
     if (mode && mode.doResolve && document) {
       return mode.doResolve(document, item);
     }
@@ -196,8 +199,8 @@ connection.onCompletionResolve(item => {
 });
 
 connection.onHover(textDocumentPosition => {
-  let document = documents.get(textDocumentPosition.textDocument.uri);
-  let mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
+  const document = documents.get(textDocumentPosition.textDocument.uri);
+  const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
   if (mode && mode.doHover) {
     return mode.doHover(document, textDocumentPosition.position);
   }
@@ -205,8 +208,8 @@ connection.onHover(textDocumentPosition => {
 });
 
 connection.onDocumentHighlight(documentHighlightParams => {
-  let document = documents.get(documentHighlightParams.textDocument.uri);
-  let mode = languageModes.getModeAtPosition(document, documentHighlightParams.position);
+  const document = documents.get(documentHighlightParams.textDocument.uri);
+  const mode = languageModes.getModeAtPosition(document, documentHighlightParams.position);
   if (mode && mode.findDocumentHighlight) {
     return mode.findDocumentHighlight(document, documentHighlightParams.position);
   }
@@ -214,8 +217,8 @@ connection.onDocumentHighlight(documentHighlightParams => {
 });
 
 connection.onDefinition(definitionParams => {
-  let document = documents.get(definitionParams.textDocument.uri);
-  let mode = languageModes.getModeAtPosition(document, definitionParams.position);
+  const document = documents.get(definitionParams.textDocument.uri);
+  const mode = languageModes.getModeAtPosition(document, definitionParams.position);
   if (mode && mode.findDefinition) {
     return mode.findDefinition(document, definitionParams.position);
   }
@@ -223,8 +226,8 @@ connection.onDefinition(definitionParams => {
 });
 
 connection.onReferences(referenceParams => {
-  let document = documents.get(referenceParams.textDocument.uri);
-  let mode = languageModes.getModeAtPosition(document, referenceParams.position);
+  const document = documents.get(referenceParams.textDocument.uri);
+  const mode = languageModes.getModeAtPosition(document, referenceParams.position);
   if (mode && mode.findReferences) {
     return mode.findReferences(document, referenceParams.position);
   }
@@ -232,8 +235,8 @@ connection.onReferences(referenceParams => {
 });
 
 connection.onSignatureHelp(signatureHelpParms => {
-  let document = documents.get(signatureHelpParms.textDocument.uri);
-  let mode = languageModes.getModeAtPosition(document, signatureHelpParms.position);
+  const document = documents.get(signatureHelpParms.textDocument.uri);
+  const mode = languageModes.getModeAtPosition(document, signatureHelpParms.position);
   if (mode && mode.doSignatureHelp) {
     return mode.doSignatureHelp(document, signatureHelpParms.position);
   }
@@ -241,14 +244,16 @@ connection.onSignatureHelp(signatureHelpParms => {
 });
 
 connection.onDocumentRangeFormatting(formatParams => {
-  let document = documents.get(formatParams.textDocument.uri);
+  const document = documents.get(formatParams.textDocument.uri);
 
-  return format(languageModes, document, formatParams.range, formatParams.options);
+  const formattingOptions = _.assign({}, formatParams.options, veturFormattingOptions);
+
+  return format(languageModes, document, formatParams.range, formattingOptions);
 });
 
 connection.onDocumentLinks(documentLinkParam => {
-  let document = documents.get(documentLinkParam.textDocument.uri);
-  let documentContext: DocumentContext = {
+  const document = documents.get(documentLinkParam.textDocument.uri);
+  const documentContext: DocumentContext = {
     resolveReference: ref => {
       if (workspacePath && ref[0] === '/') {
         return uri.file(path.join(workspacePath, ref)).toString();
@@ -256,7 +261,7 @@ connection.onDocumentLinks(documentLinkParam => {
       return url.resolve(document.uri, ref);
     }
   };
-  let links: DocumentLink[] = [];
+  const links: DocumentLink[] = [];
   languageModes.getAllModesInDocument(document).forEach(m => {
     if (m.findDocumentLinks) {
       pushAll(links, m.findDocumentLinks(document, documentContext));

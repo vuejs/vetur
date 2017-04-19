@@ -1,7 +1,6 @@
 {
   "tslint.enable": false,
   "files.exclude": {
-    "client/server": true,
-    "**/*.js": true
+    "client/server": true
   }
 }
