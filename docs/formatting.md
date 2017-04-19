@@ -1,14 +1,14 @@
 # Formatting
 
-vetur have support for formatting embedded html/css/scss/less/js/ts and expose some formatting options.
+vetur have support for formatting embedded `html/css/scss/less/js/ts` and expose some formatting options.
 
 ## General
 
 `tabSize` and `insertSpace` are read from VSCode config `editor.tabSize` and `editor.insertSpace`.
 
-## html/css/scss/less
+## `html/css/scss/less`
 
-html and css/scss/less formatting is powered by [js-beautify](https://github.com/beautify-web/js-beautify).
+`html` and `css/scss/less` formatting is powered by [js-beautify](https://github.com/beautify-web/js-beautify).
 A subset of options are exposed:
 
 - `vetur.format.html.max_preserve_newlines`
@@ -24,9 +24,9 @@ For more info on each option, see:
 - https://github.com/beautify-web/js-beautify
 - https://github.com/victorporof/Sublime-HTMLPrettify
 
-## js/ts
+## `js/ts`
 
-js/ts formatting is powered by TypeScript's language service. A list of options available:
+`js/ts` formatting is powered by TypeScript's language service. A list of options available:
 
 - `vetur.format.js.InsertSpaceBeforeFunctionParenthesis`
 
