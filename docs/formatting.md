@@ -54,5 +54,5 @@ interface FormatCodeSettings extends EditorSettings {
 
 ## Adding Option
 
-If you'd like an option from `js-beautify` or TypeScript's language service, open an issue for discussion.
+If you'd like an option from `js-beautify` or TypeScript's language service exposed, open an issue for discussion.
 I'd like to keep vetur's options minimal.
