@@ -107,7 +107,6 @@ connection.onDidChangeConfiguration((change) => {
   documents.all().forEach(triggerValidation);
 
   // dynamically enable & disable the formatter
-  // Disable formatter temporarily. https://github.com/octref/vetur/issues/82
   if (clientDynamicRegisterSupport) {
     // let enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
     // Add vetur's own config later
@@ -244,10 +243,7 @@ connection.onSignatureHelp(signatureHelpParms => {
 connection.onDocumentRangeFormatting(formatParams => {
   let document = documents.get(formatParams.textDocument.uri);
 
-  let unformattedTags: string = settings && settings.html && settings.html.format && settings.html.format.unformatted || '';
-  let enabledModes = { css: !unformattedTags.match(/\bstyle\b/), javascript: !unformattedTags.match(/\bscript\b/) };
-
-  return format(languageModes, document, formatParams.range, formatParams.options, enabledModes);
+  return format(languageModes, document, formatParams.range, formatParams.options);
 });
 
 connection.onDocumentLinks(documentLinkParam => {

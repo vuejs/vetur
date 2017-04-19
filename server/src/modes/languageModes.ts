@@ -51,7 +51,6 @@ export interface LanguageModeRange extends Range {
 }
 
 export function getLanguageModes(workspacePath: string): LanguageModes {
-
   var vls = getVls();
   let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(vls, document));
 

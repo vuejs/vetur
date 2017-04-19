@@ -1,14 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-'use strict';
-
 import { applyEdits } from '../utils/edits';
 import { TextDocument, Range, TextEdit, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageModes } from './languageModes';
 
-export function format(languageModes: LanguageModes, document: TextDocument, formatRange: Range, formattingOptions: FormattingOptions, enabledModes: { [mode: string]: boolean }) {
+export function format(languageModes: LanguageModes, document: TextDocument, formatRange: Range, formattingOptions: FormattingOptions) {
   let htmlMode = languageModes.getMode('vue-html');
 
   let embeddedModeRanges = languageModes.getModesInRange(document, formatRange);
