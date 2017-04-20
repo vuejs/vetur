@@ -96,12 +96,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         else {
           const uri = Uri.file(path.join(path.dirname(containingFile), name));
           const resolvedFileName = uri.fsPath;
-          const doc = docs.get(resolvedFileName) ||
-            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
-          return {
-            resolvedFileName,
-            extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
-          };
+          if (ts.sys.fileExists(resolvedFileName)) {
+            const doc = docs.get(resolvedFileName) ||
+              jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
+            return {
+              resolvedFileName,
+              extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
+            };
+          }
         }
       });
     },
