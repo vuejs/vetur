@@ -1,3 +1,7 @@
+### 0.6.1 | 2017-04-20
+
+- Fix a bug in module resolution that causes Vue Langauge Server to crash. #122 and #123.
+
 ### 0.6.0 | 2017-04-19
 
 - Improved formatting support with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md) to fine-tune formatting style in `js-beautify` and TypeScript's language service.
