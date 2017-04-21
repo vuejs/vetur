@@ -14,7 +14,7 @@
     "vscode-css-languageservice": "^2.0.0",
     "vscode-languageserver": "^3.0.5",
     "vscode-uri": "^1.0.0",
-    "vue-template-compiler": "^2.2.1"
+    "vue-template-compiler": "2.2.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.62",
