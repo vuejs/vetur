@@ -87,7 +87,7 @@ function isImportOfName(statement: ts.Statement, name: string): boolean {
         return false;
       }
       // import Vue from ...
-      if (importDecl.importClause.name && importDecl.importClause.name.text === 'Vue') {
+      if (importDecl.importClause.name && importDecl.importClause.name.text === name) {
         return true;
       }
       if (!importDecl.importClause.namedBindings) {
@@ -96,20 +96,20 @@ function isImportOfName(statement: ts.Statement, name: string): boolean {
       // import { Vue } from ...
       if (importDecl.importClause.namedBindings.kind === ts.SyntaxKind.NamedImports) {
         const namedImports = importDecl.importClause.namedBindings as ts.NamedImports;
-        if(namedImports.elements && namedImports.elements.some(spec => spec.name.text === "Vue")) {
+        if(namedImports.elements && namedImports.elements.some(spec => spec.name.text === name)) {
           return true;
         }
       }
       // import * as Vue from ...
       if (importDecl.importClause.namedBindings.kind === ts.SyntaxKind.NamespaceImport) {
         const namespaceImport = importDecl.importClause.namedBindings as ts.NamespaceImport;
-        return namespaceImport.name && namespaceImport.name.text === "Vue";
+        return namespaceImport.name && namespaceImport.name.text === name;
       }
     }
     // import Vue (incomplete statement)
     if (statement.kind === ts.SyntaxKind.ImportEqualsDeclaration) {
       const importEqDecl = statement as ts.ImportEqualsDeclaration;
-      return importEqDecl.name && importEqDecl.name.text === "Vue";
+      return importEqDecl.name && importEqDecl.name.text === name;
     }
     return false;
 }
