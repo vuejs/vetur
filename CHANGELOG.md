@@ -1,6 +1,6 @@
-### 0.6.2 | 2017-04-21
+### 0.6.2 | 2017-04-24
 
-- Fix `vue-template-compiler` version mismatch. #135.
+- Fix various Vue Language Server crashes.
 
 ### 0.6.1 | 2017-04-20
 
