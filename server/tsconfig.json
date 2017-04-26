@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "allowJs": true,
     "outDir": "../client/server",
     "sourceMap": true,
     "lib": [

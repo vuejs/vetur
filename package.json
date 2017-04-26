@@ -25,7 +25,6 @@
     "vscode": "^1.8.0"
   },
   "dependencies": {
-    "vue-template-compiler": "2.2.1"
   },
   "activationEvents": [
     "onLanguage:vue"
