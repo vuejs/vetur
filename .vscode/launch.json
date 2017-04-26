@@ -26,7 +26,8 @@
       "request": "attach",
       "port": 6005,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/client/server/**/*.js"]
+      "outFiles": ["${workspaceRoot}/client/server/**/*.js"],
+      "protocol": "legacy"
     }
   ]
 }
