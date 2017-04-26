@@ -1,3 +1,7 @@
+### 0.6.3 | 2017-04-26
+
+- Include `vue-template-compiler` in vetur to avoid version mismatch. #135.
+
 ### 0.6.2 | 2017-04-24
 
 - Fix various Vue Language Server crashes.
