@@ -1,3 +1,8 @@
+### 0.6.4 | 2017-04-27
+
+- When running Vue Language Server, do not use debug port. #162 and #148.
+- Avoid module resolution in `node_modules`, so CPU and Memory usage won't spike. #131.
+
 ### 0.6.3 | 2017-04-26
 
 - Include `vue-template-compiler` in vetur to avoid version mismatch. #135.
