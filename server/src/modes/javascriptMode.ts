@@ -55,7 +55,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   const configFilename = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
     ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
   const configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {
-    exclude: ['**/node_modules']
+    exclude: ['node_modules', '**/node_modules/*']
   };
   const parsedConfig = ts.parseJsonConfigFileContent(configJson,
     ts.sys,
