@@ -18,7 +18,7 @@
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
       "outFiles": ["${workspaceRoot}/client/out/**/*.js"],
-      "preLaunchTask": "npm"
+      "preLaunchTask": "yarn"
     },
     {
       "name": "server",
