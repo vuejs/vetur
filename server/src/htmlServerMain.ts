@@ -47,32 +47,14 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
     languageModes.dispose();
   });
 
-  function hasClientCapability(...keys: string[]) {
-    let c = params.capabilities;
-    for (let i = 0; c && i < keys.length; i++) {
-      c = c[keys[i]];
-    }
-    return !!c;
-  }
-
-  clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
-  clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
-
   veturFormattingOptions = initializationOptions.veturConfig.format;
 
   return {
     capabilities: {
       // Tell the client that the server works in FULL text document sync mode
       textDocumentSync: documents.syncKind,
-      completionProvider: clientDynamicRegisterSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : null,
-      hoverProvider: true,
-      documentHighlightProvider: true,
-      documentRangeFormattingProvider: false,
-      documentLinkProvider: { resolveProvider: false },
-      documentSymbolProvider: true,
-      definitionProvider: true,
-      signatureHelpProvider: { triggerCharacters: ['('] },
-      referencesProvider: true
+      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] },
+      documentRangeFormattingProvider: true
     }
   };
 });
@@ -86,7 +68,7 @@ const validation = {
   less: true
 };
 
-let formatterRegistration: Thenable<Disposable> = null;
+let formatterRegistration: Thenable<Disposable>;
 
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration((change) => {
@@ -95,12 +77,7 @@ connection.onDidChangeConfiguration((change) => {
   // Update formatting setting
   veturFormattingOptions = settings.vetur.format;
 
-  /*
-  let validationSettings = settings && settings.html && settings.html.validate || {};
-  validation.css = validationSettings.styles !== false;
-  validation.javascript = validationSettings.scripts !== false;
-  */
-  // Add vetur's own validation toggle setting later
+  // Todo: Add vetur's own validation toggle setting
 
   languageModes.getAllModes().forEach(m => {
     if (m.configure) {
@@ -109,21 +86,8 @@ connection.onDidChangeConfiguration((change) => {
   });
   documents.all().forEach(triggerValidation);
 
-  // dynamically enable & disable the formatter
-  if (clientDynamicRegisterSupport) {
-    // let enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
-    // Add vetur's own config later
-    let enableFormatter = true;
-    if (enableFormatter) {
-      if (!formatterRegistration) {
-        let documentSelector: DocumentSelector = [{ language: 'vue' }];
-        formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
-      }
-    } else if (formatterRegistration) {
-      formatterRegistration.then(r => r.dispose());
-      formatterRegistration = null;
-    }
-  }
+  let documentSelector: DocumentSelector = [{ language: 'vue' }];
+  formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
 });
 
 let pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
