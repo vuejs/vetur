@@ -32,6 +32,11 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 
 - Install [vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 
+- If you have a `tsconfig.json` / `jsconfig.json`, you must include `*.vue` files in its `include` for all language features to work on `*.vue` files.
+  - :no_entry_sign: `include: ['src/**/*.ts']`
+  - :star: `include: ['src/**/*']`
+  - :star: `include: ['src/**/*.ts', 'src/**/*.vue']`
+
 ### Optional Setup
 
 **Emmet**:
