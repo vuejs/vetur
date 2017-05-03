@@ -144,7 +144,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return [];
       }
 
       const diagnostics = [...jsLanguageService.getSyntacticDiagnostics(filename),
@@ -162,7 +162,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return { isIncomplete: false, items: [] };
       }
 
       let offset = currentTextDocument.offsetAt(position);
@@ -194,7 +194,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return null;
       }
 
       let details = jsLanguageService.getCompletionEntryDetails(filename, item.data.offset, item.label);
@@ -209,7 +209,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return null;
       }
 
       let info = jsLanguageService.getQuickInfoAtPosition(filename, currentTextDocument.offsetAt(position));
@@ -226,7 +226,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return null;
       }
 
       let signHelp = jsLanguageService.getSignatureHelpItems(filename, currentTextDocument.offsetAt(position));
@@ -268,7 +268,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return [];
       }
 
       let occurrences = jsLanguageService.getOccurrencesAtPosition(filename, currentTextDocument.offsetAt(position));
@@ -280,13 +280,13 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
           };
         });
       };
-      return null;
+      return [];
     },
     findDocumentSymbols(document: TextDocument): SymbolInformation[] {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return [];
       }
 
       let items = jsLanguageService.getNavigationBarItems(filename);
@@ -321,13 +321,13 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         items.forEach(item => collectSymbols(item));
         return result;
       }
-      return null;
+      return [];
     },
     findDefinition(document: TextDocument, position: Position): Definition {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return null;
       }
 
       let definition = jsLanguageService.getDefinitionAtPosition(filename, currentTextDocument.offsetAt(position));
@@ -345,7 +345,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return [];
       }
 
       let references = jsLanguageService.getReferencesAtPosition(filename, currentTextDocument.offsetAt(position));
@@ -357,13 +357,13 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
           };
         });
       }
-      return null;
+      return [];
     },
     format(document: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
       if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
-        return;
+        return [];
       }
 
       let initialIndentLevel = computeInitialIndent(document, range, formatParams);
@@ -394,7 +394,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         }
         return result;
       }
-      return null;
+      return [];
     },
     onDocumentRemoved(document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);
