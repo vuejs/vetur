@@ -24,7 +24,7 @@
   "scripts": {
     "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
     "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p .",
-    "linkvls": "yarn rm vetur-vls && yarn ln vetur-vls && cd ../client/server && yarn rm vetur-vls && yarn ln vetur-vls",
+    "linkvls": "yarn remove vetur-vls && yarn link vetur-vls && cd ../client/server && yarn remove vetur-vls && yarn link vetur-vls",
     "unlinkvls": "rm node_modules/vetur-vls && rm ../client/server/node_modules/vetur-vls && yarn i"
   }
 }
