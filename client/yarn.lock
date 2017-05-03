@@ -1526,9 +1526,9 @@ vscode-jsonrpc@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-3.2.0.tgz#c92b946ac385c8b41439b842b6bd07d517b64a7d"
 
-vscode-languageclient@^3.0.4:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/vscode-languageclient/-/vscode-languageclient-3.2.0.tgz#8b99b8d1dc187fffd9d9c96fd6678430523bdece"
+vscode-languageclient@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/vscode-languageclient/-/vscode-languageclient-3.2.1.tgz#bf93f472992eb74db066656bc49751aeb561b984"
   dependencies:
     vscode-jsonrpc "^3.2.0"
     vscode-languageserver-types "^3.2.0"

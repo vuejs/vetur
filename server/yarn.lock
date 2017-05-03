@@ -132,9 +132,9 @@ vscode-languageserver-types@^3.0.3, vscode-languageserver-types@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.2.0.tgz#8874ed92dbfa66df5fb0e2bf73f614cf9483be8f"
 
-vscode-languageserver@^3.0.5:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver/-/vscode-languageserver-3.2.0.tgz#d01e4d9e6577f807755c53a20ee7eea149b0582d"
+vscode-languageserver@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver/-/vscode-languageserver-3.2.1.tgz#e39cf68dc74d28a8ad06138fb4beb08646e1e002"
   dependencies:
     vscode-jsonrpc "^3.2.0"
     vscode-languageserver-types "^3.2.0"

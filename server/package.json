@@ -14,7 +14,7 @@
     "typescript": "^2.2.2",
     "vetur-vls": "^0.3.1",
     "vscode-css-languageservice": "^2.0.0",
-    "vscode-languageserver": "^3.0.5",
+    "vscode-languageserver": "^3.2.1",
     "vscode-uri": "^1.0.0"
   },
   "devDependencies": {
