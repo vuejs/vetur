@@ -71,12 +71,12 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   let host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
-    getScriptVersion(filename) { 
+    getScriptVersion(filename) {
       filename = normalizeFileName(filename);
       return versions.has(filename) ? versions.get(filename).toString() : '0';
     },
-    getScriptKind(fileName) { 
-      if(isVue(fileName)) {
+    getScriptKind(fileName) {
+      if (isVue(fileName)) {
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
         const doc = docs.get(fileName) ||
@@ -86,7 +86,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       else {
         // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
         return (ts as any).getScriptKindFromFileName(fileName);
-      } 
+      }
     },
     resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
       // in the normal case, delegate to ts.resolveModuleName
@@ -148,8 +148,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       }
 
       const diagnostics = [...jsLanguageService.getSyntacticDiagnostics(filename),
-                          ...jsLanguageService.getSemanticDiagnostics(filename)];
-      
+                           ...jsLanguageService.getSemanticDiagnostics(filename)];
+
       return diagnostics.map(diag => {
         return {
           range: convertRange(currentTextDocument, diag),
