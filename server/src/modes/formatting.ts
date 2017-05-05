@@ -7,7 +7,7 @@ export function format(languageModes: LanguageModes, document: TextDocument, for
   let embeddedEdits: TextEdit[] = [];
 
   embeddedModeRanges.forEach(range => {
-    const { start, end, mode }  = range;
+    const { start, end, mode } = range;
     if (mode && mode.format) {
       const edits = mode.format(document, range, formattingOptions);
       for (let edit of edits) {
