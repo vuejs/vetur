@@ -143,7 +143,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     doValidation(document: TextDocument): Diagnostic[] {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return [];
       }
 
@@ -161,7 +161,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     doComplete(document: TextDocument, position: Position): CompletionList {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return { isIncomplete: false, items: [] };
       }
 
@@ -193,7 +193,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {      
         return null;
       }
 
@@ -208,7 +208,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     doHover(document: TextDocument, position: Position): Hover {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return null;
       }
 
@@ -225,7 +225,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     doSignatureHelp(document: TextDocument, position: Position): SignatureHelp {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return null;
       }
 
@@ -267,7 +267,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     findDocumentHighlight(document: TextDocument, position: Position): DocumentHighlight[] {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return [];
       }
 
@@ -285,7 +285,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     findDocumentSymbols(document: TextDocument): SymbolInformation[] {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return [];
       }
 
@@ -326,7 +326,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     findDefinition(document: TextDocument, position: Position): Definition {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return null;
       }
 
@@ -344,7 +344,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     findReferences(document: TextDocument, position: Position): Location[] {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return [];
       }
 
@@ -362,7 +362,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     format(document: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       updateCurrentTextDocument(document);
       const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getSourceFileByPath(<ts.Path>filename)) {
+      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
         return [];
       }
 
