@@ -1,3 +1,9 @@
+### 0.6.5 | 2017-05-05
+
+- Fix a formatting bug for vue-html. #99.
+- Disable unused language features.
+- Check file is included in tsconfig/jsconfig before providing language features to prevent TS crash.
+
 ### 0.6.4 | 2017-04-27
 
 - When running Vue Language Server, do not use debug port. #162 and #148.
