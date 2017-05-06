@@ -1,3 +1,7 @@
+### 0.6.6 | 2017-05-06
+
+- Add back hover provider. #181.
+
 ### 0.6.5 | 2017-05-05
 
 - Fix a formatting bug for vue-html. #99.
