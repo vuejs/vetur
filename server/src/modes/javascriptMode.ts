@@ -40,6 +40,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       if (docs.has(fileName) && currentTextDocument.languageId !== docs.get(fileName).languageId) {
         // if languageId changed, we must restart the language service; it can't handle file type changes
         compilerOptions.allowJs = docs.get(fileName).languageId !== 'typescript';
+        jsLanguageService.dispose();
         jsLanguageService = ts.createLanguageService(host);
       }
       docs.set(fileName, currentTextDocument);
