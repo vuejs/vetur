@@ -2,7 +2,7 @@ import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache
 import { Vls, HTMLDocument, DocumentContext } from 'vetur-vls';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
-import { HTMLDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
+import { HTMLDocumentRegions } from './embeddedSupport';
 
 export function getVueHTMLMode(vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
   let settings: any = {};
@@ -17,7 +17,7 @@ export function getVueHTMLMode(vls: Vls, documentRegions: LanguageModelCache<HTM
       settings = options && options.html;
     },
     doComplete(document: TextDocument, position: Position) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return vls.doComplete(embedded, position, vueDocuments.get(embedded), { html5: true, angular1: true });
     },
     doHover(document: TextDocument, position: Position) {
@@ -43,12 +43,3 @@ export function getVueHTMLMode(vls: Vls, documentRegions: LanguageModelCache<HTM
     }
   };
 };
-
-function merge(src: any, dst: any): any {
-  for (var key in src) {
-    if (src.hasOwnProperty(key)) {
-      dst[key] = src[key];
-    }
-  }
-  return dst;
-}

@@ -14,17 +14,17 @@ export interface HTMLDocumentRegions {
   getImportedScripts(): string[];
 }
 
-export var CSS_STYLE_RULE = '__';
+export const CSS_STYLE_RULE = '__';
 
 interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; };
 
 export function getDocumentRegions(languageService: Vls, document: TextDocument): HTMLDocumentRegions {
-  let regions: EmbeddedRegion[] = [];
-  let scanner = languageService.createScanner(document.getText());
+  const regions: EmbeddedRegion[] = [];
+  const scanner = languageService.createScanner(document.getText());
   let lastTagName: string;
   let lastAttributeName: string;
   let languageIdFromType: string;
-  let importedScripts = [];
+  const importedScripts = [];
 
   let token = scanner.scan();
   while (token !== TokenType.EOS) {
@@ -127,7 +127,7 @@ function scanTemplateRegion(scanner: Scanner): EmbeddedRegion {
     languageId,
     start,
     end
-  }
+  };
 }
 
 function getLanguageIdFromLangAttr(lang: string): string {
@@ -141,14 +141,14 @@ function getLanguageIdFromLangAttr(lang: string): string {
 }
 
 function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], range: Range): LanguageRange[] {
-  let result: LanguageRange[] = [];
+  const result: LanguageRange[] = [];
   let currentPos = range ? range.start : Position.create(0, 0);
   let currentOffset = range ? document.offsetAt(range.start) : 0;
-  let endOffset = range ? document.offsetAt(range.end) : document.getText().length;
+  const endOffset = range ? document.offsetAt(range.end) : document.getText().length;
   for (let region of regions) {
     if (region.end > currentOffset && region.start < endOffset) {
-      let start = Math.max(region.start, currentOffset);
-      let startPos = document.positionAt(start);
+      const start = Math.max(region.start, currentOffset);
+      const startPos = document.positionAt(start);
       if (currentOffset < region.start) {
         result.push({
           start: currentPos,
@@ -156,8 +156,8 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
           languageId: 'vue'
         });
       }
-      let end = Math.min(region.end, endOffset);
-      let endPos = document.positionAt(end);
+      const end = Math.min(region.end, endOffset);
+      const endPos = document.positionAt(end);
       if (end > region.start) {
         result.push({
           start: startPos,
@@ -171,7 +171,7 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
     }
   }
   if (currentOffset < endOffset) {
-    let endPos = range ? range.end : document.positionAt(endOffset);
+    const endPos = range ? range.end : document.positionAt(endOffset);
     result.push({
       start: currentPos,
       end: endPos,
@@ -182,7 +182,7 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
 }
 
 function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[]): string[] {
-  let result = ['vue'];
+  const result = ['vue'];
   for (let region of regions) {
     if (region.languageId && result.indexOf(region.languageId) === -1) {
       result.push(region.languageId);
@@ -192,7 +192,7 @@ function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[
 }
 
 function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[], position: Position): string {
-  let offset = document.offsetAt(position);
+  const offset = document.offsetAt(position);
   for (let region of regions) {
     if (region.start <= offset) {
       if (offset <= region.end) {

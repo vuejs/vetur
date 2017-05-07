@@ -1,4 +1,4 @@
-import { Vls, HTMLDocument, DocumentContext } from 'vetur-vls';
+import { Vls } from 'vetur-vls';
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { TextDocument, Position, TextEdit, FormattingOptions, Range } from 'vscode-languageserver-types';
 import { getCSSLanguageService, getSCSSLanguageService, getLESSLanguageService, Stylesheet, LanguageService } from 'vscode-css-languageservice';
@@ -32,35 +32,35 @@ function getStyleMode(languageId: string, vls: Vls, languageService: LanguageSer
       languageService.configure(options && options.css);
     },
     doValidation(document: TextDocument) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.doValidation(embedded, stylesheets.get(embedded));
     },
     doComplete(document: TextDocument, position: Position) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.doComplete(embedded, position, stylesheets.get(embedded));
     },
     doHover(document: TextDocument, position: Position) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.doHover(embedded, position, stylesheets.get(embedded));
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.findDocumentHighlights(embedded, position, stylesheets.get(embedded));
     },
     findDocumentSymbols(document: TextDocument) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.findDocumentSymbols(embedded, stylesheets.get(embedded)).filter(s => s.name !== CSS_STYLE_RULE);
     },
     findDefinition(document: TextDocument, position: Position) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.findDefinition(embedded, position, stylesheets.get(embedded));
     },
     findReferences(document: TextDocument, position: Position) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.findReferences(embedded, position, stylesheets.get(embedded));
     },
     findColorSymbols(document: TextDocument) {
-      let embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.get(document);
       return languageService.findColorSymbols(embedded, stylesheets.get(embedded));
     },
     format (document: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[] {

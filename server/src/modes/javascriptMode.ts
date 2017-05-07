@@ -13,7 +13,7 @@ import * as _ from 'lodash';
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
 export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>, workspacePath: string): LanguageMode {
-  let jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => {
+  const jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     if (vueDocument.getLanguagesInDocument().indexOf('typescript') > -1) {
       return vueDocument.getEmbeddedDocument('typescript');
@@ -69,7 +69,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   compilerOptions = parsedConfig.options;
   compilerOptions.allowNonTsExtensions = true;
 
-  let host: ts.LanguageServiceHost = {
+  const host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
     getScriptVersion(filename) {
@@ -129,7 +129,6 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   };
 
   let jsLanguageService = ts.createLanguageService(host);
-
   let settings: any = {};
 
   return {
@@ -198,7 +197,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return null;
       }
 
-      let details = jsLanguageService.getCompletionEntryDetails(filename, item.data.offset, item.label);
+      const details = jsLanguageService.getCompletionEntryDetails(filename, item.data.offset, item.label);
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
@@ -213,9 +212,9 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return null;
       }
 
-      let info = jsLanguageService.getQuickInfoAtPosition(filename, currentTextDocument.offsetAt(position));
+      const info = jsLanguageService.getQuickInfoAtPosition(filename, currentTextDocument.offsetAt(position));
       if (info) {
-        let contents = ts.displayPartsToString(info.displayParts);
+        const contents = ts.displayPartsToString(info.displayParts);
         return {
           range: convertRange(currentTextDocument, info.textSpan),
           contents: MarkedString.fromPlainText(contents)
@@ -230,16 +229,16 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return null;
       }
 
-      let signHelp = jsLanguageService.getSignatureHelpItems(filename, currentTextDocument.offsetAt(position));
+      const signHelp = jsLanguageService.getSignatureHelpItems(filename, currentTextDocument.offsetAt(position));
       if (signHelp) {
-        let ret: SignatureHelp = {
+        const ret: SignatureHelp = {
           activeSignature: signHelp.selectedItemIndex,
           activeParameter: signHelp.argumentIndex,
           signatures: []
         };
         signHelp.items.forEach(item => {
 
-          let signature: SignatureInformation = {
+          const signature: SignatureInformation = {
             label: '',
             documentation: null,
             parameters: []
@@ -247,8 +246,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
 
           signature.label += ts.displayPartsToString(item.prefixDisplayParts);
           item.parameters.forEach((p, i, a) => {
-            let label = ts.displayPartsToString(p.displayParts);
-            let parameter: ParameterInformation = {
+            const label = ts.displayPartsToString(p.displayParts);
+            const parameter: ParameterInformation = {
               label: label,
               documentation: ts.displayPartsToString(p.documentation)
             };
@@ -272,7 +271,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return [];
       }
 
-      let occurrences = jsLanguageService.getOccurrencesAtPosition(filename, currentTextDocument.offsetAt(position));
+      const occurrences = jsLanguageService.getOccurrencesAtPosition(filename, currentTextDocument.offsetAt(position));
       if (occurrences) {
         return occurrences.map(entry => {
           return {
@@ -290,14 +289,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return [];
       }
 
-      let items = jsLanguageService.getNavigationBarItems(filename);
+      const items = jsLanguageService.getNavigationBarItems(filename);
       if (items) {
-        let result: SymbolInformation[] = [];
-        let existing = {};
-        let collectSymbols = (item: ts.NavigationBarItem, containerLabel?: string) => {
-          let sig = item.text + item.kind + item.spans[0].start;
+        const result: SymbolInformation[] = [];
+        const existing = {};
+        const collectSymbols = (item: ts.NavigationBarItem, containerLabel?: string) => {
+          const sig = item.text + item.kind + item.spans[0].start;
           if (item.kind !== 'script' && !existing[sig]) {
-            let symbol: SymbolInformation = {
+            const symbol: SymbolInformation = {
               name: item.text,
               kind: convertSymbolKind(item.kind),
               location: {
@@ -331,7 +330,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return null;
       }
 
-      let definition = jsLanguageService.getDefinitionAtPosition(filename, currentTextDocument.offsetAt(position));
+      const definition = jsLanguageService.getDefinitionAtPosition(filename, currentTextDocument.offsetAt(position));
       if (definition) {
         return definition.map(d => {
           return {
@@ -349,7 +348,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return [];
       }
 
-      let references = jsLanguageService.getReferencesAtPosition(filename, currentTextDocument.offsetAt(position));
+      const references = jsLanguageService.getReferencesAtPosition(filename, currentTextDocument.offsetAt(position));
       if (references) {
         return references.map(d => {
           return {
@@ -367,18 +366,18 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         return [];
       }
 
-      let initialIndentLevel = computeInitialIndent(document, range, formatParams);
-      let formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
-      let start = currentTextDocument.offsetAt(range.start);
+      const initialIndentLevel = computeInitialIndent(document, range, formatParams);
+      const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
+      const start = currentTextDocument.offsetAt(range.start);
       let end = currentTextDocument.offsetAt(range.end);
       let lastLineRange = null;
       if (range.end.character === 0 || isWhitespaceOnly(currentTextDocument.getText().substr(end - range.end.character, range.end.character))) {
         end -= range.end.character;
         lastLineRange = Range.create(Position.create(range.end.line, 0), range.end);
       }
-      let edits = jsLanguageService.getFormattingEditsForRange(filename, start, end, formatSettings);
+      const edits = jsLanguageService.getFormattingEditsForRange(filename, start, end, formatSettings);
       if (edits) {
-        let result = [];
+        const result = [];
         for (let edit of edits) {
           if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
             result.push({
@@ -416,8 +415,8 @@ function normalizeFileName(fileName: string): string {
 }
 
 function convertRange(document: TextDocument, span: { start: number, length: number }): Range {
-  let startPosition = document.positionAt(span.start);
-  let endPosition = document.positionAt(span.start + span.length);
+  const startPosition = document.positionAt(span.start);
+  const endPosition = document.positionAt(span.start + span.length);
   return Range.create(startPosition, endPosition);
 }
 
@@ -506,12 +505,12 @@ function convertOptions(options: FormattingOptions, formatSettings: any, initial
 }
 
 function computeInitialIndent(document: TextDocument, range: Range, options: FormattingOptions) {
-  let lineStart = document.offsetAt(Position.create(range.start.line, 0));
-  let content = document.getText();
+  const lineStart = document.offsetAt(Position.create(range.start.line, 0));
+  const content = document.getText();
 
+  const tabSize = options.tabSize || 4;
   let i = lineStart;
   let nChars = 0;
-  let tabSize = options.tabSize || 4;
   while (i < content.length) {
     let ch = content.charAt(i);
     if (ch === ' ') {

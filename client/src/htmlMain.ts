@@ -11,13 +11,13 @@ namespace ColorSymbolRequest {
 export function activate(context: ExtensionContext) {
 
   // The server is implemented in node
-  let serverModule = context.asAbsolutePath(path.join('client', 'server', 'htmlServerMain.js'));
+  const serverModule = context.asAbsolutePath(path.join('client', 'server', 'htmlServerMain.js'));
   // The debug options for the server
-  let debugOptions = { execArgv: ['--nolazy', '--debug=6005'] };
+  const debugOptions = { execArgv: ['--nolazy', '--debug=6005'] };
 
   // If the extension is launch in debug mode the debug server options are use
   // Otherwise the run options are used
-  let serverOptions: ServerOptions = {
+  const serverOptions: ServerOptions = {
     run: { module: serverModule, transport: TransportKind.ipc },
     debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   };

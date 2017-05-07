@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as path from 'path';
 
-import { parseComponent } from '../external/vue-template-compiler.js'
+import { parseComponent } from '../external/vue-template-compiler.js';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -22,7 +22,7 @@ export function createUpdater() {
   const ulssf = ts.updateLanguageServiceSourceFile;
   return {
     createLanguageServiceSourceFile(fileName: string, scriptSnapshot: ts.IScriptSnapshot, scriptTarget: ts.ScriptTarget, version: string, setNodeParents: boolean, scriptKind?: ts.ScriptKind): ts.SourceFile {
-      let sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
+      const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
       if (isVue(fileName)) {
         modifyVueSource(sourceFile);
       }
@@ -35,7 +35,7 @@ export function createUpdater() {
       }
       return sourceFile;
     }
-  }
+  };
 }
 
 /** Works like Array.prototype.find, returning `undefined` if no element satisfying the predicate is found. */

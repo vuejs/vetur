@@ -45,8 +45,8 @@ export interface LanguageModeRange extends Range {
 }
 
 export function getLanguageModes(workspacePath: string): LanguageModes {
-  var vls = getVls();
-  let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(vls, document));
+  const vls = getVls();
+  const documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(vls, document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
@@ -62,7 +62,7 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
 
   return {
     getModeAtPosition(document: TextDocument, position: Position): LanguageMode {
-      let languageId = documentRegions.get(document).getLanguageAtPosition(position);;
+      const languageId = documentRegions.get(document).getLanguageAtPosition(position);;
       if (languageId) {
         return modes[languageId];
       }
@@ -79,9 +79,9 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
       });
     },
     getAllModesInDocument(document: TextDocument): LanguageMode[] {
-      let result = [];
+      const result = [];
       for (let languageId of documentRegions.get(document).getLanguagesInDocument()) {
-        let mode = modes[languageId];
+        const mode = modes[languageId];
         if (mode) {
           result.push(mode);
         }
@@ -89,9 +89,9 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
       return result;
     },
     getAllModes(): LanguageMode[] {
-      let result = [];
+      const result = [];
       for (let languageId in modes) {
-        let mode = modes[languageId];
+        const mode = modes[languageId];
         if (mode) {
           result.push(mode);
         }

@@ -1,40 +1,37 @@
-import { createConnection, IConnection, TextDocuments, InitializeParams, InitializeResult, RequestType, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
+import { createConnection, IConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
+import { TextDocument, Diagnostic, DocumentLink, SymbolInformation } from 'vscode-languageserver-types';
+import uri from 'vscode-uri';
 import { DocumentContext } from 'vetur-vls';
-import { TextDocument, Diagnostic, DocumentLink, Range, SymbolInformation } from 'vscode-languageserver-types';
-import { getLanguageModes, LanguageModes } from './modes/languageModes';
-
-import { format } from './modes/formatting';
-
 import * as url from 'url';
 import * as path from 'path';
-import uri from 'vscode-uri';
 import * as _ from 'lodash';
 
+import { getLanguageModes, LanguageModes } from './modes/languageModes';
+import { format } from './modes/formatting';
+
 // Create a connection for the server
-let connection: IConnection = createConnection();
+const connection: IConnection = createConnection();
 
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
-let documents: TextDocuments = new TextDocuments();
+const documents: TextDocuments = new TextDocuments();
 // Make the text document manager listen on the connection
 // for open, change and close text document events
 documents.listen(connection);
 
 let workspacePath: string;
-var languageModes: LanguageModes;
-var settings: any = {};
-
-let clientSnippetSupport = false;
-let clientDynamicRegisterSupport = false;
+let languageModes: LanguageModes;
+let settings: any = {};
 
 let veturFormattingOptions: any = {};
 
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
 connection.onInitialize((params: InitializeParams): InitializeResult => {
+  console.log('vetur initialized');
   let initializationOptions = params.initializationOptions;
 
   workspacePath = params.rootPath;
@@ -55,7 +52,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
       textDocumentSync: documents.syncKind,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] },
       documentRangeFormattingProvider: false,
-      hoverProvider: true
+      hoverProvider: true,
     }
   };
 });
@@ -66,7 +63,7 @@ const validation = {
   css: true,
   javascript: true,
   scss: true,
-  less: true
+  less: true,
 };
 
 let formatterRegistration: Thenable<Disposable>;
@@ -94,13 +91,12 @@ connection.onDidChangeConfiguration((change) => {
 let pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
 const validationDelayMs = 200;
 
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
+// When the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
   triggerValidation(change.document);
 });
 
-// a document has closed: clear all diagnostics
+// A document has closed: clear all diagnostics
 documents.onDidClose(event => {
   cleanPendingValidation(event.document);
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
@@ -136,7 +132,7 @@ function validateTextDocument(textDocument: TextDocument): void {
 
 function pushAll<T>(to: T[], from: T[]) {
   if (from) {
-    for (var i = 0; i < from.length; i++) {
+    for (let i = 0; i < from.length; i++) {
       to.push(from[i]);
     }
   }
