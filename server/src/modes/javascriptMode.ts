@@ -508,7 +508,7 @@ function computeInitialIndent(document: TextDocument, range: Range, options: For
   const lineStart = document.offsetAt(Position.create(range.start.line, 0));
   const content = document.getText();
 
-  const tabSize = options.tabSize || 4;
+  const tabSize = options.tabSize || 2;
   let i = lineStart;
   let nChars = 0;
   while (i < content.length) {
