@@ -18,7 +18,7 @@ export function getVueHTMLMode(vls: Vls, documentRegions: LanguageModelCache<HTM
     },
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      return vls.doComplete(embedded, position, vueDocuments.get(embedded), { html5: true, angular1: true });
+      return vls.doComplete(embedded, position, vueDocuments.get(embedded), { html5: true });
     },
     doHover(document: TextDocument, position: Position) {
       return vls.doHover(document, position, vueDocuments.get(document));
