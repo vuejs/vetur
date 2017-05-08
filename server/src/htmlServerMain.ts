@@ -145,6 +145,7 @@ function pushAll<T>(to: T[], from: T[]) {
 connection.onCompletion(textDocumentPosition => {
   const document = documents.get(textDocumentPosition.textDocument.uri);
   const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
+
   if (mode && mode.doComplete) {
     return mode.doComplete(document, textDocumentPosition.position);
   } else {
