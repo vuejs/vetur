@@ -1,3 +1,7 @@
+### 0.6.8 | 2017-05-08
+
+- Hot fix for a Windows crash caused by incorrect path handling.
+
 ### 0.6.7 | 2017-05-07
 
 - Fix a bug of path handling on Windows. #183.
