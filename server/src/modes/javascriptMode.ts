@@ -364,9 +364,6 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       updateCurrentTextDocument(doc);
-      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
-        return [];
-      }
 
       const fileFsPath = getFileFsPath(doc.uri);
       const initialIndentLevel = computeInitialIndent(doc, range, formatParams);
