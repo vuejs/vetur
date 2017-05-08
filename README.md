@@ -70,15 +70,7 @@ Try for yourself on this project: [vue-hackernews-2.0](https://github.com/vuejs/
 
 ## Roadmap
 
-- [x] Build a language server
-- [x] IntelliSense for css/scss
-- [x] Basic IntelliSense for js/es6 in `<script>`
-- [x] Error checking for css/scss/less
-- [x] Snippet for embedded languages
-- [x] Embedded formatter for html/css/scss/less/js with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md) 
-- [x] Advanced IntelliSense
-- [ ] Jump to definition
-- [ ] Debugging embedded JS by setting breakpoints directly
+See [#188](https://github.com/octref/vetur/issues/188).
 
 ## Related
 
