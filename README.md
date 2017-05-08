@@ -9,6 +9,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 - Basic IntelliSense for `html/css/scss/less/js`
 - Advanced IntelliSense to suggest `v-` directives and `key`, `ref`, `slot` as `html` attributes
+- IntelliSense such as `scaffold`, `template with pug`, `style with scss` outside all language regions
 - Some advanced IntelliSense for `js/ts`, including:
   - Some IntelliSense for `this` in Vue Component
   - Module Resolution for node libraries, some Module Resolution for Vue Component
@@ -26,7 +27,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 ## Demo
 
-Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/blob/master/demo/vetur.vue).
+Try for yourself on this project: [vue-hackernews-2.0](https://github.com/vuejs/vue-hackernews-2.0).
 
 ## Setup
 
@@ -67,16 +68,6 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 
 - Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support
 
-**VSCode < 1.10**
-
-- In your user settings, set
-
-  ```json
-  "files.associations": {
-    "*.vue": "vue"
-  }
-  ```
-
 ## Roadmap
 
 - [x] Build a language server
@@ -85,7 +76,7 @@ Try for yourself on this file: [demo/vetur.vue](https://github.com/octref/vetur/
 - [x] Error checking for css/scss/less
 - [x] Snippet for embedded languages
 - [x] Embedded formatter for html/css/scss/less/js with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md) 
-- [x] Advanced IntelliSense (In progress, see [#26](https://github.com/octref/vetur/issues/26))
+- [x] Advanced IntelliSense
 - [ ] Jump to definition
 - [ ] Debugging embedded JS by setting breakpoints directly
 

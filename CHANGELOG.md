@@ -1,3 +1,9 @@
+### 0.6.7 | 2017-05-07
+
+- Fix a bug of path handling on Windows. #183.
+- Add top level scaffolding snippets, such as `scaffold`, `template with pug`, `style with less`.
+- Add `vetur.validation.style` and `vetur.validation.script` to allow toggling validation.
+
 ### 0.6.6 | 2017-05-06
 
 - Add back hover provider. #181.
@@ -27,8 +33,8 @@
 
 ### 0.6.0 | 2017-04-19
 
-- Improved formatting support with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md) to fine-tune formatting style in `js-beautify` and TypeScript's language service.
-- Improved `sass` syntax highlighting based on grammar from [robinbentley/vscode-sass-indented](https://github.com/robinbentley/vscode-sass-indented). #41.
+- Improve formatting support with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md) to fine-tune formatting style in `js-beautify` and TypeScript's language service.
+- Improve `sass` syntax highlighting based on grammar from [robinbentley/vscode-sass-indented](https://github.com/robinbentley/vscode-sass-indented). #41.
 
 Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/octref/vetur/pull/94):
 - Preliminary TypeScript support (try `<script lang="ts">`)
@@ -123,7 +129,7 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 
 ### 0.2.1 | 2017-01-16
 
-- Adopted YAML for editing tmLanguage.
+- Adopt YAML for editing tmLanguage.
 - Fix syntax highlighting for TS. #19.
 
 ### 0.2.0 | 2017-01-03
@@ -133,11 +139,11 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 
 ### 0.1.2 | 2016-12-19
 
-Allow `pug` as an alternative to `jade` in template. #9.
+- Allow `pug` as an alternative to `jade` in template. #9.
 
 ### 0.1.1 | 2016-12-18
 
-Fix ternary operator syntax highlighting. #3 and #11.
+- Fix ternary operator syntax highlighting. #3 and #11.
 
 ### 0.1 | 2016-11-06
 
