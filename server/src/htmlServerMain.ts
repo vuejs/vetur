@@ -1,6 +1,6 @@
 import { createConnection, IConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
 import { TextDocument, Diagnostic, DocumentLink, SymbolInformation } from 'vscode-languageserver-types';
-import uri from 'vscode-uri';
+import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from 'vetur-vls';
 import * as url from 'url';
 import * as path from 'path';
@@ -222,7 +222,7 @@ connection.onDocumentLinks(documentLinkParam => {
   const documentContext: DocumentContext = {
     resolveReference: ref => {
       if (workspacePath && ref[0] === '/') {
-        return uri.file(path.join(workspacePath, ref)).toString();
+        return Uri.file(path.join(workspacePath, ref)).toString();
       }
       return url.resolve(document.uri, ref);
     }

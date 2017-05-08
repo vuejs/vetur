@@ -9,7 +9,9 @@ import Uri from 'vscode-uri';
 import * as path from 'path';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
+import { platform } from 'os';
 
+const IS_WINDOWS = platform() === 'win32';
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
 export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>, workspacePath: string): LanguageMode {
@@ -33,18 +35,19 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   let currentTextDocument: TextDocument;
   let versions = new Map<string, number>();
   let docs = new Map<string, TextDocument>();
+
   function updateCurrentTextDocument(doc: TextDocument) {
     if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
       currentTextDocument = jsDocuments.get(doc);
-      const fileName = trimFileUri(doc.uri);
-      if (docs.has(fileName) && currentTextDocument.languageId !== docs.get(fileName).languageId) {
+      const filePath = Uri.parse(doc.uri).path;
+      if (docs.has(filePath) && currentTextDocument.languageId !== docs.get(filePath).languageId) {
         // if languageId changed, we must restart the language service; it can't handle file type changes
-        compilerOptions.allowJs = docs.get(fileName).languageId !== 'typescript';
+        compilerOptions.allowJs = docs.get(filePath).languageId !== 'typescript';
         jsLanguageService.dispose();
         jsLanguageService = ts.createLanguageService(host);
       }
-      docs.set(fileName, currentTextDocument);
-      versions.set(fileName, (versions.get(fileName) || 0) + 1);
+      docs.set(filePath, currentTextDocument);
+      versions.set(filePath, (versions.get(filePath) || 0) + 1);
     }
   }
 
@@ -73,8 +76,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
     getScriptVersion(filename) {
-      filename = normalizeFileName(filename);
-      return versions.has(filename) ? versions.get(filename).toString() : '0';
+      const fileFsPath = getFileFsPath(filename);
+      return versions.has(fileFsPath) ? versions.get(fileFsPath).toString() : '0';
     },
     getScriptKind(fileName) {
       if (isVue(fileName)) {
@@ -111,8 +114,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       });
     },
     getScriptSnapshot: (fileName: string) => {
-      fileName = normalizeFileName(fileName);
-      let text = docs.has(fileName) ? docs.get(fileName).getText() : (ts.sys.readFile(fileName) || '');
+      const fileFsPath = getFileFsPath(fileName);
+      let text = docs.has(fileFsPath) ? docs.get(fileFsPath).getText() : (ts.sys.readFile(fileFsPath) || '');
       if (isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
@@ -140,15 +143,15 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         settings.format = options.vetur.format.js;
       }
     },
-    doValidation(document: TextDocument): Diagnostic[] {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    doValidation(doc: TextDocument): Diagnostic[] {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
       }
 
-      const diagnostics = [...jsLanguageService.getSyntacticDiagnostics(filename),
-                           ...jsLanguageService.getSemanticDiagnostics(filename)];
+      const diagnostics = [...jsLanguageService.getSyntacticDiagnostics(filePath),
+                           ...jsLanguageService.getSemanticDiagnostics(filePath)];
 
       return diagnostics.map(diag => {
         return {
@@ -158,15 +161,15 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         };
       });
     },
-    doComplete(document: TextDocument, position: Position): CompletionList {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    doComplete(doc: TextDocument, position: Position): CompletionList {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return { isIncomplete: false, items: [] };
       }
 
       let offset = currentTextDocument.offsetAt(position);
-      let completions = jsLanguageService.getCompletionsAtPosition(filename, offset);
+      let completions = jsLanguageService.getCompletionsAtPosition(filePath, offset);
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -175,7 +178,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         isIncomplete: false,
         items: completions.entries.map(entry => {
           return {
-            uri: document.uri,
+            uri: doc.uri,
             position: position,
             label: entry.name,
             sortText: entry.sortText,
@@ -183,21 +186,21 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
             textEdit: TextEdit.replace(replaceRange, entry.name),
             data: { // data used for resolving item details (see 'doResolve')
               languageId: 'javascript',
-              uri: document.uri,
+              uri: doc.uri,
               offset: offset
             }
           };
         })
       };
     },
-    doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {      
+    doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
       }
 
-      const details = jsLanguageService.getCompletionEntryDetails(filename, item.data.offset, item.label);
+      const details = jsLanguageService.getCompletionEntryDetails(filePath, item.data.offset, item.label);
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
@@ -205,14 +208,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       }
       return item;
     },
-    doHover(document: TextDocument, position: Position): Hover {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    doHover(doc: TextDocument, position: Position): Hover {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
       }
 
-      const info = jsLanguageService.getQuickInfoAtPosition(filename, currentTextDocument.offsetAt(position));
+      const info = jsLanguageService.getQuickInfoAtPosition(filePath, currentTextDocument.offsetAt(position));
       if (info) {
         const contents = ts.displayPartsToString(info.displayParts);
         return {
@@ -222,14 +225,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       }
       return null;
     },
-    doSignatureHelp(document: TextDocument, position: Position): SignatureHelp {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
       }
 
-      const signHelp = jsLanguageService.getSignatureHelpItems(filename, currentTextDocument.offsetAt(position));
+      const signHelp = jsLanguageService.getSignatureHelpItems(filePath, currentTextDocument.offsetAt(position));
       if (signHelp) {
         const ret: SignatureHelp = {
           activeSignature: signHelp.selectedItemIndex,
@@ -264,14 +267,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       };
       return null;
     },
-    findDocumentHighlight(document: TextDocument, position: Position): DocumentHighlight[] {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    findDocumentHighlight(doc: TextDocument, position: Position): DocumentHighlight[] {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
       }
 
-      const occurrences = jsLanguageService.getOccurrencesAtPosition(filename, currentTextDocument.offsetAt(position));
+      const occurrences = jsLanguageService.getOccurrencesAtPosition(filePath, currentTextDocument.offsetAt(position));
       if (occurrences) {
         return occurrences.map(entry => {
           return {
@@ -282,14 +285,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       };
       return [];
     },
-    findDocumentSymbols(document: TextDocument): SymbolInformation[] {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    findDocumentSymbols(doc: TextDocument): SymbolInformation[] {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
       }
 
-      const items = jsLanguageService.getNavigationBarItems(filename);
+      const items = jsLanguageService.getNavigationBarItems(filePath);
       if (items) {
         const result: SymbolInformation[] = [];
         const existing = {};
@@ -300,7 +303,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
               name: item.text,
               kind: convertSymbolKind(item.kind),
               location: {
-                uri: document.uri,
+                uri: doc.uri,
                 range: convertRange(currentTextDocument, item.spans[0])
               },
               containerName: containerLabel
@@ -323,50 +326,50 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
       }
       return [];
     },
-    findDefinition(document: TextDocument, position: Position): Definition {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    findDefinition(doc: TextDocument, position: Position): Definition {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
       }
 
-      const definition = jsLanguageService.getDefinitionAtPosition(filename, currentTextDocument.offsetAt(position));
+      const definition = jsLanguageService.getDefinitionAtPosition(filePath, currentTextDocument.offsetAt(position));
       if (definition) {
         return definition.map(d => {
           return {
-            uri: document.uri,
+            uri: doc.uri,
             range: convertRange(currentTextDocument, d.textSpan)
           };
         });
       }
       return null;
     },
-    findReferences(document: TextDocument, position: Position): Location[] {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    findReferences(doc: TextDocument, position: Position): Location[] {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
       }
 
-      const references = jsLanguageService.getReferencesAtPosition(filename, currentTextDocument.offsetAt(position));
+      const references = jsLanguageService.getReferencesAtPosition(filePath, currentTextDocument.offsetAt(position));
       if (references) {
         return references.map(d => {
           return {
-            uri: document.uri,
+            uri: doc.uri,
             range: convertRange(currentTextDocument, d.textSpan)
           };
         });
       }
       return [];
     },
-    format(document: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
-      updateCurrentTextDocument(document);
-      const filename = trimFileUri(document.uri);
-      if (!jsLanguageService.getProgram().getRootFileNames().includes(filename)) {
+    format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
+      updateCurrentTextDocument(doc);
+      const filePath = Uri.parse(doc.uri).path;
+      if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
       }
 
-      const initialIndentLevel = computeInitialIndent(document, range, formatParams);
+      const initialIndentLevel = computeInitialIndent(doc, range, formatParams);
       const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
       const start = currentTextDocument.offsetAt(range.start);
       let end = currentTextDocument.offsetAt(range.end);
@@ -375,7 +378,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
         end -= range.end.character;
         lastLineRange = Range.create(Position.create(range.end.line, 0), range.end);
       }
-      const edits = jsLanguageService.getFormattingEditsForRange(filename, start, end, formatSettings);
+      const edits = jsLanguageService.getFormattingEditsForRange(filePath, start, end, formatSettings);
       if (edits) {
         const result = [];
         for (let edit of edits) {
@@ -406,12 +409,20 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<HTMLDocume
   };
 };
 
-function trimFileUri(uri: string): string {
-  return Uri.parse(uri).fsPath;
+function getFileFsPath(fileName: string): string {
+  return Uri.file(fileName).fsPath;
 }
 
-function normalizeFileName(fileName: string): string {
-  return Uri.file(fileName).fsPath;
+function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
+  const filePaths = ls.getProgram().getRootFileNames();
+  if (IS_WINDOWS) {
+    // Windows have a leading slash like /C:/Users/pine
+    const winFilePath = Uri.parse(documentUri).path.slice(1);
+    return filePaths.includes(winFilePath);
+  } else {
+    const filePath = Uri.parse(documentUri).path;
+    return filePaths.includes(filePath);
+  }
 }
 
 function convertRange(document: TextDocument, span: { start: number, length: number }): Range {
