@@ -112,6 +112,16 @@
     "configuration": {
       "title": "vetur configuration",
       "properties": {
+        "vetur.validation.style": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate css/scss/less/postcss"
+        },
+        "vetur.validation.script": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate js/ts"
+        },
         "vetur.format.html.max_preserve_newlines": {
           "type": "number",
           "default": 1,

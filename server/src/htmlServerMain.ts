@@ -61,9 +61,9 @@ const validation = {
   'vue-html': true,
   html: true,
   css: true,
-  javascript: true,
   scss: true,
   less: true,
+  javascript: true,
 };
 
 let formatterRegistration: Thenable<Disposable>;
@@ -75,7 +75,11 @@ connection.onDidChangeConfiguration((change) => {
   // Update formatting setting
   veturFormattingOptions = settings.vetur.format;
 
-  // Todo: Add vetur's own validation toggle setting
+  const veturValidationOptions = settings.vetur.validation;
+  validation.css  = veturValidationOptions.style;
+  validation.scss = veturValidationOptions.style;
+  validation.less = veturValidationOptions.style;
+  validation.javascript = veturValidationOptions.script;
 
   languageModes.getAllModes().forEach(m => {
     if (m.configure) {
