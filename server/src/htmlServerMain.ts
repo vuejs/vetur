@@ -1,7 +1,7 @@
 import { createConnection, IConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
 import { TextDocument, Diagnostic, DocumentLink, SymbolInformation } from 'vscode-languageserver-types';
 import uri from 'vscode-uri';
-import { DocumentContext } from 'vetur-vls';
+import { DocumentContext, getVls } from 'vetur-vls';
 import * as url from 'url';
 import * as path from 'path';
 import * as _ from 'lodash';
@@ -143,8 +143,9 @@ connection.onCompletion(textDocumentPosition => {
   const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
   if (mode && mode.doComplete) {
     return mode.doComplete(document, textDocumentPosition.position);
+  } else {
+    return getVls().doVueComplete();
   }
-  return { isIncomplete: true, items: [] };
 });
 
 connection.onCompletionResolve(item => {
