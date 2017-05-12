@@ -33,7 +33,7 @@ Try for yourself on this project: [vue-hackernews-2.0](https://github.com/vuejs/
 
 - Install [vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 
-- If you have a `tsconfig.json` / `jsconfig.json`, you must include `*.vue` files in its `include` for all language features to work on `*.vue` files.
+- You will need a `tsconfig.json` / `jsconfig.json` for JavaScript formatter. If you already have one, you must include `*.vue` files in its `include` for all language features to work on `*.vue` files.
   - :no_entry_sign: `include: ['src/**/*.ts']`
   - :star: `include: ['src/**/*']`
   - :star: `include: ['src/**/*.ts', 'src/**/*.vue']`
