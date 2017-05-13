@@ -32,6 +32,9 @@
   ],
   "main": "./client/out/htmlMain",
   "contributes": {
+    "breakpoints": [
+      { "language": "vue" }
+    ],
     "languages": [
       {
         "id": "vue",
