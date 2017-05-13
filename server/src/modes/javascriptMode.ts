@@ -1,8 +1,8 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation, Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString, DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
-import { getWordAtText, isWhitespaceOnly, repeat } from '../utils/strings';
-import { HTMLDocumentRegions } from './embeddedSupport';
+import { getWordAtText } from '../utils/strings';
+import { VueDocumentRegions } from './embeddedSupport';
 import { createUpdater, parseVue, isVue } from './typescriptMode';
 
 import Uri from 'vscode-uri';
@@ -14,7 +14,7 @@ import { platform } from 'os';
 const IS_WINDOWS = platform() === 'win32';
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
-export function getJavascriptMode (documentRegions: LanguageModelCache<HTMLDocumentRegions>, workspacePath: string): LanguageMode {
+export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): LanguageMode {
   const jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     if (vueDocument.getLanguagesInDocument().indexOf('typescript') > -1) {
@@ -36,21 +36,6 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<HTMLDocum
   let versions = new Map<string, number>();
   let docs = new Map<string, TextDocument>();
 
-  function updateCurrentTextDocument (doc: TextDocument) {
-    if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
-      currentTextDocument = jsDocuments.get(doc);
-      const fileFsPath = getFileFsPath(doc.uri);
-      if (docs.has(fileFsPath) && currentTextDocument.languageId !== docs.get(fileFsPath).languageId) {
-        // if languageId changed, we must restart the language service; it can't handle file type changes
-        compilerOptions.allowJs = docs.get(fileFsPath).languageId !== 'typescript';
-        jsLanguageService.dispose();
-        jsLanguageService = ts.createLanguageService(host);
-      }
-      docs.set(fileFsPath, currentTextDocument);
-      versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
-    }
-  }
-
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
@@ -71,6 +56,27 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<HTMLDocum
   const files = parsedConfig.fileNames;
   compilerOptions = parsedConfig.options;
   compilerOptions.allowNonTsExtensions = true;
+
+  function updateCurrentTextDocument (doc: TextDocument) {
+    const fileFsPath = getFileFsPath(doc.uri);
+    // When file is not in language service, add it
+    if (!docs.has(fileFsPath)) {
+      if (_.endsWith(fileFsPath, '.vue')) {
+        files.push(fileFsPath);
+      }
+    }
+    if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
+      currentTextDocument = jsDocuments.get(doc);
+      if (docs.has(fileFsPath) && currentTextDocument.languageId !== docs.get(fileFsPath).languageId) {
+        // if languageId changed, restart the language service; it can't handle file type changes
+        compilerOptions.allowJs = docs.get(fileFsPath).languageId !== 'typescript';
+        jsLanguageService.dispose();
+        jsLanguageService = ts.createLanguageService(host);
+      }
+      docs.set(fileFsPath, currentTextDocument);
+      versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+    }
+  }
 
   const host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,

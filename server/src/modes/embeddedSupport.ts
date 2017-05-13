@@ -6,7 +6,7 @@ export interface LanguageRange extends Range {
   attributeValue?: boolean;
 }
 
-export interface HTMLDocumentRegions {
+export interface VueDocumentRegions {
   getEmbeddedDocument (languageId: string): TextDocument;
   getLanguageRanges (range: Range): LanguageRange[];
   getLanguageAtPosition (position: Position): string;
@@ -18,7 +18,7 @@ export const CSS_STYLE_RULE = '__';
 
 interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; };
 
-export function getDocumentRegions (languageService: Vls, document: TextDocument): HTMLDocumentRegions {
+export function getDocumentRegions (languageService: Vls, document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];
   const scanner = languageService.createScanner(document.getText());
   let lastTagName: string;

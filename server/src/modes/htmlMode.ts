@@ -2,9 +2,9 @@ import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache
 import { Vls, HTMLDocument, DocumentContext } from 'vetur-vls';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
-import { HTMLDocumentRegions } from './embeddedSupport';
+import { VueDocumentRegions } from './embeddedSupport';
 
-export function getVueHTMLMode (vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getVueHTMLMode (vls: Vls, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   let settings: any = {};
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => vls.parseHTMLDocument(document));

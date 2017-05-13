@@ -3,23 +3,23 @@ import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache
 import { TextDocument, Position, TextEdit, FormattingOptions, Range } from 'vscode-languageserver-types';
 import { getCSSLanguageService, getSCSSLanguageService, getLESSLanguageService, Stylesheet, LanguageService } from 'vscode-css-languageservice';
 import { LanguageMode } from './languageModes';
-import { HTMLDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
+import { VueDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
 
-export function getCSSMode (vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getCSSMode (vls: Vls, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
   return getStyleMode('css', vls, languageService, documentRegions);
 }
 
-export function getSCSSMode (vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getSCSSMode (vls: Vls, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getSCSSLanguageService();
   return getStyleMode('scss', vls, languageService, documentRegions);
 }
-export function getLESSMode (vls: Vls, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+export function getLESSMode (vls: Vls, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getLESSLanguageService();
   return getStyleMode('less', vls, languageService, documentRegions);
 }
 
-function getStyleMode (languageId: string, vls: Vls, languageService: LanguageService, documentRegions: LanguageModelCache<HTMLDocumentRegions>): LanguageMode {
+function getStyleMode (languageId: string, vls: Vls, languageService: LanguageService, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
 
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument(languageId));
   const stylesheets = getLanguageModelCache<Stylesheet>(10, 60, document => languageService.parseStylesheet(document));

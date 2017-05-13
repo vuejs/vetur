@@ -5,7 +5,7 @@ import {
 import { getVls, DocumentContext } from 'vetur-vls';
 
 import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
-import { getDocumentRegions, HTMLDocumentRegions } from './embeddedSupport';
+import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
 import { getCSSMode, getSCSSMode, getLESSMode } from './cssMode';
 import { getJavascriptMode } from './javascriptMode';
 import { getVueHTMLMode } from './htmlMode';
@@ -46,7 +46,7 @@ export interface LanguageModeRange extends Range {
 
 export function getLanguageModes (workspacePath: string): LanguageModes {
   const vls = getVls();
-  const documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(vls, document));
+  const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document => getDocumentRegions(vls, document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
