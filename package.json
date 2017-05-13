@@ -122,6 +122,16 @@
           "default": true,
           "description": "Validate js/ts"
         },
+        "vetur.format.styleInitialIndent": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to have initial indent for <style> section"
+        },
+        "vetur.format.scriptInitialIndent": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to have initial indent for <script> section"
+        },
         "vetur.format.html.max_preserve_newlines": {
           "type": "number",
           "default": 1,
