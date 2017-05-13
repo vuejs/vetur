@@ -12,6 +12,31 @@
 	<array>
 		<dict>
 			<key>begin</key>
+			<string>&lt;!--</string>
+			<key>captures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.comment.html</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>--\s*&gt;</string>
+			<key>name</key>
+			<string>comment.block.html</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>--</string>
+					<key>name</key>
+					<string>invalid.illegal.bad-comments-or-CDATA.html</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
 			<string>(&lt;)(template)\b(?=[^&gt;]*lang=('jade'|"jade"|'pug'|"pug"))</string>
 			<key>beginCaptures</key>
 			<dict>
