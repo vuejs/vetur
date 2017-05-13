@@ -8,7 +8,7 @@ namespace ColorSymbolRequest {
   export const type: RequestType<string, Range[], any, any> = new RequestType('css/colorSymbols');
 }
 
-export function activate(context: ExtensionContext) {
+export function activate (context: ExtensionContext) {
 
   // The server is implemented in node
   const serverModule = context.asAbsolutePath(path.join('client', 'server', 'htmlServerMain.js'));
