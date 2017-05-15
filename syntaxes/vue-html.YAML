@@ -63,6 +63,17 @@ patterns:
   - name: invalid.illegal.bad-comments-or-CDATA.html
     match: (\s*)(?!--|>)\S(\s*)
 
+- name: meta.tag.block.any.html
+  begin: (</?)((?i:template)[a-zA-Z0-9:-]+\b)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.block.any.html}
+  end: (>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+
 - begin: (<)(template)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
