@@ -1,3 +1,11 @@
+### 0.6.9 | 2017-05-14
+
+- Update grammar to allow tags like <template-component> in vue-html. #189.
+- Update grammar to allow html comments outside all regions. #195.
+- Handle new file creation so vetur's IntelliSense work on it. #192.
+- Enable breakpoints for vue files. Doc for debugging coming later in #201.
+- Add `vetur.format.styleInitialIndent` and `vetur.format.scriptInitialIndent` to allow initial indent in these sections for formatting. #121.
+
 ### 0.6.8 | 2017-05-08
 
 - Hot fix for a Windows crash caused by incorrect path handling.
