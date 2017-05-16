@@ -1,3 +1,7 @@
+### 0.6.10 | 2017-05-16
+
+- Add back symbol, highlight and signature provider. #194.
+
 ### 0.6.9 | 2017-05-14
 
 - Update grammar to allow tags like <template-component> in vue-html. #189.
