@@ -37,7 +37,6 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
   let docs = new Map<string, TextDocument>();
 
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
-  // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
   (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
