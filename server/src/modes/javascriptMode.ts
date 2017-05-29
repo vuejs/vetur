@@ -70,7 +70,6 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       if (docs.has(fileFsPath) && currentTextDocument.languageId !== docs.get(fileFsPath).languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         compilerOptions.allowJs = docs.get(fileFsPath).languageId !== 'typescript';
-        jsLanguageService.dispose();
         jsLanguageService = ts.createLanguageService(host);
       }
       docs.set(fileFsPath, currentTextDocument);
