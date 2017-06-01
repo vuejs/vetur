@@ -271,6 +271,9 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       };
       return null;
     },
+    // Disabled per https://github.com/octref/vetur/issues/215
+    // Will reenable once module resolution problem is resolved for vue files.
+    /*
     findDocumentHighlight (doc: TextDocument, position: Position): DocumentHighlight[] {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
@@ -289,6 +292,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       };
       return [];
     },
+    */
     findDocumentSymbols (doc: TextDocument): SymbolInformation[] {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
