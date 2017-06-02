@@ -691,7 +691,7 @@
 		<key>vue-directives</key>
 		<dict>
 			<key>begin</key>
-			<string>(?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*\s*(=)</string>
+			<string>((?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*)\s*(=)</string>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
@@ -699,27 +699,7 @@
 					<key>name</key>
 					<string>entity.other.attribute-name.html</string>
 				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.separator.key-value.html</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>entity.other.attribute-name.html</string>
-				</dict>
-				<key>4</key>
-				<dict>
-					<key>name</key>
-					<string>entity.other.attribute-name.html</string>
-				</dict>
-				<key>5</key>
-				<dict>
-					<key>name</key>
-					<string>entity.other.attribute-name.html</string>
-				</dict>
-				<key>6</key>
+				<key>7</key>
 				<dict>
 					<key>name</key>
 					<string>punctuation.separator.key-value.html</string>
