@@ -1,3 +1,9 @@
+### 0.6.10 | 2017-06-01
+
+- Fix a language service restart issue.
+- Fix a `documentHighlight` error. #215.
+- Fix a Windows path handling issue causing IntelliSense unusable. #205.
+
 ### 0.6.10 | 2017-05-16
 
 - Add back symbol, highlight and signature provider. #194.
