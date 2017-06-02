@@ -1,9 +1,10 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation, Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString, DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
-import { getWordAtText } from '../utils/strings';
 import { VueDocumentRegions } from './embeddedSupport';
 import { createUpdater, parseVue, isVue } from './typescriptMode';
+import { getWordAtText } from '../utils/string';
+import { getFilePath, getFileFsPath, getNormalizedFileFsPath } from '../utils/path';
 
 import Uri from 'vscode-uri';
 import * as path from 'path';
@@ -11,7 +12,6 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 import { platform } from 'os';
 
-const IS_WINDOWS = platform() === 'win32';
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
 export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): LanguageMode {
@@ -404,22 +404,6 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
   };
 };
 
-function getNormalizedFileFsPath (fileName: string): string {
-  return Uri.file(fileName).fsPath;
-}
-
-function getFileFsPath (documentUri: string): string {
-  return Uri.parse(documentUri).fsPath;
-}
-
-function getFilePath (documentUri: string): string {
-  if (IS_WINDOWS) {
-    // Windows have a leading slash like /C:/Users/pine
-    return Uri.parse(documentUri).path.slice(1);
-  } else {
-    return Uri.parse(documentUri).path;
-  }
-}
 
 function languageServiceIncludesFile (ls: ts.LanguageService, documentUri: string): boolean {
   const filePaths = ls.getProgram().getRootFileNames();
