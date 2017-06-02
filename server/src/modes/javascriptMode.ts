@@ -15,6 +15,16 @@ import { platform } from 'os';
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
 export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): LanguageMode {
+  if (!workspacePath) {
+    return {
+      getId () {
+        return 'javascript';
+      },
+      onDocumentRemoved () { },
+      dispose () { }
+    }
+  }
+
   const jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     if (vueDocument.getLanguagesInDocument().indexOf('typescript') > -1) {
