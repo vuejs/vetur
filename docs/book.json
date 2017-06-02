@@ -1,0 +1,19 @@
+{
+  "gitbook": ">3.0.0",
+  "plugins": ["-sharing", "edit-link", "theme-vuejs@git+https://github.com/pearofducks/gitbook-plugin-theme-vuejs.git", "-fontsettings", "github"],
+  "pluginsConfig": {
+    "edit-link": {
+      "base": "https://github.com/octref/vetur/edit/master/docs",
+      "label": "Edit This Page"
+    },
+    "github": {
+      "url": "https://github.com/vuejs/vue-router/"
+    }
+  },
+  "links": {
+    "sharing": {
+      "facebook": false,
+      "twitter": false
+    }
+  }
+}
