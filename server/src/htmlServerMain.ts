@@ -149,10 +149,12 @@ connection.onCompletion(textDocumentPosition => {
   const document = documents.get(textDocumentPosition.textDocument.uri);
   const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
 
-  if (mode && mode.doComplete) {
-    return mode.doComplete(document, textDocumentPosition.position);
-  } else {
-    return getVls().doVueComplete();
+  if (mode) {
+    if (mode.doComplete) {
+      return mode.doComplete(document, textDocumentPosition.position);
+    } else if (mode.getId() === 'vue') {
+      return getVls().doVueComplete();
+    }
   }
 });
 
