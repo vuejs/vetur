@@ -72,10 +72,6 @@ Try for yourself on this project: [vue-hackernews-2.0](https://github.com/vuejs/
 
 See [#188](https://github.com/octref/vetur/issues/188).
 
-## Related
-
-- [octref/vls](https://github.com/octref/vls): vue language server, used to provide advanced IntelliSense, formatting and other language features.
-
 ## Contribution
 
 See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/CONTRIBUTING.md)
