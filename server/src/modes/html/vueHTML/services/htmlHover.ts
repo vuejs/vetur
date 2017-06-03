@@ -17,7 +17,7 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
       provider.collectTags((t, label) => {
         if (t === tag) {
           let tagLabel = open ? '<' + tag + '>' : '</' + tag + '>';
-          hover = { contents: [ { language: 'html', value: tagLabel }, MarkedString.fromPlainText(label)], range };
+          hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(label)], range };
         }
       });
       if (hover) {
@@ -30,7 +30,10 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
   function getTagNameRange(tokenType: TokenType, startOffset: number): Range {
     let scanner = createScanner(document.getText(), startOffset);
     let token = scanner.scan();
-    while (token !== TokenType.EOS && (scanner.getTokenEnd() < offset || scanner.getTokenEnd() == offset && token !== tokenType)) {
+    while (
+      token !== TokenType.EOS &&
+      (scanner.getTokenEnd() < offset || (scanner.getTokenEnd() == offset && token !== tokenType))
+    ) {
       token = scanner.scan();
     }
     if (token === tokenType && offset <= scanner.getTokenEnd()) {
@@ -53,4 +56,3 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
   }
   return void 0;
 }
-

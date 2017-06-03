@@ -7,18 +7,18 @@ export interface LanguageRange extends Range {
 }
 
 export interface VueDocumentRegions {
-  getEmbeddedDocument (languageId: string): TextDocument;
-  getLanguageRanges (range: Range): LanguageRange[];
-  getLanguageAtPosition (position: Position): string;
-  getLanguagesInDocument (): string[];
-  getImportedScripts (): string[];
+  getEmbeddedDocument(languageId: string): TextDocument;
+  getLanguageRanges(range: Range): LanguageRange[];
+  getLanguageAtPosition(position: Position): string;
+  getLanguagesInDocument(): string[];
+  getImportedScripts(): string[];
 }
 
 export const CSS_STYLE_RULE = '__';
 
-interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; };
+interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean }
 
-export function getDocumentRegions (languageService: Vls, document: TextDocument): VueDocumentRegions {
+export function getDocumentRegions(languageService: Vls, document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];
   const scanner = languageService.createScanner(document.getText());
   let lastTagName: string;
@@ -65,7 +65,7 @@ export function getDocumentRegions (languageService: Vls, document: TextDocument
         } else {
           if (lastAttributeName === 'src' && lastTagName.toLowerCase() === 'script') {
             let value = scanner.getTokenText();
-            if (value[0] === '\'' || value[0] === '"') {
+            if (value[0] === "'" || value[0] === '"') {
               value = value.substr(1, value.length - 1);
             }
             importedScripts.push(value);
@@ -86,7 +86,7 @@ export function getDocumentRegions (languageService: Vls, document: TextDocument
   };
 }
 
-function scanTemplateRegion (scanner: Scanner): EmbeddedRegion {
+function scanTemplateRegion(scanner: Scanner): EmbeddedRegion {
   let languageId = 'vue-html';
 
   let token: number;
@@ -130,17 +130,18 @@ function scanTemplateRegion (scanner: Scanner): EmbeddedRegion {
   };
 }
 
-function getLanguageIdFromLangAttr (lang: string): string {
+function getLanguageIdFromLangAttr(lang: string): string {
   let languageIdFromType = removeQuotes(lang);
   if (languageIdFromType === 'jade') {
     languageIdFromType = 'pug';
-  } if (languageIdFromType === 'ts') {
+  }
+  if (languageIdFromType === 'ts') {
     languageIdFromType = 'typescript';
   }
   return languageIdFromType;
 }
 
-function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], range: Range): LanguageRange[] {
+function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], range: Range): LanguageRange[] {
   const result: LanguageRange[] = [];
   let currentPos = range ? range.start : Position.create(0, 0);
   let currentOffset = range ? document.offsetAt(range.start) : 0;
@@ -181,7 +182,7 @@ function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], r
   return result;
 }
 
-function getLanguagesInDocument (document: TextDocument, regions: EmbeddedRegion[]): string[] {
+function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[]): string[] {
   const result = ['vue'];
   for (let region of regions) {
     if (region.languageId && result.indexOf(region.languageId) === -1) {
@@ -191,7 +192,7 @@ function getLanguagesInDocument (document: TextDocument, regions: EmbeddedRegion
   return result;
 }
 
-function getLanguageAtPosition (document: TextDocument, regions: EmbeddedRegion[], position: Position): string {
+function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[], position: Position): string {
   const offset = document.offsetAt(position);
   for (let region of regions) {
     if (region.start <= offset) {
@@ -205,7 +206,7 @@ function getLanguageAtPosition (document: TextDocument, regions: EmbeddedRegion[
   return 'vue';
 }
 
-function getEmbeddedDocument (document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {
+function getEmbeddedDocument(document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {
   let currentPos = 0;
   let oldContent = document.getText();
   let result = '';
@@ -222,25 +223,35 @@ function getEmbeddedDocument (document: TextDocument, contents: EmbeddedRegion[]
   return TextDocument.create(document.uri, languageId, document.version, result);
 }
 
-function getPrefix (c: EmbeddedRegion) {
+function getPrefix(c: EmbeddedRegion) {
   if (c.attributeValue) {
     switch (c.languageId) {
-      case 'css': return CSS_STYLE_RULE + '{';
+      case 'css':
+        return CSS_STYLE_RULE + '{';
     }
   }
   return '';
 }
-function getSuffix (c: EmbeddedRegion) {
+function getSuffix(c: EmbeddedRegion) {
   if (c.attributeValue) {
     switch (c.languageId) {
-      case 'css': return '}';
-      case 'javascript': return ';';
+      case 'css':
+        return '}';
+      case 'javascript':
+        return ';';
     }
   }
   return '';
 }
 
-function substituteWithWhitespace (result: string, start: number, end: number, oldContent: string, before: string, after: string) {
+function substituteWithWhitespace(
+  result: string,
+  start: number,
+  end: number,
+  oldContent: string,
+  before: string,
+  after: string
+) {
   let accumulatedWS = 0;
   result += before;
   for (let i = start + before.length; i < end; i++) {
@@ -258,7 +269,7 @@ function substituteWithWhitespace (result: string, start: number, end: number, o
   return result;
 }
 
-function append (result: string, str: string, n: number): string {
+function append(result: string, str: string, n: number): string {
   while (n > 0) {
     if (n & 1) {
       result += str;

@@ -1,6 +1,6 @@
 import { CompletionList, CompletionItemKind, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
 
-export function doVueComplete (): CompletionList {
+export function doVueComplete(): CompletionList {
   const topLevelCompletions: CompletionItem[] = [
     {
       label: 'scaffold',

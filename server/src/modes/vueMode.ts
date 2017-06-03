@@ -1,11 +1,11 @@
 import { LanguageMode } from './languageModes';
 
-export function getVueMode (): LanguageMode {
+export function getVueMode(): LanguageMode {
   return {
-    getId () {
+    getId() {
       return 'vue';
     },
-    onDocumentRemoved () { },
-    dispose () { }
-  }
+    onDocumentRemoved() {},
+    dispose() {}
+  };
 }

@@ -1,15 +1,43 @@
-import {createScanner} from './parser/htmlScanner';
-import {parse} from './parser/htmlParser';
-import {doComplete} from './services/htmlCompletion';
-import {doVueComplete} from './services/vueCompletion';
-import {doHover} from './services/htmlHover';
-import {htmlFormat, cssFormat} from './services/formatters';
-import {findDocumentLinks} from './services/htmlLinks';
-import {findDocumentHighlights} from './services/htmlHighlighting';
-import {findDocumentSymbols} from './services/htmlSymbolsProvider';
-import {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink } from 'vscode-languageserver-types';
+import { createScanner } from './parser/htmlScanner';
+import { parse } from './parser/htmlParser';
+import { doComplete } from './services/htmlCompletion';
+import { doVueComplete } from './services/vueCompletion';
+import { doHover } from './services/htmlHover';
+import { htmlFormat, cssFormat } from './services/formatters';
+import { findDocumentLinks } from './services/htmlLinks';
+import { findDocumentHighlights } from './services/htmlHighlighting';
+import { findDocumentSymbols } from './services/htmlSymbolsProvider';
+import {
+  TextDocument,
+  Position,
+  CompletionItem,
+  CompletionList,
+  Hover,
+  Range,
+  SymbolInformation,
+  Diagnostic,
+  TextEdit,
+  DocumentHighlight,
+  FormattingOptions,
+  MarkedString,
+  DocumentLink
+} from 'vscode-languageserver-types';
 
-export {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink };
+export {
+  TextDocument,
+  Position,
+  CompletionItem,
+  CompletionList,
+  Hover,
+  Range,
+  SymbolInformation,
+  Diagnostic,
+  TextEdit,
+  DocumentHighlight,
+  FormattingOptions,
+  MarkedString,
+  DocumentLink
+};
 
 export interface CompletionConfiguration {
   [provider: string]: boolean;
@@ -22,9 +50,8 @@ export interface Node {
   endTagStart: number;
   children: Node[];
   parent: Node;
-  attributes?: {[name: string]: string};
+  attributes?: { [name: string]: string };
 }
-
 
 export enum TokenType {
   StartCommentTag,
@@ -89,8 +116,17 @@ export interface DocumentContext {
 export interface LanguageService {
   createScanner(input: string): Scanner;
   parseVueHTMLDocument(document: TextDocument): VueHTMLDocument;
-  findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: VueHTMLDocument): DocumentHighlight[];
-  doComplete(document: TextDocument, position: Position, htmlDocument: VueHTMLDocument, options?: CompletionConfiguration): CompletionList;
+  findDocumentHighlights(
+    document: TextDocument,
+    position: Position,
+    htmlDocument: VueHTMLDocument
+  ): DocumentHighlight[];
+  doComplete(
+    document: TextDocument,
+    position: Position,
+    htmlDocument: VueHTMLDocument,
+    options?: CompletionConfiguration
+  ): CompletionList;
   doVueComplete(): CompletionList;
   doHover(document: TextDocument, position: Position, htmlDocument: VueHTMLDocument): Hover;
   htmlFormat(document: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];

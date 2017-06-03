@@ -1,5 +1,27 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation, Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString, DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions } from 'vscode-languageserver-types';
+import {
+  SymbolInformation,
+  SymbolKind,
+  CompletionItem,
+  Location,
+  SignatureHelp,
+  SignatureInformation,
+  ParameterInformation,
+  Definition,
+  TextEdit,
+  TextDocument,
+  Diagnostic,
+  DiagnosticSeverity,
+  Range,
+  CompletionItemKind,
+  Hover,
+  MarkedString,
+  DocumentHighlight,
+  DocumentHighlightKind,
+  CompletionList,
+  Position,
+  FormattingOptions
+} from 'vscode-languageserver-types';
 import { LanguageMode } from './languageModes';
 import { VueDocumentRegions } from './embeddedSupport';
 import { createUpdater, parseVue, isVue } from './typescriptMode';
@@ -14,15 +36,18 @@ import { platform } from 'os';
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
-export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): LanguageMode {
+export function getJavascriptMode(
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  workspacePath: string
+): LanguageMode {
   if (!workspacePath) {
     return {
-      getId () {
+      getId() {
         return 'javascript';
       },
-      onDocumentRemoved () { },
-      dispose () { }
-    }
+      onDocumentRemoved() {},
+      dispose() {}
+    };
   }
 
   const jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => {
@@ -50,23 +75,26 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
   (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
-  const configFilename = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
+  const configFilename =
+    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
     ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
-  const configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {
+  const configJson = (configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config) || {
     exclude: ['node_modules', '**/node_modules/*']
   };
-  const parsedConfig = ts.parseJsonConfigFileContent(configJson,
+  const parsedConfig = ts.parseJsonConfigFileContent(
+    configJson,
     ts.sys,
     workspacePath,
     compilerOptions,
     configFilename,
     undefined,
-    [{ extension: 'vue', isMixedContent: true }]);
+    [{ extension: 'vue', isMixedContent: true }]
+  );
   const files = parsedConfig.fileNames;
   compilerOptions = parsedConfig.options;
   compilerOptions.allowNonTsExtensions = true;
 
-  function updateCurrentTextDocument (doc: TextDocument) {
+  function updateCurrentTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
@@ -90,39 +118,39 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
   const host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
-    getScriptVersion (fileName) {
+    getScriptVersion(fileName) {
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
       return versions.has(normalizedFileFsPath) ? versions.get(normalizedFileFsPath).toString() : '0';
     },
-    getScriptKind (fileName) {
+    getScriptKind(fileName) {
       if (isVue(fileName)) {
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
-        const doc = docs.get(fileName) ||
+        const doc =
+          docs.get(fileName) ||
           jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName)));
         return doc.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
-      }
-      else {
+      } else {
         // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
         return (ts as any).getScriptKindFromFileName(fileName);
       }
     },
-    resolveModuleNames (moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
+    resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
       // in the normal case, delegate to ts.resolveModuleName
       // in the relative-imported.vue case, manually build a resolved filename
       return moduleNames.map(name => {
         if (path.isAbsolute(name) || !isVue(name)) {
           return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule;
-        }
-        else {
+        } else {
           const uri = Uri.file(path.join(path.dirname(containingFile), name));
           const resolvedFileName = uri.fsPath;
           if (ts.sys.fileExists(resolvedFileName)) {
-            const doc = docs.get(resolvedFileName) ||
+            const doc =
+              docs.get(resolvedFileName) ||
               jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
             return {
               resolvedFileName,
-              extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
+              extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js
             };
           }
         }
@@ -130,7 +158,9 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     },
     getScriptSnapshot: (fileName: string) => {
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
-      let text = docs.has(normalizedFileFsPath) ? docs.get(normalizedFileFsPath).getText() : (ts.sys.readFile(normalizedFileFsPath) || '');
+      let text = docs.has(normalizedFileFsPath)
+        ? docs.get(normalizedFileFsPath).getText()
+        : ts.sys.readFile(normalizedFileFsPath) || '';
       if (isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
@@ -143,30 +173,32 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       };
     },
     getCurrentDirectory: () => workspacePath,
-    getDefaultLibFileName: ts.getDefaultLibFilePath,
+    getDefaultLibFileName: ts.getDefaultLibFilePath
   };
 
   let jsLanguageService = ts.createLanguageService(host);
   let settings: any = {};
 
   return {
-    getId () {
+    getId() {
       return 'javascript';
     },
-    configure (options: any) {
+    configure(options: any) {
       if (options.vetur) {
         settings.format = options.vetur.format.js;
       }
     },
-    doValidation (doc: TextDocument): Diagnostic[] {
+    doValidation(doc: TextDocument): Diagnostic[] {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const diagnostics = [...jsLanguageService.getSyntacticDiagnostics(fileFsPath),
-      ...jsLanguageService.getSemanticDiagnostics(fileFsPath)];
+      const diagnostics = [
+        ...jsLanguageService.getSyntacticDiagnostics(fileFsPath),
+        ...jsLanguageService.getSemanticDiagnostics(fileFsPath)
+      ];
 
       return diagnostics.map(diag => {
         return {
@@ -176,7 +208,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         };
       });
     },
-    doComplete (doc: TextDocument, position: Position): CompletionList {
+    doComplete(doc: TextDocument, position: Position): CompletionList {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return { isIncomplete: false, items: [] };
@@ -188,7 +220,10 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
-      let replaceRange = convertRange(currentTextDocument, getWordAtText(currentTextDocument.getText(), offset, JS_WORD_REGEX));
+      let replaceRange = convertRange(
+        currentTextDocument,
+        getWordAtText(currentTextDocument.getText(), offset, JS_WORD_REGEX)
+      );
       return {
         isIncomplete: false,
         items: completions.entries.map(entry => {
@@ -199,7 +234,8 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
             sortText: entry.sortText,
             kind: convertKind(entry.kind),
             textEdit: TextEdit.replace(replaceRange, entry.name),
-            data: { // data used for resolving item details (see 'doResolve')
+            data: {
+              // data used for resolving item details (see 'doResolve')
               languageId: 'javascript',
               uri: doc.uri,
               offset: offset
@@ -208,7 +244,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         })
       };
     },
-    doResolve (doc: TextDocument, item: CompletionItem): CompletionItem {
+    doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
@@ -223,7 +259,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return item;
     },
-    doHover (doc: TextDocument, position: Position): Hover {
+    doHover(doc: TextDocument, position: Position): Hover {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
@@ -240,7 +276,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return null;
     },
-    doSignatureHelp (doc: TextDocument, position: Position): SignatureHelp {
+    doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
@@ -255,7 +291,6 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
           signatures: []
         };
         signHelp.items.forEach(item => {
-
           const signature: SignatureInformation = {
             label: '',
             documentation: null,
@@ -279,7 +314,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
           ret.signatures.push(signature);
         });
         return ret;
-      };
+      }
       return null;
     },
     // Disabled per https://github.com/octref/vetur/issues/215
@@ -304,7 +339,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return [];
     },
     */
-    findDocumentSymbols (doc: TextDocument): SymbolInformation[] {
+    findDocumentSymbols(doc: TextDocument): SymbolInformation[] {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
@@ -337,7 +372,6 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
               collectSymbols(child, containerLabel);
             }
           }
-
         };
 
         items.forEach(item => collectSymbols(item));
@@ -345,7 +379,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return [];
     },
-    findDefinition (doc: TextDocument, position: Position): Definition {
+    findDefinition(doc: TextDocument, position: Position): Definition {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return null;
@@ -363,7 +397,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return null;
     },
-    findReferences (doc: TextDocument, position: Position): Location[] {
+    findReferences(doc: TextDocument, position: Position): Location[] {
       updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
         return [];
@@ -381,7 +415,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return [];
     },
-    format (doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
+    format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       updateCurrentTextDocument(doc);
 
       const fileFsPath = getFileFsPath(doc.uri);
@@ -404,30 +438,29 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return [];
     },
-    onDocumentRemoved (document: TextDocument) {
+    onDocumentRemoved(document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);
     },
-    dispose () {
+    dispose() {
       jsLanguageService.dispose();
       jsDocuments.dispose();
     }
   };
-};
+}
 
-
-function languageServiceIncludesFile (ls: ts.LanguageService, documentUri: string): boolean {
+function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
   const filePaths = ls.getProgram().getRootFileNames();
   const filePath = getFilePath(documentUri);
   return filePaths.includes(filePath);
 }
 
-function convertRange (document: TextDocument, span: { start: number, length: number }): Range {
+function convertRange(document: TextDocument, span: { start: number; length: number }): Range {
   const startPosition = document.positionAt(span.start);
   const endPosition = document.positionAt(span.start + span.length);
   return Range.create(startPosition, endPosition);
 }
 
-function convertKind (kind: string): CompletionItemKind {
+function convertKind(kind: string): CompletionItemKind {
   switch (kind) {
     case 'primitive type':
     case 'keyword':
@@ -460,7 +493,7 @@ function convertKind (kind: string): CompletionItemKind {
   return CompletionItemKind.Property;
 }
 
-function convertSymbolKind (kind: string): SymbolKind {
+function convertSymbolKind(kind: string): SymbolKind {
   switch (kind) {
     case 'var':
     case 'local var':
@@ -487,7 +520,11 @@ function convertSymbolKind (kind: string): SymbolKind {
   return SymbolKind.Variable;
 }
 
-function convertOptions (options: FormattingOptions, formatSettings: any, initialIndentLevel: number): ts.FormatCodeOptions {
+function convertOptions(
+  options: FormattingOptions,
+  formatSettings: any,
+  initialIndentLevel: number
+): ts.FormatCodeOptions {
   const defaultJsFormattingOptions = {
     ConvertTabsToSpaces: options.insertSpaces,
     TabSize: options.tabSize,

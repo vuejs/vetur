@@ -3,32 +3,44 @@ import * as path from 'path';
 
 import { parseComponent } from '../external/vue-template-compiler.js';
 
-export function isVue (filename: string): boolean {
+export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
 }
 
-export function parseVue (text: string): string {
+export function parseVue(text: string): string {
   const output = parseComponent(text, { pad: 'space' });
   if (output && output.script && output.script.content) {
     return output.script.content;
-  }
-  else {
+  } else {
     return text;
   }
 }
 
-export function createUpdater () {
+export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
   return {
-    createLanguageServiceSourceFile (fileName: string, scriptSnapshot: ts.IScriptSnapshot, scriptTarget: ts.ScriptTarget, version: string, setNodeParents: boolean, scriptKind?: ts.ScriptKind): ts.SourceFile {
+    createLanguageServiceSourceFile(
+      fileName: string,
+      scriptSnapshot: ts.IScriptSnapshot,
+      scriptTarget: ts.ScriptTarget,
+      version: string,
+      setNodeParents: boolean,
+      scriptKind?: ts.ScriptKind
+    ): ts.SourceFile {
       const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
       if (isVue(fileName)) {
         modifyVueSource(sourceFile);
       }
       return sourceFile;
     },
-    updateLanguageServiceSourceFile (sourceFile: ts.SourceFile, scriptSnapshot: ts.IScriptSnapshot, version: string, textChangeRange: ts.TextChangeRange, aggressiveChecks?: boolean): ts.SourceFile {
+    updateLanguageServiceSourceFile(
+      sourceFile: ts.SourceFile,
+      scriptSnapshot: ts.IScriptSnapshot,
+      version: string,
+      textChangeRange: ts.TextChangeRange,
+      aggressiveChecks?: boolean
+    ): ts.SourceFile {
       sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
       if (isVue(sourceFile.fileName)) {
         modifyVueSource(sourceFile);
@@ -49,19 +61,27 @@ function find<T>(array: T[], predicate: (element: T, index: number) => boolean):
   return undefined;
 }
 
-function modifyVueSource (sourceFile: ts.SourceFile): void {
-  const exportDefaultObject = find(sourceFile.statements, st => st.kind === ts.SyntaxKind.ExportAssignment &&
-    (st as ts.ExportAssignment).expression.kind === ts.SyntaxKind.ObjectLiteralExpression);
+function modifyVueSource(sourceFile: ts.SourceFile): void {
+  const exportDefaultObject = find(
+    sourceFile.statements,
+    st =>
+      st.kind === ts.SyntaxKind.ExportAssignment &&
+      (st as ts.ExportAssignment).expression.kind === ts.SyntaxKind.ObjectLiteralExpression
+  );
   if (exportDefaultObject) {
     const isVueAlreadyImported = find(sourceFile.statements, st => isImportOfName(st, 'Vue'));
     if (!isVueAlreadyImported) {
       // 1. add `import Vue from 'vue'
       //    (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
       const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
-      const vueImport = setZeroPos(ts.createImportDeclaration(undefined,
-        undefined,
-        setZeroPos(ts.createImportClause(ts.createIdentifier('Vue'), undefined)),
-        setZeroPos(ts.createLiteral('vue'))));
+      const vueImport = setZeroPos(
+        ts.createImportDeclaration(
+          undefined,
+          undefined,
+          setZeroPos(ts.createImportClause(ts.createIdentifier('Vue'), undefined)),
+          setZeroPos(ts.createLiteral('vue'))
+        )
+      );
       sourceFile.statements.unshift(vueImport);
     }
 
@@ -76,11 +96,11 @@ function modifyVueSource (sourceFile: ts.SourceFile): void {
 }
 
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */
-function getWrapperRangeSetter (wrapped: ts.TextRange): <T extends ts.TextRange>(wrapperNode: T) => T {
+function getWrapperRangeSetter(wrapped: ts.TextRange): <T extends ts.TextRange>(wrapperNode: T) => T {
   return <T extends ts.TextRange>(wrapperNode: T) => ts.setTextRange(wrapperNode, wrapped);
 }
 
-function isImportOfName (statement: ts.Statement, name: string): boolean {
+function isImportOfName(statement: ts.Statement, name: string): boolean {
   if (statement.kind === ts.SyntaxKind.ImportDeclaration) {
     const importDecl = statement as ts.ImportDeclaration;
     // import (incomplete statement)
