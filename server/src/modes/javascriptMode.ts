@@ -266,13 +266,17 @@ export function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = jsLanguageService.getQuickInfoAtPosition(fileFsPath, currentTextDocument.offsetAt(position));
-      if (info) {
-        const contents = ts.displayPartsToString(info.displayParts);
-        return {
-          range: convertRange(currentTextDocument, info.textSpan),
-          contents: MarkedString.fromPlainText(contents)
-        };
+      try {
+        const info = jsLanguageService.getQuickInfoAtPosition(fileFsPath, currentTextDocument.offsetAt(position));
+        if (info) {
+          const contents = ts.displayPartsToString(info.displayParts);
+          return {
+            range: convertRange(currentTextDocument, info.textSpan),
+            contents: MarkedString.fromPlainText(contents)
+          };
+        }
+      } catch (e) {
+
       }
       return null;
     },
