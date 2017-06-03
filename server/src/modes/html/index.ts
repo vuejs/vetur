@@ -1,5 +1,5 @@
 import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
-import { getVueHtmlLanguageService, LanguageService, VueHTMLDocument, DocumentContext} from './vueHtmlLanguageService';
+import { getVueHtmlLanguageService, LanguageService, VueHTMLDocument, DocumentContext} from './vueHTML';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
