@@ -1,7 +1,6 @@
 import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { html as htmlBeautify, css as cssBeautify } from 'js-beautify';
 
-import { repeat } from '../utils/strings';
 import { defaultHtmlOptions, defaultCssOptions } from './formatterOptions';
 import * as _ from 'lodash';
 
@@ -76,8 +75,8 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
 
 function generateIndent(level: number, options: FormattingOptions) {
   if (options.insertSpaces) {
-    return repeat(' ', level * options.tabSize);
+    return _.repeat(' ', level * options.tabSize);
   } else {
-    return repeat('\t', level);
+    return _.repeat('\t', level);
   }
 }

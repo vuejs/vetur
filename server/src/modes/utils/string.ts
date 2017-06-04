@@ -21,43 +21,12 @@ export function getWordAtText(text: string, offset: number, wordDefinition: RegE
   return { start: offset, length: 0 };
 }
 
-export function startsWith(haystack: string, needle: string): boolean {
-  if (haystack.length < needle.length) {
-    return false;
-  }
-
-  for (let i = 0; i < needle.length; i++) {
-    if (haystack[i] !== needle[i]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-export function repeat(value: string, count: number) {
-  let s = '';
-  while (count > 0) {
-    if ((count & 1) === 1) {
-      s += value;
-    }
-    value += value;
-    count = count >>> 1;
-  }
-  return s;
-}
-
-export function isWhitespaceOnly(str: string) {
-  return /^\s*$/.test(str);
-}
-
-export function removeQuotes(str: string) {
-  return str.replace(/["']/g, ''); 
-}
-
-
 const CR = '\r'.charCodeAt(0);
 const NL = '\n'.charCodeAt(0);
 function isNewlineCharacter(charCode: number) {
   return charCode === CR || charCode === NL;
+}
+
+export function removeQuotes(str: string) {
+  return str.replace(/["']/g, ''); 
 }

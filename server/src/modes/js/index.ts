@@ -25,8 +25,8 @@ import {
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
 import { createUpdater, parseVue, isVue } from '../ts';
-import { getWordAtText } from '../../utils/string';
-import { getFilePath, getFileFsPath, getNormalizedFileFsPath } from '../../utils/path';
+import { getWordAtText } from '../utils/string';
+import { getFilePath, getFileFsPath, getNormalizedFileFsPath } from '../utils/path';
 
 import Uri from 'vscode-uri';
 import * as path from 'path';

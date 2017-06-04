@@ -1,4 +1,4 @@
-import { removeQuotes } from '../utils/string';
+import { removeQuotes } from './utils/string';
 import { Scanner, TextDocument, Position, LanguageService, TokenType, Range } from './vueHTML/ls';
 
 export interface LanguageRange extends Range {
