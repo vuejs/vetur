@@ -1,6 +1,6 @@
 # Formatting
 
-vetur have support for formatting embedded `html/css/scss/less/js/ts` and expose some formatting options.
+Vetur has support for formatting embedded `html/css/scss/less/js/ts` and expose some formatting options.
 
 ## General
 
@@ -58,4 +58,8 @@ interface FormatCodeSettings extends EditorSettings {
 ## Adding Option
 
 If you'd like an option from `js-beautify` or TypeScript's language service exposed, open an issue for discussion.  
-I'd like to keep vetur's options minimal.
+I'd like to keep Vetur's options minimal.
+
+## Future Plan
+
+[prettier](https://github.com/prettier/prettier) as an alternative formatter for style/script.
