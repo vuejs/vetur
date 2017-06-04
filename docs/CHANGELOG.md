@@ -1,5 +1,14 @@
 # Changelog
 
+### 0.7.0 | 2017-06-01
+
+- Correct syntax highlighting for longer directives such as `@click.capture.stop`. #79.
+- Doc at https://octref.github.io/vetur/
+- Disable js/ts language server to prevent crash when opening vue files without workspace. #160.
+- Restrcit scaffold snippets to vue region (outside all other regions) strictly. #219.
+- Fix a `textDocument/hover` error. #191.
+- Incorporate [vls](https://github.com/octref/vls) into vetur's `/server`.
+
 ### 0.6.10 | 2017-06-01
 
 - Fix a language service restart issue.
