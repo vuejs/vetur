@@ -1,7 +1,16 @@
-import { createConnection, IConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
+import {
+  createConnection,
+  IConnection,
+  TextDocuments,
+  InitializeParams,
+  InitializeResult,
+  DocumentRangeFormattingRequest,
+  Disposable,
+  DocumentSelector
+} from 'vscode-languageserver';
 import { TextDocument, Diagnostic, DocumentLink, SymbolInformation } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
-import { DocumentContext, getVls } from 'vetur-vls';
+import { getVueHTMLMode } from './modes/vueHTML';
 import * as url from 'url';
 import * as path from 'path';
 import * as _ from 'lodash';
@@ -66,13 +75,13 @@ const validation = {
   css: true,
   scss: true,
   less: true,
-  javascript: true,
+  javascript: true
 };
 
 let formatterRegistration: Thenable<Disposable>;
 
 // The settings have changed. Is send on server activation as well.
-connection.onDidChangeConfiguration((change) => {
+connection.onDidChangeConfiguration(change => {
   settings = change.settings;
 
   // Update formatting setting
@@ -109,7 +118,7 @@ documents.onDidClose(event => {
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
 });
 
-function cleanPendingValidation (textDocument: TextDocument): void {
+function cleanPendingValidation(textDocument: TextDocument): void {
   const request = pendingValidationRequests[textDocument.uri];
   if (request) {
     clearTimeout(request);
@@ -117,7 +126,7 @@ function cleanPendingValidation (textDocument: TextDocument): void {
   }
 }
 
-function triggerValidation (textDocument: TextDocument): void {
+function triggerValidation(textDocument: TextDocument): void {
   cleanPendingValidation(textDocument);
   pendingValidationRequests[textDocument.uri] = setTimeout(() => {
     delete pendingValidationRequests[textDocument.uri];
@@ -125,7 +134,7 @@ function triggerValidation (textDocument: TextDocument): void {
   }, validationDelayMs);
 }
 
-function validateTextDocument (textDocument: TextDocument): void {
+function validateTextDocument(textDocument: TextDocument): void {
   const diagnostics: Diagnostic[] = [];
   if (textDocument.languageId === 'vue') {
     languageModes.getAllModesInDocument(textDocument).forEach(mode => {
@@ -153,7 +162,7 @@ connection.onCompletion(textDocumentPosition => {
     if (mode.doComplete) {
       return mode.doComplete(document, textDocumentPosition.position);
     } else if (mode.getId() === 'vue') {
-      return getVls().doVueComplete();
+      return languageModes.getMode('vue-html').doScaffoldComplete();
     }
   }
 });
@@ -225,7 +234,7 @@ connection.onDocumentRangeFormatting(formatParams => {
 
 connection.onDocumentLinks(documentLinkParam => {
   const document = documents.get(documentLinkParam.textDocument.uri);
-  const documentContext: DocumentContext = {
+  const documentContext = {
     resolveReference: ref => {
       if (workspacePath && ref[0] === '/') {
         return Uri.file(path.join(workspacePath, ref)).toString();

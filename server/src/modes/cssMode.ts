@@ -1,4 +1,4 @@
-import { Vls } from 'vetur-vls';
+import { LanguageService as VueHTMLLanguageService } from './vueHTML/ls';
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { TextDocument, Position, TextEdit, FormattingOptions, Range } from 'vscode-languageserver-types';
 import {
@@ -11,23 +11,23 @@ import {
 import { LanguageMode } from './languageModes';
 import { VueDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
 
-export function getCSSMode(vls: Vls, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getCSSMode(vueHTMLLs: VueHTMLLanguageService, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('css', vls, languageService, documentRegions);
+  return getStyleMode('css', vueHTMLLs, languageService, documentRegions);
 }
 
-export function getSCSSMode(vls: Vls, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getSCSSMode(vueHTMLLs: VueHTMLLanguageService, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getSCSSLanguageService();
-  return getStyleMode('scss', vls, languageService, documentRegions);
+  return getStyleMode('scss', vueHTMLLs, languageService, documentRegions);
 }
-export function getLESSMode(vls: Vls, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getLESSMode(vueHTMLLs: VueHTMLLanguageService, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getLESSLanguageService();
-  return getStyleMode('less', vls, languageService, documentRegions);
+  return getStyleMode('less', vueHTMLLs, languageService, documentRegions);
 }
 
 function getStyleMode(
   languageId: string,
-  vls: Vls,
+  vueHTMLLs: VueHTMLLanguageService,
   languageService: LanguageService,
   documentRegions: LanguageModelCache<VueDocumentRegions>
 ): LanguageMode {
@@ -61,9 +61,7 @@ function getStyleMode(
     },
     findDocumentSymbols(document: TextDocument) {
       const embedded = embeddedDocuments.get(document);
-      return languageService
-        .findDocumentSymbols(embedded, stylesheets.get(embedded))
-        .filter(s => s.name !== CSS_STYLE_RULE);
+      return languageService.findDocumentSymbols(embedded, stylesheets.get(embedded)).filter(s => s.name !== CSS_STYLE_RULE);
     },
     findDefinition(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
@@ -78,7 +76,7 @@ function getStyleMode(
       return languageService.findColorSymbols(embedded, stylesheets.get(embedded));
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[] {
-      return vls.cssFormat(document, range, formattingOptions);
+      return vueHTMLLs.cssFormat(document, range, formattingOptions);
     },
     onDocumentRemoved(document: TextDocument) {
       embeddedDocuments.onDocumentRemoved(document);

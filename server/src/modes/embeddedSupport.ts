@@ -1,5 +1,5 @@
 import { removeQuotes } from '../utils/string';
-import { Scanner, TextDocument, Position, Vls, TokenType, Range } from 'vetur-vls';
+import { Scanner, TextDocument, Position, LanguageService, TokenType, Range } from './vueHTML/ls';
 
 export interface LanguageRange extends Range {
   languageId: string;
@@ -18,7 +18,7 @@ export const CSS_STYLE_RULE = '__';
 
 interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean }
 
-export function getDocumentRegions(languageService: Vls, document: TextDocument): VueDocumentRegions {
+export function getDocumentRegions(languageService: LanguageService, document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];
   const scanner = languageService.createScanner(document.getText());
   let lastTagName: string;

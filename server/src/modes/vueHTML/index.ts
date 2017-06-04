@@ -1,12 +1,12 @@
 import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
-import { getVueHtmlLanguageService, LanguageService, VueHTMLDocument, DocumentContext } from './vueHTML';
+import { getVueHTMLLanguageService, LanguageService, VueHTMLDocument, DocumentContext } from './ls';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
 
 export function getVueHTMLMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   let settings: any = {};
-  const languageService = getVueHtmlLanguageService();
+  const languageService = getVueHTMLLanguageService();
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
     documentRegions.get(document).getEmbeddedDocument('vue-html')
   );
@@ -24,6 +24,9 @@ export function getVueHTMLMode(documentRegions: LanguageModelCache<VueDocumentRe
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       return languageService.doComplete(embedded, position, vueHTMLs.get(embedded), { html5: true });
+    },
+    doScaffoldComplete() {
+      return languageService.doScaffoldComplete();
     },
     doHover(document: TextDocument, position: Position) {
       return languageService.doHover(document, position, vueHTMLs.get(document));

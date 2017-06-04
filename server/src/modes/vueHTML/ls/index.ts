@@ -1,7 +1,7 @@
 import { createScanner } from './parser/htmlScanner';
 import { parse } from './parser/htmlParser';
 import { doComplete } from './services/htmlCompletion';
-import { doVueComplete } from './services/vueCompletion';
+import { doScaffoldComplete } from './services/vueCompletion';
 import { doHover } from './services/htmlHover';
 import { htmlFormat, cssFormat } from './services/formatters';
 import { findDocumentLinks } from './services/htmlLinks';
@@ -127,7 +127,7 @@ export interface LanguageService {
     htmlDocument: VueHTMLDocument,
     options?: CompletionConfiguration
   ): CompletionList;
-  doVueComplete(): CompletionList;
+  doScaffoldComplete(): CompletionList;
   doHover(document: TextDocument, position: Position, htmlDocument: VueHTMLDocument): Hover;
   htmlFormat(document: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
   cssFormat(document: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
@@ -135,12 +135,12 @@ export interface LanguageService {
   findDocumentSymbols(document: TextDocument, htmlDocument: VueHTMLDocument): SymbolInformation[];
 }
 
-export function getVueHtmlLanguageService(): LanguageService {
+export function getVueHTMLLanguageService(): LanguageService {
   return {
     createScanner,
     parseVueHTMLDocument: document => parse(document.getText()),
     doComplete,
-    doVueComplete,
+    doScaffoldComplete,
     doHover,
     htmlFormat,
     cssFormat,

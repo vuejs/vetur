@@ -15,13 +15,13 @@ import {
   FormattingOptions,
   SymbolInformation
 } from 'vscode-languageserver-types';
-import { getVls, DocumentContext } from 'vetur-vls';
+import { getVueHTMLLanguageService, DocumentContext } from './vueHTML/ls'
 
 import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
 import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
 import { getCSSMode, getSCSSMode, getLESSMode } from './cssMode';
 import { getJavascriptMode } from './javascriptMode';
-import { getVueHTMLMode } from './html';
+import { getVueHTMLMode } from './vueHTML';
 import { getVueMode } from './vueMode';
 
 export interface LanguageMode {
@@ -29,6 +29,7 @@ export interface LanguageMode {
   configure?: (options: any) => void;
   doValidation?: (document: TextDocument) => Diagnostic[];
   doComplete?: (document: TextDocument, position: Position) => CompletionList;
+  doScaffoldComplete?: () => CompletionList;
   doResolve?: (document: TextDocument, item: CompletionItem) => CompletionItem;
   doHover?: (document: TextDocument, position: Position) => Hover;
   doSignatureHelp?: (document: TextDocument, position: Position) => SignatureHelp;
@@ -59,9 +60,9 @@ export interface LanguageModeRange extends Range {
 }
 
 export function getLanguageModes(workspacePath: string): LanguageModes {
-  const vls = getVls();
+  const vueHTMLLanguageService = getVueHTMLLanguageService();
   const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document =>
-    getDocumentRegions(vls, document)
+    getDocumentRegions(vueHTMLLanguageService, document)
   );
 
   let modelCaches: LanguageModelCache<any>[] = [];
@@ -70,9 +71,9 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
   let modes = {
     vue: getVueMode(),
     'vue-html': getVueHTMLMode(documentRegions),
-    css: getCSSMode(vls, documentRegions),
-    scss: getSCSSMode(vls, documentRegions),
-    less: getLESSMode(vls, documentRegions),
+    css: getCSSMode(vueHTMLLanguageService, documentRegions),
+    scss: getSCSSMode(vueHTMLLanguageService, documentRegions),
+    less: getLESSMode(vueHTMLLanguageService, documentRegions),
     javascript: getJavascriptMode(documentRegions, workspacePath)
   };
   modes['typescript'] = modes.javascript;
