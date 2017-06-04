@@ -11,7 +11,7 @@ namespace ColorSymbolRequest {
 export function activate (context: ExtensionContext) {
 
   // The server is implemented in node
-  const serverModule = context.asAbsolutePath(path.join('client', 'server', 'htmlServerMain.js'));
+  const serverModule = context.asAbsolutePath(path.join('client', 'server', 'vueServerMain.js'));
   // The debug options for the server
   const debugOptions = { execArgv: ['--nolazy', '--debug=6005'] };
 

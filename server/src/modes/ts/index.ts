@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as path from 'path';
 
-import { parseComponent } from '../external/vue-template-compiler.js';
+import { parseComponent } from '../../external/vue-template-compiler.js';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';

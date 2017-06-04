@@ -1,4 +1,4 @@
-import { LanguageService as VueHTMLLanguageService } from './vueHTML/ls';
+import { LanguageService as VueHTMLLanguageService } from '../vueHTML/ls';
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { TextDocument, Position, TextEdit, FormattingOptions, Range } from 'vscode-languageserver-types';
 import {
@@ -8,8 +8,8 @@ import {
   Stylesheet,
   LanguageService
 } from 'vscode-css-languageservice';
-import { LanguageMode } from './languageModes';
-import { VueDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
+import { LanguageMode } from '../languageModes';
+import { VueDocumentRegions, CSS_STYLE_RULE } from '../embeddedSupport';
 
 export function getCSSMode(vueHTMLLs: VueHTMLLanguageService, documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();

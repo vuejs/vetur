@@ -15,8 +15,7 @@ import * as url from 'url';
 import * as path from 'path';
 import * as _ from 'lodash';
 
-import { getLanguageModes, LanguageModes } from './modes/languageModes';
-import { format } from './modes/formatting';
+import { getLanguageModes, LanguageModes, format } from './modes/languageModes';
 
 // Create a connection for the server
 const connection: IConnection = createConnection();

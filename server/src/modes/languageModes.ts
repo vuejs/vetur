@@ -17,12 +17,12 @@ import {
 } from 'vscode-languageserver-types';
 import { getVueHTMLLanguageService, DocumentContext } from './vueHTML/ls'
 
-import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
+import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
-import { getCSSMode, getSCSSMode, getLESSMode } from './cssMode';
-import { getJavascriptMode } from './javascriptMode';
+import { getCSSMode, getSCSSMode, getLESSMode } from './css';
+import { getJSMode } from './js';
 import { getVueHTMLMode } from './vueHTML';
-import { getVueMode } from './vueMode';
+import { getVueMode } from './vue';
 
 export interface LanguageMode {
   getId();
@@ -74,7 +74,7 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
     css: getCSSMode(vueHTMLLanguageService, documentRegions),
     scss: getSCSSMode(vueHTMLLanguageService, documentRegions),
     less: getLESSMode(vueHTMLLanguageService, documentRegions),
-    javascript: getJavascriptMode(documentRegions, workspacePath)
+    javascript: getJSMode(documentRegions, workspacePath)
   };
   modes['typescript'] = modes.javascript;
 
@@ -134,4 +134,20 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
       modes = null;
     }
   };
+}
+
+export function format (languageModes: LanguageModes, document: TextDocument, formatRange: Range, formattingOptions: FormattingOptions) {
+  const embeddedModeRanges = languageModes.getModesInRange(document, formatRange);
+  const embeddedEdits: TextEdit[] = [];
+
+  embeddedModeRanges.forEach(range => {
+    if (range.mode && range.mode.format) {
+      const edits = range.mode.format(document, range, formattingOptions);
+      for (let edit of edits) {
+        embeddedEdits.push(edit);
+      }
+    }
+  });
+
+  return embeddedEdits;
 }

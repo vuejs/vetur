@@ -1,4 +1,4 @@
-import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { getVueHTMLLanguageService, LanguageService, VueHTMLDocument, DocumentContext } from './ls';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';

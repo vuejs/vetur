@@ -1,4 +1,4 @@
-import { LanguageMode } from './languageModes';
+import { LanguageMode } from '../languageModes';
 
 export function getVueMode(): LanguageMode {
   return {

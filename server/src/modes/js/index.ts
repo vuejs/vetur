@@ -22,11 +22,11 @@ import {
   Position,
   FormattingOptions
 } from 'vscode-languageserver-types';
-import { LanguageMode } from './languageModes';
-import { VueDocumentRegions } from './embeddedSupport';
-import { createUpdater, parseVue, isVue } from './typescriptMode';
-import { getWordAtText } from '../utils/string';
-import { getFilePath, getFileFsPath, getNormalizedFileFsPath } from '../utils/path';
+import { LanguageMode } from '../languageModes';
+import { VueDocumentRegions } from '../embeddedSupport';
+import { createUpdater, parseVue, isVue } from '../ts';
+import { getWordAtText } from '../../utils/string';
+import { getFilePath, getFileFsPath, getNormalizedFileFsPath } from '../../utils/path';
 
 import Uri from 'vscode-uri';
 import * as path from 'path';
@@ -36,7 +36,7 @@ import { platform } from 'os';
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
-export function getJavascriptMode(
+export function getJSMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   workspacePath: string
 ): LanguageMode {
