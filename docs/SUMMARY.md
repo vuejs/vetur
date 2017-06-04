@@ -6,4 +6,4 @@
 
 ---
 
-- [Changelog](changelog.md)
+- [Changelog](CHANGELOG.md)
