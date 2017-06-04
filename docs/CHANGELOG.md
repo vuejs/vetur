@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.7.0 | 2017-06-01
+### 0.7.0 | 2017-06-04
 
 - Correct syntax highlighting for longer directives such as `@click.capture.stop`. #79.
 - Doc at https://octref.github.io/vetur/
