@@ -7,7 +7,7 @@ export function doScaffoldComplete(): CompletionList {
       documentation: 'Scaffold <template>, <script> and <style>',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<template>
   \${}
 </template>
@@ -28,8 +28,8 @@ export default {
       documentation: 'Scaffold <template> with html',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-      `<template>
+      insertText: 
+`<template>
   \${}
 </template>
 `
@@ -39,8 +39,8 @@ export default {
       documentation: 'Scaffold <template> with pug',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-      `<template lang="pug">
+      insertText: 
+`<template lang="pug">
   \${}
 </template>
 `
@@ -50,8 +50,8 @@ export default {
       documentation: 'Scaffold <script> with JavaScript',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-      `<script>
+      insertText: 
+`<script>
 export default {
   \${}
 }
@@ -63,7 +63,7 @@ export default {
       documentation: 'Scaffold <script> with TypeScript',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<script lang="ts">
 export default {
   \${}
@@ -76,7 +76,7 @@ export default {
       documentation: 'Scaffold <style> with CSS',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<style>
 \${}
 </style>
@@ -87,7 +87,7 @@ export default {
       documentation: 'Scaffold <style> with scss',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<style lang="scss">
 \${}
 </style>
@@ -98,7 +98,7 @@ export default {
       documentation: 'Scaffold <style> with less',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<style lang="less">
 \${}
 </style>
@@ -109,7 +109,7 @@ export default {
       documentation: 'Scaffold <style> with sass',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<style lang="sass">
 \${}
 </style>
@@ -120,7 +120,7 @@ export default {
       documentation: 'Scaffold <style> with postcss',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<style lang="postcss">
 \${}
 </style>
@@ -131,13 +131,12 @@ export default {
       documentation: 'Scaffold <style> with stylus',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
+      insertText: 
 `<style lang="stylus">
 \${}
 </style>
 `
-    },
-
+    }
   ];
 
   return {
