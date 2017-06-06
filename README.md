@@ -54,6 +54,7 @@ Try for yourself on this project: [vue-hackernews-2.0](https://github.com/vuejs/
 **ESLint** for linting `<script>` section:
 
 - Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- Install [HTML plugin](https://www.npmjs.com/package/eslint-plugin-html)
 - Add `vue` to your `eslint.validate` setting, for example:
 
   ```json
@@ -62,6 +63,11 @@ Try for yourself on this project: [vue-hackernews-2.0](https://github.com/vuejs/
     "javascriptreact",
     "vue"
   ]
+  ```
+- Add `html` to the eslint plugins list (content of `.eslintrc`):
+
+  ```json
+  "plugins": ["html"]
   ```
 
 **Stylus**:
