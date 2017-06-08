@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "allowJs": true,
-    "outDir": "../client/server",
+    "strict": true,
+    "noUnusedLocals": true,
+    "outDir": "dist",
     "sourceMap": true,
     "lib": [
       "es5", "es2015.collection", "es2015.promise", "dom", "es2016.array.include"

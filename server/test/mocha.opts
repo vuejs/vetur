@@ -1,0 +1,4 @@
+--ui tdd
+--useColors true
+--require source-map-support/register
+./dist/modes/template/test

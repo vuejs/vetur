@@ -1,35 +1,22 @@
 import {
-  CompletionItem,
-  Location,
-  SignatureHelp,
-  Definition,
-  TextEdit,
-  TextDocument,
-  Diagnostic,
-  DocumentLink,
-  Range,
-  Hover,
-  DocumentHighlight,
-  CompletionList,
-  Position,
-  FormattingOptions,
-  SymbolInformation
+  CompletionItem, Location, SignatureHelp, Definition, TextEdit, TextDocument, Diagnostic, DocumentLink, Range,
+  Hover, DocumentHighlight, CompletionList, Position, FormattingOptions, SymbolInformation
 } from 'vscode-languageserver-types';
-import { getVueHTMLLanguageService, DocumentContext } from './vueHTML/ls'
+import { DocumentContext } from '../service';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
-import { getCSSMode, getSCSSMode, getLESSMode } from './css';
-import { getJSMode } from './js';
-import { getVueHTMLMode } from './vueHTML';
-import { getVueMode } from './vue';
+import { getCSSMode, getSCSSMode, getLESSMode } from './style';
+import { getJavascriptMode } from './script/javascript';
+import { getVueHTMLMode } from './template';
+
+import { getStylusMode } from './style/stylus'
 
 export interface LanguageMode {
-  getId();
+  getId (): string;
   configure?: (options: any) => void;
   doValidation?: (document: TextDocument) => Diagnostic[];
   doComplete?: (document: TextDocument, position: Position) => CompletionList;
-  doScaffoldComplete?: () => CompletionList;
   doResolve?: (document: TextDocument, item: CompletionItem) => CompletionItem;
   doHover?: (document: TextDocument, position: Position) => Hover;
   doSignatureHelp?: (document: TextDocument, position: Position) => SignatureHelp;
@@ -40,18 +27,18 @@ export interface LanguageMode {
   findReferences?: (document: TextDocument, position: Position) => Location[];
   format?: (document: TextDocument, range: Range, options: FormattingOptions) => TextEdit[];
   findColorSymbols?: (document: TextDocument) => Range[];
-  onDocumentRemoved(document: TextDocument): void;
-  dispose(): void;
+  onDocumentRemoved (document: TextDocument): void;
+  dispose (): void;
 }
 
 export interface LanguageModes {
-  getModeAtPosition(document: TextDocument, position: Position): LanguageMode;
-  getModesInRange(document: TextDocument, range: Range): LanguageModeRange[];
-  getAllModes(): LanguageMode[];
-  getAllModesInDocument(document: TextDocument): LanguageMode[];
-  getMode(languageId: string): LanguageMode;
-  onDocumentRemoved(document: TextDocument): void;
-  dispose(): void;
+  getModeAtPosition (document: TextDocument, position: Position): LanguageMode | null;
+  getModesInRange (document: TextDocument, range: Range): LanguageModeRange[];
+  getAllModes (): LanguageMode[];
+  getAllModesInDocument (document: TextDocument): LanguageMode[];
+  getMode (languageId: string): LanguageMode;
+  onDocumentRemoved (document: TextDocument): void;
+  dispose (): void;
 }
 
 export interface LanguageModeRange extends Range {
@@ -59,34 +46,32 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(workspacePath: string): LanguageModes {
-  const vueHTMLLanguageService = getVueHTMLLanguageService();
-  const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document =>
-    getDocumentRegions(vueHTMLLanguageService, document)
-  );
+export function getLanguageModes (workspacePath: string): LanguageModes {
+  const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document => getDocumentRegions(document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
-  let modes = {
-    vue: getVueMode(),
+  let jsMode = getJavascriptMode(documentRegions, workspacePath)
+  let modes: {[k: string]: LanguageMode} = {
     'vue-html': getVueHTMLMode(documentRegions),
-    css: getCSSMode(vueHTMLLanguageService, documentRegions),
-    scss: getSCSSMode(vueHTMLLanguageService, documentRegions),
-    less: getLESSMode(vueHTMLLanguageService, documentRegions),
-    javascript: getJSMode(documentRegions, workspacePath)
+    css: getCSSMode(documentRegions),
+    scss: getSCSSMode(documentRegions),
+    less: getLESSMode(documentRegions),
+    stylus: getStylusMode(documentRegions),
+    javascript: jsMode,
+    typescript: jsMode
   };
-  modes['typescript'] = modes.javascript;
 
   return {
-    getModeAtPosition(document: TextDocument, position: Position): LanguageMode {
-      const languageId = documentRegions.get(document).getLanguageAtPosition(position);
+    getModeAtPosition (document: TextDocument, position: Position): LanguageMode | null {
+      const languageId = documentRegions.get(document).getLanguageAtPosition(position);;
       if (languageId) {
         return modes[languageId];
       }
       return null;
     },
-    getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
+    getModesInRange (document: TextDocument, range: Range): LanguageModeRange[] {
       return documentRegions.get(document).getLanguageRanges(range).map(r => {
         return {
           start: r.start,
@@ -96,7 +81,7 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
         };
       });
     },
-    getAllModesInDocument(document: TextDocument): LanguageMode[] {
+    getAllModesInDocument (document: TextDocument): LanguageMode[] {
       const result = [];
       for (let languageId of documentRegions.get(document).getLanguagesInDocument()) {
         const mode = modes[languageId];
@@ -106,7 +91,7 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
       }
       return result;
     },
-    getAllModes(): LanguageMode[] {
+    getAllModes (): LanguageMode[] {
       const result = [];
       for (let languageId in modes) {
         const mode = modes[languageId];
@@ -116,38 +101,22 @@ export function getLanguageModes(workspacePath: string): LanguageModes {
       }
       return result;
     },
-    getMode(languageId: string): LanguageMode {
+    getMode (languageId: string): LanguageMode {
       return modes[languageId];
     },
-    onDocumentRemoved(document: TextDocument) {
+    onDocumentRemoved (document: TextDocument) {
       modelCaches.forEach(mc => mc.onDocumentRemoved(document));
       for (let mode in modes) {
         modes[mode].onDocumentRemoved(document);
       }
     },
-    dispose(): void {
+    dispose (): void {
       modelCaches.forEach(mc => mc.dispose());
       modelCaches = [];
       for (let mode in modes) {
         modes[mode].dispose();
       }
-      modes = null;
+      modes = {}; // drop all references
     }
   };
-}
-
-export function format (languageModes: LanguageModes, document: TextDocument, formatRange: Range, formattingOptions: FormattingOptions) {
-  const embeddedModeRanges = languageModes.getModesInRange(document, formatRange);
-  const embeddedEdits: TextEdit[] = [];
-
-  embeddedModeRanges.forEach(range => {
-    if (range.mode && range.mode.format) {
-      const edits = range.mode.format(document, range, formattingOptions);
-      for (let edit of edits) {
-        embeddedEdits.push(edit);
-      }
-    }
-  });
-
-  return embeddedEdits;
 }
