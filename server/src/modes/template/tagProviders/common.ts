@@ -70,9 +70,6 @@ export function collectValuesDefault(tag: string, attribute: string, collector: 
         collector(attribute);
       } else {
         var values = valueSets[typeInfo];
-        if (typeInfo === 'd') {
-          console.log(values, 'hjejeejkle')
-        }
         if (values) {
           values.forEach(collector);
         }

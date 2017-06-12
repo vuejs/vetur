@@ -4,10 +4,10 @@
   "version": "0.0.2",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
+  "main": "dist/htmlServerMain.js",
   "bin": {
     "vls": "./bin/vls"
   },
-  "main": "dist/htmlServerMain.js",
   "engines": {
     "node": "*"
   },
@@ -37,6 +37,6 @@
     "compile": "tsc",
     "watch": "tsc --watch",
     "test": "mocha",
-    "prepublish": "npm run compile && npm test"
+    "preversion": "npm run compile && npm test"
   }
 }

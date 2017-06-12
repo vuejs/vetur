@@ -37,7 +37,7 @@ function prepareName(name:string) : string {
  */
 function _variableSymbol(node:StylusNode, text:string[]) : SymbolInformation {
   const name = node.name;
-  const lineno = Number(node.val.lineno) - 1;
+  const lineno = Number(node.val!.lineno) - 1;
   const column = Math.max(text[lineno].indexOf(name), 0);
   const range = Range.create(lineno, column, lineno, column + name.length)
 
@@ -52,7 +52,7 @@ function _variableSymbol(node:StylusNode, text:string[]) : SymbolInformation {
  */
 function _functionSymbol(node:StylusNode, text:string[]) : SymbolInformation {
   const name = node.name;
-  const lineno = Number(node.val.lineno) - 1;
+  const lineno = Number(node.val!.lineno) - 1;
   const column = Math.max(text[lineno].indexOf(name), 0);
 
   const posStart = Position.create(lineno, column);
@@ -72,7 +72,7 @@ function _selectorSymbol(node:StylusNode, text:string[]) : SymbolInformation {
   const firstSegment = node.segments[0];
   const name = firstSegment.string ?
     node.segments.map(s => s.string).join('') :
-    firstSegment.nodes.map(s => s.name).join('');
+    firstSegment.nodes!.map(s => s.name).join('');
   const lineno = Number(firstSegment.lineno) - 1;
   const column = node.column - 1;
 
@@ -150,6 +150,9 @@ function processRawSymbols(rawSymbols: StylusNode[], text:string[]) : SymbolInfo
 export function provideDocumentSymbols(document: TextDocument): SymbolInformation[] {
   const text = document.getText()
   const ast = buildAst(text)
+  if (!ast) {
+    return []
+  }
   const rawSymbols = _.compact(flattenAndFilterAst(ast))
   const symbolInfos = processRawSymbols(rawSymbols, text.split('\n'))
 

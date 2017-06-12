@@ -12,8 +12,9 @@ import { findDocumentLinks } from './services/htmlLinks'
 import { findDocumentSymbols } from './services/htmlSymbolsProvider'
 import { htmlFormat } from './services/formatters'
 import { parseHTMLDocument } from './parser/htmlParser'
+import { ScriptMode } from '../script/javascript'
 
-export function getVueHTMLMode (documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getVueHTMLMode (documentRegions: LanguageModelCache<VueDocumentRegions>, jsMode: ScriptMode): LanguageMode {
   let settings: any = {};
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
@@ -27,7 +28,9 @@ export function getVueHTMLMode (documentRegions: LanguageModelCache<VueDocumentR
     },
     doComplete (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      return doComplete(embedded, position, vueDocuments.get(embedded), { html5: true });
+      const scriptDoc = documentRegions.get(document).getEmbeddedDocument('javascript') || documentRegions.get(document).getEmbeddedDocument('typescript')
+      const additionalTags = jsMode.findComponents(scriptDoc)
+      return doComplete(embedded, position, vueDocuments.get(embedded), { html5: true }, additionalTags);
     },
     doHover (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

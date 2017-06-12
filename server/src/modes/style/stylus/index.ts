@@ -15,10 +15,7 @@ export function getStylusMode (documentRegions: LanguageModelCache<VueDocumentRe
     dispose() {},
     doComplete(document, position) {
       const embedded = embeddedDocuments.get(document)
-      return {
-        isIncomplete: false,
-        items: provideCompletionItems(embedded, position)
-      }
+      return provideCompletionItems(embedded, position)
     },
     findDocumentSymbols(document) {
       const embedded = embeddedDocuments.get(document)
@@ -27,7 +24,7 @@ export function getStylusMode (documentRegions: LanguageModelCache<VueDocumentRe
     doHover(document, position) {
       const embedded = embeddedDocuments.get(document)
       return stylusHover(embedded, position)
-    }
+    },
   }
 }
 

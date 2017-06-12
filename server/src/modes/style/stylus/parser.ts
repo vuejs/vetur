@@ -1,33 +1,23 @@
 import cssColors from './css-colors-list';
 import { Position } from 'vscode-languageserver-types'
 
-type NodeName = 'ident' | 'selector' | 'call' | 'function' |
- 'media' | 'keyframes' | 'atrule' | 'import' | 'require' | 'supports' | 'literal' |
- 'group' | 'root' | 'block' | 'expression' | 'rgba' | 'property' | 'object';
-
-type NodeSegment = {
-  string: string,
-  lineno: number,
-  nodes: Array<{ name: string }>
-}
+type NodeName = 'Ident' | 'Selector' | 'Call' | 'Function' |
+ 'Media' | 'Keyframes' | 'Atrule' | 'Import' | 'Require' | 'Supports' | 'Literal' |
+ 'Group' | 'Root' | 'Block' | 'Expression' | 'Rgba' | 'Property' | 'Object';
 
 export interface StylusNode {
-  nodeName: NodeName,
-  lineno: number,
-  nodes?: StylusNode[]
-}
-
-export interface StylusNode {
-  nodeName: NodeName,
+  __type: NodeName,
   name: NodeName,
-  segments: NodeSegment[],
-  expr?: StylusNode,
   lineno: number,
   column: number,
-  val: StylusNode,
+  segments: StylusNode[],
+  expr?: StylusNode,
+  val?: StylusNode,
   nodes?: StylusNode[],
   vals?: StylusNode[]
   block?: StylusNode
+  __scope?: number[]
+  string?: string
 }
 
 const stylus = require('stylus');
@@ -38,7 +28,7 @@ const stylus = require('stylus');
  * @return {Boolean}
  */
 export function isVariableNode(node:StylusNode) : boolean {
-  return node.nodeName === 'ident' && node.val && node.val.nodeName === 'expression';
+  return node.__type === 'Ident' && !!node.val && node.val.__type === 'Expression';
 }
 
 /**
@@ -47,7 +37,7 @@ export function isVariableNode(node:StylusNode) : boolean {
  * @return {Boolean}
  */
 export function isFunctionNode(node:StylusNode) : boolean {
-  return node.nodeName === 'ident' && node.val && node.val.nodeName === 'function';
+  return node.__type === 'Ident' && !!node.val && node.val.__type === 'Function';
 }
 
 /**
@@ -56,7 +46,7 @@ export function isFunctionNode(node:StylusNode) : boolean {
  * @return {Boolean}
  */
 export function isSelectorNode(node:StylusNode) : boolean {
-  return node.nodeName === 'selector';
+  return node.__type === 'Selector';
 }
 
 /**
@@ -66,7 +56,7 @@ export function isSelectorNode(node:StylusNode) : boolean {
  * @return {Boolean}
  */
 export function isSelectorCallNode(node:StylusNode) : boolean {
-  return node.nodeName === 'call' && node.name === 'selector';
+  return node.__type === 'Call' && node.name === 'Selector';
 }
 
 /**
@@ -75,7 +65,7 @@ export function isSelectorCallNode(node:StylusNode) : boolean {
  * @return {Boolean}
  */
 export function isAtRuleNode(node:StylusNode) : boolean {
-  return ['media', 'keyframes', 'atrule', 'import', 'require', 'supports', 'literal'].indexOf(node.nodeName) !== -1
+  return ['Media', 'Keyframes', 'Atrule', 'Import', 'Require', 'Supports', 'Literal'].indexOf(node.__type) !== -1
 }
 
 /**
@@ -84,9 +74,9 @@ export function isAtRuleNode(node:StylusNode) : boolean {
  * @return {Boolean}
  */
 export function isColor(node:StylusNode) : boolean {
-  if (node.nodeName === 'ident' && cssColors.indexOf(node.name) >= 0) return true;
-  if (node.nodeName === 'rgba') return true;
-  if (node.nodeName === 'call' && ['rgb', 'rgba', 'hsl', 'hsla'].indexOf(node.name) >= 0) return true;
+  if (node.__type === 'Ident' && cssColors.indexOf(node.name) >= 0) return true;
+  if (node.__type === 'Rgba') return true;
+  if (node.__type === 'Call' && ['rgb', 'rgba', 'hsl', 'hsla'].indexOf(node.name) >= 0) return true;
   return false;
 }
 
@@ -95,49 +85,85 @@ export function isColor(node:StylusNode) : boolean {
  * @param {string} text - text editor content
  * @return {Object}
  */
-export function buildAst(text:string) : StylusNode | any[] {
+export function buildAst(text:string) : StylusNode | null {
   try {
-    return new stylus.Parser(text).parse();
+    let root = new stylus.Parser(text).parse();
+    // root is read only
+    let ret = JSON.parse(JSON.stringify(root.toJSON()))
+    addScope(ret, 0, [])
+    return ret
   } catch (error) {
-    return [];
+    return null;
   }
 }
 
 /**
- * fractally fucked-up function
+ * Add scope info to ast
+ * @param {StylusNode} root the stylus node
+ * @param {number} seq the order in parent node's children list, used as scope path segment
+ * @param {number[]} scope represented as path from root ast, each path segment is seq number
+ */
+function addScope(root: StylusNode, seq: number, scope: number[]) {
+  if (!root || typeof root !== 'object') {
+    return
+  }
+  root.__scope = scope
+  if (root.block) {
+    let vals = root.block.nodes || []
+    for (let i = 0, l = vals.length; i < l; i++) {
+      addScope(vals[i], i, scope.concat(seq))
+    }
+  }
+  if (root.vals) {
+    let vals = root.vals
+    for (let i = 0, l = vals.length; i < l; i++) {
+      addScope(vals[i], i, scope.concat())
+    }
+  }
+  if (root.segments) {
+    for (let seg of root.segments) {
+      addScope(seg, seq, scope.concat())
+    }
+  }
+  if (root.expr) {
+      addScope(root.expr, seq, scope.concat())
+  }
+  if (root.nodes) {
+    let vals = root.nodes
+    for (let i = 0, l = vals.length; i < l; i++) {
+      addScope(vals[i], i, scope.concat())
+    }
+  }
+  if (root.val) {
+      addScope(root.val, seq, scope.concat())
+  }
+}
+
+/**
  * Flattens ast and removes useless nodes
- * @param {Object|Array} node
+ * @param {StylusNode} node
  * @return {Array}
  */
-export function flattenAndFilterAst(node: any) : StylusNode[] {
-  if (Array.isArray(node)) {
-    return node.reduce((acc, item) => {
-      return acc.concat(flattenAndFilterAst(item));
-    }, []);
-  }
+export function flattenAndFilterAst(node: StylusNode, scope: number[] = []) : StylusNode[] {
 
-  if (!node.nodeName) return undefined as any;
-  if (node.nodeName === 'keyframes') return node;
+  if (!node.__type) return []
+  ;(node as any)['scope'] = scope
 
-  let nested: any[] = [];
+  let nested = [node]
 
   if (node.nodes) {
-    nested = nested.concat(flattenAndFilterAst(node.nodes));
+    let i = 0
+    for (let child of node.nodes) {
+      let newScope = scope.concat(i++)
+      nested = nested.concat(flattenAndFilterAst(child, newScope))
+    }
   }
 
   if (node.block) {
-    nested = nested.concat(flattenAndFilterAst(node.block));
+    nested = nested.concat(flattenAndFilterAst(node.block, scope))
   }
 
-  if (node.nodeName === 'group' || node.nodeName === 'root' || node.nodeName === 'block') {
-    return nested.length ? nested : node;
-  }
-
-  // Hack prevents duplicated nodes.
-  node.nodes = null;
-  node.block = null;
-
-  return nested.length ? [node].concat(nested) : node;
+  return nested
 }
 
 export function findNodeAtPosition(root: StylusNode, pos: Position, needBlock = false): StylusNode | null {
@@ -165,7 +191,7 @@ export function findNodeAtPosition(root: StylusNode, pos: Position, needBlock = 
       return ret
     }
   }
-  if (root.nodeName === 'function' && root.lineno === pos.line + 1) {
+  if (root.__type === 'Function' && root.lineno === pos.line + 1) {
     return root // function node column is inconsisten, ignore
   }
   if (root.lineno !== pos.line + 1 || root.column > pos.character + 1) {

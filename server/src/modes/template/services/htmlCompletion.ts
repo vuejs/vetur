@@ -8,7 +8,7 @@ export interface CompletionConfiguration {
 }
 
 
-export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
+export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration, additionalTags?: string[]): CompletionList {
 
   let result: CompletionList = {
     isIncomplete: false,
@@ -35,6 +35,17 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
   function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
     let range = getReplaceRange(afterOpenBracket, tagNameEnd);
+    if (additionalTags) {
+      for (let tag of additionalTags) {
+        result.items.push({
+          label: tag.toLowerCase(),
+          kind: CompletionItemKind.Class,
+          documentation: 'Component',
+          textEdit: TextEdit.replace(range, tag),
+          insertTextFormat: InsertTextFormat.PlainText
+        })
+      }
+    }
     tagProviders.forEach((provider) => {
       provider.collectTags((tag, label) => {
         result.items.push({
