@@ -12,10 +12,13 @@ import { findDocumentLinks } from './services/htmlLinks'
 import { findDocumentSymbols } from './services/htmlSymbolsProvider'
 import { htmlFormat } from './services/formatters'
 import { parseHTMLDocument } from './parser/htmlParser'
-import { ScriptMode } from '../script/javascript'
+import { getDefaultSetting } from './tagProviders'
 
-export function getVueHTMLMode (documentRegions: LanguageModelCache<VueDocumentRegions>, jsMode: ScriptMode): LanguageMode {
+type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>
+
+export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspacePath: string): LanguageMode {
   let settings: any = {};
+  let completionOption = getDefaultSetting(workspacePath)
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
 
@@ -25,12 +28,11 @@ export function getVueHTMLMode (documentRegions: LanguageModelCache<VueDocumentR
     },
     configure (options: any) {
       settings = options && options.html;
+      completionOption = settings && settings.suggest || getDefaultSetting(workspacePath)
     },
     doComplete (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      const scriptDoc = documentRegions.get(document).getEmbeddedDocument('javascript') || documentRegions.get(document).getEmbeddedDocument('typescript')
-      const additionalTags = jsMode.findComponents(scriptDoc)
-      return doComplete(embedded, position, vueDocuments.get(embedded), { html5: true }, additionalTags);
+      return doComplete(embedded, position, vueDocuments.get(embedded), completionOption);
     },
     doHover (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
