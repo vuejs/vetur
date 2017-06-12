@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../dist/htmlServerMain.js')
+require('../dist/vueServerMain.js')
