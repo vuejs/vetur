@@ -21,18 +21,6 @@ export function getWordAtText(text: string, offset: number, wordDefinition: RegE
   return { start: offset, length: 0 };
 }
 
-export function repeat(value: string, count: number) {
-  let s = '';
-  while (count > 0) {
-    if ((count & 1) === 1) {
-      s += value;
-    }
-    value += value;
-    count = count >>> 1;
-  }
-  return s;
-}
-
 export function removeQuotes(str: string) {
   return str.replace(/["']/g, '');
 }

@@ -4,9 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
-
 export enum TokenType {
   StartCommentTag,
   Comment,
@@ -203,7 +200,7 @@ export interface Scanner {
   getScannerState(): ScannerState;
 }
 
-const htmlScriptContents: {[k: string]: boolean} = {
+const htmlScriptContents: {[lang: string]: boolean} = {
   'text/x-handlebars-template': true
 };
 
@@ -297,12 +294,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
           return finishToken(offset, TokenType.EndTag);
         }
         if (stream.skipWhitespace()) { // white space is not valid here
-          return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
+          return finishToken(offset, TokenType.Whitespace, 'Tag name must directly follow the open bracket.');
         }
         state = ScannerState.WithinEndTag;
         stream.advanceUntilChar(_RAN);
         if (offset < stream.pos()) {
-          return finishToken(offset, TokenType.Unknown, localize('error.endTagNameExpected', 'End tag name expected.'));
+          return finishToken(offset, TokenType.Unknown, 'End tag name expected.');
         }
         return internalScan();
       case ScannerState.WithinEndTag:
@@ -313,7 +310,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
           state = ScannerState.WithinContent;
           return finishToken(offset, TokenType.EndTagClose);
         }
-        errorMessage = localize('error.tagNameExpected', 'Closing bracket expected.');
+        errorMessage = 'Closing bracket expected.';
         break;
       case ScannerState.AfterOpeningStartTag:
         lastTag = nextElementName();
@@ -325,12 +322,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
           return finishToken(offset, TokenType.StartTag);
         }
         if (stream.skipWhitespace()) { // white space is not valid here
-          return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
+          return finishToken(offset, TokenType.Whitespace, 'Tag name must directly follow the open bracket.');
         }
         state = ScannerState.WithinTag;
         stream.advanceUntilChar(_RAN);
         if (offset < stream.pos()) {
-          return finishToken(offset, TokenType.Unknown, localize('error.startTagNameExpected', 'Start tag name expected.'));
+          return finishToken(offset, TokenType.Unknown, 'Start tag name expected.');
         }
         return internalScan();
       case ScannerState.WithinTag:
@@ -366,7 +363,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
           return finishToken(offset, TokenType.StartTagClose);
         }
         stream.advance(1);
-        return finishToken(offset, TokenType.Unknown, localize('error.unexpectedCharacterInTag', 'Unexpected character in tag.'));
+        return finishToken(offset, TokenType.Unknown, 'Unexpected character in tag.');
       case ScannerState.AfterAttributeName:
         if (stream.skipWhitespace()) {
           hasSpaceAfterTag = true;

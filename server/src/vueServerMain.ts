@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 
 import { getLanguageModes, LanguageModes } from './modes/languageModes';
 
-import { NULL_HOVER, NULL_SIGNATURE } from './modes/nullMode'
+import { NULL_HOVER, NULL_SIGNATURE, NULL_COMPLETION } from './modes/nullMode'
 
 // Create a connection for the server
 const connection = process.argv.length <= 2
@@ -154,11 +154,14 @@ connection.onCompletion(textDocumentPosition => {
   const document = documents.get(textDocumentPosition.textDocument.uri);
   const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
 
-  if (mode && mode.doComplete) {
-    return mode.doComplete(document, textDocumentPosition.position);
-  } else {
-    return getVls().doVueComplete();
+  if (mode) {
+    if (mode.doComplete) {
+      return mode.doComplete(document, textDocumentPosition.position);
+    } else if (mode.getId() === 'vue'){
+      return getVls().doVueComplete();
+    }
   }
+  return NULL_COMPLETION
 });
 
 connection.onCompletionResolve(item => {

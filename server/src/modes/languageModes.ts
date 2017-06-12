@@ -65,7 +65,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
 
   return {
     getModeAtPosition (document: TextDocument, position: Position): LanguageMode | null {
-      const languageId = documentRegions.get(document).getLanguageAtPosition(position);;
+      const languageId = documentRegions.get(document).getLanguageAtPosition(position);
       if (languageId) {
         return modes[languageId];
       }

@@ -7,7 +7,6 @@ import { defaultCssOptions } from './defaultOption'
 
 import * as _ from 'lodash';
 import { css as cssBeautify } from 'js-beautify';
-import { repeat } from '../../utils/strings';
 
 export function getCSSMode (documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
@@ -127,8 +126,8 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
 
 function generateIndent(level: number, options: FormattingOptions) {
   if (options.insertSpaces) {
-    return repeat(' ', level * options.tabSize);
+    return _.repeat(' ', level * options.tabSize);
   } else {
-    return repeat('\t', level);
+    return _.repeat('\t', level);
   }
 }
