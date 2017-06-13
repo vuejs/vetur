@@ -74,9 +74,15 @@ export function isAtRuleNode(node:StylusNode) : boolean {
  * @return {Boolean}
  */
 export function isColor(node:StylusNode) : boolean {
-  if (node.__type === 'Ident' && cssColors.indexOf(node.name) >= 0) return true;
-  if (node.__type === 'Rgba') return true;
-  if (node.__type === 'Call' && ['rgb', 'rgba', 'hsl', 'hsla'].indexOf(node.name) >= 0) return true;
+  if (node.__type === 'Ident' && cssColors.indexOf(node.name) >= 0) {
+    return true;
+  }
+  if (node.__type === 'Rgba') {
+    return true;
+  }
+  if (node.__type === 'Call' && ['rgb', 'rgba', 'hsl', 'hsla'].indexOf(node.name) >= 0) {
+    return true;
+  }
   return false;
 }
 
@@ -146,8 +152,10 @@ function addScope(root: StylusNode, seq: number, scope: number[]) {
  */
 export function flattenAndFilterAst(node: StylusNode, scope: number[] = []) : StylusNode[] {
 
-  if (!node.__type) return []
-  ;(node as any)['scope'] = scope;
+  if (!node.__type) {
+    return [];
+  }
+  (node as any)['scope'] = scope;
 
   let nested = [node];
 

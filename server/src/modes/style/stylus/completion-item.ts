@@ -197,7 +197,9 @@ export function getAllSymbols(text: string, currentWord:string, position: Positi
  * @return {CompletionItem}
  */
 export function getAtRules(cssSchema: CSSSchema, currentWord:string) : CompletionItem[] {
-  if (!isAtRule(currentWord)) return [];
+  if (!isAtRule(currentWord)) {
+    return [];
+  }
 
   return cssSchema.data.css.atdirectives.map(property => {
     const completionItem = CompletionItem.create(property.name);
@@ -216,7 +218,9 @@ export function getAtRules(cssSchema: CSSSchema, currentWord:string) : Completio
  * @return {CompletionItem}
  */
 export function getProperties(cssSchema: CSSSchema, currentWord:string, useSeparator:boolean) : CompletionItem[] {
-  if (isClassOrId(currentWord) || isAtRule(currentWord)) return [];
+  if (isClassOrId(currentWord) || isAtRule(currentWord)) {
+    return [];
+  }
 
   return cssSchema.data.css.properties.map(property => {
     const completionItem = CompletionItem.create(property.name);
@@ -240,7 +244,9 @@ export function getValues(cssSchema: CSSSchema, currentWord:string) : Completion
   const result = findPropertySchema(cssSchema, property);
   const values = result && result.values;
 
-  if (!values) return [];
+  if (!values) {
+    return [];
+  }
 
   return values.map(property => {
     const completionItem = CompletionItem.create(property.name);

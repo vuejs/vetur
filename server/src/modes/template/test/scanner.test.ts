@@ -24,7 +24,7 @@ suite('HTML Scanner', () => {
       let actual: Token[] = [];
       while (tokenType !== TokenType.EOS) {
         let actualToken: Token = { offset: scanner.getTokenOffset(), type: tokenType };
-        if (tokenType == TokenType.StartTag || tokenType == TokenType.EndTag) {
+        if (tokenType === TokenType.StartTag || tokenType === TokenType.EndTag) {
           actualToken.content = t.input.substr(scanner.getTokenOffset(), scanner.getTokenLength());
         }
         actual.push(actualToken);

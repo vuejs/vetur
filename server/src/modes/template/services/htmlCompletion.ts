@@ -271,7 +271,7 @@ function isFollowedBy(s: string, offset:number, intialState: ScannerState, expec
   while (token === TokenType.Whitespace) {
     token = scanner.scan();
   }
-  return token == expectedToken;
+  return token === expectedToken;
 }
 
 function getWordStart(s: string, offset: number, limit: number): number {
