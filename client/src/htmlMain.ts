@@ -11,7 +11,7 @@ namespace ColorSymbolRequest {
 export function activate (context: ExtensionContext) {
 
   // The server is implemented in node
-  const serverModule = require.resolve('vue-langauge-server');
+  const serverModule = require.resolve('vue-language-server');
   // The debug options for the server
   const debugOptions = { execArgv: ['--nolazy', '--debug=6005'] };
 
