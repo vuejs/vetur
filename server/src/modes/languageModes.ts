@@ -10,7 +10,7 @@ import { getCSSMode, getSCSSMode, getLESSMode } from './style';
 import { getJavascriptMode } from './script/javascript';
 import { getVueHTMLMode } from './template';
 
-import { getStylusMode } from './style/stylus'
+import { getStylusMode } from './style/stylus';
 
 export interface LanguageMode {
   getId (): string;
@@ -52,7 +52,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
-  let jsMode = getJavascriptMode(documentRegions, workspacePath)
+  let jsMode = getJavascriptMode(documentRegions, workspacePath);
   let modes: {[k: string]: LanguageMode} = {
     'vue-html': getVueHTMLMode(documentRegions, workspacePath),
     css: getCSSMode(documentRegions),

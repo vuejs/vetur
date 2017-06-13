@@ -5,11 +5,11 @@
 
 
 interface CSSRecord {
-  name: string
-  desc?: string
-  browsers?: string
-  restriction?: string
-  values?: CSSRecord[]
+  name: string;
+  desc?: string;
+  browsers?: string;
+  restriction?: string;
+  values?: CSSRecord[];
 }
 
 interface CSSData {
@@ -18,8 +18,8 @@ interface CSSData {
     pseudoclasses: CSSRecord[]
     pseudoelements: CSSRecord[]
     properties: CSSRecord[]
-  }
-};
+  };
+}
 
 // file generated from css-schema.xml using css-exclude_generate_browserjs.js
 export const data: CSSData = {

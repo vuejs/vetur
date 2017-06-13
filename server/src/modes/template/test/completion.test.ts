@@ -6,170 +6,170 @@
 
 import { CompletionConfiguration } from '../services/htmlCompletion';
 
-import {  CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-util/completion-test-util'
+import {  CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-util/completion-test-util';
 
-import { parseHTMLDocument } from '../parser/htmlParser'
-import { doComplete } from '../services/htmlCompletion'
+import { parseHTMLDocument } from '../parser/htmlParser';
+import { doComplete } from '../services/htmlCompletion';
 
 let setup: CompletionTestSetup = {
   langId: 'vue-html',
   docUri: 'test://test/test.html',
   doComplete(doc, pos) {
-    let htmlDoc = parseHTMLDocument(doc)
-    return doComplete(doc, pos, htmlDoc)
+    let htmlDoc = parseHTMLDocument(doc);
+    return doComplete(doc, pos, htmlDoc);
   }
-}
+};
 
-let html = testDSL(setup)
+let html = testDSL(setup);
 
 suite('HTML Completion', () => {
   test('Complete Start Tag', () => {
     html`<|`
       .has('iframe').become('<iframe')
       .has('h1').become('<h1')
-      .has('div').become('<div')
+      .has('div').become('<div');
 
     html`< |`
       .has('iframe').become('<iframe')
       .has('h1').become('<h1')
-      .has('div').become('<div')
+      .has('div').become('<div');
 
     html`<h|`
       .has('html').become('<html')
       .has('h1').become('<h1')
-      .has('header').become('<header')
+      .has('header').become('<header');
 
 
     html`<input|`
-      .has('input').become('<input')
+      .has('input').become('<input');
 
     html`<inp|ut`
-      .has('input').become('<input')
+      .has('input').become('<input');
 
     html`<|inp`
-      .has('input').become('<input')
+      .has('input').become('<input');
   });
 
   test('Complete Attribute', () => {
     html`<input |`
       .has('type').become('<input type="$1"')
       .has('style').become('<input style="$1"')
-      .has('onmousemove').become('<input onmousemove="$1"')
+      .has('onmousemove').become('<input onmousemove="$1"');
 
     html`<input t|`
       .has('type').become('<input type="$1"')
-      .has('tabindex').become('<input tabindex="$1"')
+      .has('tabindex').become('<input tabindex="$1"');
 
     html`<input t|ype`
       .has('type').become('<input type="$1"')
-      .has('tabindex').become('<input tabindex="$1"')
+      .has('tabindex').become('<input tabindex="$1"');
 
     html`<input t|ype="text"`
       .has('type').become('<input type="text"')
-      .has('tabindex').become('<input tabindex="text"')
+      .has('tabindex').become('<input tabindex="text"');
 
     html`<input type="text" |`
       .has('style').become('<input type="text" style="$1"')
       .has('type').become('<input type="text" type="$1"')
-      .has('size').become('<input type="text" size="$1"')
+      .has('size').become('<input type="text" size="$1"');
 
     html`<input type="text" s|`
       .has('style').become('<input type="text" style="$1"')
       .has('type').become('<input type="text" type="$1"')
-      .has('size').become('<input type="text" size="$1"')
+      .has('size').become('<input type="text" size="$1"');
 
     html`<input di| type="text"`
       .has('disabled').become('<input disabled type="text"')
-      .has('dir').become('<input dir="$1" type="text"')
+      .has('dir').become('<input dir="$1" type="text"');
 
     html`<input disabled | type="text"`
       .has('dir').become('<input disabled dir="$1" type="text"')
-      .has('style').become('<input disabled style="$1" type="text"')
-  })
+      .has('style').become('<input disabled style="$1" type="text"');
+  });
 
   test('Complete Value', () => {
     html`<input type=|`
       .has('text').become('<input type="text"')
-      .has('checkbox').become('<input type="checkbox"')
+      .has('checkbox').become('<input type="checkbox"');
 
     html`<input type="c|`
       .has('color').become('<input type="color')
-      .has('checkbox').become('<input type="checkbox')
+      .has('checkbox').become('<input type="checkbox');
 
     html`<input type="|`
       .has('color').become('<input type="color')
-      .has('checkbox').become('<input type="checkbox')
+      .has('checkbox').become('<input type="checkbox');
 
     html`<input type= |`
       .has('color').become('<input type= "color"')
-      .has('checkbox').become('<input type= "checkbox"')
+      .has('checkbox').become('<input type= "checkbox"');
 
     html`<input src="c" type="color|" `
-      .has('color').become('<input src="c" type="color" ')
+      .has('color').become('<input src="c" type="color" ');
 
     html`<iframe sandbox="allow-forms |`
-      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals')
+      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals');
 
     html`<iframe sandbox="allow-forms allow-modals|`
-      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals')
+      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals');
 
     html`<iframe sandbox="allow-forms all|"`
-      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals"')
+      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals"');
 
     html`<iframe sandbox="allow-forms a|llow-modals "`
-      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals "')
+      .has('allow-modals').become('<iframe sandbox="allow-forms allow-modals "');
 
     html`<input src="c" type=color| `
-      .has('color').become('<input src="c" type="color" ')
+      .has('color').become('<input src="c" type="color" ');
 
     html`<div dir=|></div>`
       .has('ltr').become('<div dir="ltr"></div>')
-      .has('rtl').become('<div dir="rtl"></div>')
-  })
+      .has('rtl').become('<div dir="rtl"></div>');
+  });
 
   test('Complete End Tag', () => {
     html`<ul><|>`
       .has('/ul').become('<ul></ul>')
-      .has('li').become('<ul><li>')
+      .has('li').become('<ul><li>');
 
     html`<ul><li><|`
       .has('/li').become('<ul><li></li>')
-      .has('a').become('<ul><li><a')
+      .has('a').become('<ul><li><a');
 
     html`<goo></|>`
-      .has('/goo').become('<goo></goo>')
+      .has('/goo').become('<goo></goo>');
 
     html`<foo></f|`
-      .has('/foo').become('<foo></foo>')
+      .has('/foo').become('<foo></foo>');
 
     html`<foo></f|o`
-      .has('/foo').become('<foo></foo>')
+      .has('/foo').become('<foo></foo>');
 
     html`<foo></|fo`
-      .has('/foo').become('<foo></foo>')
+      .has('/foo').become('<foo></foo>');
 
     html`<foo></ |>`
-      .has('/foo').become('<foo></foo>')
+      .has('/foo').become('<foo></foo>');
 
     html`<span></ s|`
-      .has('/span').become('<span></span>')
+      .has('/span').become('<span></span>');
 
     html`<li><br></ |>`
-      .has('/li').become('<li><br></li>')
+      .has('/li').become('<li><br></li>');
 
-    html`<li/|>`.count(0)
-    html`  <div/|   `.count(0)
-    html`<li><br/|>`.count(0)
-    html`<li><br>a/|`.count(0)
+    html`<li/|>`.count(0);
+    html`  <div/|   `.count(0);
+    html`<li><br/|>`.count(0);
+    html`<li><br>a/|`.count(0);
 
     html`<foo><br/></ f|>`
-      .has('/foo').become('<foo><br/></foo>')
+      .has('/foo').become('<foo><br/></foo>');
     html`<li><div/></|`
-      .has('/li').become('<li><div/></li>')
+      .has('/li').become('<li><div/></li>');
 
 
     html`<foo><bar></bar></|   `
-      .has('/foo').become('<foo><bar></bar></foo>   ')
+      .has('/foo').become('<foo><bar></bar></foo>   ');
 
     html`
     <div>
@@ -194,10 +194,10 @@ suite('HTML Completion', () => {
           <label></label>
         </div>
         </div>
-      </form></div>`)
+      </form></div>`);
 
     html`<body><div><div></div></div></|  >`
-        .has('/body').become('<body><div><div></div></div></body  >')
+        .has('/body').become('<body><div><div></div></div></body  >');
 
     html`
     <body>
@@ -206,33 +206,33 @@ suite('HTML Completion', () => {
     .has('/div').become(`
     <body>
       <div>
-      </div>`)
-  })
+      </div>`);
+  });
 
   test('Vue complete', function () {
     html`<transition type=|></transition>`
       .has('transition').become('<transition type="transition"></transition>')
-      .has('animation').become('<transition type="animation"></transition>')
-  })
+      .has('animation').become('<transition type="animation"></transition>');
+  });
 
   test('Case sensitivity', function () {
     html`<LI></|`
       .has('/LI').become('<LI></LI>')
-      .hasNo('/li')
+      .hasNo('/li');
 
     html`<lI></|`
-      .has('/lI').become('<lI></lI>')
+      .has('/lI').become('<lI></lI>');
 
     html`<iNpUt |`
-      .has('type').become('<iNpUt type="$1"')
+      .has('type').become('<iNpUt type="$1"');
 
     html`<INPUT TYPE=|`
-      .has('color').become('<INPUT TYPE="color"')
+      .has('color').become('<INPUT TYPE="color"');
   });
 
   test('Handlebar Completion', function () {
     html`<script id="entry-template" type="text/x-handlebars-template"> <| </script>`
-      .has('div').become('<script id="entry-template" type="text/x-handlebars-template"> <div </script>')
+      .has('div').become('<script id="entry-template" type="text/x-handlebars-template"> <div </script>');
   });
 
   test('Complete aria', function () {
@@ -285,11 +285,11 @@ suite('HTML Completion', () => {
       .has('aria-valuemax')
       .has('aria-valuemin')
       .has('aria-valuenow')
-      .has('aria-valuetext')
+      .has('aria-valuetext');
     }
-    expectAria(html`<div |> </div >`)
-    expectAria(html`<span  |> </span >`)
-    expectAria(html`<input  |> </input >`)
+    expectAria(html`<div |> </div >`);
+    expectAria(html`<span  |> </span >`);
+    expectAria(html`<input  |> </input >`);
   });
 
   test('Settings', function () {
@@ -298,22 +298,22 @@ suite('HTML Completion', () => {
         langId: 'vue-html',
         docUri: 'test://test/test.html',
         doComplete(doc, pos) {
-          let htmlDoc = parseHTMLDocument(doc)
-          return doComplete(doc, pos, htmlDoc, settings)
+          let htmlDoc = parseHTMLDocument(doc);
+          return doComplete(doc, pos, htmlDoc, settings);
         }
-      })
+      });
     }
-    let noHTML = configured({ html5: false, element: true, router: false })
+    let noHTML = configured({ html5: false, element: true, router: false });
     noHTML`<|`
-      .hasNo('div')
+      .hasNo('div');
 
-    let vueHTML = configured({ html5: true, element: false, router: false })
+    let vueHTML = configured({ html5: true, element: false, router: false });
     vueHTML`<|`
       .has('div')
-      .has('component')
+      .has('component');
 
     vueHTML`<input  |> </input >`
       .has('v-if')
-      .has('type')
+      .has('type');
   });
-})
+});

@@ -7,7 +7,7 @@ export class Node {
   public closed: boolean;
   public endTagStart: number;
   public attributes: {[name: string]: string};
-  public get attributeNames() : string[] { return Object.keys(this.attributes); };
+  public get attributeNames() : string[] { return Object.keys(this.attributes); }
   constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
   }
   public isSameTag(tagInLowerCase: string) {
@@ -60,7 +60,7 @@ export function parse(text: string): HTMLDocument {
   let endTagStart = -1;
   let pendingAttribute = '';
   let token = scanner.scan();
-  let attributes: {[k: string]: string} = {}
+  let attributes: {[k: string]: string} = {};
   while (token !== TokenType.EOS) {
     switch (token) {
       case TokenType.StartTagOpen:

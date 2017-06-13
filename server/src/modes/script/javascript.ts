@@ -11,15 +11,15 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 import { platform } from 'os';
 
-import { NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode'
+import { NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
 
-import * as bridge from './bridge'
+import * as bridge from './bridge';
 
 const IS_WINDOWS = platform() === 'win32';
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
 export interface ScriptMode extends LanguageMode {
-  findComponents(document: TextDocument): string[]
+  findComponents(document: TextDocument): string[];
 }
 
 export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): ScriptMode {
@@ -92,7 +92,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     getScriptFileNames: () => files,
     getScriptVersion (fileName) {
       if (fileName === bridge.fileName) {
-        return '0'
+        return '0';
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
       let version = versions.get(normalizedFileFsPath);
@@ -108,7 +108,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       else {
         if (fileName === bridge.fileName) {
-          return ts.Extension.Ts
+          return ts.Extension.Ts;
         }
         // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
         return (ts as any).getScriptKindFromFileName(fileName);
@@ -122,7 +122,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
           return {
             resolvedFileName: bridge.fileName,
             extension: ts.Extension.Ts
-          }
+          };
         }
         if (path.isAbsolute(name) || !isVue(name)) {
           return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule!;
@@ -142,7 +142,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     },
     getScriptSnapshot: (fileName: string) => {
       if (fileName === bridge.fileName) {
-        let text = bridge.content
+        let text = bridge.content;
         return {
           getText: (start, end) => text.substring(start, end),
           getLength: () => text.length,
@@ -253,9 +253,9 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       const fileFsPath = getFileFsPath(doc.uri);
       const info = jsLanguageService.getQuickInfoAtPosition(fileFsPath, currentTextDocument.offsetAt(position));
       if (info) {
-        const display = ts.displayPartsToString(info.displayParts)
-        const doc = ts.displayPartsToString(info.documentation)
-        const contents = doc ? [doc, '\n', display] : [display]
+        const display = ts.displayPartsToString(info.displayParts);
+        const doc = ts.displayPartsToString(info.documentation);
+        const contents = doc ? [doc, '\n', display] : [display];
         return {
           range: convertRange(currentTextDocument, info.textSpan),
           contents: contents.map(MarkedString.fromPlainText)
@@ -273,7 +273,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       const signHelp = jsLanguageService.getSignatureHelpItems(fileFsPath, currentTextDocument.offsetAt(position));
       if (!signHelp) {
         return NULL_SIGNATURE;
-      };
+      }
       const ret: SignatureHelp = {
         activeSignature: signHelp.selectedItemIndex,
         activeParameter: signHelp.argumentIndex,
@@ -320,17 +320,17 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
             kind: <DocumentHighlightKind>(entry.isWriteAccess ? DocumentHighlightKind.Write : DocumentHighlightKind.Text)
           };
         });
-      };
+      }
       return [];
     },
     findDocumentSymbols (doc: TextDocument): SymbolInformation[] {
-      updateCurrentTextDocument(doc)
+      updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(jsLanguageService, doc.uri)) {
-        return []
+        return [];
       }
 
-      const fileFsPath = getFileFsPath(doc.uri)
-      const items = jsLanguageService.getNavigationBarItems(fileFsPath)
+      const fileFsPath = getFileFsPath(doc.uri);
+      const items = jsLanguageService.getNavigationBarItems(fileFsPath);
       if (items) {
         const result: SymbolInformation[] = [];
         const existing: {[k: string]: boolean} = {};
@@ -425,16 +425,16 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     },
     findComponents(doc: TextDocument) {
       const fileFsPath = getFileFsPath(doc.uri);
-      const program = jsLanguageService.getProgram()
-      const sourceFile = program.getSourceFile(fileFsPath)
-      const importStmt = sourceFile.statements.filter(st => st.kind === ts.SyntaxKind.ExportAssignment)
-      const instance = (importStmt[0] as ts.ExportAssignment).expression as ts.CallExpression
-      const comp = instance.arguments![0]
-      const checker = program.getTypeChecker()
-      const compType = checker.getTypeAtLocation(comp)
-      const compsSymbol = checker.getPropertyOfType(compType, 'components')
-      const comps = checker.getTypeOfSymbolAtLocation(compsSymbol, compsSymbol.declarations![0])
-      return checker.getPropertiesOfType(comps).map(s => s.name)
+      const program = jsLanguageService.getProgram();
+      const sourceFile = program.getSourceFile(fileFsPath);
+      const importStmt = sourceFile.statements.filter(st => st.kind === ts.SyntaxKind.ExportAssignment);
+      const instance = (importStmt[0] as ts.ExportAssignment).expression as ts.CallExpression;
+      const comp = instance.arguments![0];
+      const checker = program.getTypeChecker();
+      const compType = checker.getTypeAtLocation(comp);
+      const compsSymbol = checker.getPropertyOfType(compType, 'components');
+      const comps = checker.getTypeOfSymbolAtLocation(compsSymbol, compsSymbol.declarations![0]);
+      return checker.getPropertiesOfType(comps).map(s => s.name);
     },
     onDocumentRemoved (document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);
@@ -445,7 +445,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     }
   };
 
-};
+}
 
 
 function getNormalizedFileFsPath (fileName: string): string {

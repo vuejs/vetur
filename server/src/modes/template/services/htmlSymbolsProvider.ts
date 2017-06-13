@@ -5,7 +5,7 @@ export function findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDo
   let symbols = <SymbolInformation[]>[];
 
   htmlDocument.roots.forEach(node => {
-    provideFileSymbolsInternal(document, node, '', symbols)
+    provideFileSymbolsInternal(document, node, '', symbols);
   });
 
   return symbols;
@@ -20,7 +20,7 @@ function provideFileSymbolsInternal(document: TextDocument, node: Node, containe
     location: location,
     containerName: container,
     kind: <SymbolKind>SymbolKind.Field
-  }
+  };
 
   symbols.push(symbol);
 

@@ -21,7 +21,7 @@ BEGIN THIRD PARTY
 import {
   ITagSet, HTMLTagSpecification, IHTMLTagProvider, IValueSets, Attribute,
   collectTagsDefault, collectAttributesDefault, collectValuesDefault
-} from './common'
+} from './common';
 
 export const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
 
@@ -30,13 +30,13 @@ export function isEmptyElement(e: string): boolean {
 }
 
 function genAttr(attrString: string) {
-  let [label, type] = attrString.split(':')
-  return {label, type}
+  let [label, type] = attrString.split(':');
+  return {label, type};
 }
 
 function genTag(label: string, attrs?: string[]): HTMLTagSpecification {
   let attributes: Attribute[] | undefined = attrs && attrs.map(genAttr);
-  return new HTMLTagSpecification(label, attributes)
+  return new HTMLTagSpecification(label, attributes);
 }
 
 // HTML tag information sourced from http://www.w3.org/TR/2015/WD-html51-20151008/
@@ -319,7 +319,7 @@ export const HTML_TAGS: ITagSet = {
 };
 
 export function getHTML5TagProvider(): IHTMLTagProvider {
-  var globalAttributes = [
+  let globalAttributes = [
     'aria-activedescendant', 'aria-atomic:b', 'aria-autocomplete:autocomplete',
     'aria-busy:b', 'aria-checked:tristate', 'aria-colcount', 'aria-colindex',
     'aria-colspan', 'aria-controls', 'aria-current:current', 'aria-describedat',
@@ -336,12 +336,12 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
     'title', 'translate:y'
   ].map(genAttr);
 
-  var eventHandlers = ['onabort', 'onblur', 'oncanplay', 'oncanplaythrough', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart',
+  let eventHandlers = ['onabort', 'onblur', 'oncanplay', 'oncanplaythrough', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart',
     'ondrop', 'ondurationchange', 'onemptied', 'onended', 'onerror', 'onfocus', 'onformchange', 'onforminput', 'oninput', 'oninvalid', 'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onloadeddata', 'onloadedmetadata',
     'onloadstart', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onpause', 'onplay', 'onplaying', 'onprogress', 'onratechange', 'onreset', 'onresize', 'onreadystatechange', 'onscroll',
     'onseeked', 'onseeking', 'onselect', 'onshow', 'onstalled', 'onsubmit', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting'];
 
-  var valueSets: IValueSets = {
+  let valueSets: IValueSets = {
     b: ['true', 'false'],
     u: ['true', 'false', 'undefined'],
     o: ['on', 'off'],

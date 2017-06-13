@@ -4,21 +4,21 @@ import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languag
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
 
-import { HTMLDocument } from './parser/htmlParser'
-import { doComplete } from './services/htmlCompletion'
-import { doHover } from './services/htmlHover'
-import { findDocumentHighlights } from './services/htmlHighlighting'
-import { findDocumentLinks } from './services/htmlLinks'
-import { findDocumentSymbols } from './services/htmlSymbolsProvider'
-import { htmlFormat } from './services/formatters'
-import { parseHTMLDocument } from './parser/htmlParser'
-import { getDefaultSetting } from './tagProviders'
+import { HTMLDocument } from './parser/htmlParser';
+import { doComplete } from './services/htmlCompletion';
+import { doHover } from './services/htmlHover';
+import { findDocumentHighlights } from './services/htmlHighlighting';
+import { findDocumentLinks } from './services/htmlLinks';
+import { findDocumentSymbols } from './services/htmlSymbolsProvider';
+import { htmlFormat } from './services/formatters';
+import { parseHTMLDocument } from './parser/htmlParser';
+import { getDefaultSetting } from './tagProviders';
 
-type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>
+type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspacePath: string): LanguageMode {
   let settings: any = {};
-  let completionOption = getDefaultSetting(workspacePath)
+  let completionOption = getDefaultSetting(workspacePath);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
 
@@ -28,7 +28,7 @@ export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspaceP
     },
     configure (options: any) {
       settings = options && options.html;
-      completionOption = settings && settings.suggest || getDefaultSetting(workspacePath)
+      completionOption = settings && settings.suggest || getDefaultSetting(workspacePath);
     },
     doComplete (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
@@ -57,4 +57,4 @@ export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspaceP
       vueDocuments.dispose();
     }
   };
-};
+}

@@ -11,9 +11,9 @@ import {
 
 import * as  cssSchema from './css-schema';
 import builtIn from './built-in';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 
-type CSSSchema = typeof cssSchema
+type CSSSchema = typeof cssSchema;
 
 
 function prepareName(name:string) : string {
@@ -26,7 +26,7 @@ function prepareName(name:string) : string {
  * @return {Boolean}
  */
 export function isClassOrId(currentWord:string) : boolean {
-  return /^[.#&]/.test(currentWord)
+  return /^[.#&]/.test(currentWord);
 }
 
 /**
@@ -66,8 +66,8 @@ export function getPropertyName(currentWord:string) : string {
  * @return {Object}
  */
 export function findPropertySchema(cssSchema: CSSSchema, property:string) {
-  const properties = cssSchema.data.css.properties
-  return _.find(properties, item => item.name === property)
+  const properties = cssSchema.data.css.properties;
+  return _.find(properties, item => item.name === property);
 }
 
 /**
@@ -139,17 +139,17 @@ function _selectorCallSymbol(node:StylusNode, text:string[]) : CompletionItem {
 
 function isVisible(useSite: number[] | undefined, defSite: number[] | undefined) {
   if (!useSite || !defSite) {
-    return true
+    return true;
   }
   if (useSite.length < defSite.length) {
-    return false
+    return false;
   }
   for (let [use, def] of _.zip(useSite, defSite)) {
     if (use > def) {
-      return false
+      return false;
     }
   }
-  return true
+  return true;
 }
 
 /**
@@ -161,16 +161,16 @@ function isVisible(useSite: number[] | undefined, defSite: number[] | undefined)
 export function getAllSymbols(text: string, currentWord:string, position: Position) : CompletionItem[] {
   const ast = buildAst(text);
   if (!ast) {
-    return []
+    return [];
   }
-  const node = findNodeAtPosition(ast, position)
-  const scope = node ? node.__scope : undefined
+  const node = findNodeAtPosition(ast, position);
+  const scope = node ? node.__scope : undefined;
   const splittedText = text.split('\n');
   const rawSymbols = flattenAndFilterAst(ast).filter(item => ['Media', 'Keyframes', 'Atrule', 'Import', 'Require', 'Supports', 'Literal'].indexOf(item.__type) === -1);
 
   return _.compact(rawSymbols.map(item => {
     if (!isVisible(scope, item.__scope)) {
-      return undefined
+      return undefined;
     }
     if (isVariableNode(item)) {
       return _variableSymbol(item, splittedText, currentWord);
@@ -237,7 +237,7 @@ export function getProperties(cssSchema: CSSSchema, currentWord:string, useSepar
  */
 export function getValues(cssSchema: CSSSchema, currentWord:string) : CompletionItem[] {
   const property = getPropertyName(currentWord);
-  const result = findPropertySchema(cssSchema, property)
+  const result = findPropertySchema(cssSchema, property);
   const values = result && result.values;
 
   if (!values) return [];
@@ -253,27 +253,27 @@ export function getValues(cssSchema: CSSSchema, currentWord:string) : Completion
 }
 
 export function provideCompletionItems(document: TextDocument, position: Position) : CompletionList {
-  const start = document.offsetAt(Position.create(position.line, 0))
-  const end = document.offsetAt(position)
+  const start = document.offsetAt(Position.create(position.line, 0));
+  const end = document.offsetAt(position);
   const text = document.getText();
   const currentWord = text.slice(start, end).trim();
   const value = isValue(cssSchema, currentWord);
   // const config = workspace.getConfiguration('languageStylus');
 
-  let completions: CompletionItem[] = []
+  let completions: CompletionItem[] = [];
 
   if (value) {
-    let values = getValues(cssSchema, currentWord)
-    let symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind === CompletionItemKind.Variable || item.kind === CompletionItemKind.Function)
-    completions = completions.concat(values, symbols, builtIn)
+    let values = getValues(cssSchema, currentWord);
+    let symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind === CompletionItemKind.Variable || item.kind === CompletionItemKind.Function);
+    completions = completions.concat(values, symbols, builtIn);
   } else {
     let atRules = getAtRules(cssSchema, currentWord);
     let properties = getProperties(cssSchema, currentWord, false);
-    let symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind !== CompletionItemKind.Variable)
-    completions = completions.concat(properties, atRules, symbols)
+    let symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind !== CompletionItemKind.Variable);
+    completions = completions.concat(properties, atRules, symbols);
   }
   return {
     isIncomplete: false,
     items: completions,
-  }
+  };
 }

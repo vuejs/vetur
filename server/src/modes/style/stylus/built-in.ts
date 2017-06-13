@@ -437,7 +437,7 @@ export default builtIn.map((item) => {
   const completionItem = CompletionItem.create(item.insertText);
   completionItem.detail = item.name;
   completionItem.insertText = item.insertText;
-  completionItem.documentation = item.desc
+  completionItem.documentation = item.desc;
   completionItem.kind = CompletionItemKind.Function;
 
   return completionItem;

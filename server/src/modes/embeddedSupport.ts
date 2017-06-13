@@ -1,7 +1,7 @@
 import { removeQuotes } from '../utils/strings';
 import { Scanner, TextDocument, Position, TokenType, Range } from '../service';
 
-import { createScanner } from './template/parser/htmlScanner'
+import { createScanner } from './template/parser/htmlScanner';
 
 export interface LanguageRange extends Range {
   languageId: string;
@@ -18,7 +18,7 @@ export interface VueDocumentRegions {
 
 export const CSS_STYLE_RULE = '__';
 
-interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; };
+interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; }
 
 export function getDocumentRegions (document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];

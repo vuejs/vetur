@@ -9,7 +9,7 @@ import {
   isAtRuleNode, isFunctionNode, isSelectorCallNode, isSelectorNode, isVariableNode
 } from './parser';
 
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 
 /**
  * Generates hash for symbol for comparison with other symbols
@@ -39,9 +39,9 @@ function _variableSymbol(node:StylusNode, text:string[]) : SymbolInformation {
   const name = node.name;
   const lineno = Number(node.val!.lineno) - 1;
   const column = Math.max(text[lineno].indexOf(name), 0);
-  const range = Range.create(lineno, column, lineno, column + name.length)
+  const range = Range.create(lineno, column, lineno, column + name.length);
 
-  return SymbolInformation.create(name, SymbolKind.Variable, range)
+  return SymbolInformation.create(name, SymbolKind.Variable, range);
 }
 
 /**
@@ -57,9 +57,9 @@ function _functionSymbol(node:StylusNode, text:string[]) : SymbolInformation {
 
   const posStart = Position.create(lineno, column);
   const posEnd = Position.create(lineno, column + name.length);
-  const range = Range.create(posStart, posEnd)
+  const range = Range.create(posStart, posEnd);
 
-  return SymbolInformation.create(name, SymbolKind.Function, range)
+  return SymbolInformation.create(name, SymbolKind.Function, range);
 }
 
 /**
@@ -78,9 +78,9 @@ function _selectorSymbol(node:StylusNode, text:string[]) : SymbolInformation {
 
   const posStart = Position.create(lineno, column);
   const posEnd = Position.create(lineno, column + name.length);
-  const range = Range.create(posStart, posEnd)
+  const range = Range.create(posStart, posEnd);
 
-  return SymbolInformation.create(name, SymbolKind.Class, range)
+  return SymbolInformation.create(name, SymbolKind.Class, range);
 }
 
 /**
@@ -97,7 +97,7 @@ function _selectorCallSymbol(node:StylusNode, text:string[]) : SymbolInformation
   const posStart = Position.create(lineno, column);
   const posEnd = Position.create(lineno, column + name.length);
 
-  return SymbolInformation.create(name, SymbolKind.Class, Range.create(posStart, posEnd))
+  return SymbolInformation.create(name, SymbolKind.Class, Range.create(posStart, posEnd));
 }
 
 /**
@@ -114,7 +114,7 @@ function _atRuleSymbol(node:StylusNode, text:string[]) : SymbolInformation {
   const posStart = Position.create(lineno, column);
   const posEnd = Position.create(lineno, column + name.length);
 
-  return SymbolInformation.create(name, SymbolKind.Namespace, Range.create(posStart, posEnd))
+  return SymbolInformation.create(name, SymbolKind.Namespace, Range.create(posStart, posEnd));
 }
 
 /**
@@ -144,17 +144,17 @@ function processRawSymbols(rawSymbols: StylusNode[], text:string[]) : SymbolInfo
     if (isAtRuleNode(symNode)) {
       return _atRuleSymbol(symNode, text);
     }
-  }))
+  }));
 }
 
 export function provideDocumentSymbols(document: TextDocument): SymbolInformation[] {
-  const text = document.getText()
-  const ast = buildAst(text)
+  const text = document.getText();
+  const ast = buildAst(text);
   if (!ast) {
-    return []
+    return [];
   }
-  const rawSymbols = _.compact(flattenAndFilterAst(ast))
-  const symbolInfos = processRawSymbols(rawSymbols, text.split('\n'))
+  const rawSymbols = _.compact(flattenAndFilterAst(ast));
+  const symbolInfos = processRawSymbols(rawSymbols, text.split('\n'));
 
-  return _.uniqBy(symbolInfos, _buildHashFromSymbol)
+  return _.uniqBy(symbolInfos, _buildHashFromSymbol);
 }

@@ -2,9 +2,9 @@ import {
   HTMLTagSpecification, IHTMLTagProvider,
   collectTagsDefault, collectAttributesDefault, collectValuesDefault,
   genAttribute
-} from './common'
+} from './common';
 
-const u = undefined
+const u = undefined;
 
 const vueDirectives = [
   genAttribute('v-text', u, 'Updates the element’s `textContent`.'),
@@ -36,7 +36,7 @@ const transitionProps = [
   'enter-class', 'leave-class', 'appear-class',
   'enter-to-class', 'leave-to-class', 'appear-to-class',
   'enter-active-class', 'leave-active-class', 'appear-active-class',
-].map(t => genAttribute(t)))
+].map(t => genAttribute(t)));
 
 const vueTags = {
   component: new HTMLTagSpecification(
@@ -65,13 +65,13 @@ const vueTags = {
     [genAttribute('scoped', u, 'the name of a temporary variable that holds the props object passed from the child')]
   ),
 
-}
+};
 
 const valueSets = {
   transMode: ['out-in', 'in-out'],
   transType: ['transition', 'animation'],
   b: ['true', 'false']
-}
+};
 
 
 export function getVueTagProvider(): IHTMLTagProvider {
@@ -80,10 +80,10 @@ export function getVueTagProvider(): IHTMLTagProvider {
     isApplicable: (languageId) => languageId === 'vue-html',
     collectTags: (collector: (tag: string) => void) => collectTagsDefault(collector, vueTags),
     collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
-      collectAttributesDefault(tag, collector, vueTags, vueDirectives)
+      collectAttributesDefault(tag, collector, vueTags, vueDirectives);
     },
     collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {
-      collectValuesDefault(tag, attribute, collector, vueTags, vueDirectives, valueSets)
+      collectValuesDefault(tag, attribute, collector, vueTags, vueDirectives, valueSets);
     }
   };
 }

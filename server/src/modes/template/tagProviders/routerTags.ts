@@ -2,9 +2,9 @@ import {
   HTMLTagSpecification, IHTMLTagProvider,
   collectTagsDefault, collectAttributesDefault, collectValuesDefault,
   genAttribute
-} from './common'
+} from './common';
 
-const u = undefined
+const u = undefined;
 
 const routerTags = {
   'router-link': new HTMLTagSpecification(
@@ -25,7 +25,7 @@ const routerTags = {
       genAttribute('name', u, 'When a <router-view> has a name, it will render the component with the corresponding name in the matched route record\'s components option')
     ]
   )
-}
+};
 
 export function getRouterTagProvider(): IHTMLTagProvider {
   return {
@@ -33,10 +33,10 @@ export function getRouterTagProvider(): IHTMLTagProvider {
     isApplicable: (languageId) => languageId === 'vue-html',
     collectTags: (collector: (tag: string) => void) => collectTagsDefault(collector, routerTags),
     collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
-      collectAttributesDefault(tag, collector, routerTags, [])
+      collectAttributesDefault(tag, collector, routerTags, []);
     },
     collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {
-      collectValuesDefault(tag, attribute, collector, routerTags, [], {})
+      collectValuesDefault(tag, attribute, collector, routerTags, [], {});
     }
   };
 }

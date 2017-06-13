@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 
 import { getLanguageModes, LanguageModes } from './modes/languageModes';
 
-import { NULL_HOVER, NULL_SIGNATURE, NULL_COMPLETION } from './modes/nullMode'
+import { NULL_HOVER, NULL_SIGNATURE, NULL_COMPLETION } from './modes/nullMode';
 
 // Create a connection for the server
 const connection = process.argv.length <= 2
@@ -161,7 +161,7 @@ connection.onCompletion(textDocumentPosition => {
       return getVls().doVueComplete();
     }
   }
-  return NULL_COMPLETION
+  return NULL_COMPLETION;
 });
 
 connection.onCompletionResolve(item => {

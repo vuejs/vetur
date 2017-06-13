@@ -92,7 +92,7 @@ suite('HTML Parser', () => {
   });
 
   test('Attributes', () => {
-    let str = '<div class="these are my-classes" id="test"><span aria-describedby="test"></span></div>'
+    let str = '<div class="these are my-classes" id="test"><span aria-describedby="test"></span></div>';
     assertAttributes(str, [{
       tag: 'div',
       attributes: {
@@ -110,7 +110,7 @@ suite('HTML Parser', () => {
   });
 
   test('Attributes without value', () => {
-    let str = '<div checked id="test"></div>'
+    let str = '<div checked id="test"></div>';
     assertAttributes(str, [{
       tag: 'div',
       attributes: {

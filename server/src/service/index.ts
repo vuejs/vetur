@@ -1,6 +1,6 @@
 export {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink } from 'vscode-languageserver-types';
-import { doVueComplete } from './vueCompletion'
-import { format } from './formatting'
+import { doVueComplete } from './vueCompletion';
+import { format } from './formatting';
 
 export interface Node {
   tag: string;

@@ -9,8 +9,8 @@ import * as assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-types';
 import * as url from 'url';
 
-import { DocumentContext } from '../../../service'
-import { findDocumentLinks } from '../services/htmlLinks'
+import { DocumentContext } from '../../../service';
+import { findDocumentLinks } from '../services/htmlLinks';
 
 suite('HTML Link Detection', () => {
 
@@ -22,7 +22,7 @@ suite('HTML Link Detection', () => {
         }
         return url.resolve(documentUrl, ref);
       }
-    }
+    };
   }
 
   function testLinkCreation(modelUrl: string, tokenContent: string, expected: string | null): void {

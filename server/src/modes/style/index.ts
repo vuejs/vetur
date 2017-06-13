@@ -3,7 +3,7 @@ import { TextDocument, Position, TextEdit, FormattingOptions, Range } from 'vsco
 import { getCSSLanguageService, getSCSSLanguageService, getLESSLanguageService, LanguageService } from 'vscode-css-languageservice';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, CSS_STYLE_RULE } from '../embeddedSupport';
-import { defaultCssOptions } from './defaultOption'
+import { defaultCssOptions } from './defaultOption';
 
 import * as _ from 'lodash';
 import { css as cssBeautify } from 'js-beautify';
@@ -78,7 +78,7 @@ function getStyleMode (languageId: string, languageService: LanguageService, doc
       stylesheets.dispose();
     }
   };
-};
+}
 
 
 export function cssFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions): TextEdit[] {

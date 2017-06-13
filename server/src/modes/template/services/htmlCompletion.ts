@@ -148,7 +148,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
       let wsBefore = getWordStart(text, offset, valueStart + 1);
       let wsAfter = getWordEnd(text, offset, valueEnd);
       range = getReplaceRange(wsBefore, wsAfter);
-      addQuotes = false
+      addQuotes = false;
     } else {
       range = getReplaceRange(valueStart, valueEnd);
       addQuotes = true;

@@ -26,5 +26,5 @@ declare module 'vue-template-compiler' {
     customBlocks: SFCCustomBlock[];
   }
 
-  export function parseComponent(text: string, option: {pad: 'line' | 'space'}): SFCDescriptor
+  export function parseComponent(text: string, option: {pad: 'line' | 'space'}): SFCDescriptor;
 }

@@ -2,11 +2,11 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
 import { allTagProviders } from '../tagProviders';
-import { NULL_HOVER } from '../../nullMode'
+import { NULL_HOVER } from '../../nullMode';
 
 const TRIVIAL_TOKEN = [
   TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace
-]
+];
 
 export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover {
   let offset = document.offsetAt(position);
@@ -33,39 +33,39 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
   }
 
   function getAttributeHover(tag: string, attribute: string,range: Range): Hover {
-    tag = tag.toLowerCase()
-    let hover: Hover = NULL_HOVER
+    tag = tag.toLowerCase();
+    let hover: Hover = NULL_HOVER;
     for (let provider of tagProviders) {
       provider.collectAttributes(tag, (attr, type, documentation) => {
         if (attribute !== attr) {
-          return
+          return;
         }
         let contents = [
-          documentation ? MarkedString.fromPlainText(documentation) : `No doc for ${attr}`]
+          documentation ? MarkedString.fromPlainText(documentation) : `No doc for ${attr}`];
         hover = { contents, range };
-      })
+      });
     }
-    return hover
+    return hover;
   }
 
-  let inEndTag = node.endTagStart && offset >= node.endTagStart // <html></ht|ml>
-  let startOffset = inEndTag ? node.endTagStart : node.start
+  let inEndTag = node.endTagStart && offset >= node.endTagStart; // <html></ht|ml>
+  let startOffset = inEndTag ? node.endTagStart : node.start;
   let scanner = createScanner(document.getText(), startOffset);
   let token = scanner.scan();
 
   function shouldAdvance() {
     if (token === TokenType.EOS) {
-      return false
+      return false;
     }
-    let tokenEnd = scanner.getTokenEnd()
+    let tokenEnd = scanner.getTokenEnd();
     if (tokenEnd < offset) {
-      return true
+      return true;
     }
 
     if (tokenEnd === offset) {
-      return TRIVIAL_TOKEN.includes(token)
+      return TRIVIAL_TOKEN.includes(token);
     }
-    return false
+    return false;
   }
 
   while (shouldAdvance()) {
@@ -73,20 +73,20 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
   }
 
   if (offset > scanner.getTokenEnd()) {
-    return NULL_HOVER
+    return NULL_HOVER;
   }
-  let tagRange = { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) }
+  let tagRange = { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) };
   switch (token) {
     case TokenType.StartTag:
-      return getTagHover(node.tag, tagRange, true)
+      return getTagHover(node.tag, tagRange, true);
     case TokenType.EndTag:
-      return getTagHover(node.tag, tagRange, false)
+      return getTagHover(node.tag, tagRange, false);
     case TokenType.AttributeName:
       // TODO: treat : as special bind
-      let attribute = scanner.getTokenText().replace(/^:/, '')
-      return getAttributeHover(node.tag, attribute, tagRange)
+      let attribute = scanner.getTokenText().replace(/^:/, '');
+      return getAttributeHover(node.tag, attribute, tagRange);
   }
 
-  return NULL_HOVER
+  return NULL_HOVER;
 }
 

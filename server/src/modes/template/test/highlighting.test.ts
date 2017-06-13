@@ -6,8 +6,8 @@
 
 import * as assert from 'assert';
 import {TextDocument} from 'vscode-languageserver-types';
-import { parseHTMLDocument } from '../parser/htmlParser'
-import { findDocumentHighlights } from '../services/htmlHighlighting'
+import { parseHTMLDocument } from '../parser/htmlParser';
+import { findDocumentHighlights } from '../services/htmlHighlighting';
 
 
 

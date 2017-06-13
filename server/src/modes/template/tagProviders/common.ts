@@ -1,19 +1,19 @@
 interface TagCollector {
-  (tag: string, label: string): void
+  (tag: string, label: string): void;
 }
 
 export interface Attribute {
-  label: string
-  type?: string
-  documentation?: string
+  label: string;
+  type?: string;
+  documentation?: string;
 }
 
 interface AttributeCollector {
-  (attribute: string, type?: string, documentation?: string): void
+  (attribute: string, type?: string, documentation?: string): void;
 }
 interface StandaloneAttribute {
-  label: string
-  documentation?: string
+  label: string;
+  documentation?: string;
 }
 
 export interface IHTMLTagProvider {
@@ -37,20 +37,20 @@ export interface IValueSets {
 }
 
 export function collectTagsDefault(collector: TagCollector, tagSet: ITagSet): void {
-  for (var tag in tagSet) {
+  for (let tag in tagSet) {
     collector(tag, tagSet[tag].label);
   }
 }
 
 export function collectAttributesDefault(tag: string, collector: AttributeCollector, tagSet: ITagSet, globalAttributes: StandaloneAttribute[]): void {
   globalAttributes.forEach(attr => {
-    var segments = attr.label.split(':');
+    let segments = attr.label.split(':');
     collector(segments[0], segments[1], attr.documentation);
   });
   if (tag) {
-    var tags = tagSet[tag];
+    let tags = tagSet[tag];
     if (tags) {
-      var attributes = tags.attributes;
+      let attributes = tags.attributes;
       for (let attr of attributes) {
         collector(attr.label, attr.type, attr.documentation);
       }
@@ -61,25 +61,25 @@ export function collectAttributesDefault(tag: string, collector: AttributeCollec
 export function collectValuesDefault(tag: string, attribute: string, collector: (value: string) => void, tagSet: ITagSet, globalAttributes: StandaloneAttribute[], valueSets: IValueSets): void {
   function processAttributes (attributes: Attribute[]) {
     for (let attr of attributes) {
-      let label = attr.label
+      let label = attr.label;
       if (label !== attribute || !attr.type) {
-        continue
+        continue;
       }
-      var typeInfo = attr.type;
+      let typeInfo = attr.type;
       if (typeInfo === 'v') {
         collector(attribute);
       } else {
-        var values = valueSets[typeInfo];
+        let values = valueSets[typeInfo];
         if (values) {
           values.forEach(collector);
         }
       }
     }
-  };
+  }
   if (tag) {
-    var tags = tagSet[tag];
+    let tags = tagSet[tag];
     if (tags) {
-      var attributes = tags.attributes;
+      let attributes = tags.attributes;
       if (attributes) {
         processAttributes(attributes);
       }
@@ -96,5 +96,5 @@ export function collectValuesDefault(tag: string, attribute: string, collector: 
 }
 
 export function genAttribute(label: string, type?: string, documentation?: string):  Attribute {
-  return { label, type, documentation }
+  return { label, type, documentation };
 }

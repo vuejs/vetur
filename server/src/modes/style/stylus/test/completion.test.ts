@@ -1,40 +1,40 @@
 import {
   CompletionTestSetup,
   testDSL
-} from '../../../test-util/completion-test-util'
+} from '../../../test-util/completion-test-util';
 
-import { provideCompletionItems } from '../completion-item'
+import { provideCompletionItems } from '../completion-item';
 
 let setup: CompletionTestSetup = {
   langId: 'stylus',
   docUri: 'test://test/test.styl',
   doComplete(doc, pos) {
-    return provideCompletionItems(doc, pos)
+    return provideCompletionItems(doc, pos);
   }
-}
+};
 
-let stylus = testDSL(setup)
+let stylus = testDSL(setup);
 
 suite('Stylus Completion', () => {
   test('basic property', () => {
     stylus`back|`
-      .has('background')
+      .has('background');
 
     stylus`.back|`
-      .hasNo('background')
+      .hasNo('background');
 
     stylus`
     .background
       back|`
-      .has('background')
-  })
+      .has('background');
+  });
 
   test('variable', () => {
     stylus`
     test-var = red
     .test-selector
       color te|`
-      .has('test-var')
+      .has('test-var');
 
     stylus`
     .test-selector
@@ -42,19 +42,19 @@ suite('Stylus Completion', () => {
       color test-var
     .another-var
       hehe te|`
-      .hasNo('test-var')
+      .hasNo('test-var');
 
     stylus`
     test-var = red
     .test-selector
       te|`
-      .hasNo('test-var')
+      .hasNo('test-var');
 
     stylus`
     test-func(n)
       background n
     .test-selector
       te|`
-      .has('test-func')
-  })
-})
+      .has('test-func');
+  });
+});
