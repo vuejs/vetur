@@ -2,15 +2,10 @@
   "rules": {
     "no-unused-expression": true,
     "no-duplicate-variable": true,
-    "no-unused-variable": true,
     "no-var-keyword": true,
     "curly": true,
     "class-name": true,
-    "semicolon": [
-      "always"
-    ],
-    "triple-equals": true,
-    "duplicate-imports": true,
-    "allow-async": true
+    "semicolon": [true, "always"],
+    "triple-equals": true
   }
 }
