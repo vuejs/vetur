@@ -9,7 +9,7 @@ import {
   isFunctionNode, isSelectorCallNode, isSelectorNode, isVariableNode
 } from './parser';
 
-import * as  cssSchema from './css-schema';
+import * as cssSchema from './css-schema';
 import builtIn from './built-in';
 import * as _ from 'lodash';
 
