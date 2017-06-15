@@ -1,31 +1,26 @@
-import {
-  createConnection,
-  IConnection,
-  TextDocuments,
-  InitializeParams,
-  InitializeResult,
-  DocumentRangeFormattingRequest,
-  Disposable,
-  DocumentSelector
-} from 'vscode-languageserver';
+import { createConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
 import { TextDocument, Diagnostic, DocumentLink, SymbolInformation } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
-import { getVueHTMLMode } from './modes/vueHTML';
+import { DocumentContext, getVls } from './service';
 import * as url from 'url';
 import * as path from 'path';
 import * as _ from 'lodash';
 
-import { getLanguageModes, LanguageModes, format } from './modes/languageModes';
+import { getLanguageModes, LanguageModes } from './modes/languageModes';
+
+import { NULL_HOVER, NULL_SIGNATURE, NULL_COMPLETION } from './modes/nullMode';
 
 // Create a connection for the server
-const connection: IConnection = createConnection();
+const connection = process.argv.length <= 2
+  ? createConnection(process.stdin, process.stdout) // no arg specified
+  : createConnection();
 
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
-const documents: TextDocuments = new TextDocuments();
+const documents = new TextDocuments();
 // Make the text document manager listen on the connection
 // for open, change and close text document events
 documents.listen(connection);
@@ -34,7 +29,7 @@ let workspacePath: string;
 let languageModes: LanguageModes;
 let settings: any = {};
 
-let veturFormattingOptions: any = {};
+let veturFormattingOptions = {};
 
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
@@ -42,7 +37,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   console.log('vetur initialized');
   let initializationOptions = params.initializationOptions;
 
-  workspacePath = params.rootPath;
+  workspacePath = params.rootPath || process.cwd();
 
   languageModes = getLanguageModes(workspacePath);
   documents.onDidClose(e => {
@@ -52,7 +47,9 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
     languageModes.dispose();
   });
 
-  veturFormattingOptions = initializationOptions.veturConfig.format;
+  if (initializationOptions) {
+    veturFormattingOptions = initializationOptions.veturConfig.format;
+  }
 
   return {
     capabilities: {
@@ -68,19 +65,19 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   };
 });
 
-const validation = {
+const validation: {[k: string]: boolean} = {
   'vue-html': true,
   html: true,
   css: true,
   scss: true,
   less: true,
-  javascript: true
+  javascript: true,
 };
 
 let formatterRegistration: Thenable<Disposable>;
 
 // The settings have changed. Is send on server activation as well.
-connection.onDidChangeConfiguration(change => {
+connection.onDidChangeConfiguration((change) => {
   settings = change.settings;
 
   // Update formatting setting
@@ -117,7 +114,7 @@ documents.onDidClose(event => {
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
 });
 
-function cleanPendingValidation(textDocument: TextDocument): void {
+function cleanPendingValidation (textDocument: TextDocument): void {
   const request = pendingValidationRequests[textDocument.uri];
   if (request) {
     clearTimeout(request);
@@ -125,7 +122,7 @@ function cleanPendingValidation(textDocument: TextDocument): void {
   }
 }
 
-function triggerValidation(textDocument: TextDocument): void {
+function triggerValidation (textDocument: TextDocument): void {
   cleanPendingValidation(textDocument);
   pendingValidationRequests[textDocument.uri] = setTimeout(() => {
     delete pendingValidationRequests[textDocument.uri];
@@ -133,7 +130,7 @@ function triggerValidation(textDocument: TextDocument): void {
   }, validationDelayMs);
 }
 
-function validateTextDocument(textDocument: TextDocument): void {
+function validateTextDocument (textDocument: TextDocument): void {
   const diagnostics: Diagnostic[] = [];
   if (textDocument.languageId === 'vue') {
     languageModes.getAllModesInDocument(textDocument).forEach(mode => {
@@ -160,10 +157,11 @@ connection.onCompletion(textDocumentPosition => {
   if (mode) {
     if (mode.doComplete) {
       return mode.doComplete(document, textDocumentPosition.position);
-    } else if (mode.getId() === 'vue') {
-      return languageModes.getMode('vue-html').doScaffoldComplete();
+    } else if (mode.getId() === 'vue'){
+      return getVls().doVueComplete();
     }
   }
+  return NULL_COMPLETION;
 });
 
 connection.onCompletionResolve(item => {
@@ -184,7 +182,7 @@ connection.onHover(textDocumentPosition => {
   if (mode && mode.doHover) {
     return mode.doHover(document, textDocumentPosition.position);
   }
-  return null;
+  return NULL_HOVER;
 });
 
 connection.onDocumentHighlight(documentHighlightParams => {
@@ -220,7 +218,7 @@ connection.onSignatureHelp(signatureHelpParms => {
   if (mode && mode.doSignatureHelp) {
     return mode.doSignatureHelp(document, signatureHelpParms.position);
   }
-  return null;
+  return NULL_SIGNATURE;
 });
 
 connection.onDocumentRangeFormatting(formatParams => {
@@ -228,12 +226,12 @@ connection.onDocumentRangeFormatting(formatParams => {
 
   const formattingOptions = _.assign({}, formatParams.options, veturFormattingOptions);
 
-  return format(languageModes, document, formatParams.range, formattingOptions);
+  return getVls().format(languageModes, document, formatParams.range, formattingOptions);
 });
 
 connection.onDocumentLinks(documentLinkParam => {
   const document = documents.get(documentLinkParam.textDocument.uri);
-  const documentContext = {
+  const documentContext: DocumentContext = {
     resolveReference: ref => {
       if (workspacePath && ref[0] === '/') {
         return Uri.file(path.join(workspacePath, ref)).toString();

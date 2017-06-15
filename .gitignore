@@ -4,6 +4,7 @@ node_modules/
 out/
 
 client/server
+server/dist
 
 docs/_book
 

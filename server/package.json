@@ -1,28 +1,42 @@
 {
-  "name": "vetur-server",
-  "description": "vetur language server",
-  "version": "0.1.0",
+  "name": "vue-language-server",
+  "description": "vue-language-server",
+  "version": "0.0.2",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
+  "main": "dist/vueServerMain.js",
+  "bin": {
+    "vls": "./bin/vls"
+  },
   "engines": {
     "node": "*"
   },
+  "files": [
+    "dist",
+    "bin"
+  ],
   "dependencies": {
-    "de-indent": "^1.0.2",
-    "he": "^1.1.1",
     "js-beautify": "^1.6.14",
     "lodash": "^4.17.4",
-    "typescript": "^2.2.2",
+    "stylus": "^0.54.5",
+    "typescript": "^2.3.4",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-languageserver": "^3.2.1",
-    "vscode-uri": "^1.0.0"
+    "vscode-uri": "^1.0.0",
+    "vue-template-compiler": "^2.3.3"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.62",
-    "@types/node": "^6.0.54"
+    "@types/js-beautify": "0.0.30",
+    "@types/lodash": "^4.14.65",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^6.0.77",
+    "mocha": "^3.4.2",
+    "source-map-support": "^0.4.15"
   },
   "scripts": {
-    "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
-    "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p ."
+    "compile": "tsc",
+    "watch": "tsc --watch",
+    "test": "mocha",
+    "preversion": "npm run compile && npm test"
   }
 }
