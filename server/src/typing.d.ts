@@ -38,8 +38,8 @@ declare module 'eslint' {
       column: number;
       nodeType: string;
       source: string;
-      endLine: number;
-      endColumn: number;
+      endLine?: number;
+      endColumn?: number;
   }
   export interface Report {
     results: {
