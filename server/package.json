@@ -13,7 +13,6 @@
   },
   "files": [
     "dist",
-    "resources",
     "bin"
   ],
   "dependencies": {
