@@ -95,6 +95,10 @@ editorconfig@^0.13.2:
     lru-cache "^3.2.0"
     sigmund "^1.0.1"
 
+element-helper-json@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/element-helper-json/download/element-helper-json-1.0.0.tgz#47a14a9bdd85d3114655c963b23bdf67be69ba8b"
+
 escape-string-regexp@1.0.5:
   version "1.0.5"
   resolved "http://registry.npm.taobao.org/escape-string-regexp/download/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
