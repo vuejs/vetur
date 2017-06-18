@@ -12,6 +12,7 @@ import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/formatters';
 import { parseHTMLDocument } from './parser/htmlParser';
+import { doValidation, createLintEngine } from './services/htmlValidation';
 import { getDefaultSetting } from './tagProviders';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
@@ -21,6 +22,7 @@ export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspaceP
   let completionOption = getDefaultSetting(workspacePath);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
+  const lintEngine = createLintEngine();
 
   return {
     getId () {
@@ -29,6 +31,10 @@ export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspaceP
     configure (options: any) {
       settings = options && options.html;
       completionOption = settings && settings.suggest || getDefaultSetting(workspacePath);
+    },
+    doValidation (document) {
+      const embedded = embeddedDocuments.get(document);
+      return doValidation(embedded, lintEngine);
     },
     doComplete (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
