@@ -6,9 +6,9 @@
   version "0.0.30"
   resolved "http://registry.npm.taobao.org/@types/js-beautify/download/@types/js-beautify-0.0.30.tgz#82ffbeb2c2dec592f1d04169e926912eeed567ec"
 
-"@types/lodash@^4.14.65":
-  version "4.14.65"
-  resolved "http://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.65.tgz#a0f78d71ffcd3c02628d5f616410c98c424326d5"
+"@types/lodash@^4.14.66":
+  version "4.14.66"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.66.tgz#3dbb83477becf130611f8fac82a8fdb199805981"
 
 "@types/mocha@^2.2.41":
   version "2.2.41"
@@ -992,28 +992,32 @@ vscode-css-languageservice@^2.0.0:
     vscode-languageserver-types "^3.2.0"
     vscode-nls "^2.0.1"
 
-vscode-jsonrpc@^3.2.0:
-  version "3.2.0"
-  resolved "http://registry.npm.taobao.org/vscode-jsonrpc/download/vscode-jsonrpc-3.2.0.tgz#c92b946ac385c8b41439b842b6bd07d517b64a7d"
+vscode-jsonrpc@^3.3.0:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-3.3.1.tgz#b7857be58b97af664a8cdd071c91891d6c7d6a67"
 
 vscode-languageserver-types@^3.2.0:
   version "3.2.0"
   resolved "http://registry.npm.taobao.org/vscode-languageserver-types/download/vscode-languageserver-types-3.2.0.tgz#8874ed92dbfa66df5fb0e2bf73f614cf9483be8f"
 
-vscode-languageserver@^3.2.1:
-  version "3.2.2"
-  resolved "http://registry.npm.taobao.org/vscode-languageserver/download/vscode-languageserver-3.2.2.tgz#9a7b66e1252838ea51a0061145089a2b88a9516a"
+vscode-languageserver-types@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.3.0.tgz#8964dc7c2247536fbefd2d6836bf3febac80dd00"
+
+vscode-languageserver@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver/-/vscode-languageserver-3.3.0.tgz#f547d4f0e5702f88ff3695bae5905f9604c8cc62"
   dependencies:
-    vscode-jsonrpc "^3.2.0"
-    vscode-languageserver-types "^3.2.0"
+    vscode-jsonrpc "^3.3.0"
+    vscode-languageserver-types "^3.3.0"
 
 vscode-nls@^2.0.1:
   version "2.0.2"
   resolved "http://registry.npm.taobao.org/vscode-nls/download/vscode-nls-2.0.2.tgz#808522380844b8ad153499af5c3b03921aea02da"
 
-vscode-uri@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/vscode-uri/download/vscode-uri-1.0.0.tgz#07369e2d096bfe42b406bd21860b5aa4fe7a7ad0"
+vscode-uri@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-1.0.1.tgz#11a86befeac3c4aa3ec08623651a3c81a6d0bbc8"
 
 vue-eslint-parser@mysticatea/vue-eslint-parser#v1.1.0-4:
   version "1.1.0-4"

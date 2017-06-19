@@ -16,21 +16,21 @@
     "bin"
   ],
   "dependencies": {
+    "element-helper-json": "^1.0.0",
     "eslint": "^4.0.0",
     "eslint-plugin-vue": "^3.1.0",
-    "element-helper-json": "^1.0.0",
     "js-beautify": "^1.6.14",
     "lodash": "^4.17.4",
     "stylus": "^0.54.5",
     "typescript": "^2.3.4",
     "vscode-css-languageservice": "^2.0.0",
-    "vscode-languageserver": "^3.2.1",
-    "vscode-uri": "^1.0.0",
+    "vscode-languageserver": "^3.3.0",
+    "vscode-uri": "^1.0.1",
     "vue-template-compiler": "^2.3.3"
   },
   "devDependencies": {
     "@types/js-beautify": "0.0.30",
-    "@types/lodash": "^4.14.65",
+    "@types/lodash": "^4.14.66",
     "@types/mocha": "^2.2.41",
     "@types/node": "^6.0.77",
     "mocha": "^3.4.2",
