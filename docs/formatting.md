@@ -1,16 +1,17 @@
 # Formatting
 
-Vetur has support for formatting embedded `html/css/scss/less/js/ts` and expose some formatting options.
+Vetur has support for formatting embedded `html/css/scss/less/js/ts`.  
+Some formatting options are available.
 
 ## General
 
-`tabSize` and `insertSpace` are read from VSCode config `editor.tabSize` and `editor.insertSpace`.
-
+`tabSize` and `insertSpace` are read from VSCode config `editor.tabSize` and `editor.insertSpace`.  
+Two space soft-tab is recommended for all languages.
 
 ## `html/css/scss/less`
 
 `html` and `css/scss/less` formatting is powered by [js-beautify](https://github.com/beautify-web/js-beautify).
-A subset of options are exposed:
+Options available:
 
 - `vetur.format.html.max_preserve_newlines`
 - `vetur.format.html.preserve_newlines`
@@ -25,10 +26,9 @@ For more info on each option, see:
 - https://github.com/beautify-web/js-beautify
 - https://github.com/victorporof/Sublime-HTMLPrettify
 
-
 ## `js/ts`
 
-`js/ts` formatting is powered by TypeScript's language service. A list of options available:
+`js/ts` formatting is powered by TypeScript's language service. Options available:
 
 - `vetur.format.js.InsertSpaceBeforeFunctionParenthesis`
 
@@ -54,12 +54,11 @@ interface FormatCodeSettings extends EditorSettings {
 }
 ```
 
-
-## Adding Option
+#### Adding Option
 
 If you'd like an option from `js-beautify` or TypeScript's language service exposed, open an issue for discussion.  
 I'd like to keep Vetur's options minimal.
 
-## Future Plan
+#### Future Plan
 
-[prettier](https://github.com/prettier/prettier) as an alternative formatter for style/script.
+Adopt [prettier](https://github.com/prettier/prettier) as the default formatter.
