@@ -8,7 +8,7 @@ export function getElementTagProvider(): IHTMLTagProvider {
     isApplicable: languageId => languageId === 'vue-html',
     collectTags(collector) {
       for (const tagName in tags) {
-        collector(tagName, tags[tagName].description);
+        collector(tagName, tags[tagName].description || '');
       }
     },
     collectAttributes(tag, collector) {
@@ -21,7 +21,7 @@ export function getElementTagProvider(): IHTMLTagProvider {
       }
       for (let attr of attrs) {
         const detail = findAttributeDetail(tag, attr);
-        collector(attr, undefined, detail && detail.description);
+        collector(attr, undefined, detail && detail.description || '');
       }
     },
     collectValues(tag, attr, collector) {
