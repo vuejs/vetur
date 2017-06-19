@@ -40,16 +40,6 @@ Try for yourself on this project: [vue-hackernews-2.0](https://github.com/vuejs/
 
 ### Optional Setup
 
-**Emmet**:
-
-- In your user settings, set
-
-  ```json
-  "emmet.syntaxProfiles": {
-    "vue-html": "html",
-    "vue": "html"
-  }
-  ```
 
 **ESLint** for linting `<script>` section:
 
