@@ -31,7 +31,7 @@ export function getRouterTagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'router',
     isApplicable: (languageId) => languageId === 'vue-html',
-    collectTags: (collector: (tag: string) => void) => collectTagsDefault(collector, routerTags),
+    collectTags: (collector) => collectTagsDefault(collector, routerTags),
     collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
       collectAttributesDefault(tag, collector, routerTags, []);
     },
