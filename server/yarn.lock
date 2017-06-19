@@ -1015,7 +1015,7 @@ vscode-uri@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/vscode-uri/download/vscode-uri-1.0.0.tgz#07369e2d096bfe42b406bd21860b5aa4fe7a7ad0"
 
-"vue-eslint-parser@github:mysticatea/vue-eslint-parser#v1.1.0-4":
+vue-eslint-parser@mysticatea/vue-eslint-parser#v1.1.0-4:
   version "1.1.0-4"
   resolved "https://codeload.github.com/mysticatea/vue-eslint-parser/tar.gz/1250373ccff349c7617abc1feee6608ca251cd32"
   dependencies:
