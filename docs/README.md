@@ -12,7 +12,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 - [Emmet](emmet.md)
 - [Linting / Error Checking](linting-error.md)
 - [Formatting](formatting.md)
-- [Auto Completion)](completion.md)
+- [Auto Completion](completion.md)
 - [Debugging](debugging.md)
 
 ## Quick Start
