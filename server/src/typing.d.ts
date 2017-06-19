@@ -52,3 +52,4 @@ declare module 'eslint' {
   }
 }
 declare module 'eslint-plugin-vue';
+declare module '*.json';

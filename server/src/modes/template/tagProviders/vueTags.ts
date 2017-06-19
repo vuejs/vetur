@@ -78,7 +78,7 @@ export function getVueTagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'vue',
     isApplicable: (languageId) => languageId === 'vue-html',
-    collectTags: (collector: (tag: string) => void) => collectTagsDefault(collector, vueTags),
+    collectTags: (collector) => collectTagsDefault(collector, vueTags),
     collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
       collectAttributesDefault(tag, collector, vueTags, vueDirectives);
     },
