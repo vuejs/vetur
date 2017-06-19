@@ -305,11 +305,29 @@ suite('HTML Completion', () => {
     }
     let noHTML = configured({ html5: false, element: true, router: false });
     noHTML`<|`
+      .has('el-input').withDoc('Input data using mouse or keyboard.')
       .hasNo('div');
+
+    noHTML`<el-input |`
+      .has('placeholder')
+      .hasNo('text-color')
+      .has('on-icon-click').withDoc('hook function when clicking on the input icon')
+      .has('fetch-suggestions').become('<el-input fetch-suggestions="$1"');
+
+    noHTML`<el-cascader expand-trigger=|`
+      .has('click')
+      .has('hover');
+
+    noHTML`<el-tooltip |`
+      .has('content').withDoc('display content, can be overridden by slot#content');
+
+    noHTML`<el-popover |`
+      .has('content').withDoc('popover content, can be replaced with a default slot');
 
     let vueHTML = configured({ html5: true, element: false, router: false });
     vueHTML`<|`
       .has('div')
+      .hasNo('el-row')
       .has('component');
 
     vueHTML`<input  |> </input >`

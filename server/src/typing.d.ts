@@ -28,3 +28,5 @@ declare module 'vue-template-compiler' {
 
   export function parseComponent(text: string, option: {pad: 'line' | 'space'}): SFCDescriptor;
 }
+
+declare module '*.json';
