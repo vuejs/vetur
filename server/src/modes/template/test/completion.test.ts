@@ -337,6 +337,7 @@ suite('HTML Completion', () => {
     vueHTML`<li |`
       .has('v-else').become('<li v-else')
       .has('v-pre').become('<li v-pre')
-      .has('v-cloak').become('<li v-cloak');
+      .has('v-cloak').become('<li v-cloak')
+      .has('v-once').become('<li v-once');
   });
 });
