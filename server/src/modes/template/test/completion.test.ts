@@ -333,5 +333,10 @@ suite('HTML Completion', () => {
     vueHTML`<input  |> </input >`
       .has('v-if')
       .has('type');
+
+    vueHTML`<li |`
+      .has('v-else').become('<li v-else')
+      .has('v-pre').become('<li v-pre')
+      .has('v-cloak').become('<li v-cloak');
   });
 });

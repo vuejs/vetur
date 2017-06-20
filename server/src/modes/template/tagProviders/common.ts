@@ -13,6 +13,7 @@ interface AttributeCollector {
 }
 interface StandaloneAttribute {
   label: string;
+  type?: string;
   documentation?: string;
 }
 
@@ -44,8 +45,7 @@ export function collectTagsDefault(collector: TagCollector, tagSet: ITagSet): vo
 
 export function collectAttributesDefault(tag: string, collector: AttributeCollector, tagSet: ITagSet, globalAttributes: StandaloneAttribute[]): void {
   globalAttributes.forEach(attr => {
-    let segments = attr.label.split(':');
-    collector(segments[0], segments[1], attr.documentation);
+    collector(attr.label, attr.type, attr.documentation);
   });
   if (tag) {
     let tags = tagSet[tag];
