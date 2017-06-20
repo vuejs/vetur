@@ -1,6 +1,6 @@
 import {CompletionList, CompletionItemKind, InsertTextFormat, CompletionItem} from 'vscode-languageserver-types';
 
-export function doVueComplete(): CompletionList {
+export function doScaffoldComplete(): CompletionList {
   const topLevelCompletions: CompletionItem[] = [
     {
       label: 'scaffold',
@@ -9,7 +9,7 @@ export function doVueComplete(): CompletionList {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<template>
-  \${}
+  \${0}
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
 </script>
 
 <style>
-
+  \${0}
 </style>
 `
     },
@@ -30,7 +30,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<template>
-  \${}
+  \${0}
 </template>
 `
     },
@@ -41,7 +41,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<template lang="pug">
-  \${}
+  \${0}
 </template>
 `
     },
@@ -53,7 +53,7 @@ export default {
       insertText:
 `<script>
 export default {
-  \${}
+  \${0}
 }
 </script>
 `
@@ -66,7 +66,7 @@ export default {
       insertText:
 `<script lang="ts">
 export default {
-  \${}
+  \${0}
 }
 </script>
 `
@@ -78,7 +78,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style>
-\${}
+\${0}
 </style>
 `
     },
@@ -89,7 +89,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="scss">
-\${}
+\${0}
 </style>
 `
     },
@@ -100,7 +100,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="less">
-\${}
+\${0}
 </style>
 `
     },
@@ -111,7 +111,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="sass">
-\${}
+\${0}
 </style>
 `
     },
@@ -122,7 +122,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="postcss">
-\${}
+\${0}
 </style>
 `
     },
@@ -133,11 +133,10 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="stylus">
-\${}
+\${0}
 </style>
 `
     },
-
   ];
 
   return {

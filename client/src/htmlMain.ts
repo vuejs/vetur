@@ -10,26 +10,22 @@ namespace ColorSymbolRequest {
 
 export function activate (context: ExtensionContext) {
 
-  // The server is implemented in node
   const serverModule = require.resolve('vue-language-server');
-  // The debug options for the server
+  const debugServerModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
   const debugOptions = { execArgv: ['--nolazy', '--debug=6005'] };
 
-  // If the extension is launch in debug mode the debug server options are use
-  // Otherwise the run options are used
   const serverOptions: ServerOptions = {
     run: { module: serverModule, transport: TransportKind.ipc },
-    debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
+    debug: { module: debugServerModule, transport: TransportKind.ipc, options: debugOptions }
   };
 
   const documentSelector = ['vue'];
   const veturConfig = workspace.getConfiguration('vetur');
 
-  // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      configurationSection: ['vetur'], // the settings to synchronize
+      configurationSection: ['vetur'] // the settings to synchronize
     },
     initializationOptions: {
       veturConfig

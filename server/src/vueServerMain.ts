@@ -157,8 +157,6 @@ connection.onCompletion(textDocumentPosition => {
   if (mode) {
     if (mode.doComplete) {
       return mode.doComplete(document, textDocumentPosition.position);
-    } else if (mode.getId() === 'vue'){
-      return getVls().doVueComplete();
     }
   }
   return NULL_COMPLETION;
