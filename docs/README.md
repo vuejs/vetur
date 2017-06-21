@@ -24,7 +24,7 @@ You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or 
 
 ## Contributing
 
-[Contribution Guide](https://github.com/octref/vetur/blob/master/CONTRIBUTING.md).
+[Contribution Guide](https://github.com/octref/vetur/blob/master/.github/CONTRIBUTING.md).
 
 ## License
 
