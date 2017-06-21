@@ -27,7 +27,7 @@ See [#188](https://github.com/octref/vetur/issues/188).
 
 ## Contribution
 
-See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/octref/vetur/blob/master/.github/CONTRIBUTING.md)
 
 ## License
 
