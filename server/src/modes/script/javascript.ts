@@ -258,7 +258,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         const contents = doc ? [doc, '\n', display] : [display];
         const markedContents: MarkedString[] = contents.map(c => {
           return {
-            language: 'js',
+            language: 'ts',
             value: c
           };
         });
