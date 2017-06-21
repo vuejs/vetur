@@ -256,9 +256,15 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         const display = ts.displayPartsToString(info.displayParts);
         const doc = ts.displayPartsToString(info.documentation);
         const contents = doc ? [doc, '\n', display] : [display];
+        const markedContents: MarkedString[] = contents.map(c => {
+          return {
+            language: 'js',
+            value: c
+          };
+        });
         return {
           range: convertRange(currentTextDocument, info.textSpan),
-          contents: contents.map(MarkedString.fromPlainText)
+          contents: markedContents
         };
       }
       return { contents: [] };
