@@ -7,6 +7,6 @@ export const fileName = 'vue-temp/vue-editor-bridge.ts';
 
 export const content = `
 import Vue from 'vue'
-export default function test<T>(t: T & Vue.ComponentOptions<{}>): T {
+export default function test<T>(t: T & Vue.ComponentOptions<Vue>): T {
   return t
 }`;
