@@ -8,6 +8,9 @@
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client",
+    "precommit": "cd server && yarn && cd ../client && yarn",
+    "lint": "tslint server/src/**/*.ts client/src/**/*.ts",
+    "vscode:prepublish": "cd client && yarn upgrade vue-language-server && yarn && tsc",
     "doc": "bash ./build/update-docs.sh"
   },
   "repository": {
@@ -26,15 +29,16 @@
   "engines": {
     "vscode": "^1.8.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "activationEvents": [
     "onLanguage:vue"
   ],
   "main": "./client/out/htmlMain",
   "contributes": {
     "breakpoints": [
-      { "language": "vue" }
+      {
+        "language": "vue"
+      }
     ],
     "languages": [
       {
@@ -185,5 +189,10 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "husky": "^0.13.4",
+    "tslint": "^5.4.3",
+    "typescript": "^2.3.4"
   }
 }
