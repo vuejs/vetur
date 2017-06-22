@@ -116,15 +116,20 @@
     "configuration": {
       "title": "vetur configuration",
       "properties": {
+        "vetur.validation.template": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate vue-html in <template> using eslint-plugin-vue"
+        },
         "vetur.validation.style": {
           "type": "boolean",
           "default": true,
-          "description": "Validate css/scss/less/postcss"
+          "description": "Validate css/scss/less/postcss in <style>"
         },
         "vetur.validation.script": {
           "type": "boolean",
           "default": true,
-          "description": "Validate js/ts"
+          "description": "Validate js/ts in <script>"
         },
         "vetur.format.styleInitialIndent": {
           "type": "boolean",
