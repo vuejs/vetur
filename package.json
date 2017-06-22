@@ -10,7 +10,12 @@
     "compile": "tsc -p client",
     "precommit": "cd server && yarn && cd ../client && yarn",
     "lint": "tslint server/src/**/*.ts client/src/**/*.ts",
-    "vscode:prepublish": "cd client && yarn upgrade vue-language-server && yarn && tsc",
+    "sync:server": "cd server && npm publish",
+    "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
+    "sync": "npm run sync:server || npm run sync:client",
+    "test:server": "cd server && npm run compile && npm test",
+    "test": "npm run lint && npm run test:server",
+    "vscode:prepublish": "npm test && npm run sync",
     "doc": "bash ./build/update-docs.sh"
   },
   "repository": {
