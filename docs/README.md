@@ -2,7 +2,7 @@
 
 Vue tooling for VSCode.  
 
-This extension is in heavy development and not stable yet.  
+This extension is under heavy development.
 You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or feature requests.
 
 ## Features
