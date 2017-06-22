@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.8.2 | 2017-06-22
+
+- Republishing with correct vue-language-server.
+
 ### 0.8.1 | 2017-06-22
 
 - Published wrong veresion of vue-language-server in 0.8...oops.
