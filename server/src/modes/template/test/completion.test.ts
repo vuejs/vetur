@@ -85,6 +85,13 @@ suite('HTML Completion', () => {
     html`<input disabled | type="text"`
       .has('dir').become('<input disabled dir="$1" type="text"')
       .has('style').become('<input disabled style="$1" type="text"');
+
+    html`<input :di|`
+      .has('dir').become('<input :dir="$1"');
+
+    html`<input :di| type="text"`
+      .has('dir').become('<input :dir="$1" type="text"');
+
   });
 
   test('Complete Value', () => {
