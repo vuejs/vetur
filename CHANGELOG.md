@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.8.1 | 2017-06-22
+
+- Published wrong veresion of vue-language-server in 0.8...oops.
+
 ### 0.8.0 | 2017-06-22
 
 - eslint-plugin-vue support. #235.
