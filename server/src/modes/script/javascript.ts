@@ -255,13 +255,12 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       if (info) {
         const display = ts.displayPartsToString(info.displayParts);
         const doc = ts.displayPartsToString(info.documentation);
-        const contents = doc ? [doc, '\n', display] : [display];
-        const markedContents: MarkedString[] = contents.map(c => {
-          return {
-            language: 'ts',
-            value: c
-          };
-        });
+        let markedContents: MarkedString[] = [
+          { language: 'ts', value: display }
+        ];
+        if (doc) {
+          markedContents.unshift(doc, '\n');
+        }
         return {
           range: convertRange(currentTextDocument, info.textSpan),
           contents: markedContents
