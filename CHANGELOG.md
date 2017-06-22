@@ -1,5 +1,22 @@
 # Changelog
 
+### 0.8.2 | 2017-06-22
+
+- Republishing with correct vue-language-server.
+
+### 0.8.1 | 2017-06-22
+
+- Published wrong veresion of vue-language-server in 0.8...oops.
+
+### 0.8.0 | 2017-06-22
+
+- eslint-plugin-vue support. #235.
+- Initial stylus support. #227.
+- Element UI support. #234.
+- Let hover display code signature with syntax highlight. #247.
+
+Shoutout to @HerringtonDarkholme who helped implementing many new features!
+
 ### 0.7.0 | 2017-06-04
 
 - Correct syntax highlighting for longer directives such as `@click.capture.stop`. #79.

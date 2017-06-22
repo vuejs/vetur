@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "vscode-languageclient": "^3.2.1",
-    "vue-language-server": "0.0.2",
+    "vue-language-server": "0.0.3",
     "vscode-languageserver-types": "^3.0.3"
   },
   "devDependencies": {
