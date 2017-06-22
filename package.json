@@ -8,6 +8,14 @@
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client",
+    "precommit": "cd server && yarn && cd ../client && yarn",
+    "lint": "tslint server/src/**/*.ts client/src/**/*.ts",
+    "sync:server": "cd server && npm publish",
+    "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
+    "sync": "npm run sync:server || npm run sync:client",
+    "test:server": "cd server && npm run compile && npm test",
+    "test": "npm run lint && npm run test:server",
+    "vscode:prepublish": "npm test && npm run sync",
     "doc": "bash ./build/update-docs.sh"
   },
   "repository": {
@@ -26,15 +34,16 @@
   "engines": {
     "vscode": "^1.8.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "activationEvents": [
     "onLanguage:vue"
   ],
   "main": "./client/out/htmlMain",
   "contributes": {
     "breakpoints": [
-      { "language": "vue" }
+      {
+        "language": "vue"
+      }
     ],
     "languages": [
       {
@@ -190,5 +199,10 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "husky": "^0.13.4",
+    "tslint": "^5.4.3",
+    "typescript": "^2.3.4"
   }
 }
