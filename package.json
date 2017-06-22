@@ -15,7 +15,6 @@
     "sync": "npm run sync:server || npm run sync:client",
     "test:server": "cd server && npm run compile && npm test",
     "test": "npm run lint && npm run test:server",
-    "vscode:prepublish": "npm test && npm run sync",
     "doc": "bash ./build/update-docs.sh"
   },
   "repository": {
