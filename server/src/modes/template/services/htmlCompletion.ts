@@ -116,7 +116,9 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
   }
 
   function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
-    let range = getReplaceRange(nameStart, nameEnd);
+    const filterPrefix = scanner.getTokenText().charAt(0) === ':' ? ':' : '';
+    const start = filterPrefix ? nameStart + 1 : nameStart;
+    let range = getReplaceRange(start, nameEnd);
     let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
     let tag = currentTag.toLowerCase();
     tagProviders.forEach(provider => {
