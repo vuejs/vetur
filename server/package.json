@@ -33,8 +33,10 @@
     "@types/lodash": "^4.14.66",
     "@types/mocha": "^2.2.41",
     "@types/node": "^6.0.77",
+    "husky": "^0.13.4",
     "mocha": "^3.4.2",
-    "source-map-support": "^0.4.15"
+    "source-map-support": "^0.4.15",
+    "tslint": "^5.4.3"
   },
   "scripts": {
     "compile": "tsc",
