@@ -7,7 +7,6 @@ export interface CompletionConfiguration {
   [provider: string]: boolean;
 }
 
-
 export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
 
   let result: CompletionList = {
