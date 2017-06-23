@@ -206,12 +206,13 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      let offset = currentTextDocument.offsetAt(position);
-      let completions = jsLanguageService.getCompletionsAtPosition(fileFsPath, offset);
+      const offset = currentTextDocument.offsetAt(position);
+      const completions = jsLanguageService.getCompletionsAtPosition(fileFsPath, offset);
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
-      let replaceRange = convertRange(currentTextDocument, getWordAtText(currentTextDocument.getText(), offset, JS_WORD_REGEX));
+      const wordAtText = getWordAtText(currentTextDocument.getText(), offset, JS_WORD_REGEX);
+      const replaceRange = convertRange(currentTextDocument, wordAtText);
       return {
         isIncomplete: false,
         items: completions.entries.map(entry => {
