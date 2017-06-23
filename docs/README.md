@@ -2,6 +2,8 @@
 
 Vue tooling for VSCode.  
 
+🎉 [VueConf 2017 Talk Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) 🎉
+
 This extension is under heavy development.
 You can [open an issue](https://github.com/octref/vetur/issues/new) for bugs or feature requests.
 

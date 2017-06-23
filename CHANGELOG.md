@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.8.4 | 2017-06-23
+
+- Fix an issue that removes space after taking IntelliSense suggestion. #244.
+- Fix an issue that causes ESLint to report error on wrong line. #263.
+
 ### 0.8.3 | 2017-06-23
 
 - Add `vetur.validation.template` option to toggle vue-html validation using `eslint-plugin-vue@beta`. #235 and #257.

@@ -1,7 +1,7 @@
 {
   "name": "vue-language-server",
   "description": "vue-language-server",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "main": "dist/vueServerMain.js",
@@ -40,6 +40,7 @@
     "compile": "tsc",
     "watch": "tsc --watch",
     "test": "mocha",
-    "preversion": "npm run compile && npm test"
+    "preversion": "npm run compile && npm test",
+    "prepublish": "npm run compile"
   }
 }

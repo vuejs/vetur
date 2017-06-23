@@ -2,20 +2,20 @@
 - Vetur version:
 - VSCode version:
 
+## Problem
+<!-- With screenshot if possible -->
+
+## Reproducible Case
 <!--
-Please search through existing issues before making new issues.
+  Important. Please provide clear steps for reproducing the problem.
+  Otherwise we can't help you and your issue might be closed.
+-->
 
-Please use English for communication.
-Please include screenshots if possible.
-**Please include a reproducible case with code that can be shared if possible.**
+<!--
+  Please search through existing issues before making new issues.
+  Please use English for communication.
 
-Read README for tsconfig/Emmet/ESLint/Stylus setup.
+  Try disabling / removing other Vue extensions for VSCode.
 
-Crash / JS Head out of memory:
-
-- Try adding a tsconfig/jsconfig that only includes your client side Vue code, see more at: https://github.com/octref/vetur#setup 
-
-Other solutions to try:
-
-- Disable other vue extensions
+  For crash / memory usage problem, try adding a tsconfig/jsconfig that only includes your client side Vue code, see more at: https://github.com/octref/vetur#setup 
 -->

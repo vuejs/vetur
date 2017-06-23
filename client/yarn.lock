@@ -2200,9 +2200,9 @@ vue-eslint-parser@^1.1.0-6:
     lodash.sortedindexby "^4.6.0"
     parse5 "^3.0.0"
 
-vue-language-server@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.4.tgz#a613427e1eeda5adb219a20dd39386d95354493b"
+vue-language-server@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.5.tgz#cdb09c0f20c85d4a6e970acd5c7e88774da685a4"
   dependencies:
     element-helper-json "^1.0.0"
     eslint "^4.0.0"
