@@ -9,6 +9,8 @@
 <!--
   Important. Please provide clear steps for reproducing the problem.
   Otherwise we can't help you and your issue might be closed.
+  For example, fork https://github.com/octref/veturpack and modify it to reproduce the error,
+  then push your changes to GitHub and send us the link.
 -->
 
 <!--
