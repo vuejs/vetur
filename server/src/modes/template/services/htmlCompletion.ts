@@ -35,12 +35,14 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
   function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
     let range = getReplaceRange(afterOpenBracket, tagNameEnd);
     tagProviders.forEach((provider) => {
+      const priority = provider.priority;
       provider.collectTags((tag, label) => {
         result.items.push({
           label: tag,
           kind: CompletionItemKind.Property,
           documentation: label,
           textEdit: TextEdit.replace(range, tag),
+          sortText: priority + tag,
           insertTextFormat: InsertTextFormat.PlainText
         });
       });

@@ -62,7 +62,9 @@ const vueTags = {
   ),
   template: new HTMLTagSpecification(
     'The template element is used to declare fragments of HTML that can be cloned and inserted in the document by script.',
-    [genAttribute('scoped', u, 'the name of a temporary variable that holds the props object passed from the child')]
+    [ genAttribute('scope', u, 'the name of a temporary variable that holds the props object passed from the child'),
+      genAttribute('slot', u, 'the name of scoped slot')
+    ]
   ),
 
 };
