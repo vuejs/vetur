@@ -2,13 +2,18 @@
 - Vetur version:
 - VSCode version:
 
-- Problem: <!-- With screenshot if possible -->
+## Problem
+<!-- With screenshot if possible -->
 
-- Reproducible Case: <!-- Important. If we can't repro the problem we can't help you, and your issue might be closed. -->
+## Reproducible Case
+<!--
+  Important. Please provide clear steps for reproducing the problem.
+  Otherwise we can't help you and your issue might be closed.
+-->
 
 <!--
-Please search through existing issues before making new issues.
-Please use English for communication.
+  Please search through existing issues before making new issues.
+  Please use English for communication.
 
-- Try adding a tsconfig/jsconfig that only includes your client side Vue code, see more at: https://github.com/octref/vetur#setup 
+  For crash / memory usage problem, try adding a tsconfig/jsconfig that only includes your client side Vue code, see more at: https://github.com/octref/vetur#setup 
 -->
