@@ -115,20 +115,25 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
   }
 
   function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
-    const filterPrefix = scanner.getTokenText().charAt(0) === ':' ? ':' : '';
+    const execArray = /^[:@]/.exec(scanner.getTokenText());
+    const filterPrefix =  execArray ? execArray[0] : '';
     const start = filterPrefix ? nameStart + 1 : nameStart;
     let range = getReplaceRange(start, nameEnd);
     let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
     let tag = currentTag.toLowerCase();
     tagProviders.forEach(provider => {
       provider.collectAttributes(tag, (attribute, type, documentation) => {
+        if (type === 'event' && filterPrefix !== '@' ||
+            type !== 'event' && filterPrefix === '@') {
+          return;
+        }
         let codeSnippet = attribute;
         if (type !== 'v' && value.length) {
           codeSnippet = codeSnippet + value;
         }
         result.items.push({
           label: attribute,
-          kind: type === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
+          kind: type === 'event' ? CompletionItemKind.Function : CompletionItemKind.Value,
           textEdit: TextEdit.replace(range, codeSnippet),
           insertTextFormat: InsertTextFormat.Snippet,
           documentation
