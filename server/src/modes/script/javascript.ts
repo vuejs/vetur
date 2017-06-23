@@ -67,10 +67,11 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
 
   function updateCurrentTextDocument (doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
+    const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
     if (!docs.has(fileFsPath)) {
       if (_.endsWith(fileFsPath, '.vue')) {
-        files.push(fileFsPath);
+        files.push(filePath);
       }
     }
     if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
