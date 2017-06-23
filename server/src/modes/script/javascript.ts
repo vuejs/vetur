@@ -190,8 +190,10 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       ...jsLanguageService.getSemanticDiagnostics(fileFsPath)];
 
       return diagnostics.map(diag => {
+        // syntactic/semantic diagnostic always has start and length
+        // so we can safely cast diag to TextSpan
         return {
-          range: convertRange(currentTextDocument, diag),
+          range: convertRange(currentTextDocument, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
           message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
         };
@@ -429,6 +431,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return [];
     },
     findComponents(doc: TextDocument) {
+      // TODO: refine component info collection
       const fileFsPath = getFileFsPath(doc.uri);
       const program = jsLanguageService.getProgram();
       const sourceFile = program.getSourceFile(fileFsPath);
@@ -438,7 +441,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       const checker = program.getTypeChecker();
       const compType = checker.getTypeAtLocation(comp);
       const compsSymbol = checker.getPropertyOfType(compType, 'components');
-      const comps = checker.getTypeOfSymbolAtLocation(compsSymbol, compsSymbol.declarations![0]);
+      const comps = checker.getTypeOfSymbolAtLocation(compsSymbol!, compsSymbol!.declarations![0]);
       return checker.getPropertiesOfType(comps).map(s => s.name);
     },
     onDocumentRemoved (document: TextDocument) {

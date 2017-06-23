@@ -4,10 +4,17 @@
   "description": "Vue tooling for VSCode",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client",
+    "precommit": "cd server && yarn && cd ../client && yarn",
+    "lint": "tslint server/src/**/*.ts client/src/**/*.ts",
+    "sync:server": "cd server && npm publish",
+    "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
+    "sync": "npm run sync:server || npm run sync:client",
+    "test:server": "cd server && npm run compile && npm test",
+    "test": "npm run lint && npm run test:server",
     "doc": "bash ./build/update-docs.sh"
   },
   "repository": {
@@ -26,15 +33,16 @@
   "engines": {
     "vscode": "^1.8.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "activationEvents": [
     "onLanguage:vue"
   ],
   "main": "./client/out/htmlMain",
   "contributes": {
     "breakpoints": [
-      { "language": "vue" }
+      {
+        "language": "vue"
+      }
     ],
     "languages": [
       {
@@ -116,15 +124,20 @@
     "configuration": {
       "title": "vetur configuration",
       "properties": {
+        "vetur.validation.template": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate vue-html in <template> using eslint-plugin-vue"
+        },
         "vetur.validation.style": {
           "type": "boolean",
           "default": true,
-          "description": "Validate css/scss/less/postcss"
+          "description": "Validate css/scss/less/postcss in <style>"
         },
         "vetur.validation.script": {
           "type": "boolean",
           "default": true,
-          "description": "Validate js/ts"
+          "description": "Validate js/ts in <script>"
         },
         "vetur.format.styleInitialIndent": {
           "type": "boolean",
@@ -185,5 +198,10 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "husky": "^0.13.4",
+    "tslint": "^5.4.3",
+    "typescript": "^2.3.4"
   }
 }

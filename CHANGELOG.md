@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.8.3 | 2017-06-23
+
+- Add `vetur.validation.template` option to toggle vue-html validation using `eslint-plugin-vue@beta`. #235 and #257.
+- Fix a language server crash. #258.
+
 ### 0.8.2 | 2017-06-22
 
 - Republishing with correct vue-language-server.
