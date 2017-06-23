@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.8.5 | 2017-06-23
+
+- Fix a Windows path handling issue that causes IntelliSense not to work. #265.
+
 ### 0.8.4 | 2017-06-23
 
 - Fix an issue that removes space after taking IntelliSense suggestion. #244.
