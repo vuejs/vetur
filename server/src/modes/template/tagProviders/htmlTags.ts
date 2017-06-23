@@ -20,7 +20,7 @@ BEGIN THIRD PARTY
 
 import {
   ITagSet, HTMLTagSpecification, IHTMLTagProvider, IValueSets, Attribute,
-  collectTagsDefault, collectAttributesDefault, collectValuesDefault
+  collectTagsDefault, collectAttributesDefault, collectValuesDefault, Priority
 } from './common';
 
 export const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
@@ -390,6 +390,7 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
         collector(handler, 'event');
       });
     },
+    priority: Priority.Platform,
     collectValues: (tag: string, attribute: string, collector: (value: string) => void) => collectValuesDefault(tag, attribute, collector, HTML_TAGS, globalAttributes, valueSets)
   };
 }

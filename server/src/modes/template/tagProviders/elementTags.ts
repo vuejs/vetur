@@ -1,10 +1,11 @@
-import { IHTMLTagProvider } from './common';
+import { IHTMLTagProvider, Priority } from './common';
 import * as tags from 'element-helper-json/element-tags.json';
 import * as attributes from 'element-helper-json/element-attributes.json';
 
 export function getElementTagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'element',
+    priority: Priority.Library,
     isApplicable: languageId => languageId === 'vue-html',
     collectTags(collector) {
       for (const tagName in tags) {

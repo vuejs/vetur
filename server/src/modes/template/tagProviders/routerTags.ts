@@ -1,7 +1,7 @@
 import {
   HTMLTagSpecification, IHTMLTagProvider,
   collectTagsDefault, collectAttributesDefault, collectValuesDefault,
-  genAttribute
+  genAttribute, Priority
 } from './common';
 
 const u = undefined;
@@ -30,6 +30,7 @@ const routerTags = {
 export function getRouterTagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'router',
+    priority: Priority.Framework,
     isApplicable: (languageId) => languageId === 'vue-html',
     collectTags: (collector) => collectTagsDefault(collector, routerTags),
     collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
