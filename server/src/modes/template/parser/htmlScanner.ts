@@ -222,7 +222,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
   }
 
   function nextAttributeName(): string {
-    return stream.advanceIfRegExp(/^[^\s"'>/=\x00-\x0F\x7F\x80-\x9F]*/).toLowerCase();
+    return stream.advanceIfRegExp(/^[^\s"'<>/=\x00-\x0F\x7F\x80-\x9F]*/).toLowerCase();
   }
 
   function finishToken(offset: number, type: TokenType, errorMessage?: string): TokenType {

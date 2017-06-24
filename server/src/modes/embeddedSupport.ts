@@ -22,7 +22,8 @@ interface EmbeddedRegion { languageId: string; start: number; end: number; attri
 
 export function getDocumentRegions (document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];
-  const scanner = createScanner(document.getText());
+  const text = document.getText();
+  const scanner = createScanner(text);
   let lastTagName = '';
   let lastAttributeName = '';
   let languageIdFromType = '';
@@ -50,7 +51,7 @@ export function getDocumentRegions (document: TextDocument): VueDocumentRegions 
       case TokenType.StartTag:
         const tagName = scanner.getTokenText();
         if (tagName === 'template') {
-          const templateRegion = scanTemplateRegion(scanner);
+          const templateRegion = scanTemplateRegion(scanner, text);
           if (templateRegion) {
             regions.push(templateRegion);
           }
@@ -88,7 +89,7 @@ export function getDocumentRegions (document: TextDocument): VueDocumentRegions 
   };
 }
 
-function scanTemplateRegion (scanner: Scanner): EmbeddedRegion | null {
+function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | null {
   let languageId = 'vue-html';
 
   let token: number;
@@ -118,6 +119,14 @@ function scanTemplateRegion (scanner: Scanner): EmbeddedRegion | null {
       unClosedTemplate++;
     } else if (token === TokenType.EndTag && scanner.getTokenText() === 'template') {
       unClosedTemplate--;
+    } else if (token === TokenType.Unknown) {
+      if (scanner.getTokenText().charAt(0) === '<') {
+        let offset = scanner.getTokenOffset();
+        let unknownText = text.substr(offset, 11);
+        if (unknownText === '</template>') {
+          unClosedTemplate--;
+        }
+      }
     }
   }
 
