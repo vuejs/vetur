@@ -214,9 +214,10 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       const wordAtText = getWordAtText(currentTextDocument.getText(), offset, JS_WORD_REGEX);
       const replaceRange = convertRange(currentTextDocument, wordAtText);
+      const entries = completions.entries.filter(entry => entry.name !== '__vueEditorBridge');
       return {
         isIncomplete: false,
-        items: completions.entries.map(entry => {
+        items: entries.map(entry => {
           return {
             uri: doc.uri,
             position: position,
