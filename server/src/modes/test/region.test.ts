@@ -143,7 +143,40 @@ suite('Embedded Support', () => {
     .style('. test { color: red}', 'sass')
     .run();
 
-  // testcase('ill formed template')
-  //   .template(`<div><template> <span </template></div>`)
-  //   .run();
+  testcase('ill formed template')
+    .template(`<div><template><span</template></div>`)
+    .run();
+
+  testcase('ill formed template2')
+    .template(`<div><template> <span </template></div>`)
+    .run();
+
+  testcase('ill formed template3')
+    .template(`<`)
+    .run();
+
+  testcase('ill formed template4')
+    .template(`<div class=`)
+    .run();
+
+  testcase('ill formed template5')
+    .template(`<div class=></div>`)
+    .run();
+
+  testcase('ill formed template6')
+    .template(`<div class=""</div>`)
+    .run();
+
+  testcase('ill formed template7')
+    .template(`<div><`)
+    .run();
+
+  testcase('ill formed template8')
+    .template(`<div></`)
+    .run();
+
+  testcase('ill formed template9')
+      .script('').style('')
+    .template(`<div></d`)
+    .run();
 });
