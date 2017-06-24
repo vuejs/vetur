@@ -477,6 +477,22 @@ suite('HTML Scanner', () => {
     ]);
   });
 
+  test('Tag with Vue Bind Shorthand', () => {
+    assertTokens([{
+      input: '<abc :foo="bar">',
+      tokens: [
+        { offset: 0, type: TokenType.StartTagOpen },
+        { offset: 1, type: TokenType.StartTag, content: 'abc' },
+        { offset: 4, type: TokenType.Whitespace },
+        { offset: 5, type: TokenType.AttributeName },
+        { offset: 9, type: TokenType.DelimiterAssign },
+        { offset: 10, type: TokenType.AttributeValue },
+        { offset: 15, type: TokenType.StartTagClose }
+      ]
+    }
+    ]);
+  });
+
   test('Tag with Empty Attribute Value', () => {
     assertTokens([{
       input: '<abc foo=\'bar\'>',
