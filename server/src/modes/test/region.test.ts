@@ -41,7 +41,7 @@ function getLangId(block: string, lang: string) {
 }
 
 function testcase(description: string) {
-  type Contents = { [block: string]: string | undefined }
+  type Contents = { [block: string]: string | undefined };
 
   let contents: Contents = {
     template: defaultTemplate,
@@ -100,7 +100,7 @@ function testcase(description: string) {
         assert.equal(ranges.length, blocks.length * 2 + 1, 'block number mismatch');
         for (let i = 0, l = blocks.length; i < l; i++) {
           assert.equal(ranges[2 * i].languageId, 'vue', 'block separator mismatch');
-          const langId = getLangId(blocks[i], langMap[blocks[i]])
+          const langId = getLangId(blocks[i], langMap[blocks[i]]);
           assert.equal(ranges[2 * i + 1].languageId, langId, 'block lang mismatch');
         }
         if (offset >= 0) {
@@ -117,7 +117,7 @@ function testcase(description: string) {
         }
       });
     }
-  }
+  };
 }
 
 
