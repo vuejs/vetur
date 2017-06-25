@@ -21,7 +21,7 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 
 - Install [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur).
 - Try it with [Veturpack](https://github.com/octref/veturpack), a pre-configured Vue boilerplate based on [Vuepack](https://github.com/egoist/vuepack).
-- Refer to [setup](docs/setup.md) page for setting up.
+- Refer to [setup](https://octref.github.io/vetur/setup.html) page for setting up.
 - Refer to each feature's own page for setting up specific features.
 
 ## Roadmap
