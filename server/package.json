@@ -25,8 +25,7 @@
     "typescript": "^2.3.4",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-languageserver": "^3.3.0",
-    "vscode-uri": "^1.0.1",
-    "vue-template-compiler": "^2.3.3"
+    "vscode-uri": "^1.0.1"
   },
   "devDependencies": {
     "@types/js-beautify": "0.0.30",
