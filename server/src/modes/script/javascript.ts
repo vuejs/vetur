@@ -40,9 +40,9 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     module: ts.ModuleKind.CommonJS,
     allowSyntheticDefaultImports: true
   };
-  let currentTextDocument: TextDocument;
+  let currentScriptDoc: TextDocument;
   let versions = new Map<string, number>();
-  let docs = new Map<string, TextDocument>();
+  let scriptDocs = new Map<string, TextDocument>();
 
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
@@ -69,21 +69,21 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
-    if (!docs.has(fileFsPath)) {
+    if (!scriptDocs.has(fileFsPath)) {
       if (_.endsWith(fileFsPath, '.vue')) {
         files.push(filePath);
       }
     }
-    if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
-      currentTextDocument = jsDocuments.get(doc);
-      let lastDoc = docs.get(fileFsPath);
-      if (lastDoc && currentTextDocument.languageId !== lastDoc.languageId) {
+    if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
+      currentScriptDoc = jsDocuments.get(doc);
+      let lastDoc = scriptDocs.get(fileFsPath);
+      if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         compilerOptions.allowJs = lastDoc.languageId !== 'typescript';
         jsLanguageService.dispose();
         jsLanguageService = ts.createLanguageService(host);
       }
-      docs.set(fileFsPath, currentTextDocument);
+      scriptDocs.set(fileFsPath, currentScriptDoc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
   }
@@ -103,7 +103,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       if (isVue(fileName)) {
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
-        const doc = docs.get(fileName) ||
+        const doc = scriptDocs.get(fileName) ||
           jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName)));
         return doc.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
       }
@@ -131,7 +131,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         const uri = Uri.file(path.join(path.dirname(containingFile), name));
         const resolvedFileName = uri.fsPath;
         if (ts.sys.fileExists(resolvedFileName)) {
-          const doc = docs.get(resolvedFileName) ||
+          const doc = scriptDocs.get(resolvedFileName) ||
             jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
           return {
             resolvedFileName,
@@ -151,9 +151,9 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         };
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
-      let doc = docs.get(normalizedFileFsPath);
+      let doc = scriptDocs.get(normalizedFileFsPath);
       let text = doc ? doc.getText() : (ts.sys.readFile(normalizedFileFsPath) || '');
-      if (isVue(fileName)) {
+      if (!doc && isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
         text = parseVue(text);
@@ -194,7 +194,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         // syntactic/semantic diagnostic always has start and length
         // so we can safely cast diag to TextSpan
         return {
-          range: convertRange(currentTextDocument, diag as ts.TextSpan),
+          range: convertRange(currentScriptDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
           message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
         };
@@ -207,13 +207,13 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const offset = currentTextDocument.offsetAt(position);
+      const offset = currentScriptDoc.offsetAt(position);
       const completions = jsLanguageService.getCompletionsAtPosition(fileFsPath, offset);
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
-      const wordAtText = getWordAtText(currentTextDocument.getText(), offset, JS_WORD_REGEX);
-      const replaceRange = convertRange(currentTextDocument, wordAtText);
+      const wordAtText = getWordAtText(currentScriptDoc.getText(), offset, JS_WORD_REGEX);
+      const replaceRange = convertRange(currentScriptDoc, wordAtText);
       const entries = completions.entries.filter(entry => entry.name !== '__vueEditorBridge');
       return {
         isIncomplete: false,
@@ -256,7 +256,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = jsLanguageService.getQuickInfoAtPosition(fileFsPath, currentTextDocument.offsetAt(position));
+      const info = jsLanguageService.getQuickInfoAtPosition(fileFsPath, currentScriptDoc.offsetAt(position));
       if (info) {
         const display = ts.displayPartsToString(info.displayParts);
         const doc = ts.displayPartsToString(info.documentation);
@@ -267,7 +267,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
           markedContents.unshift(doc, '\n');
         }
         return {
-          range: convertRange(currentTextDocument, info.textSpan),
+          range: convertRange(currentScriptDoc, info.textSpan),
           contents: markedContents
         };
       }
@@ -280,7 +280,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const signHelp = jsLanguageService.getSignatureHelpItems(fileFsPath, currentTextDocument.offsetAt(position));
+      const signHelp = jsLanguageService.getSignatureHelpItems(fileFsPath, currentScriptDoc.offsetAt(position));
       if (!signHelp) {
         return NULL_SIGNATURE;
       }
@@ -322,11 +322,11 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const occurrences = jsLanguageService.getOccurrencesAtPosition(fileFsPath, currentTextDocument.offsetAt(position));
+      const occurrences = jsLanguageService.getOccurrencesAtPosition(fileFsPath, currentScriptDoc.offsetAt(position));
       if (occurrences) {
         return occurrences.map(entry => {
           return {
-            range: convertRange(currentTextDocument, entry.textSpan),
+            range: convertRange(currentScriptDoc, entry.textSpan),
             kind: <DocumentHighlightKind>(entry.isWriteAccess ? DocumentHighlightKind.Write : DocumentHighlightKind.Text)
           };
         });
@@ -352,7 +352,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
               kind: convertSymbolKind(item.kind),
               location: {
                 uri: doc.uri,
-                range: convertRange(currentTextDocument, item.spans[0])
+                range: convertRange(currentScriptDoc, item.spans[0])
               },
               containerName: containerLabel
             };
@@ -381,14 +381,14 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const definition = jsLanguageService.getDefinitionAtPosition(fileFsPath, currentTextDocument.offsetAt(position));
+      const definition = jsLanguageService.getDefinitionAtPosition(fileFsPath, currentScriptDoc.offsetAt(position));
       if (!definition) {
         return [];
       }
       return definition.map(d => {
         return {
           uri: doc.uri,
-          range: convertRange(currentTextDocument, d.textSpan)
+          range: convertRange(currentScriptDoc, d.textSpan)
         };
       });
     },
@@ -399,12 +399,12 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const references = jsLanguageService.getReferencesAtPosition(fileFsPath, currentTextDocument.offsetAt(position));
+      const references = jsLanguageService.getReferencesAtPosition(fileFsPath, currentScriptDoc.offsetAt(position));
       if (references) {
         return references.map(d => {
           return {
             uri: doc.uri,
-            range: convertRange(currentTextDocument, d.textSpan)
+            range: convertRange(currentScriptDoc, d.textSpan)
           };
         });
       }
@@ -416,15 +416,15 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       const fileFsPath = getFileFsPath(doc.uri);
       const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
       const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
-      const start = currentTextDocument.offsetAt(range.start);
-      let end = currentTextDocument.offsetAt(range.end);
+      const start = currentScriptDoc.offsetAt(range.start);
+      let end = currentScriptDoc.offsetAt(range.end);
       const edits = jsLanguageService.getFormattingEditsForRange(fileFsPath, start, end, formatSettings);
       if (edits) {
         const result = [];
         for (let edit of edits) {
           if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
             result.push({
-              range: convertRange(currentTextDocument, edit.span),
+              range: convertRange(currentScriptDoc, edit.span),
               newText: edit.newText
             });
           }
