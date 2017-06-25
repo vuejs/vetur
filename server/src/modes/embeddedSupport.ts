@@ -16,9 +16,7 @@ export interface VueDocumentRegions {
   getImportedScripts (): string[];
 }
 
-export const CSS_STYLE_RULE = '__';
-
-interface EmbeddedRegion { languageId: string; start: number; end: number; attributeValue?: boolean; }
+interface EmbeddedRegion { languageId: string; start: number; end: number; }
 
 export function getDocumentRegions (document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];
@@ -174,8 +172,7 @@ function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], r
         result.push({
           start: startPos,
           end: endPos,
-          languageId: region.languageId,
-          attributeValue: region.attributeValue
+          languageId: region.languageId
         });
       }
       currentOffset = end;
@@ -218,65 +215,14 @@ function getLanguageAtPosition (document: TextDocument, regions: EmbeddedRegion[
 }
 
 function getEmbeddedDocument (document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {
-  let currentPos = 0;
   let oldContent = document.getText();
   let result = '';
-  let lastSuffix = '';
   for (let c of contents) {
     if (c.languageId === languageId) {
-      result = substituteWithWhitespace(result, currentPos, c.start, oldContent, lastSuffix, getPrefix(c));
+      result = oldContent.substring(0, c.start).replace(/./g, ' ');
       result += oldContent.substring(c.start, c.end);
-      currentPos = c.end;
-      lastSuffix = getSuffix(c);
+      break;
     }
   }
-  result = substituteWithWhitespace(result, currentPos, oldContent.length, oldContent, lastSuffix, '');
   return TextDocument.create(document.uri, languageId, document.version, result);
-}
-
-function getPrefix (c: EmbeddedRegion) {
-  if (c.attributeValue) {
-    switch (c.languageId) {
-      case 'css': return CSS_STYLE_RULE + '{';
-    }
-  }
-  return '';
-}
-function getSuffix (c: EmbeddedRegion) {
-  if (c.attributeValue) {
-    switch (c.languageId) {
-      case 'css': return '}';
-      case 'javascript': return ';';
-    }
-  }
-  return '';
-}
-
-function substituteWithWhitespace (result: string, start: number, end: number, oldContent: string, before: string, after: string) {
-  let accumulatedWS = 0;
-  result += before;
-  for (let i = start + before.length; i < end; i++) {
-    let ch = oldContent[i];
-    if (ch === '\n' || ch === '\r') {
-      // only write new lines, skip the whitespace
-      accumulatedWS = 0;
-      result += ch;
-    } else {
-      accumulatedWS++;
-    }
-  }
-  result = append(result, ' ', accumulatedWS - after.length);
-  result += after;
-  return result;
-}
-
-function append (result: string, str: string, n: number): string {
-  while (n > 0) {
-    if (n & 1) {
-      result += str;
-    }
-    n >>= 1;
-    str += str;
-  }
-  return result;
 }
