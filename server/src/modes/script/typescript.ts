@@ -1,20 +1,24 @@
 import * as ts from 'typescript';
 import * as path from 'path';
 
-import { parseComponent } from 'vue-template-compiler';
+import { getDocumentRegions } from '../embeddedSupport';
+import { TextDocument } from 'vscode-languageserver-types';
+
 
 export function isVue (filename: string): boolean {
   return path.extname(filename) === '.vue';
 }
 
 export function parseVue (text: string): string {
-  const output = parseComponent(text, { pad: 'space' });
-  if (output && output.script && output.script.content) {
-    return output.script.content;
-  }
-  else {
+  const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
+  const regions = getDocumentRegions(doc);
+  const langs = regions.getLanguagesInDocument();
+  if (langs.indexOf('typescript') < 0 && langs.indexOf('javascript') < 0) {
+    // already extracted by jsDocuments
     return text;
   }
+  const scriptLang = langs.indexOf('typescript') >= 0 ? 'typescript' : 'javascript';
+  return regions.getEmbeddedDocument(scriptLang).getText();
 }
 
 export function createUpdater () {
