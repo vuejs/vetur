@@ -172,8 +172,7 @@ function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], r
         result.push({
           start: startPos,
           end: endPos,
-          languageId: region.languageId,
-          // attributeValue: region.attributeValue
+          languageId: region.languageId
         });
       }
       currentOffset = end;
