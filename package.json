@@ -7,7 +7,7 @@
   "version": "0.8.5",
   "publisher": "octref",
   "scripts": {
-    "compile": "tsc -p client",
+    "compile": "tsc -p server && tsc -p client",
     "precommit": "cd server && yarn && cd ../client && yarn",
     "lint": "tslint server/src/**/*.ts client/src/**/*.ts",
     "sync:server": "cd server && npm publish",
