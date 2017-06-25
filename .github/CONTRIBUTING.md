@@ -18,11 +18,19 @@ Comment on feature requests that you'd like to contribute before sending PR.
 #### Code Dev Guide
 
 ```bash
-$ cd server && yarn && npm run compile
-$ cd client && yarn
+$ yarn run compile
+```
+
+or
+
+```bash
+$ cd server && yarn && yarn run compile
+$ cd client && yarn && yarn run compile
 ```
 
 Then `F5` with `all` target to start debugging.
+
+> [yarn](https://yarnpkg.com/) yarn is fast, reliable, and secure dependency management.
 
 #### Grammar Dev Guide
 
