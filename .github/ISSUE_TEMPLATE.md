@@ -1,7 +1,5 @@
-<!--
-  Please search through existing issues before making new issues.
-  Please use English for communication.
--->
+- [ ] I searched through existing issues.
+- [ ] I have looked through docs at https://octref.github.io/vetur/
 
 - Platform: <!-- Win/macOS/Linux -->
 - Vetur version:
