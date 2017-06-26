@@ -54,7 +54,7 @@ suite('HTML Completion', () => {
     html`<input |`
       .has('type').become('<input type="$1"')
       .has('style').become('<input style="$1"')
-      .has('onmousemove').become('<input onmousemove="$1"');
+      .hasNo('onmousemove');
 
     html`<input t|`
       .has('type').become('<input type="$1"')
@@ -85,6 +85,15 @@ suite('HTML Completion', () => {
     html`<input disabled | type="text"`
       .has('dir').become('<input disabled dir="$1" type="text"')
       .has('style').become('<input disabled style="$1" type="text"');
+
+    html`<input :di|`
+      .has('dir').become('<input :dir="$1"');
+
+    html`<input :di| type="text"`
+      .has('dir').become('<input :dir="$1" type="text"');
+
+    html`<input @|`
+      .has('mousemove').become('<input @mousemove="$1"');
   });
 
   test('Complete Value', () => {

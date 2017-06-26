@@ -3,3 +3,4 @@
 --require source-map-support/register
 ./dist/modes/template/test
 ./dist/modes/style/stylus/test
+./dist/modes/test/

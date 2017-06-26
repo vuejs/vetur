@@ -2,7 +2,10 @@
 
 Vue tooling for VSCode.  
 
-Doc: https://octref.github.io/vetur
+Doc at https://octref.github.io/vetur
+Try it out with [Veturpack](https://github.com/octref/veturpack)!
+
+🎉 [VueConf 2017 Talk Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) 🎉
 
 ## Features
 
