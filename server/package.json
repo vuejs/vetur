@@ -9,7 +9,7 @@
     "vls": "./bin/vls"
   },
   "engines": {
-    "node": "6"
+    "node": ">=6"
   },
   "files": [
     "dist",
