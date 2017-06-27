@@ -307,10 +307,6 @@ dateformat@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.0.0.tgz#2743e3abb5c3fc2462e527dca445e04e9f4dee17"
 
-de-indent@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
-
 debug@*, debug@^2.6.3, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
@@ -911,10 +907,6 @@ hawk@~3.1.3:
     cryptiles "2.x.x"
     hoek "2.x.x"
     sntp "1.x.x"
-
-he@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 
 hoek@2.x.x:
   version "2.16.3"
@@ -2200,9 +2192,9 @@ vue-eslint-parser@^1.1.0-6:
     lodash.sortedindexby "^4.6.0"
     parse5 "^3.0.0"
 
-vue-language-server@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.6.tgz#f92175d66c6c40cc0e150b9da172dcd18db4a445"
+vue-language-server@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.7.tgz#020075ce90eabfaa1a6df35f385598e6bdf3a0fe"
   dependencies:
     element-helper-json "^1.0.0"
     eslint "^4.0.0"
@@ -2214,14 +2206,6 @@ vue-language-server@^0.0.6:
     vscode-css-languageservice "^2.0.0"
     vscode-languageserver "^3.3.0"
     vscode-uri "^1.0.1"
-    vue-template-compiler "^2.3.3"
-
-vue-template-compiler@^2.3.3:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.3.4.tgz#5a88ac2c5e4d5d6218e6aa80e7e221fb7e67894c"
-  dependencies:
-    de-indent "^1.0.2"
-    he "^1.1.0"
 
 wordwrap@~1.0.0:
   version "1.0.0"
