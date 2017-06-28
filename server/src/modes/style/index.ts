@@ -2,7 +2,7 @@ import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache
 import { TextDocument, Position, TextEdit, FormattingOptions, Range } from 'vscode-languageserver-types';
 import { getCSSLanguageService, getSCSSLanguageService, getLESSLanguageService, LanguageService } from 'vscode-css-languageservice';
 import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions, CSS_STYLE_RULE } from '../embeddedSupport';
+import { VueDocumentRegions } from '../embeddedSupport';
 import { defaultCssOptions } from './defaultOption';
 
 import * as _ from 'lodash';
@@ -52,7 +52,7 @@ function getStyleMode (languageId: string, languageService: LanguageService, doc
     },
     findDocumentSymbols (document) {
       const embedded = embeddedDocuments.get(document);
-      return languageService.findDocumentSymbols(embedded, stylesheets.get(embedded)).filter(s => s.name !== CSS_STYLE_RULE);
+      return languageService.findDocumentSymbols(embedded, stylesheets.get(embedded));
     },
     findDefinition (document, position) {
       const embedded = embeddedDocuments.get(document);

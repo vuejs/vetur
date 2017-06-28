@@ -16,7 +16,12 @@ function toDiagnostic(error: ESLintError): Diagnostic {
 }
 
 export function doValidation(document: TextDocument, engine: CLIEngine): Diagnostic[] {
-  const text = document.getText()
+  const rawText = document.getText();
+  // skip checking on empty template
+  if (rawText.replace(/\s/g, '') === '') {
+    return [];
+  }
+  const text = rawText
     .replace(/ {10}/, '<template>')
     .replace(/\s{11}$/, '</template>'); // TODO: replace the last 11 consecutive spaces
   const report = engine.executeOnText(text, document.uri);

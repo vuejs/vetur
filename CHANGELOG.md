@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.8.6 | 2017-06-26
+
+- Remove `vue-template-compiler` as dependency. Fix #250, #277 and #286.
+- `@` auto completion in template and better auto completion ordering. #256.
+
 ### 0.8.5 | 2017-06-23
 
 - Fix a Windows path handling issue that causes IntelliSense not to work. #265.
