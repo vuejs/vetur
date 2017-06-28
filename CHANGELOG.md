@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.8.6 | 2017-06-28
+
+- Upgrade eslint-plugin-vue to address some template linting issues. #294.
+- Skip template checking for empty template. #272.
+
 ### 0.8.6 | 2017-06-26
 
 - Remove `vue-template-compiler` as dependency. Fix #250, #277 and #286.
