@@ -12,7 +12,7 @@ Vetur automatically uses `eslint-plugin-vue@beta` for linting `<template>`. Lint
 
 To turn it off, set `vetur.validation.template: false`.
 
-To configure linting rules, turn off vetur's template validation and install `eslint` and `eslint-plugin-vue@beta` locally as `devDependencies`, and the ESLint plugin should work.
+To configure linting rules, turn off vetur's template validation and install `eslint` and `eslint-plugin-vue@beta` locally as `devDependencies`, and set ESLint rules in `.eslintrc`.
 
 ## [To Write]
 
