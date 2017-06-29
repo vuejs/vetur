@@ -1,7 +1,7 @@
 import * as path from 'path';
 
 import { languages, workspace, ExtensionContext, IndentAction } from 'vscode';
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, Range, RequestType } from 'vscode-languageclient';
+import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, Range, RequestType, RevealOutputChannelOn } from 'vscode-languageclient';
 import { EMPTY_ELEMENTS } from './htmlEmptyTagsShared';
 
 namespace ColorSymbolRequest {
@@ -29,7 +29,8 @@ export function activate (context: ExtensionContext) {
     },
     initializationOptions: {
       veturConfig
-    }
+    },
+    revealOutputChannelOn: RevealOutputChannelOn.Never
   };
 
   // Create the language client and start the client.
