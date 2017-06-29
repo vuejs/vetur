@@ -143,6 +143,10 @@ suite('Embedded Support', () => {
     .style('. test { color: red}', 'sass')
     .run();
 
+  testcase('lang attribute')
+    .template(`<editor lang="javascript"></editor>`)
+    .run();
+
   testcase('ill formed template')
     .template(`<div><template><span</template></div>`)
     .run();

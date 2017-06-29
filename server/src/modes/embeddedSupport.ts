@@ -104,25 +104,29 @@ function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | n
       return null;
     }
 
-    if (token === TokenType.AttributeName) {
-      lastAttributeName = scanner.getTokenText();
-    } else if (token === TokenType.AttributeValue) {
-      if (lastAttributeName === 'lang') {
-        languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
+    if (!start) {
+      if (token === TokenType.AttributeName) {
+        lastAttributeName = scanner.getTokenText();
+      } else if (token === TokenType.AttributeValue) {
+        if (lastAttributeName === 'lang') {
+          languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
+        }
+        lastAttributeName = null;
+      } else if (token === TokenType.StartTagClose) {
+        start = scanner.getTokenEnd();
       }
-      lastAttributeName = null;
-    } else if (token === TokenType.StartTagClose && !start) {
-      start = scanner.getTokenEnd();
-    } else if (token === TokenType.StartTag && scanner.getTokenText() === 'template') {
-      unClosedTemplate++;
-    } else if (token === TokenType.EndTag && scanner.getTokenText() === 'template') {
-      unClosedTemplate--;
-    } else if (token === TokenType.Unknown) {
-      if (scanner.getTokenText().charAt(0) === '<') {
-        let offset = scanner.getTokenOffset();
-        let unknownText = text.substr(offset, 11);
-        if (unknownText === '</template>') {
-          unClosedTemplate--;
+    } else {
+      if (token === TokenType.StartTag && scanner.getTokenText() === 'template') {
+        unClosedTemplate++;
+      } else if (token === TokenType.EndTag && scanner.getTokenText() === 'template') {
+        unClosedTemplate--;
+      } else if (token === TokenType.Unknown) {
+        if (scanner.getTokenText().charAt(0) === '<') {
+          let offset = scanner.getTokenOffset();
+          let unknownText = text.substr(offset, 11);
+          if (unknownText === '</template>') {
+            unClosedTemplate--;
+          }
         }
       }
     }
