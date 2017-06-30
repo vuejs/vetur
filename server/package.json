@@ -22,7 +22,7 @@
     "js-beautify": "^1.6.14",
     "lodash": "^4.17.4",
     "stylus": "^0.54.5",
-    "typescript": "^2.3.4",
+    "typescript": "^2.4.1",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-languageserver": "^3.3.0",
     "vscode-uri": "^1.0.1"
