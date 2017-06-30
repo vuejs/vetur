@@ -33,7 +33,7 @@ Then `F5` with `all` target to start debugging.
 
 > Tip: In VSCode, use F1 -> Inspect TM Scopes:
 
-![scope](https://github.com/octref/vetur/blob/master/asset/scope.png)
+![scope](https://github.com/vuejs/vetur/blob/master/asset/scope.png)
 
 ## Doc
 

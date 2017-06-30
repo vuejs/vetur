@@ -1,7 +1,7 @@
 VueJS Language Server
 -----
 
-Extracted from [vetur](https://github.com/octref/vetur).
+Extracted from [vetur](https://github.com/vuejs/vetur).
 
 This can be used for different editors.
 

@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/octref/vetur.git"
+    "url": "https://github.com/vuejs/vetur.git"
   },
   "keywords": [
     "vetur",

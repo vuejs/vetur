@@ -15,4 +15,4 @@ In your user settings, set
 
 #### [To Write]
 
-https://github.com/octref/vetur/issues/232
+https://github.com/vuejs/vetur/issues/232
