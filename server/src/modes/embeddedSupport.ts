@@ -104,7 +104,7 @@ function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | n
       return null;
     }
 
-    if (!start) {
+    if (start === 0) {
       if (token === TokenType.AttributeName) {
         lastAttributeName = scanner.getTokenText();
       } else if (token === TokenType.AttributeValue) {
