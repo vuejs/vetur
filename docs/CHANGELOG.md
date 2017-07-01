@@ -1,5 +1,46 @@
 # Changelog
 
+### 0.8.7 | 2017-06-28
+
+- Upgrade eslint-plugin-vue to address some template linting issues. #294.
+- Skip template checking for empty template. #272.
+
+### 0.8.6 | 2017-06-26
+
+- Remove `vue-template-compiler` as dependency. Fix #250, #277 and #286.
+- `@` auto completion in template and better auto completion ordering. #256.
+
+### 0.8.5 | 2017-06-23
+
+- Fix a Windows path handling issue that causes IntelliSense not to work. #265.
+
+### 0.8.4 | 2017-06-23
+
+- Fix an issue that removes space after taking IntelliSense suggestion. #244.
+- Fix an issue that causes ESLint to report error on wrong line. #263.
+
+### 0.8.3 | 2017-06-23
+
+- Add `vetur.validation.template` option to toggle vue-html validation using `eslint-plugin-vue@beta`. #235 and #257.
+- Fix a language server crash. #258.
+
+### 0.8.2 | 2017-06-22
+
+- Republishing with correct vue-language-server.
+
+### 0.8.1 | 2017-06-22
+
+- Published wrong veresion of vue-language-server in 0.8...oops.
+
+### 0.8.0 | 2017-06-22
+
+- eslint-plugin-vue support. #235.
+- Initial stylus support. #227.
+- Element UI support. #234.
+- Let hover display code signature with syntax highlight. #247.
+
+Shoutout to @HerringtonDarkholme who helped implementing many new features!
+
 ### 0.7.0 | 2017-06-04
 
 - Correct syntax highlighting for longer directives such as `@click.capture.stop`. #79.
