@@ -63,7 +63,10 @@ export function getLanguageServie(workspacePath: string, jsDocuments: LanguageMo
       scriptDocs.set(fileFsPath, currentScriptDoc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
-    return currentScriptDoc;
+    return {
+      service: jsLanguageService,
+      scriptDoc: currentScriptDoc
+    };
   }
 
   const host: ts.LanguageServiceHost = {
@@ -148,7 +151,8 @@ export function getLanguageServie(workspacePath: string, jsDocuments: LanguageMo
 
   let jsLanguageService = ts.createLanguageService(host);
   return {
-    jsLanguageService, updateCurrentTextDocument
+    updateCurrentTextDocument,
+    getService: () => jsLanguageService
   };
 }
 
