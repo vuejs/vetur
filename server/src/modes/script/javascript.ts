@@ -4,7 +4,7 @@ import { LanguageMode } from '../languageModes';
 import { getWordAtText } from '../../utils/strings';
 import { VueDocumentRegions } from '../embeddedSupport';
 import { getFileFsPath, getFilePath } from './preprocess';
-import { getLanguageServie } from './languageService';
+import { getServiceHost } from './serviceHost';
 
 import * as ts from 'typescript';
 import * as _ from 'lodash';
@@ -27,7 +27,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     return vueDocument.getEmbeddedDocument('javascript');
   });
 
-  let serviceHost = getLanguageServie(workspacePath, jsDocuments);
+  let serviceHost = getServiceHost(workspacePath, jsDocuments);
   let { updateCurrentTextDocument } = serviceHost;
   let settings: any = {};
 

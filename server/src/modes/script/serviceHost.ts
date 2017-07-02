@@ -8,7 +8,7 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
 import * as bridge from './bridge';
 
-export function getLanguageServie(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
+export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let compilerOptions: ts.CompilerOptions = {
     allowNonTsExtensions: true,
     allowJs: true,
