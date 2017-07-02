@@ -1,9 +1,12 @@
 import * as ts from 'typescript';
 import * as path from 'path';
+import Uri from 'vscode-uri';
 
 import { getDocumentRegions } from '../embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
+import { platform } from 'os';
 
+const IS_WINDOWS = platform() === 'win32';
 
 export function isVue (filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -78,4 +81,17 @@ function modifyVueSource (sourceFile: ts.SourceFile): void {
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */
 function getWrapperRangeSetter (wrapped: ts.TextRange): <T extends ts.TextRange>(wrapperNode: T) => T {
   return <T extends ts.TextRange>(wrapperNode: T) => ts.setTextRange(wrapperNode, wrapped);
+}
+
+export function getFileFsPath (documentUri: string): string {
+  return Uri.parse(documentUri).fsPath;
+}
+
+export function getFilePath (documentUri: string): string {
+  if (IS_WINDOWS) {
+    // Windows have a leading slash like /C:/Users/pine
+    return Uri.parse(documentUri).path.slice(1);
+  } else {
+    return Uri.parse(documentUri).path;
+  }
 }
