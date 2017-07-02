@@ -3,7 +3,7 @@ import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp,
 import { LanguageMode } from '../languageModes';
 import { getWordAtText } from '../../utils/strings';
 import { VueDocumentRegions } from '../embeddedSupport';
-import { createUpdater, parseVue, isVue } from './typescript';
+import { createUpdater, parseVue, isVue } from './preprocess';
 
 import Uri from 'vscode-uri';
 import * as path from 'path';
