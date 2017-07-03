@@ -14,7 +14,6 @@ let vueSys: ts.System = (function() {
     sys[key] = (ts.sys as any)[key];
   }
   sys.fileExists = function (path: string) {
-    console.log(path)
     if (path.endsWith('.vue.ts')) {
       return ts.sys.fileExists(path.slice(0, -3));
     }
