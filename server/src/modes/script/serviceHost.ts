@@ -110,6 +110,14 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         return (ts as any).getScriptKindFromFileName(fileName);
       }
     },
+
+    // resolve @types, see https://github.com/Microsoft/TypeScript/issues/16772
+    getDirectories: ts.sys.getDirectories,
+    directoryExists: ts.sys.directoryExists,
+    fileExists: ts.sys.fileExists,
+    readFile: ts.sys.readFile,
+    readDirectory: ts.sys.readDirectory,
+
     resolveModuleNames (moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
       // in the normal case, delegate to ts.resolveModuleName
       // in the relative-imported.vue case, manually build a resolved filename
