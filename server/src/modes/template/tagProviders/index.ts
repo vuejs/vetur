@@ -3,6 +3,7 @@ import { getHTML5TagProvider } from './htmlTags';
 import { getVueTagProvider } from './vueTags';
 import { getRouterTagProvider } from './routerTags';
 import { getElementTagProvider } from './elementTags';
+import { getOnsenTagProvider } from './onsenTags';
 
 import * as ts from 'typescript';
 import * as fs from 'fs';
@@ -11,7 +12,8 @@ export let allTagProviders : IHTMLTagProvider[] = [
   getHTML5TagProvider(),
   getVueTagProvider(),
   getRouterTagProvider(),
-  getElementTagProvider()
+  getElementTagProvider(),
+  getOnsenTagProvider()
 ];
 
 export function getDefaultSetting(workspacePath: string) {
@@ -19,7 +21,8 @@ export function getDefaultSetting(workspacePath: string) {
     html5: true,
     vue: true,
     router: false,
-    element: false
+    element: false,
+    onsen: false
   };
   try {
     let packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
@@ -29,6 +32,9 @@ export function getDefaultSetting(workspacePath: string) {
     }
     if (packageJson.dependencies['element-ui']) {
       setting['element'] = true;
+    }
+    if (packageJson.dependencies['vue-onsenui']) {
+      setting['onsen'] = true;
     }
   } catch (e) { }
   return setting;
