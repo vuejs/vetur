@@ -8,6 +8,21 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
 import * as bridge from './bridge';
 
+let vueSys: ts.System = (function() {
+  let sys: any = {};
+  for (let key of Object.keys(ts.sys)) {
+    sys[key] = (ts.sys as any)[key];
+  }
+  sys.fileExists = function (path: string) {
+    console.log(path)
+    if (path.endsWith('.vue.ts')) {
+      return ts.sys.fileExists(path.slice(0, -3));
+    }
+    return ts.sys.fileExists(path);
+  }
+  return sys;
+}());
+
 export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let compilerOptions: ts.CompilerOptions = {
     allowNonTsExtensions: true,
@@ -109,17 +124,18 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         if (path.isAbsolute(name) || !isVue(name)) {
           return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule!;
         }
-        const uri = Uri.file(path.join(path.dirname(containingFile), name));
-        const resolvedFileName = uri.fsPath;
-        if (ts.sys.fileExists(resolvedFileName)) {
-          const doc = scriptDocs.get(resolvedFileName) ||
-            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
-          return {
-            resolvedFileName,
-            extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
-          };
+        const resolved = ts.resolveModuleName(name, containingFile, compilerOptions, vueSys).resolvedModule;
+        if (!resolved) {
+          return undefined as any;
         }
-        return undefined as any;
+        const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
+        const uri = Uri.file(resolvedFileName);
+        const doc = scriptDocs.get(resolvedFileName) ||
+          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
+        return {
+          resolvedFileName,
+          extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
+        };
       });
     },
     getScriptSnapshot: (fileName: string) => {
