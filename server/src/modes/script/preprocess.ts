@@ -17,7 +17,7 @@ export function parseVue (text: string): string {
   const regions = getDocumentRegions(doc);
   const langs = regions.getLanguagesInDocument();
   if (langs.indexOf('typescript') < 0 && langs.indexOf('javascript') < 0) {
-    return text.replace(/./g, ' ');
+    return text.replace(/./g, ' ') + 'export default {};';
   }
   const scriptLang = langs.indexOf('typescript') >= 0 ? 'typescript' : 'javascript';
   return regions.getEmbeddedDocument(scriptLang).getText();
