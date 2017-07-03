@@ -1,7 +1,6 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation, Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString, DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
-import { getWordAtText } from '../../utils/strings';
 import { VueDocumentRegions } from '../embeddedSupport';
 import { getFileFsPath, getFilePath } from './preprocess';
 import { getServiceHost } from './serviceHost';
@@ -10,9 +9,6 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 
 import { NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
-
-
-const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): string[];
@@ -72,21 +68,20 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
-      const wordAtText = getWordAtText(scriptDoc.getText(), offset, JS_WORD_REGEX);
-      const replaceRange = convertRange(scriptDoc, wordAtText);
       const entries = completions.entries.filter(entry => entry.name !== '__vueEditorBridge');
       return {
         isIncomplete: false,
         items: entries.map(entry => {
+          const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           return {
             uri: doc.uri,
             position: position,
             label: entry.name,
             sortText: entry.sortText,
             kind: convertKind(entry.kind),
-            textEdit: TextEdit.replace(replaceRange, entry.name),
+            textEdit: range ? TextEdit.replace(range, entry.name) : undefined,
             data: { // data used for resolving item details (see 'doResolve')
-              languageId: 'javascript',
+              languageId: doc.languageId,
               uri: doc.uri,
               offset: offset
             }
