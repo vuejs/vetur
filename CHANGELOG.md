@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.8.6 | 2017-06-28
+### 0.8.7 | 2017-06-28
 
 - Upgrade eslint-plugin-vue to address some template linting issues. #294.
 - Skip template checking for empty template. #272.

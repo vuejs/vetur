@@ -1,5 +1,5 @@
 - [ ] I searched through existing issues.
-- [ ] I have looked through docs at https://octref.github.io/vetur/
+- [ ] I have looked through docs at https://vuejs.github.io/vetur/
 
 ## Info
 
@@ -25,5 +25,5 @@
 
   1. Try disabling / removing other Vue extensions for VSCode.
 
-  2. For crash / memory usage problem, try adding a tsconfig/jsconfig that only includes your client side Vue code, see more at: https://octref.github.io/vetur/setup.html#overall
+  2. For crash / memory usage problem, try adding a tsconfig/jsconfig that only includes your client side Vue code, see more at: https://vuejs.github.io/vetur/setup.html#overall
 -->

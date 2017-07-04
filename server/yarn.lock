@@ -1025,6 +1025,10 @@ vue-eslint-parser@^1.1.0-7:
     lodash.sortedindexby "^4.6.0"
     parse5 "^3.0.0"
 
+vue-onsenui-helper-json@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue-onsenui-helper-json/-/vue-onsenui-helper-json-1.0.0.tgz#9b70ce18fd0d0138a0b9b68b914340036deabae7"
+
 wordwrap@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
