@@ -145,6 +145,9 @@ function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | n
 
 function getLanguageIdFromLangAttr (lang: string): string {
   let languageIdFromType = removeQuotes(lang);
+  if (languageIdFromType === 'html') {
+    languageIdFromType = 'vue-html';
+  }
   if (languageIdFromType === 'jade') {
     languageIdFromType = 'pug';
   }
