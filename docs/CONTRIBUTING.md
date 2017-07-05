@@ -14,31 +14,35 @@ Comment on feature requests that you'd like to contribute before sending PR.
 
 - Prettier with 120 print-width
 - TSLint
+- `const` over `let` whenever possible
 
 #### Code Dev Guide
 
-The extension consists of 2 parts, client and the language server. The client launches the language server(lazily) on port 6005.
+Vetur consists of 2 parts
+- Language Client as a normal VSCode extension
+- Vue Language Server
 
-To compile :
+The language client launches Vue Language Server on port 6005 whenever a Vue file is opened.
+
+To compile:
 
 ```bash
-npm install
-cd server && yarn && npm run compile
+yarn
+cd server && yarn && yarn compile
 cd ../client && yarn
 ```
 
-To debug :
+To debug:
 
-* The extension has 2 configurations for debugging i.e client and server. 
-* Run the client configurtion first. 
-* As the client launches the language server lazily, open any .vue file so that the server is started. 
-* Run the server configuration which binds the server code to port 6005 to enable debugging on it. 
-* At this point breakpoints in both server and client code should work. 
+- The extension has 2 configurations for debugging i.e client and server. 
+- Run the client configurtion first. 
+- As the client launches the language server lazily, open any .vue file so that the server is started. 
+- Run the server configuration which binds the server code to port 6005 to enable debugging.
+- At this point breakpoints in both server and client code should work. 
 
 How to run individual configurations?
 
-![Vscode Screenshot](images/debug.png)
- 
+![VScode Debugging](images/debug.png)
 
 #### Grammar Dev Guide
 
