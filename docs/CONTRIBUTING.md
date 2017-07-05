@@ -40,7 +40,7 @@ To debug:
 - Run the server configuration which binds the server code to port 6005 to enable debugging.
 - At this point breakpoints in both server and client code should work. 
 
-How to run individual configurations?
+It should look like this:
 
 ![VScode Debugging](images/debug.png)
 
