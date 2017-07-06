@@ -3,4 +3,5 @@ node_js: 6
 before_script:
   - npm install yarn -g
   - cd server && yarn
+  - cd ..
 cache: yarn

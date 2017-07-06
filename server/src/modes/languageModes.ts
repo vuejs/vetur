@@ -53,7 +53,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
-  let jsMode = getJavascriptMode(documentRegions, workspacePath);
+  const jsMode = getJavascriptMode(documentRegions, workspacePath);
   let modes: {[k: string]: LanguageMode} = {
     vue: getVueMode(),
     'vue-html': getVueHTMLMode(documentRegions, workspacePath),
@@ -85,7 +85,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
     },
     getAllModesInDocument (document: TextDocument): LanguageMode[] {
       const result = [];
-      for (let languageId of documentRegions.get(document).getLanguagesInDocument()) {
+      for (const languageId of documentRegions.get(document).getLanguagesInDocument()) {
         const mode = modes[languageId];
         if (mode) {
           result.push(mode);
@@ -95,7 +95,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
     },
     getAllModes (): LanguageMode[] {
       const result = [];
-      for (let languageId in modes) {
+      for (const languageId in modes) {
         const mode = modes[languageId];
         if (mode) {
           result.push(mode);
@@ -108,14 +108,14 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
     },
     onDocumentRemoved (document: TextDocument) {
       modelCaches.forEach(mc => mc.onDocumentRemoved(document));
-      for (let mode in modes) {
+      for (const mode in modes) {
         modes[mode].onDocumentRemoved(document);
       }
     },
     dispose (): void {
       modelCaches.forEach(mc => mc.dispose());
       modelCaches = [];
-      for (let mode in modes) {
+      for (const mode in modes) {
         modes[mode].dispose();
       }
       modes = {}; // drop all references

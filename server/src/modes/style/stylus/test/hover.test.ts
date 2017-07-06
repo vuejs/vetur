@@ -6,7 +6,7 @@ import {
   stylusHover
 } from '../stylus-hover';
 
-let stylus = hoverDSL({
+const stylus = hoverDSL({
   langId: 'stylus',
   docUri: 'test://test/test.styl',
   doHover(doc, pos) {

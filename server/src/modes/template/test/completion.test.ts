@@ -11,16 +11,16 @@ import {  CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-ut
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { doComplete } from '../services/htmlCompletion';
 
-let setup: CompletionTestSetup = {
+const setup: CompletionTestSetup = {
   langId: 'vue-html',
   docUri: 'test://test/test.html',
   doComplete(doc, pos) {
-    let htmlDoc = parseHTMLDocument(doc);
+    const htmlDoc = parseHTMLDocument(doc);
     return doComplete(doc, pos, htmlDoc);
   }
 };
 
-let html = testDSL(setup);
+const html = testDSL(setup);
 
 suite('HTML Completion', () => {
   test('Complete Start Tag', () => {
@@ -307,12 +307,12 @@ suite('HTML Completion', () => {
         langId: 'vue-html',
         docUri: 'test://test/test.html',
         doComplete(doc, pos) {
-          let htmlDoc = parseHTMLDocument(doc);
+          const htmlDoc = parseHTMLDocument(doc);
           return doComplete(doc, pos, htmlDoc, settings);
         }
       });
     }
-    let noHTML = configured({ html5: false, element: true, router: false });
+    const noHTML = configured({ html5: false, element: true, router: false });
     noHTML`<|`
       .has('el-input').withDoc('Input data using mouse or keyboard.')
       .hasNo('div');
@@ -333,7 +333,7 @@ suite('HTML Completion', () => {
     noHTML`<el-popover |`
       .has('content').withDoc('popover content, can be replaced with a default slot');
 
-    let vueHTML = configured({ html5: true, element: false, router: false });
+    const vueHTML = configured({ html5: true, element: false, router: false });
     vueHTML`<|`
       .has('div')
       .hasNo('el-row')

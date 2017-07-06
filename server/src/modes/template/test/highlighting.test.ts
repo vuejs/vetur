@@ -15,20 +15,20 @@ suite('HTML Highlighting', () => {
 
 
   function assertHighlights(value: string, expectedMatches: number[], elementName: string | null): void {
-    let offset = value.indexOf('|');
+    const offset = value.indexOf('|');
     value = value.substr(0, offset) + value.substr(offset + 1);
 
-    let document = TextDocument.create('test://test/test.html', 'html', 0, value);
+    const document = TextDocument.create('test://test/test.html', 'html', 0, value);
 
-    let position = document.positionAt(offset);
-    let htmlDoc = parseHTMLDocument(document);
+    const position = document.positionAt(offset);
+    const htmlDoc = parseHTMLDocument(document);
 
-    let highlights = findDocumentHighlights(document, position, htmlDoc);
+    const highlights = findDocumentHighlights(document, position, htmlDoc);
     assert.equal(highlights.length, expectedMatches.length);
     for (let i = 0; i < highlights.length; i++) {
-      let actualStartOffset = document.offsetAt(highlights[i].range.start);
+      const actualStartOffset = document.offsetAt(highlights[i].range.start);
       assert.equal(actualStartOffset, expectedMatches[i]);
-      let actualEndOffset = document.offsetAt(highlights[i].range.end);
+      const actualEndOffset = document.offsetAt(highlights[i].range.end);
       assert.equal(actualEndOffset, expectedMatches[i] + elementName!.length);
 
       assert.equal(document.getText().substring(actualStartOffset, actualEndOffset).toLowerCase(), elementName);

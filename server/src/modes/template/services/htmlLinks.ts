@@ -37,8 +37,8 @@ function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentCo
 }
 
 function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string): DocumentLink | null {
-  let documentUri = Uri.parse(document.uri);
-  let tokenContent = stripQuotes(attributeValue);
+  const documentUri = Uri.parse(document.uri);
+  const tokenContent = stripQuotes(attributeValue);
   if (tokenContent.length === 0) {
     return null;
   }
@@ -46,7 +46,7 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
     startOffset++;
     endOffset--;
   }
-  let workspaceUrl = getWorkspaceUrl(documentUri, tokenContent, documentContext, base);
+  const workspaceUrl = getWorkspaceUrl(documentUri, tokenContent, documentContext, base);
   if (!workspaceUrl || !isValidURI(workspaceUrl)) {
     return null;
   }
@@ -66,9 +66,9 @@ function isValidURI(uri: string) {
 }
 
 export function findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[] {
-  let newLinks: DocumentLink[] = [];
+  const newLinks: DocumentLink[] = [];
 
-  let scanner = createScanner(document.getText(), 0);
+  const scanner = createScanner(document.getText(), 0);
   let token = scanner.scan();
   let afterHrefOrSrc = false;
   let afterBase = false;
@@ -77,18 +77,18 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
     switch (token) {
       case TokenType.StartTag:
         if (!base) {
-          let tagName = scanner.getTokenText().toLowerCase();
+          const tagName = scanner.getTokenText().toLowerCase();
           afterBase = tagName === 'base';
         }
         break;
       case TokenType.AttributeName:
-        let attributeName = scanner.getTokenText().toLowerCase();
+        const attributeName = scanner.getTokenText().toLowerCase();
         afterHrefOrSrc = attributeName === 'src' || attributeName === 'href';
         break;
       case TokenType.AttributeValue:
         if (afterHrefOrSrc) {
-          let attributeValue = scanner.getTokenText();
-          let link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base!);
+          const attributeValue = scanner.getTokenText();
+          const link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base!);
           if (link) {
             newLinks.push(link);
           }

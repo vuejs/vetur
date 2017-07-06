@@ -17,7 +17,7 @@ export let allTagProviders : IHTMLTagProvider[] = [
 ];
 
 export function getDefaultSetting(workspacePath: string) {
-  let setting: {[kind: string]: boolean} = {
+  const setting: {[kind: string]: boolean} = {
     html5: true,
     vue: true,
     router: false,
@@ -25,8 +25,8 @@ export function getDefaultSetting(workspacePath: string) {
     onsen: false
   };
   try {
-    let packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
-    let packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+    const packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
+    const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
     if (packageJson.dependencies['vue-router']) {
       setting['router'] = true;
     }

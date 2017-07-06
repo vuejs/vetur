@@ -18,12 +18,12 @@ suite('HTML Scanner', () => {
   function assertTokens(tests: { input: string; tokens: Token[]; }[]) {
 
     let scannerState = ScannerState.WithinContent;
-    for (let t of tests) {
-      let scanner = createScanner(t.input, 0, scannerState);
+    for (const t of tests) {
+      const scanner = createScanner(t.input, 0, scannerState);
       let tokenType = scanner.scan();
-      let actual: Token[] = [];
+      const actual: Token[] = [];
       while (tokenType !== TokenType.EOS) {
-        let actualToken: Token = { offset: scanner.getTokenOffset(), type: tokenType };
+        const actualToken: Token = { offset: scanner.getTokenOffset(), type: tokenType };
         if (tokenType === TokenType.StartTag || tokenType === TokenType.EndTag) {
           actualToken.content = t.input.substr(scanner.getTokenOffset(), scanner.getTokenLength());
         }

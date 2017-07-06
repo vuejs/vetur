@@ -6,7 +6,10 @@ export const moduleName = 'vue-editor-bridge';
 export const fileName = 'vue-temp/vue-editor-bridge.ts';
 
 export const content = `
-import Vue from 'vue'
-export default function test<T>(t: T & Vue.ComponentOptions<Vue>): T {
+import Vue from 'vue';
+export interface GeneralOption extends Vue.ComponentOptions<Vue> {
+  [key: string]: any
+}
+export default function test<T>(t: T & GeneralOption): T {
   return t
 }`;

@@ -50,7 +50,7 @@ export interface IValueSets {
 }
 
 export function collectTagsDefault(collector: TagCollector, tagSet: ITagSet): void {
-  for (let tag in tagSet) {
+  for (const tag in tagSet) {
     collector(tag, tagSet[tag].label);
   }
 }
@@ -60,10 +60,10 @@ export function collectAttributesDefault(tag: string, collector: AttributeCollec
     collector(attr.label, attr.type, attr.documentation);
   });
   if (tag) {
-    let tags = tagSet[tag];
+    const tags = tagSet[tag];
     if (tags) {
-      let attributes = tags.attributes;
-      for (let attr of attributes) {
+      const attributes = tags.attributes;
+      for (const attr of attributes) {
         collector(attr.label, attr.type, attr.documentation);
       }
     }
@@ -72,16 +72,16 @@ export function collectAttributesDefault(tag: string, collector: AttributeCollec
 
 export function collectValuesDefault(tag: string, attribute: string, collector: (value: string) => void, tagSet: ITagSet, globalAttributes: StandaloneAttribute[], valueSets: IValueSets): void {
   function processAttributes (attributes: Attribute[]) {
-    for (let attr of attributes) {
-      let label = attr.label;
+    for (const attr of attributes) {
+      const label = attr.label;
       if (label !== attribute || !attr.type) {
         continue;
       }
-      let typeInfo = attr.type;
+      const typeInfo = attr.type;
       if (typeInfo === 'v') {
         collector(attribute);
       } else {
-        let values = valueSets[typeInfo];
+        const values = valueSets[typeInfo];
         if (values) {
           values.forEach(collector);
         }
@@ -89,9 +89,9 @@ export function collectValuesDefault(tag: string, attribute: string, collector: 
     }
   }
   if (tag) {
-    let tags = tagSet[tag];
+    const tags = tagSet[tag];
     if (tags) {
-      let attributes = tags.attributes;
+      const attributes = tags.attributes;
       if (attributes) {
         processAttributes(attributes);
       }

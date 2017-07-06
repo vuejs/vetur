@@ -100,8 +100,8 @@ class MultiLineStream {
   }
 
   public advanceIfRegExp(regex: RegExp): string {
-    let str = this.source.substr(this.position);
-    let match = str.match(regex);
+    const str = this.source.substr(this.position);
+    const match = str.match(regex);
     if (match) {
       this.position = this.position + match.index! + match[0].length;
       return match[0];
@@ -110,8 +110,8 @@ class MultiLineStream {
   }
 
   public advanceUntilRegExp(regex: RegExp): string {
-    let str = this.source.substr(this.position);
-    let match = str.match(regex);
+    const str = this.source.substr(this.position);
+    const match = str.match(regex);
     if (match) {
       this.position = this.position + match.index!;
       return match[0];
@@ -146,14 +146,14 @@ class MultiLineStream {
   }
 
   public skipWhitespace(): boolean {
-    let n = this.advanceWhileChar(ch => {
+    const n = this.advanceWhileChar(ch => {
       return ch === _WSP || ch === _TAB || ch === _NWL || ch === _LFD || ch === _CAR;
     });
     return n > 0;
   }
 
   public advanceWhileChar(condition: (ch: number) => boolean): number {
-    let posNow = this.position;
+    const posNow = this.position;
     while (this.position < this.len && condition(this.source.charCodeAt(this.position))) {
       this.position++;
     }
@@ -206,7 +206,7 @@ const htmlScriptContents: {[lang: string]: boolean} = {
 
 export function createScanner(input: string, initialOffset = 0, initialState: ScannerState = ScannerState.WithinContent): Scanner {
 
-  let stream = new MultiLineStream(input, initialOffset);
+  const stream = new MultiLineStream(input, initialOffset);
   let state = initialState;
   let tokenOffset: number = 0;
   let tokenType: number;
@@ -233,9 +233,9 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
   }
 
   function scan(): TokenType {
-    let offset = stream.pos();
-    let oldState = state;
-    let token = internalScan();
+    const offset = stream.pos();
+    const oldState = state;
+    const token = internalScan();
     if (token !== TokenType.EOS && offset === stream.pos()) {
       console.log('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
       stream.advance(1);
@@ -245,7 +245,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
   }
 
   function internalScan(): TokenType {
-    let offset = stream.pos();
+    const offset = stream.pos();
     if (stream.eos()) {
       return finishToken(offset, TokenType.EOS);
     }
@@ -288,7 +288,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
         stream.advanceUntilChar(_LAN);
         return finishToken(offset, TokenType.Content);
       case ScannerState.AfterOpeningEndTag:
-        let tagName = nextElementName();
+        const tagName = nextElementName();
         if (tagName.length > 0) {
           state = ScannerState.WithinEndTag;
           return finishToken(offset, TokenType.EndTag);
@@ -380,7 +380,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
         if (stream.skipWhitespace()) {
           return finishToken(offset, TokenType.Whitespace);
         }
-        let attributeValue = stream.advanceIfRegExp(/^[^\s"'`=<>\/]+/);
+        const attributeValue = stream.advanceIfRegExp(/^[^\s"'`=<>\/]+/);
         if (attributeValue.length > 0) {
           if (lastAttributeName === 'type') {
             lastTypeValue = attributeValue;
@@ -389,7 +389,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
           hasSpaceAfterTag = false;
           return finishToken(offset, TokenType.AttributeValue);
         }
-        let ch = stream.peekChar();
+        const ch = stream.peekChar();
         if (ch === _SQO || ch === _DQO) {
           stream.advance(1); // consume quote
           if (stream.advanceUntilChar(ch)) {
@@ -409,7 +409,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
         // see http://stackoverflow.com/questions/14574471/how-do-browsers-parse-a-script-tag-exactly
         let sciptState = 1;
         while (!stream.eos()) {
-          let match = stream.advanceIfRegExp(/<!--|-->|<\/?script\s*\/?>?/i);
+          const match = stream.advanceIfRegExp(/<!--|-->|<\/?script\s*\/?>?/i);
           if (match.length === 0) {
             stream.goToEnd();
             return finishToken(offset, TokenType.Script);

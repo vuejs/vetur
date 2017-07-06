@@ -5,7 +5,7 @@ import {
 
 import { provideCompletionItems } from '../completion-item';
 
-let setup: CompletionTestSetup = {
+const setup: CompletionTestSetup = {
   langId: 'stylus',
   docUri: 'test://test/test.styl',
   doComplete(doc, pos) {
@@ -13,7 +13,7 @@ let setup: CompletionTestSetup = {
   }
 };
 
-let stylus = testDSL(setup);
+const stylus = testDSL(setup);
 
 suite('Stylus Completion', () => {
   test('basic property', () => {
