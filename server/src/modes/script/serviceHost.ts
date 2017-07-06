@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as ts from 'typescript';
-import * as _ from 'lodash';
 import Uri from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
 
@@ -8,19 +7,15 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
 import * as bridge from './bridge';
 
-let vueSys: ts.System = (function() {
-  let sys: any = {};
-  for (let key of Object.keys(ts.sys)) {
-    sys[key] = (ts.sys as any)[key];
-  }
-  sys.fileExists = function (path: string) {
+let vueSys: ts.System = {
+  ...ts.sys,
+  fileExists(path: string) {
     if (path.endsWith('.vue.ts')) {
       return ts.sys.fileExists(path.slice(0, -3));
     }
     return ts.sys.fileExists(path);
   }
-  return sys;
-}());
+};
 
 export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let compilerOptions: ts.CompilerOptions = {
@@ -62,7 +57,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
     if (!scriptDocs.has(fileFsPath)) {
-      if (_.endsWith(fileFsPath, '.vue')) {
+      if (fileFsPath.endsWith('.vue')) {
         files.push(filePath);
       }
     }

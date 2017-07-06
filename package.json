@@ -9,7 +9,7 @@
   "scripts": {
     "compile": "tsc -p client",
     "precommit": "cd server && yarn && cd ../client && yarn",
-    "lint": "tslint server/src/**/*.ts client/src/**/*.ts",
+    "lint": "tslint 'server/src/**/*.ts' 'client/src/**/*.ts'",
     "sync:server": "cd server && npm publish",
     "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
     "sync": "npm run sync:server || npm run sync:client",
