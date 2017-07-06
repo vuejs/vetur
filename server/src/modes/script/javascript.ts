@@ -79,7 +79,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
             label: entry.name,
             sortText: entry.sortText,
             kind: convertKind(entry.kind),
-            textEdit: range ? TextEdit.replace(range, entry.name) : undefined,
+            textEdit: range && TextEdit.replace(range, entry.name),
             data: { // data used for resolving item details (see 'doResolve')
               languageId: doc.languageId,
               uri: doc.uri,
