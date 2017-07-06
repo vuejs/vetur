@@ -14,14 +14,14 @@ suite('HTML Symbols', () => {
 
     const TEST_URI = "test://test/test.html";
 
-    let assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
+    const assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
         assert.deepEqual(symbols, expected);
     };
 
-    let testSymbolsFor = function(value: string, expected: SymbolInformation[]) {
-    let document = TextDocument.create(TEST_URI, 'html', 0, value);
-    let htmlDoc = parseHTMLDocument(document);
-        let symbols = findDocumentSymbols(document, htmlDoc);
+    const testSymbolsFor = function(value: string, expected: SymbolInformation[]) {
+    const document = TextDocument.create(TEST_URI, 'html', 0, value);
+    const htmlDoc = parseHTMLDocument(document);
+        const symbols = findDocumentSymbols(document, htmlDoc);
         assertSymbols(symbols, expected);
     };
 
@@ -32,9 +32,9 @@ suite('HTML Symbols', () => {
     });
 
     test('Id and classes', function() {
-    let content = '<html id=\'root\'><body id="Foo" class="bar"><div class="a b"></div></body></html>';
+    const content = '<html id=\'root\'><body id="Foo" class="bar"><div class="a b"></div></body></html>';
 
-    let expected = [
+    const expected = [
       { name: 'html#root', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 80)) },
       { name: 'body#Foo.bar', kind: SymbolKind.Field, containerName: 'html#root', location: Location.create(TEST_URI, Range.create(0, 16, 0, 73)) },
             { name: 'div.a.b', kind: SymbolKind.Field, containerName: 'body#Foo.bar', location: Location.create(TEST_URI, Range.create(0, 43, 0, 66)) },
@@ -44,9 +44,9 @@ suite('HTML Symbols', () => {
   });
 
    test('Self closing', function() {
-    let content = '<html><br id="Foo"><br id=Bar></html>';
+    const content = '<html><br id="Foo"><br id=Bar></html>';
 
-    let expected = [
+    const expected = [
       { name: 'html', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 37)) },
       { name: 'br#Foo', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 6, 0, 19)) },
             { name: 'br#Bar', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 19, 0, 30)) },
@@ -56,9 +56,9 @@ suite('HTML Symbols', () => {
   });
 
   test('No attrib', function() {
-    let content = '<html><body><div></div></body></html>';
+    const content = '<html><body><div></div></body></html>';
 
-    let expected = [
+    const expected = [
       { name: 'html', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 37)) },
       { name: 'body', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 6, 0, 30)) },
       { name: 'div', kind: SymbolKind.Field, containerName: 'body', location: Location.create(TEST_URI, Range.create(0, 12, 0, 23)) }

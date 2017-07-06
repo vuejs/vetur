@@ -43,13 +43,13 @@ function getLangId(block: string, lang: string) {
 function testcase(description: string) {
   type Contents = { [block: string]: string | undefined };
 
-  let contents: Contents = {
+  const contents: Contents = {
     template: defaultTemplate,
     script: defaultScript,
     style: defaultStyle
   };
 
-  let langMap: { [block: string]: string } = {
+  const langMap: { [block: string]: string } = {
     template: '',
     script: '',
     style: ''
@@ -66,8 +66,8 @@ function testcase(description: string) {
 
   function generateContent() {
     let content = '';
-    for (let block of activeBlocks()) {
-      let startTag = block + genAttr(langMap[block]);
+    for (const block of activeBlocks()) {
+      const startTag = block + genAttr(langMap[block]);
       content += `<${startTag}>` + '\n' + contents[block] + '\n' + `</${block}>` + '\n';
     }
     return content;
@@ -88,7 +88,7 @@ function testcase(description: string) {
     },
     run() {
       let content = generateContent();
-      let offset = content.indexOf('|');
+      const offset = content.indexOf('|');
       if (offset >= 0) {
         content = content.substr(0, offset) + content.substr(offset + 1);
       }
@@ -106,8 +106,8 @@ function testcase(description: string) {
         if (offset >= 0) {
           const pos = doc.positionAt(offset);
           const language = getDocumentRegions(doc).getLanguageAtPosition(pos);
-          for (let block of blocks) {
-            let content = contents[block];
+          for (const block of blocks) {
+            const content = contents[block];
             if (content && content.indexOf('|') >= 0) {
               assert.equal(language, getLangId(block, langMap[block]));
               return;

@@ -93,9 +93,9 @@ export function isColor(node:StylusNode) : boolean {
  */
 export function buildAst(text:string) : StylusNode | null {
   try {
-    let root = new stylus.Parser(text).parse();
+    const root = new stylus.Parser(text).parse();
     // root is read only
-    let ret = JSON.parse(JSON.stringify(root.toJSON()));
+    const ret = JSON.parse(JSON.stringify(root.toJSON()));
     addScope(ret, 0, []);
     return ret;
   } catch (error) {
@@ -115,19 +115,19 @@ function addScope(root: StylusNode, seq: number, scope: number[]) {
   }
   root.__scope = scope;
   if (root.block) {
-    let vals = root.block.nodes || [];
+    const vals = root.block.nodes || [];
     for (let i = 0, l = vals.length; i < l; i++) {
       addScope(vals[i], i, scope.concat(seq));
     }
   }
   if (root.vals) {
-    let vals = root.vals;
+    const vals = root.vals;
     for (let i = 0, l = vals.length; i < l; i++) {
       addScope(vals[i], i, scope.concat());
     }
   }
   if (root.segments) {
-    for (let seg of root.segments) {
+    for (const seg of root.segments) {
       addScope(seg, seq, scope.concat());
     }
   }
@@ -135,7 +135,7 @@ function addScope(root: StylusNode, seq: number, scope: number[]) {
       addScope(root.expr, seq, scope.concat());
   }
   if (root.nodes) {
-    let vals = root.nodes;
+    const vals = root.nodes;
     for (let i = 0, l = vals.length; i < l; i++) {
       addScope(vals[i], i, scope.concat());
     }
@@ -161,8 +161,8 @@ export function flattenAndFilterAst(node: StylusNode, scope: number[] = []) : St
 
   if (node.nodes) {
     let i = 0;
-    for (let child of node.nodes) {
-      let newScope = scope.concat(i++);
+    for (const child of node.nodes) {
+      const newScope = scope.concat(i++);
       nested = nested.concat(flattenAndFilterAst(child, newScope));
     }
   }
@@ -176,7 +176,7 @@ export function flattenAndFilterAst(node: StylusNode, scope: number[] = []) : St
 
 export function findNodeAtPosition(root: StylusNode, pos: Position, needBlock = false): StylusNode | null {
   // DFS: first find leaf node
-  let block = root.block;
+  const block = root.block;
   let children: StylusNode[] = [];
   if (block) {
     children = [block]; //needBlock ? [block] : (block.nodes || [])
@@ -193,8 +193,8 @@ export function findNodeAtPosition(root: StylusNode, pos: Position, needBlock = 
   if (root.val) {
     children.push(root.val);
   }
-  for (let child of children) {
-    let ret = findNodeAtPosition(child, pos);
+  for (const child of children) {
+    const ret = findNodeAtPosition(child, pos);
     if (ret) {
       return ret;
     }

@@ -114,8 +114,8 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
 
   let includesEnd = true;
   if (currRange) {
-    let startOffset = document.offsetAt(currRange.start);
-    let endOffset = document.offsetAt(currRange.end);
+    const startOffset = document.offsetAt(currRange.start);
+    const endOffset = document.offsetAt(currRange.end);
     includesEnd = endOffset === value.length;
     value = value.substring(startOffset, endOffset);
   } else {

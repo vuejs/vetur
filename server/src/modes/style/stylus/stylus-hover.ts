@@ -14,13 +14,13 @@ import * as cssSchema from './css-schema';
 import * as _ from 'lodash';
 
 export function stylusHover(document: TextDocument, position: Position): Hover {
-  let ast = buildAst(document.getText());
+  const ast = buildAst(document.getText());
   if (!ast) {
     return {
       contents: ''
     };
   }
-  let node = findNodeAtPosition(ast, position);
+  const node = findNodeAtPosition(ast, position);
   if (!node) {
     return {
       contents: 'no node found!'
@@ -28,7 +28,7 @@ export function stylusHover(document: TextDocument, position: Position): Hover {
   }
 
   if (node.__type === 'Property') {
-    let property = node.segments[0].name;
+    const property = node.segments[0].name;
     const properties = cssSchema.data.css.properties;
     const item = _.find(properties, item => item.name === property);
     const lineno = node.lineno - 1;

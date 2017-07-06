@@ -35,7 +35,7 @@ let veturFormattingOptions = {};
 // in the passed params the rootPath of the workspace plus the client capabilites
 connection.onInitialize((params: InitializeParams): InitializeResult => {
   console.log('vetur initialized');
-  let initializationOptions = params.initializationOptions;
+  const initializationOptions = params.initializationOptions;
 
   workspacePath = params.rootPath || process.cwd();
 
@@ -97,11 +97,11 @@ connection.onDidChangeConfiguration((change) => {
   });
   documents.all().forEach(triggerValidation);
 
-  let documentSelector: DocumentSelector = [{ language: 'vue' }];
+  const documentSelector: DocumentSelector = [{ language: 'vue' }];
   formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
 });
 
-let pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
+const pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
 const validationDelayMs = 200;
 
 // When the text document first opened or when its content has changed.
@@ -248,8 +248,8 @@ connection.onDocumentLinks(documentLinkParam => {
 });
 
 connection.onDocumentSymbol(documentSymbolParms => {
-  let document = documents.get(documentSymbolParms.textDocument.uri);
-  let symbols: SymbolInformation[] = [];
+  const document = documents.get(documentSymbolParms.textDocument.uri);
+  const symbols: SymbolInformation[] = [];
   languageModes.getAllModesInDocument(document).forEach(m => {
     if (m.findDocumentSymbols) {
       pushAll(symbols, m.findDocumentSymbols(document));

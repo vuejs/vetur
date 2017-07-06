@@ -23,9 +23,9 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
     return vueDocument.getEmbeddedDocument('javascript');
   });
 
-  let serviceHost = getServiceHost(workspacePath, jsDocuments);
-  let { updateCurrentTextDocument } = serviceHost;
-  let settings: any = {};
+  const serviceHost = getServiceHost(workspacePath, jsDocuments);
+  const { updateCurrentTextDocument } = serviceHost;
+  const settings: any = {};
 
   return {
     getId () {
@@ -37,7 +37,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
     },
     doValidation (doc: TextDocument): Diagnostic[] {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -57,7 +57,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       });
     },
     doComplete (doc: TextDocument, position: Position): CompletionList {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return { isIncomplete: false, items: [] };
       }
@@ -90,7 +90,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       };
     },
     doResolve (doc: TextDocument, item: CompletionItem): CompletionItem {
-      let { service } = updateCurrentTextDocument(doc);
+      const { service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_COMPLETION;
       }
@@ -105,7 +105,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return item;
     },
     doHover (doc: TextDocument, position: Position): Hover {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return { contents: [] };
       }
@@ -115,7 +115,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       if (info) {
         const display = ts.displayPartsToString(info.displayParts);
         const doc = ts.displayPartsToString(info.documentation);
-        let markedContents: MarkedString[] = [
+        const markedContents: MarkedString[] = [
           { language: 'ts', value: display }
         ];
         if (doc) {
@@ -129,7 +129,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return { contents: [] };
     },
     doSignatureHelp (doc: TextDocument, position: Position): SignatureHelp {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_SIGNATURE;
       }
@@ -171,7 +171,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return ret;
     },
     findDocumentHighlight (doc: TextDocument, position: Position): DocumentHighlight[] {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -189,7 +189,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return [];
     },
     findDocumentSymbols (doc: TextDocument): SymbolInformation[] {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -217,7 +217,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
           }
 
           if (item.childItems && item.childItems.length > 0) {
-            for (let child of item.childItems) {
+            for (const child of item.childItems) {
               collectSymbols(child, containerLabel);
             }
           }
@@ -230,7 +230,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return [];
     },
     findDefinition (doc: TextDocument, position: Position): Definition {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -248,7 +248,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       });
     },
     findReferences (doc: TextDocument, position: Position): Location[] {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -266,17 +266,17 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return [];
     },
     format (doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
-      let { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
 
       const fileFsPath = getFileFsPath(doc.uri);
       const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
       const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
       const start = scriptDoc.offsetAt(range.start);
-      let end = scriptDoc.offsetAt(range.end);
+      const end = scriptDoc.offsetAt(range.end);
       const edits = service.getFormattingEditsForRange(fileFsPath, start, end, formatSettings);
       if (edits) {
         const result = [];
-        for (let edit of edits) {
+        for (const edit of edits) {
           if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
             result.push({
               range: convertRange(scriptDoc, edit.span),
@@ -289,7 +289,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return [];
     },
     findComponents(doc: TextDocument) {
-      let { service } = updateCurrentTextDocument(doc);
+      const { service } = updateCurrentTextDocument(doc);
       // TODO: refine component info collection
       const fileFsPath = getFileFsPath(doc.uri);
       const program = service.getProgram();

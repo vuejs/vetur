@@ -30,12 +30,12 @@ export function isEmptyElement(e: string): boolean {
 }
 
 function genAttr(attrString: string) {
-  let [label, type] = attrString.split(':');
+  const [label, type] = attrString.split(':');
   return {label, type};
 }
 
 function genTag(label: string, attrs?: string[]): HTMLTagSpecification {
-  let attributes: Attribute[] | undefined = attrs && attrs.map(genAttr);
+  const attributes: Attribute[] | undefined = attrs && attrs.map(genAttr);
   return new HTMLTagSpecification(label, attributes);
 }
 
@@ -319,7 +319,7 @@ export const HTML_TAGS: ITagSet = {
 };
 
 export function getHTML5TagProvider(): IHTMLTagProvider {
-  let globalAttributes = [
+  const globalAttributes = [
     'aria-activedescendant', 'aria-atomic:b', 'aria-autocomplete:autocomplete',
     'aria-busy:b', 'aria-checked:tristate', 'aria-colcount', 'aria-colindex',
     'aria-colspan', 'aria-controls', 'aria-current:current', 'aria-describedat',
@@ -336,12 +336,12 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
     'title', 'translate:y'
   ].map(genAttr);
 
-  let eventHandlers = ['abort', 'blur', 'canplay', 'canplaythrough', 'change', 'click', 'contextmenu', 'dblclick', 'drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart',
+  const eventHandlers = ['abort', 'blur', 'canplay', 'canplaythrough', 'change', 'click', 'contextmenu', 'dblclick', 'drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart',
     'drop', 'durationchange', 'emptied', 'ended', 'error', 'focus', 'formchange', 'forminput', 'input', 'invalid', 'keydown', 'keypress', 'keyup', 'load', 'loadeddata', 'loadedmetadata',
     'loadstart', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'mousewheel', 'pause', 'play', 'playing', 'progress', 'ratechange', 'reset', 'resize', 'readystatechange', 'scroll',
     'seeked', 'seeking', 'select', 'show', 'stalled', 'submit', 'suspend', 'timeupdate', 'volumechange', 'waiting'];
 
-  let valueSets: IValueSets = {
+  const valueSets: IValueSets = {
     b: ['true', 'false'],
     u: ['true', 'false', 'undefined'],
     o: ['on', 'off'],
@@ -404,8 +404,8 @@ function binarySearch<T>(array: T[], key: T, comparator: (op1: T, op2: T) => num
     high = array.length - 1;
 
   while (low <= high) {
-    let mid = ((low + high) / 2) | 0;
-    let comp = comparator(array[mid], key);
+    const mid = ((low + high) / 2) | 0;
+    const comp = comparator(array[mid], key);
     if (comp < 0) {
       low = mid + 1;
     } else if (comp > 0) {

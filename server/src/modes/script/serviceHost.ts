@@ -7,7 +7,7 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
 import * as bridge from './bridge';
 
-let vueSys: ts.System = {
+const vueSys: ts.System = {
   ...ts.sys,
   fileExists(path: string) {
     if (path.endsWith('.vue.ts')) {
@@ -28,8 +28,8 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     allowSyntheticDefaultImports: true
   };
   let currentScriptDoc: TextDocument;
-  let versions = new Map<string, number>();
-  let scriptDocs = new Map<string, TextDocument>();
+  const versions = new Map<string, number>();
+  const scriptDocs = new Map<string, TextDocument>();
 
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
@@ -63,7 +63,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     }
     if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = jsDocuments.get(doc);
-      let lastDoc = scriptDocs.get(fileFsPath);
+      const lastDoc = scriptDocs.get(fileFsPath);
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         jsLanguageService.dispose();
@@ -86,7 +86,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         return '0';
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
-      let version = versions.get(normalizedFileFsPath);
+      const version = versions.get(normalizedFileFsPath);
       return version ? version.toString() : '0';
     },
     getScriptKind (fileName) {
@@ -142,7 +142,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     },
     getScriptSnapshot: (fileName: string) => {
       if (fileName === bridge.fileName) {
-        let text = bridge.content;
+        const text = bridge.content;
         return {
           getText: (start, end) => text.substring(start, end),
           getLength: () => text.length,
@@ -150,7 +150,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         };
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
-      let doc = scriptDocs.get(normalizedFileFsPath);
+      const doc = scriptDocs.get(normalizedFileFsPath);
       let text = doc ? doc.getText() : (ts.sys.readFile(normalizedFileFsPath) || '');
       if (!doc && isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because

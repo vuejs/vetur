@@ -18,18 +18,18 @@ suite('HTML Parser', () => {
   }
 
   function assertDocument(input: string, expected: any) {
-    let document = parse(input);
+    const document = parse(input);
     assert.deepEqual(document.roots.map(toJSON), expected);
   }
 
   function assertNodeBefore(input: string, offset: number, expectedTag?: string) {
-    let document = parse(input);
-    let node = document.findNodeBefore(offset);
+    const document = parse(input);
+    const node = document.findNodeBefore(offset);
     assert.equal(node ? node.tag : '', expectedTag, "offset " + offset);
   }
 
   function assertAttributes(input: string, expected: any) {
-    let document = parse(input);
+    const document = parse(input);
     assert.deepEqual(document.roots.map(toJSONWithAttributes), expected);
   }
 
@@ -63,7 +63,7 @@ suite('HTML Parser', () => {
   });
 
   test('FindNodeBefore', () => {
-    let str = '<div><input type="button"><span><br><hr></span></div>';
+    const str = '<div><input type="button"><span><br><hr></span></div>';
     assertNodeBefore(str, 0);
     assertNodeBefore(str, 1, 'div');
     assertNodeBefore(str, 5, 'div');
@@ -85,14 +85,14 @@ suite('HTML Parser', () => {
   });
 
   test('FindNodeBefore - incomplete node', () => {
-    let str = '<div><span><br></div>';
+    const str = '<div><span><br></div>';
     assertNodeBefore(str, 15, 'br');
     assertNodeBefore(str, 18, 'br');
     assertNodeBefore(str, 21, 'div');
   });
 
   test('Attributes', () => {
-    let str = '<div class="these are my-classes" id="test"><span aria-describedby="test"></span></div>';
+    const str = '<div class="these are my-classes" id="test"><span aria-describedby="test"></span></div>';
     assertAttributes(str, [{
       tag: 'div',
       attributes: {
@@ -110,7 +110,7 @@ suite('HTML Parser', () => {
   });
 
   test('Attributes without value', () => {
-    let str = '<div checked id="test"></div>';
+    const str = '<div checked id="test"></div>';
     assertAttributes(str, [{
       tag: 'div',
       attributes: {

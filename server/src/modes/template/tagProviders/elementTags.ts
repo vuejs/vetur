@@ -20,7 +20,7 @@ export function getElementTagProvider(): IHTMLTagProvider {
       if (!attrs) {
         return;
       }
-      for (let attr of attrs) {
+      for (const attr of attrs) {
         const detail = findAttributeDetail(tag, attr);
         collector(attr, undefined, detail && detail.description || '');
       }

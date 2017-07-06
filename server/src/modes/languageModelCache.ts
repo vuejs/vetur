@@ -15,7 +15,7 @@ export function getLanguageModelCache<T>(maxEntries: number, cleanupIntervalTime
     cleanupInterval = setInterval(() => {
       const cutoffTime = Date.now() - cleanupIntervalTimeInSec * 1000;
       const uris = Object.keys(languageModels);
-      for (let uri of uris) {
+      for (const uri of uris) {
         const languageModelInfo = languageModels[uri];
         if (languageModelInfo.cTime < cutoffTime) {
           delete languageModels[uri];
@@ -43,8 +43,8 @@ export function getLanguageModelCache<T>(maxEntries: number, cleanupIntervalTime
       if (nModels === maxEntries) {
         let oldestTime = Number.MAX_VALUE;
         let oldestUri = null;
-        for (let uri in languageModels) {
-          let languageModelInfo = languageModels[uri];
+        for (const uri in languageModels) {
+          const languageModelInfo = languageModels[uri];
           if (languageModelInfo.cTime < oldestTime) {
             oldestUri = uri;
             oldestTime = languageModelInfo.cTime;

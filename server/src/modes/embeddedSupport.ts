@@ -122,8 +122,8 @@ function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | n
         unClosedTemplate--;
       } else if (token === TokenType.Unknown) {
         if (scanner.getTokenText().charAt(0) === '<') {
-          let offset = scanner.getTokenOffset();
-          let unknownText = text.substr(offset, 11);
+          const offset = scanner.getTokenOffset();
+          const unknownText = text.substr(offset, 11);
           if (unknownText === '</template>') {
             unClosedTemplate--;
           }
@@ -159,7 +159,7 @@ function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], r
   let currentPos = range ? range.start : Position.create(0, 0);
   let currentOffset = range ? document.offsetAt(range.start) : 0;
   const endOffset = range ? document.offsetAt(range.end) : document.getText().length;
-  for (let region of regions) {
+  for (const region of regions) {
     if (region.end > currentOffset && region.start < endOffset) {
       const start = Math.max(region.start, currentOffset);
       const startPos = document.positionAt(start);
@@ -196,7 +196,7 @@ function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], r
 
 function getLanguagesInDocument (document: TextDocument, regions: EmbeddedRegion[]): string[] {
   const result = ['vue'];
-  for (let region of regions) {
+  for (const region of regions) {
     if (region.languageId && result.indexOf(region.languageId) === -1) {
       result.push(region.languageId);
     }
@@ -206,7 +206,7 @@ function getLanguagesInDocument (document: TextDocument, regions: EmbeddedRegion
 
 function getLanguageAtPosition (document: TextDocument, regions: EmbeddedRegion[], position: Position): string {
   const offset = document.offsetAt(position);
-  for (let region of regions) {
+  for (const region of regions) {
     if (region.start <= offset) {
       if (offset <= region.end) {
         return region.languageId;
@@ -219,9 +219,9 @@ function getLanguageAtPosition (document: TextDocument, regions: EmbeddedRegion[
 }
 
 function getEmbeddedDocument (document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {
-  let oldContent = document.getText();
+  const oldContent = document.getText();
   let result = '';
-  for (let c of contents) {
+  for (const c of contents) {
     if (c.languageId === languageId) {
       result = oldContent.substring(0, c.start).replace(/./g, ' ');
       result += oldContent.substring(c.start, c.end);

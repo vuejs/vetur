@@ -22,7 +22,7 @@ export function activate (context: ExtensionContext) {
   const documentSelector = ['vue'];
   const veturConfig = workspace.getConfiguration('vetur');
 
-  let clientOptions: LanguageClientOptions = {
+  const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
       configurationSection: ['vetur'] // the settings to synchronize
@@ -34,8 +34,8 @@ export function activate (context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  let client = new LanguageClient('vue', 'Vue Language Server', serverOptions, clientOptions);
-  let disposable = client.start();
+  const client = new LanguageClient('vue', 'Vue Language Server', serverOptions, clientOptions);
+  const disposable = client.start();
   context.subscriptions.push(disposable);
 
   languages.setLanguageConfiguration('vue-html', {

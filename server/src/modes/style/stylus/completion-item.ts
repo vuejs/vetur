@@ -144,7 +144,7 @@ function isVisible(useSite: number[] | undefined, defSite: number[] | undefined)
   if (useSite.length < defSite.length) {
     return false;
   }
-  for (let [use, def] of _.zip(useSite, defSite)) {
+  for (const [use, def] of _.zip(useSite, defSite)) {
     if (use > def) {
       return false;
     }
@@ -269,13 +269,13 @@ export function provideCompletionItems(document: TextDocument, position: Positio
   let completions: CompletionItem[] = [];
 
   if (value) {
-    let values = getValues(cssSchema, currentWord);
-    let symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind === CompletionItemKind.Variable || item.kind === CompletionItemKind.Function);
+    const values = getValues(cssSchema, currentWord);
+    const symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind === CompletionItemKind.Variable || item.kind === CompletionItemKind.Function);
     completions = completions.concat(values, symbols, builtIn);
   } else {
-    let atRules = getAtRules(cssSchema, currentWord);
-    let properties = getProperties(cssSchema, currentWord, false);
-    let symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind !== CompletionItemKind.Variable);
+    const atRules = getAtRules(cssSchema, currentWord);
+    const properties = getProperties(cssSchema, currentWord, false);
+    const symbols = getAllSymbols(text, currentWord, position).filter(item => item.kind !== CompletionItemKind.Variable);
     completions = completions.concat(properties, atRules, symbols);
   }
   return {
