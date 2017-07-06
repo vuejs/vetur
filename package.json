@@ -8,7 +8,8 @@
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client",
-    "precommit": "cd server && yarn && cd ../client && yarn",
+    "precommit": "npm run lint",
+    "prepush": "npm run test",
     "lint": "tslint 'server/src/**/*.ts' 'client/src/**/*.ts'",
     "sync:server": "cd server && npm publish",
     "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
@@ -200,7 +201,7 @@
     }
   },
   "devDependencies": {
-    "husky": "^0.13.4",
+    "husky": "^0.14.3",
     "tslint": "^5.4.3",
     "typescript": "^2.3.4"
   }
