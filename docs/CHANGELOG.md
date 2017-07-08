@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.9.0 | 2017-07-08
+
+- Onsen UI support. #308.
+- Suppress all Vetur error logs (still accessible in output tab). #296.
+- Fix an error for using `lang` http attributes in `<template>`. #293.
+- Fix path mapping error. #301 and #213.
+- Fix a bug where typing `import` at top of `<script>` causes VLS crash. #285.
+
 ### 0.8.7 | 2017-06-28
 
 - Upgrade eslint-plugin-vue to address some template linting issues. #294.
