@@ -2048,9 +2048,13 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.1.4, typescript@^2.3.4:
+typescript@^2.1.4:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.0.tgz#aef5a8d404beba36ad339abf079ddddfffba86dd"
+
+typescript@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.1.tgz#c3ccb16ddaa0b2314de031e7e6fee89e5ba346bc"
 
 unique-stream@^2.0.2:
   version "2.2.1"
@@ -2215,9 +2219,9 @@ vue-eslint-parser@^1.1.0-7:
     lodash.sortedindexby "^4.6.0"
     parse5 "^3.0.0"
 
-vue-language-server@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.8.tgz#9a0d24bbc57129ed8b7973c39578538e5f1138f8"
+vue-language-server@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.9.tgz#0275f21256cbd28438aa4701d2c8c6d8539292f3"
   dependencies:
     element-helper-json "^1.0.0"
     eslint "^4.0.0"
@@ -2225,10 +2229,15 @@ vue-language-server@^0.0.8:
     js-beautify "^1.6.14"
     lodash "^4.17.4"
     stylus "^0.54.5"
-    typescript "^2.3.4"
+    typescript "^2.4.1"
     vscode-css-languageservice "^2.0.0"
     vscode-languageserver "^3.3.0"
     vscode-uri "^1.0.1"
+    vue-onsenui-helper-json "^1.0.0"
+
+vue-onsenui-helper-json@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue-onsenui-helper-json/-/vue-onsenui-helper-json-1.0.0.tgz#9b70ce18fd0d0138a0b9b68b914340036deabae7"
 
 wordwrap@~1.0.0:
   version "1.0.0"
