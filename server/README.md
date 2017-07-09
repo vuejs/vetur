@@ -1,11 +1,9 @@
-VueJS Language Server
------
+## VueJS Language Server
 
 Vue Language Server is a standalone server implementation for editors.
 
 
-Usage
------
+## Usage
 
 There is two ways to integrate VLS into editors.
 
