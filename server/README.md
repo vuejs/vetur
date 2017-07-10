@@ -1,4 +1,4 @@
-## VueJS Language Server
+## Vue Language Server
 
 Vue Language Server is a standalone server implementation for editors.
 
