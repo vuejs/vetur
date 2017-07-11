@@ -146,11 +146,14 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
           };
         }
         if (path.isAbsolute(name) || !isVue(name)) {
-          return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule!;
+          return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule;
         }
         const resolved = ts.resolveModuleName(name, containingFile, compilerOptions, vueSys).resolvedModule;
         if (!resolved) {
           return undefined as any;
+        }
+        if (!resolved.resolvedFileName.endsWith('.vue.ts')) {
+          return resolved;
         }
         const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
         const uri = Uri.file(resolvedFileName);
