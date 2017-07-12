@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.9.1 | 2017-07-12
+
+- Fix a crash for importing non-existing .vue.ts file. #321.
+
 ### 0.9.0 | 2017-07-08
 
 - Onsen UI support. #308.
