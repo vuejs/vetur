@@ -7,15 +7,37 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
 import * as bridge from './bridge';
 
+function isProjectVue(path: string) {
+  return path.endsWith('.vue.ts') && !path.includes('node_modules');
+}
+
 const vueSys: ts.System = {
   ...ts.sys,
   fileExists(path: string) {
-    if (path.endsWith('.vue.ts')) {
+    if (isProjectVue(path)) {
       return ts.sys.fileExists(path.slice(0, -3));
     }
     return ts.sys.fileExists(path);
+  },
+  readFile(path, encoding) {
+    if (isProjectVue(path)) {
+      const ret = ts.sys.readFile(path.slice(0, -3), encoding);
+      return parseVue(ret);
+    }
+    const ret = ts.sys.readFile(path, encoding);
+    return ret;
   }
 };
+
+if (ts.sys.realpath) {
+  const realpath = ts.sys.realpath;
+  vueSys.realpath = function(path) {
+    if (isProjectVue(path)) {
+      return realpath(path.slice(0, -3)) + '.ts';
+    }
+    return realpath(path);
+  };
+}
 
 export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let compilerOptions: ts.CompilerOptions = {
@@ -107,11 +129,11 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     },
 
     // resolve @types, see https://github.com/Microsoft/TypeScript/issues/16772
-    getDirectories: ts.sys.getDirectories,
-    directoryExists: ts.sys.directoryExists,
-    fileExists: ts.sys.fileExists,
-    readFile: ts.sys.readFile,
-    readDirectory: ts.sys.readDirectory,
+    getDirectories: vueSys.getDirectories,
+    directoryExists: vueSys.directoryExists,
+    fileExists: vueSys.fileExists,
+    readFile: vueSys.readFile,
+    readDirectory: vueSys.readDirectory,
 
     resolveModuleNames (moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
       // in the normal case, delegate to ts.resolveModuleName
@@ -124,11 +146,14 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
           };
         }
         if (path.isAbsolute(name) || !isVue(name)) {
-          return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule!;
+          return ts.resolveModuleName(name, containingFile, compilerOptions, ts.sys).resolvedModule;
         }
         const resolved = ts.resolveModuleName(name, containingFile, compilerOptions, vueSys).resolvedModule;
         if (!resolved) {
           return undefined as any;
+        }
+        if (!resolved.resolvedFileName.endsWith('.vue.ts')) {
+          return resolved;
         }
         const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
         const uri = Uri.file(resolvedFileName);
