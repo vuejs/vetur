@@ -7,32 +7,33 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
 import * as bridge from './bridge';
 
-function isProjectVue(path: string) {
+function isVueProject(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
 }
 
 const vueSys: ts.System = {
   ...ts.sys,
   fileExists(path: string) {
-    if (isProjectVue(path)) {
+    if (isVueProject(path)) {
       return ts.sys.fileExists(path.slice(0, -3));
     }
     return ts.sys.fileExists(path);
   },
   readFile(path, encoding) {
-    if (isProjectVue(path)) {
-      const ret = ts.sys.readFile(path.slice(0, -3), encoding);
-      return parseVue(ret);
+    if (isVueProject(path)) {
+      const fileText = ts.sys.readFile(path.slice(0, -3), encoding);
+      return parseVue(fileText);
+    } else {
+      const fileText = ts.sys.readFile(path, encoding);
+      return fileText;
     }
-    const ret = ts.sys.readFile(path, encoding);
-    return ret;
   }
 };
 
 if (ts.sys.realpath) {
   const realpath = ts.sys.realpath;
   vueSys.realpath = function(path) {
-    if (isProjectVue(path)) {
+    if (isVueProject(path)) {
       return realpath(path.slice(0, -3)) + '.ts';
     }
     return realpath(path);
@@ -176,15 +177,15 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
       const doc = scriptDocs.get(normalizedFileFsPath);
-      let text = doc ? doc.getText() : (ts.sys.readFile(normalizedFileFsPath) || '');
+      let fileText = doc ? doc.getText() : (ts.sys.readFile(normalizedFileFsPath) || '');
       if (!doc && isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
-        text = parseVue(text);
+        fileText = parseVue(fileText);
       }
       return {
-        getText: (start, end) => text.substring(start, end),
-        getLength: () => text.length,
+        getText: (start, end) => fileText.substring(start, end),
+        getLength: () => fileText.length,
         getChangeRange: () => void 0
       };
     },
