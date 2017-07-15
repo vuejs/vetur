@@ -83,12 +83,34 @@ export default {
 `
     },
     {
+      label: 'style with CSS (scoped)',
+      documentation: 'Scaffold <style> with CSS (scoped)',
+      kind: CompletionItemKind.Snippet,
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText:
+`<style scoped>
+\${0}
+</style>
+`
+    },
+    {
       label: 'style with scss',
       documentation: 'Scaffold <style> with scss',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="scss">
+\${0}
+</style>
+`
+    },
+    {
+      label: 'style with scss (scoped)',
+      documentation: 'Scaffold <style> with scss (scoped)',
+      kind: CompletionItemKind.Snippet,
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText:
+`<style lang="scss" scoped>
 \${0}
 </style>
 `
@@ -105,12 +127,34 @@ export default {
 `
     },
     {
+      label: 'style with less (scoped)',
+      documentation: 'Scaffold <style> with less (scoped)',
+      kind: CompletionItemKind.Snippet,
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText:
+`<style lang="less" scoped>
+\${0}
+</style>
+`
+    },
+    {
       label: 'style with sass',
       documentation: 'Scaffold <style> with sass',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="sass">
+\${0}
+</style>
+`
+    },
+    {
+      label: 'style with sass (scoped)',
+      documentation: 'Scaffold <style> with sass (scoped)',
+      kind: CompletionItemKind.Snippet,
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText:
+`<style lang="sass" scoped>
 \${0}
 </style>
 `
@@ -127,12 +171,34 @@ export default {
 `
     },
     {
+      label: 'style with postcss (scoped)',
+      documentation: 'Scaffold <style> with postcss (scoped)',
+      kind: CompletionItemKind.Snippet,
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText:
+`<style lang="postcss" scoped>
+\${0}
+</style>
+`
+    },
+    {
       label: 'style with stylus',
       documentation: 'Scaffold <style> with stylus',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
       insertText:
 `<style lang="stylus">
+\${0}
+</style>
+`
+    },
+    {
+      label: 'style with stylus (scoped)',
+      documentation: 'Scaffold <style> with stylus (scoped)',
+      kind: CompletionItemKind.Snippet,
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText:
+`<style lang="stylus" scoped>
 \${0}
 </style>
 `
