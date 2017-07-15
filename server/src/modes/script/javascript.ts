@@ -17,10 +17,7 @@ export interface ScriptMode extends LanguageMode {
 export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): ScriptMode {
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
-    if (vueDocument.getLanguagesInDocument().indexOf('typescript') > -1) {
-      return vueDocument.getEmbeddedDocument('typescript');
-    }
-    return vueDocument.getEmbeddedDocument('javascript');
+    return vueDocument.getEmbeddedDocumentByType('script');
   });
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);

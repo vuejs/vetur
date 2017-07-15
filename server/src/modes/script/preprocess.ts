@@ -15,12 +15,8 @@ export function isVue (filename: string): boolean {
 export function parseVue (text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getDocumentRegions(doc);
-  const langs = regions.getLanguagesInDocument();
-  if (langs.indexOf('typescript') < 0 && langs.indexOf('javascript') < 0) {
-    return text.replace(/./g, ' ') + 'export default {};';
-  }
-  const scriptLang = langs.indexOf('typescript') >= 0 ? 'typescript' : 'javascript';
-  return regions.getEmbeddedDocument(scriptLang).getText();
+  const script = regions.getEmbeddedDocumentByType('script');
+  return script.getText() || 'export default {};';
 }
 
 export function createUpdater () {
