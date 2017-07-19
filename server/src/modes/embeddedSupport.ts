@@ -10,13 +10,27 @@ export interface LanguageRange extends Range {
 
 export interface VueDocumentRegions {
   getEmbeddedDocument (languageId: string): TextDocument;
+  getEmbeddedDocumentByType (type: EmbeddedType): TextDocument;
   getLanguageRanges (range: Range): LanguageRange[];
   getLanguageAtPosition (position: Position): string;
   getLanguagesInDocument (): string[];
   getImportedScripts (): string[];
 }
 
-interface EmbeddedRegion { languageId: string; start: number; end: number; }
+type EmbeddedType = 'template' | 'script' | 'style' | 'custom';
+
+interface EmbeddedRegion {
+  languageId: string;
+  start: number;
+  end: number;
+  type: EmbeddedType;
+}
+
+const defaultType: {[type: string]: string} = {
+  template: 'vue-html',
+  script: 'javascript',
+  style: 'css',
+};
 
 export function getDocumentRegions (document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];
@@ -32,17 +46,19 @@ export function getDocumentRegions (document: TextDocument): VueDocumentRegions 
     switch (token) {
       case TokenType.Styles:
         regions.push({
-          languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType) ? languageIdFromType : 'css',
+          languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType) ? languageIdFromType : defaultType['style'],
           start: scanner.getTokenOffset(),
-          end: scanner.getTokenEnd()
+          end: scanner.getTokenEnd(),
+          type: 'style'
         });
         languageIdFromType = '';
         break;
       case TokenType.Script:
         regions.push({
-          languageId: languageIdFromType ? languageIdFromType : 'javascript',
+          languageId: languageIdFromType ? languageIdFromType : defaultType['script'],
           start: scanner.getTokenOffset(),
-          end: scanner.getTokenEnd()
+          end: scanner.getTokenEnd(),
+          type: 'script'
         });
         languageIdFromType = '';
         break;
@@ -81,6 +97,7 @@ export function getDocumentRegions (document: TextDocument): VueDocumentRegions 
   return {
     getLanguageRanges: (range: Range) => getLanguageRanges(document, regions, range),
     getEmbeddedDocument: (languageId: string) => getEmbeddedDocument(document, regions, languageId),
+    getEmbeddedDocumentByType: (type: EmbeddedType) => getEmbeddedDocumentByType(document, regions, type),
     getLanguageAtPosition: (position: Position) => getLanguageAtPosition(document, regions, position),
     getLanguagesInDocument: () => getLanguagesInDocument(document, regions),
     getImportedScripts: () => importedScripts
@@ -139,7 +156,8 @@ function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | n
   return {
     languageId,
     start,
-    end
+    end,
+    type: 'template'
   };
 }
 
@@ -229,4 +247,17 @@ function getEmbeddedDocument (document: TextDocument, contents: EmbeddedRegion[]
     }
   }
   return TextDocument.create(document.uri, languageId, document.version, result);
+}
+
+function getEmbeddedDocumentByType (document: TextDocument, contents: EmbeddedRegion[], type: EmbeddedType): TextDocument {
+  const oldContent = document.getText();
+  let result = '';
+  for (const c of contents) {
+    if (c.type === type) {
+      result = oldContent.substring(0, c.start).replace(/./g, ' ');
+      result += oldContent.substring(c.start, c.end);
+      return TextDocument.create(document.uri, c.languageId, document.version, result);
+    }
+  }
+  return TextDocument.create(document.uri, defaultType[type], document.version, result);
 }

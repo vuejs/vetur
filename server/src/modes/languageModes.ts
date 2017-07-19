@@ -62,6 +62,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
     less: getLESSMode(documentRegions),
     stylus: getStylusMode(documentRegions),
     javascript: jsMode,
+    tsx: jsMode,
     typescript: jsMode
   };
 

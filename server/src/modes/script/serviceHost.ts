@@ -40,6 +40,12 @@ if (ts.sys.realpath) {
   };
 }
 
+function getScriptKind(langId: string): ts.ScriptKind {
+  return langId === 'typescript' ? ts.ScriptKind.TS
+    : langId === 'tsx' ? ts.ScriptKind.TSX
+    : ts.ScriptKind.JS;
+}
+
 export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let compilerOptions: ts.CompilerOptions = {
     allowNonTsExtensions: true,
@@ -48,6 +54,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     target: ts.ScriptTarget.Latest,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
     module: ts.ModuleKind.CommonJS,
+    jsx: ts.JsxEmit.Preserve,
     allowSyntheticDefaultImports: true
   };
   let currentScriptDoc: TextDocument;
@@ -118,7 +125,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         fileName = uri.fsPath;
         const doc = scriptDocs.get(fileName) ||
           jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName)));
-        return doc.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
+        return getScriptKind(doc.languageId);
       }
       else {
         if (fileName === bridge.fileName) {
@@ -160,10 +167,10 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         const uri = Uri.file(resolvedFileName);
         const doc = scriptDocs.get(resolvedFileName) ||
           jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
-        return {
-          resolvedFileName,
-          extension: doc.languageId === 'typescript' ? ts.Extension.Ts : ts.Extension.Js,
-        };
+        const extension = doc.languageId === 'typescript' ? ts.Extension.Ts
+          : doc.languageId === 'tsx' ? ts.Extension.Tsx
+          : ts.Extension.Js;
+        return { resolvedFileName, extension };
       });
     },
     getScriptSnapshot: (fileName: string) => {
