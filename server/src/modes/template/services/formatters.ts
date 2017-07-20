@@ -15,7 +15,7 @@ export function htmlFormat(document: TextDocument, currRange: Range, formattingO
     htmlFormattingOptions = _.assign(defaultHtmlOptions, formattingOptions.html);
   }
 
-  const beautifiedHtml: string = htmlBeautify(value, htmlFormattingOptions);
+  const beautifiedHtml = htmlBeautify(value, htmlFormattingOptions);
   const initialIndent = generateIndent(1, formattingOptions);
   const indentedHtml = ('\n' + beautifiedHtml).replace(/\n/g, '\n' + initialIndent) + '\n';
   return [{
