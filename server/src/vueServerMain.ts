@@ -71,6 +71,7 @@ const validation: {[k: string]: boolean} = {
   css: true,
   scss: true,
   less: true,
+  postcss: true,
   javascript: true,
 };
 

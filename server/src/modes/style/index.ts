@@ -13,6 +13,11 @@ export function getCSSMode (documentRegions: LanguageModelCache<VueDocumentRegio
   return getStyleMode('css', languageService, documentRegions);
 }
 
+export function getPostCSSMode (documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+  const languageService = getCSSLanguageService();
+  return getStyleMode('postcss', languageService, documentRegions);
+}
+
 export function getSCSSMode (documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getSCSSLanguageService();
   return getStyleMode('scss', languageService, documentRegions);
@@ -92,7 +97,7 @@ export function cssFormat(document: TextDocument, currRange: Range, formattingOp
     cssFormattingOptions = _.assign(defaultCssOptions, formattingOptions.css);
   }
 
-  const beautifiedCss: string = cssBeautify(value, cssFormattingOptions);
+  const beautifiedCss = cssBeautify(value, cssFormattingOptions);
   if (formattingOptions.styleInitialIndent) {
     const initialIndent = generateIndent(1, formattingOptions);
     const indentedCss = ('\n' + beautifiedCss).replace(/\n/g, '\n' + initialIndent) + '\n';
