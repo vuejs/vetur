@@ -1,5 +1,17 @@
 # Changelog
 
+### 0.9.2 | 2017-07-22
+
+- Support tsx. #337.
+- Initial support for postcss. #344.
+- Add scaffold snippet for scoped style tag. #335.
+- Enhanced support for closing backstick and comment in js. #329.
+- Fix a syntax highlight issue for tags containing dashes. #328.
+
+Special shoutout to [@HerringtonDarkholme](https://github.com/HerringtonDarkholme) who has been contributing to most of the improvements in Vetur for the last many versions.
+
+Congrats to [@g-plane](https://github.com/g-plane) and [@armano2](https://github.com/armano2) who landed their first PR in Vetur!
+
 ### 0.9.1 | 2017-07-12
 
 - Fix a crash for importing non-existing .vue.ts file. #321.
