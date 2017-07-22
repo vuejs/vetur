@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as ts from 'typescript';
 import Uri from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
+import { dirname } from 'path';
 
 import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
@@ -81,6 +82,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   const files = parsedConfig.fileNames;
   compilerOptions = parsedConfig.options;
   compilerOptions.allowNonTsExtensions = true;
+  let lastFile: string;
 
   function updateCurrentTextDocument (doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
@@ -109,7 +111,9 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   }
 
   const host: ts.LanguageServiceHost = {
-    getCompilationSettings: () => compilerOptions,
+    getCompilationSettings: () => {
+      return getSettingsForFile(workspacePath, lastFile);
+    },
     getScriptFileNames: () => files,
     getScriptVersion (fileName) {
       if (fileName === bridge.fileName) {
@@ -120,6 +124,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       return version ? version.toString() : '0';
     },
     getScriptKind (fileName) {
+      lastFile = fileName;
       if (isVue(fileName)) {
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
@@ -211,3 +216,40 @@ function getNormalizedFileFsPath (fileName: string): string {
   return Uri.file(fileName).fsPath;
 }
 
+function getSettingsForFile (workspacePath: string, fileName: string): ts.CompilerOptions {
+  let configJson: string;
+  const path = dirname(fileName);
+  let configFilename;
+
+  configFilename = ts.findConfigFile(path, ts.sys.fileExists, 'tsconfig.json') ||
+    ts.findConfigFile(path, ts.sys.fileExists, 'jsconfig.json');
+
+  configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {
+    exclude: ['node_modules', '**/node_modules/*']
+  };
+
+  let compilerOptions: ts.CompilerOptions = {
+    allowNonTsExtensions: true,
+    allowJs: true,
+    lib: ['lib.dom.d.ts', 'lib.es2017.d.ts'],
+    target: ts.ScriptTarget.Latest,
+    moduleResolution: ts.ModuleResolutionKind.NodeJs,
+    module: ts.ModuleKind.CommonJS,
+    jsx: ts.JsxEmit.Preserve,
+    allowSyntheticDefaultImports: true
+  };
+
+  let parsedConfig: ts.ParsedCommandLine;
+  parsedConfig = ts.parseJsonConfigFileContent(configJson,
+    ts.sys,
+    workspacePath,
+    compilerOptions,
+    configFilename,
+    undefined,
+    [{ extension: 'vue', isMixedContent: true }]);
+
+  compilerOptions = parsedConfig.options;
+  compilerOptions.allowNonTsExtensions = true;
+
+  return compilerOptions;
+}
