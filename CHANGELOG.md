@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.9.3 | 2017-07-26
+
+- Upgrade eslint-plugin-vue to 3.8.0. Fix false positives for `v-for`. #261.
+- Make `vetur.validation.style` apply to postcss. #350.
+
 ### 0.9.2 | 2017-07-22
 
 - Support tsx. #337.
