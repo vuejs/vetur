@@ -87,6 +87,7 @@ connection.onDidChangeConfiguration((change) => {
   const veturValidationOptions = settings.vetur.validation;
   validation['vue-html'] = veturValidationOptions.template;
   validation.css = veturValidationOptions.style;
+  validation.postcss = veturValidationOptions.style;
   validation.scss = veturValidationOptions.style;
   validation.less = veturValidationOptions.style;
   validation.javascript = veturValidationOptions.script;
