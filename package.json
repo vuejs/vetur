@@ -155,6 +155,11 @@
           "default": 1,
           "decription": "Maximum number of line breaks to be preserved in one chunk (0 to disable)"
         },
+        "vetur.format.html.initial_indent": {
+          "type": "boolean",
+          "default": true,
+          "decription": "Whether indent template root"
+        },
         "vetur.format.html.preserve_newlines": {
           "type": "boolean",
           "default": true,

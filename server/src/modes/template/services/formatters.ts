@@ -3,24 +3,31 @@ import { html as htmlBeautify } from 'js-beautify';
 
 import { defaultHtmlOptions } from './formatterOptions';
 import * as _ from 'lodash';
+import * as deindent from 'de-indent';
 
 export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions): TextEdit[] {
-  const { value, range } = getValueAndRange(document, currRange);
+  const userSetting: any = formattingOptions.html;
+
+  const { value: _value, range } = getValueAndRange(document, currRange);
+  const value = deindent(_value);
 
   defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
   defaultHtmlOptions.indent_size = formattingOptions.tabSize;
 
   let htmlFormattingOptions = defaultHtmlOptions;
-  if (formattingOptions.html) {
-    htmlFormattingOptions = _.assign(defaultHtmlOptions, formattingOptions.html);
+  if (userSetting) {
+    htmlFormattingOptions = _.assign(defaultHtmlOptions, userSetting);
   }
 
-  const beautifiedHtml = htmlBeautify(value, htmlFormattingOptions);
-  const initialIndent = generateIndent(1, formattingOptions);
-  const indentedHtml = ('\n' + beautifiedHtml).replace(/\n/g, '\n' + initialIndent) + '\n';
+  let beautifiedHtml = '\n' + htmlBeautify(value, htmlFormattingOptions);
+  if (userSetting.initial_indent) {
+    const initialIndent = generateIndent(1, formattingOptions);
+    beautifiedHtml = beautifiedHtml.replace(/\n/g, '\n' + initialIndent);
+  }
+  beautifiedHtml += '\n';
   return [{
     range: range,
-    newText: indentedHtml
+    newText: beautifiedHtml
   }];
 }
 

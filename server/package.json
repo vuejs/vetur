@@ -16,6 +16,7 @@
     "bin"
   ],
   "dependencies": {
+    "de-indent": "^1.0.2",
     "element-helper-json": "^1.0.0",
     "eslint": "^4.0.0",
     "eslint-plugin-vue": "beta",

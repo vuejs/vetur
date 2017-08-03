@@ -20,5 +20,7 @@ declare module 'eslint' {
     executeOnText(text: string, filename: string): Report;
   }
 }
+
+declare module 'de-indent';
 declare module 'eslint-plugin-vue';
 declare module '*.json';
