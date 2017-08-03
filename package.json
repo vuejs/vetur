@@ -140,6 +140,11 @@
           "default": true,
           "description": "Validate js/ts in <script>"
         },
+        "vetur.format.templateInitialIndent": {
+          "type": "boolean",
+          "default": false,
+          "decription": "Whether to have initial indent for <template> section"
+        },
         "vetur.format.styleInitialIndent": {
           "type": "boolean",
           "default": false,
@@ -154,11 +159,6 @@
           "type": "number",
           "default": 1,
           "decription": "Maximum number of line breaks to be preserved in one chunk (0 to disable)"
-        },
-        "vetur.format.html.initial_indent": {
-          "type": "boolean",
-          "default": true,
-          "decription": "Whether indent template root"
         },
         "vetur.format.html.preserve_newlines": {
           "type": "boolean",

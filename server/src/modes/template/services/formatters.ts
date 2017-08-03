@@ -6,21 +6,20 @@ import * as _ from 'lodash';
 import * as deindent from 'de-indent';
 
 export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions): TextEdit[] {
-  const userSetting: any = formattingOptions.html;
 
-  const { value: _value, range } = getValueAndRange(document, currRange);
-  const value = deindent(_value);
+  const { value, range } = getValueAndRange(document, currRange);
+  const html = deindent(value);
 
   defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
   defaultHtmlOptions.indent_size = formattingOptions.tabSize;
 
   let htmlFormattingOptions = defaultHtmlOptions;
-  if (userSetting) {
-    htmlFormattingOptions = _.assign(defaultHtmlOptions, userSetting);
+  if (formattingOptions.html) {
+    htmlFormattingOptions = _.assign(defaultHtmlOptions, formattingOptions.html);
   }
 
-  let beautifiedHtml = '\n' + htmlBeautify(value, htmlFormattingOptions);
-  if (userSetting.initial_indent) {
+  let beautifiedHtml = '\n' + htmlBeautify(html, htmlFormattingOptions);
+  if (formattingOptions.templateInitialIndent) {
     const initialIndent = generateIndent(1, formattingOptions);
     beautifiedHtml = beautifiedHtml.replace(/\n/g, '\n' + initialIndent);
   }
