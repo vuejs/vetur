@@ -21,6 +21,5 @@ declare module 'eslint' {
   }
 }
 
-declare module 'de-indent';
 declare module 'eslint-plugin-vue';
 declare module '*.json';
