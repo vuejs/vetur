@@ -142,7 +142,7 @@
         },
         "vetur.format.templateInitialIndent": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "decription": "Whether to have initial indent for <template> section"
         },
         "vetur.format.styleInitialIndent": {
