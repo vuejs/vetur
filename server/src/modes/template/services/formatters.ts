@@ -18,8 +18,7 @@ export function htmlFormat(document: TextDocument, currRange: Range, formattingO
   }
 
   const beautifiedHtml = htmlBeautify(value, htmlFormattingOptions);
-  const needIndent = !!formattingOptions.templateInitialIndent;
-  const wrappedHtml = wrapSection(beautifiedHtml, needIndent, formattingOptions);
+  const wrappedHtml = wrapSection(beautifiedHtml, /*needIndent*/ true, formattingOptions);
   return [{
     range: range,
     newText: wrappedHtml

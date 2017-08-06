@@ -140,11 +140,6 @@
           "default": true,
           "description": "Validate js/ts in <script>"
         },
-        "vetur.format.templateInitialIndent": {
-          "type": "boolean",
-          "default": true,
-          "decription": "Whether to have initial indent for <template> section"
-        },
         "vetur.format.styleInitialIndent": {
           "type": "boolean",
           "default": false,
