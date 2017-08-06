@@ -3,6 +3,8 @@
 Vetur has support for formatting embedded `html/css/scss/less/js/ts`.  
 Some formatting options are available.
 
+We plan to switch to [prettier](https://github.com/prettier/prettier) soon.
+
 ## General
 
 `tabSize` and `insertSpace` are read from VSCode config `editor.tabSize` and `editor.insertSpace`.  
@@ -58,7 +60,3 @@ interface FormatCodeSettings extends EditorSettings {
 
 If you'd like an option from `js-beautify` or TypeScript's language service exposed, open an issue for discussion.  
 I'd like to keep Vetur's options minimal.
-
-#### Future Plan
-
-Adopt [prettier](https://github.com/prettier/prettier) as the default formatter.
