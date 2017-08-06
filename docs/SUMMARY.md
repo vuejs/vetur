@@ -14,6 +14,7 @@
   - [Formatting](formatting.md)
   - [Auto Completion](Completion.md)
   - [Debugging](debugging.md)
+  - [Framework Support](framework.md)
 
 ---
 

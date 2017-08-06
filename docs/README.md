@@ -16,6 +16,7 @@ You can [open an issue](https://github.com/vuejs/vetur/issues/new) for bugs or f
 - [Formatting](formatting.md)
 - [Auto Completion](completion.md)
 - [Debugging](debugging.md)
+- [Framework Support](framework.md) for [Element UI](http://element.eleme.io) and [Onsen UI](https://onsen.io)
 
 ## Quick Start
 
