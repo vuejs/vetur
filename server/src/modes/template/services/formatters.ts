@@ -3,8 +3,10 @@ import { html as htmlBeautify } from 'js-beautify';
 
 import { defaultHtmlOptions } from './formatterOptions';
 import * as _ from 'lodash';
+import { wrapSection } from '../../../utils/strings';
 
 export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions): TextEdit[] {
+
   const { value, range } = getValueAndRange(document, currRange);
 
   defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
@@ -16,11 +18,10 @@ export function htmlFormat(document: TextDocument, currRange: Range, formattingO
   }
 
   const beautifiedHtml = htmlBeautify(value, htmlFormattingOptions);
-  const initialIndent = generateIndent(1, formattingOptions);
-  const indentedHtml = ('\n' + beautifiedHtml).replace(/\n/g, '\n' + initialIndent) + '\n';
+  const wrappedHtml = wrapSection(beautifiedHtml, /*needIndent*/ true, formattingOptions);
   return [{
     range: range,
-    newText: indentedHtml
+    newText: wrappedHtml
   }];
 }
 
@@ -39,12 +40,4 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
     range = Range.create(Position.create(0, 0), document.positionAt(value.length));
   }
   return { value, range };
-}
-
-function generateIndent(level: number, options: FormattingOptions) {
-  if (options.insertSpaces) {
-    return _.repeat(' ', level * options.tabSize);
-  } else {
-    return _.repeat('\t', level);
-  }
 }

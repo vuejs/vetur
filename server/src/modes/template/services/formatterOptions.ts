@@ -9,7 +9,9 @@ const defaultHtmlOptions: HTMLBeautifyOptions = {
   indent_with_tabs: false,
   max_preserve_newlines: 1, // Maximum number of line breaks to be preserved in one chunk (0 disables)
   preserve_newlines: true, // Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)
-  unformatted: [], // List of tags that should not be reformatted
+  unformatted: [
+    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen',
+    'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'],
   wrap_line_length: 0, // Lines should wrap at next opportunity after this number of characters (0 disables)
   wrap_attributes: 'force-aligned' as any // Wrap attributes to new lines [auto|force|force-aligned|force-expand-multiline] ["auto"]
 };

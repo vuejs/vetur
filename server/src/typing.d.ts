@@ -20,5 +20,6 @@ declare module 'eslint' {
     executeOnText(text: string, filename: string): Report;
   }
 }
+
 declare module 'eslint-plugin-vue';
 declare module '*.json';

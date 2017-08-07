@@ -7,6 +7,7 @@ import { defaultCssOptions } from './defaultOption';
 
 import * as _ from 'lodash';
 import { css as cssBeautify } from 'js-beautify';
+import { wrapSection } from '../../utils/strings';
 
 export function getCSSMode (documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
@@ -98,19 +99,12 @@ export function cssFormat(document: TextDocument, currRange: Range, formattingOp
   }
 
   const beautifiedCss = cssBeautify(value, cssFormattingOptions);
-  if (formattingOptions.styleInitialIndent) {
-    const initialIndent = generateIndent(1, formattingOptions);
-    const indentedCss = ('\n' + beautifiedCss).replace(/\n/g, '\n' + initialIndent) + '\n';
-    return [{
-      range: range,
-      newText: indentedCss
-    }];
-  } else {
-    return [{
-      range: range,
-      newText: '\n' + beautifiedCss + '\n'
-    }];
-  }
+  const needIndent = !!formattingOptions.styleInitialIndent;
+  const wrappedCss = wrapSection(beautifiedCss, needIndent, formattingOptions);
+  return [{
+    range: range,
+    newText: wrappedCss
+  }];
 }
 
 function getValueAndRange(document: TextDocument, currRange: Range): { value: string, range: Range } {
@@ -127,12 +121,4 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
     range = Range.create(Position.create(0, 0), document.positionAt(value.length));
   }
   return { value, range };
-}
-
-function generateIndent(level: number, options: FormattingOptions) {
-  if (options.insertSpaces) {
-    return _.repeat(' ', level * options.tabSize);
-  } else {
-    return _.repeat('\t', level);
-  }
 }
