@@ -183,4 +183,8 @@ suite('Embedded Support', () => {
       .script('').style('')
     .template(`<div></d`)
     .run();
+
+  testcase('ill formed template10')
+    .template(`<div><template>`)
+    .run();
 });
