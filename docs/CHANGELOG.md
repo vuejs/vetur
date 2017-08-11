@@ -37,7 +37,7 @@ Congrats to [@g-plane](https://github.com/g-plane) and [@armano2](https://github
 ### 0.8.6 | 2017-06-26
 
 - Remove `vue-template-compiler` as dependency. Fix #250, #277 and #286.
-- `@` auto completion in template and better auto completion ordering. #256.
+- `@` IntelliSense in template and better IntelliSense ordering. #256.
 
 ### 0.8.5 | 2017-06-23
 

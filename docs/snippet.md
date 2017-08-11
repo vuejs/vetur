@@ -22,7 +22,7 @@ Two exceptions:
 </style>
 ```
 
-### Scaffold snippets
+## Scaffold snippets
 
 Vetur provides scaffolding snippets for quickly defining regions.  
 They are `vue` snippets and can be used outside language regions.

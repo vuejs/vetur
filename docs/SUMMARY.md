@@ -12,8 +12,9 @@
   - [Emmet](emmet.md)
   - [Linting / Error Checking](linting-error.md)
   - [Formatting](formatting.md)
-  - [Auto Completion](Completion.md)
+  - [IntelliSense](intellisense.md)
   - [Debugging](debugging.md)
+  - [Framework Support](framework.md)
 
 ---
 
