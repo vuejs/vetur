@@ -9,8 +9,7 @@ Emmet is available for template and style regions.
 In your user settings, set
 
   ```json
-  "emmet.useNewEmmet": false,
-  "emmet.syntaxProfiles": {
+  "emmet.includeLanguages": {
     "vue-html": "html",
     "vue": "html"
   }
