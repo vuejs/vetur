@@ -1,14 +1,10 @@
 import { createConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
-import { TextDocument, Diagnostic, DocumentLink, SymbolInformation } from 'vscode-languageserver-types';
+import { TextDocument, Diagnostic } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
 import * as url from 'url';
 import * as path from 'path';
 import * as _ from 'lodash';
-
-import { getLanguageModes, LanguageModes } from './modes/languageModes';
-
-import { NULL_HOVER, NULL_SIGNATURE, NULL_COMPLETION } from './modes/nullMode';
 
 // Create a connection for the server
 const connection = process.argv.length <= 2
@@ -26,8 +22,8 @@ const documents = new TextDocuments();
 documents.listen(connection);
 
 let workspacePath: string;
-let languageModes: LanguageModes;
 let settings: any = {};
+const vls = getVls();
 
 let veturFormattingOptions = {};
 
@@ -38,13 +34,13 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   const initializationOptions = params.initializationOptions;
 
   workspacePath = params.rootPath || process.cwd();
+  vls.initialize(workspacePath);
 
-  languageModes = getLanguageModes(workspacePath);
   documents.onDidClose(e => {
-    languageModes.onDocumentRemoved(e.document);
+    vls.removeDocument(e.document);
   });
   connection.onShutdown(() => {
-    languageModes.dispose();
+    vls.dispose();
   });
 
   if (initializationOptions) {
@@ -65,38 +61,16 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   };
 });
 
-const validation: {[k: string]: boolean} = {
-  'vue-html': true,
-  html: true,
-  css: true,
-  scss: true,
-  less: true,
-  postcss: true,
-  javascript: true,
-};
 
 let formatterRegistration: Thenable<Disposable>;
 
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration((change) => {
   settings = change.settings;
+  vls.configure(settings);
 
   // Update formatting setting
   veturFormattingOptions = settings.vetur.format;
-
-  const veturValidationOptions = settings.vetur.validation;
-  validation['vue-html'] = veturValidationOptions.template;
-  validation.css = veturValidationOptions.style;
-  validation.postcss = veturValidationOptions.style;
-  validation.scss = veturValidationOptions.style;
-  validation.less = veturValidationOptions.style;
-  validation.javascript = veturValidationOptions.script;
-
-  languageModes.getAllModes().forEach(m => {
-    if (m.configure) {
-      m.configure(change.settings);
-    }
-  });
   documents.all().forEach(triggerValidation);
 
   const documentSelector: DocumentSelector = [{ language: 'vue' }];
@@ -134,92 +108,47 @@ function triggerValidation (textDocument: TextDocument): void {
 }
 
 function validateTextDocument (textDocument: TextDocument): void {
-  const diagnostics: Diagnostic[] = [];
-  if (textDocument.languageId === 'vue') {
-    languageModes.getAllModesInDocument(textDocument).forEach(mode => {
-      if (mode.doValidation && validation[mode.getId()]) {
-        pushAll(diagnostics, mode.doValidation(textDocument));
-      }
-    });
-  }
+  const diagnostics: Diagnostic[] = vls.validate(textDocument);
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
-
-function pushAll<T>(to: T[], from: T[]) {
-  if (from) {
-    for (let i = 0; i < from.length; i++) {
-      to.push(from[i]);
-    }
-  }
 }
 
 connection.onCompletion(textDocumentPosition => {
   const document = documents.get(textDocumentPosition.textDocument.uri);
-  const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
-
-  if (mode) {
-    if (mode.doComplete) {
-      return mode.doComplete(document, textDocumentPosition.position);
-    }
-  }
-  return NULL_COMPLETION;
+  return vls.doComplete(document, textDocumentPosition.position);
 });
 
 connection.onCompletionResolve(item => {
   const data = item.data;
   if (data && data.languageId && data.uri) {
-    const mode = languageModes.getMode(data.languageId);
     const document = documents.get(data.uri);
-    if (mode && mode.doResolve && document) {
-      return mode.doResolve(document, item);
-    }
+    return vls.doResolve(document, data.languageId, item);
   }
   return item;
 });
 
 connection.onHover(textDocumentPosition => {
   const document = documents.get(textDocumentPosition.textDocument.uri);
-  const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
-  if (mode && mode.doHover) {
-    return mode.doHover(document, textDocumentPosition.position);
-  }
-  return NULL_HOVER;
+  return vls.doHover(document, textDocumentPosition.position);
 });
 
 connection.onDocumentHighlight(documentHighlightParams => {
   const document = documents.get(documentHighlightParams.textDocument.uri);
-  const mode = languageModes.getModeAtPosition(document, documentHighlightParams.position);
-  if (mode && mode.findDocumentHighlight) {
-    return mode.findDocumentHighlight(document, documentHighlightParams.position);
-  }
-  return [];
+  return vls.findDocumentHighlight(document, documentHighlightParams.position);
 });
 
 connection.onDefinition(definitionParams => {
   const document = documents.get(definitionParams.textDocument.uri);
-  const mode = languageModes.getModeAtPosition(document, definitionParams.position);
-  if (mode && mode.findDefinition) {
-    return mode.findDefinition(document, definitionParams.position);
-  }
-  return [];
+  return vls.findDefinition(document, definitionParams.position);
 });
 
 connection.onReferences(referenceParams => {
   const document = documents.get(referenceParams.textDocument.uri);
-  const mode = languageModes.getModeAtPosition(document, referenceParams.position);
-  if (mode && mode.findReferences) {
-    return mode.findReferences(document, referenceParams.position);
-  }
-  return [];
+  return vls.findReferences(document, referenceParams.position);
 });
 
 connection.onSignatureHelp(signatureHelpParms => {
   const document = documents.get(signatureHelpParms.textDocument.uri);
-  const mode = languageModes.getModeAtPosition(document, signatureHelpParms.position);
-  if (mode && mode.doSignatureHelp) {
-    return mode.doSignatureHelp(document, signatureHelpParms.position);
-  }
-  return NULL_SIGNATURE;
+  return vls.doSignatureHelp(document, signatureHelpParms.position);
 });
 
 connection.onDocumentRangeFormatting(formatParams => {
@@ -227,7 +156,7 @@ connection.onDocumentRangeFormatting(formatParams => {
 
   const formattingOptions = _.assign({}, formatParams.options, veturFormattingOptions);
 
-  return getVls().format(languageModes, document, formatParams.range, formattingOptions);
+  return vls.format(document, formatParams.range, formattingOptions);
 });
 
 connection.onDocumentLinks(documentLinkParam => {
@@ -240,24 +169,12 @@ connection.onDocumentLinks(documentLinkParam => {
       return url.resolve(document.uri, ref);
     }
   };
-  const links: DocumentLink[] = [];
-  languageModes.getAllModesInDocument(document).forEach(m => {
-    if (m.findDocumentLinks) {
-      pushAll(links, m.findDocumentLinks(document, documentContext));
-    }
-  });
-  return links;
+  return vls.findDocumentLinks(document, documentContext);
 });
 
 connection.onDocumentSymbol(documentSymbolParms => {
   const document = documents.get(documentSymbolParms.textDocument.uri);
-  const symbols: SymbolInformation[] = [];
-  languageModes.getAllModesInDocument(document).forEach(m => {
-    if (m.findDocumentSymbols) {
-      pushAll(symbols, m.findDocumentSymbols(document));
-    }
-  });
-  return symbols;
+  return vls.findDocumentSymbols(document);
 });
 
 // Listen on the connection
