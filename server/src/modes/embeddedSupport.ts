@@ -1,7 +1,7 @@
 import { removeQuotes } from '../utils/strings';
-import { Scanner, TextDocument, Position, TokenType, Range } from '../service';
-
 import { createScanner } from './template/parser/htmlScanner';
+import { TextDocument, Position, Range } from 'vscode-languageserver-types';
+import { TokenType, Scanner } from './template/parser/htmlScanner';
 
 export interface LanguageRange extends Range {
   languageId: string;
