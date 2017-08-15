@@ -29,10 +29,12 @@
     "vue-onsenui-helper-json": "^1.0.0"
   },
   "devDependencies": {
+    "@types/glob": "^5.0.30",
     "@types/js-beautify": "0.0.30",
     "@types/lodash": "^4.14.66",
     "@types/mocha": "^2.2.41",
     "@types/node": "^6.0.77",
+    "glob": "^7.1.2",
     "mocha": "^3.4.2",
     "source-map-support": "^0.4.15"
   },

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "@comp/*": ["./component/*"]
+    }
+  }
+}
