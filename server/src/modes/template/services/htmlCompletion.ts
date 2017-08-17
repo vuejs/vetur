@@ -1,19 +1,35 @@
-import {TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem} from 'vscode-languageserver-types';
-import {HTMLDocument} from '../parser/htmlParser';
-import {TokenType, createScanner, ScannerState} from '../parser/htmlScanner';
-import {allTagProviders} from '../tagProviders';
+import {
+  TextDocument,
+  Position,
+  CompletionList,
+  CompletionItemKind,
+  Range,
+  TextEdit,
+  InsertTextFormat,
+  CompletionItem
+} from 'vscode-languageserver-types';
+import { HTMLDocument } from '../parser/htmlParser';
+import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
+import { allTagProviders } from '../tagProviders';
+import * as emmet from 'vscode-emmet-helper';
 
 export interface CompletionConfiguration {
   [provider: string]: boolean;
 }
 
-export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
-
+export function doComplete(
+  document: TextDocument,
+  position: Position,
+  htmlDocument: HTMLDocument,
+  settings?: CompletionConfiguration
+): CompletionList {
   const result: CompletionList = {
     isIncomplete: false,
     items: []
   };
-  const tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
+  const tagProviders = allTagProviders.filter(
+    p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false)
+  );
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
@@ -34,7 +50,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
   function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
     const range = getReplaceRange(afterOpenBracket, tagNameEnd);
-    tagProviders.forEach((provider) => {
+    tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectTags((tag, label) => {
         result.items.push({
@@ -54,7 +70,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
     let start = offset;
     while (start > 0) {
       const ch = text.charAt(start - 1);
-      if ("\n\r".indexOf(ch) >= 0) {
+      if ('\n\r'.indexOf(ch) >= 0) {
         return text.substring(start, offset);
       }
       if (!isWhiteSpace(ch)) {
@@ -65,14 +81,18 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
     return text.substring(0, offset);
   }
 
-  function collectCloseTagSuggestions(afterOpenBracket: number, matchingOnly: boolean, tagNameEnd: number = offset): CompletionList {
+  function collectCloseTagSuggestions(
+    afterOpenBracket: number,
+    matchingOnly: boolean,
+    tagNameEnd: number = offset
+  ): CompletionList {
     const range = getReplaceRange(afterOpenBracket, tagNameEnd);
     const closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
     let curr = node;
     while (curr) {
       const tag = curr.tag;
       if (tag && (!curr.closed || curr.endTagStart > offset)) {
-        const item : CompletionItem = {
+        const item: CompletionItem = {
           label: '/' + tag,
           kind: CompletionItemKind.Property,
           filterText: '/' + tag + closeTag,
@@ -83,8 +103,10 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
         const endIndent = getLineIndent(afterOpenBracket - 1);
         if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
           const insertText = startIndent + '</' + tag + closeTag;
-          item.textEdit = TextEdit.replace(getReplaceRange(afterOpenBracket - 1 - endIndent.length), insertText),
-          item.filterText = endIndent + '</' + tag + closeTag;
+          (item.textEdit = TextEdit.replace(
+            getReplaceRange(afterOpenBracket - 1 - endIndent.length),
+            insertText
+          )), (item.filterText = endIndent + '</' + tag + closeTag);
         }
         result.items.push(item);
         return result;
@@ -102,7 +124,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
           kind: CompletionItemKind.Property,
           documentation: label,
           filterText: '/' + tag + closeTag,
-          textEdit: TextEdit.replace(range,  '/' + tag + closeTag),
+          textEdit: TextEdit.replace(range, '/' + tag + closeTag),
           insertTextFormat: InsertTextFormat.PlainText
         });
       });
@@ -118,16 +140,17 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
   function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
     const execArray = /^[:@]/.exec(scanner.getTokenText());
-    const filterPrefix =  execArray ? execArray[0] : '';
+    const filterPrefix = execArray ? execArray[0] : '';
     const start = filterPrefix ? nameStart + 1 : nameStart;
     const range = getReplaceRange(start, nameEnd);
-    const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
+    const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)
+      ? ''
+      : '="$1"';
     const tag = currentTag.toLowerCase();
     tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectAttributes(tag, (attribute, type, documentation) => {
-        if (type === 'event' && filterPrefix !== '@' ||
-            type !== 'event' && filterPrefix === '@') {
+        if ((type === 'event' && filterPrefix !== '@') || (type !== 'event' && filterPrefix === '@')) {
           return;
         }
         let codeSnippet = attribute;
@@ -152,7 +175,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
     let addQuotes: boolean;
     if (valueEnd && offset > valueStart && offset <= valueEnd && text[valueStart] === '"') {
       // inside attribute
-      if (valueEnd > offset && text[valueEnd-1] === '"') {
+      if (valueEnd > offset && text[valueEnd - 1] === '"') {
         valueEnd--;
       }
       const wsBefore = getWordStart(text, offset, valueStart + 1);
@@ -180,7 +203,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
     return result;
   }
 
-  function scanNextForEndPos(nextToken: TokenType) : number {
+  function scanNextForEndPos(nextToken: TokenType): number {
     if (offset === scanner.getTokenEnd()) {
       token = scanner.scan();
       if (token === nextToken && scanner.getTokenOffset() === offset) {
@@ -262,7 +285,13 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
         break;
       default:
         if (offset <= scanner.getTokenEnd()) {
-          return result;
+          return emmet.doComplete(document, position, 'html', {
+            useNewEmmet: true,
+            showExpandedAbbreviation: true,
+            showAbbreviationSuggestions: true,
+            syntaxProfiles: {},
+            variables: {}
+          });
         }
         break;
     }
@@ -275,7 +304,7 @@ function isWhiteSpace(s: string): boolean {
   return /^\s*$/.test(s);
 }
 
-function isFollowedBy(s: string, offset:number, intialState: ScannerState, expectedToken: TokenType) {
+function isFollowedBy(s: string, offset: number, intialState: ScannerState, expectedToken: TokenType) {
   const scanner = createScanner(s, offset, intialState);
   let token = scanner.scan();
   while (token === TokenType.Whitespace) {
@@ -285,7 +314,7 @@ function isFollowedBy(s: string, offset:number, intialState: ScannerState, expec
 }
 
 function getWordStart(s: string, offset: number, limit: number): number {
-  while (offset > limit && !isWhiteSpace(s[offset-1])) {
+  while (offset > limit && !isWhiteSpace(s[offset - 1])) {
     offset--;
   }
   return offset;
