@@ -6,7 +6,7 @@
 
 import { CompletionConfiguration } from '../services/htmlCompletion';
 
-import {  CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-util/completion-test-util';
+import { CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-util/completion-test-util';
 
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { doComplete } from '../services/htmlCompletion';
