@@ -1,4 +1,4 @@
-<script lang="typescript">
+<script lang="ts">
 export default {
   data(): any {
     return {

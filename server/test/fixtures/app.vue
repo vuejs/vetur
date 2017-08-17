@@ -1,4 +1,4 @@
-<script lang="typescript">
+<script lang="ts">
 import Comp from './component/comp.vue';
 import Comp2 from '@comp/comp.vue';
 import test from 'mod';
