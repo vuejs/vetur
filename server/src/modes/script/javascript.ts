@@ -263,11 +263,13 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       return [];
     },
     format (doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
-
-      const fileFsPath = getFileFsPath(doc.uri);
       const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
       const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
+      // InsertSpaceAfterFunctionKeywordForAnonymousFunctions should be consistent with InsertSpaceBeforeFunctionParenthesis
+      formatSettings.InsertSpaceAfterFunctionKeywordForAnonymousFunctions = settings.format.InsertSpaceBeforeFunctionParenthesis;
+
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const fileFsPath = getFileFsPath(doc.uri);
       const start = scriptDoc.offsetAt(range.start);
       const end = scriptDoc.offsetAt(range.end);
       const edits = service.getFormattingEditsForRange(fileFsPath, start, end, formatSettings);
