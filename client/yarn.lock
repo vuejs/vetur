@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@emmetio/extract-abbreviation@^0.1.1":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@emmetio/extract-abbreviation/-/extract-abbreviation-0.1.3.tgz#dc00bf488ddf86a2a82ca95fb2ccb575bd832f68"
+
 "@types/node@^6.0.46", "@types/node@^6.0.51":
   version "6.0.84"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.84.tgz#193ffe5a9f42864d425ffd9739d95b753c6a1eab"
@@ -2210,6 +2214,13 @@ vscode-css-languageservice@^2.0.0:
     vscode-languageserver-types "^3.2.0"
     vscode-nls "^2.0.1"
 
+vscode-emmet-helper@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-1.0.16.tgz#017f5e83e46ad9cc606a6fc7adf41d711e5b1e62"
+  dependencies:
+    "@emmetio/extract-abbreviation" "^0.1.1"
+    vscode-languageserver-types "^3.0.3"
+
 vscode-jsonrpc@^3.3.0:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-3.3.1.tgz#b7857be58b97af664a8cdd071c91891d6c7d6a67"
@@ -2270,9 +2281,9 @@ vue-eslint-parser@^1.1.0-7:
     lodash.sortedindexby "^4.6.0"
     parse5 "^3.0.0"
 
-vue-language-server@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.12.tgz#961d122633cbcf3a38a5a05e546681475c71fda8"
+vue-language-server@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.13.tgz#2ee63d7724035cdfb6d9a7b5e05666189ebe30bc"
   dependencies:
     element-helper-json "^1.0.0"
     eslint "^4.0.0"
@@ -2282,6 +2293,7 @@ vue-language-server@^0.0.12:
     stylus "^0.54.5"
     typescript "^2.4.1"
     vscode-css-languageservice "^2.0.0"
+    vscode-emmet-helper "^1.0.16"
     vscode-languageserver "^3.3.0"
     vscode-uri "^1.0.1"
     vue-onsenui-helper-json "^1.0.0"
