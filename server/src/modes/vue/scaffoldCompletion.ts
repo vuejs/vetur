@@ -19,7 +19,7 @@ export default {
 </script>
 
 <style>
-  \${0}
+
 </style>
 `
     },
