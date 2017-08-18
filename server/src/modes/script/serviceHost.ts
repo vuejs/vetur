@@ -108,6 +108,10 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     };
   }
 
+  function getScriptDocByFsPath (fsPath: string) {
+    return scriptDocs.get(fsPath);
+  }
+
   const host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
@@ -203,6 +207,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   let jsLanguageService = ts.createLanguageService(host);
   return {
     updateCurrentTextDocument,
+    getScriptDocByFsPath,
     getService: () => jsLanguageService
   };
 }

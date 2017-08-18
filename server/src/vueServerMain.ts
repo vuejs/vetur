@@ -56,7 +56,9 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
       documentRangeFormattingProvider: false,
       hoverProvider: true,
       documentHighlightProvider: true,
-      documentSymbolProvider: true
+      documentSymbolProvider: true,
+      definitionProvider: true,
+      referencesProvider: true
     }
   };
 });

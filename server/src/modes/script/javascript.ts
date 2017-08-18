@@ -5,6 +5,7 @@ import { VueDocumentRegions } from '../embeddedSupport';
 import { getFileFsPath, getFilePath } from './preprocess';
 import { getServiceHost } from './serviceHost';
 
+import Uri from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 
@@ -21,7 +22,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
   });
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
-  const { updateCurrentTextDocument } = serviceHost;
+  const { updateCurrentTextDocument, getScriptDocByFsPath } = serviceHost;
   const settings: any = {};
 
   return {
@@ -233,16 +234,22 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const definition = service.getDefinitionAtPosition(fileFsPath, scriptDoc.offsetAt(position));
-      if (!definition) {
+      const definitions = service.getDefinitionAtPosition(fileFsPath, scriptDoc.offsetAt(position));
+      if (!definitions) {
         return [];
       }
-      return definition.map(d => {
-        return {
-          uri: doc.uri,
-          range: convertRange(scriptDoc, d.textSpan)
-        };
+
+      const definitionResults: Definition = [];
+      definitions.forEach(d => {
+        const definitionTargetDoc = getScriptDocByFsPath(fileFsPath);
+        if (definitionTargetDoc) {
+          definitionResults.push({
+            uri: Uri.file(d.fileName).toString(),
+            range: convertRange(definitionTargetDoc, d.textSpan)
+          });
+        }
       });
+      return definitionResults;
     },
     findReferences (doc: TextDocument, position: Position): Location[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -252,15 +259,21 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
 
       const fileFsPath = getFileFsPath(doc.uri);
       const references = service.getReferencesAtPosition(fileFsPath, scriptDoc.offsetAt(position));
-      if (references) {
-        return references.map(d => {
-          return {
-            uri: doc.uri,
-            range: convertRange(scriptDoc, d.textSpan)
-          };
-        });
+      if (!references) {
+        return [];
       }
-      return [];
+
+      const referenceResults: Location[] = [];
+      references.forEach(r => {
+        const referenceTargetDoc = getScriptDocByFsPath(fileFsPath);
+        if (referenceTargetDoc) {
+          referenceResults.push({
+            uri: Uri.file(r.fileName).toString(),
+            range: convertRange(referenceTargetDoc, r.textSpan)
+          });
+        }
+      });
+      return referenceResults;
     },
     format (doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
