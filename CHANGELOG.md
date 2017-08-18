@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.9.4 | 2017-08-16
+
+- Integrate new Emmet support for html, css, scss, less and stylus. #232.
+- Revamp doc on website.
+- Fix formatter adding spaces to empty lines in `<template>`. #360.
+
 ### 0.9.3 | 2017-07-26
 
 - Upgrade eslint-plugin-vue to 3.8.0. Fix false positives for `v-for`. #261.
