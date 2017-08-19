@@ -4,6 +4,7 @@ import { getVueTagProvider } from './vueTags';
 import { getRouterTagProvider } from './routerTags';
 import { getElementTagProvider } from './elementTags';
 import { getOnsenTagProvider } from './onsenTags';
+export { getComponentTags } from './componentTags';
 
 import * as ts from 'typescript';
 import * as fs from 'fs';

@@ -14,10 +14,14 @@ import { htmlFormat } from './services/formatters';
 import { parseHTMLDocument } from './parser/htmlParser';
 import { doValidation, createLintEngine } from './services/htmlValidation';
 import { getDefaultSetting } from './tagProviders';
+import { ScriptMode } from '../script/javascript';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
-export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspacePath: string): LanguageMode {
+export function getVueHTMLMode (
+  documentRegions: DocumentRegionCache,
+  workspacePath: string,
+  scriptMode: ScriptMode): LanguageMode {
   let settings: any = {};
   let completionOption = getDefaultSetting(workspacePath);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
@@ -38,7 +42,8 @@ export function getVueHTMLMode (documentRegions: DocumentRegionCache, workspaceP
     },
     doComplete (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      return doComplete(embedded, position, vueDocuments.get(embedded), completionOption);
+      const components = scriptMode.findComponents(document);
+      return doComplete(embedded, position, vueDocuments.get(embedded), completionOption, components);
     },
     doHover (document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

@@ -10,7 +10,8 @@ import {
 } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
-import { allTagProviders } from '../tagProviders';
+import { allTagProviders, getComponentTags } from '../tagProviders';
+import { ComponentInfo } from '../../script/findComponents';
 import * as emmet from 'vscode-emmet-helper';
 
 export interface CompletionConfiguration {
@@ -21,7 +22,8 @@ export function doComplete(
   document: TextDocument,
   position: Position,
   htmlDocument: HTMLDocument,
-  settings?: CompletionConfiguration
+  settings?: CompletionConfiguration,
+  components?: ComponentInfo[]
 ): CompletionList {
   const result: CompletionList = {
     isIncomplete: false,
@@ -30,6 +32,9 @@ export function doComplete(
   const tagProviders = allTagProviders.filter(
     p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false)
   );
+  if (components) {
+    tagProviders.push(getComponentTags(components));
+  }
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
