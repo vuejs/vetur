@@ -4,6 +4,7 @@ import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
 import { getFileFsPath, getFilePath } from './preprocess';
 import { getServiceHost } from './serviceHost';
+import { findComponents, ComponentInfo } from './findComponents';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -12,7 +13,7 @@ import * as _ from 'lodash';
 import { NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
 
 export interface ScriptMode extends LanguageMode {
-  findComponents(document: TextDocument): string[];
+  findComponents(document: TextDocument): ComponentInfo[];
 }
 
 export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): ScriptMode {
@@ -304,16 +305,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       const { service } = updateCurrentTextDocument(doc);
       // TODO: refine component info collection
       const fileFsPath = getFileFsPath(doc.uri);
-      const program = service.getProgram();
-      const sourceFile = program.getSourceFile(fileFsPath);
-      const importStmt = sourceFile.statements.filter(st => st.kind === ts.SyntaxKind.ExportAssignment);
-      const instance = (importStmt[0] as ts.ExportAssignment).expression as ts.CallExpression;
-      const comp = instance.arguments![0];
-      const checker = program.getTypeChecker();
-      const compType = checker.getTypeAtLocation(comp);
-      const compsSymbol = checker.getPropertyOfType(compType, 'components');
-      const comps = checker.getTypeOfSymbolAtLocation(compsSymbol!, compsSymbol!.declarations![0]);
-      return checker.getPropertiesOfType(comps).map(s => s.name);
+      return findComponents(service, fileFsPath);
     },
     onDocumentRemoved (document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);
