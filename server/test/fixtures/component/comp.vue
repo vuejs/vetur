@@ -4,6 +4,7 @@ export default {
     return {
       test: 123
     };
-  }
+  },
+  props: ['propname', 'anotherProp']
 };
 </script>
