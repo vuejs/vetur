@@ -1,10 +1,14 @@
-import { createConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector } from 'vscode-languageserver';
-import { TextDocument, Diagnostic } from 'vscode-languageserver-types';
+import { createConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector, RequestType } from 'vscode-languageserver';
+import { TextDocument, Diagnostic, Range } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
 import * as url from 'url';
 import * as path from 'path';
 import * as _ from 'lodash';
+
+namespace ColorSymbolRequest {
+  export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
+}
 
 // Create a connection for the server
 const connection = process.argv.length <= 2
@@ -176,6 +180,14 @@ connection.onDocumentLinks(documentLinkParam => {
 connection.onDocumentSymbol(documentSymbolParms => {
   const document = documents.get(documentSymbolParms.textDocument.uri);
   return vls.findDocumentSymbols(document);
+});
+
+connection.onRequest(ColorSymbolRequest.type, uri => {
+  const document = documents.get(uri);
+  if (document) {
+    return vls.findColorSymbols(document);
+  }
+  return [];
 });
 
 // Listen on the connection

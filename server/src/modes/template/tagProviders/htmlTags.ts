@@ -144,12 +144,12 @@ export const HTML_TAGS: ITagSet = {
     'The rt element marks the ruby text component of a ruby annotation. When it is the child of a ruby element or of an rtc element that is itself the child of a ruby element, it doesn\'t represent anything itself, but its ancestor ruby element uses it as part of determining what it represents.'),
   // <rtc> is not yet supported by 2+ browsers
   //rtc: genTag(
-  //	'The rtc element marks a ruby text container for ruby text components in a ruby annotation. When it is the child of a ruby element it doesn\'t represent anything itself, but its parent ruby element uses it as part of determining what it represents.'),
+  //  'The rtc element marks a ruby text container for ruby text components in a ruby annotation. When it is the child of a ruby element it doesn\'t represent anything itself, but its parent ruby element uses it as part of determining what it represents.'),
   rp: genTag(
     'The rp element is used to provide fallback text to be shown by user agents that don\'t support ruby annotations. One widespread convention is to provide parentheses around the ruby text component of a ruby annotation.'),
   // <data> is not yet supported by 2+ browsers
   //data: genTag(
-  //	'The data element represents its contents, along with a machine-readable form of those contents in the value attribute.'),
+  //  'The data element represents its contents, along with a machine-readable form of those contents in the value attribute.'),
   time: genTag(
     'The time element represents its contents, along with a machine-readable form of those contents in the datetime attribute. The kind of content is limited to various kinds of dates, times, time-zone offsets, and durations, as described below.',
     ['datetime']),
@@ -301,10 +301,10 @@ export const HTML_TAGS: ITagSet = {
     'The summary element represents a summary, caption, or legend for the rest of the contents of the summary element\'s parent details element, if any.'),
   // <menu> and <menuitem> are not yet supported by 2+ browsers
   //menu: genTag(
-  //	'The menu element represents a list of commands.',
-  //	['type:mt', 'label']),
+  //  'The menu element represents a list of commands.',
+  //  ['type:mt', 'label']),
   //menuitem: genTag(
-  //	'The menuitem element represents a command that the user can invoke from a popup menu (either a context menu or the menu of a menu button).'),
+  //  'The menuitem element represents a command that the user can invoke from a popup menu (either a context menu or the menu of a menu button).'),
   dialog: genTag(
     'The dialog element represents a part of an application that a user interacts with to perform a task, for example a dialog box, inspector, or window.'),
   // Scripting
