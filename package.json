@@ -65,15 +65,6 @@
         "configuration": "./languages/vue-html.json"
       },
       {
-        "id": "sass",
-        "aliases": [
-          "SASS",
-          "Sass",
-          "sass"
-        ],
-        "configuration": "./languages/sass.json"
-      },
-      {
         "id": "postcss",
         "aliases": [
           "PostCSS",
@@ -102,11 +93,6 @@
           "source.ts": "typescript",
           "source.coffee": "coffeescript"
         }
-      },
-      {
-        "language": "sass",
-        "scopeName": "source.sass",
-        "path": "./syntaxes/sass.tmLanguage"
       },
       {
         "language": "postcss",
