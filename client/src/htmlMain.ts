@@ -41,8 +41,8 @@ export function activate (context: ExtensionContext) {
   const colorRequestor = (uri: string) => {
     return client.sendRequest(ColorSymbolRequest.type, uri).then(ranges => ranges.map(client.protocol2CodeConverter.asRange));
   };
-  const isDecoratorEnabled = (languageId: string) => {
-    return workspace.getConfiguration().get<boolean>(languageId + '.colorDecorators.enable');
+  const isDecoratorEnabled = () => {
+    return workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
   };
   client.onReady().then(() => {
     context.subscriptions.push(activateColorDecorations(colorRequestor, { vue: true }, isDecoratorEnabled));
