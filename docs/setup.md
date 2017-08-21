@@ -44,6 +44,10 @@
   ]
   ```
 
+### Sass
+
+- Install [Sass extension](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented) for Sass support
+
 ### Stylus
 
 - Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support
