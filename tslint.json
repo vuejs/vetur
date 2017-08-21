@@ -1,15 +1,19 @@
 {
   "rules": {
-    "no-unused-expression": true,
-    "no-duplicate-variable": true,
-    "no-var-keyword": true,
+    "class-name": true,
     "curly": true,
+    "import-spacing": true,
+    "indent": [true, "spaces", 2],
     "label-position": true,
     "no-arg": true,
+    "no-duplicate-variable": true,
     "no-eval": true,
+    "no-inferrable-types": true,
+    "no-unused-expression": true,
     "no-var-keyword": true,
+    "object-literal-key-quotes": [true, "as-needed"],
     "prefer-const": true,
-    "class-name": true,
+    "whitespace": true,
     "semicolon": [true, "always"],
     "triple-equals": true
   }

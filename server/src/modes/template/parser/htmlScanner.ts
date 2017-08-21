@@ -73,7 +73,7 @@ class MultiLineStream {
     return this.source.charCodeAt(this.position++) || 0;
   }
 
-  public peekChar(n: number = 0): number {
+  public peekChar(n = 0): number {
     return this.source.charCodeAt(this.position + n) || 0;
   }
 
@@ -208,7 +208,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 
   const stream = new MultiLineStream(input, initialOffset);
   let state = initialState;
-  let tokenOffset: number = 0;
+  let tokenOffset = 0;
   let tokenType: number;
   let tokenError: string;
 
