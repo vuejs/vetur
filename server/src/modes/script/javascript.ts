@@ -73,7 +73,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           return {
             uri: doc.uri,
-            position: position,
+            position,
             label: entry.name,
             sortText: entry.sortText,
             kind: convertKind(entry.kind),
@@ -81,7 +81,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
             data: { // data used for resolving item details (see 'doResolve')
               languageId: doc.languageId,
               uri: doc.uri,
-              offset: offset
+              offset
             }
           };
         })
@@ -154,7 +154,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         item.parameters.forEach((p, i, a) => {
           const label = ts.displayPartsToString(p.displayParts);
           const parameter: ParameterInformation = {
-            label: label,
+            label,
             documentation: ts.displayPartsToString(p.documentation)
           };
           signature.label += label;

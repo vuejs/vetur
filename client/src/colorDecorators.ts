@@ -108,7 +108,7 @@ export function activateColorDecorations(decoratorProvider: (uri: string) => The
               }
             }
             return <DecorationOptions>{
-              range: range,
+              range,
               renderOptions: {
                 before: {
                   backgroundColor: color

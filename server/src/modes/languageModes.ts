@@ -15,19 +15,19 @@ import { getStylusMode } from './style/stylus';
 
 export interface LanguageMode {
   getId (): string;
-  configure?: (options: any) => void;
-  doValidation?: (document: TextDocument) => Diagnostic[];
-  doComplete?: (document: TextDocument, position: Position) => CompletionList;
-  doResolve?: (document: TextDocument, item: CompletionItem) => CompletionItem;
-  doHover?: (document: TextDocument, position: Position) => Hover;
-  doSignatureHelp?: (document: TextDocument, position: Position) => SignatureHelp;
-  findDocumentHighlight?: (document: TextDocument, position: Position) => DocumentHighlight[];
-  findDocumentSymbols?: (document: TextDocument) => SymbolInformation[];
-  findDocumentLinks?: (document: TextDocument, documentContext: DocumentContext) => DocumentLink[];
-  findDefinition?: (document: TextDocument, position: Position) => Definition;
-  findReferences?: (document: TextDocument, position: Position) => Location[];
-  format?: (document: TextDocument, range: Range, options: FormattingOptions) => TextEdit[];
-  findColorSymbols?: (document: TextDocument) => Range[];
+  configure?(options: any): void;
+  doValidation?(document: TextDocument): Diagnostic[];
+  doComplete?(document: TextDocument, position: Position): CompletionList;
+  doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
+  doHover?(document: TextDocument, position: Position): Hover;
+  doSignatureHelp?(document: TextDocument, position: Position): SignatureHelp;
+  findDocumentHighlight?(document: TextDocument, position: Position): DocumentHighlight[];
+  findDocumentSymbols?(document: TextDocument): SymbolInformation[];
+  findDocumentLinks?(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
+  findDefinition?(document: TextDocument, position: Position): Definition;
+  findReferences?(document: TextDocument, position: Position): Location[];
+  format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
+  findColorSymbols?(document: TextDocument): Range[];
   onDocumentRemoved (document: TextDocument): void;
   dispose (): void;
 }
