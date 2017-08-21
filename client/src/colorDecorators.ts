@@ -156,10 +156,10 @@ function _parseHexDigit(charCode: number): number {
   }
   // a - f
   if (charCode >= 97 && charCode <= 102) {
-    return charCode -87;
+    return charCode - 87;
   }
   if (charCode >= 65 && charCode <= 70) {
-    return charCode -55;
+    return charCode - 55;
   }
   return 0;
 }
