@@ -45,7 +45,7 @@ export function activate (context: ExtensionContext) {
     return workspace.getConfiguration().get<boolean>(languageId + '.colorDecorators.enable');
   };
   client.onReady().then(() => {
-	  context.subscriptions.push(activateColorDecorations(colorRequestor, { vue: true }, isDecoratorEnabled));
+    context.subscriptions.push(activateColorDecorations(colorRequestor, { vue: true }, isDecoratorEnabled));
   });
 
   languages.setLanguageConfiguration('vue-html', {

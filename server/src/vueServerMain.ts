@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 
 namespace ColorSymbolRequest {
-	export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
+  export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
 }
 
 // Create a connection for the server
@@ -183,11 +183,11 @@ connection.onDocumentSymbol(documentSymbolParms => {
 });
 
 connection.onRequest(ColorSymbolRequest.type, uri => {
-	const document = documents.get(uri);
-	if (document) {
-		return vls.findColorSymbols(document);
-	}
-	return [];
+  const document = documents.get(uri);
+  if (document) {
+    return vls.findColorSymbols(document);
+  }
+  return [];
 });
 
 // Listen on the connection

@@ -3,126 +3,126 @@ import { window, workspace, DecorationOptions, DecorationRenderOptions, Disposab
 const MAX_DECORATORS = 500;
 
 const decorationType: DecorationRenderOptions = {
-	before: {
-		contentText: ' ',
-		border: 'solid 0.1em #000',
-		margin: '0.1em 0.2em 0 0.2em',
-		width: '0.8em',
-		height: '0.8em'
-	},
-	dark: {
-		before: {
-			border: 'solid 0.1em #eee'
-		}
-	}
+  before: {
+    contentText: ' ',
+    border: 'solid 0.1em #000',
+    margin: '0.1em 0.2em 0 0.2em',
+    width: '0.8em',
+    height: '0.8em'
+  },
+  dark: {
+    before: {
+      border: 'solid 0.1em #eee'
+    }
+  }
 };
 
 export function activateColorDecorations(decoratorProvider: (uri: string) => Thenable<Range[]>, supportedLanguages: { [id: string]: boolean }, isDecoratorEnabled: (languageId: string) => boolean): Disposable {
 
-	const disposables: Disposable[] = [];
+  const disposables: Disposable[] = [];
 
-	const colorsDecorationType = window.createTextEditorDecorationType(decorationType);
-	disposables.push(colorsDecorationType);
+  const colorsDecorationType = window.createTextEditorDecorationType(decorationType);
+  disposables.push(colorsDecorationType);
 
-	const decoratorEnablement = {};
-	for (const languageId in supportedLanguages) {
-		decoratorEnablement[languageId] = isDecoratorEnabled(languageId);
-	}
+  const decoratorEnablement = {};
+  for (const languageId in supportedLanguages) {
+    decoratorEnablement[languageId] = isDecoratorEnabled(languageId);
+  }
 
-	const pendingUpdateRequests: { [key: string]: NodeJS.Timer; } = {};
+  const pendingUpdateRequests: { [key: string]: NodeJS.Timer; } = {};
 
-	window.onDidChangeVisibleTextEditors(editors => {
-		for (const editor of editors) {
-			triggerUpdateDecorations(editor.document);
-		}
-	}, null, disposables);
+  window.onDidChangeVisibleTextEditors(editors => {
+    for (const editor of editors) {
+      triggerUpdateDecorations(editor.document);
+    }
+  }, null, disposables);
 
-	workspace.onDidChangeTextDocument(event => triggerUpdateDecorations(event.document), null, disposables);
+  workspace.onDidChangeTextDocument(event => triggerUpdateDecorations(event.document), null, disposables);
 
-	// track open and close for document languageId changes
-	workspace.onDidCloseTextDocument(event => triggerUpdateDecorations(event, true));
-	workspace.onDidOpenTextDocument(event => triggerUpdateDecorations(event));
+  // track open and close for document languageId changes
+  workspace.onDidCloseTextDocument(event => triggerUpdateDecorations(event, true));
+  workspace.onDidOpenTextDocument(event => triggerUpdateDecorations(event));
 
-	workspace.onDidChangeConfiguration(_ => {
-		let hasChanges = false;
-		for (const languageId in supportedLanguages) {
-			const prev = decoratorEnablement[languageId];
-			const curr = isDecoratorEnabled(languageId);
-			if (prev !== curr) {
-				decoratorEnablement[languageId] = curr;
-				hasChanges = true;
-			}
-		}
-		if (hasChanges) {
-			updateAllVisibleEditors(true);
-		}
-	}, null, disposables);
+  workspace.onDidChangeConfiguration(_ => {
+    let hasChanges = false;
+    for (const languageId in supportedLanguages) {
+      const prev = decoratorEnablement[languageId];
+      const curr = isDecoratorEnabled(languageId);
+      if (prev !== curr) {
+        decoratorEnablement[languageId] = curr;
+        hasChanges = true;
+      }
+    }
+    if (hasChanges) {
+      updateAllVisibleEditors(true);
+    }
+  }, null, disposables);
 
-	updateAllVisibleEditors(false);
+  updateAllVisibleEditors(false);
 
-	function updateAllVisibleEditors(settingsChanges: boolean) {
-		window.visibleTextEditors.forEach(editor => {
-			if (editor.document) {
-				triggerUpdateDecorations(editor.document, settingsChanges);
-			}
-		});
-	}
+  function updateAllVisibleEditors(settingsChanges: boolean) {
+    window.visibleTextEditors.forEach(editor => {
+      if (editor.document) {
+        triggerUpdateDecorations(editor.document, settingsChanges);
+      }
+    });
+  }
 
-	function triggerUpdateDecorations(document: TextDocument, settingsChanges = false) {
-		const triggerUpdate = supportedLanguages[document.languageId] && (decoratorEnablement[document.languageId] || settingsChanges);
-		if (triggerUpdate) {
-			const documentUriStr = document.uri.toString();
-			const timeout = pendingUpdateRequests[documentUriStr];
-			if (typeof timeout !== 'undefined') {
-				clearTimeout(timeout);
-			}
-			pendingUpdateRequests[documentUriStr] = setTimeout(() => {
-				// check if the document is in use by an active editor
-				for (const editor of window.visibleTextEditors) {
-					if (editor.document && documentUriStr === editor.document.uri.toString()) {
-						if (decoratorEnablement[editor.document.languageId]) {
-							updateDecorationForEditor(documentUriStr, editor.document.version);
-							break;
-						} else {
-							editor.setDecorations(colorsDecorationType, []);
-						}
-					}
-				}
-				delete pendingUpdateRequests[documentUriStr];
-			}, 500);
-		}
-	}
+  function triggerUpdateDecorations(document: TextDocument, settingsChanges = false) {
+    const triggerUpdate = supportedLanguages[document.languageId] && (decoratorEnablement[document.languageId] || settingsChanges);
+    if (triggerUpdate) {
+      const documentUriStr = document.uri.toString();
+      const timeout = pendingUpdateRequests[documentUriStr];
+      if (typeof timeout !== 'undefined') {
+        clearTimeout(timeout);
+      }
+      pendingUpdateRequests[documentUriStr] = setTimeout(() => {
+        // check if the document is in use by an active editor
+        for (const editor of window.visibleTextEditors) {
+          if (editor.document && documentUriStr === editor.document.uri.toString()) {
+            if (decoratorEnablement[editor.document.languageId]) {
+              updateDecorationForEditor(documentUriStr, editor.document.version);
+              break;
+            } else {
+              editor.setDecorations(colorsDecorationType, []);
+            }
+          }
+        }
+        delete pendingUpdateRequests[documentUriStr];
+      }, 500);
+    }
+  }
 
-	function updateDecorationForEditor(contentUri: string, documentVersion: number) {
-		decoratorProvider(contentUri).then(ranges => {
-			for (const editor of window.visibleTextEditors) {
-				const document = editor.document;
+  function updateDecorationForEditor(contentUri: string, documentVersion: number) {
+    decoratorProvider(contentUri).then(ranges => {
+      for (const editor of window.visibleTextEditors) {
+        const document = editor.document;
 
-				if (document && document.version === documentVersion && contentUri === document.uri.toString()) {
-					const decorations = ranges.slice(0, MAX_DECORATORS).map(range => {
-						let color = document.getText(range);
-						if (color[0] === '#' && (color.length === 5 || color.length === 9)) {
-							const c = fromHex(color);
-							if (c) {
-								color = `rgba(${c.red}, ${c.green}, ${c.blue}, ${c.alpha})`;
-							}
-						}
-						return <DecorationOptions>{
-							range: range,
-							renderOptions: {
-								before: {
-									backgroundColor: color
-								}
-							}
-						};
-					});
-					editor.setDecorations(colorsDecorationType, decorations);
-				}
-			}
-		});
-	}
+        if (document && document.version === documentVersion && contentUri === document.uri.toString()) {
+          const decorations = ranges.slice(0, MAX_DECORATORS).map(range => {
+            let color = document.getText(range);
+            if (color[0] === '#' && (color.length === 5 || color.length === 9)) {
+              const c = fromHex(color);
+              if (c) {
+                color = `rgba(${c.red}, ${c.green}, ${c.blue}, ${c.alpha})`;
+              }
+            }
+            return <DecorationOptions>{
+              range: range,
+              renderOptions: {
+                before: {
+                  backgroundColor: color
+                }
+              }
+            };
+          });
+          editor.setDecorations(colorsDecorationType, decorations);
+        }
+      }
+    });
+  }
 
-	return Disposable.from(...disposables);
+  return Disposable.from(...disposables);
 }
 
 function fromHex(hex: string) {
