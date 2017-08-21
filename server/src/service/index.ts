@@ -38,6 +38,7 @@ export interface VLS {
   findDocumentLinks(doc: TextDocument, documentContext: DocumentContext): DocumentLink[];
   findDefinition(doc: TextDocument, position: Position): Definition;
   findReferences(doc: TextDocument, position: Position): Location[];
+  findColorSymbols(doc: TextDocument): Range[];
   removeDocument(doc: TextDocument): void;
   dispose(): void;
 }
@@ -148,6 +149,15 @@ export function getVls(): VLS {
         }
       });
       return symbols;
+    },
+    findColorSymbols(doc) {
+      const ranges: Range[] = [];
+      languageModes.getAllModesInDocument(doc).forEach(m => {
+        if (m.findColorSymbols) {
+          pushAll(ranges, m.findColorSymbols(doc));
+        }
+      });
+      return ranges;
     },
     doSignatureHelp(doc, position) {
       const mode = languageModes.getModeAtPosition(doc, position);

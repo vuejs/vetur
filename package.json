@@ -125,6 +125,11 @@
     "configuration": {
       "title": "vetur configuration",
       "properties": {
+        "vue.colorDecorators.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use color decorators in vue"
+        },
         "vetur.validation.template": {
           "type": "boolean",
           "default": true,
