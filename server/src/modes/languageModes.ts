@@ -14,7 +14,7 @@ import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
 
 export interface LanguageMode {
-  getId (): string;
+  getId(): string;
   configure?(options: any): void;
   doValidation?(document: TextDocument): Diagnostic[];
   doComplete?(document: TextDocument, position: Position): CompletionList;
@@ -28,18 +28,18 @@ export interface LanguageMode {
   findReferences?(document: TextDocument, position: Position): Location[];
   format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
   findColorSymbols?(document: TextDocument): Range[];
-  onDocumentRemoved (document: TextDocument): void;
-  dispose (): void;
+  onDocumentRemoved(document: TextDocument): void;
+  dispose(): void;
 }
 
 export interface LanguageModes {
-  getModeAtPosition (document: TextDocument, position: Position): LanguageMode | null;
-  getModesInRange (document: TextDocument, range: Range): LanguageModeRange[];
-  getAllModes (): LanguageMode[];
-  getAllModesInDocument (document: TextDocument): LanguageMode[];
-  getMode (languageId: string): LanguageMode;
-  onDocumentRemoved (document: TextDocument): void;
-  dispose (): void;
+  getModeAtPosition(document: TextDocument, position: Position): LanguageMode | null;
+  getModesInRange(document: TextDocument, range: Range): LanguageModeRange[];
+  getAllModes(): LanguageMode[];
+  getAllModesInDocument(document: TextDocument): LanguageMode[];
+  getMode(languageId: string): LanguageMode;
+  onDocumentRemoved(document: TextDocument): void;
+  dispose(): void;
 }
 
 export interface LanguageModeRange extends Range {
@@ -47,7 +47,7 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes (workspacePath: string): LanguageModes {
+export function getLanguageModes(workspacePath: string): LanguageModes {
   const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document => getDocumentRegions(document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
@@ -68,14 +68,14 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
   };
 
   return {
-    getModeAtPosition (document: TextDocument, position: Position): LanguageMode | null {
+    getModeAtPosition(document: TextDocument, position: Position): LanguageMode | null {
       const languageId = documentRegions.get(document).getLanguageAtPosition(position);
       if (languageId) {
         return modes[languageId];
       }
       return null;
     },
-    getModesInRange (document: TextDocument, range: Range): LanguageModeRange[] {
+    getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
       return documentRegions.get(document).getLanguageRanges(range).map(r => {
         return {
           start: r.start,
@@ -85,7 +85,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
         };
       });
     },
-    getAllModesInDocument (document: TextDocument): LanguageMode[] {
+    getAllModesInDocument(document: TextDocument): LanguageMode[] {
       const result = [];
       for (const languageId of documentRegions.get(document).getLanguagesInDocument()) {
         const mode = modes[languageId];
@@ -95,7 +95,7 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
       }
       return result;
     },
-    getAllModes (): LanguageMode[] {
+    getAllModes(): LanguageMode[] {
       const result = [];
       for (const languageId in modes) {
         const mode = modes[languageId];
@@ -105,16 +105,16 @@ export function getLanguageModes (workspacePath: string): LanguageModes {
       }
       return result;
     },
-    getMode (languageId: string): LanguageMode {
+    getMode(languageId: string): LanguageMode {
       return modes[languageId];
     },
-    onDocumentRemoved (document: TextDocument) {
+    onDocumentRemoved(document: TextDocument) {
       modelCaches.forEach(mc => mc.onDocumentRemoved(document));
       for (const mode in modes) {
         modes[mode].onDocumentRemoved(document);
       }
     },
-    dispose (): void {
+    dispose(): void {
       modelCaches.forEach(mc => mc.dispose());
       modelCaches = [];
       for (const mode in modes) {

@@ -96,7 +96,7 @@ documents.onDidClose(event => {
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
 });
 
-function cleanPendingValidation (textDocument: TextDocument): void {
+function cleanPendingValidation(textDocument: TextDocument): void {
   const request = pendingValidationRequests[textDocument.uri];
   if (request) {
     clearTimeout(request);
@@ -104,7 +104,7 @@ function cleanPendingValidation (textDocument: TextDocument): void {
   }
 }
 
-function triggerValidation (textDocument: TextDocument): void {
+function triggerValidation(textDocument: TextDocument): void {
   cleanPendingValidation(textDocument);
   pendingValidationRequests[textDocument.uri] = setTimeout(() => {
     delete pendingValidationRequests[textDocument.uri];
@@ -112,7 +112,7 @@ function triggerValidation (textDocument: TextDocument): void {
   }, validationDelayMs);
 }
 
-function validateTextDocument (textDocument: TextDocument): void {
+function validateTextDocument(textDocument: TextDocument): void {
   const diagnostics: Diagnostic[] = vls.validate(textDocument);
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }

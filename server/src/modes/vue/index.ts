@@ -6,7 +6,7 @@ export function getVueMode(): LanguageMode {
     getId() {
       return 'vue';
     },
-    doComplete (document, position) {
+    doComplete(document, position) {
       return doScaffoldComplete();
     },
     onDocumentRemoved() {},
