@@ -12,7 +12,7 @@ import { findDocumentSymbols } from '../services/htmlSymbolsProvider';
 
 suite('HTML Symbols', () => {
 
-    const TEST_URI = "test://test/test.html";
+    const TEST_URI = 'test://test/test.html';
 
     const assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
         assert.deepEqual(symbols, expected);
