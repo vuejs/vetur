@@ -38,7 +38,7 @@ suite('HTML Hover', () => {
     html`<html></html>|`.hasNothing();
   });
 
-  test('Attribute', function() {
+  test('Attribute', function () {
     html`<div a|ria-atomic="true"></div>`.hasHoverAt('No doc for aria-atomic', 5);
     html`<component inli|ne-template></component>`.hasHoverAt('treat inner content as its template rather than distributed content', 11);
     html`<div :v|-if="true"></div>`.hasHoverAt('Conditionally renders the element based on the truthy\\-ness of the expression value\\.', 5);

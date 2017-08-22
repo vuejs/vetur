@@ -9,7 +9,7 @@ namespace ColorSymbolRequest {
   export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
 }
 
-export function activate (context: ExtensionContext) {
+export function activate(context: ExtensionContext) {
 
   const serverModule = require.resolve('vue-language-server');
   const debugServerModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));

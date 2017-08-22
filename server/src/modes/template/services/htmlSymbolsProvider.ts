@@ -16,8 +16,8 @@ function provideFileSymbolsInternal(document: TextDocument, node: Node, containe
   const name = nodeToName(node);
   const location = Location.create(document.uri, Range.create(document.positionAt(node.start), document.positionAt(node.end)));
   const symbol: SymbolInformation = {
-    name: name,
-    location: location,
+    name,
+    location,
     containerName: container,
     kind: <SymbolKind>SymbolKind.Field
   };

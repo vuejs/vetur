@@ -145,7 +145,7 @@ export function cssFormat(document: TextDocument, currRange: Range, formattingOp
   const wrappedCss = wrapSection(beautifiedCss, needIndent, formattingOptions);
   return [
     {
-      range: range,
+      range,
       newText: wrappedCss
     }
   ];
