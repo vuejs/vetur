@@ -17,4 +17,3 @@ Vetur supports syntax highlighting for the following languages:
 |`<script>`|`js`|
 |`<script lang="ts">`|`typescript`|
 |`<script lang="coffee">`|`coffee`|
-
