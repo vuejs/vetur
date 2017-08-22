@@ -25,7 +25,7 @@ suite('HTML Parser', () => {
   function assertNodeBefore(input: string, offset: number, expectedTag?: string) {
     const document = parse(input);
     const node = document.findNodeBefore(offset);
-    assert.equal(node ? node.tag : '', expectedTag, "offset " + offset);
+    assert.equal(node ? node.tag : '', expectedTag, 'offset ' + offset);
   }
 
   function assertAttributes(input: string, expected: any) {

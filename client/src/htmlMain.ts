@@ -3,12 +3,13 @@ import * as path from 'path';
 import { languages, workspace, ExtensionContext, IndentAction } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, Range, RequestType, RevealOutputChannelOn } from 'vscode-languageclient';
 import { EMPTY_ELEMENTS } from './htmlEmptyTagsShared';
+import { activateColorDecorations } from './colorDecorators';
 
 namespace ColorSymbolRequest {
-  export const type: RequestType<string, Range[], any, any> = new RequestType('css/colorSymbols');
+  export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
 }
 
-export function activate (context: ExtensionContext) {
+export function activate(context: ExtensionContext) {
 
   const serverModule = require.resolve('vue-language-server');
   const debugServerModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
@@ -37,6 +38,15 @@ export function activate (context: ExtensionContext) {
   const client = new LanguageClient('vue', 'Vue Language Server', serverOptions, clientOptions);
   const disposable = client.start();
   context.subscriptions.push(disposable);
+  const colorRequestor = (uri: string) => {
+    return client.sendRequest(ColorSymbolRequest.type, uri).then(ranges => ranges.map(client.protocol2CodeConverter.asRange));
+  };
+  const isDecoratorEnabled = () => {
+    return workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
+  };
+  client.onReady().then(() => {
+    context.subscriptions.push(activateColorDecorations(colorRequestor, { vue: true }, isDecoratorEnabled));
+  });
 
   languages.setLanguageConfiguration('vue-html', {
     wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,

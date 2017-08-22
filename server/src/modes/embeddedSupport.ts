@@ -9,12 +9,12 @@ export interface LanguageRange extends Range {
 }
 
 export interface VueDocumentRegions {
-  getEmbeddedDocument (languageId: string): TextDocument;
-  getEmbeddedDocumentByType (type: EmbeddedType): TextDocument;
-  getLanguageRanges (range: Range): LanguageRange[];
-  getLanguageAtPosition (position: Position): string;
-  getLanguagesInDocument (): string[];
-  getImportedScripts (): string[];
+  getEmbeddedDocument(languageId: string): TextDocument;
+  getEmbeddedDocumentByType(type: EmbeddedType): TextDocument;
+  getLanguageRanges(range: Range): LanguageRange[];
+  getLanguageAtPosition(position: Position): string;
+  getLanguagesInDocument(): string[];
+  getImportedScripts(): string[];
 }
 
 type EmbeddedType = 'template' | 'script' | 'style' | 'custom';
@@ -32,7 +32,7 @@ const defaultType: {[type: string]: string} = {
   style: 'css',
 };
 
-export function getDocumentRegions (document: TextDocument): VueDocumentRegions {
+export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
   const regions: EmbeddedRegion[] = [];
   const text = document.getText();
   const scanner = createScanner(text);
@@ -104,7 +104,7 @@ export function getDocumentRegions (document: TextDocument): VueDocumentRegions 
   };
 }
 
-function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | null {
+function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | null {
   let languageId = 'vue-html';
 
   let token: number;
@@ -175,7 +175,7 @@ function scanTemplateRegion (scanner: Scanner, text: string): EmbeddedRegion | n
   };
 }
 
-function getLanguageIdFromLangAttr (lang: string): string {
+function getLanguageIdFromLangAttr(lang: string): string {
   let languageIdFromType = removeQuotes(lang);
   if (languageIdFromType === 'jade') {
     languageIdFromType = 'pug';
@@ -186,7 +186,7 @@ function getLanguageIdFromLangAttr (lang: string): string {
   return languageIdFromType;
 }
 
-function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], range: Range): LanguageRange[] {
+function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], range: Range): LanguageRange[] {
   const result: LanguageRange[] = [];
   let currentPos = range ? range.start : Position.create(0, 0);
   let currentOffset = range ? document.offsetAt(range.start) : 0;
@@ -226,7 +226,7 @@ function getLanguageRanges (document: TextDocument, regions: EmbeddedRegion[], r
   return result;
 }
 
-function getLanguagesInDocument (document: TextDocument, regions: EmbeddedRegion[]): string[] {
+function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[]): string[] {
   const result = ['vue'];
   for (const region of regions) {
     if (region.languageId && result.indexOf(region.languageId) === -1) {
@@ -236,7 +236,7 @@ function getLanguagesInDocument (document: TextDocument, regions: EmbeddedRegion
   return result;
 }
 
-function getLanguageAtPosition (document: TextDocument, regions: EmbeddedRegion[], position: Position): string {
+function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[], position: Position): string {
   const offset = document.offsetAt(position);
   for (const region of regions) {
     if (region.start <= offset) {
@@ -250,7 +250,7 @@ function getLanguageAtPosition (document: TextDocument, regions: EmbeddedRegion[
   return 'vue';
 }
 
-function getEmbeddedDocument (document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {
+function getEmbeddedDocument(document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {
   const oldContent = document.getText();
   let result = '';
   for (const c of contents) {
@@ -263,7 +263,7 @@ function getEmbeddedDocument (document: TextDocument, contents: EmbeddedRegion[]
   return TextDocument.create(document.uri, languageId, document.version, result);
 }
 
-function getEmbeddedDocumentByType (document: TextDocument, contents: EmbeddedRegion[], type: EmbeddedType): TextDocument {
+function getEmbeddedDocumentByType(document: TextDocument, contents: EmbeddedRegion[], type: EmbeddedType): TextDocument {
   const oldContent = document.getText();
   let result = '';
   for (const c of contents) {

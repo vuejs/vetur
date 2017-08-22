@@ -16,7 +16,7 @@ export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
 }
 
-export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): ScriptMode {
+export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): ScriptMode {
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     return vueDocument.getEmbeddedDocumentByType('script');
@@ -27,15 +27,15 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
   const settings: any = {};
 
   return {
-    getId () {
+    getId() {
       return 'javascript';
     },
-    configure (options: any) {
+    configure(options: any) {
       if (options.vetur) {
         settings.format = options.vetur.format.js;
       }
     },
-    doValidation (doc: TextDocument): Diagnostic[] {
+    doValidation(doc: TextDocument): Diagnostic[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -55,7 +55,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         };
       });
     },
-    doComplete (doc: TextDocument, position: Position): CompletionList {
+    doComplete(doc: TextDocument, position: Position): CompletionList {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return { isIncomplete: false, items: [] };
@@ -74,7 +74,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           return {
             uri: doc.uri,
-            position: position,
+            position,
             label: entry.name,
             sortText: entry.sortText,
             kind: convertKind(entry.kind),
@@ -82,13 +82,13 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
             data: { // data used for resolving item details (see 'doResolve')
               languageId: doc.languageId,
               uri: doc.uri,
-              offset: offset
+              offset
             }
           };
         })
       };
     },
-    doResolve (doc: TextDocument, item: CompletionItem): CompletionItem {
+    doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
       const { service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_COMPLETION;
@@ -103,7 +103,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return item;
     },
-    doHover (doc: TextDocument, position: Position): Hover {
+    doHover(doc: TextDocument, position: Position): Hover {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return { contents: [] };
@@ -127,7 +127,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return { contents: [] };
     },
-    doSignatureHelp (doc: TextDocument, position: Position): SignatureHelp {
+    doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_SIGNATURE;
@@ -155,7 +155,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
         item.parameters.forEach((p, i, a) => {
           const label = ts.displayPartsToString(p.displayParts);
           const parameter: ParameterInformation = {
-            label: label,
+            label,
             documentation: ts.displayPartsToString(p.documentation)
           };
           signature.label += label;
@@ -169,7 +169,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       });
       return ret;
     },
-    findDocumentHighlight (doc: TextDocument, position: Position): DocumentHighlight[] {
+    findDocumentHighlight(doc: TextDocument, position: Position): DocumentHighlight[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -187,7 +187,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return [];
     },
-    findDocumentSymbols (doc: TextDocument): SymbolInformation[] {
+    findDocumentSymbols(doc: TextDocument): SymbolInformation[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -228,7 +228,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       }
       return [];
     },
-    findDefinition (doc: TextDocument, position: Position): Definition {
+    findDefinition(doc: TextDocument, position: Position): Definition {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -252,7 +252,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       });
       return definitionResults;
     },
-    findReferences (doc: TextDocument, position: Position): Location[] {
+    findReferences(doc: TextDocument, position: Position): Location[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -276,7 +276,7 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       });
       return referenceResults;
     },
-    format (doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
+    format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
       const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
       // InsertSpaceAfterFunctionKeywordForAnonymousFunctions should be consistent with InsertSpaceBeforeFunctionParenthesis
@@ -307,10 +307,10 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
       const fileFsPath = getFileFsPath(doc.uri);
       return findComponents(service, fileFsPath);
     },
-    onDocumentRemoved (document: TextDocument) {
+    onDocumentRemoved(document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);
     },
-    dispose () {
+    dispose() {
       serviceHost.getService().dispose();
       jsDocuments.dispose();
     }
@@ -319,19 +319,19 @@ export function getJavascriptMode (documentRegions: LanguageModelCache<VueDocume
 }
 
 
-function languageServiceIncludesFile (ls: ts.LanguageService, documentUri: string): boolean {
+function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
   const filePaths = ls.getProgram().getRootFileNames();
   const filePath = getFilePath(documentUri);
   return filePaths.includes(filePath);
 }
 
-function convertRange (document: TextDocument, span: ts.TextSpan): Range {
+function convertRange(document: TextDocument, span: ts.TextSpan): Range {
   const startPosition = document.positionAt(span.start);
   const endPosition = document.positionAt(span.start + span.length);
   return Range.create(startPosition, endPosition);
 }
 
-function convertKind (kind: string): CompletionItemKind {
+function convertKind(kind: string): CompletionItemKind {
   switch (kind) {
     case 'primitive type':
     case 'keyword':
@@ -364,7 +364,7 @@ function convertKind (kind: string): CompletionItemKind {
   return CompletionItemKind.Property;
 }
 
-function convertSymbolKind (kind: string): SymbolKind {
+function convertSymbolKind(kind: string): SymbolKind {
   switch (kind) {
     case 'var':
     case 'local var':
@@ -391,7 +391,7 @@ function convertSymbolKind (kind: string): SymbolKind {
   return SymbolKind.Variable;
 }
 
-function convertOptions (options: FormattingOptions, formatSettings: any, initialIndentLevel: number): ts.FormatCodeOptions {
+function convertOptions(options: FormattingOptions, formatSettings: any, initialIndentLevel: number): ts.FormatCodeOptions {
   const defaultJsFormattingOptions = {
     ConvertTabsToSpaces: options.insertSpaces,
     TabSize: options.tabSize,

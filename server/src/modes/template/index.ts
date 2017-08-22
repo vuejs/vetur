@@ -18,7 +18,7 @@ import { ScriptMode } from '../script/javascript';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
-export function getVueHTMLMode (
+export function getVueHTMLMode(
   documentRegions: DocumentRegionCache,
   workspacePath: string,
   scriptMode: ScriptMode): LanguageMode {
@@ -29,42 +29,42 @@ export function getVueHTMLMode (
   const lintEngine = createLintEngine();
 
   return {
-    getId () {
+    getId() {
       return 'vue-html';
     },
-    configure (options: any) {
+    configure(options: any) {
       settings = options && options.html;
       completionOption = settings && settings.suggest || getDefaultSetting(workspacePath);
     },
-    doValidation (document) {
+    doValidation(document) {
       const embedded = embeddedDocuments.get(document);
       return doValidation(embedded, lintEngine);
     },
-    doComplete (document: TextDocument, position: Position) {
+    doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const components = scriptMode.findComponents(document);
       return doComplete(embedded, position, vueDocuments.get(embedded), completionOption, components);
     },
-    doHover (document: TextDocument, position: Position) {
+    doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       return doHover(embedded, position, vueDocuments.get(embedded));
     },
-    findDocumentHighlight (document: TextDocument, position: Position) {
+    findDocumentHighlight(document: TextDocument, position: Position) {
       return findDocumentHighlights(document, position, vueDocuments.get(document));
     },
-    findDocumentLinks (document: TextDocument, documentContext: DocumentContext) {
+    findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
       return findDocumentLinks(document, documentContext);
     },
-    findDocumentSymbols (document: TextDocument) {
+    findDocumentSymbols(document: TextDocument) {
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
-    format (document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
+    format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
       return htmlFormat(document, range, formattingOptions);
     },
-    onDocumentRemoved (document: TextDocument) {
+    onDocumentRemoved(document: TextDocument) {
       vueDocuments.onDocumentRemoved(document);
     },
-    dispose () {
+    dispose() {
       vueDocuments.dispose();
     }
   };

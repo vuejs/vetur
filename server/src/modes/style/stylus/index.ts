@@ -11,7 +11,7 @@ import { provideCompletionItems } from './completion-item';
 import { provideDocumentSymbols } from './symbols-finder';
 import { stylusHover } from './stylus-hover';
 
-export function getStylusMode (documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument('stylus'));
   return {
     getId: () => 'stylus',
