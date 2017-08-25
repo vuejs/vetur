@@ -24,7 +24,7 @@
     "stylus": "^0.54.5",
     "typescript": "^2.4.1",
     "vscode-css-languageservice": "^2.0.0",
-    "vscode-emmet-helper": "^1.0.16",
+    "vscode-emmet-helper": "^1.0.19",
     "vscode-languageserver": "^3.3.0",
     "vscode-uri": "^1.0.1",
     "vue-onsenui-helper-json": "^1.0.0"
