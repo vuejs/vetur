@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 
 namespace ColorSymbolRequest {
-	export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
+  export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
 }
 
 // Create a connection for the server
@@ -96,7 +96,7 @@ documents.onDidClose(event => {
   connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
 });
 
-function cleanPendingValidation (textDocument: TextDocument): void {
+function cleanPendingValidation(textDocument: TextDocument): void {
   const request = pendingValidationRequests[textDocument.uri];
   if (request) {
     clearTimeout(request);
@@ -104,7 +104,7 @@ function cleanPendingValidation (textDocument: TextDocument): void {
   }
 }
 
-function triggerValidation (textDocument: TextDocument): void {
+function triggerValidation(textDocument: TextDocument): void {
   cleanPendingValidation(textDocument);
   pendingValidationRequests[textDocument.uri] = setTimeout(() => {
     delete pendingValidationRequests[textDocument.uri];
@@ -112,7 +112,7 @@ function triggerValidation (textDocument: TextDocument): void {
   }, validationDelayMs);
 }
 
-function validateTextDocument (textDocument: TextDocument): void {
+function validateTextDocument(textDocument: TextDocument): void {
   const diagnostics: Diagnostic[] = vls.validate(textDocument);
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
@@ -183,11 +183,11 @@ connection.onDocumentSymbol(documentSymbolParms => {
 });
 
 connection.onRequest(ColorSymbolRequest.type, uri => {
-	const document = documents.get(uri);
-	if (document) {
-		return vls.findColorSymbols(document);
-	}
-	return [];
+  const document = documents.get(uri);
+  if (document) {
+    return vls.findColorSymbols(document);
+  }
+  return [];
 });
 
 // Listen on the connection

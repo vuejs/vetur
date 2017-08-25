@@ -1,5 +1,14 @@
 # Changelog
 
+### 0.9.5 | 2017-08-22
+
+- slm support. #366.
+- Color Decorator support with `vetur.colorDecorators.enable`. #28.
+- sass lang removed. Now recommend [sass extension](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented) for sass grammar.
+- Fix the multicursor in `scaffold` snippet.
+- Initial support for goto definition and find references.
+- `vetur.format.js.InsertSpaceBeforeFunctionParenthesis` now control both space before named and anonymous functions. #226.
+
 ### 0.9.4 | 2017-08-16
 
 - Integrate new Emmet support for html, css, scss, less and stylus. #232.

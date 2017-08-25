@@ -1,16 +1,27 @@
 {
   "rules": {
-    "no-unused-expression": true,
-    "no-duplicate-variable": true,
-    "no-var-keyword": true,
-    "curly": true,
-    "label-position": true,
-    "no-arg": true,
-    "no-eval": true,
-    "no-var-keyword": true,
-    "prefer-const": true,
     "class-name": true,
+    "curly": true,
+    "import-spacing": true,
+    "indent": [true, "spaces", 2],
+    "interface-over-type-literal": true,
+    "label-position": true,
+    "max-line-length": 120,
+    "no-arg": true,
+    "no-duplicate-variable": true,
+    "no-eval": true,
+    "no-inferrable-types": true,
+    "no-unused-expression": true,
+    "no-var-keyword": true,
+    "object-literal-key-quotes": [true, "as-needed"],
+    "object-literal-shorthand": true,
+    "prefer-const": true,
+    "prefer-method-signature": true,
+    "quotemark": [true, "single", "avoid-escape"],
+    "whitespace": true,
     "semicolon": [true, "always"],
-    "triple-equals": true
+    "space-before-function-paren": [true, {"anonymous": "always", "named": "never"}],
+    "triple-equals": true,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   }
 }

@@ -20,7 +20,7 @@ export function htmlFormat(document: TextDocument, currRange: Range, formattingO
   const beautifiedHtml = htmlBeautify(value, htmlFormattingOptions);
   const wrappedHtml = wrapSection(beautifiedHtml, /*needIndent*/ true, formattingOptions);
   return [{
-    range: range,
+    range,
     newText: wrappedHtml
   }];
 }

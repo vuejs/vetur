@@ -71,7 +71,7 @@ export function collectAttributesDefault(tag: string, collector: AttributeCollec
 }
 
 export function collectValuesDefault(tag: string, attribute: string, collector: (value: string) => void, tagSet: ITagSet, globalAttributes: StandaloneAttribute[], valueSets: IValueSets): void {
-  function processAttributes (attributes: Attribute[]) {
+  function processAttributes(attributes: Attribute[]) {
     for (const attr of attributes) {
       const label = attr.label;
       if (label !== attribute || !attr.type) {

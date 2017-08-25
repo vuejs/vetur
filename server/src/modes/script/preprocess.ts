@@ -8,29 +8,29 @@ import { platform } from 'os';
 
 const IS_WINDOWS = platform() === 'win32';
 
-export function isVue (filename: string): boolean {
+export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
 }
 
-export function parseVue (text: string): string {
+export function parseVue(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getDocumentRegions(doc);
   const script = regions.getEmbeddedDocumentByType('script');
   return script.getText() || 'export default {};';
 }
 
-export function createUpdater () {
+export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
   return {
-    createLanguageServiceSourceFile (fileName: string, scriptSnapshot: ts.IScriptSnapshot, scriptTarget: ts.ScriptTarget, version: string, setNodeParents: boolean, scriptKind?: ts.ScriptKind): ts.SourceFile {
+    createLanguageServiceSourceFile(fileName: string, scriptSnapshot: ts.IScriptSnapshot, scriptTarget: ts.ScriptTarget, version: string, setNodeParents: boolean, scriptKind?: ts.ScriptKind): ts.SourceFile {
       const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
       if (isVue(fileName)) {
         modifyVueSource(sourceFile);
       }
       return sourceFile;
     },
-    updateLanguageServiceSourceFile (sourceFile: ts.SourceFile, scriptSnapshot: ts.IScriptSnapshot, version: string, textChangeRange: ts.TextChangeRange, aggressiveChecks?: boolean): ts.SourceFile {
+    updateLanguageServiceSourceFile(sourceFile: ts.SourceFile, scriptSnapshot: ts.IScriptSnapshot, version: string, textChangeRange: ts.TextChangeRange, aggressiveChecks?: boolean): ts.SourceFile {
       sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
       if (isVue(sourceFile.fileName)) {
         modifyVueSource(sourceFile);
@@ -51,7 +51,7 @@ function find<T>(array: T[], predicate: (element: T, index: number) => boolean):
   return undefined;
 }
 
-function modifyVueSource (sourceFile: ts.SourceFile): void {
+function modifyVueSource(sourceFile: ts.SourceFile): void {
   const exportDefaultObject = find(sourceFile.statements, st => st.kind === ts.SyntaxKind.ExportAssignment &&
     (st as ts.ExportAssignment).expression.kind === ts.SyntaxKind.ObjectLiteralExpression);
   if (exportDefaultObject) {
@@ -75,15 +75,15 @@ function modifyVueSource (sourceFile: ts.SourceFile): void {
 }
 
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */
-function getWrapperRangeSetter (wrapped: ts.TextRange): <T extends ts.TextRange>(wrapperNode: T) => T {
+function getWrapperRangeSetter(wrapped: ts.TextRange): <T extends ts.TextRange>(wrapperNode: T) => T {
   return <T extends ts.TextRange>(wrapperNode: T) => ts.setTextRange(wrapperNode, wrapped);
 }
 
-export function getFileFsPath (documentUri: string): string {
+export function getFileFsPath(documentUri: string): string {
   return Uri.parse(documentUri).fsPath;
 }
 
-export function getFilePath (documentUri: string): string {
+export function getFilePath(documentUri: string): string {
   if (IS_WINDOWS) {
     // Windows have a leading slash like /C:/Users/pine
     return Uri.parse(documentUri).path.slice(1);

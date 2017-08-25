@@ -32,7 +32,7 @@ const vueSys: ts.System = {
 
 if (ts.sys.realpath) {
   const realpath = ts.sys.realpath;
-  vueSys.realpath = function(path) {
+  vueSys.realpath = function (path) {
     if (isVueProject(path)) {
       return realpath(path.slice(0, -3)) + '.ts';
     }
@@ -82,7 +82,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   compilerOptions = parsedConfig.options;
   compilerOptions.allowNonTsExtensions = true;
 
-  function updateCurrentTextDocument (doc: TextDocument) {
+  function updateCurrentTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
@@ -108,14 +108,14 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     };
   }
 
-  function getScriptDocByFsPath (fsPath: string) {
+  function getScriptDocByFsPath(fsPath: string) {
     return scriptDocs.get(fsPath);
   }
 
   const host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
     getScriptFileNames: () => files,
-    getScriptVersion (fileName) {
+    getScriptVersion(fileName) {
       if (fileName === bridge.fileName) {
         return '0';
       }
@@ -123,7 +123,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       const version = versions.get(normalizedFileFsPath);
       return version ? version.toString() : '0';
     },
-    getScriptKind (fileName) {
+    getScriptKind(fileName) {
       if (isVue(fileName)) {
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
@@ -147,7 +147,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     readFile: vueSys.readFile,
     readDirectory: vueSys.readDirectory,
 
-    resolveModuleNames (moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
+    resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
       // in the normal case, delegate to ts.resolveModuleName
       // in the relative-imported.vue case, manually build a resolved filename
       return moduleNames.map(name => {
@@ -212,7 +212,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   };
 }
 
-function getNormalizedFileFsPath (fileName: string): string {
+function getNormalizedFileFsPath(fileName: string): string {
   return Uri.file(fileName).fsPath;
 }
 

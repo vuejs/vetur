@@ -7,6 +7,7 @@ Vetur supports syntax highlighting for the following languages:
 |`<template>`|`html`|
 |`<template lang="pug">`|`pug`|
 |`<template lang="jade">`|`pug`|
+|`<template lang="slm">`|`slm`|
 |`<style>`|`css`|
 |`<style lang="postcss">`|`postcss`|
 |`<style lang="scss">`|`scss`|
@@ -16,4 +17,3 @@ Vetur supports syntax highlighting for the following languages:
 |`<script>`|`js`|
 |`<script lang="ts">`|`typescript`|
 |`<script lang="coffee">`|`coffee`|
-

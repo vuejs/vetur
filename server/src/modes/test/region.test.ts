@@ -41,7 +41,9 @@ function getLangId(block: string, lang: string) {
 }
 
 function testcase(description: string) {
-  type Contents = { [block: string]: string | undefined };
+  interface Contents {
+    [block: string]: string | undefined;
+  }
 
   const contents: Contents = {
     template: defaultTemplate,

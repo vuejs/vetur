@@ -9,7 +9,7 @@ namespace ColorSymbolRequest {
   export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
 }
 
-export function activate (context: ExtensionContext) {
+export function activate(context: ExtensionContext) {
 
   const serverModule = require.resolve('vue-language-server');
   const debugServerModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
@@ -41,11 +41,11 @@ export function activate (context: ExtensionContext) {
   const colorRequestor = (uri: string) => {
     return client.sendRequest(ColorSymbolRequest.type, uri).then(ranges => ranges.map(client.protocol2CodeConverter.asRange));
   };
-  const isDecoratorEnabled = (languageId: string) => {
-    return workspace.getConfiguration().get<boolean>(languageId + '.colorDecorators.enable');
+  const isDecoratorEnabled = () => {
+    return workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
   };
   client.onReady().then(() => {
-	  context.subscriptions.push(activateColorDecorations(colorRequestor, { vue: true }, isDecoratorEnabled));
+    context.subscriptions.push(activateColorDecorations(colorRequestor, { vue: true }, isDecoratorEnabled));
   });
 
   languages.setLanguageConfiguration('vue-html', {

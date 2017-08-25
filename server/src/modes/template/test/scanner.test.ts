@@ -750,65 +750,65 @@ suite('HTML Scanner', () => {
       ]
     }
     ]);
-	});
+  });
 
-	test('Simple Doctype #2', () => {
-		assertTokens([{
-			input: '<!doctype a>',
-			tokens: [
-				{ offset: 0, type: TokenType.StartDoctypeTag },
-				{ offset: 9, type: TokenType.Doctype },
-				{ offset: 11, type: TokenType.EndDoctypeTag }
-			]
-		}
-		]);
-	});
+  test('Simple Doctype #2', () => {
+    assertTokens([{
+      input: '<!doctype a>',
+      tokens: [
+        { offset: 0, type: TokenType.StartDoctypeTag },
+        { offset: 9, type: TokenType.Doctype },
+        { offset: 11, type: TokenType.EndDoctypeTag }
+      ]
+    }
+    ]);
+  });
 
-	test('Simple Doctype #4', () => {
-		assertTokens([{
-			input: '<!DOCTYPE a\n"foo" \'bar\'>',
-			tokens: [
-				{ offset: 0, type: TokenType.StartDoctypeTag },
-				{ offset: 9, type: TokenType.Doctype },
-				{ offset: 23, type: TokenType.EndDoctypeTag }
-			]
-		}
-		]);
-	});
+  test('Simple Doctype #4', () => {
+    assertTokens([{
+      input: '<!DOCTYPE a\n"foo" \'bar\'>',
+      tokens: [
+        { offset: 0, type: TokenType.StartDoctypeTag },
+        { offset: 9, type: TokenType.Doctype },
+        { offset: 23, type: TokenType.EndDoctypeTag }
+      ]
+    }
+    ]);
+  });
 
 
-	test('Incomplete', () => {
-		assertTokens([{
-			input: '    ',
-			tokens: [
-				{ offset: 0, type: TokenType.Content }
-			]
-		}]);
-		assertTokens([{
-			input: '<!---   ',
-			tokens: [
-				{ offset: 0, type: TokenType.StartCommentTag },
-				{ offset: 4, type: TokenType.Comment }
-			]
-		}]);
-		assertTokens([{
-			input: '<style>color:red',
-			tokens: [
-				{ offset: 0, type: TokenType.StartTagOpen },
-				{ offset: 1, type: TokenType.StartTag, content: 'style' },
-				{ offset: 6, type: TokenType.StartTagClose },
-				{ offset: 7, type: TokenType.Styles }
-			]
-		}]);
-		assertTokens([{
-			input: '<script>alert("!!")',
-			tokens: [
-				{ offset: 0, type: TokenType.StartTagOpen },
-				{ offset: 1, type: TokenType.StartTag, content: 'script' },
-				{ offset: 7, type: TokenType.StartTagClose },
-				{ offset: 8, type: TokenType.Script }
-			]
-		}]);
-	});
+  test('Incomplete', () => {
+    assertTokens([{
+      input: '    ',
+      tokens: [
+        { offset: 0, type: TokenType.Content }
+      ]
+    }]);
+    assertTokens([{
+      input: '<!---   ',
+      tokens: [
+        { offset: 0, type: TokenType.StartCommentTag },
+        { offset: 4, type: TokenType.Comment }
+      ]
+    }]);
+    assertTokens([{
+      input: '<style>color:red',
+      tokens: [
+        { offset: 0, type: TokenType.StartTagOpen },
+        { offset: 1, type: TokenType.StartTag, content: 'style' },
+        { offset: 6, type: TokenType.StartTagClose },
+        { offset: 7, type: TokenType.Styles }
+      ]
+    }]);
+    assertTokens([{
+      input: '<script>alert("!!")',
+      tokens: [
+        { offset: 0, type: TokenType.StartTagOpen },
+        { offset: 1, type: TokenType.StartTag, content: 'script' },
+        { offset: 7, type: TokenType.StartTagClose },
+        { offset: 8, type: TokenType.Script }
+      ]
+    }]);
+  });
 
 });
