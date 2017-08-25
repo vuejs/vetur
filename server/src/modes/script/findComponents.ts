@@ -5,19 +5,19 @@ export interface ComponentInfo {
   props?: string[];
 }
 
-export function findComponents(service: ts.LanguageService, fileFsPath: string) {
+export function findComponents(service: ts.LanguageService, fileFsPath: string): ComponentInfo[] {
   const program = service.getProgram();
   const sourceFile = program.getSourceFile(fileFsPath);
-  const importStmt = sourceFile.statements.filter(st => st.kind === ts.SyntaxKind.ExportAssignment);
-  if (importStmt.length === 0) {
+  const exportStmt = sourceFile.statements.filter(st => st.kind === ts.SyntaxKind.ExportAssignment);
+  if (exportStmt.length === 0) {
     return [];
   }
-  const maybeComp = (importStmt[0] as ts.ExportAssignment).expression;
-  if (maybeComp.kind !== ts.SyntaxKind.CallExpression) {
+  // vls will create synthetic __vueEditorBridge({ ... })
+  const exportCall = (exportStmt[0] as ts.ExportAssignment).expression;
+  if (exportCall.kind !== ts.SyntaxKind.CallExpression) {
     return [];
   }
-  const instance = maybeComp as ts.CallExpression;
-  const comp = instance.arguments[0];
+  const comp = (exportCall as ts.CallExpression).arguments[0];
   const checker = program.getTypeChecker();
   const compType = checker.getTypeAtLocation(comp);
   const childComps = getPropertyTypeOfType(compType, 'components', checker);
@@ -35,9 +35,9 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   if (!compType) {
     return info;
   }
-  const propArray = getArrayProp(compType, checker);
-  if (propArray) {
-    info.props = propArray;
+  const arrayProps = getArrayProps(compType, checker);
+  if (arrayProps) {
+    info.props = arrayProps;
     return info;
   }
   const props = getPropertyTypeOfType(compType, 'props', checker);
@@ -48,7 +48,7 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   return info;
 }
 
-function getArrayProp(compType: ts.Type, checker: ts.TypeChecker) {
+function getArrayProps(compType: ts.Type, checker: ts.TypeChecker) {
   const propSymbol = checker.getPropertyOfType(compType, 'props');
   if (!propSymbol || !propSymbol.valueDeclaration) {
     return undefined;
