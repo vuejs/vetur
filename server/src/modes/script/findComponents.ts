@@ -1,8 +1,13 @@
 import * as ts from 'typescript';
 
+export interface PropInfo {
+  name: string;
+  doc?: string;
+}
+
 export interface ComponentInfo {
   name: string;
-  props?: string[];
+  props?: PropInfo[];
 }
 
 export function findComponents(service: ts.LanguageService, fileFsPath: string): ComponentInfo[] {
@@ -44,8 +49,31 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   if (!props) {
     return info;
   }
-  info.props = checker.getPropertiesOfType(props).map(s => s.name);
+  info.props = checker.getPropertiesOfType(props).map(s => {
+    return {
+      name: s.name,
+      doc: getPropTypeDeclaration(s, checker)
+    };
+  });
   return info;
+}
+
+function getPropTypeDeclaration(prop: ts.Symbol, checker: ts.TypeChecker) {
+  if (!prop.valueDeclaration) {
+    return '';
+  }
+  const declaration = prop.valueDeclaration.getChildAt(2);
+  if (!declaration) {
+    return '';
+  }
+  if (declaration.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+    const text: string[] = [];
+    declaration.forEachChild(n => {
+      text.push(n.getText());
+    });
+    return text.join('\n');
+  }
+  return declaration.getText();
 }
 
 function getArrayProps(compType: ts.Type, checker: ts.TypeChecker) {
@@ -60,7 +88,7 @@ function getArrayProps(compType: ts.Type, checker: ts.TypeChecker) {
   const propArray = propDef as ts.ArrayLiteralExpression;
   return propArray.elements
     .filter(e => e.kind === ts.SyntaxKind.StringLiteral)
-    .map((e: ts.StringLiteral) => e.text);
+    .map((e: ts.StringLiteral) => ({name: e.text}));
 }
 
 function getPropertyTypeOfType(tpe: ts.Type, property: string, checker: ts.TypeChecker) {
