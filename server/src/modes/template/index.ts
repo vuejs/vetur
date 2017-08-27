@@ -15,6 +15,7 @@ import { parseHTMLDocument } from './parser/htmlParser';
 import { doValidation, createLintEngine } from './services/htmlValidation';
 import { getDefaultSetting } from './tagProviders';
 import { ScriptMode } from '../script/javascript';
+import { getComponentTags, allTagProviders } from './tagProviders';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
@@ -47,7 +48,9 @@ export function getVueHTMLMode(
     },
     doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      return doHover(embedded, position, vueDocuments.get(embedded));
+      const components = scriptMode.findComponents(document);
+      const tagProviders = allTagProviders.concat(getComponentTags(components));
+      return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
       return findDocumentHighlights(document, position, vueDocuments.get(document));

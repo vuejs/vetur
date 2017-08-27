@@ -5,6 +5,7 @@ import { getRouterTagProvider } from './routerTags';
 import { getElementTagProvider } from './elementTags';
 import { getOnsenTagProvider } from './onsenTags';
 export { getComponentTags } from './componentTags';
+export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';
 import * as fs from 'fs';

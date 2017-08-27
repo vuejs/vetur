@@ -303,7 +303,6 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
     },
     findComponents(doc: TextDocument) {
       const { service } = updateCurrentTextDocument(doc);
-      // TODO: refine component info collection
       const fileFsPath = getFileFsPath(doc.uri);
       return findComponents(service, fileFsPath);
     },
