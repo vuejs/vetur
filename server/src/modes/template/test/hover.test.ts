@@ -7,6 +7,7 @@
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { doHover } from '../services/htmlHover';
 import { hoverDSL } from '../../test-util/hover-test-util';
+import { allTagProviders } from '../tagProviders';
 
 
 const html = hoverDSL({
@@ -14,7 +15,7 @@ const html = hoverDSL({
   langId: 'vue-html',
   doHover(document, position) {
     const htmlAST = parseHTMLDocument(document);
-    return doHover(document, position, htmlAST);
+    return doHover(document, position, htmlAST, allTagProviders);
   }
 });
 

@@ -5,6 +5,7 @@ import { getRouterTagProvider } from './routerTags';
 import { getElementTagProvider } from './elementTags';
 import { getOnsenTagProvider } from './onsenTags';
 export { getComponentTags } from './componentTags';
+export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';
 import * as fs from 'fs';
@@ -17,8 +18,19 @@ export let allTagProviders : IHTMLTagProvider[] = [
   getOnsenTagProvider()
 ];
 
+export interface CompletionConfiguration {
+  [provider: string]: boolean;
+}
+
+
+export function getBasicTagProviders(setting: CompletionConfiguration) {
+  return allTagProviders.filter(
+    p => !setting || setting[p.getId()] !== false
+  );
+}
+
 export function getDefaultSetting(workspacePath: string) {
-  const setting: {[kind: string]: boolean} = {
+  const setting: CompletionConfiguration = {
     html5: true,
     vue: true,
     router: false,

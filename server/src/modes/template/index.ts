@@ -15,6 +15,7 @@ import { parseHTMLDocument } from './parser/htmlParser';
 import { doValidation, createLintEngine } from './services/htmlValidation';
 import { getDefaultSetting } from './tagProviders';
 import { ScriptMode } from '../script/javascript';
+import { getComponentTags, getBasicTagProviders } from './tagProviders';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
@@ -24,6 +25,7 @@ export function getVueHTMLMode(
   scriptMode: ScriptMode): LanguageMode {
   let settings: any = {};
   let completionOption = getDefaultSetting(workspacePath);
+  let basicTagProviders = getBasicTagProviders(completionOption);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
@@ -35,6 +37,7 @@ export function getVueHTMLMode(
     configure(options: any) {
       settings = options && options.html;
       completionOption = settings && settings.suggest || getDefaultSetting(workspacePath);
+      basicTagProviders = getBasicTagProviders(completionOption);
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
@@ -43,11 +46,14 @@ export function getVueHTMLMode(
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const components = scriptMode.findComponents(document);
-      return doComplete(embedded, position, vueDocuments.get(embedded), completionOption, components);
+      const tagProviders = basicTagProviders.concat(getComponentTags(components));
+      return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
     doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      return doHover(embedded, position, vueDocuments.get(embedded));
+      const components = scriptMode.findComponents(document);
+      const tagProviders = basicTagProviders.concat(getComponentTags(components));
+      return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
       return findDocumentHighlights(document, position, vueDocuments.get(document));

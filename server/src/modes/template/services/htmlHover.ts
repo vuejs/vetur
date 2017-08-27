@@ -1,20 +1,24 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
-import { allTagProviders } from '../tagProviders';
+import { IHTMLTagProvider } from '../tagProviders';
 import { NULL_HOVER } from '../../nullMode';
 
 const TRIVIAL_TOKEN = [
   TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace
 ];
 
-export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover {
+export function doHover(
+  document: TextDocument,
+  position: Position,
+  htmlDocument: HTMLDocument,
+  tagProviders: IHTMLTagProvider[]
+  ): Hover {
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeAt(offset);
   if (!node || !node.tag) {
     return NULL_HOVER;
   }
-  const tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId));
   function getTagHover(tag: string, range: Range, open: boolean): Hover {
     tag = tag.toLowerCase();
     for (const provider of tagProviders) {

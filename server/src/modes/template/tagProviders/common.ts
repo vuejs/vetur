@@ -28,7 +28,6 @@ export enum Priority {
 
 export interface IHTMLTagProvider {
   getId(): string;
-  isApplicable(languageId: string): boolean;
   collectTags(collector: TagCollector): void;
   collectAttributes(tag: string, collector: AttributeCollector): void;
   collectValues(tag: string, attribute: string, collector: (value: string) => void): void;
