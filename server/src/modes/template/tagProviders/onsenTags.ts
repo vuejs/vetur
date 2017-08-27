@@ -6,7 +6,6 @@ export function getOnsenTagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'onsen',
     priority: Priority.Library,
-    isApplicable: languageId => languageId === 'vue-html',
     collectTags(collector) {
       for (const tagName in tags) {
         collector(tagName, tags[tagName].description || '');

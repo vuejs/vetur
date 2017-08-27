@@ -18,7 +18,6 @@ export function getComponentTags(components: ComponentInfo[]): IHTMLTagProvider 
   return {
     getId: () => 'component',
     priority: Priority.UserCode,
-    isApplicable: (languageId) => languageId === 'vue-html',
     collectTags: (collector) => collectTagsDefault(collector, tags),
     collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
       collectAttributesDefault(tag, collector, tags, []);

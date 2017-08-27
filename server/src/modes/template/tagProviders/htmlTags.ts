@@ -382,7 +382,6 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
 
   return {
     getId: () => 'html5',
-    isApplicable: () => true,
     collectTags: (collector: (tag: string, label: string) => void) => collectTagsDefault(collector, HTML_TAGS),
     collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
       collectAttributesDefault(tag, collector, HTML_TAGS, globalAttributes);
