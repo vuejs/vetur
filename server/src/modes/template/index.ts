@@ -44,7 +44,10 @@ export function getVueHTMLMode(
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const components = scriptMode.findComponents(document);
-      return doComplete(embedded, position, vueDocuments.get(embedded), completionOption, components);
+      const tagProviders = allTagProviders.filter(
+        p => p.isApplicable(document.languageId) && (!completionOption || completionOption[p.getId()] !== false)
+      ).concat(getComponentTags(components));
+      return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
     doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

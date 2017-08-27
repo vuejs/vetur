@@ -10,13 +10,14 @@ import { CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-uti
 
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { doComplete } from '../services/htmlCompletion';
+import { allTagProviders } from '../tagProviders';
 
 const setup: CompletionTestSetup = {
   langId: 'vue-html',
   docUri: 'test://test/test.html',
   doComplete(doc, pos) {
     const htmlDoc = parseHTMLDocument(doc);
-    return doComplete(doc, pos, htmlDoc);
+    return doComplete(doc, pos, htmlDoc, allTagProviders);
   }
 };
 
@@ -308,7 +309,10 @@ suite('HTML Completion', () => {
         docUri: 'test://test/test.html',
         doComplete(doc, pos) {
           const htmlDoc = parseHTMLDocument(doc);
-          return doComplete(doc, pos, htmlDoc, settings);
+          const tagProviders = allTagProviders.filter(
+            p => p.isApplicable(doc.languageId) && (!settings || settings[p.getId()] !== false)
+          );
+          return doComplete(doc, pos, htmlDoc, tagProviders);
         }
       });
     }
