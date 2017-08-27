@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { CompletionConfiguration } from '../services/htmlCompletion';
+import { CompletionConfiguration } from '../tagProviders';
 
 import { CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-util/completion-test-util';
 
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { doComplete } from '../services/htmlCompletion';
-import { allTagProviders } from '../tagProviders';
+import { allTagProviders, getBasicTagProviders } from '../tagProviders';
 
 const setup: CompletionTestSetup = {
   langId: 'vue-html',
@@ -309,9 +309,7 @@ suite('HTML Completion', () => {
         docUri: 'test://test/test.html',
         doComplete(doc, pos) {
           const htmlDoc = parseHTMLDocument(doc);
-          const tagProviders = allTagProviders.filter(
-            p => p.isApplicable(doc.languageId) && (!settings || settings[p.getId()] !== false)
-          );
+          const tagProviders = getBasicTagProviders(settings);
           return doComplete(doc, pos, htmlDoc, tagProviders);
         }
       });

@@ -13,10 +13,6 @@ import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
 
-export interface CompletionConfiguration {
-  [provider: string]: boolean;
-}
-
 export function doComplete(
   document: TextDocument,
   position: Position,
