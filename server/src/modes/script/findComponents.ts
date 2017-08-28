@@ -7,6 +7,7 @@ export interface PropInfo {
 
 export interface ComponentInfo {
   name: string;
+  fsPath?: string;
   props?: PropInfo[];
 }
 
@@ -35,10 +36,14 @@ export function findComponents(service: ts.LanguageService, fileFsPath: string):
 function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   const compType = getSymbolType(symbol, checker);
   const info: ComponentInfo = {
-    name: symbol.name
+    name: symbol.name,
   };
   if (!compType) {
     return info;
+  }
+  if (compType.symbol && compType.symbol.declarations) {
+    const declaration = compType.symbol.declarations[0];
+    info.fsPath = declaration ? declaration.getSourceFile().fileName : '';
   }
   const arrayProps = getArrayProps(compType, checker);
   if (arrayProps) {
