@@ -38,7 +38,7 @@ export function findComponents(service: ts.LanguageService, fileFsPath: string):
 function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   const compType = getSymbolType(symbol, checker);
   const info: ComponentInfo = {
-    name: symbol.name,
+    name: hyphenate(symbol.name),
   };
   if (!compType) {
     return info;
@@ -64,7 +64,7 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   }
   info.props = checker.getPropertiesOfType(props).map(s => {
     return {
-      name: s.name,
+      name: hyphenate(s.name),
       doc: getPropTypeDeclaration(s, checker)
     };
   });
@@ -101,7 +101,7 @@ function getArrayProps(compType: ts.Type, checker: ts.TypeChecker) {
   const propArray = propDef as ts.ArrayLiteralExpression;
   return propArray.elements
     .filter(e => e.kind === ts.SyntaxKind.StringLiteral)
-    .map((e: ts.StringLiteral) => ({name: e.text}));
+    .map((e: ts.StringLiteral) => ({name: hyphenate(e.text)}));
 }
 
 function getPropertyTypeOfType(tpe: ts.Type, property: string, checker: ts.TypeChecker) {
@@ -116,3 +116,7 @@ function getSymbolType(symbol: ts.Symbol | undefined, checker: ts.TypeChecker) {
   return checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration);
 }
 
+const hyphenateRE = /\B([A-Z])/g;
+function hyphenate(word: string) {
+  return word.replace(hyphenateRE, '-$1').toLowerCase();
+}

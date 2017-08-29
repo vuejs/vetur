@@ -9,9 +9,9 @@ import { ComponentInfo } from '../../script/findComponents';
 export function getComponentTags(components: ComponentInfo[]): IHTMLTagProvider {
   const tags: ITagSet = {};
   for (const comp of components) {
-    const compName = hyphenate(comp.name);
+    const compName = comp.name;
     const props = comp.props
-      ? comp.props.map(s => genAttribute(hyphenate(s.name), undefined, s.doc))
+      ? comp.props.map(s => genAttribute(s.name, undefined, s.doc))
       : [];
     tags[compName] = new HTMLTagSpecification('', props);
   }
@@ -28,7 +28,3 @@ export function getComponentTags(components: ComponentInfo[]): IHTMLTagProvider 
   };
 }
 
-const hyphenateRE = /\B([A-Z])/g;
-function hyphenate(word: string) {
-  return word.replace(hyphenateRE, '-$1').toLowerCase();
-}

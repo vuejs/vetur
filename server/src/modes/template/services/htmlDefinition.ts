@@ -7,7 +7,7 @@ const TRIVIAL_TOKEN = [
   TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace
 ];
 
-export function findeDefinition(
+export function findDefinition(
   document: TextDocument,
   position: Position,
   htmlDocument: HTMLDocument,
