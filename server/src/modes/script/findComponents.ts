@@ -1,4 +1,6 @@
 import * as ts from 'typescript';
+import { Definition, Range } from 'vscode-languageserver-types';
+import Uri from 'vscode-uri';
 
 export interface PropInfo {
   name: string;
@@ -7,7 +9,7 @@ export interface PropInfo {
 
 export interface ComponentInfo {
   name: string;
-  fsPath?: string;
+  definition?: Definition;
   props?: PropInfo[];
 }
 
@@ -43,7 +45,13 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   }
   if (compType.symbol && compType.symbol.declarations) {
     const declaration = compType.symbol.declarations[0];
-    info.fsPath = declaration ? declaration.getSourceFile().fileName : '';
+    if (declaration) {
+      const fileName = declaration.getSourceFile().fileName;
+      info.definition = [{
+        uri: Uri.file(fileName).toString(),
+        range: Range.create(1, 1, 1, 1)
+      }];
+    }
   }
   const arrayProps = getArrayProps(compType, checker);
   if (arrayProps) {
