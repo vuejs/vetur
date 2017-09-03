@@ -137,7 +137,9 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
         unClosedTemplate++;
       } else if (token === TokenType.EndTag && scanner.getTokenText() === 'template') {
         unClosedTemplate--;
-        if (isLeadingTemplateEnd()) {
+        // test leading </template>
+        const charPosBeforeEndTag = scanner.getTokenOffset() - 3;
+        if (text[charPosBeforeEndTag] === '\n') {
           break;
         }
       } else if (token === TokenType.Unknown) {
@@ -146,21 +148,19 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
           const unknownText = text.substr(offset, 11);
           if (unknownText === '</template>') {
             unClosedTemplate--;
-          }
-          if (isLeadingTemplateEnd) {
-            break;
+            // test leading </template>
+            if (text[offset - 1] === '\n') {
+              return {
+                languageId,
+                start,
+                end: offset,
+                type: 'template'
+              };
+            }
           }
         }
       }
     }
-  }
-
-  // leading `</template>` means end of template
-  function isLeadingTemplateEnd() {
-    const offset = scanner.getTokenOffset();
-    // should work for both line separator
-    // -2 for </, -1 for line break
-    return text[offset - 3] === '\n';
   }
 
   // In EndTag, find end
