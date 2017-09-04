@@ -136,6 +136,26 @@ suite('Embedded Support', () => {
     .template(`<div|></div>`)
     .run();
 
+  testcase('ill position1')
+    .template(`<|`)
+    .run();
+
+  testcase('ill position2')
+    .template(`<div |`)
+    .run();
+
+  testcase('ill position3')
+    .template(`<div class=""|`)
+    .run();
+
+  testcase('ill position4')
+    .template(`<div>|`)
+    .run();
+
+  testcase('ill position5')
+    .template(`|`)
+    .run();
+
   testcase('empty block')
     .style(` `)
     .run();
