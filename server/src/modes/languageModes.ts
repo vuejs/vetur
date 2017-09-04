@@ -47,7 +47,7 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(workspacePath: string): LanguageModes {
+export function getLanguageModes(workspacePath: string | null | undefined): LanguageModes {
   const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document => getDocumentRegions(document));
 
   let modelCaches: LanguageModelCache<any>[] = [];

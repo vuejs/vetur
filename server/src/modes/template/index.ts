@@ -21,7 +21,7 @@ type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode(
   documentRegions: DocumentRegionCache,
-  workspacePath: string,
+  workspacePath: string | null | undefined,
   scriptMode: ScriptMode): LanguageMode {
   let settings: any = {};
   let completionOption = getDefaultSetting(workspacePath);

@@ -25,7 +25,7 @@ export interface DocumentContext {
 }
 
 export interface VLS {
-  initialize(workspacePath: string): void;
+  initialize(workspacePath: string | null | undefined): void;
   configure(settings: any): void;
   format(doc: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
   validate(doc: TextDocument): Diagnostic[];
