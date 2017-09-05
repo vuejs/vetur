@@ -29,7 +29,7 @@ export function getBasicTagProviders(setting: CompletionConfiguration) {
   );
 }
 
-export function getDefaultSetting(workspacePath: string) {
+export function getDefaultSetting(workspacePath: string | null | undefined) {
   const setting: CompletionConfiguration = {
     html5: true,
     vue: true,
@@ -37,6 +37,9 @@ export function getDefaultSetting(workspacePath: string) {
     element: false,
     onsen: false
   };
+  if (!workspacePath) {
+    return setting;
+  }
   try {
     const packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));

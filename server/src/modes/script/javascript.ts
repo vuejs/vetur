@@ -10,13 +10,16 @@ import Uri from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 
-import { NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
+import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
 
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
 }
 
-export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): ScriptMode {
+export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string | null | undefined): ScriptMode {
+  if (!workspacePath) {
+    return { ...nullMode, findComponents: () => [] };
+  }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     return vueDocument.getEmbeddedDocumentByType('script');

@@ -25,7 +25,7 @@ const documents = new TextDocuments();
 // for open, change and close text document events
 documents.listen(connection);
 
-let workspacePath: string;
+let workspacePath: string | null | undefined;
 let settings: any = {};
 const vls = getVls();
 
@@ -37,7 +37,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   console.log('vetur initialized');
   const initializationOptions = params.initializationOptions;
 
-  workspacePath = params.rootPath || process.cwd();
+  workspacePath = params.rootPath;
   vls.initialize(workspacePath);
 
   documents.onDidClose(e => {
