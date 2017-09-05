@@ -21,6 +21,7 @@
     "eslint-plugin-vue": "3.13.0",
     "js-beautify": "^1.6.14",
     "lodash": "^4.17.4",
+    "parse-gitignore": "^0.4.0",
     "stylus": "^0.54.5",
     "typescript": "^2.4.1",
     "vscode-css-languageservice": "^2.0.0",
