@@ -13,6 +13,7 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/formatters';
 import { parseHTMLDocument } from './parser/htmlParser';
 import { doValidation, createLintEngine } from './services/htmlValidation';
+import { findDefinition } from './services/htmlDefinition';
 import { getDefaultSetting } from './tagProviders';
 import { ScriptMode } from '../script/javascript';
 import { getComponentTags, getBasicTagProviders } from './tagProviders';
@@ -66,6 +67,11 @@ export function getVueHTMLMode(
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
       return htmlFormat(document, range, formattingOptions);
+    },
+    findDefinition(document: TextDocument, position: Position) {
+      const embedded = embeddedDocuments.get(document);
+      const components = scriptMode.findComponents(document);
+      return findDefinition(embedded, position, vueDocuments.get(embedded), components);
     },
     onDocumentRemoved(document: TextDocument) {
       vueDocuments.onDocumentRemoved(document);

@@ -33,13 +33,13 @@ function testProps(components: ComponentInfo[]) {
     assert.equal(components.length, 2, 'componet number');
     const comp = components[0];
     const comp2 = components[1];
-    assert.equal(comp.name, 'Comp', 'componet name');
-    assert.equal(comp2.name, 'Comp2', 'componet name');
-    assert.deepEqual(comp.props, [{name: 'propname'}, {name: 'anotherProp'}]);
+    assert.equal(comp.name, 'comp', 'componet name');
+    assert.equal(comp2.name, 'comp2', 'componet name');
+    assert.deepEqual(comp.props, [{name: 'propname'}, {name: 'another-prop'}]);
     assert.deepEqual(comp2.props, [
       {name: 'propname', doc: 'String'},
-      {name: 'weirdProp', doc: ''},
-      {name: 'anotherProp', doc: 'type: Number'},
+      {name: 'weird-prop', doc: ''},
+      {name: 'another-prop', doc: 'type: Number'},
     ]);
 }
 
