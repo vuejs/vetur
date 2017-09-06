@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as ts from 'typescript';
 import Uri from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
+import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
@@ -9,6 +10,17 @@ import * as bridge from './bridge';
 
 function isVueProject(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
+}
+
+function defaultIgnorePatterns(workspacePath: string) {
+  const nodeModules = ['node_modules', '**/node_modules/*'];
+  const gitignore = ts.findConfigFile(workspacePath, ts.sys.fileExists, '.gitignore');
+  if (!gitignore) {
+    return nodeModules;
+  }
+  const parsed: string[] = parseGitIgnore(gitignore);
+  const filtered = parsed.filter(s => !s.startsWith('!'));
+  return nodeModules.concat(filtered);
 }
 
 const vueSys: ts.System = {
@@ -69,7 +81,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   const configFilename = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
     ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
   const configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {
-    exclude: ['node_modules', '**/node_modules/*']
+    exclude: defaultIgnorePatterns(workspacePath)
   };
   const parsedConfig = ts.parseJsonConfigFileContent(configJson,
     ts.sys,
