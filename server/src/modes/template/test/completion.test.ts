@@ -10,7 +10,7 @@ import { CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-uti
 
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { doComplete } from '../services/htmlCompletion';
-import { allTagProviders, getBasicTagProviders } from '../tagProviders';
+import { allTagProviders, getEnabledTagProviders } from '../tagProviders';
 
 const setup: CompletionTestSetup = {
   langId: 'vue-html',
@@ -309,8 +309,8 @@ suite('HTML Completion', () => {
         docUri: 'test://test/test.html',
         doComplete(doc, pos) {
           const htmlDoc = parseHTMLDocument(doc);
-          const tagProviders = getBasicTagProviders(settings);
-          return doComplete(doc, pos, htmlDoc, tagProviders);
+          const enabledTagProviders = getEnabledTagProviders(settings);
+          return doComplete(doc, pos, htmlDoc, enabledTagProviders);
         }
       });
     }

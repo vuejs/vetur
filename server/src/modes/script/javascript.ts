@@ -33,9 +33,9 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
     getId() {
       return 'javascript';
     },
-    configure(options: any) {
-      if (options.vetur) {
-        settings.format = options.vetur.format.js;
+    configure(config) {
+      if (config.vetur) {
+        settings.format = config.vetur.format.js;
       }
     },
     doValidation(doc: TextDocument): Diagnostic[] {

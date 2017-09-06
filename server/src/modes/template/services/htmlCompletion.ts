@@ -280,10 +280,11 @@ export function doComplete(
         if (offset <= scanner.getTokenEnd()) {
           return emmet.doComplete(document, position, 'html', {
             useNewEmmet: true,
-            showExpandedAbbreviation: true,
+            showExpandedAbbreviation: 'alwayx',
             showAbbreviationSuggestions: true,
             syntaxProfiles: {},
-            variables: {}
+            variables: {},
+            preferences: {}
           });
         }
         break;

@@ -26,7 +26,7 @@ const documents = new TextDocuments();
 documents.listen(connection);
 
 let workspacePath: string | null | undefined;
-let settings: any = {};
+let config: any = {};
 const vls = getVls();
 
 let veturFormattingOptions = {};
@@ -71,11 +71,11 @@ let formatterRegistration: Thenable<Disposable>;
 
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration((change) => {
-  settings = change.settings;
-  vls.configure(settings);
+  config = change.settings;
+  vls.configure(config);
 
   // Update formatting setting
-  veturFormattingOptions = settings.vetur.format;
+  veturFormattingOptions = config.vetur.format;
   documents.all().forEach(triggerValidation);
 
   const documentSelector: DocumentSelector = [{ language: 'vue' }];

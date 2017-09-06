@@ -56,8 +56,8 @@ function getStyleMode(
     getId() {
       return languageId;
     },
-    configure(options) {
-      languageService.configure(options && options.css);
+    configure(config) {
+      languageService.configure(config && config.css);
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
