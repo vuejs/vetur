@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.9.7 | 2017-09-08
+
+- Upgrade to newest TypeScript version with support for JSDoc cast and more. #419 and #420.
+- Hotfix for the disappearing formatter. #421.
+
 ### 0.9.6 | 2017-09-07
 
 - Handle unquoted attr values. #341.
