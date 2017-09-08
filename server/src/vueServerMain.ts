@@ -57,7 +57,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
       textDocumentSync: documents.syncKind,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '/', '@', '*', '$'] },
       signatureHelpProvider: { triggerCharacters: ['('] },
-      documentRangeFormattingProvider: false,
+      documentRangeFormattingProvider: true,
       hoverProvider: true,
       documentHighlightProvider: true,
       documentSymbolProvider: true,
