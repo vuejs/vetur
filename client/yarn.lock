@@ -2340,9 +2340,9 @@ vue-eslint-parser@^2.0.1-beta.0:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-language-server@^0.0.16:
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.16.tgz#fc90471838bddc31b360ccb34904765be36a8946"
+vue-language-server@^0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.17.tgz#d6ba1e5893932c265be336d2504a7232a6868165"
   dependencies:
     element-helper-json "^1.0.0"
     eslint "^4.5.0"
