@@ -27,16 +27,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
   const { updateCurrentTextDocument, getScriptDocByFsPath } = serviceHost;
-  const settings: any = {};
+  let config: any = {};
 
   return {
     getId() {
       return 'javascript';
     },
-    configure(config) {
-      if (config.vetur) {
-        settings.format = config.vetur.format.js;
-      }
+    configure(c) {
+      config = c;
     },
     doValidation(doc: TextDocument): Diagnostic[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -281,9 +279,9 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
-      const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
+      const formatSettings = convertOptions(formatParams, config.vetur.format.js, initialIndentLevel);
       // InsertSpaceAfterFunctionKeywordForAnonymousFunctions should be consistent with InsertSpaceBeforeFunctionParenthesis
-      formatSettings.InsertSpaceAfterFunctionKeywordForAnonymousFunctions = settings.format.InsertSpaceBeforeFunctionParenthesis;
+      formatSettings.InsertSpaceAfterFunctionKeywordForAnonymousFunctions = config.vetur.format.js.InsertSpaceBeforeFunctionParenthesis;
 
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);

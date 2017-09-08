@@ -21,12 +21,12 @@ export function activate(context: ExtensionContext) {
   };
 
   const documentSelector = ['vue'];
-  const veturConfig = workspace.getConfiguration('vetur');
+  const veturConfig = workspace.getConfiguration();
 
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      configurationSection: ['vetur'] // the settings to synchronize
+      configurationSection: ['vetur', 'html'] // the settings to synchronize
     },
     initializationOptions: {
       veturConfig
