@@ -5,7 +5,7 @@
 	<key>fileTypes</key>
 	<array/>
 	<key>name</key>
-	<string>Vue Html</string>
+	<string>Vue HTML</string>
 	<key>patterns</key>
 	<array>
 		<dict>
@@ -559,7 +559,7 @@
 		<key>tag-generic-attribute</key>
 		<dict>
 			<key>match</key>
-			<string>\b([a-zA-Z\-:]+)</string>
+			<string>(?&lt;=[^=])\b([a-zA-Z0-9:-]+)</string>
 			<key>name</key>
 			<string>entity.other.attribute-name.html</string>
 		</dict>
@@ -581,7 +581,7 @@
 				</dict>
 			</dict>
 			<key>end</key>
-			<string>(?&lt;='|")</string>
+			<string>(?!\G)(?&lt;='|"|[^\s&lt;&gt;/])</string>
 			<key>name</key>
 			<string>meta.attribute-with-value.id.html</string>
 			<key>patterns</key>
@@ -659,6 +659,20 @@
 							<string>#entities</string>
 						</dict>
 					</array>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>meta.toc-list.id.html</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(?&lt;==)(?:[^\s&lt;&gt;/'"]|/(?!&gt;))+</string>
+					<key>name</key>
+					<string>string.unquoted.html</string>
 				</dict>
 			</array>
 		</dict>
