@@ -40,19 +40,8 @@ export function createUpdater() {
   };
 }
 
-/** Works like Array.prototype.find, returning `undefined` if no element satisfying the predicate is found. */
-function find<T>(array: T[], predicate: (element: T, index: number) => boolean): T | undefined {
-  for (let i = 0; i < array.length; i++) {
-    const value = array[i];
-    if (predicate(value, i)) {
-      return value;
-    }
-  }
-  return undefined;
-}
-
 function modifyVueSource(sourceFile: ts.SourceFile): void {
-  const exportDefaultObject = find(sourceFile.statements, st => st.kind === ts.SyntaxKind.ExportAssignment &&
+  const exportDefaultObject = sourceFile.statements.find(st => st.kind === ts.SyntaxKind.ExportAssignment &&
     (st as ts.ExportAssignment).expression.kind === ts.SyntaxKind.ObjectLiteralExpression);
   if (exportDefaultObject) {
     // 1. add `import Vue from 'vue'
@@ -62,7 +51,8 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
       undefined,
       setZeroPos(ts.createImportClause(ts.createIdentifier('__vueEditorBridge'), undefined as any)), // TODO: remove this after 2.4
       setZeroPos(ts.createLiteral('vue-editor-bridge'))));
-    sourceFile.statements.unshift(vueImport);
+    const statements: Array<ts.Statement> = sourceFile.statements as any;
+    statements.unshift(vueImport);
 
     // 2. find the export default and wrap it in `__vueEditorBridge(...)` if it exists and is an object literal
     //    (the span of the function construct call and *all* its members must be the same as the object literal it wraps)

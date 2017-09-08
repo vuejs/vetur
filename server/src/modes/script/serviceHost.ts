@@ -34,7 +34,7 @@ const vueSys: ts.System = {
   readFile(path, encoding) {
     if (isVueProject(path)) {
       const fileText = ts.sys.readFile(path.slice(0, -3), encoding);
-      return parseVue(fileText);
+      return fileText ? parseVue(fileText) : fileText;
     } else {
       const fileText = ts.sys.readFile(path, encoding);
       return fileText;
@@ -140,7 +140,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
         const doc = scriptDocs.get(fileName) ||
-          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName)));
+          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName) || ''));
         return getScriptKind(doc.languageId);
       }
       else {
@@ -182,7 +182,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
         const uri = Uri.file(resolvedFileName);
         const doc = scriptDocs.get(resolvedFileName) ||
-          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
+          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName) || ''));
         const extension = doc.languageId === 'typescript' ? ts.Extension.Ts
           : doc.languageId === 'tsx' ? ts.Extension.Tsx
           : ts.Extension.Js;
