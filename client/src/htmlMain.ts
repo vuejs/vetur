@@ -13,7 +13,7 @@ export function activate(context: ExtensionContext) {
 
   const serverModule = require.resolve('vue-language-server');
   const debugServerModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
-  const debugOptions = { execArgv: ['--nolazy', '--debug=6005'] };
+  const debugOptions = { execArgv: ['--nolazy', '--inspect=6005'] };
 
   const serverOptions: ServerOptions = {
     run: { module: serverModule, transport: TransportKind.ipc },
