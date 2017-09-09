@@ -6,7 +6,7 @@ Vetur provides error-checking and linting.
 
 Install [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for the best linting experience. Vetur's template linting is only for quick start and does not support rule configuration.
 
-After you installed [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), you should go to VS Code settings then add `vue` and `vue-html` to `eslint.validate` property.
+After you installed [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), you should go to VS Code settings and add `vue` and `vue-html` to `eslint.validate` property.
 
 When configured correctly, ESLint should work for both `<template>` and `<script>`.
 
