@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as ts from 'typescript';
 import Uri from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
+import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
@@ -9,6 +10,17 @@ import * as bridge from './bridge';
 
 function isVueProject(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
+}
+
+function defaultIgnorePatterns(workspacePath: string) {
+  const nodeModules = ['node_modules', '**/node_modules/*'];
+  const gitignore = ts.findConfigFile(workspacePath, ts.sys.fileExists, '.gitignore');
+  if (!gitignore) {
+    return nodeModules;
+  }
+  const parsed: string[] = parseGitIgnore(gitignore);
+  const filtered = parsed.filter(s => !s.startsWith('!'));
+  return nodeModules.concat(filtered);
 }
 
 const vueSys: ts.System = {
@@ -22,7 +34,7 @@ const vueSys: ts.System = {
   readFile(path, encoding) {
     if (isVueProject(path)) {
       const fileText = ts.sys.readFile(path.slice(0, -3), encoding);
-      return parseVue(fileText);
+      return fileText ? parseVue(fileText) : fileText;
     } else {
       const fileText = ts.sys.readFile(path, encoding);
       return fileText;
@@ -69,7 +81,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   const configFilename = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
     ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
   const configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {
-    exclude: ['node_modules', '**/node_modules/*']
+    exclude: defaultIgnorePatterns(workspacePath)
   };
   const parsedConfig = ts.parseJsonConfigFileContent(configJson,
     ts.sys,
@@ -128,7 +140,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
         const doc = scriptDocs.get(fileName) ||
-          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName)));
+          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName) || ''));
         return getScriptKind(doc.languageId);
       }
       else {
@@ -170,7 +182,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
         const uri = Uri.file(resolvedFileName);
         const doc = scriptDocs.get(resolvedFileName) ||
-          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName)));
+          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName) || ''));
         const extension = doc.languageId === 'typescript' ? ts.Extension.Ts
           : doc.languageId === 'tsx' ? ts.Extension.Tsx
           : ts.Extension.Js;

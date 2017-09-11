@@ -1,5 +1,21 @@
 # Changelog
 
+### 0.9.7 | 2017-09-08
+
+- Upgrade to newest TypeScript version with support for JSDoc cast and more. #419 and #420.
+- Hotfix for the disappearing formatter. #421.
+
+### 0.9.6 | 2017-09-07
+
+- Handle unquoted attr values. #341.
+- Exclude files based on gitignore file by default. #418.
+- Fix opening single Vue file without workspace perf issue. #348.
+- More tolerant parsing for template region, so IntelliSense would be available even when template is invalid. #413.
+- Find Definition for Vue components in `<template>`. #411.
+- Completion for component name and props in `<template>`. #393.
+- Fix emmet not showing suggestions correctly for items with `-`. #398.
+- Fix an ESLint error handling nested v-for. #400.
+
 ### 0.9.5 | 2017-08-22
 
 - slm support. #366.

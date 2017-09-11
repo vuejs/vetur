@@ -10,13 +10,16 @@ import Uri from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 
-import { NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
+import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
 
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
 }
 
-export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string): ScriptMode {
+export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string | null | undefined): ScriptMode {
+  if (!workspacePath) {
+    return { ...nullMode, findComponents: () => [] };
+  }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     return vueDocument.getEmbeddedDocumentByType('script');
@@ -24,16 +27,14 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
   const { updateCurrentTextDocument, getScriptDocByFsPath } = serviceHost;
-  const settings: any = {};
+  let config: any = {};
 
   return {
     getId() {
       return 'javascript';
     },
-    configure(options: any) {
-      if (options.vetur) {
-        settings.format = options.vetur.format.js;
-      }
+    configure(c) {
+      config = c;
     },
     doValidation(doc: TextDocument): Diagnostic[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -278,9 +279,9 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
-      const formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel);
+      const formatSettings = convertOptions(formatParams, config.vetur.format.js, initialIndentLevel);
       // InsertSpaceAfterFunctionKeywordForAnonymousFunctions should be consistent with InsertSpaceBeforeFunctionParenthesis
-      formatSettings.InsertSpaceAfterFunctionKeywordForAnonymousFunctions = settings.format.InsertSpaceBeforeFunctionParenthesis;
+      formatSettings.InsertSpaceAfterFunctionKeywordForAnonymousFunctions = config.vetur.format.js.InsertSpaceBeforeFunctionParenthesis;
 
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);

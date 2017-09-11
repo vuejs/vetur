@@ -221,12 +221,12 @@ repository:
 
   tag-generic-attribute:
     name: entity.other.attribute-name.html
-    match: \b([a-zA-Z\-:]+)
+    match: (?<=[^=])\b([a-zA-Z0-9:-]+)
 
   tag-id-attribute:
     name: meta.attribute-with-value.id.html
     begin: \b(id)\b\s*(=)
-    end: (?<='|")
+    end: (?!\G)(?<='|"|[^\s<>/])
     captures:
       '1': {name: entity.other.attribute-name.id.html}
       '2': {name: punctuation.separator.key-value.html}
@@ -253,6 +253,10 @@ repository:
       patterns:
       - include: '#vue-interpolations'
       - include: '#entities'
+    - name: string.unquoted.html
+      match: (?<==)(?:[^\s<>/'"]|/(?!>))+
+      captures:
+        '0': {name: meta.toc-list.id.html}
 
   tag-stuff:
     patterns:

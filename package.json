@@ -4,7 +4,7 @@
   "description": "Vue tooling for VSCode",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.9.5",
+  "version": "0.9.7",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client",

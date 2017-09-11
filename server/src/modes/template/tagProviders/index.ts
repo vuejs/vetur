@@ -22,33 +22,35 @@ export interface CompletionConfiguration {
   [provider: string]: boolean;
 }
 
-
-export function getBasicTagProviders(setting: CompletionConfiguration) {
-  return allTagProviders.filter(
-    p => !setting || setting[p.getId()] !== false
-  );
-}
-
-export function getDefaultSetting(workspacePath: string) {
-  const setting: CompletionConfiguration = {
+export function getTagProviderSettings(workspacePath: string | null | undefined) {
+  const settings: CompletionConfiguration = {
     html5: true,
     vue: true,
     router: false,
     element: false,
     onsen: false
   };
+  if (!workspacePath) {
+    return settings;
+  }
   try {
     const packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
     if (packageJson.dependencies['vue-router']) {
-      setting['router'] = true;
+      settings['router'] = true;
     }
     if (packageJson.dependencies['element-ui']) {
-      setting['element'] = true;
+      settings['element'] = true;
     }
     if (packageJson.dependencies['vue-onsenui']) {
-      setting['onsen'] = true;
+      settings['onsen'] = true;
     }
   } catch (e) { }
-  return setting;
+  return settings;
+}
+
+export function getEnabledTagProviders(tagProviderSetting: CompletionConfiguration) {
+  return allTagProviders.filter(
+    p => tagProviderSetting[p.getId()] !== false
+  );
 }

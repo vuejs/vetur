@@ -264,7 +264,6 @@ export function provideCompletionItems(document: TextDocument, position: Positio
   const text = document.getText();
   const currentWord = text.slice(start, end).trim();
   const value = isValue(cssSchema, currentWord);
-  // const config = workspace.getConfiguration('languageStylus');
 
   let completions: CompletionItem[] = [];
 

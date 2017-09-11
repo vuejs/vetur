@@ -1,7 +1,7 @@
 {
   "name": "vue-language-server",
   "description": "vue-language-server",
-  "version": "0.0.14",
+  "version": "0.0.17",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "main": "dist/vueServerMain.js",
@@ -18,11 +18,12 @@
   "dependencies": {
     "element-helper-json": "^1.0.0",
     "eslint": "^4.5.0",
-    "eslint-plugin-vue": "beta",
+    "eslint-plugin-vue": "3.13.0",
     "js-beautify": "^1.6.14",
     "lodash": "^4.17.4",
+    "parse-gitignore": "^0.4.0",
     "stylus": "^0.54.5",
-    "typescript": "^2.4.1",
+    "typescript": "^2.5.2",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-emmet-helper": "^1.0.19",
     "vscode-languageserver": "^3.3.0",

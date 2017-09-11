@@ -49,7 +49,7 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
       const fileName = declaration.getSourceFile().fileName;
       info.definition = [{
         uri: Uri.file(fileName).toString(),
-        range: Range.create(1, 1, 1, 1)
+        range: Range.create(0, 0, 0, 0)
       }];
     }
   }

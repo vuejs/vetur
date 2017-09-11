@@ -25,8 +25,8 @@ export interface DocumentContext {
 }
 
 export interface VLS {
-  initialize(workspacePath: string): void;
-  configure(settings: any): void;
+  initialize(workspacePath: string | null | undefined): void;
+  configure(config: any): void;
   format(doc: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
   validate(doc: TextDocument): Diagnostic[];
   doComplete(doc: TextDocument, position: Position): CompletionList;
@@ -59,8 +59,8 @@ export function getVls(): VLS {
     initialize(workspacePath) {
       languageModes = getLanguageModes(workspacePath);
     },
-    configure(settings) {
-      const veturValidationOptions = settings.vetur.validation;
+    configure(config) {
+      const veturValidationOptions = config.vetur.validation;
       validation['vue-html'] = veturValidationOptions.template;
       validation.css = veturValidationOptions.style;
       validation.postcss = veturValidationOptions.style;
@@ -70,7 +70,7 @@ export function getVls(): VLS {
 
       languageModes.getAllModes().forEach(m => {
         if (m.configure) {
-          m.configure(settings);
+          m.configure(config);
         }
       });
     },
