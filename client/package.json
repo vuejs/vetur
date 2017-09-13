@@ -4,19 +4,19 @@
   "version": "0.1.0",
   "author": "Pine Wu <octref@gmail.com>",
   "engines": {
-    "vscode": "^1.8.0"
+    "vscode": "^1.16.0"
   },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "dependencies": {
-    "vscode-languageclient": "^3.2.1",
-    "vscode-languageserver-types": "^3.0.3",
+    "vscode-languageclient": "^3.4.2",
+    "vscode-languageserver-types": "^3.4.0",
     "vue-language-server": "^0.0.17"
   },
   "devDependencies": {
     "@types/node": "^6.0.51",
     "typescript": "^2.1.4",
-    "vscode": "^1.0.3"
+    "vscode": "^1.1.5"
   }
 }
