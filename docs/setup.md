@@ -31,6 +31,43 @@
     }
   ```
 
+### Absolute path
+
+- If you want to get intellisense of go to definition or component and props autocomplete when use absolute path.You can set example below.
+
+```html
+└── src
+    ├── components
+    │   ├── a.vue
+    │   └── b.vue
+    ├── containers
+    │   └── index.vue
+    ├── index.js
+    └── jsconfig.json
+```
+
+`jsconfig.json`
+
+```json
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "components/*": [
+                "src/components/*"
+            ]
+        }
+    }
+}
+```
+
+index.vue
+
+```html
+import a from 'components/a.vue'
+import b from 'components/b.vue
+```
+
 ### ESLint
 
 - Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
@@ -43,6 +80,23 @@
     "vue"
   ]
   ```
+
+ - AutoFix Eslint Error after save
+
+  ```json
+"eslint.autoFixOnSave": true,
+"eslint.validate": [
+    {
+        "language": "javascript",
+        "autoFix": true
+    },
+    {
+        "language": "vue",
+        "autoFix": true
+    }
+]
+  ```
+
 
 ### Sass
 
