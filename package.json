@@ -38,7 +38,7 @@
   "activationEvents": [
     "onLanguage:vue"
   ],
-  "main": "./client/out/htmlMain",
+  "main": "./client/out/vueMain",
   "contributes": {
     "breakpoints": [
       {
