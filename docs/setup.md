@@ -31,7 +31,7 @@
     }
   ```
 
-### Absolute path
+### Path mapping
 
 - If you want to get intellisense of go to definition or component and props autocomplete when use absolute path.You can set example below.
 
