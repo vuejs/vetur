@@ -80,7 +80,7 @@
         "path": "./syntaxes/vue.tmLanguage",
         "embeddedLanguages": {
           "text.html.basic": "html",
-          "text.vue-html": "vue-html",
+          "text.html.vue-html": "vue-html",
           "text.jade": "jade",
           "text.pug": "pug",
           "source.css": "css",
@@ -101,7 +101,7 @@
       },
       {
         "language": "vue-html",
-        "scopeName": "text.vue-html",
+        "scopeName": "text.html.vue-html",
         "path": "./syntaxes/vue-html.tmLanguage",
         "embeddedLanguages": {
           "source.js": "javascript"

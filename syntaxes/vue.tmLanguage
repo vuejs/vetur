@@ -223,14 +223,14 @@
 						</dict>
 					</dict>
 					<key>contentName</key>
-					<string>text.vue-html</string>
+					<string>text.html.vue-html</string>
 					<key>end</key>
 					<string>(?=&lt;/template&gt;)</string>
 					<key>patterns</key>
 					<array>
 						<dict>
 							<key>include</key>
-							<string>text.vue-html</string>
+							<string>text.html.vue-html</string>
 						</dict>
 					</array>
 				</dict>
