@@ -33,13 +33,9 @@
 
 ### Path mapping
 
-- Components imported by non relative path need path mapping configuration.Vetur needs knowledge about your project to resolve component. This is similar to [Webapck's alias](https://webpack.js.org/configuration/resolve/) or [TypeScript's path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html).
+If you are using [Webapck's alias](https://webpack.js.org/configuration/resolve/) or [TypeScript's path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html) to resolve components, you need to update Vetur's `tsconfig.json` or `jsconfig.json`.
 
-Path mapping configuration in Vetur is the same as that in TypeScript. You need to add `tsconfig.json` or `jsconfig.json` in your project and add `paths` option in the json.
-
-You can set example below.
-
-Project layou:
+For example:
 
 ```html
 └── src
@@ -86,23 +82,6 @@ import b from 'components/b.vue
     "vue"
   ]
   ```
-
- - AutoFix Eslint Error after save
-
-  ```json
-"eslint.autoFixOnSave": true,
-"eslint.validate": [
-    {
-        "language": "javascript",
-        "autoFix": true
-    },
-    {
-        "language": "vue",
-        "autoFix": true
-    }
-]
-  ```
-
 
 ### Sass
 
