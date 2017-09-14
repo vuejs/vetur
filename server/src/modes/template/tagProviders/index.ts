@@ -4,6 +4,7 @@ import { getVueTagProvider } from './vueTags';
 import { getRouterTagProvider } from './routerTags';
 import { getElementTagProvider } from './elementTags';
 import { getOnsenTagProvider } from './onsenTags';
+import { getBootstrapVueTagProvider } from './bootstrapVueTags';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
 
@@ -15,7 +16,8 @@ export let allTagProviders : IHTMLTagProvider[] = [
   getVueTagProvider(),
   getRouterTagProvider(),
   getElementTagProvider(),
-  getOnsenTagProvider()
+  getOnsenTagProvider(),
+  getBootstrapVueTagProvider()
 ];
 
 export interface CompletionConfiguration {
@@ -28,7 +30,8 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     vue: true,
     router: false,
     element: false,
-    onsen: false
+    onsen: false,
+    'bootstrap-vue': false,
   };
   if (!workspacePath) {
     return settings;
@@ -44,6 +47,9 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
     if (packageJson.dependencies['vue-onsenui']) {
       settings['onsen'] = true;
+    }
+    if (packageJson.dependencies['bootstrap-vue']) {
+      settings['bootstrap-vue'] = true;
     }
   } catch (e) { }
   return settings;
