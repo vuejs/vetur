@@ -1,7 +1,7 @@
 cd docs
 rm -rf _book
-gitbook install
-gitbook build
+gitbook install -v 3.2.2
+gitbook build -v 3.2.2
 cd _book
 git init
 git add -A
