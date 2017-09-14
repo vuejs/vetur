@@ -23,3 +23,15 @@ To configure linting rules, turn off vetur's template validation and install `es
 TSLint is not available yet. We do look forward to including it. See [#170](https://github.com/vuejs/vetur/issues/170).
 
 Meanwhile, TS compiler errors will be shown.
+
+#### ESLint Autofix On Save
+
+  ```json
+  "eslint.autoFixOnSave": true,
+  "eslint.validate": [
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ]
+  ```
