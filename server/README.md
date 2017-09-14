@@ -4,7 +4,7 @@
 
 Vetur is the VSCode client consuming `vue-language-server`.
 
-It's possible for other `language-server-protocol` compatible editors could build client that consume VLS.
+It's possible for other `language-server-protocol` compatible editors to build language server clients that consume VLS.
 
 ## Usage
 
