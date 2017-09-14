@@ -33,7 +33,13 @@
 
 ### Path mapping
 
-- If you want to get intellisense of go to definition or component and props autocomplete when use absolute path.You can set example below.
+- Components imported by non relative path need path mapping configuration.Vetur needs knowledge about your project to resolve component. This is similar to [Webapck's alias](https://webpack.js.org/configuration/resolve/) or [TypeScript's path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html).
+
+Path mapping configuration in Vetur is the same as that in TypeScript. You need to add `tsconfig.json` or `jsconfig.json` in your project and add `paths` option in the json.
+
+You can set example below.
+
+Project layou:
 
 ```html
 └── src
@@ -46,7 +52,7 @@
     └── jsconfig.json
 ```
 
-`jsconfig.json`
+jsconfig.json:
 
 ```json
 {
