@@ -1,56 +1,52 @@
 ## Vue Language Server
 
-Vue Language Server is a standalone server implementation for editors.
+`vue-language-server` is a language server implementation compatible with [`language-server-protocol`](https://github.com/Microsoft/language-server-protocol).
 
+Vetur is the VSCode client consuming `vue-language-server`.
+
+It's possible for other `language-server-protocol` compatible editors could build client that consume VLS.
 
 ## Usage
 
-There is two ways to integrate VLS into editors.
+There are two ways to integrate `vue-language-server` into editors:
 
-1) as global executable.
+1. As a global executable.
 
-Example Client: https://github.com/autozimu/LanguageClient-neovim
+  Example Client: https://github.com/autozimu/LanguageClient-neovim
 
-First, install VLS globally.
+  First, install VLS globally.
 
-```bash
-npm install vue-language-server -g
-```
+  ```bash
+  npm install vue-language-server -g
+  ```
 
-This will provide you the global `vls` command.
+  This will provide you the global `vls` command.
 
-Then, configure LanguageClient to use `vls`. In this example, we write below configuration into `init.vim`.
-
-
-```vim
-let g:LanguageClient_serverCommands = {
-    \ 'vue': ['vls']
-    \ }
-```
+  Then, configure LanguageClient to use `vls`. In this example, we write below configuration into `init.vim`.
 
 
-2) as plugin dependency.
+  ```vim
+  let g:LanguageClient_serverCommands = {
+      \ 'vue': ['vls']
+      \ }
+  ```
 
-Example: https://github.com/HerringtonDarkholme/atom-vue
+2. As a plugin dependency.
 
-First, install vue-language-server as a local dependency.
+  Example: https://github.com/HerringtonDarkholme/atom-vue
 
-```bash
-npm install vue-language-server --save
-```
+  First, install vue-language-server as a local dependency.
 
-Then, require the vue-language-server, this would typically look like:
+  ```bash
+  npm install vue-language-server --save
+  ```
 
-```ts
-class VueLanguageClient extends AutoLanguageClient {
-  startServerProcess () {
-    return cp.spawn('node', [require.resolve('vue-language-server/dist/htmlServerMain')])
+  Then, require the vue-language-server, this would typically look like:
+
+  ```ts
+  class VueLanguageClient extends AutoLanguageClient {
+    startServerProcess () {
+      return cp.spawn('node', [require.resolve('vue-language-server/dist/htmlServerMain')])
+    }
   }
-}
-```
-
-Your mileage might vary, but the basic idea is roughly the same.
-
-## License
-
-MIT
+  ```

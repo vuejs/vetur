@@ -1,6 +1,6 @@
 # Vetur
 
-Vue tooling for VSCode.  
+Vue tooling for VSCode, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
 
 Doc at https://vuejs.github.io/vetur
 Try it out with [Veturpack](https://github.com/octref/veturpack)!
