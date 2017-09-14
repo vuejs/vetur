@@ -2266,20 +2266,15 @@ vscode-emmet-helper@^1.0.19:
     "@emmetio/extract-abbreviation" "^0.1.1"
     vscode-languageserver-types "^3.0.3"
 
-vscode-jsonrpc@^3.3.0:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-3.3.1.tgz#b7857be58b97af664a8cdd071c91891d6c7d6a67"
-
 vscode-jsonrpc@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-3.4.0.tgz#aa95ac583bf31d80f725d57c27c09f4c2cfe9fa9"
 
-vscode-languageclient@^3.2.1:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/vscode-languageclient/-/vscode-languageclient-3.3.0.tgz#c761d020f9689acc8a8a5bae51453f381903493c"
+vscode-languageclient@^3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/vscode-languageclient/-/vscode-languageclient-3.4.2.tgz#2ed6eea072550baabc9bd32480ff027875598972"
   dependencies:
-    vscode-jsonrpc "^3.3.0"
-    vscode-languageserver-types "^3.3.0"
+    vscode-languageserver-protocol "^3.4.1"
 
 vscode-languageserver-protocol@^3.4.1:
   version "3.4.1"
@@ -2311,9 +2306,9 @@ vscode-uri@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-1.0.1.tgz#11a86befeac3c4aa3ec08623651a3c81a6d0bbc8"
 
-vscode@^1.0.3:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/vscode/-/vscode-1.1.4.tgz#1f1d4d662d55c9a28bc467aacb632291f70a686d"
+vscode@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/vscode/-/vscode-1.1.5.tgz#10eb104001840c3dd0813815fd4a05f8fc882d14"
   dependencies:
     glob "^7.1.1"
     gulp-chmod "^2.0.0"

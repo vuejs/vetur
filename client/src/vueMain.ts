@@ -2,8 +2,9 @@ import * as path from 'path';
 
 import { languages, workspace, ExtensionContext, IndentAction } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, Range, RequestType, RevealOutputChannelOn } from 'vscode-languageclient';
-import { EMPTY_ELEMENTS } from './htmlEmptyTagsShared';
 import { activateColorDecorations } from './colorDecorators';
+
+const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
 
 namespace ColorSymbolRequest {
   export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');

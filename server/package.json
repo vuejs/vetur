@@ -26,7 +26,7 @@
     "typescript": "^2.5.2",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-emmet-helper": "^1.0.19",
-    "vscode-languageserver": "^3.3.0",
+    "vscode-languageserver": "^3.4.2",
     "vscode-uri": "^1.0.1",
     "vue-onsenui-helper-json": "^1.0.0"
   },
