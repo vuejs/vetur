@@ -17,7 +17,7 @@ interface StandaloneAttribute {
   documentation?: string;
 }
 
-// Note: cannot items more than 10 for lexcial order
+// Note: cannot items more than 10 for lexical order
 // smaller enum value means higher priority
 export enum Priority {
   UserCode,
@@ -32,7 +32,7 @@ export interface IHTMLTagProvider {
   collectAttributes(tag: string, collector: AttributeCollector): void;
   collectValues(tag: string, attribute: string, collector: (value: string) => void): void;
 
-  /* a prefix for completion's lexcial order */
+  /* a prefix for completion's lexical order */
   readonly priority: Priority;
 }
 

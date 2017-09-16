@@ -137,6 +137,10 @@ bluebird@^3.0.5:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
+bootstrap-vue-helper-json@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue-helper-json/-/bootstrap-vue-helper-json-1.0.2.tgz#17dca204a7824ec6a15add41e83f69762219d99d"
+
 brace-expansion@^1.1.7:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.8.tgz#c07b211c7c952ec1f8efd51a77ef0d1d3990a292"
