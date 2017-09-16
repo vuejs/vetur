@@ -1,5 +1,5 @@
 import { createConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector, RequestType } from 'vscode-languageserver';
-import { TextDocument, Diagnostic, Range } from 'vscode-languageserver-types';
+import { TextDocument, Diagnostic, Range, Position } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
 import * as url from 'url';
@@ -62,7 +62,11 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
       documentHighlightProvider: true,
       documentSymbolProvider: true,
       definitionProvider: true,
-      referencesProvider: true
+      referencesProvider: true,
+      documentOnTypeFormattingProvider: {
+        firstTriggerCharacter: ';',
+        moreTriggerCharacter: ['}', '\n']
+      }
     }
   };
 });
@@ -162,6 +166,19 @@ connection.onDocumentRangeFormatting(formatParams => {
   const formattingOptions = _.assign({}, formatParams.options, veturFormattingOptions);
 
   return vls.format(document, formatParams.range, formattingOptions);
+});
+
+connection.onDocumentOnTypeFormatting(onTypeFormatParams => {
+  const document = documents.get(onTypeFormatParams.textDocument.uri);
+
+  const formattingOptions = _.assign({}, onTypeFormatParams.options, veturFormattingOptions);
+  const endPos = onTypeFormatParams.position;
+  const startLine = onTypeFormatParams.ch === '\n'
+    ? endPos.line - 1 : endPos.line;
+  const startPos = Position.create(startLine, 1);
+  const range = Range.create(startPos, endPos);
+
+  return vls.format(document, range, formattingOptions);
 });
 
 connection.onDocumentLinks(documentLinkParam => {
