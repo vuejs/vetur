@@ -1,4 +1,4 @@
-- [ ] I searched through existing issues.
+- [ ] I searched through existing issues and FAQ https://github.com/vuejs/vetur/wiki/FAQ
 - [ ] I have looked through docs at https://vuejs.github.io/vetur/
 
 ## Info
