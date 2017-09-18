@@ -323,7 +323,7 @@ suite('HTML Completion', () => {
       .has('placeholder')
       .hasNo('text-color')
       .has('on-icon-click').withDoc('hook function when clicking on the input icon')
-      .has('fetch-suggestions').become('<el-input fetch-suggestions="$1"');
+      .has('auto-complete').become('<el-input auto-complete="$1"');
 
     noHTML`<el-cascader expand-trigger=|`
       .has('click')
