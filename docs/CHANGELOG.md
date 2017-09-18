@@ -1,5 +1,12 @@
 # Changelog
 
+### 0.9.8 | 2017-09-18
+
+- [bootstrap-vue](https://bootstrap-vue.js.org/) support. #433.
+- formatOnType support. #431.
+- Make `editor.emmet.action.expandAbbreviation` available in `vue-html` region, so old-style emmet is usable.
+- Upgrade Element UI and Onsen UI auto-completion tags & attributes.
+
 ### 0.9.7 | 2017-09-08
 
 - Upgrade to newest TypeScript version with support for JSDoc cast and more. #419 and #420.
