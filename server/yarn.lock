@@ -304,8 +304,8 @@ editorconfig@^0.13.2:
     sigmund "^1.0.1"
 
 element-helper-json@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/element-helper-json/-/element-helper-json-1.0.0.tgz#47a14a9bdd85d3114655c963b23bdf67be69ba8b"
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/element-helper-json/-/element-helper-json-1.4.2.tgz#941fd0f1874d1abddc88f7c67838c73ea66e000f"
 
 escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -1140,8 +1140,8 @@ vue-eslint-parser@^2.0.1-beta.0:
     lodash "^4.17.4"
 
 vue-onsenui-helper-json@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/vue-onsenui-helper-json/-/vue-onsenui-helper-json-1.0.0.tgz#9b70ce18fd0d0138a0b9b68b914340036deabae7"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vue-onsenui-helper-json/-/vue-onsenui-helper-json-1.0.1.tgz#13b262511c760d892604f77d8342f4e34d002438"
 
 which@^1.2.9:
   version "1.3.0"
