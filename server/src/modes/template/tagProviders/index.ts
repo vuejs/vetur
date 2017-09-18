@@ -2,9 +2,7 @@ import { IHTMLTagProvider } from './common';
 import { getHTML5TagProvider } from './htmlTags';
 import { getVueTagProvider } from './vueTags';
 import { getRouterTagProvider } from './routerTags';
-import { getElementTagProvider } from './elementTags';
-import { getOnsenTagProvider } from './onsenTags';
-import { getBootstrapVueTagProvider } from './bootstrapVueTags';
+import { elementTagProvider, onsenTagProvider, bootstrapTagProvider } from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
 
@@ -15,9 +13,9 @@ export let allTagProviders : IHTMLTagProvider[] = [
   getHTML5TagProvider(),
   getVueTagProvider(),
   getRouterTagProvider(),
-  getElementTagProvider(),
-  getOnsenTagProvider(),
-  getBootstrapVueTagProvider()
+  elementTagProvider,
+  onsenTagProvider,
+  bootstrapTagProvider
 ];
 
 export interface CompletionConfiguration {
@@ -31,7 +29,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     router: false,
     element: false,
     onsen: false,
-    'bootstrap-vue': false,
+    bootstrap: false,
   };
   if (!workspacePath) {
     return settings;
@@ -49,7 +47,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       settings['onsen'] = true;
     }
     if (packageJson.dependencies['bootstrap-vue']) {
-      settings['bootstrap-vue'] = true;
+      settings['bootstrap'] = true;
     }
   } catch (e) { }
   return settings;
