@@ -47,10 +47,11 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
     // 1. add `import Vue from 'vue'
     //    (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
     const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
-    const vueImport = setZeroPos(ts.createImportDeclaration(undefined,
+    const vueImport = setZeroPos(ts.createImportDeclaration(
       undefined,
-      setZeroPos(ts.createImportClause(ts.createIdentifier('__vueEditorBridge'), undefined as any)), // TODO: remove this after 2.4
-      setZeroPos(ts.createLiteral('vue-editor-bridge'))));
+      undefined,
+      setZeroPos(ts.createImportClause(ts.createIdentifier('Vue'), undefined as any)), // TODO: remove this after 2.4
+      setZeroPos(ts.createLiteral('vue'))));
     const statements: Array<ts.Statement> = sourceFile.statements as any;
     statements.unshift(vueImport);
 
@@ -58,9 +59,9 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
     //    (the span of the function construct call and *all* its members must be the same as the object literal it wraps)
     const objectLiteral = (exportDefaultObject as ts.ExportAssignment).expression as ts.ObjectLiteralExpression;
     const setObjPos = getWrapperRangeSetter(objectLiteral);
-    const vue = ts.setTextRange(ts.createIdentifier('__vueEditorBridge'), { pos: objectLiteral.pos, end: objectLiteral.pos + 1 });
-    (exportDefaultObject as ts.ExportAssignment).expression = setObjPos(ts.createCall(vue, undefined, [objectLiteral]));
-    setObjPos(((exportDefaultObject as ts.ExportAssignment).expression as ts.CallExpression).arguments!);
+    const vue = ts.setTextRange(ts.createIdentifier('Vue'), { pos: objectLiteral.pos, end: objectLiteral.pos + 1 });
+    (exportDefaultObject as ts.ExportAssignment).expression = setObjPos(ts.createNew(vue, undefined, [objectLiteral]));
+    setObjPos(((exportDefaultObject as ts.ExportAssignment).expression as ts.NewExpression).arguments!);
   }
 }
 
