@@ -67,7 +67,7 @@ function inferIsOldVersion(workspacePath: string): boolean {
     const sloppyVersion = parseFloat(vueDep);
     return sloppyVersion < 2.5;
   } catch (e) {
-    return false;
+    return true;
   }
 }
 
