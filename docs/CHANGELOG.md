@@ -4,7 +4,7 @@
 
 - Fix `this.$` completion.
 - Support Vue 2.5+ types. #435.
-- [bootstrap-vue](https://bootstrap-vue.js.org/) support. #433.
+- [bootstrap-vue](https://bootstrap-vue.js.org/) support. Thanks to [@alexsasharegan](https://github.com/alexsasharegan). #428.
 - formatOnType support. #431.
 - Make `editor.emmet.action.expandAbbreviation` available in `vue-html` region, so old-style emmet is usable.
 - Upgrade Element UI and Onsen UI auto-completion tags & attributes.
