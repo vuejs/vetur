@@ -62,6 +62,10 @@ function inferIsOldVersion(workspacePath: string): boolean {
   const packageJSONPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
   try {
     const packageJSON = packageJSONPath && JSON.parse(ts.sys.readFile(packageJSONPath)!);
+    // Special casing. Remove after Vue 2.5 release.
+    if (packageJSON.dependencies.vue.includes('vue#new-type')) {
+      return false;
+    }
     // use a sloppy method to infer version, to reduce dep on semver or so
     const vueDep = packageJSON.dependencies.vue.match(/\d+\.\d+/)[0];
     const sloppyVersion = parseFloat(vueDep);
