@@ -1,7 +1,9 @@
 # Changelog
 
-### 0.9.8 | 2017-09-18
+### 0.9.8 | 2017-09-21
 
+- Fix `this.$` completion.
+- Support Vue 2.5+ types. #435.
 - [bootstrap-vue](https://bootstrap-vue.js.org/) support. #433.
 - formatOnType support. #431.
 - Make `editor.emmet.action.expandAbbreviation` available in `vue-html` region, so old-style emmet is usable.
