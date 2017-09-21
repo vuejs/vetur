@@ -2,7 +2,8 @@
 
 Vue tooling for VSCode, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
 
-Doc at https://vuejs.github.io/vetur  
+Doc: https://vuejs.github.io/vetur
+
 Try it out with [Veturpack](https://github.com/octref/veturpack)!  
 Try the improved editing experience with Vue 2.5 new type declaration: [Veturpack#new-types](https://github.com/octref/veturpack/tree/new-types)
 
