@@ -22,6 +22,7 @@ You can [open an issue](https://github.com/vuejs/vetur/issues/new) for bugs or f
 
 - Install [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur).
 - Try it with [Veturpack](https://github.com/octref/veturpack), a pre-configured Vue boilerplate based on [Vuepack](https://github.com/egoist/vuepack).
+- Try the improved editing experience with Vue 2.5 new type declaration: [Veturpack#new-types](https://github.com/octref/veturpack/tree/new-types).
 - Refer to [setup](setup.md) page for setting up.
 - Refer to each feature's own page for setting up specific features.
 
