@@ -58,6 +58,19 @@ function getScriptKind(langId: string): ts.ScriptKind {
     : ts.ScriptKind.JS;
 }
 
+function inferIsOldVersion(workspacePath: string): boolean {
+  const packageJSONPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
+  try {
+    const packageJSON = packageJSONPath && JSON.parse(ts.sys.readFile(packageJSONPath)!);
+    // use a sloppy method to infer version, to reduce dep on semver or so
+    const vueDep = packageJSON.dependencies.vue.match(/\d+\.\d+/)[0];
+    const sloppyVersion = parseFloat(vueDep);
+    return sloppyVersion < 2.5;
+  } catch (e) {
+    return true;
+  }
+}
+
 export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let compilerOptions: ts.CompilerOptions = {
     allowNonTsExtensions: true,
@@ -91,6 +104,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     undefined,
     [{ extension: 'vue', isMixedContent: true }]);
   const files = parsedConfig.fileNames;
+  const isOldVersion = inferIsOldVersion(workspacePath);
   compilerOptions = parsedConfig.options;
   compilerOptions.allowNonTsExtensions = true;
 
@@ -191,7 +205,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     },
     getScriptSnapshot: (fileName: string) => {
       if (fileName === bridge.fileName) {
-        const text = bridge.content;
+        const text = isOldVersion ? bridge.oldContent : bridge.content;
         return {
           getText: (start, end) => text.substring(start, end),
           getLength: () => text.length,
