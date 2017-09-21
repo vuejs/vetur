@@ -178,6 +178,10 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
+bootstrap-vue-helper-json@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue-helper-json/-/bootstrap-vue-helper-json-1.0.2.tgz#17dca204a7824ec6a15add41e83f69762219d99d"
+
 brace-expansion@^1.1.7:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.8.tgz#c07b211c7c952ec1f8efd51a77ef0d1d3990a292"
@@ -2291,7 +2295,7 @@ vscode-languageserver-types@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.4.0.tgz#5043ae47ee4ac16af07bb3d0ca561235e0c0d2fa"
 
-vscode-languageserver@^3.3.0:
+vscode-languageserver@^3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/vscode-languageserver/-/vscode-languageserver-3.4.2.tgz#08cbe50ee26901d37dd4b5dc52c25b909363c1f1"
   dependencies:
@@ -2335,10 +2339,11 @@ vue-eslint-parser@^2.0.1-beta.0:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-language-server@^0.0.17:
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.17.tgz#d6ba1e5893932c265be336d2504a7232a6868165"
+vue-language-server@^0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.18.tgz#394f20ee770b9ea36a1b459ce833554cd5c98ce0"
   dependencies:
+    bootstrap-vue-helper-json "^1.0.1"
     element-helper-json "^1.0.0"
     eslint "^4.5.0"
     eslint-plugin-vue "3.13.0"
@@ -2349,7 +2354,7 @@ vue-language-server@^0.0.17:
     typescript "^2.5.2"
     vscode-css-languageservice "^2.0.0"
     vscode-emmet-helper "^1.0.19"
-    vscode-languageserver "^3.3.0"
+    vscode-languageserver "^3.4.2"
     vscode-uri "^1.0.1"
     vue-onsenui-helper-json "^1.0.0"
 
