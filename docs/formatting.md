@@ -7,7 +7,7 @@ We plan to switch to [prettier](https://github.com/prettier/prettier) soon.
 
 ## General
 
-`tabSize` and `insertSpace` are read from VSCode config `editor.tabSize` and `editor.insertSpace`.  
+`tabSize` and `insertSpaces` are read from VSCode config `editor.tabSize` and `editor.insertSpaces`.  
 Two space soft-tab is recommended for all languages.
 
 ## `html/css/scss/less`
