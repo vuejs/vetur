@@ -172,13 +172,13 @@ connection.onDocumentOnTypeFormatting(onTypeFormatParams => {
   const document = documents.get(onTypeFormatParams.textDocument.uri);
 
   const formattingOptions = _.assign({}, onTypeFormatParams.options, veturFormattingOptions);
-  const endPos = onTypeFormatParams.position;
-  const startLine = onTypeFormatParams.ch === '\n'
-    ? endPos.line - 1 : endPos.line;
-  const startPos = Position.create(startLine, 1);
+  const isNewLine = onTypeFormatParams.ch === '\n';
+  const endOffset = document.offsetAt(onTypeFormatParams.position) - (isNewLine ? 1 : 0);
+  const endPos = document.positionAt(endOffset);
+  const startPos = Position.create(endPos.line - (isNewLine ? 1 : 0), 1);
   const range = Range.create(startPos, endPos);
 
-  return vls.format(document, range, formattingOptions);
+  return vls.onTypeFormat(document, range, formattingOptions);
 });
 
 connection.onDocumentLinks(documentLinkParam => {
