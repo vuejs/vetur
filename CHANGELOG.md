@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.9.9 | 2017-09-21
+
+- Fix a template highlight issue. #440.
+
 ### 0.9.8 | 2017-09-21
 
 - Fix `this.$` completion.
