@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.9.10 | 2017-09-22
+
+- Fix Enter key not working correctly due to formatOnType. #448.
+
 ### 0.9.9 | 2017-09-21
 
 - Fix a template highlight issue. #440.
