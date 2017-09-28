@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
-import { CompletionList } from 'vscode-languageserver-types';
+import { CompletionList, TextEdit } from 'vscode-languageserver-types';
+import * as StylusSupremacy from 'stylus-supremacy';
 
 import { Priority } from '../emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
@@ -53,6 +54,44 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
     doHover(document, position) {
       const embedded = embeddedDocuments.get(document);
       return stylusHover(embedded, position);
+    },
+    format(document, range, documentOptions) {
+      // Note that this would have been `document.getText(range)`
+      // See https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-nametextdocumentaspan-classcodeitem-id38textdocumentspan
+      const inputText = document.getText();
+      
+      const tabStopChar = documentOptions.insertSpaces ? ' '.repeat(documentOptions.tabSize) : '\t';
+      const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n'; // Note that this would have been `document.eol` ideally
+
+      // Extract only the Stylus content from the whole document
+      const inputLines = inputText.split(/\r?\n/);
+      let inputBuffer = inputLines[range.start.line].substring(range.start.character) + '\n';
+      for (let lineIndex = range.start.line + 1; lineIndex < range.end.line; lineIndex++) {
+        inputBuffer += inputLines[lineIndex] + '\n';
+      }
+      inputBuffer += inputLines[range.end.line].substring(0, range.end.character);
+
+      // Determine the base indentation for the Stylus content
+      let baseIndent = '';
+      if (range.start.line !== range.end.line) {
+        baseIndent = _.get(inputLines[range.start.line].match(/^(\t|\s)+/), '0', '') + tabStopChar;
+      }
+
+      // See https://thisismanta.github.io/stylus-supremacy/#options
+      const formattingOptions = {
+        tabStopChar,
+        newLineChar: '\n',
+      };
+
+      const formattedText = StylusSupremacy.format(inputBuffer, formattingOptions);
+
+      // Add the base indentation and correct the new line characters
+      const outputText = formattedText
+        .split(/\n/)
+        .map(line => line.length > 0 ? (baseIndent + line) : '')
+        .join(newLineChar);
+
+      return [TextEdit.replace(range, outputText)];
     },
   };
 }
