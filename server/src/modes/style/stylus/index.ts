@@ -14,8 +14,14 @@ import { stylusHover } from './stylus-hover';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument('stylus'));
+  let baseIndentEnabled = false;
+  let stylusSupremacyFormattingOptions: StylusSupremacy.FormattingOptions = {};
   return {
     getId: () => 'stylus',
+    configure(config) {
+      baseIndentEnabled = _.get(config, 'vetur.format.styleInitialIndent', false);
+      stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(_.get(config, 'vetur.format.stylus', {}));
+    },
     onDocumentRemoved() {},
     dispose() {},
     doComplete(document, position) {
@@ -73,12 +79,14 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
 
       // Determine the base indentation for the Stylus content
       let baseIndent = '';
-      if (range.start.line !== range.end.line) {
+      if (range.start.line !== range.end.line && baseIndentEnabled) {
         baseIndent = _.get(inputLines[range.start.line].match(/^(\t|\s)+/), '0', '') + tabStopChar;
       }
 
+      // Build the formatting options for Stylus Supremacy
       // See https://thisismanta.github.io/stylus-supremacy/#options
       const formattingOptions = {
+        ...stylusSupremacyFormattingOptions,
         tabStopChar,
         newLineChar: '\n',
       };

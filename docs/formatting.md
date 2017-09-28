@@ -1,6 +1,6 @@
 # Formatting
 
-Vetur has support for formatting embedded `html/css/scss/less/js/ts`.  
+Vetur has support for formatting embedded `html/css/scss/less/stylus/js/ts`.  
 Some formatting options are available.
 
 We plan to switch to [prettier](https://github.com/prettier/prettier) soon.
@@ -27,6 +27,41 @@ For more info on each option, see:
 
 - https://github.com/beautify-web/js-beautify
 - https://github.com/victorporof/Sublime-HTMLPrettify
+
+## `stylus`
+
+`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy).
+Options available:
+
+- `vetur.format.stylus.insertColons`
+- `vetur.format.stylus.insertSemicolons`
+- `vetur.format.stylus.insertBraces`
+- `vetur.format.stylus.insertNewLineAroundImports`
+- `vetur.format.stylus.insertNewLineAroundBlocks`
+- `vetur.format.stylus.insertNewLineAroundProperties`
+- `vetur.format.stylus.insertNewLineAroundOthers`
+- `vetur.format.stylus.insertNewLineBetweenSelectors`
+- `vetur.format.stylus.insertSpaceBeforeComment`
+- `vetur.format.stylus.insertSpaceAfterComment`
+- `vetur.format.stylus.insertSpaceAfterComma`
+- `vetur.format.stylus.insertSpaceInsideParenthesis`
+- `vetur.format.stylus.insertParenthesisAfterNegation`
+- `vetur.format.stylus.insertParenthesisAroundIfCondition`
+- `vetur.format.stylus.insertNewLineBeforeElse`
+- `vetur.format.stylus.insertLeadingZeroBeforeFraction`
+- `vetur.format.stylus.quoteChar`
+- `vetur.format.stylus.sortProperties`
+- `vetur.format.stylus.alwaysUseImport`
+- `vetur.format.stylus.alwaysUseNot`
+- `vetur.format.stylus.alwaysUseAtBlock`
+- `vetur.format.stylus.alwaysUseExtends`
+- `vetur.format.stylus.alwaysUseNoneOverZero`
+- `vetur.format.stylus.alwaysUseZeroWithoutUnit`
+- `vetur.format.stylus.reduceMarginAndPaddingValues`
+
+For more info on each option, see https://thisismanta.github.io/stylus-supremacy
+
+ Note that [Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy/#vscode) is also available as a separate Visual Studio Code extension, and has nothing to do with this extension.
 
 ## `js/ts`
 

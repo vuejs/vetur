@@ -187,6 +187,164 @@
           "type": "boolean",
           "default": false,
           "description": "Add a space before function parenthesis"
+        },
+        "vetur.format.stylus.insertColons": {
+          "description": "Insert or remove a colon between a property name and its value.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.insertSemicolons": {
+          "description": "Insert or remove a semi-colon after a property value, a variable declaration, a variable assignment and a mixin/function call.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.insertBraces": {
+          "description": "Insert or remove a pair of curly braces where they are supposed to be. Note that this option does not affect @block construction, see alwaysUseAtBlock.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.insertNewLineAroundImports": {
+          "description": "Insert a new-line around a group of @import/@require(s).\nOnly apply to imports outside a block when set to \"root\", or only apply to imports inside a block when set to \"nested\".",
+          "enum": [
+            true,
+            false,
+            "root",
+            "nested"
+          ],
+          "default": true
+        },
+        "vetur.format.stylus.insertNewLineAroundBlocks": {
+          "description": "Insert a new-line around blocks.\nOnly apply to top-level blocks when set to \"root\", or only apply to nested blocks when set to \"nested\".",
+          "enum": [
+            true,
+            false,
+            "root",
+            "nested"
+          ],
+          "default": true
+        },
+        "vetur.format.stylus.insertNewLineAroundProperties": {
+          "description": "Insert a new-line around a group of CSS properties.\nUnlike insertNewLineAroundBlocks and insertNewLineAroundOthers, this option cannot be set to \"root\" nor \"nested\" because CSS properties cannot be placed at the top level.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.insertNewLineAroundOthers": {
+          "description": "Insert a new-line around a group of non-properties, non-imports and non-blocks.\nOnly apply to others outside a block when set to \"root\", or only apply to others inside a block when set to \"nested\".",
+          "enum": [
+            true,
+            false,
+            "root",
+            "nested"
+          ],
+          "default": false
+        },
+        "vetur.format.stylus.insertNewLineBetweenSelectors": {
+          "description": "Insert or remove a new-line between selectors.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.insertSpaceBeforeComment": {
+          "description": "Insert or remove a white-space before a comment.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.insertSpaceAfterComment": {
+          "description": "Insert or remove a white-space after a comment.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.insertSpaceAfterComma": {
+          "description": "Insert or remove a white-space after a comma.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.insertSpaceInsideParenthesis": {
+          "description": "Insert or remove a white-space after an open parenthesis and before a close parenthesis.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.insertParenthesisAfterNegation": {
+          "description": "Insert a pair of parentheses or a white-space after a negation operator. This does nothing if a pair of parentheses is already after the negation operator.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.insertParenthesisAroundIfCondition": {
+          "description": "Insert or remove a pair of parentheses around if-condition.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.insertNewLineBeforeElse": {
+          "description": "Insert or remove a new-line before else keyword.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.insertLeadingZeroBeforeFraction": {
+          "description": "Insert or remove a zero before a number that between 1 and 0.",
+          "type": "boolean",
+          "default": true
+        },
+        "vetur.format.stylus.quoteChar": {
+          "description": "Represent a quote character that is used to begin and terminate a string. You must choose either a single-quote or a double-quote.",
+          "enum": [
+            "'",
+            "\""
+          ],
+          "default": "'"
+        },
+        "vetur.format.stylus.sortProperties": {
+          "description": "Can be either false for not sorting, \"alphabetical\" for sorting CSS properties from A to Z, \"grouped\" for sorting CSS properties according to Stylint and nib, or an array of property names that defines the property order, for example [\"color\", \"background\", \"display\"].",
+          "oneOf": [
+            {
+              "enum": [
+                false,
+                "alphabetical",
+                "grouped"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            }
+          ],
+          "default": false
+        },
+        "vetur.format.stylus.alwaysUseImport": {
+          "description": "Replace @require with @import, or do nothing.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.alwaysUseNot": {
+          "description": "Replace ! operator with not keyword, or vice versa.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.alwaysUseAtBlock": {
+          "description": "Replace an increased-indent at-block construction with an explicit one with @block keyword or vice versa.\nNote that this option does not incorporate insertBraces option.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.alwaysUseExtends": {
+          "description": "Convert @extend keyword to @extends keyword, or vice versa.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.alwaysUseNoneOverZero": {
+          "description": "Replace 0 (regardless of its unit) with none for border and outline properties, or do nothing.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.alwaysUseZeroWithoutUnit": {
+          "description": "Replace 0 (regardless of its unit) with 0 (without units), or do nothing.",
+          "type": "boolean",
+          "default": false
+        },
+        "vetur.format.stylus.reduceMarginAndPaddingValues": {
+          "description": "Reduce margin and padding duplicate values by converting margin x x x x to margin x, margin x y x y to margin x y, and margin x y y y to margin x y y where x, y is a unique property value.",
+          "type": "boolean",
+          "default": false
         }
       }
     }
