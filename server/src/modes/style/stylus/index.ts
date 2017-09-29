@@ -14,12 +14,12 @@ import { stylusHover } from './stylus-hover';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument('stylus'));
-  let baseIndentEnabled = false;
+  let baseIndentShifted = false;
   let stylusSupremacyFormattingOptions: StylusSupremacy.FormattingOptions = {};
   return {
     getId: () => 'stylus',
     configure(config) {
-      baseIndentEnabled = _.get(config, 'vetur.format.styleInitialIndent', false);
+      baseIndentShifted = _.get(config, 'vetur.format.styleInitialIndent', false);
       stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(_.get(config, 'vetur.format.stylus', {}));
     },
     onDocumentRemoved() {},
@@ -62,25 +62,24 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       return stylusHover(embedded, position);
     },
     format(document, range, documentOptions) {
-      // Note that this would have been `document.getText(range)`
-      // See https://code.visualstudio.com/docs/extensionAPI/vscode-api#_a-nametextdocumentaspan-classcodeitem-id38textdocumentspan
-      const inputText = document.getText();
+      const embedded = embeddedDocuments.get(document);
+      const inputText = embedded.getText();
       
       const tabStopChar = documentOptions.insertSpaces ? ' '.repeat(documentOptions.tabSize) : '\t';
       const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n'; // Note that this would have been `document.eol` ideally
 
-      // Extract only the Stylus content from the whole document
-      const inputLines = inputText.split(/\r?\n/);
-      let inputBuffer = inputLines[range.start.line].substring(range.start.character) + '\n';
-      for (let lineIndex = range.start.line + 1; lineIndex < range.end.line; lineIndex++) {
-        inputBuffer += inputLines[lineIndex] + '\n';
-      }
-      inputBuffer += inputLines[range.end.line].substring(0, range.end.character);
-
-      // Determine the base indentation for the Stylus content
+      // Determine the base indentation for the multi-line Stylus content
       let baseIndent = '';
-      if (range.start.line !== range.end.line && baseIndentEnabled) {
-        baseIndent = _.get(inputLines[range.start.line].match(/^(\t|\s)+/), '0', '') + tabStopChar;
+      if (range.start.line !== range.end.line) {
+        const styleTagLine = document.getText().split(/\r?\n/)[range.start.line];
+        if (styleTagLine) {
+          baseIndent = _.get(styleTagLine.match(/^(\t|\s)+/), '0', '');
+        }
+      }
+
+      // Add one more indentation when `vetur.format.styleInitialIndent` is set to `true`
+      if (baseIndentShifted) {
+        baseIndent += tabStopChar;
       }
 
       // Build the formatting options for Stylus Supremacy
@@ -91,10 +90,10 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
         newLineChar: '\n',
       };
 
-      const formattedText = StylusSupremacy.format(inputBuffer, formattingOptions);
+      const formattedText = StylusSupremacy.format(inputText, formattingOptions);
 
       // Add the base indentation and correct the new line characters
-      const outputText = formattedText
+      const outputText = ((range.start.line !== range.end.line ? '\n' : '') + formattedText)
         .split(/\n/)
         .map(line => line.length > 0 ? (baseIndent + line) : '')
         .join(newLineChar);
