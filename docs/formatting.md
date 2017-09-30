@@ -30,36 +30,9 @@ For more info on each option, see:
 
 ## `stylus`
 
-`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy). The following options are being shared with Stylus Supremacy extension.
-Options available:
+`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy). Vetur shares the formatting options for `stylus` language with Stylus Supremacy extension. However, you must install [Stylus Supremacy](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) extension separately in order to use auto-completion in Visual Studio Code settings.
 
-- `stylusSupremacy.insertColons`
-- `stylusSupremacy.insertSemicolons`
-- `stylusSupremacy.insertBraces`
-- `stylusSupremacy.insertNewLineAroundImports`
-- `stylusSupremacy.insertNewLineAroundBlocks`
-- `stylusSupremacy.insertNewLineAroundProperties`
-- `stylusSupremacy.insertNewLineAroundOthers`
-- `stylusSupremacy.insertNewLineBetweenSelectors`
-- `stylusSupremacy.insertSpaceBeforeComment`
-- `stylusSupremacy.insertSpaceAfterComment`
-- `stylusSupremacy.insertSpaceAfterComma`
-- `stylusSupremacy.insertSpaceInsideParenthesis`
-- `stylusSupremacy.insertParenthesisAfterNegation`
-- `stylusSupremacy.insertParenthesisAroundIfCondition`
-- `stylusSupremacy.insertNewLineBeforeElse`
-- `stylusSupremacy.insertLeadingZeroBeforeFraction`
-- `stylusSupremacy.quoteChar`
-- `stylusSupremacy.sortProperties`
-- `stylusSupremacy.alwaysUseImport`
-- `stylusSupremacy.alwaysUseNot`
-- `stylusSupremacy.alwaysUseAtBlock`
-- `stylusSupremacy.alwaysUseExtends`
-- `stylusSupremacy.alwaysUseNoneOverZero`
-- `stylusSupremacy.alwaysUseZeroWithoutUnit`
-- `stylusSupremacy.reduceMarginAndPaddingValues`
-
-For more info on each option, see https://thisismanta.github.io/stylus-supremacy
+For all Stylus formatting options, see https://thisismanta.github.io/stylus-supremacy/#options
 
 ## `js/ts`
 
