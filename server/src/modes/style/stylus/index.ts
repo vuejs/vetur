@@ -20,7 +20,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
     getId: () => 'stylus',
     configure(config) {
       baseIndentShifted = _.get(config, 'vetur.format.styleInitialIndent', false);
-      stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(_.get(config, 'vetur.format.stylus', {}));
+      stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(config.stylusSupremacy || {});
     },
     onDocumentRemoved() {},
     dispose() {},

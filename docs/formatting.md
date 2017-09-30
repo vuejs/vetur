@@ -30,38 +30,36 @@ For more info on each option, see:
 
 ## `stylus`
 
-`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy).
+`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy). The following options are being shared with Stylus Supremacy extension.
 Options available:
 
-- `vetur.format.stylus.insertColons`
-- `vetur.format.stylus.insertSemicolons`
-- `vetur.format.stylus.insertBraces`
-- `vetur.format.stylus.insertNewLineAroundImports`
-- `vetur.format.stylus.insertNewLineAroundBlocks`
-- `vetur.format.stylus.insertNewLineAroundProperties`
-- `vetur.format.stylus.insertNewLineAroundOthers`
-- `vetur.format.stylus.insertNewLineBetweenSelectors`
-- `vetur.format.stylus.insertSpaceBeforeComment`
-- `vetur.format.stylus.insertSpaceAfterComment`
-- `vetur.format.stylus.insertSpaceAfterComma`
-- `vetur.format.stylus.insertSpaceInsideParenthesis`
-- `vetur.format.stylus.insertParenthesisAfterNegation`
-- `vetur.format.stylus.insertParenthesisAroundIfCondition`
-- `vetur.format.stylus.insertNewLineBeforeElse`
-- `vetur.format.stylus.insertLeadingZeroBeforeFraction`
-- `vetur.format.stylus.quoteChar`
-- `vetur.format.stylus.sortProperties`
-- `vetur.format.stylus.alwaysUseImport`
-- `vetur.format.stylus.alwaysUseNot`
-- `vetur.format.stylus.alwaysUseAtBlock`
-- `vetur.format.stylus.alwaysUseExtends`
-- `vetur.format.stylus.alwaysUseNoneOverZero`
-- `vetur.format.stylus.alwaysUseZeroWithoutUnit`
-- `vetur.format.stylus.reduceMarginAndPaddingValues`
+- `stylusSupremacy.insertColons`
+- `stylusSupremacy.insertSemicolons`
+- `stylusSupremacy.insertBraces`
+- `stylusSupremacy.insertNewLineAroundImports`
+- `stylusSupremacy.insertNewLineAroundBlocks`
+- `stylusSupremacy.insertNewLineAroundProperties`
+- `stylusSupremacy.insertNewLineAroundOthers`
+- `stylusSupremacy.insertNewLineBetweenSelectors`
+- `stylusSupremacy.insertSpaceBeforeComment`
+- `stylusSupremacy.insertSpaceAfterComment`
+- `stylusSupremacy.insertSpaceAfterComma`
+- `stylusSupremacy.insertSpaceInsideParenthesis`
+- `stylusSupremacy.insertParenthesisAfterNegation`
+- `stylusSupremacy.insertParenthesisAroundIfCondition`
+- `stylusSupremacy.insertNewLineBeforeElse`
+- `stylusSupremacy.insertLeadingZeroBeforeFraction`
+- `stylusSupremacy.quoteChar`
+- `stylusSupremacy.sortProperties`
+- `stylusSupremacy.alwaysUseImport`
+- `stylusSupremacy.alwaysUseNot`
+- `stylusSupremacy.alwaysUseAtBlock`
+- `stylusSupremacy.alwaysUseExtends`
+- `stylusSupremacy.alwaysUseNoneOverZero`
+- `stylusSupremacy.alwaysUseZeroWithoutUnit`
+- `stylusSupremacy.reduceMarginAndPaddingValues`
 
 For more info on each option, see https://thisismanta.github.io/stylus-supremacy
-
- Note that [Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy/#vscode) is also available as a separate Visual Studio Code extension, and has nothing to do with this extension.
 
 ## `js/ts`
 
