@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
-import { CompletionList } from 'vscode-languageserver-types';
+import { CompletionList, TextEdit } from 'vscode-languageserver-types';
+import * as StylusSupremacy from 'stylus-supremacy';
 
 import { Priority } from '../emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
@@ -13,8 +14,14 @@ import { stylusHover } from './stylus-hover';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument('stylus'));
+  let baseIndentShifted = false;
+  let stylusSupremacyFormattingOptions: StylusSupremacy.FormattingOptions = {};
   return {
     getId: () => 'stylus',
+    configure(config) {
+      baseIndentShifted = _.get(config, 'vetur.format.styleInitialIndent', false);
+      stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(config.stylusSupremacy || {});
+    },
     onDocumentRemoved() {},
     dispose() {},
     doComplete(document, position) {
@@ -53,6 +60,45 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
     doHover(document, position) {
       const embedded = embeddedDocuments.get(document);
       return stylusHover(embedded, position);
+    },
+    format(document, range, documentOptions) {
+      const embedded = embeddedDocuments.get(document);
+      const inputText = embedded.getText();
+      
+      const tabStopChar = documentOptions.insertSpaces ? ' '.repeat(documentOptions.tabSize) : '\t';
+      const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n'; // Note that this would have been `document.eol` ideally
+
+      // Determine the base indentation for the multi-line Stylus content
+      let baseIndent = '';
+      if (range.start.line !== range.end.line) {
+        const styleTagLine = document.getText().split(/\r?\n/)[range.start.line];
+        if (styleTagLine) {
+          baseIndent = _.get(styleTagLine.match(/^(\t|\s)+/), '0', '');
+        }
+      }
+
+      // Add one more indentation when `vetur.format.styleInitialIndent` is set to `true`
+      if (baseIndentShifted) {
+        baseIndent += tabStopChar;
+      }
+
+      // Build the formatting options for Stylus Supremacy
+      // See https://thisismanta.github.io/stylus-supremacy/#options
+      const formattingOptions = {
+        ...stylusSupremacyFormattingOptions,
+        tabStopChar,
+        newLineChar: '\n',
+      };
+
+      const formattedText = StylusSupremacy.format(inputText, formattingOptions);
+
+      // Add the base indentation and correct the new line characters
+      const outputText = ((range.start.line !== range.end.line ? '\n' : '') + formattedText)
+        .split(/\n/)
+        .map(line => line.length > 0 ? (baseIndent + line) : '')
+        .join(newLineChar);
+
+      return [TextEdit.replace(range, outputText)];
     },
   };
 }

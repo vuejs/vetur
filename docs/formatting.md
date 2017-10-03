@@ -1,6 +1,6 @@
 # Formatting
 
-Vetur has support for formatting embedded `html/css/scss/less/js/ts`.  
+Vetur has support for formatting embedded `html/css/scss/less/stylus/js/ts`.  
 Some formatting options are available.
 
 We plan to switch to [prettier](https://github.com/prettier/prettier) soon.
@@ -27,6 +27,12 @@ For more info on each option, see:
 
 - https://github.com/beautify-web/js-beautify
 - https://github.com/victorporof/Sublime-HTMLPrettify
+
+## `stylus`
+
+`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy). Vetur shares the formatting options for `stylus` language with Stylus Supremacy extension. However, you must install [Stylus Supremacy](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) extension separately in order to use auto-completion in Visual Studio Code settings.
+
+For all Stylus formatting options, see https://thisismanta.github.io/stylus-supremacy/#options
 
 ## `js/ts`
 
