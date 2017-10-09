@@ -29,5 +29,11 @@
     ["\"", "\""],
     ["'", "'"],
     ["`", "`"]
-  ]
+  ],
+  "folding": {
+    "markers": {
+      "start": "^<(template|style|script)[^>]*>",
+      "end": "^</(template|style|script)>"
+    }
+  }
 }

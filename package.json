@@ -55,14 +55,14 @@
         "extensions": [
           ".vue"
         ],
-        "configuration": "./languages/vue.json"
+        "configuration": "./languages/vue-language-configuration.json"
       },
       {
         "id": "vue-html",
         "aliases": [
           "Vue-html"
         ],
-        "configuration": "./languages/vue-html.json"
+        "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
         "id": "postcss",
@@ -70,7 +70,7 @@
           "PostCSS",
           "POSTCSS"
         ],
-        "configuration": "./languages/postcss.json"
+        "configuration": "./languages/postcss-language-configuration.json"
       }
     ],
     "grammars": [
