@@ -90,6 +90,10 @@ export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
         }
         lastAttributeName = '';
         break;
+      case TokenType.EndTagClose:
+        lastAttributeName = '';
+        languageIdFromType = '';
+        break;
     }
     token = scanner.scan();
   }
