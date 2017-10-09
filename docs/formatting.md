@@ -30,9 +30,18 @@ For more info on each option, see:
 
 ## `stylus`
 
-`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy). Vetur shares the formatting options for `stylus` language with Stylus Supremacy extension. However, you must install [Stylus Supremacy](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) extension separately in order to use auto-completion in Visual Studio Code settings.
+`stylus` formatting is powered by [Manta's Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy). Vetur shares the formatting options for `stylus` language with Stylus Supremacy extension.
 
-For all Stylus formatting options, see https://thisismanta.github.io/stylus-supremacy/#options
+A useful default:
+```json
+{
+  "stylusSupremacy.insertBraces": false,
+  "stylusSupremacy.insertColons": false,
+  "stylusSupremacy.insertSemicolons": false
+}
+```
+
+For all Stylus formatting options, see https://thisismanta.github.io/stylus-supremacy/#options.
 
 ## `js/ts`
 
