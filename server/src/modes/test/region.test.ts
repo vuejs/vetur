@@ -209,4 +209,15 @@ suite('Embedded Support', () => {
   testcase('ill formed template10')
     .template(`<div><template>`)
     .run();
+
+  test('oneline style', () => {
+    const content = `
+<style lang="scss"></style>
+<script>export default {}</script>
+`;
+    const doc = TextDocument.create('test://test/test.vue', 'vue', 0, content);
+    const ranges = getAllRegions(doc);
+    assert.equal(ranges.length, 3);
+    assert.equal(ranges[1].languageId, 'javascript');
+  });
 });
