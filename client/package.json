@@ -12,7 +12,7 @@
   "dependencies": {
     "vscode-languageclient": "^3.4.2",
     "vscode-languageserver-types": "^3.4.0",
-    "vue-language-server": "^0.0.19"
+    "vue-language-server": "0.0.20"
   },
   "devDependencies": {
     "@types/node": "^6.0.51",
