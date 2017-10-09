@@ -41,6 +41,7 @@ A useful default:
 }
 ```
 
+For IntelliSense on `stylusSupremacy.*` config, install [Manta's Stylus Supremacy](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy).  
 For all Stylus formatting options, see https://thisismanta.github.io/stylus-supremacy/#options.
 
 ## `js/ts`
