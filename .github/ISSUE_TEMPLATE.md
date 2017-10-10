@@ -10,6 +10,7 @@
 
 ## Problem
 
+<!-- Include error message from Panel -> Output -> Vue Language Server -->
 <!-- With screenshot / gif if possible -->
 
 ## Reproducible Case
