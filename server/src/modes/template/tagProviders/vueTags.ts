@@ -22,7 +22,8 @@ const vueDirectives = [
   genAttribute('v-once', 'v', 'Render the element and component once only.'),
   genAttribute('key', u, 'Hint at VNodes identity for VDom diffing, e.g. list rendering'),
   genAttribute('ref', u, 'Register a reference to an element or a child component.'),
-  genAttribute('slot', u, 'Used on content inserted into child components to indicate which named slot the content belongs to.')
+  genAttribute('slot', u, 'Used on content inserted into child components to indicate which named slot the content belongs to.'),
+  genAttribute('slot-scope', u, 'the name of a temporary variable that holds the props object passed from the child')
 ];
 
 
@@ -62,7 +63,7 @@ const vueTags = {
   ),
   template: new HTMLTagSpecification(
     'The template element is used to declare fragments of HTML that can be cloned and inserted in the document by script.',
-    [ genAttribute('scope', u, 'the name of a temporary variable that holds the props object passed from the child'),
+    [ genAttribute('scope', u, '(deprecated) a temporary variable that holds the props object passed from the child'),
       genAttribute('slot', u, 'the name of scoped slot')
     ]
   ),
