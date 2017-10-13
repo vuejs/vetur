@@ -1,5 +1,6 @@
-- [ ] I searched through existing issues and FAQ https://github.com/vuejs/vetur/wiki/FAQ
-- [ ] I have looked through docs at https://vuejs.github.io/vetur/
+- [ ] I have searched through existing issues
+- [ ] I have read through docs at https://vuejs.github.io/vetur/
+- [ ] I have read FAQ: https://github.com/vuejs/vetur/wiki/FAQ
 
 ## Info
 
@@ -9,7 +10,8 @@
 
 ## Problem
 
-<!-- With screenshot if possible -->
+<!-- Include error message from Panel -> Output -> Vue Language Server -->
+<!-- With screenshot / gif if possible -->
 
 ## Reproducible Case
 
@@ -18,12 +20,4 @@
   Otherwise we can't help you and your issue might be closed.
   For example, fork https://github.com/octref/veturpack and modify it to reproduce the error,
   then push your changes to GitHub and send us the link.
--->
-
-<!--
-  ### Common Fix ###
-
-  1. Try disabling / removing other Vue extensions for VSCode.
-
-  2. For crash / memory usage problem, try adding a tsconfig/jsconfig that only includes your client side Vue code, see more at: https://vuejs.github.io/vetur/setup.html#overall
 -->

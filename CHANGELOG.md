@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.9.11 | 2017-10-09
+
+- Stylus formatter based on [Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy/). Thanks to [@ThisIsManta](https://github.com/ThisIsManta)'s contribution. #457.
+- Fix a bug where one-line tags with `src` could corrupt linting. #461.
+- Region support for `<template>`, `<style>` and `<script>`. #459.
+
 ### 0.9.10 | 2017-09-22
 
 - Fix Enter key not working correctly due to formatOnType. #448.

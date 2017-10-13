@@ -4,7 +4,7 @@
   "description": "Vue tooling for VSCode",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client",
@@ -55,14 +55,14 @@
         "extensions": [
           ".vue"
         ],
-        "configuration": "./languages/vue.json"
+        "configuration": "./languages/vue-language-configuration.json"
       },
       {
         "id": "vue-html",
         "aliases": [
           "Vue-html"
         ],
-        "configuration": "./languages/vue-html.json"
+        "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
         "id": "postcss",
@@ -70,7 +70,7 @@
           "PostCSS",
           "POSTCSS"
         ],
-        "configuration": "./languages/postcss.json"
+        "configuration": "./languages/postcss-language-configuration.json"
       }
     ],
     "grammars": [

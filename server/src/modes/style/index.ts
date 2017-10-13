@@ -60,8 +60,12 @@ function getStyleMode(
       languageService.configure(config && config.css);
     },
     doValidation(document) {
-      const embedded = embeddedDocuments.get(document);
-      return languageService.doValidation(embedded, stylesheets.get(embedded));
+      if (languageId === 'postcss') {
+        return [];
+      } else {
+        const embedded = embeddedDocuments.get(document);
+        return languageService.doValidation(embedded, stylesheets.get(embedded));
+      }
     },
     doComplete(document, position) {
       const embedded = embeddedDocuments.get(document);
