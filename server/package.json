@@ -47,6 +47,6 @@
     "watch": "tsc --watch",
     "test": "mocha",
     "preversion": "npm run compile && npm test",
-    "prepublish": "npm run compile"
+    "prepublishOnly": "npm run compile"
   }
 }
