@@ -1,10 +1,34 @@
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation, Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString, DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions } from 'vscode-languageserver-types';
+import {
+  SymbolInformation,
+  SymbolKind,
+  CompletionItem,
+  Location,
+  SignatureHelp,
+  SignatureInformation,
+  ParameterInformation,
+  Definition,
+  TextEdit,
+  TextDocument,
+  Diagnostic,
+  DiagnosticSeverity,
+  Range,
+  CompletionItemKind,
+  Hover,
+  MarkedString,
+  DocumentHighlight,
+  DocumentHighlightKind,
+  CompletionList,
+  Position,
+  FormattingOptions
+} from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
-import { getFileFsPath, getFilePath } from './preprocess';
+import { getFileFsPath, getFilePath } from 'utils/paths';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
+
+import { prettierFormat } from './services/formatter';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -16,7 +40,10 @@ export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
 }
 
-export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumentRegions>, workspacePath: string | null | undefined): ScriptMode {
+export function getJavascriptMode(
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  workspacePath: string | null | undefined
+): ScriptMode {
   if (!workspacePath) {
     return { ...nullMode, findComponents: () => [] };
   }
@@ -43,8 +70,10 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const diagnostics = [...service.getSyntacticDiagnostics(fileFsPath),
-      ...service.getSemanticDiagnostics(fileFsPath)];
+      const diagnostics = [
+        ...service.getSyntacticDiagnostics(fileFsPath),
+        ...service.getSemanticDiagnostics(fileFsPath)
+      ];
 
       return diagnostics.map(diag => {
         // syntactic/semantic diagnostic always has start and length
@@ -80,7 +109,8 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
             sortText: entry.sortText,
             kind: convertKind(entry.kind),
             textEdit: range && TextEdit.replace(range, entry.name),
-            data: { // data used for resolving item details (see 'doResolve')
+            data: {
+              // data used for resolving item details (see 'doResolve')
               languageId: doc.languageId,
               uri: doc.uri,
               offset
@@ -115,9 +145,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
       if (info) {
         const display = ts.displayPartsToString(info.displayParts);
         const doc = ts.displayPartsToString(info.documentation);
-        const markedContents: MarkedString[] = [
-          { language: 'ts', value: display }
-        ];
+        const markedContents: MarkedString[] = [{ language: 'ts', value: display }];
         if (doc) {
           markedContents.unshift(doc, '\n');
         }
@@ -145,7 +173,6 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
         signatures: []
       };
       signHelp.items.forEach(item => {
-
         const signature: SignatureInformation = {
           label: '',
           documentation: undefined,
@@ -182,7 +209,9 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
         return occurrences.map(entry => {
           return {
             range: convertRange(scriptDoc, entry.textSpan),
-            kind: <DocumentHighlightKind>(entry.isWriteAccess ? DocumentHighlightKind.Write : DocumentHighlightKind.Text)
+            kind: <DocumentHighlightKind>(entry.isWriteAccess
+              ? DocumentHighlightKind.Write
+              : DocumentHighlightKind.Text)
           };
         });
       }
@@ -198,7 +227,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
       const items = service.getNavigationBarItems(fileFsPath);
       if (items) {
         const result: SymbolInformation[] = [];
-        const existing: {[k: string]: boolean} = {};
+        const existing: { [k: string]: boolean } = {};
         const collectSymbols = (item: ts.NavigationBarItem, containerLabel?: string) => {
           const sig = item.text + item.kind + item.spans[0].start;
           if (item.kind !== 'script' && !existing[sig]) {
@@ -221,7 +250,6 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
               collectSymbols(child, containerLabel);
             }
           }
-
         };
 
         items.forEach(item => collectSymbols(item));
@@ -278,29 +306,32 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
       return referenceResults;
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
-      const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
-      const formatSettings = convertOptions(formatParams, config.vetur.format.js, initialIndentLevel);
-      // InsertSpaceAfterFunctionKeywordForAnonymousFunctions should be consistent with InsertSpaceBeforeFunctionParenthesis
-      formatSettings.InsertSpaceAfterFunctionKeywordForAnonymousFunctions = config.vetur.format.js.InsertSpaceBeforeFunctionParenthesis;
-
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
-      const fileFsPath = getFileFsPath(doc.uri);
-      const start = scriptDoc.offsetAt(range.start);
-      const end = scriptDoc.offsetAt(range.end);
-      const edits = service.getFormattingEditsForRange(fileFsPath, start, end, formatSettings);
-      if (edits) {
-        const result = [];
-        for (const edit of edits) {
-          if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
-            result.push({
-              range: convertRange(scriptDoc, edit.span),
-              newText: edit.newText
-            });
+      if (config.vetur.format.defaultFormatter.js === 'prettier') {
+        return prettierFormat(scriptDoc, range, formatParams, config.prettier);
+      } else {
+        const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
+        const jsFormatSettings: ts.FormatCodeSettings = config.javascript.format;
+        const convertedFormatSettings = convertOptions(jsFormatSettings, formatParams, initialIndentLevel);
+
+        const fileFsPath = getFileFsPath(doc.uri);
+        const start = scriptDoc.offsetAt(range.start);
+        const end = scriptDoc.offsetAt(range.end);
+        const edits = service.getFormattingEditsForRange(fileFsPath, start, end, convertedFormatSettings);
+        if (edits) {
+          const result = [];
+          for (const edit of edits) {
+            if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
+              result.push({
+                range: convertRange(scriptDoc, edit.span),
+                newText: edit.newText
+              });
+            }
           }
+          return result;
         }
-        return result;
+        return [];
       }
-      return [];
     },
     findComponents(doc: TextDocument) {
       const { service } = updateCurrentTextDocument(doc);
@@ -315,9 +346,7 @@ export function getJavascriptMode(documentRegions: LanguageModelCache<VueDocumen
       jsDocuments.dispose();
     }
   };
-
 }
-
 
 function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
   const filePaths = ls.getProgram().getRootFileNames();
@@ -391,26 +420,15 @@ function convertSymbolKind(kind: string): SymbolKind {
   return SymbolKind.Variable;
 }
 
-function convertOptions(options: FormattingOptions, formatSettings: any, initialIndentLevel: number): ts.FormatCodeOptions {
-  const defaultJsFormattingOptions = {
-    ConvertTabsToSpaces: options.insertSpaces,
-    TabSize: options.tabSize,
-    IndentSize: options.tabSize,
-    IndentStyle: ts.IndentStyle.Smart,
-    NewLineCharacter: '\n',
-    BaseIndentSize: options.tabSize * initialIndentLevel,
-    InsertSpaceAfterCommaDelimiter: true,
-    InsertSpaceAfterSemicolonInForStatements: true,
-    InsertSpaceAfterKeywordsInControlFlowStatements: true,
-    InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
-    InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
-    InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: false,
-    InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: false,
-    InsertSpaceBeforeFunctionParenthesis: true,
-    InsertSpaceBeforeAndAfterBinaryOperators: true,
-    PlaceOpenBraceOnNewLineForControlBlocks: false,
-    PlaceOpenBraceOnNewLineForFunctions: false
-  };
-
-  return _.assign(defaultJsFormattingOptions, formatSettings);
+function convertOptions(
+  formatSettings: ts.FormatCodeSettings,
+  options: FormattingOptions,
+  initialIndentLevel: number
+): ts.FormatCodeSettings {
+  return _.assign(formatSettings, {
+    convertTabsToSpaces: options.insertSpaces,
+    tabSize: options.tabSize,
+    indentSize: options.tabSize,
+    baseIndentSize: options.tabSize * initialIndentLevel
+  });
 }

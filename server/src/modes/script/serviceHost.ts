@@ -5,7 +5,8 @@ import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../languageModelCache';
-import { createUpdater, parseVue, isVue, getFileFsPath, getFilePath } from './preprocess';
+import { createUpdater, parseVue, isVue } from './preprocess';
+import { getFileFsPath, getFilePath } from 'utils/paths';
 import * as bridge from './bridge';
 
 function isVueProject(path: string) {

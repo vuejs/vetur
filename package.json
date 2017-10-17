@@ -131,62 +131,125 @@
           "default": true,
           "description": "Validate js/ts in <script>"
         },
+        "vetur.format.defaultFormatter.html": {
+          "type": "string",
+          "default": "js-beautify-html",
+          "enum": [
+            "js-beautify-html"
+          ],
+          "enumDescriptions": [
+            "html formatter of js-beautify"
+          ],
+          "description": "Default formatter for <template> region"
+        },
+        "vetur.format.defaultFormatter.css": {
+          "type": "string",
+          "default": "vscode-css",
+          "enum": [
+            "vscode-css",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "css formatter from vscode-css-languageservice",
+            "css formatter using postcss parser from prettier"
+          ],
+          "description": "Default formatter for <style> region"
+        },
+        "vetur.format.defaultFormatter.postcss": {
+          "type": "string",
+          "default": "vscode-css",
+          "enum": [
+            "vscode-css"
+          ],
+          "enumDescriptions": [
+            "postcss formatter from vscode-css-languageservice"
+          ],
+          "description": "Default formatter for <style lang='postcss'> region"
+        },
+        "vetur.format.defaultFormatter.scss": {
+          "type": "string",
+          "default": "vscode-css",
+          "enum": [
+            "vscode-css",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "scss formatter from vscode-css-languageservice",
+            "scss formatter using postcss parser from prettier"
+          ],
+          "description": "Default formatter for <style lang='scss'> region"
+        },
+        "vetur.format.defaultFormatter.less": {
+          "type": "string",
+          "default": "vscode-css",
+          "enum": [
+            "vscode-css",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "less formatter from vscode-css-languageservice",
+            "less formatter using postcss parser from prettier"
+          ],
+          "description": "Default formatter for <style lang='less'> region"
+        },
+        "vetur.format.defaultFormatter.stylus": {
+          "type": "string",
+          "default": "stylus-supremacy",
+          "enum": [
+            "stylus-supremacy"
+          ],
+          "enumDescriptions": [
+            "stylus formatter from stylus-supremacy"
+          ],
+          "description": "Default formatter for <style lang='stylus'> region"
+        },
+        "vetur.format.defaultFormatter.js": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "prettier",
+            "vscode-typescript"
+          ],
+          "enumDescriptions": [
+            "js formatter from prettier",
+            "js formatter from TypeScript"
+          ],
+          "description": "Default formatter for <script> region"
+        },
+        "vetur.format.defaultFormatter.ts": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "prettier",
+            "vscode-typescript"
+          ],
+          "enumDescriptions": [
+            "ts formatter using typescript parser from prettier",
+            "ts formatter from TypeScript"
+          ],
+          "description": "Default formatter for <script> region"
+        },
+        "vetur.format.defaultFormatterOptions": {
+          "type": "object",
+          "default": {
+            "js-beautify-html": {
+              "max_preserve_newlines": 1,
+              "preserve_newlines": true,
+              "wrap_line_length": 0,
+              "wrap_attributes": "auto"
+            }
+          },
+          "description": "Options for all default formatters"
+        },
         "vetur.format.styleInitialIndent": {
           "type": "boolean",
           "default": false,
-          "description": "Whether to have initial indent for <style> section"
+          "description": "Whether to have initial indent for <style> region"
         },
         "vetur.format.scriptInitialIndent": {
           "type": "boolean",
           "default": false,
-          "description": "Whether to have initial indent for <script> section"
-        },
-        "vetur.format.html.max_preserve_newlines": {
-          "type": "number",
-          "default": 1,
-          "decription": "Maximum number of line breaks to be preserved in one chunk (0 to disable)"
-        },
-        "vetur.format.html.preserve_newlines": {
-          "type": "boolean",
-          "default": true,
-          "decription": "Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)"
-        },
-        "vetur.format.html.wrap_line_length": {
-          "type": "number",
-          "default": 0,
-          "decription": "Lines should wrap at next opportunity after this number of characters (0 to disable)"
-        },
-        "vetur.format.html.wrap_attributes": {
-          "type": "string",
-          "default": "auto",
-          "enum": [
-            "auto",
-            "force",
-            "force-aligned",
-            "force-expand-multiline"
-          ],
-          "enumDescriptions": [
-            "Wrap attributes only when line length is exceeded",
-            "Wrap each attribute except first",
-            "Wrap each attribute except first and keep aligned",
-            "Wrap each attribute"
-          ],
-          "decription": "Wrap attributes"
-        },
-        "vetur.format.css.newline_between_rules": {
-          "type": "boolean",
-          "default": true,
-          "description": "Add a new line after every css rule"
-        },
-        "vetur.format.css.preserve_newlines": {
-          "type": "boolean",
-          "default": true,
-          "description": "Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)"
-        },
-        "vetur.format.js.InsertSpaceBeforeFunctionParenthesis": {
-          "type": "boolean",
-          "default": false,
-          "description": "Add a space before function parenthesis"
+          "description": "Whether to have initial indent for <script> region"
         }
       }
     }

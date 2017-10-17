@@ -21,7 +21,7 @@ import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
 import { defaultCssOptions } from './defaultOption';
-import { wrapSection } from '../../utils/strings';
+import { wrapSection } from 'utils/strings';
 
 export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
