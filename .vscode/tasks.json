@@ -4,7 +4,14 @@
     {
       "type": "npm",
       "script": "compile",
-      "label": "npm-compile"
+      "label": "npm-compile",
+      "isBackground": false,
+      "presentation": {
+        "echo": false,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared"
+      }
     }
   ]
 }
