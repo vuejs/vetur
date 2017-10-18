@@ -162,9 +162,7 @@ connection.onSignatureHelp(signatureHelpParms => {
 
 connection.onDocumentRangeFormatting(formatParams => {
   const document = documents.get(formatParams.textDocument.uri);
-
   const formattingOptions = _.assign({}, formatParams.options, veturFormattingOptions);
-
   return vls.format(document, formatParams.range, formattingOptions);
 });
 

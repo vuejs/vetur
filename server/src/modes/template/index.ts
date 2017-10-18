@@ -10,7 +10,7 @@ import { doHover } from './services/htmlHover';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
-import { htmlFormat } from './services/formatters';
+import { htmlFormat } from './services/htmlFormat';
 import { parseHTMLDocument } from './parser/htmlParser';
 import { doValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
