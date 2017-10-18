@@ -26,7 +26,7 @@
     "prettier": "^1.7.4",
     "stylus": "^0.54.5",
     "stylus-supremacy": "~2.4.0",
-    "typescript": "^2.5.2",
+    "typescript": "2.5.3",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-emmet-helper": "^1.0.19",
     "vscode-languageserver": "^3.4.2",
