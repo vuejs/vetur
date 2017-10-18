@@ -1,3 +1,3 @@
-import { prettierFormat } from './prettier';
+import { prettierFormatJs, prettierFormatTs } from './prettier';
 
-export { prettierFormat };
+export { prettierFormatJs, prettierFormatTs };

@@ -6,7 +6,7 @@ import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue } from './preprocess';
-import { getFileFsPath, getFilePath } from 'utils/paths';
+import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
 
 function isVueProject(path: string) {

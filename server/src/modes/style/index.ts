@@ -21,7 +21,7 @@ import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
 import { defaultCssOptions } from './defaultOption';
-import { wrapSection } from 'utils/strings';
+import { wrapSection } from '../../utils/strings';
 
 export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
@@ -155,11 +155,9 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
   let value = document.getText();
   let range = currRange;
 
-  let includesEnd = true;
   if (currRange) {
     const startOffset = document.offsetAt(currRange.start);
     const endOffset = document.offsetAt(currRange.end);
-    includesEnd = endOffset === value.length;
     value = value.substring(startOffset, endOffset);
   } else {
     range = Range.create(Position.create(0, 0), document.positionAt(value.length));

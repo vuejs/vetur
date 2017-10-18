@@ -24,11 +24,11 @@ import {
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
-import { getFileFsPath, getFilePath } from 'utils/paths';
+import { getFileFsPath, getFilePath } from '../../utils/paths';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
 
-import { prettierFormat } from './services/formatter';
+import { prettierFormatJs, prettierFormatTs } from './services/formatter';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -307,17 +307,28 @@ export function getJavascriptMode(
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
-      if (config.vetur.format.defaultFormatter.js === 'prettier') {
-        return prettierFormat(scriptDoc, range, formatParams, config.prettier);
+
+      const defaultFormatter =
+        scriptDoc.languageId === 'javascript'
+          ? config.vetur.format.defaultFormatter.js
+          : config.vetur.format.defaultFormatter.ts;
+
+      if (defaultFormatter === 'prettier') {
+        return scriptDoc.languageId === 'javascript'
+          ? prettierFormatJs(scriptDoc, range, formatParams, config.prettier)
+          : prettierFormatTs(scriptDoc, range, formatParams, config.prettier);
       } else {
         const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
-        const jsFormatSettings: ts.FormatCodeSettings = config.javascript.format;
-        const convertedFormatSettings = convertOptions(jsFormatSettings, formatParams, initialIndentLevel);
+        const formatSettings: ts.FormatCodeSettings = scriptDoc.languageId === 'javascript'
+          ? config.javascript.format
+          : config.typescript.format;
+        const convertedFormatSettings = convertOptions(formatSettings, formatParams, initialIndentLevel);
 
         const fileFsPath = getFileFsPath(doc.uri);
         const start = scriptDoc.offsetAt(range.start);
         const end = scriptDoc.offsetAt(range.end);
         const edits = service.getFormattingEditsForRange(fileFsPath, start, end, convertedFormatSettings);
+
         if (edits) {
           const result = [];
           for (const edit of edits) {

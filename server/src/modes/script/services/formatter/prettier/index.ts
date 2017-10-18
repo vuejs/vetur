@@ -1,12 +1,30 @@
 import { FormattingOptions, TextDocument, TextEdit, Range } from 'vscode-languageserver-types';
 
-import { Prettier, PrettierConfig, PrettierEslintFormat, PrettierVSCodeConfig } from './prettier';
+import { Prettier, PrettierConfig, PrettierVSCodeConfig } from './prettier';
 
-export function prettierFormat(
+export function prettierFormatJs(
   doc: TextDocument,
   range: Range,
   formatParams: FormattingOptions,
   prettierVSCodeConfig: PrettierVSCodeConfig
+) {
+  return prettierFormat(doc, range, formatParams, prettierVSCodeConfig, true);
+}
+export function prettierFormatTs(
+  doc: TextDocument,
+  range: Range,
+  formatParams: FormattingOptions,
+  prettierVSCodeConfig: PrettierVSCodeConfig
+) {
+  return prettierFormat(doc, range, formatParams, prettierVSCodeConfig, false);
+}
+
+function prettierFormat(
+  doc: TextDocument,
+  range: Range,
+  formatParams: FormattingOptions,
+  prettierVSCodeConfig: PrettierVSCodeConfig,
+  isJavascript: boolean
 ): TextEdit[] {
   try {
     const bundledPrettier = require('prettier') as Prettier;
@@ -25,28 +43,16 @@ export function prettierFormat(
       trailingComma,
       bracketSpacing: prettierVSCodeConfig.bracketSpacing,
       jsxBracketSameLine: prettierVSCodeConfig.jsxBracketSameLine,
-      parser: 'babylon',
+      parser: isJavascript ? 'babylon' : 'typescript',
       semi: prettierVSCodeConfig.semi,
       useTabs: prettierVSCodeConfig.useTabs
     };
 
-    if (prettierVSCodeConfig.eslintIntegration) {
-      const prettierEslint = require('prettier-eslint') as PrettierEslintFormat;
-
-      const formattedCode =
-        '\n' +
-        prettierEslint({
-          text: doc.getText(),
-          filePath: doc.uri,
-          prettierOptions
-        });
-
-      return [TextEdit.replace(range, formattedCode)];
-    } else {
-      const formattedCode = '\n' + bundledPrettier.format(doc.getText(), prettierOptions);
-      return [TextEdit.replace(range, formattedCode)];
-    }
+    const formattedCode = '\n' + bundledPrettier.format(doc.getText(), prettierOptions);
+    return [TextEdit.replace(range, formattedCode)];
   } catch (e) {
+    console.log('Prettier format failed');
+    console.error(e);
     return [];
   }
 }

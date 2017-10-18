@@ -1,4 +1,4 @@
-import { removeQuotes } from 'utils/strings';
+import { removeQuotes } from '../utils/strings';
 import { createScanner } from './template/parser/htmlScanner';
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 import { TokenType, Scanner } from './template/parser/htmlScanner';
