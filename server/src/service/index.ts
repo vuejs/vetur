@@ -28,7 +28,6 @@ export interface VLS {
   initialize(workspacePath: string | null | undefined): void;
   configure(config: any): void;
   format(doc: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
-  onTypeFormat(doc: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
   validate(doc: TextDocument): Diagnostic[];
   doComplete(doc: TextDocument, position: Position): CompletionList;
   doResolve(doc: TextDocument, languageId: string, item: CompletionItem): CompletionItem;
@@ -77,19 +76,6 @@ export function getVls(): VLS {
     },
     format(doc, range, formattingOptions) {
       return format(languageModes, doc, range, formattingOptions);
-    },
-    onTypeFormat(doc, range, formattingOptions) {
-      const embeddedModeRanges = languageModes.getModesInRange(doc, range);
-      const embeddedEdits: TextEdit[] = [];
-      for (const range of embeddedModeRanges) {
-        if (range.mode.getId() !== 'javascript') {
-          continue;
-        }
-        if (range.mode.format) {
-          embeddedEdits.push(...range.mode.format(doc, range, formattingOptions));
-        }
-      }
-      return embeddedEdits;
     },
     validate(doc) {
       const diagnostics: Diagnostic[] = [];
