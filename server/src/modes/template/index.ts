@@ -10,7 +10,7 @@ import { doHover } from './services/htmlHover';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
-import { htmlFormat } from './services/formatters';
+import { htmlFormat } from './services/htmlFormat';
 import { parseHTMLDocument } from './parser/htmlParser';
 import { doValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
@@ -31,14 +31,16 @@ export function getVueHTMLMode(
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
+  let config: any = {};
 
   return {
     getId() {
       return 'vue-html';
     },
-    configure(config) {
-      tagProviderSettings = _.assign(tagProviderSettings, config.html.suggest);
+    configure(c) {
+      tagProviderSettings = _.assign(tagProviderSettings, c.html.suggest);
       enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
+      config = c;
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
@@ -66,7 +68,10 @@ export function getVueHTMLMode(
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-      return htmlFormat(document, range, formattingOptions);
+      if (config.vetur.format.defaultFormatter.html === 'none') {
+        return [];
+      }
+      return htmlFormat(document, range, formattingOptions, config);
     },
     findDefinition(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

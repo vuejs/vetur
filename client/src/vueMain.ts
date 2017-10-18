@@ -22,15 +22,15 @@ export function activate(context: ExtensionContext) {
   };
 
   const documentSelector = ['vue'];
-  const veturConfig = workspace.getConfiguration();
+  const config = workspace.getConfiguration();
 
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      configurationSection: ['vetur', 'html', 'stylusSupremacy'] // the settings to synchronize
+      configurationSection: ['vetur', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy'] // the settings to synchronize
     },
     initializationOptions: {
-      veturConfig
+      config
     },
     revealOutputChannelOn: RevealOutputChannelOn.Never
   };

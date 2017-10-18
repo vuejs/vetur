@@ -15,12 +15,12 @@ import { stylusHover } from './stylus-hover';
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument('stylus'));
   let baseIndentShifted = false;
-  let stylusSupremacyFormattingOptions: StylusSupremacy.FormattingOptions = {};
+  let config: any = {};
   return {
     getId: () => 'stylus',
-    configure(config) {
-      baseIndentShifted = _.get(config, 'vetur.format.styleInitialIndent', false);
-      stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(config.stylusSupremacy || {});
+    configure(c) {
+      baseIndentShifted = _.get(c, 'vetur.format.styleInitialIndent', false);
+      config = c;
     },
     onDocumentRemoved() {},
     dispose() {},
@@ -61,11 +61,15 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       const embedded = embeddedDocuments.get(document);
       return stylusHover(embedded, position);
     },
-    format(document, range, documentOptions) {
+    format(document, range, formatParams) {
+      if (config.vetur.format.defaultFormatter.stylus === 'none') {
+        return [];
+      }
+
       const embedded = embeddedDocuments.get(document);
       const inputText = embedded.getText();
       
-      const tabStopChar = documentOptions.insertSpaces ? ' '.repeat(documentOptions.tabSize) : '\t';
+      const tabStopChar = formatParams.insertSpaces ? ' '.repeat(formatParams.tabSize) : '\t';
       const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n'; // Note that this would have been `document.eol` ideally
 
       // Determine the base indentation for the multi-line Stylus content
@@ -84,6 +88,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
 
       // Build the formatting options for Stylus Supremacy
       // See https://thisismanta.github.io/stylus-supremacy/#options
+      const stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(config.stylusSupremacy || {});
       const formattingOptions = {
         ...stylusSupremacyFormattingOptions,
         tabStopChar,

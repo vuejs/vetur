@@ -1,7 +1,12 @@
 import { TextDocument, Range, TextEdit, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageModes } from '../modes/languageModes';
 
-export function format(languageModes: LanguageModes, document: TextDocument, formatRange: Range, formattingOptions: FormattingOptions) {
+export function format(
+  languageModes: LanguageModes,
+  document: TextDocument,
+  formatRange: Range,
+  formattingOptions: FormattingOptions
+) {
   const embeddedModeRanges = languageModes.getModesInRange(document, formatRange);
   const embeddedEdits: TextEdit[] = [];
 

@@ -4,7 +4,6 @@ import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
 import * as url from 'url';
 import * as path from 'path';
-import * as _ from 'lodash';
 
 namespace ColorSymbolRequest {
   export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
@@ -29,8 +28,6 @@ let workspacePath: string | null | undefined;
 let config: any = {};
 const vls = getVls();
 
-let veturFormattingOptions = {};
-
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
 connection.onInitialize((params: InitializeParams): InitializeResult => {
@@ -48,7 +45,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   });
 
   if (initializationOptions) {
-    veturFormattingOptions = initializationOptions.veturConfig.format;
+    config = initializationOptions.config;
   }
 
   return {
@@ -79,7 +76,6 @@ connection.onDidChangeConfiguration((change) => {
   vls.configure(config);
 
   // Update formatting setting
-  veturFormattingOptions = config.vetur.format;
   documents.all().forEach(triggerValidation);
 
   const documentSelector: DocumentSelector = [{ language: 'vue' }];
@@ -162,23 +158,19 @@ connection.onSignatureHelp(signatureHelpParms => {
 
 connection.onDocumentRangeFormatting(formatParams => {
   const document = documents.get(formatParams.textDocument.uri);
-
-  const formattingOptions = _.assign({}, formatParams.options, veturFormattingOptions);
-
-  return vls.format(document, formatParams.range, formattingOptions);
+  return vls.format(document, formatParams.range, formatParams.options);
 });
 
-connection.onDocumentOnTypeFormatting(onTypeFormatParams => {
-  const document = documents.get(onTypeFormatParams.textDocument.uri);
+connection.onDocumentOnTypeFormatting(formatParams => {
+  const document = documents.get(formatParams.textDocument.uri);
 
-  const formattingOptions = _.assign({}, onTypeFormatParams.options, veturFormattingOptions);
-  const isNewLine = onTypeFormatParams.ch === '\n';
-  const endOffset = document.offsetAt(onTypeFormatParams.position) - (isNewLine ? 1 : 0);
+  const isNewLine = formatParams.ch === '\n';
+  const endOffset = document.offsetAt(formatParams.position) - (isNewLine ? 1 : 0);
   const endPos = document.positionAt(endOffset);
   const startPos = Position.create(endPos.line - (isNewLine ? 1 : 0), 1);
   const range = Range.create(startPos, endPos);
 
-  return vls.onTypeFormat(document, range, formattingOptions);
+  return vls.onTypeFormat(document, range, formatParams.options);
 });
 
 connection.onDocumentLinks(documentLinkParam => {

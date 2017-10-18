@@ -4,7 +4,7 @@
   "description": "Vue tooling for VSCode",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.9.11",
+  "version": "0.10.0",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p client",
@@ -131,62 +131,132 @@
           "default": true,
           "description": "Validate js/ts in <script>"
         },
+        "vetur.format.defaultFormatter.html": {
+          "type": "string",
+          "default": "none",
+          "enum": [
+            "none",
+            "js-beautify-html"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "html formatter of js-beautify"
+          ],
+          "description": "Default formatter for <template> region"
+        },
+        "vetur.format.defaultFormatter.css": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "css formatter using css parser from prettier"
+          ],
+          "description": "Default formatter for <style> region"
+        },
+        "vetur.format.defaultFormatter.postcss": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "postcss formatter using css parser from prettier"
+          ],
+          "description": "Default formatter for <style lang='postcss'> region"
+        },
+        "vetur.format.defaultFormatter.scss": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "scss formatter using scss parser from prettier"
+          ],
+          "description": "Default formatter for <style lang='scss'> region"
+        },
+        "vetur.format.defaultFormatter.less": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "less formatter using postcss parser from prettier"
+          ],
+          "description": "Default formatter for <style lang='less'> region"
+        },
+        "vetur.format.defaultFormatter.stylus": {
+          "type": "string",
+          "default": "stylus-supremacy",
+          "enum": [
+            "none",
+            "stylus-supremacy"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "stylus formatter from stylus-supremacy"
+          ],
+          "description": "Default formatter for <style lang='stylus'> region"
+        },
+        "vetur.format.defaultFormatter.js": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier",
+            "vscode-typescript"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "js formatter from prettier",
+            "js formatter from TypeScript"
+          ],
+          "description": "Default formatter for <script> region"
+        },
+        "vetur.format.defaultFormatter.ts": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier",
+            "vscode-typescript"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "ts formatter using typescript parser from prettier",
+            "ts formatter from TypeScript"
+          ],
+          "description": "Default formatter for <script> region"
+        },
+        "vetur.format.defaultFormatterOptions": {
+          "type": "object",
+          "default": {
+            "js-beautify-html": {
+
+            }
+          },
+          "description": "Options for all default formatters"
+        },
         "vetur.format.styleInitialIndent": {
           "type": "boolean",
           "default": false,
-          "description": "Whether to have initial indent for <style> section"
+          "description": "Whether to have initial indent for <style> region"
         },
         "vetur.format.scriptInitialIndent": {
           "type": "boolean",
           "default": false,
-          "description": "Whether to have initial indent for <script> section"
-        },
-        "vetur.format.html.max_preserve_newlines": {
-          "type": "number",
-          "default": 1,
-          "decription": "Maximum number of line breaks to be preserved in one chunk (0 to disable)"
-        },
-        "vetur.format.html.preserve_newlines": {
-          "type": "boolean",
-          "default": true,
-          "decription": "Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)"
-        },
-        "vetur.format.html.wrap_line_length": {
-          "type": "number",
-          "default": 0,
-          "decription": "Lines should wrap at next opportunity after this number of characters (0 to disable)"
-        },
-        "vetur.format.html.wrap_attributes": {
-          "type": "string",
-          "default": "auto",
-          "enum": [
-            "auto",
-            "force",
-            "force-aligned",
-            "force-expand-multiline"
-          ],
-          "enumDescriptions": [
-            "Wrap attributes only when line length is exceeded",
-            "Wrap each attribute except first",
-            "Wrap each attribute except first and keep aligned",
-            "Wrap each attribute"
-          ],
-          "decription": "Wrap attributes"
-        },
-        "vetur.format.css.newline_between_rules": {
-          "type": "boolean",
-          "default": true,
-          "description": "Add a new line after every css rule"
-        },
-        "vetur.format.css.preserve_newlines": {
-          "type": "boolean",
-          "default": true,
-          "description": "Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)"
-        },
-        "vetur.format.js.InsertSpaceBeforeFunctionParenthesis": {
-          "type": "boolean",
-          "default": false,
-          "description": "Add a space before function parenthesis"
+          "description": "Whether to have initial indent for <script> region"
         }
       }
     }
