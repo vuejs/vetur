@@ -13,19 +13,33 @@
 - Vetur now uses prettier for formatting css/scss/less/js/ts.
 - Vetur plans to use prettier for html formatting when it lands in prettier. Upstream issues [prettier/prettier#1882](https://github.com/prettier/prettier/issues/1882) [prettier/prettier#2097](https://github.com/prettier/prettier/issues/2097)
 - `vetur.format.defaultFormatter` now allows you to set formatter based on language. The current default is:
+
   ```json
   "vetur.format.defaultFormatter": {
-    html: "none",
-    css: "prettier",
-    postcss: "prettier",
-    scss: "prettier",
-    less: "prettier",
-    js: "prettier",
-    ts: "prettier",
-    stylus: "stylus-supremacy"
+    "html": "none",
+    "css": "prettier",
+    "postcss": "prettier",
+    "scss": "prettier",
+    "less": "prettier",
+    "js": "prettier",
+    "ts": "prettier",
+    "stylus": "stylus-supremacy"
   }
   ```
-- Vetur now disables html formatting with js-beautify by default and plans to completely remove js-beautify once html support lands in prettier. You can still enable it by setting `vetur.format.defaultFormatter.html` as `js-beautify-html` and change its settings in `vetur.format.defaultFormatterOptions.js-beautify-html`.
+
+- Vetur now disables html formatting with js-beautify by default and plans to completely remove js-beautify once html support lands in prettier. You can still enable it by setting:
+
+  ```json
+  "vetur.format.defaultFormatter": {
+    "html": "js-beautify-html"
+  },
+  "vetur.format.defaultFormatterOptions": {
+    "js-beautify-html": {
+      // js-beautify-html settings, see https://github.com/vuejs/vetur/blob/master/server/src/modes/template/services/htmlFormat.ts
+    }
+  }
+  ```
+
 - Vetur will close all html formatting issues. js-beautify issues should be reported to js-beautify. Our team will direct effort to build html / vue formatting in prettier.
 
 ### 0.9.11 | 2017-10-09
