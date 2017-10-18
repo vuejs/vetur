@@ -1,8 +1,6 @@
 import {
   TextDocument,
   Position,
-  TextEdit,
-  FormattingOptions,
   Range,
   CompletionList
 } from 'vscode-languageserver-types';
@@ -13,15 +11,14 @@ import {
   LanguageService
 } from 'vscode-css-languageservice';
 import * as _ from 'lodash';
-import { css as cssBeautify } from 'js-beautify';
 import * as emmet from 'vscode-emmet-helper';
 
 import { Priority } from './emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
-import { defaultCssOptions } from './defaultOption';
-import { wrapSection } from '../../utils/strings';
+import { pretterify } from '../../utils/prettier';
+import { ParserOption } from '../../utils/prettier/prettier.d';
 
 export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
@@ -51,13 +48,15 @@ function getStyleMode(
     documentRegions.get(document).getEmbeddedDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
+  let config: any = {};
 
   return {
     getId() {
       return languageId;
     },
-    configure(config) {
-      languageService.configure(config && config.css);
+    configure(c) {
+      languageService.configure(c && c.css);
+      config = c;
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
@@ -115,8 +114,15 @@ function getStyleMode(
       const embedded = embeddedDocuments.get(document);
       return languageService.findColorSymbols(embedded, stylesheets.get(embedded));
     },
-    format(document, range, formattingOptions) {
-      return cssFormat(document, range, formattingOptions);
+    format(document, currRange, formattingOptions) {
+      const { value, range } = getValueAndRange(document, currRange);
+      const parserMap: { [k: string]: ParserOption } = {
+        css: 'css',
+        postcss: 'css',
+        scss: 'scss',
+        less: 'less'
+      };
+      return pretterify(value, range, formattingOptions, config.prettier, parserMap[languageId]);
     },
     onDocumentRemoved(document) {
       embeddedDocuments.onDocumentRemoved(document);
@@ -127,28 +133,6 @@ function getStyleMode(
       stylesheets.dispose();
     }
   };
-}
-
-export function cssFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions): TextEdit[] {
-  const { value, range } = getValueAndRange(document, currRange);
-
-  defaultCssOptions.indent_with_tabs = !formattingOptions.insertSpaces;
-  defaultCssOptions.indent_size = formattingOptions.tabSize;
-
-  let cssFormattingOptions = defaultCssOptions;
-  if (formattingOptions.css) {
-    cssFormattingOptions = _.assign(defaultCssOptions, formattingOptions.css);
-  }
-
-  const beautifiedCss = cssBeautify(value, cssFormattingOptions);
-  const needIndent = !!formattingOptions.styleInitialIndent;
-  const wrappedCss = wrapSection(beautifiedCss, needIndent, formattingOptions);
-  return [
-    {
-      range,
-      newText: wrappedCss
-    }
-  ];
 }
 
 function getValueAndRange(document: TextDocument, currRange: Range): { value: string; range: Range } {

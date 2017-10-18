@@ -1,7 +1,9 @@
 export type ParserOption =
 | 'babylon'
 | 'flow'
-| 'postcss'
+| 'css'
+| 'scss'
+| 'less'
 | 'typescript'
 | 'json'
 | 'graphql';
