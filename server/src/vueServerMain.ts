@@ -1,5 +1,5 @@
-import { createConnection, TextDocuments, InitializeParams, InitializeResult, DocumentRangeFormattingRequest, Disposable, DocumentSelector, RequestType } from 'vscode-languageserver';
-import { TextDocument, Diagnostic, Range } from 'vscode-languageserver-types';
+import { createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType } from 'vscode-languageserver';
+import { TextDocument, Diagnostic, Range, Position } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
 import * as url from 'url';
@@ -54,7 +54,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
       textDocumentSync: documents.syncKind,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '/', '@', '*'] },
       signatureHelpProvider: { triggerCharacters: ['('] },
-      documentRangeFormattingProvider: true,
+      documentFormattingProvider: true,
       hoverProvider: true,
       documentHighlightProvider: true,
       documentSymbolProvider: true,
@@ -64,8 +64,6 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   };
 });
 
-let formatterRegistration: Thenable<Disposable>;
-
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration((change) => {
   config = change.settings;
@@ -73,9 +71,6 @@ connection.onDidChangeConfiguration((change) => {
 
   // Update formatting setting
   documents.all().forEach(triggerValidation);
-
-  const documentSelector: DocumentSelector = [{ language: 'vue' }];
-  formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
 });
 
 const pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
@@ -152,9 +147,10 @@ connection.onSignatureHelp(signatureHelpParms => {
   return vls.doSignatureHelp(document, signatureHelpParms.position);
 });
 
-connection.onDocumentRangeFormatting(formatParams => {
+connection.onDocumentFormatting(formatParams => {
   const document = documents.get(formatParams.textDocument.uri);
-  return vls.format(document, formatParams.range, formatParams.options);
+  const fullDocRange = Range.create(Position.create(0, 0), document.positionAt(document.getText().length));
+  return vls.format(document, fullDocRange, formatParams.options);
 });
 
 connection.onDocumentLinks(documentLinkParam => {
