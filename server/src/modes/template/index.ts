@@ -31,14 +31,16 @@ export function getVueHTMLMode(
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
+  let config = {};
 
   return {
     getId() {
       return 'vue-html';
     },
-    configure(config) {
-      tagProviderSettings = _.assign(tagProviderSettings, config.html.suggest);
+    configure(c) {
+      tagProviderSettings = _.assign(tagProviderSettings, c.html.suggest);
       enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
+      config = c;
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
@@ -66,7 +68,7 @@ export function getVueHTMLMode(
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-      return htmlFormat(document, range, formattingOptions);
+      return htmlFormat(document, range, formattingOptions, config);
     },
     findDefinition(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

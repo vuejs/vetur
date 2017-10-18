@@ -1,22 +1,32 @@
 import { FormattingOptions, TextDocument, TextEdit, Range } from 'vscode-languageserver-types';
 
-import { Prettier, PrettierConfig, PrettierVSCodeConfig } from './prettier';
+import { ParserOption, Prettier, PrettierConfig, PrettierVSCodeConfig } from './prettier';
 
-export function prettierFormatJs(
+export function pretterify(
   doc: TextDocument,
   range: Range,
   formatParams: FormattingOptions,
-  prettierVSCodeConfig: PrettierVSCodeConfig
+  prettierVSCodeConfig: PrettierVSCodeConfig,
+  parser: ParserOption
 ) {
-  return prettierFormat(doc, range, formatParams, prettierVSCodeConfig, true);
+  return prettierFormat(doc, range, formatParams, prettierVSCodeConfig, parser);
 }
-export function prettierFormatTs(
+
+export function prettierifyJs(
   doc: TextDocument,
   range: Range,
   formatParams: FormattingOptions,
   prettierVSCodeConfig: PrettierVSCodeConfig
 ) {
-  return prettierFormat(doc, range, formatParams, prettierVSCodeConfig, false);
+  return prettierFormat(doc, range, formatParams, prettierVSCodeConfig, 'babylon');
+}
+export function prettierifyTs(
+  doc: TextDocument,
+  range: Range,
+  formatParams: FormattingOptions,
+  prettierVSCodeConfig: PrettierVSCodeConfig
+) {
+  return prettierFormat(doc, range, formatParams, prettierVSCodeConfig, 'typescript');
 }
 
 function prettierFormat(
@@ -24,7 +34,7 @@ function prettierFormat(
   range: Range,
   formatParams: FormattingOptions,
   prettierVSCodeConfig: PrettierVSCodeConfig,
-  isJavascript: boolean
+  parser: ParserOption
 ): TextEdit[] {
   try {
     const bundledPrettier = require('prettier') as Prettier;
@@ -43,7 +53,7 @@ function prettierFormat(
       trailingComma,
       bracketSpacing: prettierVSCodeConfig.bracketSpacing,
       jsxBracketSameLine: prettierVSCodeConfig.jsxBracketSameLine,
-      parser: isJavascript ? 'babylon' : 'typescript',
+      parser,
       semi: prettierVSCodeConfig.semi,
       useTabs: prettierVSCodeConfig.useTabs
     };

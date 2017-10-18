@@ -4,13 +4,13 @@ import { html as htmlBeautify } from 'js-beautify';
 
 import { wrapSection } from '../../../utils/strings';
 
-export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions): TextEdit[] {
+export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions, config: any): TextEdit[] {
   const { value, range } = getValueAndRange(document, currRange);
 
   defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
   defaultHtmlOptions.indent_size = formattingOptions.tabSize;
 
-  const htmlFormattingOptions = _.assign(defaultHtmlOptions, formattingOptions.defaultFormatterOptions['js-beautify-html']);
+  const htmlFormattingOptions = _.assign(defaultHtmlOptions, config.vetur.format.defaultFormatterOptions['js-beautify-html']);
 
   const beautifiedHtml = htmlBeautify(value, htmlFormattingOptions);
   const wrappedHtml = wrapSection(beautifiedHtml, /*needIndent*/ true, formattingOptions);

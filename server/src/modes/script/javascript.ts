@@ -28,7 +28,7 @@ import { getFileFsPath, getFilePath } from '../../utils/paths';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
 
-import { prettierFormatJs, prettierFormatTs } from './services/formatter';
+import { prettierifyJs, prettierifyTs } from '../../utils/prettier';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -315,13 +315,12 @@ export function getJavascriptMode(
 
       if (defaultFormatter === 'prettier') {
         return scriptDoc.languageId === 'javascript'
-          ? prettierFormatJs(scriptDoc, range, formatParams, config.prettier)
-          : prettierFormatTs(scriptDoc, range, formatParams, config.prettier);
+          ? prettierifyJs(scriptDoc, range, formatParams, config.prettier)
+          : prettierifyTs(scriptDoc, range, formatParams, config.prettier);
       } else {
         const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
-        const formatSettings: ts.FormatCodeSettings = scriptDoc.languageId === 'javascript'
-          ? config.javascript.format
-          : config.typescript.format;
+        const formatSettings: ts.FormatCodeSettings =
+          scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
         const convertedFormatSettings = convertOptions(formatSettings, formatParams, initialIndentLevel);
 
         const fileFsPath = getFileFsPath(doc.uri);
