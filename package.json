@@ -133,61 +133,65 @@
         },
         "vetur.format.defaultFormatter.html": {
           "type": "string",
-          "default": "js-beautify-html",
+          "default": "none",
           "enum": [
+            "none",
             "js-beautify-html"
           ],
           "enumDescriptions": [
+            "disable formatting",
             "html formatter of js-beautify"
           ],
           "description": "Default formatter for <template> region"
         },
         "vetur.format.defaultFormatter.css": {
           "type": "string",
-          "default": "vscode-css",
+          "default": "prettier",
           "enum": [
-            "vscode-css",
+            "none",
             "prettier"
           ],
           "enumDescriptions": [
-            "css formatter from vscode-css-languageservice",
-            "css formatter using postcss parser from prettier"
+            "disable formatting",
+            "css formatter using css parser from prettier"
           ],
           "description": "Default formatter for <style> region"
         },
         "vetur.format.defaultFormatter.postcss": {
           "type": "string",
-          "default": "vscode-css",
+          "default": "prettier",
           "enum": [
-            "vscode-css"
+            "none",
+            "prettier"
           ],
           "enumDescriptions": [
-            "postcss formatter from vscode-css-languageservice"
+            "disable formatting",
+            "postcss formatter using css parser from prettier"
           ],
           "description": "Default formatter for <style lang='postcss'> region"
         },
         "vetur.format.defaultFormatter.scss": {
           "type": "string",
-          "default": "vscode-css",
+          "default": "prettier",
           "enum": [
-            "vscode-css",
+            "none",
             "prettier"
           ],
           "enumDescriptions": [
-            "scss formatter from vscode-css-languageservice",
-            "scss formatter using postcss parser from prettier"
+            "disable formatting",
+            "scss formatter using scss parser from prettier"
           ],
           "description": "Default formatter for <style lang='scss'> region"
         },
         "vetur.format.defaultFormatter.less": {
           "type": "string",
-          "default": "vscode-css",
+          "default": "prettier",
           "enum": [
-            "vscode-css",
+            "none",
             "prettier"
           ],
           "enumDescriptions": [
-            "less formatter from vscode-css-languageservice",
+            "disable formatting",
             "less formatter using postcss parser from prettier"
           ],
           "description": "Default formatter for <style lang='less'> region"
@@ -196,9 +200,11 @@
           "type": "string",
           "default": "stylus-supremacy",
           "enum": [
+            "none",
             "stylus-supremacy"
           ],
           "enumDescriptions": [
+            "disable formatting",
             "stylus formatter from stylus-supremacy"
           ],
           "description": "Default formatter for <style lang='stylus'> region"
@@ -207,10 +213,12 @@
           "type": "string",
           "default": "prettier",
           "enum": [
+            "none",
             "prettier",
             "vscode-typescript"
           ],
           "enumDescriptions": [
+            "disable formatting",
             "js formatter from prettier",
             "js formatter from TypeScript"
           ],
@@ -220,10 +228,12 @@
           "type": "string",
           "default": "prettier",
           "enum": [
+            "none",
             "prettier",
             "vscode-typescript"
           ],
           "enumDescriptions": [
+            "disable formatting",
             "ts formatter using typescript parser from prettier",
             "ts formatter from TypeScript"
           ],
@@ -233,10 +243,7 @@
           "type": "object",
           "default": {
             "js-beautify-html": {
-              "max_preserve_newlines": 1,
-              "preserve_newlines": true,
-              "wrap_line_length": 0,
-              "wrap_attributes": "auto"
+
             }
           },
           "description": "Options for all default formatters"

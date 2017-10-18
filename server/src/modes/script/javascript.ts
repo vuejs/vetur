@@ -28,7 +28,7 @@ import { getFileFsPath, getFilePath } from '../../utils/paths';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
 
-import { prettierifyJs, prettierifyTs } from '../../utils/prettier';
+import { pretterify } from '../../utils/prettier';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -313,12 +313,17 @@ export function getJavascriptMode(
           ? config.vetur.format.defaultFormatter.js
           : config.vetur.format.defaultFormatter.ts;
 
+      if (defaultFormatter === 'none') {
+        return [];
+      }
+
+      const needIndent = config.vetur.format.scriptInitialIndent;
       if (defaultFormatter === 'prettier') {
         return scriptDoc.languageId === 'javascript'
-          ? prettierifyJs(scriptDoc, range, formatParams, config.prettier)
-          : prettierifyTs(scriptDoc, range, formatParams, config.prettier);
+          ? pretterify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, 'babylon')
+          : pretterify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, 'typescript');
       } else {
-        const initialIndentLevel = formatParams.scriptInitialIndent ? 1 : 0;
+        const initialIndentLevel = needIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
           scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
         const convertedFormatSettings = convertOptions(formatSettings, formatParams, initialIndentLevel);

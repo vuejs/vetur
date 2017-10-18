@@ -1,37 +1,12 @@
-import { FormattingOptions, TextDocument, TextEdit, Range } from 'vscode-languageserver-types';
+import { FormattingOptions, TextEdit, Range } from 'vscode-languageserver-types';
 
 import { ParserOption, Prettier, PrettierConfig, PrettierVSCodeConfig } from './prettier';
+import { indentSection } from '../strings';
 
 export function pretterify(
   code: string,
   range: Range,
-  formatParams: FormattingOptions,
-  prettierVSCodeConfig: PrettierVSCodeConfig,
-  parser: ParserOption
-) {
-  return prettierFormat(code, range, formatParams, prettierVSCodeConfig, parser);
-}
-
-export function prettierifyJs(
-  doc: TextDocument,
-  range: Range,
-  formatParams: FormattingOptions,
-  prettierVSCodeConfig: PrettierVSCodeConfig
-) {
-  return prettierFormat(doc.getText(), range, formatParams, prettierVSCodeConfig, 'babylon');
-}
-export function prettierifyTs(
-  doc: TextDocument,
-  range: Range,
-  formatParams: FormattingOptions,
-  prettierVSCodeConfig: PrettierVSCodeConfig
-) {
-  return prettierFormat(doc.getText(), range, formatParams, prettierVSCodeConfig, 'typescript');
-}
-
-function prettierFormat(
-  code: string,
-  range: Range,
+  initialIndent: boolean,
   formatParams: FormattingOptions,
   prettierVSCodeConfig: PrettierVSCodeConfig,
   parser: ParserOption
@@ -58,8 +33,14 @@ function prettierFormat(
       useTabs: prettierVSCodeConfig.useTabs
     };
 
-    const formattedCode = '\n' + bundledPrettier.format(code, prettierOptions);
-    return [TextEdit.replace(range, formattedCode)];
+    const pretterifiedCode = bundledPrettier.format(code, prettierOptions);
+    if (initialIndent) {
+      // Prettier adds newline at the end
+      const formattedCode = '\n' + indentSection(pretterifiedCode, formatParams);
+      return [TextEdit.replace(range, formattedCode)];
+    } else {
+      return [TextEdit.replace(range, '\n' + pretterifiedCode)];
+    }
   } catch (e) {
     console.log('Prettier format failed');
     console.error(e);

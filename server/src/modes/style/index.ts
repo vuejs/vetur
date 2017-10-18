@@ -1,9 +1,4 @@
-import {
-  TextDocument,
-  Position,
-  Range,
-  CompletionList
-} from 'vscode-languageserver-types';
+import { TextDocument, Position, Range, CompletionList } from 'vscode-languageserver-types';
 import {
   getCSSLanguageService,
   getSCSSLanguageService,
@@ -115,14 +110,19 @@ function getStyleMode(
       return languageService.findColorSymbols(embedded, stylesheets.get(embedded));
     },
     format(document, currRange, formattingOptions) {
+      if (config.vetur.format.defaultFormatter[languageId] === 'none') {
+        return [];
+      }
+
       const { value, range } = getValueAndRange(document, currRange);
+      const needIndent = config.vetur.format.styleInitialIndent;
       const parserMap: { [k: string]: ParserOption } = {
         css: 'css',
         postcss: 'css',
         scss: 'scss',
         less: 'less'
       };
-      return pretterify(value, range, formattingOptions, config.prettier, parserMap[languageId]);
+      return pretterify(value, range, needIndent, formattingOptions, config.prettier, parserMap[languageId]);
     },
     onDocumentRemoved(document) {
       embeddedDocuments.onDocumentRemoved(document);

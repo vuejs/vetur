@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
 
-import { wrapSection } from '../../../utils/strings';
+import { indentSection } from '../../../utils/strings';
 
 export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions, config: any): TextEdit[] {
   const { value, range } = getValueAndRange(document, currRange);
@@ -13,7 +13,7 @@ export function htmlFormat(document: TextDocument, currRange: Range, formattingO
   const htmlFormattingOptions = _.assign(defaultHtmlOptions, config.vetur.format.defaultFormatterOptions['js-beautify-html']);
 
   const beautifiedHtml = htmlBeautify(value, htmlFormattingOptions);
-  const wrappedHtml = wrapSection(beautifiedHtml, /*needIndent*/ true, formattingOptions);
+  const wrappedHtml = '\n' + indentSection(beautifiedHtml, formattingOptions) + '\n';
   return [
     {
       range,

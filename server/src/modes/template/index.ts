@@ -31,7 +31,7 @@ export function getVueHTMLMode(
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
-  let config = {};
+  let config: any = {};
 
   return {
     getId() {
@@ -68,6 +68,9 @@ export function getVueHTMLMode(
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
+      if (config.vetur.format.defaultFormatter.html === 'none') {
+        return [];
+      }
       return htmlFormat(document, range, formattingOptions, config);
     },
     findDefinition(document: TextDocument, position: Position) {
