@@ -2621,13 +2621,13 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
+typescript@2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.5.3.tgz#df3dcdc38f3beb800d4bc322646b04a3f6ca7f0d"
+
 typescript@^2.1.4:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.2.tgz#f8395f85d459276067c988aa41837a8f82870844"
-
-typescript@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.5.2.tgz#038a95f7d9bbb420b1bf35ba31d4c5c1dd3ffe34"
 
 uid-number@^0.0.6:
   version "0.0.6"
@@ -2825,9 +2825,9 @@ vue-eslint-parser@^2.0.1-beta.0:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-language-server@0.0.21:
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.21.tgz#d76d1e7ddd0d5b482efd91fe7ecc5219361a62a1"
+vue-language-server@0.0.22:
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.22.tgz#497b3ecd23f695b132626d9091db3211c332a38c"
   dependencies:
     bootstrap-vue-helper-json "^1.0.1"
     element-helper-json "^1.0.0"
@@ -2839,7 +2839,7 @@ vue-language-server@0.0.21:
     prettier "^1.7.4"
     stylus "^0.54.5"
     stylus-supremacy "~2.4.0"
-    typescript "^2.5.2"
+    typescript "2.5.3"
     vscode-css-languageservice "^2.0.0"
     vscode-emmet-helper "^1.0.19"
     vscode-languageserver "^3.4.2"
