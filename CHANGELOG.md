@@ -1,12 +1,12 @@
 # Changelog
 
-### 0.10.1 | 2017-10-09
+### 0.10.1 | 2017-10-19
 
 - Remove range formatter. #100.
 - Remove onTypeFormat. #477.
 - Upgrade TypeScript for better large workspace handling. #390.
 
-### 0.10.0 | 2017-10-09
+### 0.10.0 | 2017-10-19
 
 - :red_circle: Breaking change in `vetur.format.*` setting. See details below.
 - Prettier as default formatter for css/scss/less/js/ts. #221.
