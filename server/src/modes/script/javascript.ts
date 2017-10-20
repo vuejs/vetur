@@ -100,13 +100,13 @@ export function getJavascriptMode(
       const entries = completions.entries.filter(entry => entry.name !== '__vueEditorBridge');
       return {
         isIncomplete: false,
-        items: entries.map(entry => {
+        items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           return {
             uri: doc.uri,
             position,
             label: entry.name,
-            sortText: entry.sortText,
+            sortText: entry.sortText + index,
             kind: convertKind(entry.kind),
             textEdit: range && TextEdit.replace(range, entry.name),
             data: {
