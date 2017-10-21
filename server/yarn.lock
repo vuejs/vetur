@@ -1938,9 +1938,9 @@ stylint@^1.5.9:
     user-home "2.0.0"
     yargs "4.7.1"
 
-stylus-supremacy@~2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.4.0.tgz#7a7b081539ed53cc5adca4aa400c5be76c30909a"
+stylus-supremacy@~2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.5.0.tgz#a01da56efdad8070d3d47aa3f435078bc1f794eb"
   dependencies:
     comment-json "^1.1.3"
     glob "^7.1.2"
