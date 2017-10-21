@@ -25,7 +25,7 @@
     "parse-gitignore": "^0.4.0",
     "prettier": "^1.7.4",
     "stylus": "^0.54.5",
-    "stylus-supremacy": "~2.4.0",
+    "stylus-supremacy": "~2.5.0",
     "typescript": "2.5.3",
     "vscode-css-languageservice": "^2.0.0",
     "vscode-emmet-helper": "^1.0.19",
