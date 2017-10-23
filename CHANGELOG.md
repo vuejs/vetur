@@ -16,6 +16,8 @@
 
 #### Vetur Formatting Changes
 
+See updated docs at: https://vuejs.github.io/vetur/formatting.html
+
 - Vetur now uses prettier for formatting css/scss/less/js/ts.
 - Vetur plans to use prettier for html formatting when it lands in prettier. Upstream issues [prettier/prettier#1882](https://github.com/prettier/prettier/issues/1882) [prettier/prettier#2097](https://github.com/prettier/prettier/issues/2097)
 - `vetur.format.defaultFormatter` now allows you to set formatter based on language. The current default is:
