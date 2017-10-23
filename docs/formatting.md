@@ -13,14 +13,27 @@ Currently there are 4 formatters:
 - stylus-supremacy: stylus
 - none: disable formatting for that language
 
-Settings are mostly read from other namespaces.
+Current default: 
+
+  ```json
+  "vetur.format.defaultFormatter": {
+    "html": "none",
+    "css": "prettier",
+    "postcss": "prettier",
+    "scss": "prettier",
+    "less": "prettier",
+    "js": "prettier",
+    "ts": "prettier",
+    "stylus": "stylus-supremacy"
+  }
+  ```
 
 ## Settings
 
-`tabSize` and `insertSpaces` are read from VSCode config `editor.tabSize` and `editor.insertSpaces`.  
+`tabSize` and `insertSpaces` are read from VS Code config `editor.tabSize` and `editor.insertSpaces`.  
 Two space soft-tab is recommended for all languages.
 
-Settings are read from:
+Formatter specific Settings are read from:
 
 - prettier: `prettier.*`. You can install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) to get IntelliSense for the settings, but Vetur will work without it.
 - vscode-typescript
@@ -39,4 +52,4 @@ Settings are read from:
 
 ## Plan
 
-I plan to contribute to prettier's html formatter and drop js-beautify eventually.
+I plan to contribute to [reshape](https://github.com/reshape/reshape) formatter and drop js-beautify eventually.
