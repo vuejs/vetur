@@ -282,11 +282,11 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 ### 0.4.1 | 2017-03-02
 
 - Relax grammar to allow `<script type="text/babel">`. #70.
-- Move `files.associations` setup in README, as vue file is not associated with html by default in VSCode.
+- Move `files.associations` setup in README, as vue file is not associated with html by default in VS Code.
 
 ### 0.4.0 | 2017-02-27
 
-- Port new changes from VSCode's html extension, which fixes
+- Port new changes from VS Code's html extension, which fixes
   - Embedded formatter for html/css/scss/less/js
   - IntelliSense for html
 
@@ -307,7 +307,7 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 ### 0.3.5 | 2017-02-20
 
 - Add vue-html as a language. #44.
-- Remove vue-js and use VSCode's javascript grammar.
+- Remove vue-js and use VS Code's javascript grammar.
 
 ### 0.3.4 | 2017-02-19
 
@@ -341,7 +341,7 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 
 ### 0.2.0 | 2017-01-03
 
-- Language server based on VSCode's html extension. #2.
+- Language server based on VS Code's html extension. #2.
 - Basic SCSS and LESS language features.
 
 ### 0.1.2 | 2016-12-19

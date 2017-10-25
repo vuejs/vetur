@@ -1,7 +1,7 @@
 {
   "name": "vetur",
   "displayName": "Vetur",
-  "description": "Vue tooling for VSCode",
+  "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
   "version": "0.10.1",

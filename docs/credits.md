@@ -8,7 +8,7 @@ Contributors:
 
 ### Attributions
 
-Vetur is based on Microsoft's [html language service](https://github.com/Microsoft/vscode/tree/master/extensions/html) for VSCode.
+Vetur is based on Microsoft's [html language service](https://github.com/Microsoft/vscode/tree/master/extensions/html) for VS Code.
 
 Others:
 - Logo from [vuejs/vuejs.org](https://github.com/vuejs/vuejs.org)

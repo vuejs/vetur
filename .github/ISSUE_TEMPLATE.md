@@ -6,7 +6,7 @@
 
 - Platform: <!-- Win/macOS/Linux -->
 - Vetur version:
-- VSCode version:
+- VS Code version:
 
 ## Problem
 
