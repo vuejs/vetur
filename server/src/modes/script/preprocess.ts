@@ -15,22 +15,32 @@ export function parseVue(text: string): string {
   return script.getText() || 'export default {};';
 }
 
+function isTSLike(scriptKind: ts.ScriptKind | undefined) {
+  return scriptKind === ts.ScriptKind.TS || scriptKind === ts.ScriptKind.TSX;
+}
+
 export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
   return {
     createLanguageServiceSourceFile(fileName: string, scriptSnapshot: ts.IScriptSnapshot, scriptTarget: ts.ScriptTarget, version: string, setNodeParents: boolean, scriptKind?: ts.ScriptKind): ts.SourceFile {
       const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
-      if (isVue(fileName)) {
+      // store scriptKind info on sourceFile
+      const hackSourceFile: any = sourceFile;
+      hackSourceFile.__scriptKind = scriptKind;
+      if (isVue(fileName) && !isTSLike(scriptKind)) {
         modifyVueSource(sourceFile);
       }
       return sourceFile;
     },
     updateLanguageServiceSourceFile(sourceFile: ts.SourceFile, scriptSnapshot: ts.IScriptSnapshot, version: string, textChangeRange: ts.TextChangeRange, aggressiveChecks?: boolean): ts.SourceFile {
-      sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
-      if (isVue(sourceFile.fileName)) {
+      let hackSourceFile: any = sourceFile;
+      const scriptKind = hackSourceFile.__scriptKind;
+      sourceFile = hackSourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
+      if (isVue(sourceFile.fileName) && !isTSLike(scriptKind)) {
         modifyVueSource(sourceFile);
       }
+      hackSourceFile.__scriptKind = scriptKind;
       return sourceFile;
     }
   };
