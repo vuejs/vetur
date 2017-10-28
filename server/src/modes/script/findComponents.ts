@@ -20,12 +20,11 @@ export function findComponents(service: ts.LanguageService, fileFsPath: string):
   if (exportStmt.length === 0) {
     return [];
   }
-  // vls will create synthetic __vueEditorBridge({ ... })
-  const exportCall = (exportStmt[0] as ts.ExportAssignment).expression;
-  if (exportCall.kind !== ts.SyntaxKind.CallExpression) {
+  const exportExpr = (exportStmt[0] as ts.ExportAssignment).expression;
+  const comp = getComponentFromExport(exportExpr);
+  if (!comp) {
     return [];
   }
-  const comp = (exportCall as ts.CallExpression).arguments[0];
   const checker = program.getTypeChecker();
   const compType = checker.getTypeAtLocation(comp);
   const childComps = getPropertyTypeOfType(compType, 'components', checker);
@@ -33,6 +32,17 @@ export function findComponents(service: ts.LanguageService, fileFsPath: string):
     return [];
   }
   return checker.getPropertiesOfType(childComps).map(s => getCompInfo(s, checker));
+}
+
+function getComponentFromExport(exportExpr: ts.Expression) {
+  switch (exportExpr.kind) {
+    case ts.SyntaxKind.CallExpression:
+      // Vue.extend or synthetic __vueEditorBridge
+      return (exportExpr as ts.CallExpression).arguments[0];
+    case ts.SyntaxKind.ObjectLiteralExpression:
+      return exportExpr;
+  }
+  return undefined;
 }
 
 function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
