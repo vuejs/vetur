@@ -1,6 +1,7 @@
 <script lang="ts">
 const weirdProp = String;
-export default {
+import Vue from 'vue';
+export default Vue.extend({
   props: {
     propname: String,
     weirdProp,
@@ -8,5 +9,5 @@ export default {
       type: Number,
     }
   }
-};
+});
 </script>
