@@ -75,17 +75,10 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   if (!declaration) {
     return info;
   }
-  let compExpr: ts.Expression | undefined;
+  let compExpr: ts.Node = declaration;
   if (declaration.kind === ts.SyntaxKind.ExportAssignment) {
-    compExpr = (declaration as ts.ExportAssignment).expression;
-    compExpr = getComponentFromExport(compExpr);
-  } else if (declaration.kind === ts.SyntaxKind.PropertyAssignment) {
-    compExpr = (declaration as ts.PropertyAssignment).initializer;
-  } else if (declaration.kind === ts.SyntaxKind.VariableDeclaration) {
-    compExpr = (declaration as ts.VariableDeclaration).initializer;
-  }
-  if (!compExpr) {
-    return info;
+    const expr = (declaration as ts.ExportAssignment).expression;
+    compExpr = getComponentFromExport(expr) || declaration;
   }
   const compType = checker.getTypeAtLocation(compExpr);
   const arrayProps = getArrayProps(compType, checker);
