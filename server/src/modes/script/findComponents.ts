@@ -46,15 +46,23 @@ function getComponentFromExport(exportExpr: ts.Expression) {
 }
 
 function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
-  const compType = getSymbolType(symbol, checker);
   const info: ComponentInfo = {
     name: hyphenate(symbol.name),
   };
-  if (!compType) {
+  const node = symbol.valueDeclaration;
+  if (!node) {
     return info;
   }
-  if (compType.symbol && compType.symbol.declarations) {
-    const declaration = compType.symbol.declarations[0];
+  if (node.kind === ts.SyntaxKind.PropertyAssignment) {
+    symbol = checker.getSymbolAtLocation((node as ts.PropertyAssignment).initializer) || symbol;
+  } else if (node.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
+    symbol = checker.getShorthandAssignmentValueSymbol(node) || symbol;
+  }
+  if (symbol.flags & ts.SymbolFlags.Alias) {
+    symbol = checker.getAliasedSymbol(symbol);
+  }
+  if (symbol.declarations) {
+    const declaration = symbol.declarations[0];
     if (declaration) {
       const fileName = declaration.getSourceFile().fileName;
       info.definition = [{
@@ -63,6 +71,21 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
       }];
     }
   }
+  const declaration = symbol.valueDeclaration;
+  if (!declaration) {
+    return info;
+  }
+  let compExpr: ts.Expression | undefined;
+  if (declaration.kind === ts.SyntaxKind.ExportAssignment) {
+    compExpr = (declaration as ts.ExportAssignment).expression;
+    compExpr = getComponentFromExport(compExpr);
+  } else if (declaration.kind === ts.SyntaxKind.PropertyAssignment) {
+    compExpr = (declaration as ts.PropertyAssignment).initializer;
+  }
+  if (!compExpr) {
+    return info;
+  }
+  const compType = checker.getTypeAtLocation(compExpr);
   const arrayProps = getArrayProps(compType, checker);
   if (arrayProps) {
     info.props = arrayProps;
