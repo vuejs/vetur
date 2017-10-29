@@ -8,7 +8,9 @@ Comp2.props;
 test.test.toFixed();
 myGlobal.toFixed();
 
-const Comp4 = { props: ['inline'] };
+const Comp4 = {
+  props: { inline: Number }
+};
 
 export default {
   components: {

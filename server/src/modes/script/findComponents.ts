@@ -81,6 +81,8 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
     compExpr = getComponentFromExport(compExpr);
   } else if (declaration.kind === ts.SyntaxKind.PropertyAssignment) {
     compExpr = (declaration as ts.PropertyAssignment).initializer;
+  } else if (declaration.kind === ts.SyntaxKind.VariableDeclaration) {
+    compExpr = (declaration as ts.VariableDeclaration).initializer;
   }
   if (!compExpr) {
     return info;
