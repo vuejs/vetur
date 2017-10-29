@@ -45,42 +45,49 @@ function getComponentFromExport(exportExpr: ts.Expression) {
   return undefined;
 }
 
+// Vue.extend will return a type without `props`. We need to find the object literal
+function findDefinitionLiteralSymbol(symbol: ts.Symbol, checker: ts.TypeChecker) {
+  const node = symbol.valueDeclaration;
+  if (!node) {
+    return undefined;
+  }
+  if (node.kind === ts.SyntaxKind.PropertyAssignment) {
+    // {comp: importedComponent}
+    symbol = checker.getSymbolAtLocation((node as ts.PropertyAssignment).initializer) || symbol;
+  } else if (node.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
+    // {comp}
+    symbol = checker.getShorthandAssignmentValueSymbol(node) || symbol;
+  }
+  if (symbol.flags & ts.SymbolFlags.Alias) {
+    // resolve import Comp from './comp.vue'
+    symbol = checker.getAliasedSymbol(symbol);
+  }
+  return symbol;
+}
+
 function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   const info: ComponentInfo = {
     name: hyphenate(symbol.name),
   };
-  const node = symbol.valueDeclaration;
-  if (!node) {
+  const literalSymbol = findDefinitionLiteralSymbol(symbol, checker);
+  if (!literalSymbol) {
     return info;
   }
-  if (node.kind === ts.SyntaxKind.PropertyAssignment) {
-    symbol = checker.getSymbolAtLocation((node as ts.PropertyAssignment).initializer) || symbol;
-  } else if (node.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
-    symbol = checker.getShorthandAssignmentValueSymbol(node) || symbol;
-  }
-  if (symbol.flags & ts.SymbolFlags.Alias) {
-    symbol = checker.getAliasedSymbol(symbol);
-  }
-  if (symbol.declarations) {
-    const declaration = symbol.declarations[0];
-    if (declaration) {
-      const fileName = declaration.getSourceFile().fileName;
-      info.definition = [{
-        uri: Uri.file(fileName).toString(),
-        range: Range.create(0, 0, 0, 0)
-      }];
-    }
-  }
-  const declaration = symbol.valueDeclaration;
+  const declaration = literalSymbol.valueDeclaration;
   if (!declaration) {
     return info;
   }
-  let compExpr: ts.Node = declaration;
+  info.definition = [{
+    uri: Uri.file(declaration.getSourceFile().fileName).toString(),
+    range: Range.create(0, 0, 0, 0)
+  }];
+
+  let node: ts.Node = declaration;
   if (declaration.kind === ts.SyntaxKind.ExportAssignment) {
     const expr = (declaration as ts.ExportAssignment).expression;
-    compExpr = getComponentFromExport(expr) || declaration;
+    node = getComponentFromExport(expr) || declaration;
   }
-  const compType = checker.getTypeAtLocation(compExpr);
+  const compType = checker.getTypeAtLocation(node);
   const arrayProps = getArrayProps(compType, checker);
   if (arrayProps) {
     info.props = arrayProps;
