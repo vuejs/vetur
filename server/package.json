@@ -24,6 +24,7 @@
     "lodash": "^4.17.4",
     "parse-gitignore": "^0.4.0",
     "prettier": "^1.7.4",
+    "prettier-eslint": "^8.2.1",
     "stylus": "^0.54.5",
     "stylus-supremacy": "~2.5.0",
     "typescript": "2.5.3",
