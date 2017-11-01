@@ -319,18 +319,12 @@ export function getJavascriptMode(
       const needIndent = config.vetur.format.scriptInitialIndent;
       const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
       if (defaultFormatter === 'prettier') {
+        const code = scriptDoc.getText();
+        const filePath = getFileFsPath(scriptDoc.uri);
         if (config.prettier.eslintIntegration) {
-          return prettierEslintify(
-            scriptDoc.getText(),
-            range,
-            getFileFsPath(scriptDoc.uri),
-            needIndent,
-            formatParams,
-            config.prettier,
-            parser
-          );
+          return prettierEslintify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
         } else {
-          return prettierify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, parser);
+          return prettierify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
         }
       } else {
         const initialIndentLevel = needIndent ? 1 : 0;

@@ -12,6 +12,7 @@ import { Priority } from './emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
+import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
 
@@ -126,7 +127,15 @@ function getStyleMode(
         scss: 'scss',
         less: 'less'
       };
-      return prettierify(value, range, needIndent, formattingOptions, config.prettier, parserMap[languageId]);
+      return prettierify(
+        value,
+        getFileFsPath(document.uri),
+        range,
+        needIndent,
+        formattingOptions,
+        config.prettier,
+        parserMap[languageId]
+      );
     },
     onDocumentRemoved(document) {
       embeddedDocuments.onDocumentRemoved(document);

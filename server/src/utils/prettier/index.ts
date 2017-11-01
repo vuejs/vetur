@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { FormattingOptions, TextEdit, Range } from 'vscode-languageserver-types';
 
 import { ParserOption, Prettier, PrettierConfig, PrettierVSCodeConfig, PrettierEslintFormat } from './prettier';
@@ -5,6 +6,7 @@ import { indentSection } from '../strings';
 
 export function prettierify(
   code: string,
+  filePath: string,
   range: Range,
   initialIndent: boolean,
   formatParams: FormattingOptions,
@@ -13,7 +15,7 @@ export function prettierify(
 ): TextEdit[] {
   try {
     const prettier = require('prettier') as Prettier;
-    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser);
+    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
     return [toReplaceTextedit(prettierifiedCode, range, formatParams, initialIndent)];
@@ -26,8 +28,8 @@ export function prettierify(
 
 export function prettierEslintify(
   code: string,
-  range: Range,
   filePath: string,
+  range: Range,
   initialIndent: boolean,
   formatParams: FormattingOptions,
   prettierVSCodeConfig: PrettierVSCodeConfig,
@@ -35,7 +37,7 @@ export function prettierEslintify(
 ): TextEdit[] {
   try {
     const prettierEslint = require('prettier-eslint') as PrettierEslintFormat;
-    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser);
+    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
     const prettierifiedCode = prettierEslint({
       text: code,
@@ -49,7 +51,11 @@ export function prettierEslintify(
   }
 }
 
-function getPrettierOptions(prettierVSCodeConfig: PrettierVSCodeConfig, parser: ParserOption): PrettierConfig {
+function getPrettierOptions(
+  prettierVSCodeConfig: PrettierVSCodeConfig,
+  parser: ParserOption,
+  filePath: string
+): PrettierConfig {
   let trailingComma = prettierVSCodeConfig.trailingComma;
   if (trailingComma === true) {
     trailingComma = 'es5';
@@ -57,7 +63,7 @@ function getPrettierOptions(prettierVSCodeConfig: PrettierVSCodeConfig, parser: 
     trailingComma = 'none';
   }
 
-  return {
+  const prettierOptions = {
     printWidth: prettierVSCodeConfig.printWidth,
     tabWidth: prettierVSCodeConfig.tabWidth,
     singleQuote: prettierVSCodeConfig.singleQuote,
@@ -68,6 +74,15 @@ function getPrettierOptions(prettierVSCodeConfig: PrettierVSCodeConfig, parser: 
     semi: prettierVSCodeConfig.semi,
     useTabs: prettierVSCodeConfig.useTabs
   };
+
+  const prettier = require('prettier') as Prettier;
+  const prettierrcOptions = (prettier.resolveConfig as any).sync(filePath, { useCache: false });
+
+  if (!prettierrcOptions) {
+    return prettierOptions;
+  } else {
+    return _.assign(prettierOptions, prettierrcOptions);
+  }
 }
 
 function toReplaceTextedit(
