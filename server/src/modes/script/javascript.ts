@@ -24,11 +24,10 @@ import {
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
-import { getFileFsPath, getFilePath } from '../../utils/paths';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
-
-import { pretterify } from '../../utils/prettier';
+import { prettierify, prettierEslintify } from '../../utils/prettier';
+import { getFileFsPath, getFilePath } from '../../utils/paths';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -318,10 +317,21 @@ export function getJavascriptMode(
       }
 
       const needIndent = config.vetur.format.scriptInitialIndent;
+      const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
       if (defaultFormatter === 'prettier') {
-        return scriptDoc.languageId === 'javascript'
-          ? pretterify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, 'babylon')
-          : pretterify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, 'typescript');
+        if (config.prettier.eslintIntegration) {
+          return prettierEslintify(
+            scriptDoc.getText(),
+            range,
+            getFileFsPath(scriptDoc.uri),
+            needIndent,
+            formatParams,
+            config.prettier,
+            parser
+          );
+        } else {
+          return prettierify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, parser);
+        }
       } else {
         const initialIndentLevel = needIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
