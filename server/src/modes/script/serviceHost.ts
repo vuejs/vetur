@@ -106,17 +106,17 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     undefined,
     [{ extension: 'vue', isMixedContent: true }]);
   const files = parsedConfig.fileNames;
-  const raw = parsedConfig.raw
+  const raw = parsedConfig.raw;
   const isOldVersion = inferIsOldVersion(workspacePath);
   compilerOptions = parsedConfig.options;
   compilerOptions.allowNonTsExtensions = true;
   compilerOptions.lib = (raw.compilerOptions && raw.compilerOptions.lib) || compilerOptions.lib;
   compilerOptions.lib = compilerOptions.lib.map((item) => {
     if (item.startsWith('lib.') && item.endsWith('.d.ts')) {
-      return item
+      return item;
     }
-    return `lib.${item}.d.ts`
-  })
+    return `lib.${item}.d.ts`;
+  });
 
 
   function updateCurrentTextDocument(doc: TextDocument) {
