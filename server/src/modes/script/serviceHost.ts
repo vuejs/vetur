@@ -101,13 +101,13 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   const parsedConfig = ts.parseJsonConfigFileContent(configJson,
     ts.sys,
     workspacePath,
-    compilerOptions,
+    {},
     configFilename,
     undefined,
     [{ extension: 'vue', isMixedContent: true }]);
   const files = parsedConfig.fileNames;
   const isOldVersion = inferIsOldVersion(workspacePath);
-  compilerOptions = parsedConfig.options;
+  compilerOptions = { ...compilerOptions, ...parsedConfig.options};
   compilerOptions.allowNonTsExtensions = true;
 
   function updateCurrentTextDocument(doc: TextDocument) {
