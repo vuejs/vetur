@@ -33,7 +33,7 @@
 
 ### Path mapping
 
-If you are using [Webapck's alias](https://webpack.js.org/configuration/resolve/) or [TypeScript's path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html) to resolve components, you need to update Vetur's `tsconfig.json` or `jsconfig.json`.
+If you are using [Webpack's alias](https://webpack.js.org/configuration/resolve/) or [TypeScript's path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html) to resolve components, you need to update Vetur's `tsconfig.json` or `jsconfig.json`.
 
 For example:
 

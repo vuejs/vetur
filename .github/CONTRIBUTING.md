@@ -19,7 +19,7 @@ Comment on feature requests that you'd like to contribute before sending PR.
 #### Code Dev Guide
 
 Vetur consists of 2 parts
-- Language Client as a normal VSCode extension
+- Language Client as a normal VS Code extension
 - Vue Language Server
 
 The language client launches Vue Language Server on port 6005 whenever a Vue file is opened.
@@ -51,7 +51,7 @@ It should look like this:
 - F7 to compile yaml grammar to tmLanguage files
 - Run the `client` debug target in vetur project root
 
-> Tip: In VSCode, use F1 -> Inspect TM Scopes:
+> Tip: In VS Code, use F1 -> Inspect TM Scopes:
 
 ![scope](https://github.com/vuejs/vetur/blob/master/asset/scope.png)
 
