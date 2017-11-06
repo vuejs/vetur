@@ -30,9 +30,11 @@ suite('integrated test', () => {
 });
 
 function testProps(components: ComponentInfo[]) {
-  assert.equal(components.length, 2, 'component number');
+  assert.equal(components.length, 4, 'component number');
   const comp = components[0];
   const comp2 = components[1];
+  const comp3 = components[2];
+  const comp4 = components[3];
   assert.equal(comp.name, 'comp', 'component name');
   assert.equal(comp2.name, 'comp2', 'component name');
   assert.deepEqual(comp.props, [{ name: 'propname' }, { name: 'another-prop' }]);
@@ -41,6 +43,8 @@ function testProps(components: ComponentInfo[]) {
     { name: 'weird-prop', doc: '' },
     { name: 'another-prop', doc: 'type: Number' }
   ]);
+  assert.deepEqual(comp3.props, [{ name: 'inline' }]);
+  assert.deepEqual(comp4.props, [{ name: 'inline', doc: 'Number' }]);
 }
 
 function createTextDocument(filename: string): TextDocument {
