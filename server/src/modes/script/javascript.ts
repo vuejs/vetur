@@ -110,7 +110,7 @@ export function getJavascriptMode(
             textEdit: range && TextEdit.replace(range, entry.name),
             data: {
               // data used for resolving item details (see 'doResolve')
-              languageId: doc.languageId,
+              languageId: scriptDoc.languageId,
               uri: doc.uri,
               offset
             }
