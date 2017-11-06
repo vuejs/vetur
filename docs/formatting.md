@@ -30,9 +30,12 @@ Current default:
 
 #### prettier
 
-Settings are read from `prettier.*`. You can install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) to get IntelliSense for settings, but Vetur will work without it.
+Settings precedence:
 
-**ESLint integration**: Planned, see: https://github.com/vuejs/vetur/issues/478
+1. `.prettierrc` at project root. See format at https://github.com/prettier/prettier#configuration-file
+2. `prettier.*`. You can install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) to get IntelliSense for settings, but Vetur will work without it.
+
+ESLint integration: `"prettier.eslintIntegration": true`.
 
 #### vscode-typescript
 
@@ -40,11 +43,10 @@ VS Code's js/ts formatter built on TypeScript language service.
 
 Settings are read from `javascript.format.*` and `typescript.format.*`.
 
-**Known issue**: `<script lang="ts">` are not correctly recognized as TypeScript and will use the JS formatter with JS formatter settings. See https://github.com/vuejs/vetur/issues/476
-
 #### js-beautify-html
 
-Alternative html formatter. Deprecated, turned off by default and will be removed soon.
+Alternative html formatter. Deprecated, turned off by default and will be removed soon.  
+js-beautify has many long-standing bugs that never get fixed. Use at your own risk.
 
 Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/src/modes/template/services/htmlFormat.ts). You can override them by setting `vetur.format.defaultFormatterOptions.js-beautify-html`.
 
