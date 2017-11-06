@@ -707,7 +707,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(&lt;)(script)\b(?=[^&gt;]*lang=('coffee'|"coffee"))</string>
+			<string>(&lt;)(script)\b(?=[^&gt;]*lang=('coffee'|"coffee"|'coffeescript'|"coffeescript"))</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
