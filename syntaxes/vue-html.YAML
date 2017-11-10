@@ -1,4 +1,4 @@
-# [PackageDev] target_format: plist, ext: tmLanguage
+# [PackageDev] target_format: json, ext: json
 ---
 name: Vue HTML
 scopeName: text.html.vue-html

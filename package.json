@@ -77,7 +77,7 @@
       {
         "language": "vue",
         "scopeName": "source.vue",
-        "path": "./syntaxes/vue.tmLanguage",
+        "path": "./syntaxes/vue.json",
         "embeddedLanguages": {
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
@@ -102,7 +102,7 @@
       {
         "language": "vue-html",
         "scopeName": "text.html.vue-html",
-        "path": "./syntaxes/vue-html.tmLanguage",
+        "path": "./syntaxes/vue-html.json",
         "embeddedLanguages": {
           "source.js": "javascript"
         }
