@@ -15,7 +15,7 @@
     "vue-language-server": "0.0.23"
   },
   "devDependencies": {
-    "@types/node": "^6.0.51",
+    "@types/node": "^8.0.51",
     "typescript": "^2.1.4",
     "vscode": "^1.1.5"
   }
