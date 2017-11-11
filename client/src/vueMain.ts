@@ -1,8 +1,11 @@
+import * as fs from 'fs';
 import * as path from 'path';
 
+import * as vscode from 'vscode';
 import { languages, workspace, ExtensionContext, IndentAction } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, Range, RequestType, RevealOutputChannelOn } from 'vscode-languageclient';
 import { activateColorDecorations } from './colorDecorators';
+import { getGeneratedGrammar } from './grammar';
 
 const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
 
@@ -11,7 +14,23 @@ namespace ColorSymbolRequest {
 }
 
 export function activate(context: ExtensionContext) {
+  /**
+   * Custom Block Grammar generation command
+   */
+  context.subscriptions.push(vscode.commands.registerCommand('vetur.generateGrammar', () => {
+    const customBlocks: { [k: string]: string } = workspace.getConfiguration().get('vetur.grammar.customBlocks');
+    try {
+      const generatedGrammar = getGeneratedGrammar(path.resolve(context.extensionPath, 'syntaxes/vue.json'), customBlocks);
+      fs.writeFileSync(path.resolve(context.extensionPath, 'syntaxes/vue-generated.json'), generatedGrammar, 'utf-8');
+      vscode.window.showInformationMessage('Successfully generated vue grammar. Reload VS Code to enable it.');
+    } catch (e) {
+      vscode.window.showErrorMessage('Failed to generate vue grammar. `vetur.grammar.customBlocks` contain invalid language values');
+    }
+  }));
 
+  /**
+   * Vue Language Server Initialization
+   */
   const serverModule = require.resolve('vue-language-server');
   const debugServerModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
   const debugOptions = { execArgv: ['--nolazy', '--inspect=6005'] };
