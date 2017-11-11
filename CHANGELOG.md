@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.11.1 | 2017-11-10 
+
+- Syntax highlighting for Custom Block. #210.
+  - Added setting `vetur.grammar.customBlocks`.
+  - Added command "Vetur: Generate grammar from `vetur.grammar.customBlocks`".
+
 ### 0.11.0 | 2017-11-06
 
 - Better completion order in js/ts. #489.

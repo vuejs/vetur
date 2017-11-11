@@ -1,11 +1,17 @@
 # Changelog
 
+### 0.11.1 | 2017-11-10 
+
+- Syntax highlighting for Custom Block. #210.
+  - Added setting `vetur.grammar.customBlocks`.
+  - Added command "Vetur: Generate grammar from `vetur.grammar.customBlocks`".
+
 ### 0.11.0 | 2017-11-06
 
 - Better completion order in js/ts. #489.
 - Fix some Stylus formatting issues. #471.
 - prettier-eslint support. #478.
-- Fix Vetur not correctly distinguishing js/ts regions.
+- Fix Vetur not correctly distinguishing js/ts regions. #504 and #476.
 - Fix a bug where Vetur misses completion item details. #418.
 - Prefer user jsconfig/tsconfig compilerOptions in Vue Language Server. #515 and #512.
 
