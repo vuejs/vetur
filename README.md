@@ -1,9 +1,5 @@
 # Vetur
 
-[![](asset/badges/ver.svg)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
-[![](asset/badges/ins.svg)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
-[![](asset/badges/rat.svg)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
-
 Vue tooling for VS Code, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
 
 Doc: https://vuejs.github.io/vetur

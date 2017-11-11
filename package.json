@@ -40,6 +40,12 @@
   ],
   "main": "./client/out/vueMain",
   "contributes": {
+    "commands": [
+      {
+        "command": "vetur.generateGrammar",
+        "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
+      }
+    ],
     "breakpoints": [
       {
         "language": "vue"
@@ -77,7 +83,7 @@
       {
         "language": "vue",
         "scopeName": "source.vue",
-        "path": "./syntaxes/vue.tmLanguage",
+        "path": "./syntaxes/vue-generated.json",
         "embeddedLanguages": {
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
@@ -91,7 +97,10 @@
           "source.stylus": "stylus",
           "source.js": "javascript",
           "source.ts": "typescript",
-          "source.coffee": "coffeescript"
+          "source.coffee": "coffeescript",
+          "text.html.markdown": "md",
+          "source.yaml": "yaml",
+          "source.json": "json"
         }
       },
       {
@@ -102,7 +111,7 @@
       {
         "language": "vue-html",
         "scopeName": "text.html.vue-html",
-        "path": "./syntaxes/vue-html.tmLanguage",
+        "path": "./syntaxes/vue-html.json",
         "embeddedLanguages": {
           "source.js": "javascript"
         }
@@ -115,6 +124,14 @@
           "type": "boolean",
           "default": true,
           "description": "Use color decorators in vue"
+        },
+        "vetur.grammar.customBlocks": {
+          "type": "object",
+          "default": {
+            "docs": "md",
+            "i18n": "json"
+          },
+          "description": "Mapping from custom block tag name to language name. Used for generating grammar to support syntax highlighting for custom blocks."
         },
         "vetur.validation.template": {
           "type": "boolean",
