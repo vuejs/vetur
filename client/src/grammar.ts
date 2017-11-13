@@ -16,11 +16,16 @@ const SCOPES = {
   sass: 'source.sass',
   stylus: 'source.stylus',
   javascript: 'source.js',
+  js: 'source.js',
   typescript: 'source.ts',
+  ts: 'source.ts',
   coffeescript: 'source.coffee',
+  coffee: 'source.coffee',
   md: 'text.html.markdown',
+  markdown: 'text.html.markdown',
   yaml: 'source.yaml',
-  json: 'source.json'
+  json: 'source.json',
+  php: 'source.php'
 };
 
 export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: string]: string }): string {
@@ -33,7 +38,7 @@ export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: str
 
     grammar.patterns.push(makePattern(tag, SCOPES[lang]));
   }
-  return JSON.stringify(grammar);
+  return JSON.stringify(grammar, null, 2);
 }
 
 function makePattern(tag: string, scope: string) {
@@ -56,13 +61,7 @@ function makePattern(tag: string, scope: string) {
         }, 
         {
             "end": "(?=</${tag}>)", 
-            "begin": "(>)", 
             "contentName": "${scope}", 
-            "beginCaptures": {
-                "1": {
-                    "name": "punctuation.definition.tag.end.html"
-                }
-            }, 
             "patterns": [
                 {
                     "include": "${scope}"
@@ -76,10 +75,13 @@ function makePattern(tag: string, scope: string) {
         }, 
         "2": {
             "name": "entity.name.tag.style.html"
+        },
+        "3": {
+            "name": "punctuation.definition.tag.end.html"
         }
     }, 
     "end": "(</)(${tag})(>)", 
-    "begin": "(<)(${tag})", 
+    "begin": "(<)(${tag})(>)", 
     "contentName": "${scope}.embedded.vue"
   }
   `);
