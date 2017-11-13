@@ -1,4 +1,6 @@
-# Contribution Guide
+# Contribution
+
+**If you are reporting an issue, refer to [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md) instead.**
 
 Contribution is welcome! There are many ways you could help Vetur's development:
 

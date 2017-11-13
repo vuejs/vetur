@@ -18,6 +18,7 @@
 
 ---
 
+- [FAQ](FAQ.md)
 - [Contributing](CONTRIBUTING.md)
 - [Roadmap](roadmap.md)
 - [Changelog](CHANGELOG.md)
