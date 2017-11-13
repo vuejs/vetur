@@ -594,10 +594,10 @@
         },
         {
           "end": "(?=</i18n>)",
-          "contentName": "source.yaml",
+          "contentName": "source.json",
           "patterns": [
             {
-              "include": "source.yaml"
+              "include": "source.json"
             }
           ]
         }
@@ -615,130 +615,7 @@
       },
       "end": "(</)(i18n)(>)",
       "begin": "(<)(i18n)(>)",
-      "contentName": "source.yaml.embedded.vue"
-    },
-    {
-      "endCaptures": {
-        "1": {
-          "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#tag-stuff"
-        },
-        {
-          "end": "(?=</test>)",
-          "contentName": "source.js",
-          "patterns": [
-            {
-              "include": "source.js"
-            }
-          ]
-        }
-      ],
-      "beginCaptures": {
-        "1": {
-          "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
-        }
-      },
-      "end": "(</)(test)(>)",
-      "begin": "(<)(test)(>)",
-      "contentName": "source.js.embedded.vue"
-    },
-    {
-      "endCaptures": {
-        "1": {
-          "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#tag-stuff"
-        },
-        {
-          "end": "(?=</php>)",
-          "contentName": "source.php",
-          "patterns": [
-            {
-              "include": "source.php"
-            }
-          ]
-        }
-      ],
-      "beginCaptures": {
-        "1": {
-          "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
-        }
-      },
-      "end": "(</)(php)(>)",
-      "begin": "(<)(php)(>)",
-      "contentName": "source.php.embedded.vue"
-    },
-    {
-      "endCaptures": {
-        "1": {
-          "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#tag-stuff"
-        },
-        {
-          "end": "(?=</acf>)",
-          "contentName": "source.php",
-          "patterns": [
-            {
-              "include": "source.php"
-            }
-          ]
-        }
-      ],
-      "beginCaptures": {
-        "1": {
-          "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
-        }
-      },
-      "end": "(</)(acf)(>)",
-      "begin": "(<)(acf)(>)",
-      "contentName": "source.php.embedded.vue"
+      "contentName": "source.json.embedded.vue"
     }
   ],
   "repository": {
