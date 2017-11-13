@@ -1,5 +1,9 @@
 # Vetur
 
+[![](https://vsmarketplacebadge.apphb.com/version-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+[![](https://vsmarketplacebadge.apphb.com/installs-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+[![](https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+
 Vue tooling for VS Code, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
 
 Doc: https://vuejs.github.io/vetur
