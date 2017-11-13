@@ -1,5 +1,12 @@
 # Changelog
 
+### 0.11.2 | 2017-11-13 
+
+- Workaround a js-beautify bug which indents multi-line comment. #535.
+- Docs for generating grammar for custom blocks.
+- Allow `php` as one of the custom block language. #536.
+- Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
+
 ### 0.11.1 | 2017-11-10 
 
 - Syntax highlighting for Custom Block. #210.
