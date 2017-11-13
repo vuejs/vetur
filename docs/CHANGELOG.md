@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.11.3 | 2017-11-13 
+
+- Hot fix for a bug in formatting `<template>` with js-beautify where it adds `</template>` to the end. #539.
+
 ### 0.11.2 | 2017-11-13 
 
 - Workaround a js-beautify bug which indents multi-line comment. #535.
