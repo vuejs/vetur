@@ -16,7 +16,7 @@
     "sync": "npm run sync:server || npm run sync:client",
     "test:server": "cd server && npm run compile && npm test",
     "test": "npm run lint && npm run test:server",
-    "doc": "bash ./build/update-docs.sh"
+    "docs": "bash ./build/update-docs.sh"
   },
   "repository": {
     "type": "git",
