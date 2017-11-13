@@ -3,9 +3,10 @@
 ### 0.11.2 | 2017-11-13 
 
 - Workaround a js-beautify bug which indents multi-line comment. #535.
-- Docs for generating grammar for custom blocks.
+- Docs for generating grammar for custom blocks: https://vuejs.github.io/vetur/highlighting.html.
 - Allow `php` as one of the custom block language. #536.
 - Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
+- Pretty print generated gramamr so it's readable. (You can find it at ~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json).
 
 ### 0.11.1 | 2017-11-10 
 
