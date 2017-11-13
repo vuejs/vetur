@@ -2,6 +2,9 @@ import * as _ from 'lodash';
 import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
 
+const templateHead = '<template>';
+const templateTail = '</template>';
+
 export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions, config: any): TextEdit[] {
   const { value, range } = getValueAndRange(document, currRange);
 
@@ -10,8 +13,8 @@ export function htmlFormat(document: TextDocument, currRange: Range, formattingO
 
   const htmlFormattingOptions = _.assign(defaultHtmlOptions, config.vetur.format.defaultFormatterOptions['js-beautify-html']);
 
-  const beautifiedHtml = htmlBeautify(`<template>\n${value}</template>`, htmlFormattingOptions).substring(12).replace(/<\/template>$/, '');
-  const wrappedHtml = '\n' + beautifiedHtml;
+  const beautifiedHtml = htmlBeautify(templateHead + value + templateTail, htmlFormattingOptions);
+  const wrappedHtml = beautifiedHtml.substr(0, beautifiedHtml.length - templateTail.length).substr(templateHead.length);
   return [
     {
       range,
