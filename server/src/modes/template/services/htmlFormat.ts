@@ -14,7 +14,7 @@ export function htmlFormat(document: TextDocument, currRange: Range, formattingO
   const htmlFormattingOptions = _.assign(defaultHtmlOptions, config.vetur.format.defaultFormatterOptions['js-beautify-html']);
 
   const beautifiedHtml = htmlBeautify(templateHead + value + templateTail, htmlFormattingOptions);
-  const wrappedHtml = beautifiedHtml.substr(0, beautifiedHtml.length - templateTail.length).substr(templateHead.length);
+  const wrappedHtml = beautifiedHtml.substr(templateHead.length, beautifiedHtml.length - templateTail.length);
   return [
     {
       range,
