@@ -16,7 +16,7 @@
     "bin"
   ],
   "dependencies": {
-    "bootstrap-vue-helper-json": "^1.0.1",
+    "bootstrap-vue-helper-json": "^1.1.1",
     "element-helper-json": "^1.0.0",
     "eslint": "^4.5.0",
     "eslint-plugin-vue": "3.13.0",
