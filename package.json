@@ -10,7 +10,7 @@
     "compile": "tsc -p client",
     "precommit": "npm run lint",
     "prepush": "npm run test",
-    "lint": "tslint 'server/src/**/*.ts' 'client/src/**/*.ts'",
+    "lint": "tslint --project tslint.json",
     "sync:server": "cd server && npm publish",
     "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
     "sync": "npm run sync:server || npm run sync:client",
@@ -260,9 +260,7 @@
         "vetur.format.defaultFormatterOptions": {
           "type": "object",
           "default": {
-            "js-beautify-html": {
-
-            }
+            "js-beautify-html": {}
           },
           "description": "Options for all default formatters"
         },
@@ -281,7 +279,7 @@
   },
   "devDependencies": {
     "husky": "^0.14.3",
-    "tslint": "^5.4.3",
+    "tslint": "^5.8.0",
     "typescript": "^2.3.4"
   }
 }
