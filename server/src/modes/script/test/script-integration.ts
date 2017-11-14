@@ -5,12 +5,12 @@ import * as fs from 'fs';
 import { TextDocument } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 
-import { getJavascriptMode } from './javascript';
-import { getLanguageModelCache } from '../languageModelCache';
-import { getDocumentRegions } from '../embeddedSupport';
-import { ComponentInfo } from './findComponents';
+import { getJavascriptMode } from '../javascript';
+import { getLanguageModelCache } from '../../languageModelCache';
+import { getDocumentRegions } from '../../embeddedSupport';
+import { ComponentInfo } from '../findComponents';
 
-const workspace = path.resolve(__dirname, '../../../test/fixtures/');
+const workspace = path.resolve(__dirname, '../../../../test/fixtures/');
 const documentRegions = getLanguageModelCache(10, 60, document => getDocumentRegions(document));
 const scriptMode = getJavascriptMode(documentRegions, workspace);
 
