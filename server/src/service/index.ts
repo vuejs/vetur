@@ -13,7 +13,7 @@ import {
   Location,
   TextEdit,
   Hover,
-  Range,
+  Range
 } from 'vscode-languageserver-types';
 
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
@@ -45,14 +45,14 @@ export interface VLS {
 
 export function getVls(): VLS {
   let languageModes: LanguageModes;
-  const validation: {[k: string]: boolean} = {
+  const validation: { [k: string]: boolean } = {
     'vue-html': true,
     html: true,
     css: true,
     scss: true,
     less: true,
     postcss: true,
-    javascript: true,
+    javascript: true
   };
 
   return {

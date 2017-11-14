@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { TextDocument, Range } from 'vscode-languageserver-types';
 import { getDocumentRegions } from '../embeddedSupport';
 
-const defaultTemplate =`
+const defaultTemplate = `
 <div class="example">{{ msg }}</div>
 `;
 
@@ -122,11 +122,8 @@ function testcase(description: string) {
   };
 }
 
-
 suite('Embedded Support', () => {
-
-  testcase('basic')
-    .run();
+  testcase('basic').run();
 
   testcase('nested template')
     .template(`<div><template></template></div>`)
@@ -202,7 +199,8 @@ suite('Embedded Support', () => {
     .run();
 
   testcase('ill formed template9')
-      .script('').style('')
+    .script('')
+    .style('')
     .template(`<div></d`)
     .run();
 

@@ -23,7 +23,7 @@ export enum Priority {
   UserCode,
   Library,
   Framework,
-  Platform,
+  Platform
 }
 
 export interface IHTMLTagProvider {
@@ -41,7 +41,7 @@ export interface ITagSet {
 }
 
 export class HTMLTagSpecification {
-  constructor(public label: string, public attributes: Attribute[] = []) { }
+  constructor(public label: string, public attributes: Attribute[] = []) {}
 }
 
 export interface IValueSets {
@@ -54,7 +54,12 @@ export function collectTagsDefault(collector: TagCollector, tagSet: ITagSet): vo
   }
 }
 
-export function collectAttributesDefault(tag: string, collector: AttributeCollector, tagSet: ITagSet, globalAttributes: StandaloneAttribute[]): void {
+export function collectAttributesDefault(
+  tag: string,
+  collector: AttributeCollector,
+  tagSet: ITagSet,
+  globalAttributes: StandaloneAttribute[]
+): void {
   if (tag) {
     const tags = tagSet[tag];
     if (tags) {
@@ -69,7 +74,14 @@ export function collectAttributesDefault(tag: string, collector: AttributeCollec
   });
 }
 
-export function collectValuesDefault(tag: string, attribute: string, collector: (value: string) => void, tagSet: ITagSet, globalAttributes: StandaloneAttribute[], valueSets: IValueSets): void {
+export function collectValuesDefault(
+  tag: string,
+  attribute: string,
+  collector: (value: string) => void,
+  tagSet: ITagSet,
+  globalAttributes: StandaloneAttribute[],
+  valueSets: IValueSets
+): void {
   function processAttributes(attributes: Attribute[]) {
     for (const attr of attributes) {
       const label = attr.label;
@@ -106,6 +118,6 @@ export function collectValuesDefault(tag: string, attribute: string, collector: 
   // }
 }
 
-export function genAttribute(label: string, type?: string, documentation?: string):  Attribute {
+export function genAttribute(label: string, type?: string, documentation?: string): Attribute {
   return { label, type, documentation };
 }

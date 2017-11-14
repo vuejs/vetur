@@ -1,12 +1,14 @@
-import {
-  TextDocument, SymbolInformation,
-  SymbolKind, Range, Position
-} from 'vscode-languageserver-types';
+import { TextDocument, SymbolInformation, SymbolKind, Range, Position } from 'vscode-languageserver-types';
 
 import {
   StylusNode,
-  buildAst, flattenAndFilterAst,
-  isAtRuleNode, isFunctionNode, isSelectorCallNode, isSelectorNode, isVariableNode
+  buildAst,
+  flattenAndFilterAst,
+  isAtRuleNode,
+  isFunctionNode,
+  isSelectorCallNode,
+  isSelectorNode,
+  isVariableNode
 } from './parser';
 
 import * as _ from 'lodash';
@@ -16,7 +18,7 @@ import * as _ from 'lodash';
  * @param {SymbolInformation} symbol
  * @return {String}
  */
-function _buildHashFromSymbol(symbol:SymbolInformation) : string {
+function _buildHashFromSymbol(symbol: SymbolInformation): string {
   return `${symbol.kind}_${symbol.name}_${symbol.location.range.start.line}_${symbol.location.range.end.line}`;
 }
 
@@ -25,7 +27,7 @@ function _buildHashFromSymbol(symbol:SymbolInformation) : string {
  * @param {String} name
  * @return String
  */
-function prepareName(name:string) : string {
+function prepareName(name: string): string {
   return name.replace(/\{|\}/g, '').trim();
 }
 
@@ -35,7 +37,7 @@ function prepareName(name:string) : string {
  * @param {String[]} text - text editor content splitted by lines
  * @return {SymbolInformation}
  */
-function _variableSymbol(node:StylusNode, text:string[]) : SymbolInformation {
+function _variableSymbol(node: StylusNode, text: string[]): SymbolInformation {
   const name = node.name;
   const lineno = Number(node.val!.lineno) - 1;
   const column = Math.max(text[lineno].indexOf(name), 0);
@@ -50,7 +52,7 @@ function _variableSymbol(node:StylusNode, text:string[]) : SymbolInformation {
  * @param {String[]} text - text editor content splitted by lines
  * @return {SymbolInformation}
  */
-function _functionSymbol(node:StylusNode, text:string[]) : SymbolInformation {
+function _functionSymbol(node: StylusNode, text: string[]): SymbolInformation {
   const name = node.name;
   const lineno = Number(node.val!.lineno) - 1;
   const column = Math.max(text[lineno].indexOf(name), 0);
@@ -68,11 +70,11 @@ function _functionSymbol(node:StylusNode, text:string[]) : SymbolInformation {
  * @param {String[]} text - text editor content splitted by lines
  * @return {SymbolInformation}
  */
-function _selectorSymbol(node:StylusNode, text:string[]) : SymbolInformation {
+function _selectorSymbol(node: StylusNode, text: string[]): SymbolInformation {
   const firstSegment = node.segments[0];
-  const name = firstSegment.string ?
-    node.segments.map(s => s.string).join('') :
-    firstSegment.nodes!.map(s => s.name).join('');
+  const name = firstSegment.string
+    ? node.segments.map(s => s.string).join('')
+    : firstSegment.nodes!.map(s => s.name).join('');
   const lineno = Number(firstSegment.lineno) - 1;
   const column = node.column - 1;
 
@@ -89,7 +91,7 @@ function _selectorSymbol(node:StylusNode, text:string[]) : SymbolInformation {
  * @param {String[]} text - text editor content splitted by lines
  * @return {SymbolInformation}
  */
-function _selectorCallSymbol(node:StylusNode, text:string[]) : SymbolInformation {
+function _selectorCallSymbol(node: StylusNode, text: string[]): SymbolInformation {
   const lineno = Number(node.lineno) - 1;
   const name = prepareName(text[lineno]);
   const column = Math.max(text[lineno].indexOf(name), 0);
@@ -106,7 +108,7 @@ function _selectorCallSymbol(node:StylusNode, text:string[]) : SymbolInformation
  * @param {String[]} text - text editor content splitted by lines
  * @return {SymbolInformation}
  */
-function _atRuleSymbol(node:StylusNode, text:string[]) : SymbolInformation {
+function _atRuleSymbol(node: StylusNode, text: string[]): SymbolInformation {
   const lineno = Number(node.lineno) - 1;
   const name = prepareName(text[lineno]);
   const column = Math.max(text[lineno].indexOf(name), 0);
@@ -123,28 +125,30 @@ function _atRuleSymbol(node:StylusNode, text:string[]) : SymbolInformation {
  * @param {String[]} text - text editor content splitted by lines
  * @return {SymbolInformation[]}
  */
-function processRawSymbols(rawSymbols: StylusNode[], text:string[]) : SymbolInformation[] {
-  return _.compact(rawSymbols.map(symNode => {
-    if (isVariableNode(symNode)) {
-      return _variableSymbol(symNode, text);
-    }
+function processRawSymbols(rawSymbols: StylusNode[], text: string[]): SymbolInformation[] {
+  return _.compact(
+    rawSymbols.map(symNode => {
+      if (isVariableNode(symNode)) {
+        return _variableSymbol(symNode, text);
+      }
 
-    if (isFunctionNode(symNode)) {
-      return _functionSymbol(symNode, text);
-    }
+      if (isFunctionNode(symNode)) {
+        return _functionSymbol(symNode, text);
+      }
 
-    if (isSelectorNode(symNode)) {
-      return _selectorSymbol(symNode, text);
-    }
+      if (isSelectorNode(symNode)) {
+        return _selectorSymbol(symNode, text);
+      }
 
-    if (isSelectorCallNode(symNode)) {
-      return _selectorCallSymbol(symNode, text);
-    }
+      if (isSelectorCallNode(symNode)) {
+        return _selectorCallSymbol(symNode, text);
+      }
 
-    if (isAtRuleNode(symNode)) {
-      return _atRuleSymbol(symNode, text);
-    }
-  }));
+      if (isAtRuleNode(symNode)) {
+        return _atRuleSymbol(symNode, text);
+      }
+    })
+  );
 }
 
 export function provideDocumentSymbols(document: TextDocument): SymbolInformation[] {

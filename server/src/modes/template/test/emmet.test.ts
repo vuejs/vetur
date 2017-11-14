@@ -16,23 +16,18 @@ const vueHtml = testDSL(setup);
 
 suite('Emmet Completion', () => {
   test('Emmet HTML Expansion', () => {
-    vueHtml`ul>li*2|`
-      .has(`ul>li*2`)
-      .become(
-`<ul>
+    vueHtml`ul>li*2|`.has(`ul>li*2`).become(
+      `<ul>
 \t<li>\${1}</li>
 \t<li>\${2}</li>
-</ul>`);
+</ul>`
+    );
 
-    vueHtml`div+p|`
-      .has(`div+p`)
-      .become(
-`<div>\${1}</div>
-<p>\${2}</p>`);
+    vueHtml`div+p|`.has(`div+p`).become(
+      `<div>\${1}</div>
+<p>\${2}</p>`
+    );
   });
 
-    vueHtml`#header|`
-      .has(`#header`)
-      .become(
-`<div id="header">\${1}</div>`);
+  vueHtml`#header|`.has(`#header`).become(`<div id="header">\${1}</div>`);
 });

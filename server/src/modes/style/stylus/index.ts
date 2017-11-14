@@ -13,7 +13,9 @@ import { provideDocumentSymbols } from './symbols-finder';
 import { stylusHover } from './stylus-hover';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
-  const embeddedDocuments = getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument('stylus'));
+  const embeddedDocuments = getLanguageModelCache(10, 60, document =>
+    documentRegions.get(document).getEmbeddedDocument('stylus')
+  );
   let baseIndentShifted = false;
   let config: any = {};
   return {
@@ -26,7 +28,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
     dispose() {},
     doComplete(document, position) {
       const embedded = embeddedDocuments.get(document);
-      
+
       const emmetCompletions: CompletionList = emmet.doComplete(document, position, 'stylus', {
         useNewEmmet: true,
         showExpandedAbbreviation: true,
@@ -68,7 +70,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
 
       const embedded = embeddedDocuments.get(document);
       const inputText = embedded.getText();
-      
+
       const tabStopChar = formatParams.insertSpaces ? ' '.repeat(formatParams.tabSize) : '\t';
       const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n'; // Note that this would have been `document.eol` ideally
 
@@ -92,7 +94,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       const formattingOptions = {
         ...stylusSupremacyFormattingOptions,
         tabStopChar,
-        newLineChar: '\n',
+        newLineChar: '\n'
       };
 
       const formattedText = StylusSupremacy.format(inputText, formattingOptions);
@@ -100,11 +102,11 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       // Add the base indentation and correct the new line characters
       const outputText = ((range.start.line !== range.end.line ? '\n' : '') + formattedText)
         .split(/\n/)
-        .map(line => line.length > 0 ? (baseIndent + line) : '')
+        .map(line => (line.length > 0 ? baseIndent + line : ''))
         .join(newLineChar);
 
       return [TextEdit.replace(range, outputText)];
-    },
+    }
   };
 }
 

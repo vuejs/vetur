@@ -1,8 +1,12 @@
-import {HTMLDocument} from '../parser/htmlParser';
-import {TokenType, createScanner} from '../parser/htmlScanner';
-import {TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight} from 'vscode-languageserver-types';
+import { HTMLDocument } from '../parser/htmlParser';
+import { TokenType, createScanner } from '../parser/htmlScanner';
+import { TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight } from 'vscode-languageserver-types';
 
-export function findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[] {
+export function findDocumentHighlights(
+  document: TextDocument,
+  position: Position,
+  htmlDocument: HTMLDocument
+): DocumentHighlight[] {
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeAt(offset);
   if (!node.tag) {
@@ -10,8 +14,9 @@ export function findDocumentHighlights(document: TextDocument, position: Positio
   }
   const result = [];
   const startTagRange = getTagNameRange(TokenType.StartTag, document, node.start);
-  const endTagRange = typeof node.endTagStart === 'number' && getTagNameRange(TokenType.EndTag, document, node.endTagStart);
-  if (startTagRange && covers(startTagRange, position) || endTagRange && covers(endTagRange, position)) {
+  const endTagRange =
+    typeof node.endTagStart === 'number' && getTagNameRange(TokenType.EndTag, document, node.endTagStart);
+  if ((startTagRange && covers(startTagRange, position)) || (endTagRange && covers(endTagRange, position))) {
     if (startTagRange) {
       result.push({ kind: DocumentHighlightKind.Read, range: startTagRange });
     }

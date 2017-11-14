@@ -7,13 +7,13 @@ export const NULL_HOVER = {
 export const NULL_SIGNATURE = {
   signatures: [],
   activeSignature: 0,
-  activeParameter: 0,
+  activeParameter: 0
 };
 
 export const NULL_COMPLETION = {
   isIncomplete: false,
   items: [],
-  label: '',
+  label: ''
 };
 
 export const nullMode: LanguageMode = {
@@ -23,5 +23,5 @@ export const nullMode: LanguageMode = {
   doHover: () => NULL_HOVER,
   doComplete: () => NULL_COMPLETION,
   doSignatureHelp: () => NULL_SIGNATURE,
-  findReferences: () => [],
+  findReferences: () => []
 };

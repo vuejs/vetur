@@ -9,7 +9,6 @@ import { doHover } from '../services/htmlHover';
 import { hoverDSL } from '../../test-util/hover-test-util';
 import { allTagProviders } from '../tagProviders';
 
-
 const html = hoverDSL({
   docUri: 'test://test/test.html',
   langId: 'vue-html',
@@ -20,8 +19,7 @@ const html = hoverDSL({
 });
 
 suite('HTML Hover', () => {
-
-  test('Single', function (): any {
+  test('Single', function(): any {
     html`|<html></html>`.hasNothing();
     html`<|html></html>`.hasHoverAt('<html>', 1);
     html`<h|tml></html>`.hasHoverAt('<html>', 1);
@@ -39,9 +37,15 @@ suite('HTML Hover', () => {
     html`<html></html>|`.hasNothing();
   });
 
-  test('Attribute', function () {
+  test('Attribute', function() {
     html`<div a|ria-atomic="true"></div>`.hasHoverAt('No doc for aria-atomic', 5);
-    html`<component inli|ne-template></component>`.hasHoverAt('treat inner content as its template rather than distributed content', 11);
-    html`<div :v|-if="true"></div>`.hasHoverAt('Conditionally renders the element based on the truthy\\-ness of the expression value\\.', 5);
+    html`<component inli|ne-template></component>`.hasHoverAt(
+      'treat inner content as its template rather than distributed content',
+      11
+    );
+    html`<div :v|-if="true"></div>`.hasHoverAt(
+      'Conditionally renders the element based on the truthy\\-ness of the expression value\\.',
+      5
+    );
   });
 });

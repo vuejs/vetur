@@ -5,13 +5,21 @@ import { html as htmlBeautify } from 'js-beautify';
 const templateHead = '<template>';
 const templateTail = '</template>';
 
-export function htmlFormat(document: TextDocument, currRange: Range, formattingOptions: FormattingOptions, config: any): TextEdit[] {
+export function htmlFormat(
+  document: TextDocument,
+  currRange: Range,
+  formattingOptions: FormattingOptions,
+  config: any
+): TextEdit[] {
   const { value, range } = getValueAndRange(document, currRange);
 
   defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
   defaultHtmlOptions.indent_size = formattingOptions.tabSize;
 
-  const htmlFormattingOptions = _.assign(defaultHtmlOptions, config.vetur.format.defaultFormatterOptions['js-beautify-html']);
+  const htmlFormattingOptions = _.assign(
+    defaultHtmlOptions,
+    config.vetur.format.defaultFormatterOptions['js-beautify-html']
+  );
 
   const beautifiedHtml = htmlBeautify(templateHead + value + templateTail, htmlFormattingOptions);
   const wrappedHtml = beautifiedHtml.substring(templateHead.length, beautifiedHtml.length - templateTail.length);
@@ -49,8 +57,23 @@ const defaultHtmlOptions: HTMLBeautifyOptions = {
   max_preserve_newlines: 1, // Maximum number of line breaks to be preserved in one chunk (0 disables)
   preserve_newlines: true, // Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)
   unformatted: [
-    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen',
-    'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'],
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'keygen',
+    'link',
+    'menuitem',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr'
+  ],
   wrap_line_length: 0, // Lines should wrap at next opportunity after this number of characters (0 disables)
   wrap_attributes: 'auto' as any // Wrap attributes to new lines [auto|force|force-aligned|force-expand-multiline] ["auto"]
 };

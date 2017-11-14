@@ -3,16 +3,14 @@ import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Definition } from 'vscode-languageserver-types';
 import { ComponentInfo } from '../../script/findComponents';
 
-const TRIVIAL_TOKEN = [
-  TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace
-];
+const TRIVIAL_TOKEN = [TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace];
 
 export function findDefinition(
   document: TextDocument,
   position: Position,
   htmlDocument: HTMLDocument,
   componentInfos: ComponentInfo[]
-  ): Definition {
+): Definition {
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeAt(offset);
   if (!node || !node.tag) {
@@ -55,7 +53,10 @@ export function findDefinition(
   if (offset > scanner.getTokenEnd()) {
     return [];
   }
-  const tagRange = { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) };
+  const tagRange = {
+    start: document.positionAt(scanner.getTokenOffset()),
+    end: document.positionAt(scanner.getTokenEnd())
+  };
   switch (token) {
     case TokenType.StartTag:
       return getTagDefinition(node.tag, tagRange, true);
@@ -65,4 +66,3 @@ export function findDefinition(
 
   return [];
 }
-

@@ -1,7 +1,4 @@
-import {
-  CompletionTestSetup,
-  testDSL
-} from '../../../test-util/completion-test-util';
+import { CompletionTestSetup, testDSL } from '../../../test-util/completion-test-util';
 
 import { provideCompletionItems } from '../completion-item';
 
@@ -17,44 +14,37 @@ const stylus = testDSL(setup);
 
 suite('Stylus Completion', () => {
   test('basic property', () => {
-    stylus`back|`
-      .has('background');
+    stylus`back|`.has('background');
 
-    stylus`.back|`
-      .hasNo('background');
+    stylus`.back|`.hasNo('background');
 
     stylus`
     .background
-      back|`
-      .has('background');
+      back|`.has('background');
   });
 
   test('variable', () => {
     stylus`
     test-var = red
     .test-selector
-      color te|`
-      .has('test-var');
+      color te|`.has('test-var');
 
     stylus`
     .test-selector
       test-var = red
       color test-var
     .another-var
-      hehe te|`
-      .hasNo('test-var');
+      hehe te|`.hasNo('test-var');
 
     stylus`
     test-var = red
     .test-selector
-      te|`
-      .hasNo('test-var');
+      te|`.hasNo('test-var');
 
     stylus`
     test-func(n)
       background n
     .test-selector
-      te|`
-      .has('test-func');
+      te|`.has('test-func');
   });
 });

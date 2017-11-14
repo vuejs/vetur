@@ -5,15 +5,11 @@
 'use strict';
 
 import * as assert from 'assert';
-import {TextDocument} from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-types';
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { findDocumentHighlights } from '../services/htmlHighlighting';
 
-
-
 suite('HTML Highlighting', () => {
-
-
   function assertHighlights(value: string, expectedMatches: number[], elementName: string | null): void {
     const offset = value.indexOf('|');
     value = value.substr(0, offset) + value.substr(offset + 1);
@@ -31,11 +27,17 @@ suite('HTML Highlighting', () => {
       const actualEndOffset = document.offsetAt(highlights[i].range.end);
       assert.equal(actualEndOffset, expectedMatches[i] + elementName!.length);
 
-      assert.equal(document.getText().substring(actualStartOffset, actualEndOffset).toLowerCase(), elementName);
+      assert.equal(
+        document
+          .getText()
+          .substring(actualStartOffset, actualEndOffset)
+          .toLowerCase(),
+        elementName
+      );
     }
   }
 
-  test('Single', function (): any {
+  test('Single', function(): any {
     assertHighlights('|<html></html>', [], null);
     assertHighlights('<|html></html>', [1, 8], 'html');
     assertHighlights('<h|tml></html>', [1, 8], 'html');
@@ -51,7 +53,7 @@ suite('HTML Highlighting', () => {
     assertHighlights('<html></html>|', [], null);
   });
 
-  test('Nested', function (): any {
+  test('Nested', function(): any {
     assertHighlights('<html>|<div></div></html>', [], null);
     assertHighlights('<html><|div></div></html>', [7, 13], 'div');
     assertHighlights('<html><div>|</div></html>', [], null);
@@ -64,13 +66,13 @@ suite('HTML Highlighting', () => {
     assertHighlights('<html><div></div><div></d|iv></html>', [18, 24], 'div');
   });
 
-  test('Selfclosed', function (): any {
+  test('Selfclosed', function(): any {
     assertHighlights('<html><|div/></html>', [7], 'div');
     assertHighlights('<html><|br></html>', [7], 'br');
     assertHighlights('<html><div><d|iv/></div></html>', [12], 'div');
   });
 
-  test('Case insensivity', function (): any {
+  test('Case insensivity', function(): any {
     assertHighlights('<HTML><diV><Div></dIV></dI|v></html>', [7, 24], 'div');
     assertHighlights('<HTML><diV|><Div></dIV></dIv></html>', [7, 24], 'div');
   });

@@ -1,4 +1,10 @@
-import { createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType } from 'vscode-languageserver';
+import {
+  createConnection,
+  TextDocuments,
+  InitializeParams,
+  InitializeResult,
+  RequestType
+} from 'vscode-languageserver';
 import { TextDocument, Diagnostic, Range, Position } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
@@ -10,9 +16,10 @@ namespace ColorSymbolRequest {
 }
 
 // Create a connection for the server
-const connection = process.argv.length <= 2
-  ? createConnection(process.stdin, process.stdout) // no arg specified
-  : createConnection();
+const connection =
+  process.argv.length <= 2
+    ? createConnection(process.stdin, process.stdout) // no arg specified
+    : createConnection();
 
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
@@ -65,7 +72,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 });
 
 // The settings have changed. Is send on server activation as well.
-connection.onDidChangeConfiguration((change) => {
+connection.onDidChangeConfiguration(change => {
   config = change.settings;
   vls.configure(config);
 
