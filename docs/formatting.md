@@ -2,12 +2,6 @@
 
 Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.  
 
-## Settings
-
-`tabSize` and `insertSpaces` are read from VS Code config `editor.tabSize` and `editor.insertSpaces` for formatting.
-
-Two space soft-tab is recommended for all languages.
-
 ## Formatters
 
 Choose each language's default formatter in `vetur.format.defaultFormatter`.  
@@ -41,12 +35,16 @@ ESLint integration: `"prettier.eslintIntegration": true`. Settings are read from
 
 VS Code's js/ts formatter built on TypeScript language service.
 
-Settings are read from `javascript.format.*` and `typescript.format.*`.
+`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
+
+Other settings are read from `javascript.format.*` and `typescript.format.*`.
 
 #### js-beautify-html
 
 Alternative html formatter. Deprecated, turned off by default and will be removed soon.  
 js-beautify has many long-standing bugs that never get fixed. Use at your own risk.
+
+`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
 
 Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/src/modes/template/services/htmlFormat.ts). You can override them by setting `vetur.format.defaultFormatterOptions.js-beautify-html`.
 
@@ -60,7 +58,9 @@ Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/sr
 
 #### stylus-supremacy
 
-Settings are read from `stylusSupremacy.*`. You can install [Stylus Supremacy extension](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) to get IntelliSense for settings, but Vetur will work without it. A useful default:
+`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
+
+Other settings are read from `stylusSupremacy.*`. You can install [Stylus Supremacy extension](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) to get IntelliSense for settings, but Vetur will work without it. A useful default:
 
 ```json
 {
