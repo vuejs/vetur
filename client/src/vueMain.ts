@@ -78,7 +78,8 @@ export function activate(context: ExtensionContext) {
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      configurationSection: ['vetur', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy'] // the settings to synchronize
+      // the settings to synchronize
+      configurationSection: ['vetur', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy']
     },
     initializationOptions: {
       config

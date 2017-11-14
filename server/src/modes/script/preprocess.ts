@@ -73,7 +73,7 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
       ts.createImportDeclaration(
         undefined,
         undefined,
-        setZeroPos(ts.createImportClause(ts.createIdentifier('__vueEditorBridge'), undefined as any)), // TODO: remove this after 2.4
+        setZeroPos(ts.createImportClause(ts.createIdentifier('__vueEditorBridge'), undefined as any)),
         setZeroPos(ts.createLiteral('vue-editor-bridge'))
       )
     );
@@ -81,7 +81,7 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
     statements.unshift(vueImport);
 
     // 2. find the export default and wrap it in `__vueEditorBridge(...)` if it exists and is an object literal
-    //    (the span of the function construct call and *all* its members must be the same as the object literal it wraps)
+    // (the span of the function construct call and *all* its members must be the same as the object literal it wraps)
     const objectLiteral = (exportDefaultObject as ts.ExportAssignment).expression as ts.ObjectLiteralExpression;
     const setObjPos = getWrapperRangeSetter(objectLiteral);
     const vue = ts.setTextRange(ts.createIdentifier('__vueEditorBridge'), {

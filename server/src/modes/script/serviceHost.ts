@@ -45,7 +45,7 @@ const vueSys: ts.System = {
 
 if (ts.sys.realpath) {
   const realpath = ts.sys.realpath;
-  vueSys.realpath = function(path) {
+  vueSys.realpath = function (path) {
     if (isVueProject(path)) {
       return realpath(path.slice(0, -3)) + '.ts';
     }

@@ -19,7 +19,7 @@ const html = hoverDSL({
 });
 
 suite('HTML Hover', () => {
-  test('Single', function(): any {
+  test('Single', function (): any {
     html`|<html></html>`.hasNothing();
     html`<|html></html>`.hasHoverAt('<html>', 1);
     html`<h|tml></html>`.hasHoverAt('<html>', 1);
@@ -37,7 +37,7 @@ suite('HTML Hover', () => {
     html`<html></html>|`.hasNothing();
   });
 
-  test('Attribute', function() {
+  test('Attribute', function () {
     html`<div a|ria-atomic="true"></div>`.hasHoverAt('No doc for aria-atomic', 5);
     html`<component inli|ne-template></component>`.hasHoverAt(
       'treat inner content as its template rather than distributed content',

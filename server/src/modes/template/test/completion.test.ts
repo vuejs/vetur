@@ -241,7 +241,7 @@ suite('HTML Completion', () => {
       </div>`);
   });
 
-  test('Vue complete', function() {
+  test('Vue complete', function () {
     html`<transition type=|></transition>`
       .has('transition')
       .become('<transition type="transition"></transition>')
@@ -249,7 +249,7 @@ suite('HTML Completion', () => {
       .become('<transition type="animation"></transition>');
   });
 
-  test('Case sensitivity', function() {
+  test('Case sensitivity', function () {
     html`<LI></|`
       .has('/LI')
       .become('<LI></LI>')
@@ -262,13 +262,13 @@ suite('HTML Completion', () => {
     html`<INPUT TYPE=|`.has('color').become('<INPUT TYPE="color"');
   });
 
-  test('Handlebar Completion', function() {
+  test('Handlebar Completion', function () {
     html`<script id="entry-template" type="text/x-handlebars-template"> <| </script>`
       .has('div')
       .become('<script id="entry-template" type="text/x-handlebars-template"> <div </script>');
   });
 
-  test('Complete aria', function() {
+  test('Complete aria', function () {
     function expectAria(asserter: CompletionAsserter) {
       asserter
         .has('aria-activedescendant')
@@ -325,7 +325,7 @@ suite('HTML Completion', () => {
     expectAria(html`<input  |> </input >`);
   });
 
-  test('Settings', function() {
+  test('Settings', function () {
     function configured(settings: CompletionConfiguration) {
       return testDSL({
         langId: 'vue-html',

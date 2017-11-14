@@ -72,7 +72,9 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       const inputText = embedded.getText();
 
       const tabStopChar = formatParams.insertSpaces ? ' '.repeat(formatParams.tabSize) : '\t';
-      const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n'; // Note that this would have been `document.eol` ideally
+
+      // Note that this would have been `document.eol` ideally
+      const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n';
 
       // Determine the base indentation for the multi-line Stylus content
       let baseIndent = '';
