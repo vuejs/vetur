@@ -1,7 +1,8 @@
 {
   "rules": {
     "class-name": true,
-    "curly": true, "import-spacing": true,
+    "curly": true,
+    "import-spacing": true,
     "indent": [true, "spaces", 2],
     "interface-over-type-literal": true,
     "label-position": true,
@@ -24,10 +25,5 @@
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   },
   "linterOptions": {
-    "exclude": [
-      "server/src/modes/template/tagProviders/*.ts",
-      "server/src/modes/style/stylus/css-schema.ts",
-      "server/src/modes/style/stylus/built-in.ts"
-    ]
   }
 }

@@ -10,7 +10,7 @@
     "compile": "tsc -p client",
     "precommit": "npm run lint",
     "prepush": "npm run test",
-    "lint": "tslint --project tslint.json",
+    "lint": "tslint -p tslint.json",
     "sync:server": "cd server && npm publish",
     "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
     "sync": "npm run sync:server || npm run sync:client",
