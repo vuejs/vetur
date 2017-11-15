@@ -1,8 +1,8 @@
+/* tslint:disable:max-line-length */
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-
 
 interface CSSRecord {
   name: string;
@@ -14,10 +14,10 @@ interface CSSRecord {
 
 interface CSSData {
   css: {
-    atdirectives: CSSRecord[]
-    pseudoclasses: CSSRecord[]
-    pseudoelements: CSSRecord[]
-    properties: CSSRecord[]
+    atdirectives: CSSRecord[];
+    pseudoclasses: CSSRecord[];
+    pseudoelements: CSSRecord[];
+    properties: CSSRecord[];
   };
 }
 
@@ -36,7 +36,8 @@ export const data: CSSData = {
       },
       {
         name: '@font-face',
-        desc: "Allows for linking to fonts that are automatically activated when needed. This permits authors to work around the limitation of 'web-safe' fonts, allowing for consistent rendering independent of the fonts available in a given user's environment."
+        desc:
+          "Allows for linking to fonts that are automatically activated when needed. This permits authors to work around the limitation of 'web-safe' fonts, allowing for consistent rendering independent of the fonts available in a given user's environment."
       },
       {
         name: '@font-feature-values',
@@ -58,7 +59,8 @@ export const data: CSSData = {
       },
       {
         name: '@-moz-document',
-        desc: 'Gecko-specific at-rule that restricts the style rules contained within it based on the URL of the document.',
+        desc:
+          'Gecko-specific at-rule that restricts the style rules contained within it based on the URL of the document.',
         browsers: 'FF1.8'
       },
       {
@@ -92,7 +94,8 @@ export const data: CSSData = {
       },
       {
         name: '@supports',
-        desc: 'A conditional group rule whose condition tests whether the user agent supports CSS property:value pairs.',
+        desc:
+          'A conditional group rule whose condition tests whether the user agent supports CSS property:value pairs.',
         browsers: 'E,C28,FF22,O12.1,S9'
       },
       {
@@ -104,16 +107,19 @@ export const data: CSSData = {
     pseudoclasses: [
       {
         name: ':active',
-        desc: 'Applies while an element is being activated by the user. For example, between the times the user presses the mouse button and releases it.'
+        desc:
+          'Applies while an element is being activated by the user. For example, between the times the user presses the mouse button and releases it.'
       },
       {
         name: ':any-link',
-        desc: 'Represents an element that acts as the source anchor of a hyperlink. Applies to both visited and unvisited links.',
+        desc:
+          'Represents an element that acts as the source anchor of a hyperlink. Applies to both visited and unvisited links.',
         browsers: 'S9'
       },
       {
         name: ':checked',
-        desc: "Radio and checkbox elements can be toggled by the user. Some menu items are 'checked' when the user selects them. When such elements are toggled 'on' the :checked pseudo-class applies.",
+        desc:
+          "Radio and checkbox elements can be toggled by the user. Some menu items are 'checked' when the user selects them. When such elements are toggled 'on' the :checked pseudo-class applies.",
         browsers: 'E,C,FF1,IE9,O9,S3.13'
       },
       {
@@ -123,22 +129,26 @@ export const data: CSSData = {
       },
       {
         name: ':decrement',
-        desc: 'Non-standard. Applies to buttons and track pieces. Indicates whether or not the button or track piece will decrement the view’s position when used.',
+        desc:
+          'Non-standard. Applies to buttons and track pieces. Indicates whether or not the button or track piece will decrement the view’s position when used.',
         browsers: 'C,S5'
       },
       {
         name: ':default',
-        desc: 'Applies to the one or more UI elements that are the default among a set of similar elements. Typically applies to context menu items, buttons, and select lists/menus.',
+        desc:
+          'Applies to the one or more UI elements that are the default among a set of similar elements. Typically applies to context menu items, buttons, and select lists/menus.',
         browsers: 'C,FF3,O10,S5'
       },
       {
         name: ':disabled',
-        desc: 'Represents user interface elements that are in a disabled state; such elements have a corresponding enabled state.',
+        desc:
+          'Represents user interface elements that are in a disabled state; such elements have a corresponding enabled state.',
         browsers: 'E,C,FF1.5,IE9,O9,S3.1'
       },
       {
         name: ':double-button',
-        desc: 'Non-standard. Applies to buttons and track pieces. Applies when both buttons are displayed together at the same end of the scrollbar.',
+        desc:
+          'Non-standard. Applies to buttons and track pieces. Applies when both buttons are displayed together at the same end of the scrollbar.',
         browsers: 'C,S5'
       },
       {
@@ -148,17 +158,20 @@ export const data: CSSData = {
       },
       {
         name: ':enabled',
-        desc: 'Represents user interface elements that are in an enabled state; such elements have a corresponding disabled state.',
+        desc:
+          'Represents user interface elements that are in an enabled state; such elements have a corresponding disabled state.',
         browsers: 'E,C,FF1.5,IE9,O9,S3.1'
       },
       {
         name: ':end',
-        desc: 'Non-standard. Applies to buttons and track pieces. Indicates whether the object is placed after the thumb.',
+        desc:
+          'Non-standard. Applies to buttons and track pieces. Indicates whether the object is placed after the thumb.',
         browsers: 'C,S5'
       },
       {
         name: ':first',
-        desc: 'When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.'
+        desc:
+          'When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.'
       },
       {
         name: ':first-child',
@@ -167,7 +180,8 @@ export const data: CSSData = {
       },
       {
         name: ':first-of-type',
-        desc: 'Same as :nth-of-type(1). Represents an element that is the first sibling of its type in the list of children of its parent element.',
+        desc:
+          'Same as :nth-of-type(1). Represents an element that is the first sibling of its type in the list of children of its parent element.',
         browsers: 'E,C,FF3.5,IE9,O9.5,S3.2'
       },
       {
@@ -196,7 +210,8 @@ export const data: CSSData = {
       },
       {
         name: ':host()',
-        desc: 'When evaluated in the context of a shadow tree, it matches the shadow tree’s host element if the host element, in its normal context, matches the selector argument.',
+        desc:
+          'When evaluated in the context of a shadow tree, it matches the shadow tree’s host element if the host element, in its normal context, matches the selector argument.',
         browsers: 'C35,O22'
       },
       {
@@ -206,11 +221,13 @@ export const data: CSSData = {
       },
       {
         name: ':hover',
-        desc: 'Applies while the user designates an element with a pointing device, but does not necessarily activate it. For example, a visual user agent could apply this pseudo-class when the cursor (mouse pointer) hovers over a box generated by the element.'
+        desc:
+          'Applies while the user designates an element with a pointing device, but does not necessarily activate it. For example, a visual user agent could apply this pseudo-class when the cursor (mouse pointer) hovers over a box generated by the element.'
       },
       {
         name: ':increment',
-        desc: 'Non-standard. Applies to buttons and track pieces. Indicates whether or not the button or track piece will increment the view’s position when used.',
+        desc:
+          'Non-standard. Applies to buttons and track pieces. Indicates whether or not the button or track piece will increment the view’s position when used.',
         browsers: 'C,S5'
       },
       {
@@ -220,12 +237,14 @@ export const data: CSSData = {
       },
       {
         name: ':in-range',
-        desc: 'Used in conjunction with the min and max attributes, whether on a range input, a number field, or any other types that accept those attributes.',
+        desc:
+          'Used in conjunction with the min and max attributes, whether on a range input, a number field, or any other types that accept those attributes.',
         browsers: 'E13,C,FF10,O9.6,S5.1'
       },
       {
         name: ':invalid',
-        desc: 'An element is :valid or :invalid when it is, respectively, valid or invalid with respect to data validity semantics defined by a different specification.',
+        desc:
+          'An element is :valid or :invalid when it is, respectively, valid or invalid with respect to data validity semantics defined by a different specification.',
         browsers: 'E,C,FF4,IE10,O10,S5'
       },
       {
@@ -240,12 +259,14 @@ export const data: CSSData = {
       },
       {
         name: ':last-of-type',
-        desc: 'Same as :nth-last-of-type(1). Represents an element that is the last sibling of its type in the list of children of its parent element.',
+        desc:
+          'Same as :nth-last-of-type(1). Represents an element that is the last sibling of its type in the list of children of its parent element.',
         browsers: 'E,C,FF3.5,IE9,O9.5,S3.1'
       },
       {
         name: ':left',
-        desc: 'When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.'
+        desc:
+          'When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.'
       },
       {
         name: ':link',
@@ -258,12 +279,14 @@ export const data: CSSData = {
       },
       {
         name: ':-moz-any()',
-        desc: 'Represents an element that is represented by the selector list passed as its argument. Standardized as :matches().',
+        desc:
+          'Represents an element that is represented by the selector list passed as its argument. Standardized as :matches().',
         browsers: 'FF4'
       },
       {
         name: ':-moz-any-link',
-        desc: 'Represents an element that acts as the source anchor of a hyperlink. Applies to both visited and unvisited links.',
+        desc:
+          'Represents an element that acts as the source anchor of a hyperlink. Applies to both visited and unvisited links.',
         browsers: 'FF1'
       },
       {
@@ -303,7 +326,8 @@ export const data: CSSData = {
       },
       {
         name: ':-moz-only-whitespace',
-        desc: 'The same as :empty, except that it additionally matches elements that only contain code points affected by whitespace processing. Standardized as :blank.',
+        desc:
+          'The same as :empty, except that it additionally matches elements that only contain code points affected by whitespace processing. Standardized as :blank.',
         browsers: 'FF1.5'
       },
       {
@@ -333,7 +357,8 @@ export const data: CSSData = {
       },
       {
         name: ':-moz-user-disabled',
-        desc: 'Non-standard. Matches elements representing images that have been disabled due to the user’s preferences.',
+        desc:
+          'Non-standard. Matches elements representing images that have been disabled due to the user’s preferences.',
         browsers: 'FF3'
       },
       {
@@ -348,17 +373,20 @@ export const data: CSSData = {
       },
       {
         name: ':-ms-input-placeholder',
-        desc: 'Represents placeholder text in an input field. Note: for Edge use the pseudo-element ::-ms-input-placeholder. Standardized as ::placeholder.',
+        desc:
+          'Represents placeholder text in an input field. Note: for Edge use the pseudo-element ::-ms-input-placeholder. Standardized as ::placeholder.',
         browsers: 'IE10'
       },
       {
         name: ':-ms-keyboard-active',
-        desc: 'Windows Store apps only. Applies one or more styles to an element when it has focus and the user presses the space bar.',
+        desc:
+          'Windows Store apps only. Applies one or more styles to an element when it has focus and the user presses the space bar.',
         browsers: 'IE10'
       },
       {
         name: ':-ms-lang()',
-        desc: 'Represents an element that is in the language specified. Accepts a comma seperated list of language tokens.',
+        desc:
+          'Represents an element that is in the language specified. Accepts a comma seperated list of language tokens.',
         browsers: 'E,IE10'
       },
       {
@@ -368,47 +396,56 @@ export const data: CSSData = {
       },
       {
         name: ':not()',
-        desc: 'The negation pseudo-class, :not(X), is a functional notation taking a simple selector (excluding the negation pseudo-class itself) as an argument. It represents an element that is not represented by its argument.',
+        desc:
+          'The negation pseudo-class, :not(X), is a functional notation taking a simple selector (excluding the negation pseudo-class itself) as an argument. It represents an element that is not represented by its argument.',
         browsers: 'E,C,FF1,IE9,O9.5,S2'
       },
       {
         name: ':nth-child()',
-        desc: 'Represents an element that has an+b-1 siblings before it in the document tree, for any positive integer or zero value of n, and has a parent element.',
+        desc:
+          'Represents an element that has an+b-1 siblings before it in the document tree, for any positive integer or zero value of n, and has a parent element.',
         browsers: 'E,C,FF3.5,IE9,O9.5,S3.1'
       },
       {
         name: ':nth-last-child()',
-        desc: 'Represents an element that has an+b-1 siblings after it in the document tree, for any positive integer or zero value of n, and has a parent element.',
+        desc:
+          'Represents an element that has an+b-1 siblings after it in the document tree, for any positive integer or zero value of n, and has a parent element.',
         browsers: 'E,C,FF3.5,IE9,O9.5,S3.1'
       },
       {
         name: ':nth-last-of-type()',
-        desc: 'Represents an element that has an+b-1 siblings with the same expanded element name after it in the document tree, for any zero or positive integer value of n, and has a parent element.',
+        desc:
+          'Represents an element that has an+b-1 siblings with the same expanded element name after it in the document tree, for any zero or positive integer value of n, and has a parent element.',
         browsers: 'E,C,FF3.5,IE9,O9.5,S3.1'
       },
       {
         name: ':nth-of-type()',
-        desc: 'Represents an element that has an+b-1 siblings with the same expanded element name before it in the document tree, for any zero or positive integer value of n, and has a parent element.',
+        desc:
+          'Represents an element that has an+b-1 siblings with the same expanded element name before it in the document tree, for any zero or positive integer value of n, and has a parent element.',
         browsers: 'E,C,FF3.5,IE9,O9.5,S3.1'
       },
       {
         name: ':only-child',
-        desc: 'Represents an element that has a parent element and whose parent element has no other element children. Same as :first-child:last-child or :nth-child(1):nth-last-child(1), but with a lower specificity.',
+        desc:
+          'Represents an element that has a parent element and whose parent element has no other element children. Same as :first-child:last-child or :nth-child(1):nth-last-child(1), but with a lower specificity.',
         browsers: 'E,C,FF1.5,IE9,O9.5,S3.1'
       },
       {
         name: ':only-of-type',
-        desc: 'Matches every element that is the only child of its type, of its parent. Same as :first-of-type:last-of-type or :nth-of-type(1):nth-last-of-type(1), but with a lower specificity.',
+        desc:
+          'Matches every element that is the only child of its type, of its parent. Same as :first-of-type:last-of-type or :nth-of-type(1):nth-last-of-type(1), but with a lower specificity.',
         browsers: 'E,C,FF3.5,IE9,O9.5,S3.2'
       },
       {
         name: ':optional',
-        desc: 'A form element is :required or :optional if a value for it is, respectively, required or optional before the form it belongs to is submitted. Elements that are not form elements are neither required nor optional.',
+        desc:
+          'A form element is :required or :optional if a value for it is, respectively, required or optional before the form it belongs to is submitted. Elements that are not form elements are neither required nor optional.',
         browsers: 'E,C,FF4,IE10,O10,S5'
       },
       {
         name: ':out-of-range',
-        desc: 'Used in conjunction with the min and max attributes, whether on a range input, a number field, or any other types that accept those attributes.',
+        desc:
+          'Used in conjunction with the min and max attributes, whether on a range input, a number field, or any other types that accept those attributes.',
         browsers: 'E13,C,FF10,O9.6,S5.1'
       },
       {
@@ -418,22 +455,26 @@ export const data: CSSData = {
       },
       {
         name: ':read-only',
-        desc: 'An element whose contents are not user-alterable is :read-only. However, elements whose contents are user-alterable (such as text input fields) are considered to be in a :read-write state. In typical documents, most elements are :read-only.',
+        desc:
+          'An element whose contents are not user-alterable is :read-only. However, elements whose contents are user-alterable (such as text input fields) are considered to be in a :read-write state. In typical documents, most elements are :read-only.',
         browsers: 'E13,C,FF10,O9,S4'
       },
       {
         name: ':read-write',
-        desc: 'An element whose contents are not user-alterable is :read-only. However, elements whose contents are user-alterable (such as text input fields) are considered to be in a :read-write state. In typical documents, most elements are :read-only.',
+        desc:
+          'An element whose contents are not user-alterable is :read-only. However, elements whose contents are user-alterable (such as text input fields) are considered to be in a :read-write state. In typical documents, most elements are :read-only.',
         browsers: 'E13,C,FF10,O9,S4'
       },
       {
         name: ':required',
-        desc: 'A form element is :required or :optional if a value for it is, respectively, required or optional before the form it belongs to is submitted. Elements that are not form elements are neither required nor optional.',
+        desc:
+          'A form element is :required or :optional if a value for it is, respectively, required or optional before the form it belongs to is submitted. Elements that are not form elements are neither required nor optional.',
         browsers: 'E,C,FF4,IE10,O10,S5'
       },
       {
         name: ':right',
-        desc: 'When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.'
+        desc:
+          'When printing double-sided documents, the page boxes on left and right pages may be different. This can be expressed through CSS pseudo-classes defined in the  page context.'
       },
       {
         name: ':root',
@@ -447,22 +488,26 @@ export const data: CSSData = {
       },
       {
         name: ':single-button',
-        desc: 'Non-standard. Applies to buttons and track pieces. Applies when both buttons are displayed separately at either end of the scrollbar.',
+        desc:
+          'Non-standard. Applies to buttons and track pieces. Applies when both buttons are displayed separately at either end of the scrollbar.',
         browsers: 'C,S5'
       },
       {
         name: ':start',
-        desc: 'Non-standard. Applies to buttons and track pieces. Indicates whether the object is placed before the thumb.',
+        desc:
+          'Non-standard. Applies to buttons and track pieces. Indicates whether the object is placed before the thumb.',
         browsers: 'C,S5'
       },
       {
         name: ':target',
-        desc: "Some URIs refer to a location within a resource. This kind of URI ends with a 'number sign' (#) followed by an anchor identifier (called the fragment identifier).",
+        desc:
+          "Some URIs refer to a location within a resource. This kind of URI ends with a 'number sign' (#) followed by an anchor identifier (called the fragment identifier).",
         browsers: 'E,C,FF1,IE9,O9.5,S1'
       },
       {
         name: ':valid',
-        desc: 'An element is :valid or :invalid when it is, respectively, valid or invalid with respect to data validity semantics defined by a different specification.',
+        desc:
+          'An element is :valid or :invalid when it is, respectively, valid or invalid with respect to data validity semantics defined by a different specification.',
         browsers: 'E,C,FF4,IE10,O10,S5'
       },
       {
@@ -476,7 +521,8 @@ export const data: CSSData = {
       },
       {
         name: ':-webkit-any()',
-        desc: 'Represents an element that is represented by the selector list passed as its argument. Standardized as :matches().',
+        desc:
+          'Represents an element that is represented by the selector list passed as its argument. Standardized as :matches().',
         browsers: 'C,S5'
       },
       {
@@ -486,7 +532,8 @@ export const data: CSSData = {
       },
       {
         name: ':window-inactive',
-        desc: 'Non-standard. Applies to all scrollbar pieces. Indicates whether or not the window containing the scrollbar is currently active.',
+        desc:
+          'Non-standard. Applies to all scrollbar pieces. Indicates whether or not the window containing the scrollbar is currently active.',
         browsers: 'C,S3'
       }
     ],
@@ -498,17 +545,20 @@ export const data: CSSData = {
       },
       {
         name: '::backdrop',
-        desc: 'Used to create a backdrop that hides the underlying document for an element in a top layer (such as an element that is displayed fullscreen).',
+        desc:
+          'Used to create a backdrop that hides the underlying document for an element in a top layer (such as an element that is displayed fullscreen).',
         browsers: 'E'
       },
       {
         name: '::before',
-        desc: 'Represents a styleable child pseudo-element immediately before the originating element’s actual content.',
+        desc:
+          'Represents a styleable child pseudo-element immediately before the originating element’s actual content.',
         browsers: 'E,C,FF1.5,IE9,O9,S4'
       },
       {
         name: '::content',
-        desc: 'Deprecated. Matches the distribution list itself, on elements that have one. Use ::slotted for forward compatibility.',
+        desc:
+          'Deprecated. Matches the distribution list itself, on elements that have one. Use ::slotted for forward compatibility.',
         browsers: 'C35,O22'
       },
       {
@@ -529,7 +579,8 @@ export const data: CSSData = {
       },
       {
         name: '::first-letter',
-        desc: 'Represents the first letter of an element, if it is not preceded by any other content (such as images or inline tables) on its line.',
+        desc:
+          'Represents the first letter of an element, if it is not preceded by any other content (such as images or inline tables) on its line.',
         browsers: 'E,C,FF1.5,IE9,O7,S1'
       },
       {
@@ -572,7 +623,8 @@ export const data: CSSData = {
       },
       {
         name: '::-ms-backdrop',
-        desc: 'Used to create a backdrop that hides the underlying document for an element in a top layer (such as an element that is displayed fullscreen).',
+        desc:
+          'Used to create a backdrop that hides the underlying document for an element in a top layer (such as an element that is displayed fullscreen).',
         browsers: 'IE11'
       },
       {
@@ -602,12 +654,14 @@ export const data: CSSData = {
       },
       {
         name: '::-ms-fill-lower',
-        desc: 'Represents the portion of the slider track from its smallest value up to the value currently selected by the thumb. In a left-to-right layout, this is the portion of the slider track to the left of the thumb.',
+        desc:
+          'Represents the portion of the slider track from its smallest value up to the value currently selected by the thumb. In a left-to-right layout, this is the portion of the slider track to the left of the thumb.',
         browsers: 'E,IE10'
       },
       {
         name: '::-ms-fill-upper',
-        desc: "Represents the portion of the slider track from the value currently selected by the thumb up to the slider's largest value. In a left-to-right layout, this is the portion of the slider track to the right of the thumb.",
+        desc:
+          "Represents the portion of the slider track from the value currently selected by the thumb up to the slider's largest value. In a left-to-right layout, this is the portion of the slider track to the right of the thumb.",
         browsers: 'E,IE10'
       },
       {
@@ -622,12 +676,14 @@ export const data: CSSData = {
       },
       {
         name: '::-ms-ticks-after',
-        desc: "Represents the tick marks of a slider that begin just after the thumb and continue up to the slider's largest value. In a left-to-right layout, these are the ticks to the right of the thumb.",
+        desc:
+          "Represents the tick marks of a slider that begin just after the thumb and continue up to the slider's largest value. In a left-to-right layout, these are the ticks to the right of the thumb.",
         browsers: 'E,IE10'
       },
       {
         name: '::-ms-ticks-before',
-        desc: 'Represents the tick marks of a slider that represent its smallest values up to the value currently selected by the thumb. In a left-to-right layout, these are the ticks to the left of the thumb.',
+        desc:
+          'Represents the tick marks of a slider that represent its smallest values up to the value currently selected by the thumb. In a left-to-right layout, these are the ticks to the left of the thumb.',
         browsers: 'E,IE10'
       },
       {
@@ -787,13 +843,15 @@ export const data: CSSData = {
     properties: [
       {
         name: 'additive-symbols',
-        desc: "@counter-style descriptor. Specifies the symbols used by the marker-construction algorithm specified by the system descriptor. Needs to be specified if the counter system is 'additive'.",
+        desc:
+          "@counter-style descriptor. Specifies the symbols used by the marker-construction algorithm specified by the system descriptor. Needs to be specified if the counter system is 'additive'.",
         browsers: 'FF33',
         restriction: 'integer, string, image, identifier'
       },
       {
         name: 'align-content',
-        desc: "Aligns a flex container’s lines within the flex container when there is extra space in the cross-axis, similar to how 'justify-content' aligns individual items within the main-axis.",
+        desc:
+          "Aligns a flex container’s lines within the flex container when there is extra space in the cross-axis, similar to how 'justify-content' aligns individual items within the main-axis.",
         browsers: 'E,C29,FF22,IE11,O12.1,S9',
         restriction: 'enum',
         values: [
@@ -831,7 +889,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'baseline',
-            desc: "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
+            desc:
+              "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
           },
           {
             name: 'center',
@@ -847,7 +906,8 @@ export const data: CSSData = {
           },
           {
             name: 'stretch',
-            desc: 'If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched.'
+            desc:
+              'If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched.'
           }
         ]
       },
@@ -859,11 +919,13 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: "Computes to the value of 'align-items' on the element’s parent, or 'stretch' if the element has no parent. On absolutely positioned elements, it computes to itself."
+            desc:
+              "Computes to the value of 'align-items' on the element’s parent, or 'stretch' if the element has no parent. On absolutely positioned elements, it computes to itself."
           },
           {
             name: 'baseline',
-            desc: "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
+            desc:
+              "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
           },
           {
             name: 'center',
@@ -879,7 +941,8 @@ export const data: CSSData = {
           },
           {
             name: 'stretch',
-            desc: 'If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched.'
+            desc:
+              'If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched.'
           }
         ]
       },
@@ -892,7 +955,8 @@ export const data: CSSData = {
       },
       {
         name: 'alt',
-        desc: 'Provides alternative text for assistive technology to replace the genenerated content of a ::before or ::after element.',
+        desc:
+          'Provides alternative text for assistive technology to replace the genenerated content of a ::before or ::after element.',
         browsers: 'S9',
         restriction: 'string, enum',
         values: []
@@ -933,7 +997,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -961,7 +1026,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -989,13 +1055,15 @@ export const data: CSSData = {
           },
           {
             name: 'none',
-            desc: 'There is no change to the property value between the time the animation is applied and the time the animation begins playing or after the animation completes.'
+            desc:
+              'There is no change to the property value between the time the animation is applied and the time the animation begins playing or after the animation completes.'
           }
         ]
       },
       {
         name: 'animation-iteration-count',
-        desc: 'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
+        desc:
+          'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
         browsers: 'E,C43,FF16,IE10,O12.1,S9',
         restriction: 'number, enum',
         values: [
@@ -1007,7 +1075,8 @@ export const data: CSSData = {
       },
       {
         name: 'animation-name',
-        desc: 'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
+        desc:
+          'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
         browsers: 'E,C43,FF16,IE10,O12.1,S9',
         restriction: 'identifier, enum',
         values: [
@@ -1039,7 +1108,8 @@ export const data: CSSData = {
       },
       {
         name: 'backface-visibility',
-        desc: "Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.",
+        desc:
+          "Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.",
         browsers: 'E,C36,FF16,IE10,O23',
         restriction: 'enum',
         values: [
@@ -1060,35 +1130,42 @@ export const data: CSSData = {
         values: [
           {
             name: 'fixed',
-            desc: "The background is fixed with regard to the viewport. In paged media where there is no viewport, a 'fixed' background is fixed with respect to the page box and therefore replicated on every page."
+            desc:
+              "The background is fixed with regard to the viewport. In paged media where there is no viewport, a 'fixed' background is fixed with respect to the page box and therefore replicated on every page."
           },
           {
             name: 'local',
-            desc: "The background is fixed with regard to the element's contents: if the element has a scrolling mechanism, the background scrolls with the element's contents."
+            desc:
+              "The background is fixed with regard to the element's contents: if the element has a scrolling mechanism, the background scrolls with the element's contents."
           },
           {
             name: 'scroll',
-            desc: "The background is fixed with regard to the element itself and does not scroll with its contents. (It is effectively attached to the element's border.)"
+            desc:
+              "The background is fixed with regard to the element itself and does not scroll with its contents. (It is effectively attached to the element's border.)"
           }
         ]
       },
       {
         name: 'background-attachment',
-        desc: "Specifies whether the background images are fixed with regard to the viewport ('fixed') or scroll along with the element ('scroll') or its contents ('local').",
+        desc:
+          "Specifies whether the background images are fixed with regard to the viewport ('fixed') or scroll along with the element ('scroll') or its contents ('local').",
         restriction: 'enum',
         values: [
           {
             name: 'fixed',
-            desc: "The background is fixed with regard to the viewport. In paged media where there is no viewport, a 'fixed' background is fixed with respect to the page box and therefore replicated on every page."
+            desc:
+              "The background is fixed with regard to the viewport. In paged media where there is no viewport, a 'fixed' background is fixed with respect to the page box and therefore replicated on every page."
           },
           {
             name: 'local',
-            desc: 'The background is fixed with regard to the element’s contents: if the element has a scrolling mechanism, the background scrolls with the element’s contents.',
+            desc:
+              'The background is fixed with regard to the element’s contents: if the element has a scrolling mechanism, the background scrolls with the element’s contents.',
             browsers: 'E,C,FF25,IE9,O11.5,S5'
           },
           {
             name: 'scroll',
-            desc: 'The background is fixed with regard to the element itself and does not scroll with its contents. (It is effectively attached to the element’s border.)'
+            desc:
+              'The background is fixed with regard to the element itself and does not scroll with its contents. (It is effectively attached to the element’s border.)'
           }
         ]
       },
@@ -1177,52 +1254,62 @@ export const data: CSSData = {
       },
       {
         name: 'background-origin',
-        desc: "For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes 'box-decoration-break' operates on to determine the background positioning area(s).",
+        desc:
+          "For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes 'box-decoration-break' operates on to determine the background positioning area(s).",
         browsers: 'E,C,FF4,IE9,O10.5,S3',
         restriction: 'box'
       },
       {
         name: 'background-position',
-        desc: 'Specifies the initial position of the background image(s) (after any resizing) within their corresponding background positioning area.',
+        desc:
+          'Specifies the initial position of the background image(s) (after any resizing) within their corresponding background positioning area.',
         restriction: 'position, length, percentage'
       },
       {
         name: 'background-position-x',
-        desc: 'If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.',
+        desc:
+          'If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.',
         browsers: 'E,IE6',
         restriction: 'length, percentage',
         values: [
           {
             name: 'center',
-            desc: "Equivalent to '50%' ('left 50%') for the horizontal position if the horizontal position is not otherwise specified, or '50%' ('top 50%') for the vertical position if it is."
+            desc:
+              "Equivalent to '50%' ('left 50%') for the horizontal position if the horizontal position is not otherwise specified, or '50%' ('top 50%') for the vertical position if it is."
           },
           {
             name: 'left',
-            desc: "Equivalent to '0%' for the horizontal position if one or two values are given, otherwise specifies the left edge as the origin for the next offset."
+            desc:
+              "Equivalent to '0%' for the horizontal position if one or two values are given, otherwise specifies the left edge as the origin for the next offset."
           },
           {
             name: 'right',
-            desc: "Equivalent to '100%' for the horizontal position if one or two values are given, otherwise specifies the right edge as the origin for the next offset."
+            desc:
+              "Equivalent to '100%' for the horizontal position if one or two values are given, otherwise specifies the right edge as the origin for the next offset."
           }
         ]
       },
       {
         name: 'background-position-y',
-        desc: 'If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.',
+        desc:
+          'If background images have been specified, this property specifies their initial position (after any resizing) within their corresponding background positioning area.',
         browsers: 'E,IE6',
         restriction: 'length, percentage',
         values: [
           {
             name: 'bottom',
-            desc: "Equivalent to '100%' for the vertical position if one or two values are given, otherwise specifies the bottom edge as the origin for the next offset."
+            desc:
+              "Equivalent to '100%' for the vertical position if one or two values are given, otherwise specifies the bottom edge as the origin for the next offset."
           },
           {
             name: 'center',
-            desc: "Equivalent to '50%' ('left 50%') for the horizontal position if the horizontal position is not otherwise specified, or '50%' ('top 50%') for the vertical position if it is."
+            desc:
+              "Equivalent to '50%' ('left 50%') for the horizontal position if the horizontal position is not otherwise specified, or '50%' ('top 50%') for the vertical position if it is."
           },
           {
             name: 'top',
-            desc: "Equivalent to '0%' for the vertical position if one or two values are given, otherwise specifies the top edge as the origin for the next offset."
+            desc:
+              "Equivalent to '0%' for the vertical position if one or two values are given, otherwise specifies the top edge as the origin for the next offset."
           }
         ]
       },
@@ -1240,15 +1327,18 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'Resolved by using the image’s intrinsic ratio and the size of the other dimension, or failing that, using the image’s intrinsic size, or failing that, treating it as 100%.'
+            desc:
+              'Resolved by using the image’s intrinsic ratio and the size of the other dimension, or failing that, using the image’s intrinsic size, or failing that, treating it as 100%.'
           },
           {
             name: 'contain',
-            desc: 'Scale the image, while preserving its intrinsic aspect ratio (if any), to the largest size such that both its width and its height can fit inside the background positioning area.'
+            desc:
+              'Scale the image, while preserving its intrinsic aspect ratio (if any), to the largest size such that both its width and its height can fit inside the background positioning area.'
           },
           {
             name: 'cover',
-            desc: 'Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both its width and its height can completely cover the background positioning area.'
+            desc:
+              'Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both its width and its height can completely cover the background positioning area.'
           }
         ]
       },
@@ -1277,49 +1367,57 @@ export const data: CSSData = {
       },
       {
         name: 'border-block-end',
-        desc: "Logical 'border-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width, line-style, color'
       },
       {
         name: 'border-block-start',
-        desc: "Logical 'border-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width, line-style, color'
       },
       {
         name: 'border-block-end-color',
-        desc: "Logical 'border-bottom-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-bottom-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'color'
       },
       {
         name: 'border-block-start-color',
-        desc: "Logical 'border-top-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-top-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'color'
       },
       {
         name: 'border-block-end-style',
-        desc: "Logical 'border-bottom-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-bottom-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'line-style'
       },
       {
         name: 'border-block-start-style',
-        desc: "Logical 'border-top-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-top-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'lline-style'
       },
       {
         name: 'border-block-end-width',
-        desc: "Logical 'border-bottom-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-bottom-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width'
       },
       {
         name: 'border-block-start-width',
-        desc: "Logical 'border-top-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-top-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width'
       },
@@ -1378,13 +1476,15 @@ export const data: CSSData = {
       },
       {
         name: 'border-image',
-        desc: "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
+        desc:
+          "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
         browsers: 'E,C16,FF15,IE11,O15,S6',
         restriction: 'length, percentage, number, url, enum',
         values: [
           {
             name: 'auto',
-            desc: "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
+            desc:
+              "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
           },
           {
             name: 'fill',
@@ -1399,11 +1499,13 @@ export const data: CSSData = {
           },
           {
             name: 'round',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
           },
           {
             name: 'space',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
           },
           {
             name: 'stretch',
@@ -1416,13 +1518,15 @@ export const data: CSSData = {
       },
       {
         name: 'border-image-outset',
-        desc: 'The values specify the amount by which the border image area extends beyond the border box on the top, right, bottom, and left sides respectively. If the fourth value is absent, it is the same as the second. If the third one is also absent, it is the same as the first. If the second one is also absent, it is the same as the first. Numbers represent multiples of the corresponding border-width.',
+        desc:
+          'The values specify the amount by which the border image area extends beyond the border box on the top, right, bottom, and left sides respectively. If the fourth value is absent, it is the same as the second. If the third one is also absent, it is the same as the first. If the second one is also absent, it is the same as the first. Numbers represent multiples of the corresponding border-width.',
         browsers: 'E,C16,FF15,IE11,O15,S6',
         restriction: 'length, number'
       },
       {
         name: 'border-image-repeat',
-        desc: 'Specifies how the images for the sides and the middle part of the border image are scaled and tiled. If the second keyword is absent, it is assumed to be the same as the first.',
+        desc:
+          'Specifies how the images for the sides and the middle part of the border image are scaled and tiled. If the second keyword is absent, it is assumed to be the same as the first.',
         browsers: 'E,C16,FF15,IE11,O15,S6',
         restriction: 'enum',
         values: [
@@ -1431,11 +1535,13 @@ export const data: CSSData = {
           },
           {
             name: 'round',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
           },
           {
             name: 'space',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
           },
           {
             name: 'stretch',
@@ -1445,7 +1551,8 @@ export const data: CSSData = {
       },
       {
         name: 'border-image-slice',
-        desc: 'Specifies inward offsets from the top, right, bottom, and left edges of the image, dividing it into nine regions: four corners, four edges and a middle.',
+        desc:
+          'Specifies inward offsets from the top, right, bottom, and left edges of the image, dividing it into nine regions: four corners, four edges and a middle.',
         browsers: 'E,C16,FF15,IE11,O15,S6',
         restriction: 'number, percentage',
         values: [
@@ -1457,7 +1564,8 @@ export const data: CSSData = {
       },
       {
         name: 'border-image-source',
-        desc: "Specifies an image to use instead of the border styles given by the 'border-style' properties and as an additional background layer for the element. If the value is 'none' or if the image cannot be displayed, the border styles will be used.",
+        desc:
+          "Specifies an image to use instead of the border styles given by the 'border-style' properties and as an additional background layer for the element. If the value is 'none' or if the image cannot be displayed, the border styles will be used.",
         browsers: 'E,C16,FF15,IE11,O15,S6',
         restriction: 'image',
         values: [
@@ -1469,61 +1577,71 @@ export const data: CSSData = {
       },
       {
         name: 'border-image-width',
-        desc: "The four values of 'border-image-width' specify offsets that are used to divide the border image area into nine parts. They represent inward distances from the top, right, bottom, and left sides of the area, respectively.",
+        desc:
+          "The four values of 'border-image-width' specify offsets that are used to divide the border image area into nine parts. They represent inward distances from the top, right, bottom, and left sides of the area, respectively.",
         browsers: 'E,C16,FF15,IE11,O15,S6',
         restriction: 'length, percentage, number',
         values: [
           {
             name: 'auto',
-            desc: 'The border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead.'
+            desc:
+              'The border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead.'
           }
         ]
       },
       {
         name: 'border-inline-end',
-        desc: "Logical 'border-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width, line-style, color'
       },
       {
         name: 'border-inline-start',
-        desc: "Logical 'border-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width, line-style, color'
       },
       {
         name: 'border-inline-end-color',
-        desc: "Logical 'border-right-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-right-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'color'
       },
       {
         name: 'border-inline-start-color',
-        desc: "Logical 'border-left-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-left-color'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'color'
       },
       {
         name: 'border-inline-end-style',
-        desc: "Logical 'border-right-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-right-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'line-style'
       },
       {
         name: 'border-inline-start-style',
-        desc: "Logical 'border-left-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-left-style'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'lline-style'
       },
       {
         name: 'border-inline-end-width',
-        desc: "Logical 'border-right-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-right-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width'
       },
       {
         name: 'border-inline-start-width',
-        desc: "Logical 'border-left-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'border-left-width'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, line-width'
       },
@@ -1575,7 +1693,8 @@ export const data: CSSData = {
       },
       {
         name: 'border-spacing',
-        desc: 'The lengths specify the distance that separates adjoining cell borders. If one length is specified, it gives both the horizontal and vertical spacing. If two are specified, the first gives the horizontal spacing and the second the vertical spacing. Lengths may not be negative.',
+        desc:
+          'The lengths specify the distance that separates adjoining cell borders. If one length is specified, it gives both the horizontal and vertical spacing. If two are specified, the first gives the horizontal spacing and the second the vertical spacing. Lengths may not be negative.',
         browsers: 'E,C,FF1,IE8,O7,S1.2',
         restriction: 'length'
       },
@@ -1619,24 +1738,28 @@ export const data: CSSData = {
       },
       {
         name: 'border-width',
-        desc: "Shorthand that sets the four 'border-*-width' properties. If it has four values, they set top, right, bottom and left in that order. If left is missing, it is the same as right; if bottom is missing, it is the same as top; if right is missing, it is the same as top.",
+        desc:
+          "Shorthand that sets the four 'border-*-width' properties. If it has four values, they set top, right, bottom and left in that order. If left is missing, it is the same as right; if bottom is missing, it is the same as top; if right is missing, it is the same as top.",
         restriction: 'length, line-width',
         values: []
       },
       {
         name: 'bottom',
-        desc: "Specifies how far an absolutely positioned box's bottom margin edge is offset above the bottom edge of the box's 'containing block'.",
+        desc:
+          "Specifies how far an absolutely positioned box's bottom margin edge is offset above the bottom edge of the box's 'containing block'.",
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
           }
         ]
       },
       {
         name: 'box-decoration-break',
-        desc: 'Specifies whether individual boxes are treated as broken pieces of one continuous box, or whether each box is individually wrapped with the border and padding.',
+        desc:
+          'Specifies whether individual boxes are treated as broken pieces of one continuous box, or whether each box is individually wrapped with the border and padding.',
         browsers: 'FF32,O11',
         restriction: 'enum',
         values: [
@@ -1650,7 +1773,8 @@ export const data: CSSData = {
       },
       {
         name: 'box-shadow',
-        desc: "Attaches one or more drop-shadows to the box. The property is a comma-separated list of shadows, each specified by 2-4 length values, an optional color, and an optional 'inset' keyword. Omitted lengths are 0; omitted colors are a user agent chosen color.",
+        desc:
+          "Attaches one or more drop-shadows to the box. The property is a comma-separated list of shadows, each specified by 2-4 length values, an optional color, and an optional 'inset' keyword. Omitted lengths are 0; omitted colors are a user agent chosen color.",
         browsers: 'E,C,FF4,IE9,O11.5,S5.1',
         restriction: 'length, color, enum',
         values: [
@@ -1705,7 +1829,8 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'page',
@@ -1713,7 +1838,8 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -1749,7 +1875,8 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'page',
@@ -1757,7 +1884,8 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -1803,16 +1931,19 @@ export const data: CSSData = {
       },
       {
         name: 'clear',
-        desc: "Indicates which sides of an element's box(es) may not be adjacent to an earlier floating box. The 'clear' property does not consider floats inside the element itself or in other block formatting contexts.",
+        desc:
+          "Indicates which sides of an element's box(es) may not be adjacent to an earlier floating box. The 'clear' property does not consider floats inside the element itself or in other block formatting contexts.",
         restriction: 'enum',
         values: [
           {
             name: 'both',
-            desc: 'The clearance of the generated box is set to the amount necessary to place the top border edge below the bottom outer edge of any right-floating and left-floating boxes that resulted from elements earlier in the source document.'
+            desc:
+              'The clearance of the generated box is set to the amount necessary to place the top border edge below the bottom outer edge of any right-floating and left-floating boxes that resulted from elements earlier in the source document.'
           },
           {
             name: 'left',
-            desc: 'The clearance of the generated box is set to the amount necessary to place the top border edge below the bottom outer edge of any left-floating boxes that resulted from elements earlier in the source document.'
+            desc:
+              'The clearance of the generated box is set to the amount necessary to place the top border edge below the bottom outer edge of any left-floating boxes that resulted from elements earlier in the source document.'
           },
           {
             name: 'none',
@@ -1820,13 +1951,15 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: 'The clearance of the generated box is set to the amount necessary to place the top border edge below the bottom outer edge of any right-floating boxes that resulted from elements earlier in the source document.'
+            desc:
+              'The clearance of the generated box is set to the amount necessary to place the top border edge below the bottom outer edge of any right-floating boxes that resulted from elements earlier in the source document.'
           }
         ]
       },
       {
         name: 'clip',
-        desc: "Deprecated. Use the 'clip-path' property when support allows. Defines the visible portion of an element’s box.",
+        desc:
+          "Deprecated. Use the 'clip-path' property when support allows. Defines the visible portion of an element’s box.",
         restriction: 'enum',
         values: [
           {
@@ -1840,7 +1973,8 @@ export const data: CSSData = {
       },
       {
         name: 'clip-path',
-        desc: 'Specifies a clipping path where everything inside the path is visable and everything outside is clipped out.',
+        desc:
+          'Specifies a clipping path where everything inside the path is visable and everything outside is clipped out.',
         browsers: 'FF3.5',
         restriction: 'url, shape, geometry-box, enum',
         values: [
@@ -1856,7 +1990,8 @@ export const data: CSSData = {
       },
       {
         name: 'clip-rule',
-        desc: 'Indicates the algorithm which is to be used to determine what parts of the canvas are included inside the shape.',
+        desc:
+          'Indicates the algorithm which is to be used to determine what parts of the canvas are included inside the shape.',
         browsers: 'E,C5,FF3,IE10,O9,S6',
         restriction: 'enum',
         values: [
@@ -1905,7 +2040,8 @@ export const data: CSSData = {
       },
       {
         name: 'column-fill',
-        desc: 'In continuous media, this property will only be consulted if the length of columns has been constrained. Otherwise, columns will automatically be balanced.',
+        desc:
+          'In continuous media, this property will only be consulted if the length of columns has been constrained. Otherwise, columns will automatically be balanced.',
         browsers: 'E,IE10,O11.5,S9',
         restriction: 'enum',
         values: [
@@ -1920,7 +2056,8 @@ export const data: CSSData = {
       },
       {
         name: 'column-gap',
-        desc: 'Sets the gap between columns. If there is a column rule between columns, it will appear in the middle of the gap.',
+        desc:
+          'Sets the gap between columns. If there is a column rule between columns, it will appear in the middle of the gap.',
         browsers: 'E,IE10,O11.5,S9',
         restriction: 'length, enum',
         values: [
@@ -1932,7 +2069,8 @@ export const data: CSSData = {
       },
       {
         name: 'column-rule',
-        desc: "Shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
+        desc:
+          "Shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
         browsers: 'E,IE10,O11.5,S9',
         restriction: 'length, line-width, line-style, color'
       },
@@ -1974,7 +2112,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'all',
-            desc: 'The element spans across all columns. Content in the normal flow that appears before the element is automatically balanced across all columns before the element appear.'
+            desc:
+              'The element spans across all columns. Content in the normal flow that appears before the element is automatically balanced across all columns before the element appear.'
           },
           {
             name: 'none',
@@ -2008,11 +2147,13 @@ export const data: CSSData = {
           },
           {
             name: 'icon',
-            desc: "The (pseudo-)element is replaced in its entirety by the resource referenced by its 'icon' property, and treated as a replaced element."
+            desc:
+              "The (pseudo-)element is replaced in its entirety by the resource referenced by its 'icon' property, and treated as a replaced element."
           },
           {
             name: 'none',
-            desc: 'On elements, this inhibits the children of the element from being rendered as children of this element, as if the element was empty. On pseudo-elements it causes the pseudo-element to have no content.'
+            desc:
+              'On elements, this inhibits the children of the element from being rendered as children of this element, as if the element was empty. On pseudo-elements it causes the pseudo-element to have no content.'
           },
           {
             name: 'normal',
@@ -2037,7 +2178,8 @@ export const data: CSSData = {
       },
       {
         name: 'counter-reset',
-        desc: 'Property accepts one or more names of counters (identifiers), each one optionally followed by an integer. The integer gives the value that the counter is set to on each occurrence of the element.',
+        desc:
+          'Property accepts one or more names of counters (identifiers), each one optionally followed by an integer. The integer gives the value that the counter is set to on each occurrence of the element.',
         browsers: 'E,C,FF1.5,IE8,O10.5,S3',
         restriction: 'identifier, integer',
         values: [
@@ -2204,7 +2346,8 @@ export const data: CSSData = {
       },
       {
         name: 'direction',
-        desc: "Specifies the inline base direction or directionality of any bidi paragraph, embedding, isolate, or override established by the box. Note: for HTML content use the 'dir' attribute and 'bdo' element rather than this property.",
+        desc:
+          "Specifies the inline base direction or directionality of any bidi paragraph, embedding, isolate, or override established by the box. Note: for HTML content use the 'dir' attribute and 'bdo' element rather than this property.",
         restriction: 'enum',
         values: [
           {
@@ -2217,7 +2360,8 @@ export const data: CSSData = {
       },
       {
         name: 'display',
-        desc: "In combination with 'float' and 'position', determines the type of box or boxes that are generated for an element.",
+        desc:
+          "In combination with 'float' and 'position', determines the type of box or boxes that are generated for an element.",
         restriction: 'enum',
         values: [
           {
@@ -2387,7 +2531,8 @@ export const data: CSSData = {
       },
       {
         name: 'empty-cells',
-        desc: 'In the separated borders model, this property controls the rendering of borders and backgrounds around cells that have no visible content.',
+        desc:
+          'In the separated borders model, this property controls the rendering of borders and backgrounds around cells that have no visible content.',
         browsers: 'E,C,FF1,IE7,O4,S1.2',
         restriction: 'enum',
         values: [
@@ -2405,7 +2550,8 @@ export const data: CSSData = {
       },
       {
         name: 'enable-background',
-        desc: "Deprecated. Use 'isolation' property instead when support allows. Specifies how the accumulation of the background image is managed.",
+        desc:
+          "Deprecated. Use 'isolation' property instead when support allows. Specifies how the accumulation of the background image is managed.",
         restriction: 'integer, length, percentage, enum',
         values: [
           {
@@ -2418,7 +2564,8 @@ export const data: CSSData = {
       },
       {
         name: 'fallback',
-        desc: '@counter-style descriptor. Specifies a fallback counter style to be used when the current counter style can’t create a representation for a given counter value.',
+        desc:
+          '@counter-style descriptor. Specifies a fallback counter style to be used when the current counter style can’t create a representation for a given counter value.',
         browsers: 'FF33',
         restriction: 'identifier'
       },
@@ -2429,7 +2576,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'url()',
-            desc: 'A URL reference to a paint server element, which is an element that defines a paint server: ‘hatch’, ‘linearGradient’, ‘mesh’, ‘pattern’, ‘radialGradient’ and ‘solidcolor’.'
+            desc:
+              'A URL reference to a paint server element, which is an element that defines a paint server: ‘hatch’, ‘linearGradient’, ‘mesh’, ‘pattern’, ‘radialGradient’ and ‘solidcolor’.'
           }
         ]
       },
@@ -2440,7 +2588,8 @@ export const data: CSSData = {
       },
       {
         name: 'fill-rule',
-        desc: 'Indicates the algorithm (or winding rule) which is to be used to determine what parts of the canvas are included inside the shape.',
+        desc:
+          'Indicates the algorithm (or winding rule) which is to be used to determine what parts of the canvas are included inside the shape.',
         restriction: 'enum',
         values: [
           {
@@ -2453,7 +2602,8 @@ export const data: CSSData = {
       },
       {
         name: 'filter',
-        desc: 'Processes an element’s rendering before it is displayed in the document, by applying one or more filter effects.',
+        desc:
+          'Processes an element’s rendering before it is displayed in the document, by applying one or more filter effects.',
         browsers: 'E13,FF35',
         restriction: 'enum, url',
         values: [
@@ -2500,7 +2650,8 @@ export const data: CSSData = {
       },
       {
         name: 'flex',
-        desc: 'Specifies the components of a flexible length: the flex grow factor and flex shrink factor, and the flex basis.',
+        desc:
+          'Specifies the components of a flexible length: the flex grow factor and flex shrink factor, and the flex basis.',
         browsers: 'E,C29,FF22,IE11,O12.1,S9',
         restriction: 'length, number, percentage',
         values: [
@@ -2536,13 +2687,15 @@ export const data: CSSData = {
       },
       {
         name: 'flex-direction',
-        desc: 'Specifies how flex items are placed in the flex container, by setting the direction of the flex container’s main axis.',
+        desc:
+          'Specifies how flex items are placed in the flex container, by setting the direction of the flex container’s main axis.',
         browsers: 'E,C29,FF22,IE11,O12.1,S9',
         restriction: 'enum',
         values: [
           {
             name: 'column',
-            desc: 'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
+            desc:
+              'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
           },
           {
             name: 'column-reverse'
@@ -2563,7 +2716,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'column',
-            desc: 'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
+            desc:
+              'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
           },
           {
             name: 'column-reverse'
@@ -2601,7 +2755,8 @@ export const data: CSSData = {
       },
       {
         name: 'flex-wrap',
-        desc: 'Controls whether the flex container is single-line or multi-line, and the direction of the cross-axis, which determines the direction new lines are stacked in.',
+        desc:
+          'Controls whether the flex container is single-line or multi-line, and the direction of the cross-axis, which determines the direction new lines are stacked in.',
         browsers: 'E,C29,FF28,IE11,O12.1,S9',
         restriction: 'enum',
         values: [
@@ -2620,12 +2775,14 @@ export const data: CSSData = {
       },
       {
         name: 'float',
-        desc: 'Specifies how a box should be floated. It may be set for any element, but only applies to elements that generate boxes that are not absolutely positioned.',
+        desc:
+          'Specifies how a box should be floated. It may be set for any element, but only applies to elements that generate boxes that are not absolutely positioned.',
         restriction: 'enum',
         values: [
           {
             name: 'left',
-            desc: "The element generates a block box that is floated to the left. Content flows on the right side of the box, starting at the top (subject to the 'clear' property)."
+            desc:
+              "The element generates a block box that is floated to the left. Content flows on the right side of the box, starting at the top (subject to the 'clear' property)."
           },
           {
             name: 'none',
@@ -2633,7 +2790,8 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: "Similar to 'left', except the box is floated to the right, and content flows on the left side of the box, starting at the top."
+            desc:
+              "Similar to 'left', except the box is floated to the right, and content flows on the left side of the box, starting at the top."
           }
         ]
       },
@@ -2651,7 +2809,8 @@ export const data: CSSData = {
       },
       {
         name: 'font',
-        desc: "Shorthand property for setting 'font-style', 'font-variant', 'font-weight', 'font-size', 'line-height', and 'font-family', at the same place in the style sheet. The syntax of this property is based on a traditional typographical shorthand notation to set multiple properties related to fonts.",
+        desc:
+          "Shorthand property for setting 'font-style', 'font-variant', 'font-weight', 'font-size', 'line-height', and 'font-family', at the same place in the style sheet. The syntax of this property is based on a traditional typographical shorthand notation to set multiple properties related to fonts.",
         restriction: 'font',
         values: [
           {
@@ -2729,7 +2888,8 @@ export const data: CSSData = {
           },
           {
             name: 'small-caps',
-            desc: 'Specifies a font that is labeled as a small-caps font. If a genuine small-caps font is not available, user agents should simulate a small-caps font.'
+            desc:
+              'Specifies a font that is labeled as a small-caps font. If a genuine small-caps font is not available, user agents should simulate a small-caps font.'
           },
           {
             name: 'small-caption'
@@ -2756,7 +2916,8 @@ export const data: CSSData = {
       },
       {
         name: 'font-family',
-        desc: 'Specifies a prioritized list of font family names or generic family names. A user agent iterates through the list of family names until it matches an available font that contains a glyph for the character to be rendered.',
+        desc:
+          'Specifies a prioritized list of font family names or generic family names. A user agent iterates through the list of family names until it matches an available font that contains a glyph for the character to be rendered.',
         restriction: 'font',
         values: [
           {
@@ -2787,7 +2948,8 @@ export const data: CSSData = {
             name: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
           },
           {
-            name: "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif"
+            name:
+              "'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif"
           },
           {
             name: 'monospace'
@@ -2814,7 +2976,8 @@ export const data: CSSData = {
       },
       {
         name: 'font-feature-settings',
-        desc: 'Provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.',
+        desc:
+          'Provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.',
         browsers: 'E,FF34,IE10',
         restriction: 'string, integer',
         values: [
@@ -3194,7 +3357,8 @@ export const data: CSSData = {
       },
       {
         name: 'font-kerning',
-        desc: 'Kerning is the contextual adjustment of inter-glyph spacing. This property controls metric kerning, kerning that utilizes adjustment data contained in the font.',
+        desc:
+          'Kerning is the contextual adjustment of inter-glyph spacing. This property controls metric kerning, kerning that utilizes adjustment data contained in the font.',
         browsers: 'C33,FF34,O20',
         restriction: 'enum',
         values: [
@@ -3214,19 +3378,22 @@ export const data: CSSData = {
       },
       {
         name: 'font-language-override',
-        desc: "The value of 'normal' implies that when rendering with OpenType fonts the language of the document is used to infer the OpenType language system, used to select language specific features when rendering.",
+        desc:
+          "The value of 'normal' implies that when rendering with OpenType fonts the language of the document is used to infer the OpenType language system, used to select language specific features when rendering.",
         browsers: 'FF34',
         restriction: 'string',
         values: [
           {
             name: 'normal',
-            desc: 'Implies that when rendering with OpenType fonts the language of the document is used to infer the OpenType language system, used to select language specific features when rendering.'
+            desc:
+              'Implies that when rendering with OpenType fonts the language of the document is used to infer the OpenType language system, used to select language specific features when rendering.'
           }
         ]
       },
       {
         name: 'font-size',
-        desc: 'Indicates the desired height of glyphs from the font. For scalable fonts, the font-size is a scale factor applied to the EM unit of the font. (Note that certain glyphs may bleed outside their EM box.) For non-scalable fonts, the font-size is converted into absolute units and matched against the declared font-size of the font, using the same absolute coordinate space for both of the matched values.',
+        desc:
+          'Indicates the desired height of glyphs from the font. For scalable fonts, the font-size is a scale factor applied to the EM unit of the font. (Note that certain glyphs may bleed outside their EM box.) For non-scalable fonts, the font-size is converted into absolute units and matched against the declared font-size of the font, using the same absolute coordinate space for both of the matched values.',
         restriction: 'length, percentage',
         values: [
           {
@@ -3260,7 +3427,8 @@ export const data: CSSData = {
       },
       {
         name: 'font-size-adjust',
-        desc: 'Preserves the readability of text when font fallback occurs by adjusting the font-size so that the x-height is the same irregardless of the font used.',
+        desc:
+          'Preserves the readability of text when font fallback occurs by adjusting the font-size so that the x-height is the same irregardless of the font used.',
         browsers: 'E,FF3,IE10',
         restriction: 'number',
         values: [
@@ -3315,7 +3483,8 @@ export const data: CSSData = {
       },
       {
         name: 'font-style',
-        desc: 'Allows italic or oblique faces to be selected. Italic forms are generally cursive in nature while oblique faces are typically sloped versions of the regular face.',
+        desc:
+          'Allows italic or oblique faces to be selected. Italic forms are generally cursive in nature while oblique faces are typically sloped versions of the regular face.',
         restriction: 'enum',
         values: [
           {
@@ -3334,7 +3503,8 @@ export const data: CSSData = {
       },
       {
         name: 'font-synthesis',
-        desc: 'Controls whether user agents are allowed to synthesize bold or oblique font faces when a font family lacks bold or italic faces.',
+        desc:
+          'Controls whether user agents are allowed to synthesize bold or oblique font faces when a font family lacks bold or italic faces.',
         browsers: 'FF34,S9',
         restriction: 'enum',
         values: [
@@ -3361,13 +3531,15 @@ export const data: CSSData = {
           },
           {
             name: 'small-caps',
-            desc: 'Specifies a font that is labeled as a small-caps font. If a genuine small-caps font is not available, user agents should simulate a small-caps font.'
+            desc:
+              'Specifies a font that is labeled as a small-caps font. If a genuine small-caps font is not available, user agents should simulate a small-caps font.'
           }
         ]
       },
       {
         name: 'font-variant-alternates',
-        desc: 'For any given character, fonts can provide a variety of alternate glyphs in addition to the default glyph for that character. This property provides control over the selection of these alternate glyphs.',
+        desc:
+          'For any given character, fonts can provide a variety of alternate glyphs in addition to the default glyph for that character. This property provides control over the selection of these alternate glyphs.',
         browsers: 'FF34',
         restriction: 'enum',
         values: [
@@ -3419,7 +3591,8 @@ export const data: CSSData = {
           },
           {
             name: 'small-caps',
-            desc: 'Enables display of small capitals. Small-caps glyphs typically use the form of uppercase letters but are reduced to the size of lowercase letters.'
+            desc:
+              'Enables display of small capitals. Small-caps glyphs typically use the form of uppercase letters but are reduced to the size of lowercase letters.'
           },
           {
             name: 'titling-caps'
@@ -3471,7 +3644,8 @@ export const data: CSSData = {
       },
       {
         name: 'font-variant-ligatures',
-        desc: 'Specifies control over which ligatures are enabled or disabled. A value of ‘normal’ implies that the defaults set by the font are used.',
+        desc:
+          'Specifies control over which ligatures are enabled or disabled. A value of ‘normal’ implies that the defaults set by the font are used.',
         browsers: 'C18,FF34,O15,S6',
         restriction: 'enum',
         values: [
@@ -3633,13 +3807,15 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'Sets the orientation based on the fullwidth or non-fullwidth characters and the most common orientation.'
+            desc:
+              'Sets the orientation based on the fullwidth or non-fullwidth characters and the most common orientation.'
           }
         ]
       },
       {
         name: 'height',
-        desc: "Specifies the height of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
+        desc:
+          "Specifies the height of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
         restriction: 'length, percentage',
         values: [
           {
@@ -3676,7 +3852,8 @@ export const data: CSSData = {
       },
       {
         name: 'image-rendering',
-        desc: 'Provides a hint to the user-agent about what aspects of an image are most important to preserve when the image is scaled, to aid the user-agent in the choice of an appropriate scaling algorithm.',
+        desc:
+          'Provides a hint to the user-agent about what aspects of an image are most important to preserve when the image is scaled, to aid the user-agent in the choice of an appropriate scaling algorithm.',
         browsers: 'C,FF3.6,O11.6,S',
         restriction: 'enum',
         values: [
@@ -3724,7 +3901,8 @@ export const data: CSSData = {
           },
           {
             name: 'normal',
-            desc: 'The IME state should be normal; this value can be used in a user style sheet to override the page setting.'
+            desc:
+              'The IME state should be normal; this value can be used in a user style sheet to override the page setting.'
           }
         ]
       },
@@ -3742,13 +3920,15 @@ export const data: CSSData = {
       },
       {
         name: 'isolation',
-        desc: "In CSS setting to 'isolate' will turn the element into a stacking context. In SVG, it defines whether an element is isolated or not.",
+        desc:
+          "In CSS setting to 'isolate' will turn the element into a stacking context. In SVG, it defines whether an element is isolated or not.",
         browsers: 'C,FF,O,S',
         restriction: 'enum',
         values: [
           {
             name: 'auto',
-            desc: 'Elements are not isolated unless an operation is applied that causes the creation of a stacking context.'
+            desc:
+              'Elements are not isolated unless an operation is applied that causes the creation of a stacking context.'
           },
           {
             name: 'isolate',
@@ -3786,23 +3966,27 @@ export const data: CSSData = {
       },
       {
         name: 'kerning',
-        desc: 'Indicates whether the user agent should adjust inter-glyph spacing based on kerning tables that are included in the relevant font or instead disable auto-kerning and set inter-character spacing to a specific length.',
+        desc:
+          'Indicates whether the user agent should adjust inter-glyph spacing based on kerning tables that are included in the relevant font or instead disable auto-kerning and set inter-character spacing to a specific length.',
         restriction: 'length, enum',
         values: [
           {
             name: 'auto',
-            desc: 'Indicates that the user agent should adjust inter-glyph spacing based on kerning tables that are included in the font that will be used.'
+            desc:
+              'Indicates that the user agent should adjust inter-glyph spacing based on kerning tables that are included in the font that will be used.'
           }
         ]
       },
       {
         name: 'left',
-        desc: "Specifies how far an absolutely positioned box's left margin edge is offset to the right of the left edge of the box's 'containing block'.",
+        desc:
+          "Specifies how far an absolutely positioned box's left margin edge is offset to the right of the left edge of the box's 'containing block'.",
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
           }
         ]
       },
@@ -3819,7 +4003,8 @@ export const data: CSSData = {
       },
       {
         name: 'lighting-color',
-        desc: "Defines the color of the light source for filter primitives 'feDiffuseLighting' and 'feSpecularLighting'.",
+        desc:
+          "Defines the color of the light source for filter primitives 'feDiffuseLighting' and 'feSpecularLighting'.",
         browsers: 'E,C5,FF3,IE10,O9,S6',
         restriction: 'color'
       },
@@ -3830,7 +4015,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'normal',
-            desc: "Tells user agents to set the computed value to a 'reasonable' value based on the font size of the element."
+            desc:
+              "Tells user agents to set the computed value to a 'reasonable' value based on the font size of the element."
           }
         ]
       },
@@ -3902,7 +4088,8 @@ export const data: CSSData = {
       },
       {
         name: 'list-style-image',
-        desc: "Sets the image that will be used as the list item marker. When the image is available, it will replace the marker set with the 'list-style-type' marker.",
+        desc:
+          "Sets the image that will be used as the list item marker. When the image is available, it will replace the marker set with the 'list-style-type' marker.",
         restriction: 'image',
         values: [
           {
@@ -3995,7 +4182,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin',
-        desc: 'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage',
         values: [
           {
@@ -4005,7 +4193,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-block-end',
-        desc: "Logical 'margin-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'margin-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
@@ -4016,7 +4205,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-block-start',
-        desc: "Logical 'margin-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'margin-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
@@ -4027,7 +4217,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-bottom',
-        desc: 'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage',
         values: [
           {
@@ -4037,7 +4228,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-inline-end',
-        desc: "Logical 'margin-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'margin-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
@@ -4048,7 +4240,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-inline-start',
-        desc: "Logical 'margin-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'margin-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
@@ -4059,7 +4252,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-left',
-        desc: 'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage',
         values: [
           {
@@ -4069,7 +4263,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-right',
-        desc: 'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage',
         values: [
           {
@@ -4079,7 +4274,8 @@ export const data: CSSData = {
       },
       {
         name: 'margin-top',
-        desc: 'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the margin area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage',
         values: [
           {
@@ -4089,7 +4285,8 @@ export const data: CSSData = {
       },
       {
         name: 'marker',
-        desc: 'Specifies the marker symbol that shall be used for all points on the sets the value for all vertices on the given ‘path’ element or basic shape.',
+        desc:
+          'Specifies the marker symbol that shall be used for all points on the sets the value for all vertices on the given ‘path’ element or basic shape.',
         restriction: 'url',
         values: [
           {
@@ -4373,7 +4570,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'Indicates that the object is rotated by the angle of the direction of the motion path plus 180 degrees.'
+            desc:
+              'Indicates that the object is rotated by the angle of the direction of the motion path plus 180 degrees.'
           }
         ]
       },
@@ -4410,7 +4608,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'Indicates that the object is rotated by the angle of the direction of the motion path plus 180 degrees.'
+            desc:
+              'Indicates that the object is rotated by the angle of the direction of the motion path plus 180 degrees.'
           }
         ]
       },
@@ -4450,7 +4649,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -4478,7 +4678,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -4490,7 +4691,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-animation-iteration-count',
-        desc: 'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
+        desc:
+          'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
         browsers: 'FF9',
         restriction: 'number, enum',
         values: [
@@ -4502,7 +4704,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-animation-name',
-        desc: 'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
+        desc:
+          'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
         browsers: 'FF9',
         restriction: 'identifier, enum',
         values: [
@@ -4528,13 +4731,15 @@ export const data: CSSData = {
       },
       {
         name: '-moz-animation-timing-function',
-        desc: "Describes how the animation will progress over one cycle of its duration. See the 'transition-timing-function'.",
+        desc:
+          "Describes how the animation will progress over one cycle of its duration. See the 'transition-timing-function'.",
         browsers: 'FF9',
         restriction: 'timing-function'
       },
       {
         name: '-moz-appearance',
-        desc: "Used in Gecko (Firefox) to display an element using a platform-native styling based on the operating system's theme.",
+        desc:
+          "Used in Gecko (Firefox) to display an element using a platform-native styling based on the operating system's theme.",
         browsers: 'FF1',
         restriction: 'enum',
         values: [
@@ -4746,7 +4951,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-backface-visibility',
-        desc: "Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.",
+        desc:
+          "Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.",
         browsers: 'FF10',
         restriction: 'enum',
         values: [
@@ -4771,7 +4977,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-background-inline-policy',
-        desc: 'In Gecko-based applications like Firefox, the -moz-background-inline-policy CSS property specifies how the background image of an inline element is determined when the content of the inline element wraps onto multiple lines. The choice of position has significant effects on repetition.',
+        desc:
+          'In Gecko-based applications like Firefox, the -moz-background-inline-policy CSS property specifies how the background image of an inline element is determined when the content of the inline element wraps onto multiple lines. The choice of position has significant effects on repetition.',
         browsers: 'FF1',
         restriction: 'enum',
         values: [
@@ -4788,7 +4995,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-background-origin',
-        desc: "For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes 'box-decoration-break' operates on to determine the background positioning area(s).",
+        desc:
+          "For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes 'box-decoration-break' operates on to determine the background positioning area(s).",
         browsers: 'FF1',
         restriction: 'box'
       },
@@ -4800,13 +5008,15 @@ export const data: CSSData = {
       },
       {
         name: '-moz-border-image',
-        desc: "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
+        desc:
+          "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
         browsers: 'FF3.6',
         restriction: 'length, percentage, number, url, enum',
         values: [
           {
             name: 'auto',
-            desc: "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
+            desc:
+              "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
           },
           {
             name: 'fill',
@@ -4820,11 +5030,13 @@ export const data: CSSData = {
           },
           {
             name: 'round',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
           },
           {
             name: 'space',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
           },
           {
             name: 'stretch',
@@ -4855,25 +5067,30 @@ export const data: CSSData = {
       },
       {
         name: '-moz-box-align',
-        desc: 'Specifies how a XUL box aligns its contents across (perpendicular to) the direction of its layout. The effect of this is only visible if there is extra space in the box.',
+        desc:
+          'Specifies how a XUL box aligns its contents across (perpendicular to) the direction of its layout. The effect of this is only visible if there is extra space in the box.',
         browsers: 'FF1',
         restriction: 'enum',
         values: [
           {
             name: 'baseline',
-            desc: 'If this box orientation is inline-axis or horizontal, all children are placed with their baselines aligned, and extra space placed before or after as necessary. For block flows, the baseline of the first non-empty line box located within the element is used. For tables, the baseline of the first cell is used.'
+            desc:
+              'If this box orientation is inline-axis or horizontal, all children are placed with their baselines aligned, and extra space placed before or after as necessary. For block flows, the baseline of the first non-empty line box located within the element is used. For tables, the baseline of the first cell is used.'
           },
           {
             name: 'center',
-            desc: 'Any extra space is divided evenly, with half placed above the child and the other half placed after the child.'
+            desc:
+              'Any extra space is divided evenly, with half placed above the child and the other half placed after the child.'
           },
           {
             name: 'end',
-            desc: 'For normal direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element. For reverse direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element.'
+            desc:
+              'For normal direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element. For reverse direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element.'
           },
           {
             name: 'start',
-            desc: 'For normal direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element. For reverse direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element.'
+            desc:
+              'For normal direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element. For reverse direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element.'
           },
           {
             name: 'stretch',
@@ -4883,23 +5100,27 @@ export const data: CSSData = {
       },
       {
         name: '-moz-box-direction',
-        desc: 'Specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).',
+        desc:
+          'Specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).',
         browsers: 'FF1',
         restriction: 'enum',
         values: [
           {
             name: 'normal',
-            desc: 'A box with a computed value of horizontal for box-orient displays its children from left to right. A box with a computed value of vertical displays its children from top to bottom.'
+            desc:
+              'A box with a computed value of horizontal for box-orient displays its children from left to right. A box with a computed value of vertical displays its children from top to bottom.'
           },
           {
             name: 'reverse',
-            desc: 'A box with a computed value of horizontal for box-orient displays its children from right to left. A box with a computed value of vertical displays its children from bottom to top.'
+            desc:
+              'A box with a computed value of horizontal for box-orient displays its children from right to left. A box with a computed value of vertical displays its children from bottom to top.'
           }
         ]
       },
       {
         name: '-moz-box-flex',
-        desc: "Specifies how a box grows to fill the box that contains it, in the direction of the containing box's layout.",
+        desc:
+          "Specifies how a box grows to fill the box that contains it, in the direction of the containing box's layout.",
         browsers: 'FF1',
         restriction: 'number'
       },
@@ -4911,13 +5132,15 @@ export const data: CSSData = {
       },
       {
         name: '-moz-box-ordinal-group',
-        desc: 'Indicates the ordinal group the element belongs to. Elements with a lower ordinal group are displayed before those with a higher ordinal group.',
+        desc:
+          'Indicates the ordinal group the element belongs to. Elements with a lower ordinal group are displayed before those with a higher ordinal group.',
         browsers: 'FF1',
         restriction: 'integer'
       },
       {
         name: '-moz-box-orient',
-        desc: 'In Mozilla applications, -moz-box-orient specifies whether a box lays out its contents horizontally or vertically.',
+        desc:
+          'In Mozilla applications, -moz-box-orient specifies whether a box lays out its contents horizontally or vertically.',
         browsers: 'FF1',
         restriction: 'enum',
         values: [
@@ -4939,25 +5162,30 @@ export const data: CSSData = {
       },
       {
         name: '-moz-box-pack',
-        desc: 'Specifies how a box packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.',
+        desc:
+          'Specifies how a box packs its contents in the direction of its layout. The effect of this is only visible if there is extra space in the box.',
         browsers: 'FF1',
         restriction: 'enum',
         values: [
           {
             name: 'center',
-            desc: 'The extra space is divided evenly, with half placed before the first child and the other half placed after the last child.'
+            desc:
+              'The extra space is divided evenly, with half placed before the first child and the other half placed after the last child.'
           },
           {
             name: 'end',
-            desc: 'For normal direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child. For reverse direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child.'
+            desc:
+              'For normal direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child. For reverse direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child.'
           },
           {
             name: 'justify',
-            desc: 'The space is divided evenly in-between each child, with none of the extra space placed before the first child or after the last child. If there is only one child, treat the pack value as if it were start.'
+            desc:
+              'The space is divided evenly in-between each child, with none of the extra space placed before the first child or after the last child. If there is only one child, treat the pack value as if it were start.'
           },
           {
             name: 'start',
-            desc: 'For normal direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child. For reverse direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child.'
+            desc:
+              'For normal direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child. For reverse direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child.'
           }
         ]
       },
@@ -4992,7 +5220,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-column-gap',
-        desc: 'Sets the gap between columns. If there is a column rule between columns, it will appear in the middle of the gap.',
+        desc:
+          'Sets the gap between columns. If there is a column rule between columns, it will appear in the middle of the gap.',
         browsers: 'FF3.5',
         restriction: 'length',
         values: [
@@ -5004,7 +5233,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-column-rule',
-        desc: "Shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
+        desc:
+          "Shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
         browsers: 'FF3.5',
         restriction: 'length, line-width, line-style, color'
       },
@@ -5052,7 +5282,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-font-feature-settings',
-        desc: 'Provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.',
+        desc:
+          'Provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.',
         browsers: 'FF4',
         restriction: 'string, integer',
         values: [
@@ -5105,7 +5336,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'Conditional hyphenation characters inside a word, if present, take priority over automatic resources when determining hyphenation points within the word.'
+            desc:
+              'Conditional hyphenation characters inside a word, if present, take priority over automatic resources when determining hyphenation points within the word.'
           },
           {
             name: 'manual'
@@ -5118,7 +5350,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-perspective',
-        desc: 'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
+        desc:
+          'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
         browsers: 'FF10',
         restriction: 'length',
         values: [
@@ -5130,13 +5363,15 @@ export const data: CSSData = {
       },
       {
         name: '-moz-perspective-origin',
-        desc: 'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
+        desc:
+          'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
         browsers: 'FF10',
         restriction: 'position, percentage, length'
       },
       {
         name: '-moz-text-align-last',
-        desc: "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.",
+        desc:
+          "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.",
         browsers: 'FF12',
         restriction: 'enum',
         values: [
@@ -5153,17 +5388,20 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
           },
           {
             name: 'right',
-            desc: "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
           }
         ]
       },
       {
         name: '-moz-text-decoration-color',
-        desc: 'Specifies the color of text decoration (underlines overlines, and line-throughs) set on the element with text-decoration-line.',
+        desc:
+          'Specifies the color of text decoration (underlines overlines, and line-throughs) set on the element with text-decoration-line.',
         browsers: 'FF6',
         restriction: 'color'
       },
@@ -5233,7 +5471,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-transform',
-        desc: "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
+        desc:
+          "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
         browsers: 'FF3.5',
         restriction: 'enum',
         values: [
@@ -5329,7 +5568,8 @@ export const data: CSSData = {
       },
       {
         name: '-moz-transition-delay',
-        desc: 'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
+        desc:
+          'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
         browsers: 'FF4',
         restriction: 'time'
       },
@@ -5408,7 +5648,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-accelerator',
-        desc: 'IE only. Has the ability to turn off its system underlines for accelerator keys until the ALT key is pressed',
+        desc:
+          'IE only. Has the ability to turn off its system underlines for accelerator keys until the ALT key is pressed',
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
@@ -5453,7 +5694,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'chained',
-            desc: 'The nearest zoomable parent element begins zooming when the user hits a zoom limit during a manipulation. No bounce effect is shown.'
+            desc:
+              'The nearest zoomable parent element begins zooming when the user hits a zoom limit during a manipulation. No bounce effect is shown.'
           },
           {
             name: 'none',
@@ -5501,7 +5743,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'mandatory',
-            desc: 'Indicates that the motion of the content after the contact is picked up is always adjusted so that it lands on a snap-point.'
+            desc:
+              'Indicates that the motion of the content after the contact is picked up is always adjusted so that it lands on a snap-point.'
           },
           {
             name: 'none',
@@ -5509,7 +5752,8 @@ export const data: CSSData = {
           },
           {
             name: 'proximity',
-            desc: 'Indicates that the motion of the content after the contact is picked up may be adjusted if the content would normally stop "close enough" to a snap-point.'
+            desc:
+              'Indicates that the motion of the content after the contact is picked up may be adjusted if the content would normally stop "close enough" to a snap-point.'
           },
           {
             name: 'snapInterval(100%, 100%)',
@@ -5544,7 +5788,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'mandatory',
-            desc: 'Indicates that the motion of the content after the contact is picked up is always adjusted so that it lands on a snap-point.'
+            desc:
+              'Indicates that the motion of the content after the contact is picked up is always adjusted so that it lands on a snap-point.'
           },
           {
             name: 'none',
@@ -5552,7 +5797,8 @@ export const data: CSSData = {
           },
           {
             name: 'proximity',
-            desc: 'Indicates that the motion of the content after the contact is picked up may be adjusted if the content would normally stop "close enough" to a snap-point.'
+            desc:
+              'Indicates that the motion of the content after the contact is picked up may be adjusted if the content would normally stop "close enough" to a snap-point.'
           }
         ]
       },
@@ -5564,7 +5810,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-flex',
-        desc: 'specifies the parameters of a flexible length: the positive and negative flexibility, and the preferred size.',
+        desc:
+          'specifies the parameters of a flexible length: the positive and negative flexibility, and the preferred size.',
         browsers: 'IE10',
         restriction: 'length, number, percentage',
         values: [
@@ -5586,7 +5833,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'baseline',
-            desc: "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
+            desc:
+              "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
           },
           {
             name: 'center',
@@ -5598,23 +5846,27 @@ export const data: CSSData = {
           },
           {
             name: 'start',
-            desc: 'The cross-start margin edge of the flexbox item is placed flush with the cross-start edge of the line.'
+            desc:
+              'The cross-start margin edge of the flexbox item is placed flush with the cross-start edge of the line.'
           },
           {
             name: 'stretch',
-            desc: "If the cross size property of the flexbox item is anything other than 'auto', this value is identical to 'start'."
+            desc:
+              "If the cross size property of the flexbox item is anything other than 'auto', this value is identical to 'start'."
           }
         ]
       },
       {
         name: '-ms-flex-direction',
-        desc: 'Specifies how flex items are placed in the flex container, by setting the direction of the flex container’s main axis.',
+        desc:
+          'Specifies how flex items are placed in the flex container, by setting the direction of the flex container’s main axis.',
         browsers: 'IE10',
         restriction: 'enum',
         values: [
           {
             name: 'column',
-            desc: 'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
+            desc:
+              'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
           },
           {
             name: 'column-reverse'
@@ -5635,7 +5887,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'column',
-            desc: 'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
+            desc:
+              'The flex container’s main axis has the same orientation as the block axis of the current writing mode.'
           },
           {
             name: 'column-reverse'
@@ -5664,11 +5917,13 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: "Computes to the value of 'align-items' on the element’s parent, or 'stretch' if the element has no parent. On absolutely positioned elements, it computes to itself."
+            desc:
+              "Computes to the value of 'align-items' on the element’s parent, or 'stretch' if the element has no parent. On absolutely positioned elements, it computes to itself."
           },
           {
             name: 'baseline',
-            desc: "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
+            desc:
+              "If the flex item’s inline axis is the same as the cross axis, this value is identical to 'flex-start'. Otherwise, it participates in baseline alignment."
           },
           {
             name: 'center',
@@ -5684,13 +5939,15 @@ export const data: CSSData = {
           },
           {
             name: 'stretch',
-            desc: 'If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched.'
+            desc:
+              'If the cross size property of the flex item computes to auto, and neither of the cross-axis margins are auto, the flex item is stretched.'
           }
         ]
       },
       {
         name: '-ms-flex-line-pack',
-        desc: "Aligns a flex container’s lines within the flex container when there is extra space in the cross-axis, similar to how 'justify-content' aligns individual items within the main-axis.",
+        desc:
+          "Aligns a flex container’s lines within the flex container when there is extra space in the cross-axis, similar to how 'justify-content' aligns individual items within the main-axis.",
         browsers: 'IE10',
         restriction: 'enum',
         values: [
@@ -5722,7 +5979,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-flex-order',
-        desc: 'Controls the order in which children of a flex container appear within the flex container, by assigning them to ordinal groups.',
+        desc:
+          'Controls the order in which children of a flex container appear within the flex container, by assigning them to ordinal groups.',
         browsers: 'IE10',
         restriction: 'integer'
       },
@@ -5756,7 +6014,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-flex-wrap',
-        desc: 'Controls whether the flex container is single-line or multi-line, and the direction of the cross-axis, which determines the direction new lines are stacked in.',
+        desc:
+          'Controls whether the flex container is single-line or multi-line, and the direction of the cross-axis, which determines the direction new lines are stacked in.',
         browsers: 'IE10',
         restriction: 'enum',
         values: [
@@ -5830,7 +6089,8 @@ export const data: CSSData = {
           },
           {
             name: 'start',
-            desc: "Aligns the starting edge of the Grid Item's margin box to the starting edge of the Grid Item's column."
+            desc:
+              "Aligns the starting edge of the Grid Item's margin box to the starting edge of the Grid Item's column."
           },
           {
             name: 'stretch',
@@ -5851,7 +6111,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-grid-layer',
-        desc: 'Grid-layer is similar in concept to z-index, but avoids overloading the meaning of the z-index property, which is applicable only to positioned elements.',
+        desc:
+          'Grid-layer is similar in concept to z-index, but avoids overloading the meaning of the z-index property, which is applicable only to positioned elements.',
         browsers: 'E,IE10',
         restriction: 'integer'
       },
@@ -5948,7 +6209,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-hyphenate-limit-zone',
-        desc: 'Specifies the maximum amount of unfilled space (before justification) that may be left in the line box before hyphenation is triggered to pull part of a word from the next line back up into the current line.',
+        desc:
+          'Specifies the maximum amount of unfilled space (before justification) that may be left in the line box before hyphenation is triggered to pull part of a word from the next line back up into the current line.',
         browsers: 'E,IE10',
         restriction: 'percentage, length'
       },
@@ -5960,7 +6222,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'Conditional hyphenation characters inside a word, if present, take priority over automatic resources when determining hyphenation points within the word.'
+            desc:
+              'Conditional hyphenation characters inside a word, if present, take priority over automatic resources when determining hyphenation points within the word.'
           },
           {
             name: 'manual'
@@ -5992,7 +6255,8 @@ export const data: CSSData = {
           },
           {
             name: 'normal',
-            desc: 'The IME state should be normal; this value can be used in a user style sheet to override the page setting.'
+            desc:
+              'The IME state should be normal; this value can be used in a user style sheet to override the page setting.'
           }
         ]
       },
@@ -6071,15 +6335,18 @@ export const data: CSSData = {
         values: [
           {
             name: 'both',
-            desc: 'Default. Both the char and line grid modes are enabled. This setting is necessary to fully enable the layout grid on an element.'
+            desc:
+              'Default. Both the char and line grid modes are enabled. This setting is necessary to fully enable the layout grid on an element.'
           },
           {
             name: 'char',
-            desc: 'Only a character grid is used. This is recommended for use with block-level elements, such as a blockquote, where the line grid is intended to be disabled.'
+            desc:
+              'Only a character grid is used. This is recommended for use with block-level elements, such as a blockquote, where the line grid is intended to be disabled.'
           },
           {
             name: 'line',
-            desc: 'Only a line grid is used. This is recommended for use with inline elements, such as a span, to disable the horizontal grid on runs of text that act as a single entity in the grid layout.'
+            desc:
+              'Only a line grid is used. This is recommended for use with inline elements, such as a span, to disable the horizontal grid on runs of text that act as a single entity in the grid layout.'
           },
           {
             name: 'none',
@@ -6095,14 +6362,16 @@ export const data: CSSData = {
         values: [
           {
             name: 'fixed',
-            desc: 'Grid used for monospaced layout. All noncursive characters are treated as equal; every character is centered within a single grid space by default.'
+            desc:
+              'Grid used for monospaced layout. All noncursive characters are treated as equal; every character is centered within a single grid space by default.'
           },
           {
             name: 'loose'
           },
           {
             name: 'strict',
-            desc: 'Grid used for Chinese, as well as Japanese (Genko) and Korean characters. Only the ideographs, kanas, and wide characters are snapped to the grid.'
+            desc:
+              'Grid used for Chinese, as well as Japanese (Genko) and Korean characters. Only the ideographs, kanas, and wide characters are snapped to the grid.'
           }
         ]
       },
@@ -6114,15 +6383,18 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'The UA determines the set of line-breaking restrictions to use for CJK scripts, and it may vary the restrictions based on the length of the line; e.g., use a less restrictive set of line-break rules for short lines.'
+            desc:
+              'The UA determines the set of line-breaking restrictions to use for CJK scripts, and it may vary the restrictions based on the length of the line; e.g., use a less restrictive set of line-break rules for short lines.'
           },
           {
             name: 'keep-all',
-            desc: 'Sequences of CJK characters can no longer break on implied break points. This option should only be used where the presence of word separator characters still creates line-breaking opportunities, as in Korean.'
+            desc:
+              'Sequences of CJK characters can no longer break on implied break points. This option should only be used where the presence of word separator characters still creates line-breaking opportunities, as in Korean.'
           },
           {
             name: 'newspaper',
-            desc: 'Breaks CJK scripts using the least restrictive set of line-breaking rules. Typically used for short lines, such as in newspapers.'
+            desc:
+              'Breaks CJK scripts using the least restrictive set of line-breaking rules. Typically used for short lines, such as in newspapers.'
           },
           {
             name: 'normal',
@@ -6149,7 +6421,8 @@ export const data: CSSData = {
           },
           {
             name: 'none',
-            desc: 'Indicates the element does not display scrollbars or panning indicators, even when its content overflows.'
+            desc:
+              'Indicates the element does not display scrollbars or panning indicators, even when its content overflows.'
           },
           {
             name: 'scrollbar'
@@ -6158,7 +6431,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-perspective',
-        desc: 'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
+        desc:
+          'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
         browsers: 'IE10',
         restriction: 'length',
         values: [
@@ -6170,19 +6444,22 @@ export const data: CSSData = {
       },
       {
         name: '-ms-perspective-origin',
-        desc: 'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
+        desc:
+          'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
         browsers: 'IE10',
         restriction: 'position, percentage, length'
       },
       {
         name: '-ms-perspective-origin-x',
-        desc: 'Establishes the origin for the perspective property. It effectively sets the X  position at which the viewer appears to be looking at the children of the element.',
+        desc:
+          'Establishes the origin for the perspective property. It effectively sets the X  position at which the viewer appears to be looking at the children of the element.',
         browsers: 'IE10',
         restriction: 'position, percentage, length'
       },
       {
         name: '-ms-perspective-origin-y',
-        desc: 'Establishes the origin for the perspective property. It effectively sets the Y position at which the viewer appears to be looking at the children of the element.',
+        desc:
+          'Establishes the origin for the perspective property. It effectively sets the Y position at which the viewer appears to be looking at the children of the element.',
         browsers: 'IE10',
         restriction: 'position, percentage, length'
       },
@@ -6214,7 +6491,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-scrollbar-base-color',
-        desc: 'Determines the color of the main elements of a scroll bar, which include the scroll box, track, and scroll arrows.',
+        desc:
+          'Determines the color of the main elements of a scroll bar, which include the scroll box, track, and scroll arrows.',
         browsers: 'IE8',
         restriction: 'color'
       },
@@ -6250,7 +6528,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-scroll-chaining',
-        desc: 'Gets or sets a value that indicates the scrolling behavior that occurs when a user hits the content boundary during a manipulation.',
+        desc:
+          'Gets or sets a value that indicates the scrolling behavior that occurs when a user hits the content boundary during a manipulation.',
         browsers: 'E,IE10',
         restriction: 'enum, length',
         values: [
@@ -6264,7 +6543,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-scroll-limit',
-        desc: 'Gets or sets a shorthand value that sets values for the -ms-scroll-limit-x-min, -ms-scroll-limit-y-min, -ms-scroll-limit-x-max, and -ms-scroll-limit-y-max properties.',
+        desc:
+          'Gets or sets a shorthand value that sets values for the -ms-scroll-limit-x-min, -ms-scroll-limit-y-min, -ms-scroll-limit-x-max, and -ms-scroll-limit-y-max properties.',
         browsers: 'E,IE10',
         restriction: 'length',
         values: [
@@ -6309,7 +6589,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-scroll-rails',
-        desc: 'Gets or sets a value that indicates whether or not small motions perpendicular to the primary axis of motion will result in either changes to both the scrollTop and scrollLeft properties or a change to the primary axis (for instance, either the scrollTop or scrollLeft properties will change, but not both).',
+        desc:
+          'Gets or sets a value that indicates whether or not small motions perpendicular to the primary axis of motion will result in either changes to both the scrollTop and scrollLeft properties or a change to the primary axis (for instance, either the scrollTop or scrollLeft properties will change, but not both).',
         browsers: 'E,IE10',
         restriction: 'enum, length',
         values: [
@@ -6351,7 +6632,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-scroll-snap-type',
-        desc: 'Gets or sets a value that defines what type of snap-point should be used for the current element. There are two type of snap-points, with the primary difference being whether or not the user is guaranteed to always stop on a snap-point.',
+        desc:
+          'Gets or sets a value that defines what type of snap-point should be used for the current element. There are two type of snap-points, with the primary difference being whether or not the user is guaranteed to always stop on a snap-point.',
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
@@ -6361,17 +6643,20 @@ export const data: CSSData = {
           },
           {
             name: 'mandatory',
-            desc: 'The visual viewport of this scroll container is guaranteed to rest on a snap point when there are no active scrolling operations.'
+            desc:
+              'The visual viewport of this scroll container is guaranteed to rest on a snap point when there are no active scrolling operations.'
           },
           {
             name: 'proximity',
-            desc: 'The visual viewport of this scroll container may come to rest on a snap point at the termination of a scroll at the discretion of the UA given the parameters of the scroll.'
+            desc:
+              'The visual viewport of this scroll container may come to rest on a snap point at the termination of a scroll at the discretion of the UA given the parameters of the scroll.'
           }
         ]
       },
       {
         name: '-ms-scroll-snap-x',
-        desc: 'Gets or sets a shorthand value that sets values for the -ms-scroll-snap-type and -ms-scroll-snap-points-x properties.',
+        desc:
+          'Gets or sets a shorthand value that sets values for the -ms-scroll-snap-type and -ms-scroll-snap-points-x properties.',
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
@@ -6394,7 +6679,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-scroll-snap-y',
-        desc: 'Gets or sets a shorthand value that sets values for the -ms-scroll-snap-type and -ms-scroll-snap-points-y properties.',
+        desc:
+          'Gets or sets a shorthand value that sets values for the -ms-scroll-snap-type and -ms-scroll-snap-points-y properties.',
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
@@ -6417,7 +6703,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-scroll-translation',
-        desc: 'Gets or sets a value that specifies whether vertical-to-horizontal scroll wheel translation occurs on the specified element.',
+        desc:
+          'Gets or sets a value that specifies whether vertical-to-horizontal scroll wheel translation occurs on the specified element.',
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
@@ -6431,7 +6718,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-text-align-last',
-        desc: "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.",
+        desc:
+          "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.",
         browsers: 'E,IE8',
         restriction: 'enum',
         values: [
@@ -6448,17 +6736,20 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
           },
           {
             name: 'right',
-            desc: "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
           }
         ]
       },
       {
         name: '-ms-text-autospace',
-        desc: "Determines whether or not a full-width punctuation mark character should be trimmed if it appears at the beginning of a line, so that its 'ink' lines up with the first glyph in the line above and below.",
+        desc:
+          "Determines whether or not a full-width punctuation mark character should be trimmed if it appears at the beginning of a line, so that its 'ink' lines up with the first glyph in the line above and below.",
         browsers: 'E,IE8',
         restriction: 'enum',
         values: [
@@ -6491,7 +6782,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'all',
-            desc: 'Attempt to typeset horizontally all consecutive characters within the box such that they take up the space of a single character within the vertical line box.'
+            desc:
+              'Attempt to typeset horizontally all consecutive characters within the box such that they take up the space of a single character within the vertical line box.'
           },
           {
             name: 'digits'
@@ -6504,17 +6796,20 @@ export const data: CSSData = {
       },
       {
         name: '-ms-text-justify',
-        desc: "Selects the justification algorithm used when 'text-align' is set to 'justify'. The property applies to block containers, but the UA may (but is not required to) also support it on inline elements.",
+        desc:
+          "Selects the justification algorithm used when 'text-align' is set to 'justify'. The property applies to block containers, but the UA may (but is not required to) also support it on inline elements.",
         browsers: 'E,IE8',
         restriction: 'enum',
         values: [
           {
             name: 'auto',
-            desc: 'The UA determines the justification algorithm to follow, based on a balance between performance and adequate presentation quality.'
+            desc:
+              'The UA determines the justification algorithm to follow, based on a balance between performance and adequate presentation quality.'
           },
           {
             name: 'distribute',
-            desc: "Justification primarily changes spacing both at word separators and at grapheme cluster boundaries in all scripts except those in the connected and cursive groups. This value is sometimes used in e.g. Japanese, often with the 'text-align-last' property."
+            desc:
+              "Justification primarily changes spacing both at word separators and at grapheme cluster boundaries in all scripts except those in the connected and cursive groups. This value is sometimes used in e.g. Japanese, often with the 'text-align-last' property."
           },
           {
             name: 'inter-cluster'
@@ -6532,7 +6827,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-text-kashida-space',
-        desc: 'Sets or retrieves the ratio of kashida expansion to white space expansion when justifying lines of text in the object.',
+        desc:
+          'Sets or retrieves the ratio of kashida expansion to white space expansion when justifying lines of text in the object.',
         browsers: 'E,IE10',
         restriction: 'percentage'
       },
@@ -6568,17 +6864,20 @@ export const data: CSSData = {
       },
       {
         name: '-ms-text-underline-position',
-        desc: "Sets the position of an underline specified on the same element: it does not affect underlines specified by ancestor elements.This property is typically used in vertical writing contexts such as in Japanese documents where it often desired to have the underline appear 'over' (to the right of) the affected run of text",
+        desc:
+          "Sets the position of an underline specified on the same element: it does not affect underlines specified by ancestor elements.This property is typically used in vertical writing contexts such as in Japanese documents where it often desired to have the underline appear 'over' (to the right of) the affected run of text",
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
           {
             name: 'alphabetic',
-            desc: 'The underline is aligned with the alphabetic baseline. In this case the underline is likely to cross some descenders.'
+            desc:
+              'The underline is aligned with the alphabetic baseline. In this case the underline is likely to cross some descenders.'
           },
           {
             name: 'auto',
-            desc: "The user agent may use any algorithm to determine the underline's position. In horizontal line layout, the underline should be aligned as for alphabetic. In vertical line layout, if the language is set to Japanese or Korean, the underline should be aligned as for over."
+            desc:
+              "The user agent may use any algorithm to determine the underline's position. In horizontal line layout, the underline should be aligned as for alphabetic. In vertical line layout, if the language is set to Japanese or Korean, the underline should be aligned as for over."
           },
           {
             name: 'over'
@@ -6612,15 +6911,18 @@ export const data: CSSData = {
           },
           {
             name: 'pan-x',
-            desc: 'The element permits touch-driven panning on the horizontal axis. The touch pan is performed on the nearest ancestor with horizontally scrollable content.'
+            desc:
+              'The element permits touch-driven panning on the horizontal axis. The touch pan is performed on the nearest ancestor with horizontally scrollable content.'
           },
           {
             name: 'pan-y',
-            desc: 'The element permits touch-driven panning on the vertical axis. The touch pan is performed on the nearest ancestor with vertically scrollable content.'
+            desc:
+              'The element permits touch-driven panning on the vertical axis. The touch pan is performed on the nearest ancestor with vertically scrollable content.'
           },
           {
             name: 'pinch-zoom',
-            desc: 'The element permits pinch-zooming. The pinch-zoom is performed on the nearest ancestor with zoomable content.'
+            desc:
+              'The element permits pinch-zooming. The pinch-zoom is performed on the nearest ancestor with zoomable content.'
           }
         ]
       },
@@ -6641,7 +6943,8 @@ export const data: CSSData = {
       },
       {
         name: '-ms-transform',
-        desc: "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
+        desc:
+          "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
         browsers: 'IE9-9',
         restriction: 'enum',
         values: [
@@ -6772,13 +7075,15 @@ export const data: CSSData = {
       },
       {
         name: '-ms-word-wrap',
-        desc: 'Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit.',
+        desc:
+          'Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit.',
         browsers: 'IE8',
         restriction: 'enum',
         values: [
           {
             name: 'break-word',
-            desc: "An unbreakable 'word' may be broken at an arbitrary point if there are no otherwise-acceptable break points in the line."
+            desc:
+              "An unbreakable 'word' may be broken at an arbitrary point if there are no otherwise-acceptable break points in the line."
           },
           {
             name: 'normal',
@@ -6805,7 +7110,8 @@ export const data: CSSData = {
           },
           {
             name: 'end',
-            desc: 'Inline flow content can wrap on the end side of the exclusion area but must leave the area to the start edge of the exclusion area empty.'
+            desc:
+              'Inline flow content can wrap on the end side of the exclusion area but must leave the area to the start edge of the exclusion area empty.'
           },
           {
             name: 'maximum'
@@ -6815,7 +7121,8 @@ export const data: CSSData = {
           },
           {
             name: 'start',
-            desc: 'Inline flow content can wrap on the start edge of the exclusion area but must leave the area to end edge of the exclusion area empty.'
+            desc:
+              'Inline flow content can wrap on the start edge of the exclusion area but must leave the area to end edge of the exclusion area empty.'
           }
         ]
       },
@@ -6827,17 +7134,20 @@ export const data: CSSData = {
       },
       {
         name: '-ms-wrap-through',
-        desc: 'Specifies if an element inherits its parent wrapping context. In other words if it is subject to the exclusions defined outside the element.',
+        desc:
+          'Specifies if an element inherits its parent wrapping context. In other words if it is subject to the exclusions defined outside the element.',
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
           {
             name: 'none',
-            desc: "The exclusion element does not inherit its parent node's wrapping context. Its descendants are only subject to exclusion shapes defined inside the element."
+            desc:
+              "The exclusion element does not inherit its parent node's wrapping context. Its descendants are only subject to exclusion shapes defined inside the element."
           },
           {
             name: 'wrap',
-            desc: "The exclusion element inherits its parent node's wrapping context. Its descendant inline content wraps around exclusions defined outside the element."
+            desc:
+              "The exclusion element inherits its parent node's wrapping context. Its descendant inline content wraps around exclusions defined outside the element."
           }
         ]
       },
@@ -6906,7 +7216,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
+            desc:
+              'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
           },
           {
             name: 'current'
@@ -6918,7 +7229,8 @@ export const data: CSSData = {
       },
       {
         name: 'nav-index',
-        desc: "Provides an input-method-neutral way of specifying the sequential navigation order (also known as 'tabbing order').",
+        desc:
+          "Provides an input-method-neutral way of specifying the sequential navigation order (also known as 'tabbing order').",
         browsers: 'O9.5',
         restriction: 'number',
         values: [
@@ -6936,7 +7248,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
+            desc:
+              'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
           },
           {
             name: 'current'
@@ -6954,7 +7267,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
+            desc:
+              'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
           },
           {
             name: 'current'
@@ -6972,7 +7286,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
+            desc:
+              'The user agent automatically determines which element to navigate the focus to in response to directional navigational input.'
           },
           {
             name: 'current'
@@ -7024,7 +7339,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -7052,7 +7368,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -7080,13 +7397,15 @@ export const data: CSSData = {
           },
           {
             name: 'none',
-            desc: 'There is no change to the property value between the time the animation is applied and the time the animation begins playing or after the animation completes.'
+            desc:
+              'There is no change to the property value between the time the animation is applied and the time the animation begins playing or after the animation completes.'
           }
         ]
       },
       {
         name: '-o-animation-iteration-count',
-        desc: 'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
+        desc:
+          'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
         browsers: 'O12',
         restriction: 'number, enum',
         values: [
@@ -7098,7 +7417,8 @@ export const data: CSSData = {
       },
       {
         name: '-o-animation-name',
-        desc: 'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
+        desc:
+          'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
         browsers: 'O12',
         restriction: 'identifier, enum',
         values: [
@@ -7124,27 +7444,32 @@ export const data: CSSData = {
       },
       {
         name: '-o-animation-timing-function',
-        desc: "Describes how the animation will progress over one cycle of its duration. See the 'transition-timing-function'.",
+        desc:
+          "Describes how the animation will progress over one cycle of its duration. See the 'transition-timing-function'.",
         browsers: 'O12',
         restriction: 'timing-function'
       },
       {
         name: 'object-fit',
-        desc: 'Specifies how the contents of a replaced element should be scaled relative to the box established by its used height and width.',
+        desc:
+          'Specifies how the contents of a replaced element should be scaled relative to the box established by its used height and width.',
         browsers: 'C32,FF36,O19,S7.1',
         restriction: 'enum',
         values: [
           {
             name: 'contain',
-            desc: "The replaced content is sized to maintain its aspect ratio while fitting within the element’s content box: its concrete object size is resolved as a contain constraint against the element's used width and height."
+            desc:
+              "The replaced content is sized to maintain its aspect ratio while fitting within the element’s content box: its concrete object size is resolved as a contain constraint against the element's used width and height."
           },
           {
             name: 'cover',
-            desc: "The replaced content is sized to maintain its aspect ratio while filling the element's entire content box: its concrete object size is resolved as a cover constraint against the element’s used width and height."
+            desc:
+              "The replaced content is sized to maintain its aspect ratio while filling the element's entire content box: its concrete object size is resolved as a cover constraint against the element’s used width and height."
           },
           {
             name: 'fill',
-            desc: "The replaced content is sized to fill the element’s content box: the object's concrete object size is the element's used width and height."
+            desc:
+              "The replaced content is sized to fill the element’s content box: the object's concrete object size is the element's used width and height."
           },
           {
             name: 'none',
@@ -7163,13 +7488,15 @@ export const data: CSSData = {
       },
       {
         name: '-o-border-image',
-        desc: "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
+        desc:
+          "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
         browsers: 'O11.6',
         restriction: 'length, percentage, number, image, enum',
         values: [
           {
             name: 'auto',
-            desc: "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
+            desc:
+              "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
           },
           {
             name: 'fill',
@@ -7183,11 +7510,13 @@ export const data: CSSData = {
           },
           {
             name: 'round',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
           },
           {
             name: 'space',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
           },
           {
             name: 'stretch',
@@ -7197,21 +7526,25 @@ export const data: CSSData = {
       },
       {
         name: '-o-object-fit',
-        desc: 'Specifies how the contents of a replaced element should be scaled relative to the box established by its used height and width.',
+        desc:
+          'Specifies how the contents of a replaced element should be scaled relative to the box established by its used height and width.',
         browsers: 'O10.6',
         restriction: 'enum',
         values: [
           {
             name: 'contain',
-            desc: "The replaced content is sized to maintain its aspect ratio while fitting within the element’s content box: its concrete object size is resolved as a contain constraint against the element's used width and height."
+            desc:
+              "The replaced content is sized to maintain its aspect ratio while fitting within the element’s content box: its concrete object size is resolved as a contain constraint against the element's used width and height."
           },
           {
             name: 'cover',
-            desc: "The replaced content is sized to maintain its aspect ratio while filling the element's entire content box: its concrete object size is resolved as a cover constraint against the element’s used width and height."
+            desc:
+              "The replaced content is sized to maintain its aspect ratio while filling the element's entire content box: its concrete object size is resolved as a cover constraint against the element’s used width and height."
           },
           {
             name: 'fill',
-            desc: "The replaced content is sized to fill the element’s content box: the object's concrete object size is the element's used width and height."
+            desc:
+              "The replaced content is sized to fill the element’s content box: the object's concrete object size is the element's used width and height."
           },
           {
             name: 'none',
@@ -7236,13 +7569,15 @@ export const data: CSSData = {
       },
       {
         name: 'order',
-        desc: 'Controls the order in which children of a flex container appear within the flex container, by assigning them to ordinal groups.',
+        desc:
+          'Controls the order in which children of a flex container appear within the flex container, by assigning them to ordinal groups.',
         browsers: 'E,C29,FF22,IE11,O12.1,S9',
         restriction: 'integer'
       },
       {
         name: 'orphans',
-        desc: 'Specifies the minimum number of line boxes in a block container that must be left in a fragment before a fragmentation break.',
+        desc:
+          'Specifies the minimum number of line boxes in a block container that must be left in a fragment before a fragmentation break.',
         browsers: 'C,IE8,O7,S1.3',
         restriction: 'integer'
       },
@@ -7254,7 +7589,8 @@ export const data: CSSData = {
       },
       {
         name: '-o-tab-size',
-        desc: 'This property determines the width of the tab character (U+0009), in space characters (U+0020), when rendered.',
+        desc:
+          'This property determines the width of the tab character (U+0009), in space characters (U+0020), when rendered.',
         browsers: 'O10.6',
         restriction: 'integer, length'
       },
@@ -7274,7 +7610,8 @@ export const data: CSSData = {
       },
       {
         name: '-o-transform',
-        desc: "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
+        desc:
+          "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
         browsers: 'O10.5',
         restriction: 'enum',
         values: [
@@ -7367,7 +7704,8 @@ export const data: CSSData = {
       },
       {
         name: '-o-transition-delay',
-        desc: 'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
+        desc:
+          'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
         browsers: 'O11.5',
         restriction: 'time'
       },
@@ -7401,49 +7739,57 @@ export const data: CSSData = {
       },
       {
         name: 'offset-block-end',
-        desc: "Logical 'bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
           }
         ]
       },
       {
         name: 'offset-block-start',
-        desc: "Logical 'top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
           }
         ]
       },
       {
         name: 'offset-inline-end',
-        desc: "Logical 'right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
           }
         ]
       },
       {
         name: 'offset-inline-start',
-        desc: "Logical 'left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well."
           }
         ]
       },
@@ -7506,11 +7852,13 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: "The behavior of the 'auto' value is UA-dependent, but should cause a scrolling mechanism to be provided for overflowing boxes."
+            desc:
+              "The behavior of the 'auto' value is UA-dependent, but should cause a scrolling mechanism to be provided for overflowing boxes."
           },
           {
             name: 'hidden',
-            desc: 'Content is clipped and no scrolling mechanism should be provided to view the content outside the clipping region.'
+            desc:
+              'Content is clipped and no scrolling mechanism should be provided to view the content outside the clipping region.'
           },
           {
             name: '-moz-hidden-unscrollable',
@@ -7518,7 +7866,8 @@ export const data: CSSData = {
           },
           {
             name: 'scroll',
-            desc: 'Content is clipped and if the user agent uses a scrolling mechanism that is visible on the screen (such as a scroll bar or a panner), that mechanism should be displayed for a box whether or not any of its content is clipped.'
+            desc:
+              'Content is clipped and if the user agent uses a scrolling mechanism that is visible on the screen (such as a scroll bar or a panner), that mechanism should be displayed for a box whether or not any of its content is clipped.'
           },
           {
             name: 'visible',
@@ -7528,13 +7877,15 @@ export const data: CSSData = {
       },
       {
         name: 'overflow-wrap',
-        desc: 'Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit within the line box.',
+        desc:
+          'Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit within the line box.',
         browsers: 'C23,O12.1,S6.1',
         restriction: 'enum',
         values: [
           {
             name: 'break-word',
-            desc: 'An otherwise unbreakable sequence of characters may be broken at an arbitrary point if there are no otherwise-acceptable break points in the line.'
+            desc:
+              'An otherwise unbreakable sequence of characters may be broken at an arbitrary point if there are no otherwise-acceptable break points in the line.'
           },
           {
             name: 'normal',
@@ -7550,15 +7901,18 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: "The behavior of the 'auto' value is UA-dependent, but should cause a scrolling mechanism to be provided for overflowing boxes."
+            desc:
+              "The behavior of the 'auto' value is UA-dependent, but should cause a scrolling mechanism to be provided for overflowing boxes."
           },
           {
             name: 'hidden',
-            desc: 'Content is clipped and no scrolling mechanism should be provided to view the content outside the clipping region.'
+            desc:
+              'Content is clipped and no scrolling mechanism should be provided to view the content outside the clipping region.'
           },
           {
             name: 'scroll',
-            desc: 'Content is clipped and if the user agent uses a scrolling mechanism that is visible on the screen (such as a scroll bar or a panner), that mechanism should be displayed for a box whether or not any of its content is clipped.'
+            desc:
+              'Content is clipped and if the user agent uses a scrolling mechanism that is visible on the screen (such as a scroll bar or a panner), that mechanism should be displayed for a box whether or not any of its content is clipped.'
           },
           {
             name: 'visible',
@@ -7574,15 +7928,18 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: "The behavior of the 'auto' value is UA-dependent, but should cause a scrolling mechanism to be provided for overflowing boxes."
+            desc:
+              "The behavior of the 'auto' value is UA-dependent, but should cause a scrolling mechanism to be provided for overflowing boxes."
           },
           {
             name: 'hidden',
-            desc: 'Content is clipped and no scrolling mechanism should be provided to view the content outside the clipping region.'
+            desc:
+              'Content is clipped and no scrolling mechanism should be provided to view the content outside the clipping region.'
           },
           {
             name: 'scroll',
-            desc: 'Content is clipped and if the user agent uses a scrolling mechanism that is visible on the screen (such as a scroll bar or a panner), that mechanism should be displayed for a box whether or not any of its content is clipped.'
+            desc:
+              'Content is clipped and if the user agent uses a scrolling mechanism that is visible on the screen (such as a scroll bar or a panner), that mechanism should be displayed for a box whether or not any of its content is clipped.'
           },
           {
             name: 'visible',
@@ -7592,58 +7949,68 @@ export const data: CSSData = {
       },
       {
         name: 'pad',
-        desc: '@counter-style descriptor. Specifies a “fixed-width” counter style, where representations shorter than the pad value are padded with a particular <symbol>',
+        desc:
+          '@counter-style descriptor. Specifies a “fixed-width” counter style, where representations shorter than the pad value are padded with a particular <symbol>',
         browsers: 'FF33',
         restriction: 'integer, image, string, identifier'
       },
       {
         name: 'padding',
-        desc: 'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage',
         values: []
       },
       {
         name: 'padding-bottom',
-        desc: 'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage'
       },
       {
         name: 'padding-block-end',
-        desc: "Logical 'padding-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'padding-bottom'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage'
       },
       {
         name: 'padding-block-start',
-        desc: "Logical 'padding-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'padding-top'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage'
       },
       {
         name: 'padding-inline-end',
-        desc: "Logical 'padding-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'padding-right'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage'
       },
       {
         name: 'padding-inline-start',
-        desc: "Logical 'padding-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
+        desc:
+          "Logical 'padding-left'. Mapping depends on the parent element’s 'writing-mode', 'direction', and 'text-orientation'.",
         browsers: 'FF41',
         restriction: 'length, percentage'
       },
       {
         name: 'padding-left',
-        desc: 'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage'
       },
       {
         name: 'padding-right',
-        desc: 'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage'
       },
       {
         name: 'padding-top',
-        desc: 'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
+        desc:
+          'Shorthand property to set values the thickness of the padding area. If left is omitted, it is the same as right. If bottom is omitted it is the same as top, if right is omitted it is the same as top. The value may not be negative.',
         restriction: 'length, percentage'
       },
       {
@@ -7665,11 +8032,13 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks after the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks after the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks after the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks after the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -7692,11 +8061,13 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks before the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks before the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks before the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks before the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -7718,7 +8089,8 @@ export const data: CSSData = {
       },
       {
         name: 'paint-order',
-        desc: 'Controls the order that the three paint operations that shapes and text are rendered with: their fill, their stroke and any markers they might have.',
+        desc:
+          'Controls the order that the three paint operations that shapes and text are rendered with: their fill, their stroke and any markers they might have.',
         browsers: 'C35,FF31,O22,S7.1',
         restriction: 'enum',
         values: [
@@ -7730,7 +8102,8 @@ export const data: CSSData = {
           },
           {
             name: 'normal',
-            desc: "The element is painted with the standard order of painting operations: the 'fill' is painted first, then its 'stroke' and finally its markers."
+            desc:
+              "The element is painted with the standard order of painting operations: the 'fill' is painted first, then its 'stroke' and finally its markers."
           },
           {
             name: 'stroke'
@@ -7739,7 +8112,8 @@ export const data: CSSData = {
       },
       {
         name: 'perspective',
-        desc: 'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
+        desc:
+          'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
         browsers: 'E,C36,FF16,IE10,O23,S9',
         restriction: 'length, enum',
         values: [
@@ -7751,7 +8125,8 @@ export const data: CSSData = {
       },
       {
         name: 'perspective-origin',
-        desc: 'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
+        desc:
+          'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
         browsers: 'E,C36,FF16,IE10,O23,S9',
         restriction: 'position, percentage, length'
       },
@@ -7762,11 +8137,13 @@ export const data: CSSData = {
         values: [
           {
             name: 'all',
-            desc: 'The given element can be the target element for pointer events whenever the pointer is over either the interior or the perimeter of the element.'
+            desc:
+              'The given element can be the target element for pointer events whenever the pointer is over either the interior or the perimeter of the element.'
           },
           {
             name: 'fill',
-            desc: 'The given element can be the target element for pointer events whenever the pointer is over the interior of the element.'
+            desc:
+              'The given element can be the target element for pointer events whenever the pointer is over the interior of the element.'
           },
           {
             name: 'none',
@@ -7777,11 +8154,13 @@ export const data: CSSData = {
           },
           {
             name: 'stroke',
-            desc: 'The given element can be the target element for pointer events whenever the pointer is over the perimeter of the element.'
+            desc:
+              'The given element can be the target element for pointer events whenever the pointer is over the perimeter of the element.'
           },
           {
             name: 'visible',
-            desc: 'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and the pointer is over either the interior or the perimete of the element.'
+            desc:
+              'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and the pointer is over either the interior or the perimete of the element.'
           },
           {
             name: 'visibleFill'
@@ -7803,7 +8182,8 @@ export const data: CSSData = {
           },
           {
             name: 'fixed',
-            desc: "The box's position is calculated according to the 'absolute' model, but in addition, the box is fixed with respect to some reference. As with the 'absolute' model, the box's margins do not collapse with any other margins."
+            desc:
+              "The box's position is calculated according to the 'absolute' model, but in addition, the box is fixed with respect to some reference. As with the 'absolute' model, the box's margins do not collapse with any other margins."
           },
           {
             name: '-ms-page',
@@ -7839,7 +8219,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'none',
-            desc: "The 'open-quote' and 'close-quote' values of the 'content' property produce no quotations marks, as if they were 'no-open-quote' and 'no-close-quote' respectively."
+            desc:
+              "The 'open-quote' and 'close-quote' values of the 'content' property produce no quotations marks, as if they were 'no-open-quote' and 'no-close-quote' respectively."
           }
         ]
       },
@@ -7855,7 +8236,8 @@ export const data: CSSData = {
           },
           {
             name: 'infinite',
-            desc: 'If used as the first value in a range, it represents negative infinity; if used as the second value, it represents positive infinity.'
+            desc:
+              'If used as the first value in a range, it represents negative infinity; if used as the second value, it represents positive infinity.'
           }
         ]
       },
@@ -7867,36 +8249,43 @@ export const data: CSSData = {
         values: [
           {
             name: 'both',
-            desc: 'The UA presents a bidirectional resizing mechanism to allow the user to adjust both the height and the width of the element.'
+            desc:
+              'The UA presents a bidirectional resizing mechanism to allow the user to adjust both the height and the width of the element.'
           },
           {
             name: 'horizontal',
-            desc: 'The UA presents a unidirectional horizontal resizing mechanism to allow the user to adjust only the width of the element.'
+            desc:
+              'The UA presents a unidirectional horizontal resizing mechanism to allow the user to adjust only the width of the element.'
           },
           {
             name: 'none',
-            desc: 'The UA does not present a resizing mechanism on the element, and the user is given no direct manipulation mechanism to resize the element.'
+            desc:
+              'The UA does not present a resizing mechanism on the element, and the user is given no direct manipulation mechanism to resize the element.'
           },
           {
             name: 'vertical',
-            desc: 'The UA presents a unidirectional vertical resizing mechanism to allow the user to adjust only the height of the element.'
+            desc:
+              'The UA presents a unidirectional vertical resizing mechanism to allow the user to adjust only the height of the element.'
           }
         ]
       },
       {
         name: 'right',
-        desc: "Specifies how far an absolutely positioned box's right margin edge is offset to the left of the right edge of the box's 'containing block'.",
+        desc:
+          "Specifies how far an absolutely positioned box's right margin edge is offset to the left of the right edge of the box's 'containing block'.",
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
           }
         ]
       },
       {
         name: 'ruby-align',
-        desc: 'Specifies how text is distributed within the various ruby boxes when their contents do not exactly fill their respective boxes.',
+        desc:
+          'Specifies how text is distributed within the various ruby boxes when their contents do not exactly fill their respective boxes.',
         browsers: 'FF10,IE5',
         restriction: 'enum',
         values: [
@@ -7942,14 +8331,16 @@ export const data: CSSData = {
           },
           {
             name: 'space-around',
-            desc: "As for 'space-between' except that there exists an extra justification opportunities whose space is distributed half before and half after the ruby content.",
+            desc:
+              "As for 'space-between' except that there exists an extra justification opportunities whose space is distributed half before and half after the ruby content.",
             browsers: 'FF10'
           }
         ]
       },
       {
         name: 'ruby-overhang',
-        desc: 'Determines whether, and on which side, ruby text is allowed to partially overhang any adjacent text in addition to its own base, when the ruby text is wider than the ruby base.',
+        desc:
+          'Determines whether, and on which side, ruby text is allowed to partially overhang any adjacent text in addition to its own base, when the ruby text is wider than the ruby base.',
         browsers: 'FF10,IE5',
         restriction: 'enum',
         values: [
@@ -7973,7 +8364,8 @@ export const data: CSSData = {
       },
       {
         name: 'ruby-position',
-        desc: 'Used by the parent of elements with display: ruby-text to control the position of the ruby text with respect to its base.',
+        desc:
+          'Used by the parent of elements with display: ruby-text to control the position of the ruby text with respect to its base.',
         browsers: 'FF10,IE5',
         restriction: 'enum',
         values: [
@@ -7988,13 +8380,15 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: "The ruby text appears on the right of the base. Unlike 'before' and 'after', this value is not relative to the text flow direction."
+            desc:
+              "The ruby text appears on the right of the base. Unlike 'before' and 'after', this value is not relative to the text flow direction."
           }
         ]
       },
       {
         name: 'ruby-span',
-        desc: 'Determines whether, and on which side, ruby text is allowed to partially overhang any adjacent text in addition to its own base, when the ruby text is wider than the ruby base.',
+        desc:
+          'Determines whether, and on which side, ruby text is allowed to partially overhang any adjacent text in addition to its own base, when the ruby text is wider than the ruby base.',
         browsers: 'FF10',
         restriction: 'enum',
         values: [
@@ -8021,7 +8415,8 @@ export const data: CSSData = {
       },
       {
         name: 'scrollbar-base-color',
-        desc: 'Determines the color of the main elements of a scroll bar, which include the scroll box, track, and scroll arrows.',
+        desc:
+          'Determines the color of the main elements of a scroll bar, which include the scroll box, track, and scroll arrows.',
         browsers: 'IE6',
         restriction: 'color'
       },
@@ -8057,7 +8452,8 @@ export const data: CSSData = {
       },
       {
         name: 'scroll-behavior',
-        desc: 'Specifies the scrolling behavior for a scrolling box, when scrolling happens due to navigation or CSSOM scrolling APIs.',
+        desc:
+          'Specifies the scrolling behavior for a scrolling box, when scrolling happens due to navigation or CSSOM scrolling APIs.',
         browsers: 'FF36',
         restriction: 'enum',
         values: [
@@ -8072,7 +8468,8 @@ export const data: CSSData = {
       },
       {
         name: 'scroll-snap-coordinate',
-        desc: 'Defines the x and y coordinate within the element which will align with the nearest ancestor scroll container’s snap-destination for the respective axis.',
+        desc:
+          'Defines the x and y coordinate within the element which will align with the nearest ancestor scroll container’s snap-destination for the respective axis.',
         browsers: 'FF39',
         restriction: 'position, length, percentage, enum',
         values: [
@@ -8084,7 +8481,8 @@ export const data: CSSData = {
       },
       {
         name: 'scroll-snap-destination',
-        desc: 'Define the x and y coordinate within the scroll container’s visual viewport which element snap points will align with.',
+        desc:
+          'Define the x and y coordinate within the scroll container’s visual viewport which element snap points will align with.',
         browsers: 'FF39',
         restriction: 'position, length, percentage'
       },
@@ -8130,23 +8528,27 @@ export const data: CSSData = {
           },
           {
             name: 'mandatory',
-            desc: 'The visual viewport of this scroll container is guaranteed to rest on a snap point when there are no active scrolling operations.'
+            desc:
+              'The visual viewport of this scroll container is guaranteed to rest on a snap point when there are no active scrolling operations.'
           },
           {
             name: 'proximity',
-            desc: 'The visual viewport of this scroll container may come to rest on a snap point at the termination of a scroll at the discretion of the UA given the parameters of the scroll.'
+            desc:
+              'The visual viewport of this scroll container may come to rest on a snap point at the termination of a scroll at the discretion of the UA given the parameters of the scroll.'
           }
         ]
       },
       {
         name: 'shape-image-threshold',
-        desc: 'Defines the alpha channel threshold used to extract the shape using an image. A value of 0.5 means that the shape will enclose all the pixels that are more than 50% opaque.',
+        desc:
+          'Defines the alpha channel threshold used to extract the shape using an image. A value of 0.5 means that the shape will enclose all the pixels that are more than 50% opaque.',
         browsers: 'C37,O24',
         restriction: 'number'
       },
       {
         name: 'shape-margin',
-        desc: "Adds a margin to a 'shape-outside'. This defines a new shape that is the smallest contour that includes all the points that are the 'shape-margin' distance outward in the perpendicular direction from a point on the underlying shape.",
+        desc:
+          "Adds a margin to a 'shape-outside'. This defines a new shape that is the smallest contour that includes all the points that are the 'shape-margin' distance outward in the perpendicular direction from a point on the underlying shape.",
         browsers: 'C37,O24',
         restriction: 'url, length, percentage'
       },
@@ -8172,7 +8574,8 @@ export const data: CSSData = {
       },
       {
         name: 'src',
-        desc: '@font-face descriptor. Specifies the resource containing font data. It is required, whether the font is downloadable or locally installed.',
+        desc:
+          '@font-face descriptor. Specifies the resource containing font data. It is required, whether the font is downloadable or locally installed.',
         restriction: 'enum, url, identifier',
         values: [
           {
@@ -8204,7 +8607,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'url()',
-            desc: 'A URL reference to a paint server element, which is an element that defines a paint server: ‘hatch’, ‘linearGradient’, ‘mesh’, ‘pattern’, ‘radialGradient’ and ‘solidcolor’.'
+            desc:
+              'A URL reference to a paint server element, which is an element that defines a paint server: ‘hatch’, ‘linearGradient’, ‘mesh’, ‘pattern’, ‘radialGradient’ and ‘solidcolor’.'
           }
         ]
       },
@@ -8234,11 +8638,13 @@ export const data: CSSData = {
           },
           {
             name: 'round',
-            desc: 'Indicates that at each end of each subpath, the shape representing the stroke will be extended by a half circle with a radius equal to the stroke width.'
+            desc:
+              'Indicates that at each end of each subpath, the shape representing the stroke will be extended by a half circle with a radius equal to the stroke width.'
           },
           {
             name: 'square',
-            desc: 'Indicates that at the end of each subpath, the shape representing the stroke will be extended by a rectangle with the same width as the stroke width and whose length is half of the stroke width.'
+            desc:
+              'Indicates that at the end of each subpath, the shape representing the stroke will be extended by a rectangle with the same width as the stroke width and whose length is half of the stroke width.'
           }
         ]
       },
@@ -8261,7 +8667,8 @@ export const data: CSSData = {
       },
       {
         name: 'stroke-miterlimit',
-        desc: "When two line segments meet at a sharp angle and miter joins have been specified for 'stroke-linejoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path.",
+        desc:
+          "When two line segments meet at a sharp angle and miter joins have been specified for 'stroke-linejoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path.",
         restriction: 'number'
       },
       {
@@ -8282,7 +8689,8 @@ export const data: CSSData = {
       },
       {
         name: 'system',
-        desc: '@counter-style descriptor. Specifies which algorithm will be used to construct the counter’s representation based on the counter value.',
+        desc:
+          '@counter-style descriptor. Specifies which algorithm will be used to construct the counter’s representation based on the counter value.',
         browsers: 'FF33',
         restriction: 'enum, integer',
         values: [
@@ -8291,7 +8699,8 @@ export const data: CSSData = {
           },
           {
             name: 'alphabetic',
-            desc: 'Interprets the list of counter symbols as digits to an alphabetic numbering system, similar to the default lower-alpha counter style, which wraps from "a", "b", "c", to "aa", "ab", "ac".'
+            desc:
+              'Interprets the list of counter symbols as digits to an alphabetic numbering system, similar to the default lower-alpha counter style, which wraps from "a", "b", "c", to "aa", "ab", "ac".'
           },
           {
             name: 'cyclic'
@@ -8313,7 +8722,8 @@ export const data: CSSData = {
       },
       {
         name: 'symbols',
-        desc: '@counter-style descriptor. Specifies the symbols used by the marker-construction algorithm specified by the system descriptor.',
+        desc:
+          '@counter-style descriptor. Specifies the symbols used by the marker-construction algorithm specified by the system descriptor.',
         browsers: 'FF33',
         restriction: 'image, string, identifier'
       },
@@ -8340,7 +8750,8 @@ export const data: CSSData = {
       },
       {
         name: 'text-align',
-        desc: 'Describes how inline contents of a block are horizontally aligned if the contents do not completely fill the line box.',
+        desc:
+          'Describes how inline contents of a block are horizontally aligned if the contents do not completely fill the line box.',
         restriction: 'string',
         values: [
           {
@@ -8358,11 +8769,13 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
           },
           {
             name: 'right',
-            desc: "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
           },
           {
             name: 'start',
@@ -8373,13 +8786,15 @@ export const data: CSSData = {
       },
       {
         name: 'text-align-last',
-        desc: "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.",
+        desc:
+          "Describes how the last line of a block or a line right before a forced line break is aligned when 'text-align' is set to 'justify'.",
         browsers: 'E,FF12,IE5',
         restriction: 'enum',
         values: [
           {
             name: 'auto',
-            desc: "Content on the affected line is aligned per 'text-align' unless 'text-align' is set to 'justify', in which case it is 'start-aligned'."
+            desc:
+              "Content on the affected line is aligned per 'text-align' unless 'text-align' is set to 'justify', in which case it is 'start-aligned'."
           },
           {
             name: 'center',
@@ -8391,11 +8806,13 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the left edge of the line box. In vertical text, 'left' aligns to the edge of the line box that would be the start edge for left-to-right text."
           },
           {
             name: 'right',
-            desc: "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
+            desc:
+              "The inline contents are aligned to the right edge of the line box. In vertical text, 'right' aligns to the edge of the line box that would be the end edge for left-to-right text."
           }
         ]
       },
@@ -8406,15 +8823,18 @@ export const data: CSSData = {
         values: [
           {
             name: 'end',
-            desc: 'The rendered characters are aligned such that the end of the resulting rendered text is at the initial current text position.'
+            desc:
+              'The rendered characters are aligned such that the end of the resulting rendered text is at the initial current text position.'
           },
           {
             name: 'middle',
-            desc: 'The rendered characters are aligned such that the geometric middle of the resulting rendered text is at the initial current text position.'
+            desc:
+              'The rendered characters are aligned such that the geometric middle of the resulting rendered text is at the initial current text position.'
           },
           {
             name: 'start',
-            desc: 'The rendered characters are aligned such that the start of the resulting rendered text is at the initial current text position.'
+            desc:
+              'The rendered characters are aligned such that the start of the resulting rendered text is at the initial current text position.'
           }
         ]
       },
@@ -8502,23 +8922,27 @@ export const data: CSSData = {
       },
       {
         name: 'text-indent',
-        desc: "Specifies the indentation applied to lines of inline content in a block. The indentation only affects the first line of inline content in the block unless the 'hanging' keyword is specified, in which case it affects all lines except the first.",
+        desc:
+          "Specifies the indentation applied to lines of inline content in a block. The indentation only affects the first line of inline content in the block unless the 'hanging' keyword is specified, in which case it affects all lines except the first.",
         restriction: 'percentage, length',
         values: []
       },
       {
         name: 'text-justify',
-        desc: "Selects the justification algorithm used when 'text-align' is set to 'justify'. The property applies to block containers, but the UA may (but is not required to) also support it on inline elements.",
+        desc:
+          "Selects the justification algorithm used when 'text-align' is set to 'justify'. The property applies to block containers, but the UA may (but is not required to) also support it on inline elements.",
         browsers: 'E,IE5.5',
         restriction: 'enum',
         values: [
           {
             name: 'auto',
-            desc: 'The UA determines the justification algorithm to follow, based on a balance between performance and adequate presentation quality.'
+            desc:
+              'The UA determines the justification algorithm to follow, based on a balance between performance and adequate presentation quality.'
           },
           {
             name: 'distribute',
-            desc: "Justification primarily changes spacing both at word separators and at grapheme cluster boundaries in all scripts except those in the connected and cursive groups. This value is sometimes used in e.g. Japanese, often with the 'text-align-last' property."
+            desc:
+              "Justification primarily changes spacing both at word separators and at grapheme cluster boundaries in all scripts except those in the connected and cursive groups. This value is sometimes used in e.g. Japanese, often with the 'text-align-last' property."
           },
           {
             name: 'distribute-all-lines'
@@ -8575,7 +8999,8 @@ export const data: CSSData = {
       },
       {
         name: 'text-rendering',
-        desc: 'The creator of SVG content might want to provide a hint to the implementation about what tradeoffs to make as it renders text. The ‘text-rendering’ property provides these hints.',
+        desc:
+          'The creator of SVG content might want to provide a hint to the implementation about what tradeoffs to make as it renders text. The ‘text-rendering’ property provides these hints.',
         browsers: 'C,FF3,O9,S5',
         restriction: 'enum',
         values: [
@@ -8590,7 +9015,8 @@ export const data: CSSData = {
           },
           {
             name: 'optimizeSpeed',
-            desc: 'Indicates that the user agent shall emphasize rendering speed over legibility and geometric precision.'
+            desc:
+              'Indicates that the user agent shall emphasize rendering speed over legibility and geometric precision.'
           }
         ]
       },
@@ -8623,7 +9049,8 @@ export const data: CSSData = {
       },
       {
         name: 'text-underline-position',
-        desc: "Sets the position of an underline specified on the same element: it does not affect underlines specified by ancestor elements. This property is typically used in vertical writing contexts such as in Japanese documents where it often desired to have the underline appear 'over' (to the right of) the affected run of text",
+        desc:
+          "Sets the position of an underline specified on the same element: it does not affect underlines specified by ancestor elements. This property is typically used in vertical writing contexts such as in Japanese documents where it often desired to have the underline appear 'over' (to the right of) the affected run of text",
         browsers: 'E,IE10',
         restriction: 'enum',
         values: [
@@ -8632,7 +9059,8 @@ export const data: CSSData = {
           },
           {
             name: 'auto',
-            desc: 'The user agent may use any algorithm to determine the underline’s position. In horizontal line layout, the underline should be aligned as for alphabetic. In vertical line layout, if the language is set to Japanese or Korean, the underline should be aligned as for over.'
+            desc:
+              'The user agent may use any algorithm to determine the underline’s position. In horizontal line layout, the underline should be aligned as for alphabetic. In vertical line layout, if the language is set to Japanese or Korean, the underline should be aligned as for over.'
           },
           {
             name: 'below',
@@ -8642,12 +9070,14 @@ export const data: CSSData = {
       },
       {
         name: 'top',
-        desc: "Specifies how far an absolutely positioned box's top margin edge is offset below the top edge of the box's 'containing block'.",
+        desc:
+          "Specifies how far an absolutely positioned box's top margin edge is offset below the top edge of the box's 'containing block'.",
         restriction: 'length, percentage',
         values: [
           {
             name: 'auto',
-            desc: "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
+            desc:
+              "For non-replaced elements, the effect of this value depends on which of related properties have the value 'auto' as well"
           }
         ]
       },
@@ -8675,7 +9105,8 @@ export const data: CSSData = {
           },
           {
             name: 'manipulation',
-            desc: 'The user agent may consider touches that begin on the element only for the purposes of scrolling and continuous zooming.'
+            desc:
+              'The user agent may consider touches that begin on the element only for the purposes of scrolling and continuous zooming.'
           },
           {
             name: 'none',
@@ -8683,11 +9114,13 @@ export const data: CSSData = {
           },
           {
             name: 'pan-x',
-            desc: 'The user agent may consider touches that begin on the element only for the purposes of horizontally scrolling the element’s nearest ancestor with horizontally scrollable content.'
+            desc:
+              'The user agent may consider touches that begin on the element only for the purposes of horizontally scrolling the element’s nearest ancestor with horizontally scrollable content.'
           },
           {
             name: 'pan-y',
-            desc: 'The user agent may consider touches that begin on the element only for the purposes of vertically scrolling the element’s nearest ancestor with vertically scrollable content.'
+            desc:
+              'The user agent may consider touches that begin on the element only for the purposes of vertically scrolling the element’s nearest ancestor with vertically scrollable content.'
           },
           {
             name: 'pinch-zoom',
@@ -8697,7 +9130,8 @@ export const data: CSSData = {
       },
       {
         name: 'transform',
-        desc: "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
+        desc:
+          "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
         browsers: 'E,C36,FF16,IE10,O12.1,S9',
         restriction: 'enum',
         values: [
@@ -8808,7 +9242,8 @@ export const data: CSSData = {
       },
       {
         name: 'transition-delay',
-        desc: 'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
+        desc:
+          'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
         browsers: 'E,FF16,IE10,O12.5',
         restriction: 'time'
       },
@@ -8862,7 +9297,8 @@ export const data: CSSData = {
           },
           {
             name: 'normal',
-            desc: 'The element does not open an additional level of embedding with respect to the bidirectional algorithm. For inline-level elements, implicit reordering works across element boundaries.'
+            desc:
+              'The element does not open an additional level of embedding with respect to the bidirectional algorithm. For inline-level elements, implicit reordering works across element boundaries.'
           },
           {
             name: 'plaintext',
@@ -8872,14 +9308,16 @@ export const data: CSSData = {
       },
       {
         name: 'unicode-range',
-        desc: '@font-face descriptor. Defines the set of Unicode codepoints that may be supported by the font face for which it is declared.',
+        desc:
+          '@font-face descriptor. Defines the set of Unicode codepoints that may be supported by the font face for which it is declared.',
         restriction: 'unicode-range',
         values: [
           {
             name: 'U+26'
           },
           {
-            name: 'U+20-24F, U+2B0-2FF, U+370-4FF, U+1E00-1EFF, U+2000-20CF, U+2100-23FF, U+2500-26FF, U+E000-F8FF, U+FB00–FB4F'
+            name:
+              'U+20-24F, U+2B0-2FF, U+370-4FF, U+1E00-1EFF, U+2000-20CF, U+2100-23FF, U+2500-26FF, U+E000-F8FF, U+FB00–FB4F'
           },
           {
             name: 'U+20-17F, U+2B0-2FF, U+2000-206F, U+20A0-20CF, U+2100-21FF, U+2600-26FF'
@@ -8888,7 +9326,8 @@ export const data: CSSData = {
             name: 'U+20-2FF, U+370-4FF, U+1E00-20CF, U+2100-23FF, U+2500-26FF, U+FB00-FB4F, U+FFF0-FFFD'
           },
           {
-            name: 'U+20-4FF, U+530-58F, U+10D0-10FF, U+1E00-23FF, U+2440-245F, U+2500-26FF, U+FB00-FB4F, U+FE20-FE2F, U+FFF0-FFFD'
+            name:
+              'U+20-4FF, U+530-58F, U+10D0-10FF, U+1E00-23FF, U+2440-245F, U+2500-26FF, U+FB00-FB4F, U+FE20-FE2F, U+FFF0-FFFD'
           },
           {
             name: 'U+00-7F'
@@ -9110,12 +9549,14 @@ export const data: CSSData = {
       },
       {
         name: 'vertical-align',
-        desc: 'Affects the vertical positioning of the inline boxes generated by an inline-level element inside a line box.',
+        desc:
+          'Affects the vertical positioning of the inline boxes generated by an inline-level element inside a line box.',
         restriction: 'percentage, length',
         values: [
           {
             name: 'auto',
-            desc: 'Align the dominant baseline of the parent box with the equivalent, or heuristically reconstructed, baseline of the element inline box.'
+            desc:
+              'Align the dominant baseline of the parent box with the equivalent, or heuristically reconstructed, baseline of the element inline box.'
           },
           {
             name: 'baseline',
@@ -9131,11 +9572,13 @@ export const data: CSSData = {
           },
           {
             name: 'sub',
-            desc: "Lower the baseline of the box to the proper position for subscripts of the parent's box. (This value has no effect on the font size of the element's text.)"
+            desc:
+              "Lower the baseline of the box to the proper position for subscripts of the parent's box. (This value has no effect on the font size of the element's text.)"
           },
           {
             name: 'super',
-            desc: "Raise the baseline of the box to the proper position for superscripts of the parent's box. (This value has no effect on the font size of the element's text.)"
+            desc:
+              "Raise the baseline of the box to the proper position for superscripts of the parent's box. (This value has no effect on the font size of the element's text.)"
           },
           {
             name: 'text-bottom'
@@ -9155,12 +9598,14 @@ export const data: CSSData = {
       },
       {
         name: 'visibility',
-        desc: 'Specifies whether the boxes generated by an element are rendered. Invisible boxes still affect layout (set the ‘display’ property to ‘none’ to suppress box generation altogether).',
+        desc:
+          'Specifies whether the boxes generated by an element are rendered. Invisible boxes still affect layout (set the ‘display’ property to ‘none’ to suppress box generation altogether).',
         restriction: 'enum',
         values: [
           {
             name: 'collapse',
-            desc: "Table-specific. If used on elements other than rows, row groups, columns, or column groups, 'collapse' has the same meaning as 'hidden'."
+            desc:
+              "Table-specific. If used on elements other than rows, row groups, columns, or column groups, 'collapse' has the same meaning as 'hidden'."
           },
           {
             name: 'hidden',
@@ -9208,7 +9653,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -9236,7 +9682,8 @@ export const data: CSSData = {
           },
           {
             name: 'reverse',
-            desc: 'All iterations of the animation are played in the reverse direction from the way they were specified.'
+            desc:
+              'All iterations of the animation are played in the reverse direction from the way they were specified.'
           }
         ]
       },
@@ -9264,13 +9711,15 @@ export const data: CSSData = {
           },
           {
             name: 'none',
-            desc: 'There is no change to the property value between the time the animation is applied and the time the animation begins playing or after the animation completes.'
+            desc:
+              'There is no change to the property value between the time the animation is applied and the time the animation begins playing or after the animation completes.'
           }
         ]
       },
       {
         name: '-webkit-animation-iteration-count',
-        desc: 'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
+        desc:
+          'Defines the number of times an animation cycle is played. The default value is one, meaning the animation will play from beginning to end once.',
         browsers: 'C,S5',
         restriction: 'number, enum',
         values: [
@@ -9282,7 +9731,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-animation-name',
-        desc: 'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
+        desc:
+          'Defines a list of animations that apply. Each name is used to select the keyframe at-rule that provides the property values for the animation.',
         browsers: 'C,S5',
         restriction: 'identifier, enum',
         values: [
@@ -9308,7 +9758,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-animation-timing-function',
-        desc: "Describes how the animation will progress over one cycle of its duration. See the 'transition-timing-function'.",
+        desc:
+          "Describes how the animation will progress over one cycle of its duration. See the 'transition-timing-function'.",
         browsers: 'C,S5',
         restriction: 'timing-function'
       },
@@ -9454,7 +9905,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-backdrop-filter',
-        desc: "Applies a filter effect where the first filter in the list takes the element's background image as the input image.",
+        desc:
+          "Applies a filter effect where the first filter in the list takes the element's background image as the input image.",
         browsers: 'S9',
         restriction: 'enum, url',
         values: [
@@ -9500,7 +9952,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-backface-visibility',
-        desc: "Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.",
+        desc:
+          "Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.",
         browsers: 'C,S5',
         restriction: 'enum',
         values: [
@@ -9533,19 +9986,22 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-background-origin',
-        desc: "For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes 'box-decoration-break' operates on to determine the background positioning area(s).",
+        desc:
+          "For elements rendered as a single box, specifies the background positioning area. For elements rendered as multiple boxes (e.g., inline boxes on several lines, boxes on several pages) specifies which boxes 'box-decoration-break' operates on to determine the background positioning area(s).",
         browsers: 'C,S3',
         restriction: 'box'
       },
       {
         name: '-webkit-border-image',
-        desc: "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
+        desc:
+          "Shorthand property for setting 'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset' and 'border-image-repeat'. Omitted values are set to their initial values.",
         browsers: 'C,S5',
         restriction: 'length, percentage, number, url, enum',
         values: [
           {
             name: 'auto',
-            desc: "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
+            desc:
+              "If 'auto' is specified then the border image width is the intrinsic width or height (whichever is applicable) of the corresponding image slice. If the image does not have the required intrinsic dimension then the corresponding border-width is used instead."
           },
           {
             name: 'fill',
@@ -9559,11 +10015,13 @@ export const data: CSSData = {
           },
           {
             name: 'round',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the image is rescaled so that it does.'
           },
           {
             name: 'space',
-            desc: 'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
+            desc:
+              'The image is tiled (repeated) to fill the area. If it does not fill the area with a whole number of tiles, the extra space is distributed around the tiles.'
           },
           {
             name: 'stretch',
@@ -9582,19 +10040,23 @@ export const data: CSSData = {
         values: [
           {
             name: 'baseline',
-            desc: 'If this box orientation is inline-axis or horizontal, all children are placed with their baselines aligned, and extra space placed before or after as necessary. For block flows, the baseline of the first non-empty line box located within the element is used. For tables, the baseline of the first cell is used.'
+            desc:
+              'If this box orientation is inline-axis or horizontal, all children are placed with their baselines aligned, and extra space placed before or after as necessary. For block flows, the baseline of the first non-empty line box located within the element is used. For tables, the baseline of the first cell is used.'
           },
           {
             name: 'center',
-            desc: 'Any extra space is divided evenly, with half placed above the child and the other half placed after the child.'
+            desc:
+              'Any extra space is divided evenly, with half placed above the child and the other half placed after the child.'
           },
           {
             name: 'end',
-            desc: 'For normal direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element. For reverse direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element.'
+            desc:
+              'For normal direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element. For reverse direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element.'
           },
           {
             name: 'start',
-            desc: 'For normal direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element. For reverse direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element.'
+            desc:
+              'For normal direction boxes, the top edge of each child is placed along the top of the box. Extra space is placed below the element. For reverse direction boxes, the bottom edge of each child is placed along the bottom of the box. Extra space is placed above the element.'
           },
           {
             name: 'stretch',
@@ -9604,17 +10066,20 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-box-direction',
-        desc: 'In webkit applications, -webkit-box-direction specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).',
+        desc:
+          'In webkit applications, -webkit-box-direction specifies whether a box lays out its contents normally (from the top or left edge), or in reverse (from the bottom or right edge).',
         browsers: 'C,S3',
         restriction: 'enum',
         values: [
           {
             name: 'normal',
-            desc: 'A box with a computed value of horizontal for box-orient displays its children from left to right. A box with a computed value of vertical displays its children from top to bottom.'
+            desc:
+              'A box with a computed value of horizontal for box-orient displays its children from left to right. A box with a computed value of vertical displays its children from top to bottom.'
           },
           {
             name: 'reverse',
-            desc: 'A box with a computed value of horizontal for box-orient displays its children from right to left. A box with a computed value of vertical displays its children from bottom to top.'
+            desc:
+              'A box with a computed value of horizontal for box-orient displays its children from right to left. A box with a computed value of vertical displays its children from bottom to top.'
           }
         ]
       },
@@ -9632,13 +10097,15 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-box-ordinal-group',
-        desc: 'Indicates the ordinal group the element belongs to. Elements with a lower ordinal group are displayed before those with a higher ordinal group.',
+        desc:
+          'Indicates the ordinal group the element belongs to. Elements with a lower ordinal group are displayed before those with a higher ordinal group.',
         browsers: 'C,S3',
         restriction: 'integer'
       },
       {
         name: '-webkit-box-orient',
-        desc: 'In webkit applications, -webkit-box-orient specifies whether a box lays out its contents horizontally or vertically.',
+        desc:
+          'In webkit applications, -webkit-box-orient specifies whether a box lays out its contents horizontally or vertically.',
         browsers: 'C,S3',
         restriction: 'enum',
         values: [
@@ -9666,19 +10133,23 @@ export const data: CSSData = {
         values: [
           {
             name: 'center',
-            desc: 'The extra space is divided evenly, with half placed before the first child and the other half placed after the last child.'
+            desc:
+              'The extra space is divided evenly, with half placed before the first child and the other half placed after the last child.'
           },
           {
             name: 'end',
-            desc: 'For normal direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child. For reverse direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child.'
+            desc:
+              'For normal direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child. For reverse direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child.'
           },
           {
             name: 'justify',
-            desc: 'The space is divided evenly in-between each child, with none of the extra space placed before the first child or after the last child. If there is only one child, treat the pack value as if it were start.'
+            desc:
+              'The space is divided evenly in-between each child, with none of the extra space placed before the first child or after the last child. If there is only one child, treat the pack value as if it were start.'
           },
           {
             name: 'start',
-            desc: 'For normal direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child. For reverse direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child.'
+            desc:
+              'For normal direction boxes, the left edge of the first child is placed at the left side, with all extra space placed after the last child. For reverse direction boxes, the right edge of the last child is placed at the right side, with all extra space placed before the first child.'
           }
         ]
       },
@@ -9754,7 +10225,8 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'page',
@@ -9765,7 +10237,8 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -9804,7 +10277,8 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'page',
@@ -9815,7 +10289,8 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -9881,7 +10356,8 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'page',
@@ -9892,7 +10368,8 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -9931,7 +10408,8 @@ export const data: CSSData = {
           },
           {
             name: 'left',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a left page.'
           },
           {
             name: 'page',
@@ -9942,7 +10420,8 @@ export const data: CSSData = {
           },
           {
             name: 'right',
-            desc: 'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
+            desc:
+              'Force one or two page breaks before/after the generated box so that the next page is formatted as a right page.'
           }
         ]
       },
@@ -9987,7 +10466,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-column-gap',
-        desc: 'Sets the gap between columns. If there is a column rule between columns, it will appear in the middle of the gap.',
+        desc:
+          'Sets the gap between columns. If there is a column rule between columns, it will appear in the middle of the gap.',
         browsers: 'C,S3',
         restriction: 'length',
         values: [
@@ -9999,7 +10479,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-column-rule',
-        desc: "This property is a shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
+        desc:
+          "This property is a shorthand for setting 'column-rule-width', 'column-rule-style', and 'column-rule-color' at the same place in the style sheet. Omitted values are set to their initial values.",
         browsers: 'C,S3',
         restriction: 'length, line-width, line-style, color'
       },
@@ -10041,7 +10522,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'all',
-            desc: 'The element spans across all columns. Content in the normal flow that appears before the element is automatically balanced across all columns before the element appear.'
+            desc:
+              'The element spans across all columns. Content in the normal flow that appears before the element is automatically balanced across all columns before the element appear.'
           },
           {
             name: 'none',
@@ -10063,7 +10545,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-filter',
-        desc: 'Processes an element’s rendering before it is displayed in the document, by applying one or more filter effects.',
+        desc:
+          'Processes an element’s rendering before it is displayed in the document, by applying one or more filter effects.',
         browsers: 'C18,O15,S6',
         restriction: 'enum, url',
         values: [
@@ -10133,7 +10616,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-font-feature-settings',
-        desc: 'This property provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.',
+        desc:
+          'This property provides low-level control over OpenType font features. It is intended as a way of providing access to font features that are not widely used but are needed for a particular use case.',
         browsers: 'C16',
         restriction: 'string, integer',
         values: [
@@ -10184,7 +10668,8 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'Conditional hyphenation characters inside a word, if present, take priority over automatic resources when determining hyphenation points within the word.'
+            desc:
+              'Conditional hyphenation characters inside a word, if present, take priority over automatic resources when determining hyphenation points within the word.'
           },
           {
             name: 'manual'
@@ -10308,15 +10793,18 @@ export const data: CSSData = {
         values: [
           {
             name: 'auto',
-            desc: 'Resolved by using the image’s intrinsic ratio and the size of the other dimension, or failing that, using the image’s intrinsic size, or failing that, treating it as 100%.'
+            desc:
+              'Resolved by using the image’s intrinsic ratio and the size of the other dimension, or failing that, using the image’s intrinsic size, or failing that, treating it as 100%.'
           },
           {
             name: 'contain',
-            desc: 'Scale the image, while preserving its intrinsic aspect ratio (if any), to the largest size such that both its width and its height can fit inside the background positioning area.'
+            desc:
+              'Scale the image, while preserving its intrinsic aspect ratio (if any), to the largest size such that both its width and its height can fit inside the background positioning area.'
           },
           {
             name: 'cover',
-            desc: 'Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both its width and its height can completely cover the background positioning area.'
+            desc:
+              'Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both its width and its height can completely cover the background positioning area.'
           }
         ]
       },
@@ -10353,7 +10841,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-perspective',
-        desc: 'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
+        desc:
+          'Applies the same transform as the perspective(<number>) transform function, except that it applies only to the positioned or transformed children of the element, not to the transform on the element itself.',
         browsers: 'C,S4',
         restriction: 'length',
         values: [
@@ -10365,7 +10854,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-perspective-origin',
-        desc: 'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
+        desc:
+          'Establishes the origin for the perspective property. It effectively sets the X and Y position at which the viewer appears to be looking at the children of the element.',
         browsers: 'C,S4',
         restriction: 'position, percentage, length'
       },
@@ -10437,7 +10927,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-transform',
-        desc: "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
+        desc:
+          "A two-dimensional transformation is applied to an element through the 'transform' property. This property contains a list of transform functions similar to those allowed by SVG.",
         browsers: 'C,O12,S3.1',
         restriction: 'enum',
         values: [
@@ -10562,7 +11053,8 @@ export const data: CSSData = {
       },
       {
         name: '-webkit-transition-delay',
-        desc: 'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
+        desc:
+          'Defines when the transition will start. It allows a transition to begin execution some period of time from when it is applied.',
         browsers: 'C,O12,S5',
         restriction: 'time'
       },
@@ -10670,13 +11162,15 @@ export const data: CSSData = {
       },
       {
         name: 'widows',
-        desc: 'Specifies the minimum number of line boxes of a block container that must be left in a fragment after a break.',
+        desc:
+          'Specifies the minimum number of line boxes of a block container that must be left in a fragment after a break.',
         browsers: 'C,IE8,O9.5,S1',
         restriction: 'integer'
       },
       {
         name: 'width',
-        desc: "Specifies the width of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
+        desc:
+          "Specifies the width of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.",
         restriction: 'length, percentage',
         values: [
           {
@@ -10699,7 +11193,8 @@ export const data: CSSData = {
       },
       {
         name: 'will-change',
-        desc: 'Provides a rendering hint to the user agent, stating what kinds of changes the author expects to perform on the element.',
+        desc:
+          'Provides a rendering hint to the user agent, stating what kinds of changes the author expects to perform on the element.',
         browsers: 'C36,FF36,O24',
         restriction: 'enum, identifier',
         values: [
@@ -10747,12 +11242,14 @@ export const data: CSSData = {
       },
       {
         name: 'word-wrap',
-        desc: 'Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit.',
+        desc:
+          'Specifies whether the UA may break within a word to prevent overflow when an otherwise-unbreakable string is too long to fit.',
         restriction: 'enum',
         values: [
           {
             name: 'break-word',
-            desc: 'An otherwise unbreakable sequence of characters may be broken at an arbitrary point if there are no otherwise-acceptable break points in the line.'
+            desc:
+              'An otherwise unbreakable sequence of characters may be broken at an arbitrary point if there are no otherwise-acceptable break points in the line.'
           },
           {
             name: 'normal',
@@ -10787,18 +11284,21 @@ export const data: CSSData = {
       },
       {
         name: 'z-index',
-        desc: "For a positioned box, the 'z-index' property specifies the stack level of the box in the current stacking context and whether the box establishes a local stacking context.",
+        desc:
+          "For a positioned box, the 'z-index' property specifies the stack level of the box in the current stacking context and whether the box establishes a local stacking context.",
         restriction: 'integer',
         values: [
           {
             name: 'auto',
-            desc: 'The stack level of the generated box in the current stacking context is 0. The box does not establish a new stacking context unless it is the root element.'
+            desc:
+              'The stack level of the generated box in the current stacking context is 0. The box does not establish a new stacking context unless it is the root element.'
           }
         ]
       },
       {
         name: 'zoom',
-        desc: "Non-standard. Specifies the magnification scale of the object. See 'transform: scale()' for a standards-based alternative.",
+        desc:
+          "Non-standard. Specifies the magnification scale of the object. See 'transform: scale()' for a standards-based alternative.",
         browsers: 'E,C,IE6,O15,S4',
         restriction: 'enum, integer, number, percentage',
         values: [
@@ -10821,10 +11321,14 @@ export const descriptions = {
   700: 'Bold',
   800: 'Extra Bold (Ultra Bold)',
   900: 'Black (Heavy)',
-  alternate: 'The animation cycle iterations that are odd counts are played in the normal direction, and the animation cycle iterations that are even counts are played in a reverse direction.',
-  'alternate-reverse': 'The animation cycle iterations that are odd counts are played in the reverse direction, and the animation cycle iterations that are even counts are played in a normal direction.',
-  backwards: "The beginning property value (as defined in the first @keyframes at-rule) is applied before the animation is displayed, during the period defined by 'animation-delay'.",
-  forwards: 'The final property value (as defined in the last @keyframes at-rule) is maintained after the animation completes.',
+  alternate:
+    'The animation cycle iterations that are odd counts are played in the normal direction, and the animation cycle iterations that are even counts are played in a reverse direction.',
+  'alternate-reverse':
+    'The animation cycle iterations that are odd counts are played in the reverse direction, and the animation cycle iterations that are even counts are played in a normal direction.',
+  backwards:
+    "The beginning property value (as defined in the first @keyframes at-rule) is applied before the animation is displayed, during the period defined by 'animation-delay'.",
+  forwards:
+    'The final property value (as defined in the last @keyframes at-rule) is maintained after the animation completes.',
   paused: 'A running animation will be paused.',
   running: 'Resume playback of a paused animation.',
   multiply: 'The source color is multiplied by the destination color and replaces the destination.',
@@ -10839,30 +11343,44 @@ export const descriptions = {
   difference: 'Subtracts the darker of the two constituent colors from the lighter color..',
   exclusion: 'Produces an effect similar to that of the Difference mode but lower in contrast.',
   hue: 'Creates a color with the hue of the source color and the saturation and luminosity of the backdrop color.',
-  saturation: 'Creates a color with the saturation of the source color and the hue and luminosity of the backdrop color.',
+  saturation:
+    'Creates a color with the saturation of the source color and the hue and luminosity of the backdrop color.',
   color: 'Creates a color with the hue and saturation of the source color and the luminosity of the backdrop color.',
-  luminosity: 'Creates a color with the luminosity of the source color and the hue and saturation of the backdrop color.',
+  luminosity:
+    'Creates a color with the luminosity of the source color and the hue and saturation of the backdrop color.',
   repeat: 'The image is tiled (repeated) to fill the area.',
   clone: 'Each box is independently wrapped with the border and padding.',
-  slice: 'The effect is as though the element were rendered with no breaks present, and then sliced by the breaks afterward.',
-  inset: 'Changes the drop shadow from an outer shadow (one that shadows the box onto the canvas, as if it were lifted above the canvas) to an inner shadow (one that shadows the canvas onto the box, as if the box were cut out of the canvas and shifted behind it).',
-  'border-box': 'The specified width and height (and respective min/max properties) on this element determine the border box of the element.',
-  'content-box': 'Behavior of width and height as specified by CSS2.1. The specified width and height (and respective min/max properties) apply to the width and height respectively of the content box of the element.',
+  slice:
+    'The effect is as though the element were rendered with no breaks present, and then sliced by the breaks afterward.',
+  inset:
+    'Changes the drop shadow from an outer shadow (one that shadows the box onto the canvas, as if it were lifted above the canvas) to an inner shadow (one that shadows the canvas onto the box, as if the box were cut out of the canvas and shifted behind it).',
+  'border-box':
+    'The specified width and height (and respective min/max properties) on this element determine the border box of the element.',
+  'content-box':
+    'Behavior of width and height as specified by CSS2.1. The specified width and height (and respective min/max properties) apply to the width and height respectively of the content box of the element.',
   'rect()': 'Specifies offsets from the edges of the border box.',
-  evenodd: 'Determines the ‘insideness’ of a point on the canvas by drawing a ray from that point to infinity in any direction and counting the number of path segments from the given shape that the ray crosses.',
-  nonzero: 'Determines the ‘insideness’ of a point on the canvas by drawing a ray from that point to infinity in any direction and then examining the places where a segment of the shape crosses the ray.',
+  evenodd:
+    'Determines the ‘insideness’ of a point on the canvas by drawing a ray from that point to infinity in any direction and counting the number of path segments from the given shape that the ray crosses.',
+  nonzero:
+    'Determines the ‘insideness’ of a point on the canvas by drawing a ray from that point to infinity in any direction and then examining the places where a segment of the shape crosses the ray.',
   linearRGB: 'Color operations should occur in the linearized RGB color space.',
   sRGB: 'Color operations should occur in the sRGB color space.',
   balance: 'Balance content equally between columns, if possible.',
   'attr()': 'The attr(n) function returns as a string the value of attribute n for the subject of the selector.',
   'counter(name)': "Counters are denoted by identifiers (see the 'counter-increment' and 'counter-reset' properties).",
-  alias: 'Indicates an alias of/shortcut to something is to be created. Often rendered as an arrow with a small curved arrow next to it.',
-  'all-scroll': 'Indicates that the something can be scrolled in any direction. Often rendered as arrows pointing up, down, left, and right with a dot in the middle.',
-  cell: 'Indicates that a cell or set of cells may be selected. Often rendered as a thick plus-sign with a dot in the middle.',
-  'col-resize': 'Indicates that the item/column can be resized horizontally. Often rendered as arrows pointing left and right with a vertical bar separating them.',
-  'context-menu': 'A context menu is available for the object under the cursor. Often rendered as an arrow with a small menu-like graphic next to it.',
+  alias:
+    'Indicates an alias of/shortcut to something is to be created. Often rendered as an arrow with a small curved arrow next to it.',
+  'all-scroll':
+    'Indicates that the something can be scrolled in any direction. Often rendered as arrows pointing up, down, left, and right with a dot in the middle.',
+  cell:
+    'Indicates that a cell or set of cells may be selected. Often rendered as a thick plus-sign with a dot in the middle.',
+  'col-resize':
+    'Indicates that the item/column can be resized horizontally. Often rendered as arrows pointing left and right with a vertical bar separating them.',
+  'context-menu':
+    'A context menu is available for the object under the cursor. Often rendered as an arrow with a small menu-like graphic next to it.',
   copy: 'Indicates something is to be copied. Often rendered as an arrow with a small plus sign next to it.',
-  crosshair: "A simple crosshair (e.g., short line segments resembling a '+' sign). Often used to indicate a two dimensional bitmap selection mode.",
+  crosshair:
+    "A simple crosshair (e.g., short line segments resembling a '+' sign). Often used to indicate a two dimensional bitmap selection mode.",
   'e-resize': 'Indicates that east edge is to be moved.',
   'ew-resize': 'Indicates a bidirectional east-west resize cursor.',
   grab: 'Indicates that something can be grabbed.',
@@ -10875,15 +11393,19 @@ export const descriptions = {
   '-moz-zoom-out': 'Indicates that something can be zoomed (magnified) out.',
   'ne-resize': 'Indicates that movement starts from north-east corner.',
   'nesw-resize': 'Indicates a bidirectional north-east/south-west cursor.',
-  'no-drop': 'Indicates that the dragged item cannot be dropped at the current cursor location. Often rendered as a hand or pointer with a small circle with a line through it.',
-  'not-allowed': 'Indicates that the requested action will not be carried out. Often rendered as a circle with a line through it.',
+  'no-drop':
+    'Indicates that the dragged item cannot be dropped at the current cursor location. Often rendered as a hand or pointer with a small circle with a line through it.',
+  'not-allowed':
+    'Indicates that the requested action will not be carried out. Often rendered as a circle with a line through it.',
   'n-resize': 'Indicates that north edge is to be moved.',
   'ns-resize': 'Indicates a bidirectional north-south cursor.',
   'nw-resize': 'Indicates that movement starts from north-west corner.',
   'nwse-resize': 'Indicates a bidirectional north-west/south-east cursor.',
   pointer: 'The cursor is a pointer that indicates a link.',
-  progress: "A progress indicator. The program is performing some processing, but is different from 'wait' in that the user may still interact with the program. Often rendered as a spinning beach ball, or an arrow with a watch or hourglass.",
-  'row-resize': 'Indicates that the item/row can be resized vertically. Often rendered as arrows pointing up and down with a horizontal bar separating them.',
+  progress:
+    "A progress indicator. The program is performing some processing, but is different from 'wait' in that the user may still interact with the program. Often rendered as a spinning beach ball, or an arrow with a watch or hourglass.",
+  'row-resize':
+    'Indicates that the item/row can be resized vertically. Often rendered as arrows pointing up and down with a horizontal bar separating them.',
   'se-resize': 'Indicates that movement starts from south-east corner.',
   's-resize': 'Indicates that south edge is to be moved.',
   'sw-resize': 'Indicates that movement starts from south-west corner.',
@@ -10901,27 +11423,34 @@ export const descriptions = {
   block: 'The element generates a block-level box',
   flex: 'The element generates a principal flex container box and establishes a flex formatting context.',
   flexbox: "The element lays out its contents using flow layout (block-and-inline layout). Standardized as 'flex'.",
-  'inline-block': 'A block box, which itself is flowed as a single inline box, similar to a replaced element. The inside of an inline-block is formatted as a block box, and the box itself is formatted as an inline box.',
+  'inline-block':
+    'A block box, which itself is flowed as a single inline box, similar to a replaced element. The inside of an inline-block is formatted as a block box, and the box itself is formatted as an inline box.',
   'inline-flex': 'Inline-level flex container.',
   'inline-flexbox': "Inline-level flex container. Standardized as 'inline-flex'",
   'inline-table': 'Inline-level table wrapper box containing table box.',
   'list-item': 'One or more block boxes and one marker box.',
   '-moz-box': "The element lays out its contents using flow layout (block-and-inline layout). Standardized as 'flex'.",
   '-moz-inline-box': "Inline-level flex container. Standardized as 'inline-flex'",
-  '-ms-flexbox': "The element lays out its contents using flow layout (block-and-inline layout). Standardized as 'flex'.",
+  '-ms-flexbox':
+    "The element lays out its contents using flow layout (block-and-inline layout). Standardized as 'flex'.",
   '-ms-grid': 'The element generates a principal grid container box, and establishes a grid formatting context.',
   '-ms-inline-flexbox': "Inline-level flex container. Standardized as 'inline-flex'",
   '-ms-inline-grid': 'Inline-level grid container.',
-  'run-in': 'The element generates a run-in box. Run-in elements act like inlines or blocks, depending on the surrounding elements.',
-  table: 'The element generates a principal table wrapper box containing an additionally-generated table box, and establishes a table formatting context.',
-  '-webkit-box': "The element lays out its contents using flow layout (block-and-inline layout). Standardized as 'flex'.",
+  'run-in':
+    'The element generates a run-in box. Run-in elements act like inlines or blocks, depending on the surrounding elements.',
+  table:
+    'The element generates a principal table wrapper box containing an additionally-generated table box, and establishes a table formatting context.',
+  '-webkit-box':
+    "The element lays out its contents using flow layout (block-and-inline layout). Standardized as 'flex'.",
   '-webkit-flex': 'The element lays out its contents using flow layout (block-and-inline layout).',
   '-webkit-inline-box': "Inline-level flex container. Standardized as 'inline-flex'",
   '-webkit-inline-flex': 'Inline-level flex container.',
   hide: 'No borders or backgrounds are drawn around/behind empty cells.',
   show: 'Borders and backgrounds are drawn around/behind empty cells (like normal cells).',
-  accumulate: "If the ancestor container element has a property of new, then all graphics elements within the current container are rendered both on the parent's background image and onto the target.",
-  new: "Create a new background image canvas. All children of the current container element can access the background, and they will be rendered onto both the parent's background image canvas in addition to the target device.",
+  accumulate:
+    "If the ancestor container element has a property of new, then all graphics elements within the current container are rendered both on the parent's background image and onto the target.",
+  new:
+    "Create a new background image canvas. All children of the current container element can access the background, and they will be rendered onto both the parent's background image canvas in addition to the target device.",
   'blur()': 'Applies a Gaussian blur to the input image.',
   'brightness()': 'Applies a linear multiplier to input image, making it appear more or less bright.',
   'contrast()': 'Adjusts the contrast of the input.',
@@ -10955,7 +11484,8 @@ export const descriptions = {
   '"blwm"': 'Below-base Mark Positioning. Required in Indic scripts.',
   '"blws"': 'Below-base Substitutions. Required in Indic scripts.',
   '"calt"': 'Contextual Alternates.',
-  '"case"': 'Case-Sensitive Forms. Applies only to European scripts; particularly prominent in Spanish-language setting.',
+  '"case"':
+    'Case-Sensitive Forms. Applies only to European scripts; particularly prominent in Spanish-language setting.',
   '"ccmp"': 'Glyph Composition/Decomposition.',
   '"cfar"': 'Conjunct Form After Ro. Required in Khmer scripts.',
   '"cjct"': 'Conjunct Forms. Required in Indic scripts that show similarity to Devanagari.',
@@ -11014,14 +11544,17 @@ export const descriptions = {
   '"pcap"': 'Petite Capitals.',
   '"pkna"': 'Proportional Kana. Generally used only in Japanese fonts.',
   '"pnum"': 'Proportional Figures.',
-  '"pref"': 'Pre-base Forms. Required in Khmer and Myanmar (Burmese) scripts and southern Indic scripts that may display a pre-base form of Ra.',
+  '"pref"':
+    'Pre-base Forms. Required in Khmer and Myanmar (Burmese) scripts and southern Indic scripts that may display a pre-base form of Ra.',
   '"pres"': 'Pre-base Substitutions. Required in Indic scripts.',
-  '"pstf"': 'Post-base Forms. Required in scripts of south and southeast Asia that have post-base forms for consonants eg: Gurmukhi, Malayalam, Khmer.',
+  '"pstf"':
+    'Post-base Forms. Required in scripts of south and southeast Asia that have post-base forms for consonants eg: Gurmukhi, Malayalam, Khmer.',
   '"psts"': 'Post-base Substitutions.',
   '"pwid"': 'Proportional Widths.',
   '"qwid"': 'Quarter Widths. Generally used only in CJKV fonts.',
   '"rand"': 'Randomize.',
-  '"rclt"': 'Required Contextual Alternates. May apply to any script, but is especially important for many styles of Arabic.',
+  '"rclt"':
+    'Required Contextual Alternates. May apply to any script, but is especially important for many styles of Arabic.',
   '"rlig"': 'Required Ligatures. Applies to Arabic and Syriac. May apply to some other scripts.',
   '"rkrf"': 'Rakar Forms. Required in Devanagari and Gujarati scripts.',
   '"rphf"': 'Reph Form. Required in Indic scripts. E.g. Devanagari, Kannada.',
@@ -11098,26 +11631,35 @@ export const descriptions = {
   'fit-content': 'Use the fit-content inline size or fit-content block size, as appropriate to the writing mode.',
   'max-content': 'Use the max-content inline size or max-content block size, as appropriate to the writing mode.',
   'min-content': 'Use the min-content inline size or min-content block size, as appropriate to the writing mode.',
-  flip: 'After rotating by the precededing angle, the image is flipped horizontally. Defaults to 0deg if the angle is ommitted.',
-  'from-image': 'If the image has an orientation specified in its metadata, such as EXIF, this value computes to the angle that the metadata specifies is necessary to correctly orient the image.',
-  'crisp-edges': 'The image must be scaled with an algorithm that preserves contrast and edges in the image, and which does not smooth colors or introduce blur to the image in the process.',
+  flip:
+    'After rotating by the precededing angle, the image is flipped horizontally. Defaults to 0deg if the angle is ommitted.',
+  'from-image':
+    'If the image has an orientation specified in its metadata, such as EXIF, this value computes to the angle that the metadata specifies is necessary to correctly orient the image.',
+  'crisp-edges':
+    'The image must be scaled with an algorithm that preserves contrast and edges in the image, and which does not smooth colors or introduce blur to the image in the process.',
   optimizeQuality: 'Deprecated.',
-  pixelated: "When scaling the image up, the 'nearest neighbor' or similar algorithm must be used, so that the image appears to be simply composed of very large pixels.",
-  active: 'The input method editor is initially active; text entry is performed using it unless the user specifically dismisses it.',
+  pixelated:
+    "When scaling the image up, the 'nearest neighbor' or similar algorithm must be used, so that the image appears to be simply composed of very large pixels.",
+  active:
+    'The input method editor is initially active; text entry is performed using it unless the user specifically dismisses it.',
   disabled: 'The input method editor is disabled and may not be activated by the user.',
   inactive: 'The input method editor is initially inactive, but the user may activate it if they wish.',
   circle: 'A hollow circle.',
   disc: 'A filled circle.',
-  inside: 'The marker box is outside the principal block box, as described in the section on the ::marker pseudo-element below.',
-  outside: "The ::marker pseudo-element is an inline element placed immediately before all ::before pseudo-elements in the principal block box, after which the element's content flows.",
+  inside:
+    'The marker box is outside the principal block box, as described in the section on the ::marker pseudo-element below.',
+  outside:
+    "The ::marker pseudo-element is an inline element placed immediately before all ::before pseudo-elements in the principal block box, after which the element's content flows.",
   'symbols()': 'Allows a counter style to be defined inline.',
   alpha: 'Indicates that the alpha values of the mask should be used.',
   luminance: 'Indicates that the luminance values of the mask should be used.',
   'path()': "Defines an SVG path as a string, with optional 'fill-rule' as the first argument.",
   'block-axis': "Elements are oriented along the box's axis.",
   'inline-axis': 'Elements are oriented vertically.',
-  'padding-box': 'The specified width and height (and respective min/max properties) on this element determine the padding box of the element.',
-  manual: 'Words are only broken at line breaks where there are characters inside the word that suggest line break opportunities',
+  'padding-box':
+    'The specified width and height (and respective min/max properties) on this element determine the padding box of the element.',
+  manual:
+    'Words are only broken at line breaks where there are characters inside the word that suggest line break opportunities',
   'line-through': 'Each line of text has a line through the middle.',
   overline: 'Each line of text has a line above it.',
   underline: 'Each line of text is underlined.',
@@ -11126,27 +11668,35 @@ export const descriptions = {
   double: 'Produces a double line.',
   solid: 'Produces a solid line.',
   wavy: 'Produces a wavy line.',
-  'matrix()': 'Specifies a 2D transformation in the form of a transformation matrix of six values. matrix(a,b,c,d,e,f) is equivalent to applying the transformation matrix [a b c d e f]',
+  'matrix()':
+    'Specifies a 2D transformation in the form of a transformation matrix of six values. matrix(a,b,c,d,e,f) is equivalent to applying the transformation matrix [a b c d e f]',
   'matrix3d()': 'Specifies a 3D transformation as a 4x4 homogeneous matrix of 16 values in column-major order.',
   perspective: 'Specifies a perspective projection matrix.',
-  'rotate()': 'Specifies a 2D rotation by the angle specified in the parameter about the origin of the element, as defined by the transform-origin property.',
-  'rotate3d()': 'Specifies a clockwise 3D rotation by the angle specified in last parameter about the [x,y,z] direction vector described by the first 3 parameters.',
+  'rotate()':
+    'Specifies a 2D rotation by the angle specified in the parameter about the origin of the element, as defined by the transform-origin property.',
+  'rotate3d()':
+    'Specifies a clockwise 3D rotation by the angle specified in last parameter about the [x,y,z] direction vector described by the first 3 parameters.',
   "rotateX('angle')": 'Specifies a clockwise rotation by the given angle about the X axis.',
   "rotateY('angle')": 'Specifies a clockwise rotation by the given angle about the Y axis.',
   "rotateZ('angle')": 'Specifies a clockwise rotation by the given angle about the Z axis.',
-  'scale()': 'Specifies a 2D scale operation by the [sx,sy] scaling vector described by the 2 parameters. If the second parameter is not provided, it is takes a value equal to the first.',
+  'scale()':
+    'Specifies a 2D scale operation by the [sx,sy] scaling vector described by the 2 parameters. If the second parameter is not provided, it is takes a value equal to the first.',
   'scale3d()': 'Specifies a 3D scale operation by the [sx,sy,sz] scaling vector described by the 3 parameters.',
   'scaleX()': 'Specifies a scale operation using the [sx,1] scaling vector, where sx is given as the parameter.',
   'scaleY()': 'Specifies a scale operation using the [sy,1] scaling vector, where sy is given as the parameter.',
   'scaleZ()': 'Specifies a scale operation using the [1,1,sz] scaling vector, where sz is given as the parameter.',
-  'skew()': 'Specifies a skew transformation along the X and Y axes. The first angle parameter specifies the skew on the X axis. The second angle parameter specifies the skew on the Y axis. If the second parameter is not given then a value of 0 is used for the Y angle (ie: no skew on the Y axis).',
+  'skew()':
+    'Specifies a skew transformation along the X and Y axes. The first angle parameter specifies the skew on the X axis. The second angle parameter specifies the skew on the Y axis. If the second parameter is not given then a value of 0 is used for the Y angle (ie: no skew on the Y axis).',
   'skewX()': 'Specifies a skew transformation along the X axis by the given angle.',
   'skewY()': 'Specifies a skew transformation along the Y axis by the given angle.',
-  'translate()': 'Specifies a 2D translation by the vector [tx, ty], where tx is the first translation-value parameter and ty is the optional second translation-value parameter.',
-  'translate3d()': 'Specifies a 3D translation by the vector [tx,ty,tz], with tx, ty and tz being the first, second and third translation-value parameters respectively.',
+  'translate()':
+    'Specifies a 2D translation by the vector [tx, ty], where tx is the first translation-value parameter and ty is the optional second translation-value parameter.',
+  'translate3d()':
+    'Specifies a 3D translation by the vector [tx,ty,tz], with tx, ty and tz being the first, second and third translation-value parameters respectively.',
   'translateX()': 'Specifies a translation by the given amount in the X direction.',
   'translateY()': 'Specifies a translation by the given amount in the Y direction.',
-  'translateZ()': 'Specifies a translation by the given amount in the Z direction. Note that percentage values are not allowed in the translateZ translation-value, and if present are evaluated as 0.',
+  'translateZ()':
+    'Specifies a translation by the given amount in the Z direction. Note that percentage values are not allowed in the translateZ translation-value, and if present are evaluated as 0.',
   false: 'The element does not contain an accelerator key sequence.',
   true: 'The element contains an accelerator key sequence.',
   bt: 'Bottom-to-top block flow. Layout is horizontal.',
@@ -11158,97 +11708,149 @@ export const descriptions = {
   mode: 'Any of the range of mode values available to the -ms-layout-grid-mode property.',
   type: 'Any of the range of type values available to the -ms-layout-grid-type property.',
   loose: 'Default. Grid used for Japanese and Korean characters.',
-  '-ms-autohiding-scrollbar': 'Indicates the element displays auto-hiding scrollbars during mouse interactions and panning indicators during touch and keyboard interactions.',
-  scrollbar: 'Scrollbars are typically narrow strips inserted on one or two edges of an element and which often have arrows to click on and a "thumb" to drag up and down (or left and right) to move the contents of the element.',
-  'ideograph-alpha': 'Creates 1/4em extra spacing between runs of ideographic letters and non-ideographic letters, such as Latin-based, Cyrillic, Greek, Arabic or Hebrew.',
+  '-ms-autohiding-scrollbar':
+    'Indicates the element displays auto-hiding scrollbars during mouse interactions and panning indicators during touch and keyboard interactions.',
+  scrollbar:
+    'Scrollbars are typically narrow strips inserted on one or two edges of an element and which often have arrows to click on and a "thumb" to drag up and down (or left and right) to move the contents of the element.',
+  'ideograph-alpha':
+    'Creates 1/4em extra spacing between runs of ideographic letters and non-ideographic letters, such as Latin-based, Cyrillic, Greek, Arabic or Hebrew.',
   'ideograph-numeric': 'Creates 1/4em extra spacing between runs of ideographic letters and numeric glyphs.',
   'ideograph-parenthesis': 'Creates extra spacing between normal (non wide) parenthesis and ideographs.',
   'ideograph-space': 'Extends the width of the space character while surrounded by ideographs.',
-  punctuation: 'Creates extra non-breaking spacing around punctuation as required by language-specific typographic conventions.',
-  digits: 'Attempt to typeset horizontally each maximal sequence of consecutive ASCII digits (U+0030–U+0039) that has as many or fewer characters than the specified integer such that it takes up the space of a single character within the vertical line box.',
-  'inter-cluster': 'Justification primarily changes spacing at word separators and at grapheme cluster boundaries in clustered scripts. This value is typically used for Southeast Asian scripts such as Thai.',
-  'inter-ideograph': 'Justification primarily changes spacing at word separators and at inter-graphemic boundaries in scripts that use no word spaces. This value is typically used for CJK languages.',
-  'inter-word': 'Justification primarily changes spacing at word separators. This value is typically used for languages that separate words using spaces, like English or (sometimes) Korean.',
-  kashida: 'Justification primarily stretches Arabic and related scripts through the use of kashida or other calligraphic elongation.',
+  punctuation:
+    'Creates extra non-breaking spacing around punctuation as required by language-specific typographic conventions.',
+  digits:
+    'Attempt to typeset horizontally each maximal sequence of consecutive ASCII digits (U+0030–U+0039) that has as many or fewer characters than the specified integer such that it takes up the space of a single character within the vertical line box.',
+  'inter-cluster':
+    'Justification primarily changes spacing at word separators and at grapheme cluster boundaries in clustered scripts. This value is typically used for Southeast Asian scripts such as Thai.',
+  'inter-ideograph':
+    'Justification primarily changes spacing at word separators and at inter-graphemic boundaries in scripts that use no word spaces. This value is typically used for CJK languages.',
+  'inter-word':
+    'Justification primarily changes spacing at word separators. This value is typically used for languages that separate words using spaces, like English or (sometimes) Korean.',
+  kashida:
+    'Justification primarily stretches Arabic and related scripts through the use of kashida or other calligraphic elongation.',
   clip: 'Clip inline content that overflows. Characters may be only partially rendered.',
   ellipsis: 'Render an ellipsis character (U+2026) to represent clipped inline content.',
-  over: "The underline is aligned with the 'top' (right in vertical writing) edge of the element's em-box. In this mode, an overline also switches sides.",
-  under: "The underline is aligned with the 'bottom' (left in vertical writing) edge of the element's em-box. In this case the underline usually does not cross the descenders. This is sometimes called 'accounting' underline.",
+  over:
+    "The underline is aligned with the 'top' (right in vertical writing) edge of the element's em-box. In this mode, an overline also switches sides.",
+  under:
+    "The underline is aligned with the 'bottom' (left in vertical writing) edge of the element's em-box. In this case the underline usually does not cross the descenders. This is sometimes called 'accounting' underline.",
   grippers: 'Grippers are always on.',
   'break-all': 'Lines may break between any two grapheme clusters for non-CJK scripts.',
-  clear: 'Inline flow content can only wrap on top and bottom of the exclusion and must leave the areas to the start and end edges of the exclusion box empty.',
-  maximum: 'Inline flow content can wrap on the side of the exclusion with the largest available space for the given line, and must leave the other side of the exclusion empty.',
-  minimum: 'Inline flow content can flow around the edge of the exclusion with the smallest available space within the flow content’s containing block, and must leave the other edge of the exclusion empty.',
+  clear:
+    'Inline flow content can only wrap on top and bottom of the exclusion and must leave the areas to the start and end edges of the exclusion box empty.',
+  maximum:
+    'Inline flow content can wrap on the side of the exclusion with the largest available space for the given line, and must leave the other side of the exclusion empty.',
+  minimum:
+    'Inline flow content can flow around the edge of the exclusion with the smallest available space within the flow content’s containing block, and must leave the other edge of the exclusion empty.',
   current: 'Indicates that the user agent should target the frame that the element is in.',
   root: 'Indicates that the user agent should target the full window.',
-  'scale-down': 'Size the content as if ‘none’ or ‘contain’ were specified, whichever would result in a smaller concrete object size.',
+  'scale-down':
+    'Size the content as if ‘none’ or ‘contain’ were specified, whichever would result in a smaller concrete object size.',
   invert: 'Performs a color inversion on the pixels on the screen.',
   '-moz-hidden-unscrollable': "Same as the standardized 'clip', except doesn’t establish a block formatting context.",
   painted: 'The given element can be the target element for pointer events when the pointer is over a "painted" area. ',
-  visibleFill: 'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and when the pointer is over the interior of the element.',
-  visiblePainted: 'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and when the pointer is over a ‘painted’ area.',
-  visibleStroke: 'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and when the pointer is over the perimeter of the element.',
-  absolute: "The box's position (and possibly size) is specified with the 'top', 'right', 'bottom', and 'left' properties. These properties specify offsets with respect to the box's 'containing block'.",
+  visibleFill:
+    'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and when the pointer is over the interior of the element.',
+  visiblePainted:
+    'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and when the pointer is over a ‘painted’ area.',
+  visibleStroke:
+    'The given element can be the target element for pointer events when the ‘visibility’ property is set to visible and when the pointer is over the perimeter of the element.',
+  absolute:
+    "The box's position (and possibly size) is specified with the 'top', 'right', 'bottom', and 'left' properties. These properties specify offsets with respect to the box's 'containing block'.",
   '-ms-page': "The box's position is calculated according to the 'absolute' model.",
-  relative: "The box's position is calculated according to the normal flow (this is called the position in normal flow). Then the box is offset relative to its normal position.",
-  static: "The box is a normal box, laid out according to the normal flow. The 'top', 'right', 'bottom', and 'left' properties do not apply.",
-  sticky: "The box's position is calculated according to the normal flow. Then the box is offset relative to its flow root and containing block and in all cases, including table elements, does not affect the position of any following boxes.",
-  '-webkit-sticky': "The box's position is calculated according to the normal flow. Then the box is offset relative to its flow root and containing block and in all cases, including table elements, does not affect the position of any following boxes.",
-  'distribute-letter': 'If the width of the ruby text is smaller than that of the base, then the ruby text contents are evenly distributed across the width of the base, with the first and last ruby text glyphs lining up with the corresponding first and last base glyphs. If the width of the ruby text is at least the width of the base, then the letters of the base are evenly distributed across the width of the ruby text.',
-  'distribute-space': 'If the width of the ruby text is smaller than that of the base, then the ruby text contents are evenly distributed across the width of the base, with a certain amount of white space preceding the first and following the last character in the ruby text. That amount of white space is normally equal to half the amount of inter-character space of the ruby text.',
-  'line-edge': "If the ruby text is not adjacent to a line edge, it is aligned as in 'auto'. If it is adjacent to a line edge, then it is still aligned as in auto, but the side of the ruby text that touches the end of the line is lined up with the corresponding edge of the base.",
-  after: 'The ruby text appears after the base. This is a relatively rare setting used in ideographic East Asian writing systems, most easily found in educational text.',
-  before: 'The ruby text appears before the base. This is the most common setting used in ideographic East Asian writing systems.',
-  'attr(x)': "The value of attribute 'x' is a string value. The string value is evaluated as a <number> to determine the number of ruby base elements to be spanned by the annotation element.",
+  relative:
+    "The box's position is calculated according to the normal flow (this is called the position in normal flow). Then the box is offset relative to its normal position.",
+  static:
+    "The box is a normal box, laid out according to the normal flow. The 'top', 'right', 'bottom', and 'left' properties do not apply.",
+  sticky:
+    "The box's position is calculated according to the normal flow. Then the box is offset relative to its flow root and containing block and in all cases, including table elements, does not affect the position of any following boxes.",
+  '-webkit-sticky':
+    "The box's position is calculated according to the normal flow. Then the box is offset relative to its flow root and containing block and in all cases, including table elements, does not affect the position of any following boxes.",
+  'distribute-letter':
+    'If the width of the ruby text is smaller than that of the base, then the ruby text contents are evenly distributed across the width of the base, with the first and last ruby text glyphs lining up with the corresponding first and last base glyphs. If the width of the ruby text is at least the width of the base, then the letters of the base are evenly distributed across the width of the ruby text.',
+  'distribute-space':
+    'If the width of the ruby text is smaller than that of the base, then the ruby text contents are evenly distributed across the width of the base, with a certain amount of white space preceding the first and following the last character in the ruby text. That amount of white space is normally equal to half the amount of inter-character space of the ruby text.',
+  'line-edge':
+    "If the ruby text is not adjacent to a line edge, it is aligned as in 'auto'. If it is adjacent to a line edge, then it is still aligned as in auto, but the side of the ruby text that touches the end of the line is lined up with the corresponding edge of the base.",
+  after:
+    'The ruby text appears after the base. This is a relatively rare setting used in ideographic East Asian writing systems, most easily found in educational text.',
+  before:
+    'The ruby text appears before the base. This is the most common setting used in ideographic East Asian writing systems.',
+  'attr(x)':
+    "The value of attribute 'x' is a string value. The string value is evaluated as a <number> to determine the number of ruby base elements to be spanned by the annotation element.",
   smooth: 'Scrolls in a smooth fashion using a user-agent-defined timing function and time period.',
-  'repeat()': 'Defines an interval at which snap points are defined, starting from the container’s relevant start edge.',
+  'repeat()':
+    'Defines an interval at which snap points are defined, starting from the container’s relevant start edge.',
   'margin-box': 'The background is painted within (clipped to) the margin box.',
   'format()': 'Optional hint describing the format of the font resource.',
   'local()': 'Format-specific string that identifies a locally available copy of a given font.',
   butt: 'Indicates that the stroke for each subpath does not extend beyond its two endpoints.',
   bevel: 'Indicates that a bevelled corner is to be used to join path segments.',
   miter: 'Indicates that a sharp corner is to be used to join path segments.',
-  additive: 'Represents “sign-value” numbering systems, which, rather than using reusing digits in different positions to change their value, define additional digits with much larger values, so that the value of the number can be obtained by adding all the digits together.',
-  cyclic: 'Cycles repeatedly through its provided symbols, looping back to the beginning when it reaches the end of the list.',
+  additive:
+    'Represents “sign-value” numbering systems, which, rather than using reusing digits in different positions to change their value, define additional digits with much larger values, so that the value of the number can be obtained by adding all the digits together.',
+  cyclic:
+    'Cycles repeatedly through its provided symbols, looping back to the beginning when it reaches the end of the list.',
   extends: 'Use the algorithm of another counter style, but alter other aspects.',
-  numeric: "interprets the list of counter symbols as digits to a \"place-value\" numbering system, similar to the default 'decimal' counter style.",
-  symbolic: 'Cycles repeatedly through its provided symbols, doubling, tripling, etc. the symbols on each successive pass through the list.',
-  sideways: "This value is equivalent to 'sideways-right' in 'vertical-rl' writing mode and equivalent to 'sideways-left' in 'vertical-lr' writing mode.",
-  'sideways-right': 'In vertical writing modes, this causes text to be set as if in a horizontal layout, but rotated 90° clockwise.',
-  upright: 'In vertical writing modes, characters from horizontal-only scripts are rendered upright, i.e. in their standard horizontal orientation.',
-  geometricPrecision: 'Indicates that the user agent shall emphasize geometric precision over legibility and rendering speed.',
-  optimizeLegibility: 'Indicates that the user agent shall emphasize legibility over rendering speed and geometric precision.',
+  numeric:
+    'interprets the list of counter symbols as digits to a "place-value" numbering system, similar to the default \'decimal\' counter style.',
+  symbolic:
+    'Cycles repeatedly through its provided symbols, doubling, tripling, etc. the symbols on each successive pass through the list.',
+  sideways:
+    "This value is equivalent to 'sideways-right' in 'vertical-rl' writing mode and equivalent to 'sideways-left' in 'vertical-lr' writing mode.",
+  'sideways-right':
+    'In vertical writing modes, this causes text to be set as if in a horizontal layout, but rotated 90° clockwise.',
+  upright:
+    'In vertical writing modes, characters from horizontal-only scripts are rendered upright, i.e. in their standard horizontal orientation.',
+  geometricPrecision:
+    'Indicates that the user agent shall emphasize geometric precision over legibility and rendering speed.',
+  optimizeLegibility:
+    'Indicates that the user agent shall emphasize legibility over rendering speed and geometric precision.',
   capitalize: 'Puts the first typographic letter unit of each word in titlecase.',
   lowercase: 'Puts all letters in lowercase.',
   uppercase: 'Puts all letters in uppercase.',
   'perspective()': 'Specifies a perspective projection matrix.',
   flat: 'All children of this element are rendered flattened into the 2D plane of the element.',
   'preserve-3d': 'Flattening is not performed, so children maintain their position in 3D space.',
-  'bidi-override': "Inside the element, reordering is strictly in sequence according to the 'direction' property; the implicit part of the bidirectional algorithm is ignored.",
-  embed: "If the element is inline-level, this value opens an additional level of embedding with respect to the bidirectional algorithm. The direction of this embedding level is given by the 'direction' property.",
-  'isolate-override': "This combines the isolation behavior of 'isolate' with the directional override behavior of 'bidi-override'",
-  plaintext: "For the purposes of the Unicode bidirectional algorithm, the base directionality of each bidi paragraph for which the element forms the containing block is determined not by the element's computed 'direction'.",
+  'bidi-override':
+    "Inside the element, reordering is strictly in sequence according to the 'direction' property; the implicit part of the bidirectional algorithm is ignored.",
+  embed:
+    "If the element is inline-level, this value opens an additional level of embedding with respect to the bidirectional algorithm. The direction of this embedding level is given by the 'direction' property.",
+  'isolate-override':
+    "This combines the isolation behavior of 'isolate' with the directional override behavior of 'bidi-override'",
+  plaintext:
+    "For the purposes of the Unicode bidirectional algorithm, the base directionality of each bidi paragraph for which the element forms the containing block is determined not by the element's computed 'direction'.",
   'U+26': 'Ampersand.',
-  'U+20-24F, U+2B0-2FF, U+370-4FF, U+1E00-1EFF, U+2000-20CF, U+2100-23FF, U+2500-26FF, U+E000-F8FF, U+FB00–FB4F': 'WGL4 character set (Pan-European).',
-  'U+20-17F, U+2B0-2FF, U+2000-206F, U+20A0-20CF, U+2100-21FF, U+2600-26FF': 'The Multilingual European Subset No. 1. Latin. Covers ~44 languages.',
-  'U+20-2FF, U+370-4FF, U+1E00-20CF, U+2100-23FF, U+2500-26FF, U+FB00-FB4F, U+FFF0-FFFD': 'The Multilingual European Subset No. 2. Latin, Greek, and Cyrillic. Covers ~128 language.',
-  'U+20-4FF, U+530-58F, U+10D0-10FF, U+1E00-23FF, U+2440-245F, U+2500-26FF, U+FB00-FB4F, U+FE20-FE2F, U+FFF0-FFFD': 'The Multilingual European Subset No. 3. Covers all characters belonging to European scripts.',
+  'U+20-24F, U+2B0-2FF, U+370-4FF, U+1E00-1EFF, U+2000-20CF, U+2100-23FF, U+2500-26FF, U+E000-F8FF, U+FB00–FB4F':
+    'WGL4 character set (Pan-European).',
+  'U+20-17F, U+2B0-2FF, U+2000-206F, U+20A0-20CF, U+2100-21FF, U+2600-26FF':
+    'The Multilingual European Subset No. 1. Latin. Covers ~44 languages.',
+  'U+20-2FF, U+370-4FF, U+1E00-20CF, U+2100-23FF, U+2500-26FF, U+FB00-FB4F, U+FFF0-FFFD':
+    'The Multilingual European Subset No. 2. Latin, Greek, and Cyrillic. Covers ~128 language.',
+  'U+20-4FF, U+530-58F, U+10D0-10FF, U+1E00-23FF, U+2440-245F, U+2500-26FF, U+FB00-FB4F, U+FE20-FE2F, U+FFF0-FFFD':
+    'The Multilingual European Subset No. 3. Covers all characters belonging to European scripts.',
   'U+00-7F': 'Basic Latin (ASCII).',
-  'U+80-FF': 'Latin-1 Supplement. Accented characters for Western European languages, common punctuation characters, multiplication and division signs.',
+  'U+80-FF':
+    'Latin-1 Supplement. Accented characters for Western European languages, common punctuation characters, multiplication and division signs.',
   'U+100-17F': 'Latin Extended-A. Accented characters for for Czech, Dutch, Polish, and Turkish.',
-  'U+180-24F': 'Latin Extended-B. Croatian, Slovenian, Romanian, Non-European and historic latin, Khoisan, Pinyin, Livonian, Sinology.',
+  'U+180-24F':
+    'Latin Extended-B. Croatian, Slovenian, Romanian, Non-European and historic latin, Khoisan, Pinyin, Livonian, Sinology.',
   'U+1E00-1EFF': 'Latin Extended Additional. Vietnamese, German captial sharp s, Medievalist, Latin general use.',
   'U+250-2AF': 'International Phonetic Alphabet Extensions.',
   'U+370-3FF': 'Greek and Coptic.',
   'U+1F00-1FFF': 'Greek Extended. Accented characters for polytonic Greek.',
   'U+400-4FF': 'Cyrillic.',
-  'U+500-52F': 'Cyrillic Supplement. Extra letters for Komi, Khanty, Chukchi, Mordvin, Kurdish, Aleut, Chuvash, Abkhaz, Azerbaijani, and Orok.',
+  'U+500-52F':
+    'Cyrillic Supplement. Extra letters for Komi, Khanty, Chukchi, Mordvin, Kurdish, Aleut, Chuvash, Abkhaz, Azerbaijani, and Orok.',
   'U+00-52F, U+1E00-1FFF, U+2200–22FF': 'Latin, Greek, Cyrillic, some punctuation and symbols.',
   'U+530–58F': 'Armenian.',
   'U+590–5FF': 'Hebrew.',
   'U+600–6FF': 'Arabic.',
-  'U+750–77F': 'Arabic Supplement. Additional letters for African languages, Khowar, Torwali, Burushaski, and early Persian.',
-  'U+8A0–8FF': 'Arabic Extended-A. Additional letters for African languages, European and Central Asian languages, Rohingya, Berber, Arwi, and Koranic annotation signs.',
+  'U+750–77F':
+    'Arabic Supplement. Additional letters for African languages, Khowar, Torwali, Burushaski, and early Persian.',
+  'U+8A0–8FF':
+    'Arabic Extended-A. Additional letters for African languages, European and Central Asian languages, Rohingya, Berber, Arwi, and Koranic annotation signs.',
   'U+700–74F': 'Syriac.',
   'U+900–97F': 'Devanagari.',
   'U+980–9FF': 'Bengali.',
@@ -11276,7 +11878,8 @@ export const descriptions = {
   'U+1800–18AF': 'Mongolian.',
   'U+1B80–1BBF': 'Sundanese.',
   'U+1CC0–1CCF': 'Sundanese Supplement. Punctuation.',
-  'U+4E00–9FD5': 'CJK (Chinese, Japanese, Korean) Unified Ideographs. Most common ideographs for modern Chinese and Japanese.',
+  'U+4E00–9FD5':
+    'CJK (Chinese, Japanese, Korean) Unified Ideographs. Most common ideographs for modern Chinese and Japanese.',
   'U+3400–4DB5': 'CJK Unified Ideographs Extension A. Rare ideographs.',
   'U+2F00–2FDF': 'Kangxi Radicals.',
   'U+2E80–2EFF': 'CJK Radicals Supplement. Alternative forms of Kangxi Radicals.',
@@ -11299,7 +11902,8 @@ export const descriptions = {
   'U+2300–23FF': 'Miscellaneous Technical.',
   'U+E000-F8FF': 'Private Use Area.',
   'U+FB00–FB4F': 'Alphabetic Presentation Forms. Ligatures for latin, Armenian, and Hebrew.',
-  'U+FB50–FDFF': 'Arabic Presentation Forms-A. Contextual forms / ligatures for Persian, Urdu, Sindhi, Central Asian languages, etc, Arabic pedagogical symbols, word ligatures.',
+  'U+FB50–FDFF':
+    'Arabic Presentation Forms-A. Contextual forms / ligatures for Persian, Urdu, Sindhi, Central Asian languages, etc, Arabic pedagogical symbols, word ligatures.',
   'U+1F600–1F64F': 'Emoji: Emoticons.',
   'U+2600–26FF': 'Emoji: Miscellaneous Symbols.',
   'U+1F300–1F5FF': 'Emoji: Miscellaneous Symbols and Pictographs.',
@@ -11311,11 +11915,15 @@ export const descriptions = {
   pre: "Sets 'white-space-collapsing' to 'preserve' and 'text-wrap' to 'none'.",
   'pre-line': "Sets 'white-space-collapsing' to 'preserve-breaks' and 'text-wrap' to 'normal'.",
   'pre-wrap': "Sets 'white-space-collapsing' to 'preserve' and 'text-wrap' to 'normal'.",
-  contents: 'Indicates that the author expects to animate or change something about the element’s contents in the near future.',
-  'scroll-position': 'Indicates that the author expects to animate or change the scroll position of the element in the near future.',
+  contents:
+    'Indicates that the author expects to animate or change something about the element’s contents in the near future.',
+  'scroll-position':
+    'Indicates that the author expects to animate or change the scroll position of the element in the near future.',
   'horizontal-tb': 'Top-to-bottom block flow direction. The writing mode is horizontal.',
-  'sideways-lr': 'Left-to-right block flow direction. The writing mode is vertical, while the typographic mode is horizontal.',
-  'sideways-rl': 'Right-to-left block flow direction. The writing mode is vertical, while the typographic mode is horizontal.',
+  'sideways-lr':
+    'Left-to-right block flow direction. The writing mode is vertical, while the typographic mode is horizontal.',
+  'sideways-rl':
+    'Right-to-left block flow direction. The writing mode is vertical, while the typographic mode is horizontal.',
   'vertical-lr': 'Left-to-right block flow direction. The writing mode is vertical.',
   'vertical-rl': 'Right-to-left block flow direction. The writing mode is vertical.'
 };

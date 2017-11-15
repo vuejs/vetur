@@ -1,10 +1,6 @@
-import {
-  hoverDSL
-} from '../../../test-util/hover-test-util';
+import { hoverDSL } from '../../../test-util/hover-test-util';
 
-import {
-  stylusHover
-} from '../stylus-hover';
+import { stylusHover } from '../stylus-hover';
 
 const stylus = hoverDSL({
   langId: 'stylus',
@@ -17,23 +13,18 @@ const stylus = hoverDSL({
 suite('Stylus Hover', () => {
   test('property hover', () => {
     stylus`.test
-  cu|rsor pointer`
-    .hasHoverAt('Allows control over cursor appearance in an element', 9);
+  cu|rsor pointer`.hasHoverAt('Allows control over cursor appearance in an element', 9);
 
     stylus`.test
-  cu|rsor: pointer`
-    .hasHoverAt('Allows control over cursor appearance in an element', 9);
+  cu|rsor: pointer`.hasHoverAt('Allows control over cursor appearance in an element', 9);
 
     stylus`.test
-  |cursor: pointer`
-    .hasHoverAt('Allows control over cursor appearance in an element', 9);
+  |cursor: pointer`.hasHoverAt('Allows control over cursor appearance in an element', 9);
 
     stylus`.test
-  cursor|: pointer`
-    .hasHoverAt('Allows control over cursor appearance in an element', 9);
+  cursor|: pointer`.hasHoverAt('Allows control over cursor appearance in an element', 9);
 
     stylus`.test
-  cursor: p|ointer`
-    .hasNothing();
+  cursor: p|ointer`.hasNothing();
   });
 });

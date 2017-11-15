@@ -1,6 +1,19 @@
 import {
-  CompletionItem, Location, SignatureHelp, Definition, TextEdit, TextDocument, Diagnostic, DocumentLink, Range,
-  Hover, DocumentHighlight, CompletionList, Position, FormattingOptions, SymbolInformation
+  CompletionItem,
+  Location,
+  SignatureHelp,
+  Definition,
+  TextEdit,
+  TextDocument,
+  Diagnostic,
+  DocumentLink,
+  Range,
+  Hover,
+  DocumentHighlight,
+  CompletionList,
+  Position,
+  FormattingOptions,
+  SymbolInformation
 } from 'vscode-languageserver-types';
 import { DocumentContext } from '../service';
 
@@ -54,7 +67,7 @@ export function getLanguageModes(workspacePath: string | null | undefined): Lang
   modelCaches.push(documentRegions);
 
   const jsMode = getJavascriptMode(documentRegions, workspacePath);
-  let modes: {[k: string]: LanguageMode} = {
+  let modes: { [k: string]: LanguageMode } = {
     vue: getVueMode(),
     'vue-html': getVueHTMLMode(documentRegions, workspacePath, jsMode),
     css: getCSSMode(documentRegions),
@@ -76,14 +89,17 @@ export function getLanguageModes(workspacePath: string | null | undefined): Lang
       return null;
     },
     getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
-      return documentRegions.get(document).getLanguageRanges(range).map(r => {
-        return {
-          start: r.start,
-          end: r.end,
-          mode: modes[r.languageId],
-          attributeValue: r.attributeValue
-        };
-      });
+      return documentRegions
+        .get(document)
+        .getLanguageRanges(range)
+        .map(r => {
+          return {
+            start: r.start,
+            end: r.end,
+            mode: modes[r.languageId],
+            attributeValue: r.attributeValue
+          };
+        });
     },
     getAllModesInDocument(document: TextDocument): LanguageMode[] {
       const result = [];

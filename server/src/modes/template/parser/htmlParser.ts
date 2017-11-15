@@ -6,15 +6,25 @@ export class Node {
   public tag: string;
   public closed: boolean;
   public endTagStart: number;
-  public attributes: {[name: string]: string};
-  public get attributeNames() : string[] { return Object.keys(this.attributes); }
-  constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
+  public attributes: { [name: string]: string };
+  public get attributeNames(): string[] {
+    return Object.keys(this.attributes);
   }
+  constructor(public start: number, public end: number, public children: Node[], public parent: Node) {}
   public isSameTag(tagInLowerCase: string) {
-    return this.tag && tagInLowerCase && this.tag.length === tagInLowerCase.length && this.tag.toLowerCase() === tagInLowerCase;
+    return (
+      this.tag &&
+      tagInLowerCase &&
+      this.tag.length === tagInLowerCase.length &&
+      this.tag.toLowerCase() === tagInLowerCase
+    );
   }
-  public get firstChild(): Node { return this.children[0]; }
-  public get lastChild(): Node | undefined { return this.children.length ? this.children[this.children.length - 1] : void 0; }
+  public get firstChild(): Node {
+    return this.children[0];
+  }
+  public get lastChild(): Node | undefined {
+    return this.children.length ? this.children[this.children.length - 1] : void 0;
+  }
 
   public findNodeBefore(offset: number): Node {
     const idx = findFirst(this.children, c => offset <= c.start) - 1;
@@ -60,7 +70,7 @@ export function parse(text: string): HTMLDocument {
   let endTagStart = -1;
   let pendingAttribute = '';
   let token = scanner.scan();
-  let attributes: {[k: string]: string} = {};
+  let attributes: { [k: string]: string } = {};
   while (token !== TokenType.EOS) {
     switch (token) {
       case TokenType.StartTagOpen:
@@ -146,7 +156,8 @@ export function parseHTMLDocument(document: TextDocument): HTMLDocument {
  * @returns the least x for which p(x) is true or array.length if no element fullfills the given function.
  */
 function findFirst<T>(array: T[], p: (x: T) => boolean): number {
-  let low = 0, high = array.length;
+  let low = 0,
+    high = array.length;
   if (high === 0) {
     return 0; // no children
   }

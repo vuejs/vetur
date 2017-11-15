@@ -1,5 +1,12 @@
 import * as assert from 'assert';
-import { CompletionList, TextDocument, CompletionItemKind, Position, CompletionItem, TextEdit } from 'vscode-languageserver-types';
+import {
+  CompletionList,
+  TextDocument,
+  CompletionItemKind,
+  Position,
+  CompletionItem,
+  TextEdit
+} from 'vscode-languageserver-types';
 
 export interface CompletionTestSetup {
   doComplete(doc: TextDocument, pos: Position): CompletionList;
@@ -30,8 +37,11 @@ export class CompletionAsserter {
   has(label: string) {
     const items = this.items;
     const matches = items.filter(completion => completion.label === label);
-    assert.equal(matches.length, 1,
-        label + ' should only existing once: Actual: ' + items.map(c => c.label).join(', '));
+    assert.equal(
+      matches.length,
+      1,
+      label + ' should only existing once: Actual: ' + items.map(c => c.label).join(', ')
+    );
     this.lastMatch = matches[0];
     return this;
   }
@@ -51,8 +61,7 @@ export class CompletionAsserter {
     this.lastMatch = undefined as any;
     const items = this.items;
     const matches = items.filter(completion => completion.label === label);
-    assert.equal(matches.length, 0,
-        label + ' should not exist. Actual: ' + items.map(c => c.label).join(', '));
+    assert.equal(matches.length, 0, label + ' should not exist. Actual: ' + items.map(c => c.label).join(', '));
     return this;
   }
 }

@@ -1,4 +1,4 @@
-import {CompletionList, CompletionItemKind, InsertTextFormat, CompletionItem} from 'vscode-languageserver-types';
+import { CompletionList, CompletionItemKind, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
 
 export function doScaffoldComplete(): CompletionList {
   const topLevelCompletions: CompletionItem[] = [
@@ -7,8 +7,7 @@ export function doScaffoldComplete(): CompletionList {
       documentation: 'Scaffold <template>, <script> and <style>',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<template>
+      insertText: `<template>
   \${0}
 </template>
 
@@ -28,8 +27,7 @@ export default {
       documentation: 'Scaffold <template> with html',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<template>
+      insertText: `<template>
   \${0}
 </template>
 `
@@ -39,8 +37,7 @@ export default {
       documentation: 'Scaffold <template> with pug',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<template lang="pug">
+      insertText: `<template lang="pug">
   \${0}
 </template>
 `
@@ -50,8 +47,7 @@ export default {
       documentation: 'Scaffold <script> with JavaScript',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<script>
+      insertText: `<script>
 export default {
   \${0}
 }
@@ -63,8 +59,7 @@ export default {
       documentation: 'Scaffold <script> with TypeScript',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<script lang="ts">
+      insertText: `<script lang="ts">
 export default {
   \${0}
 }
@@ -76,8 +71,7 @@ export default {
       documentation: 'Scaffold <style> with CSS',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style>
+      insertText: `<style>
 \${0}
 </style>
 `
@@ -87,8 +81,7 @@ export default {
       documentation: 'Scaffold <style> with CSS (scoped)',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style scoped>
+      insertText: `<style scoped>
 \${0}
 </style>
 `
@@ -98,8 +91,7 @@ export default {
       documentation: 'Scaffold <style> with scss',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="scss">
+      insertText: `<style lang="scss">
 \${0}
 </style>
 `
@@ -109,8 +101,7 @@ export default {
       documentation: 'Scaffold <style> with scss (scoped)',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="scss" scoped>
+      insertText: `<style lang="scss" scoped>
 \${0}
 </style>
 `
@@ -120,8 +111,7 @@ export default {
       documentation: 'Scaffold <style> with less',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="less">
+      insertText: `<style lang="less">
 \${0}
 </style>
 `
@@ -131,8 +121,7 @@ export default {
       documentation: 'Scaffold <style> with less (scoped)',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="less" scoped>
+      insertText: `<style lang="less" scoped>
 \${0}
 </style>
 `
@@ -142,8 +131,7 @@ export default {
       documentation: 'Scaffold <style> with sass',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="sass">
+      insertText: `<style lang="sass">
 \${0}
 </style>
 `
@@ -153,8 +141,7 @@ export default {
       documentation: 'Scaffold <style> with sass (scoped)',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="sass" scoped>
+      insertText: `<style lang="sass" scoped>
 \${0}
 </style>
 `
@@ -164,8 +151,7 @@ export default {
       documentation: 'Scaffold <style> with postcss',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="postcss">
+      insertText: `<style lang="postcss">
 \${0}
 </style>
 `
@@ -175,8 +161,7 @@ export default {
       documentation: 'Scaffold <style> with postcss (scoped)',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="postcss" scoped>
+      insertText: `<style lang="postcss" scoped>
 \${0}
 </style>
 `
@@ -186,8 +171,7 @@ export default {
       documentation: 'Scaffold <style> with stylus',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="stylus">
+      insertText: `<style lang="stylus">
 \${0}
 </style>
 `
@@ -197,12 +181,11 @@ export default {
       documentation: 'Scaffold <style> with stylus (scoped)',
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText:
-`<style lang="stylus" scoped>
+      insertText: `<style lang="stylus" scoped>
 \${0}
 </style>
 `
-    },
+    }
   ];
 
   return {

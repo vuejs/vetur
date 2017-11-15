@@ -17,8 +17,11 @@ const decorationType: DecorationRenderOptions = {
   }
 };
 
-export function activateColorDecorations(decoratorProvider: (uri: string) => Thenable<Range[]>, supportedLanguages: { [id: string]: boolean }, isDecoratorEnabled: (languageId: string) => boolean): Disposable {
-
+export function activateColorDecorations(
+  decoratorProvider: (uri: string) => Thenable<Range[]>,
+  supportedLanguages: { [id: string]: boolean },
+  isDecoratorEnabled: (languageId: string) => boolean
+): Disposable {
   const disposables: Disposable[] = [];
 
   const colorsDecorationType = window.createTextEditorDecorationType(decorationType);
@@ -29,13 +32,17 @@ export function activateColorDecorations(decoratorProvider: (uri: string) => The
     decoratorEnablement[languageId] = isDecoratorEnabled(languageId);
   }
 
-  const pendingUpdateRequests: { [key: string]: NodeJS.Timer; } = {};
+  const pendingUpdateRequests: { [key: string]: NodeJS.Timer } = {};
 
-  window.onDidChangeVisibleTextEditors(editors => {
-    for (const editor of editors) {
-      triggerUpdateDecorations(editor.document);
-    }
-  }, null, disposables);
+  window.onDidChangeVisibleTextEditors(
+    editors => {
+      for (const editor of editors) {
+        triggerUpdateDecorations(editor.document);
+      }
+    },
+    null,
+    disposables
+  );
 
   workspace.onDidChangeTextDocument(event => triggerUpdateDecorations(event.document), null, disposables);
 
@@ -43,20 +50,24 @@ export function activateColorDecorations(decoratorProvider: (uri: string) => The
   workspace.onDidCloseTextDocument(event => triggerUpdateDecorations(event, true));
   workspace.onDidOpenTextDocument(event => triggerUpdateDecorations(event));
 
-  workspace.onDidChangeConfiguration(_ => {
-    let hasChanges = false;
-    for (const languageId in supportedLanguages) {
-      const prev = decoratorEnablement[languageId];
-      const curr = isDecoratorEnabled(languageId);
-      if (prev !== curr) {
-        decoratorEnablement[languageId] = curr;
-        hasChanges = true;
+  workspace.onDidChangeConfiguration(
+    _ => {
+      let hasChanges = false;
+      for (const languageId in supportedLanguages) {
+        const prev = decoratorEnablement[languageId];
+        const curr = isDecoratorEnabled(languageId);
+        if (prev !== curr) {
+          decoratorEnablement[languageId] = curr;
+          hasChanges = true;
+        }
       }
-    }
-    if (hasChanges) {
-      updateAllVisibleEditors(true);
-    }
-  }, null, disposables);
+      if (hasChanges) {
+        updateAllVisibleEditors(true);
+      }
+    },
+    null,
+    disposables
+  );
 
   updateAllVisibleEditors(false);
 
@@ -69,7 +80,8 @@ export function activateColorDecorations(decoratorProvider: (uri: string) => The
   }
 
   function triggerUpdateDecorations(document: TextDocument, settingsChanges = false) {
-    const triggerUpdate = supportedLanguages[document.languageId] && (decoratorEnablement[document.languageId] || settingsChanges);
+    const triggerUpdate =
+      supportedLanguages[document.languageId] && (decoratorEnablement[document.languageId] || settingsChanges);
     if (triggerUpdate) {
       const documentUriStr = document.uri.toString();
       const timeout = pendingUpdateRequests[documentUriStr];
@@ -134,7 +146,10 @@ function fromHex(hex: string) {
     const blue = 16 * _parseHexDigit(hex.charCodeAt(5)) + _parseHexDigit(hex.charCodeAt(6));
     const alpha = 16 * _parseHexDigit(hex.charCodeAt(7)) + _parseHexDigit(hex.charCodeAt(8));
     return {
-      red, green, blue, alpha
+      red,
+      green,
+      blue,
+      alpha
     };
   }
   if (length === 5) {
@@ -144,7 +159,10 @@ function fromHex(hex: string) {
     const blue = _parseHexDigit(hex.charCodeAt(3));
     const alpha = _parseHexDigit(hex.charCodeAt(4));
     return {
-      red, green, blue, alpha
+      red,
+      green,
+      blue,
+      alpha
     };
   }
 }

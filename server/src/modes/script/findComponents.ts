@@ -67,7 +67,7 @@ function findDefinitionLiteralSymbol(symbol: ts.Symbol, checker: ts.TypeChecker)
 
 function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   const info: ComponentInfo = {
-    name: hyphenate(symbol.name),
+    name: hyphenate(symbol.name)
   };
   const literalSymbol = findDefinitionLiteralSymbol(symbol, checker);
   if (!literalSymbol) {
@@ -77,10 +77,12 @@ function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
   if (!declaration) {
     return info;
   }
-  info.definition = [{
-    uri: Uri.file(declaration.getSourceFile().fileName).toString(),
-    range: Range.create(0, 0, 0, 0)
-  }];
+  info.definition = [
+    {
+      uri: Uri.file(declaration.getSourceFile().fileName).toString(),
+      range: Range.create(0, 0, 0, 0)
+    }
+  ];
 
   let node: ts.Node = declaration;
   if (declaration.kind === ts.SyntaxKind.ExportAssignment) {
@@ -136,7 +138,7 @@ function getArrayProps(compType: ts.Type, checker: ts.TypeChecker) {
   const propArray = propDef as ts.ArrayLiteralExpression;
   return propArray.elements
     .filter(e => e.kind === ts.SyntaxKind.StringLiteral)
-    .map((e: ts.StringLiteral) => ({name: hyphenate(e.text)}));
+    .map((e: ts.StringLiteral) => ({ name: hyphenate(e.text) }));
 }
 
 function getPropertyTypeOfType(tpe: ts.Type, property: string, checker: ts.TypeChecker) {

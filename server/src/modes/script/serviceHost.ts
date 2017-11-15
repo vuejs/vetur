@@ -54,9 +54,7 @@ if (ts.sys.realpath) {
 }
 
 function getScriptKind(langId: string): ts.ScriptKind {
-  return langId === 'typescript' ? ts.ScriptKind.TS
-    : langId === 'tsx' ? ts.ScriptKind.TSX
-    : ts.ScriptKind.JS;
+  return langId === 'typescript' ? ts.ScriptKind.TS : langId === 'tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.JS;
 }
 
 function inferIsOldVersion(workspacePath: string): boolean {
@@ -93,21 +91,18 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
   (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
-  const configFilename = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
+  const configFilename =
+    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
     ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
-  const configJson = configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config || {
+  const configJson = (configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config) || {
     exclude: defaultIgnorePatterns(workspacePath)
   };
-  const parsedConfig = ts.parseJsonConfigFileContent(configJson,
-    ts.sys,
-    workspacePath,
-    {},
-    configFilename,
-    undefined,
-    [{ extension: 'vue', isMixedContent: true }]);
+  const parsedConfig = ts.parseJsonConfigFileContent(configJson, ts.sys, workspacePath, {}, configFilename, undefined, [
+    { extension: 'vue', isMixedContent: true }
+  ]);
   const files = parsedConfig.fileNames;
   const isOldVersion = inferIsOldVersion(workspacePath);
-  compilerOptions = { ...compilerOptions, ...parsedConfig.options};
+  compilerOptions = { ...compilerOptions, ...parsedConfig.options };
   compilerOptions.allowNonTsExtensions = true;
 
   function updateCurrentTextDocument(doc: TextDocument) {
@@ -155,11 +150,11 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       if (isVue(fileName)) {
         const uri = Uri.file(fileName);
         fileName = uri.fsPath;
-        const doc = scriptDocs.get(fileName) ||
+        const doc =
+          scriptDocs.get(fileName) ||
           jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName) || ''));
         return getScriptKind(doc.languageId);
-      }
-      else {
+      } else {
         if (fileName === bridge.fileName) {
           return ts.Extension.Ts;
         }
@@ -197,11 +192,13 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         }
         const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
         const uri = Uri.file(resolvedFileName);
-        const doc = scriptDocs.get(resolvedFileName) ||
+        const doc =
+          scriptDocs.get(resolvedFileName) ||
           jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName) || ''));
-        const extension = doc.languageId === 'typescript' ? ts.Extension.Ts
-          : doc.languageId === 'tsx' ? ts.Extension.Tsx
-          : ts.Extension.Js;
+        const extension =
+          doc.languageId === 'typescript'
+            ? ts.Extension.Ts
+            : doc.languageId === 'tsx' ? ts.Extension.Tsx : ts.Extension.Js;
         return { resolvedFileName, extension };
       });
     },
@@ -216,7 +213,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
       const doc = scriptDocs.get(normalizedFileFsPath);
-      let fileText = doc ? doc.getText() : (ts.sys.readFile(normalizedFileFsPath) || '');
+      let fileText = doc ? doc.getText() : ts.sys.readFile(normalizedFileFsPath) || '';
       if (!doc && isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
@@ -229,7 +226,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       };
     },
     getCurrentDirectory: () => workspacePath,
-    getDefaultLibFileName: ts.getDefaultLibFilePath,
+    getDefaultLibFileName: ts.getDefaultLibFilePath
   };
 
   let jsLanguageService = ts.createLanguageService(host);
@@ -243,4 +240,3 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
 function getNormalizedFileFsPath(fileName: string): string {
   return Uri.file(fileName).fsPath;
 }
-

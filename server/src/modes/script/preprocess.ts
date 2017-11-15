@@ -23,7 +23,14 @@ export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
   return {
-    createLanguageServiceSourceFile(fileName: string, scriptSnapshot: ts.IScriptSnapshot, scriptTarget: ts.ScriptTarget, version: string, setNodeParents: boolean, scriptKind?: ts.ScriptKind): ts.SourceFile {
+    createLanguageServiceSourceFile(
+      fileName: string,
+      scriptSnapshot: ts.IScriptSnapshot,
+      scriptTarget: ts.ScriptTarget,
+      version: string,
+      setNodeParents: boolean,
+      scriptKind?: ts.ScriptKind
+    ): ts.SourceFile {
       const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
       // store scriptKind info on sourceFile
       const hackSourceFile: any = sourceFile;
@@ -33,7 +40,13 @@ export function createUpdater() {
       }
       return sourceFile;
     },
-    updateLanguageServiceSourceFile(sourceFile: ts.SourceFile, scriptSnapshot: ts.IScriptSnapshot, version: string, textChangeRange: ts.TextChangeRange, aggressiveChecks?: boolean): ts.SourceFile {
+    updateLanguageServiceSourceFile(
+      sourceFile: ts.SourceFile,
+      scriptSnapshot: ts.IScriptSnapshot,
+      version: string,
+      textChangeRange: ts.TextChangeRange,
+      aggressiveChecks?: boolean
+    ): ts.SourceFile {
       let hackSourceFile: any = sourceFile;
       const scriptKind = hackSourceFile.__scriptKind;
       sourceFile = hackSourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
@@ -47,24 +60,34 @@ export function createUpdater() {
 }
 
 function modifyVueSource(sourceFile: ts.SourceFile): void {
-  const exportDefaultObject = sourceFile.statements.find(st => st.kind === ts.SyntaxKind.ExportAssignment &&
-    (st as ts.ExportAssignment).expression.kind === ts.SyntaxKind.ObjectLiteralExpression);
+  const exportDefaultObject = sourceFile.statements.find(
+    st =>
+      st.kind === ts.SyntaxKind.ExportAssignment &&
+      (st as ts.ExportAssignment).expression.kind === ts.SyntaxKind.ObjectLiteralExpression
+  );
   if (exportDefaultObject) {
     // 1. add `import Vue from 'vue'
     //    (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
     const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
-    const vueImport = setZeroPos(ts.createImportDeclaration(undefined,
-      undefined,
-      setZeroPos(ts.createImportClause(ts.createIdentifier('__vueEditorBridge'), undefined as any)), // TODO: remove this after 2.4
-      setZeroPos(ts.createLiteral('vue-editor-bridge'))));
+    const vueImport = setZeroPos(
+      ts.createImportDeclaration(
+        undefined,
+        undefined,
+        setZeroPos(ts.createImportClause(ts.createIdentifier('__vueEditorBridge'), undefined as any)),
+        setZeroPos(ts.createLiteral('vue-editor-bridge'))
+      )
+    );
     const statements: Array<ts.Statement> = sourceFile.statements as any;
     statements.unshift(vueImport);
 
     // 2. find the export default and wrap it in `__vueEditorBridge(...)` if it exists and is an object literal
-    //    (the span of the function construct call and *all* its members must be the same as the object literal it wraps)
+    // (the span of the function construct call and *all* its members must be the same as the object literal it wraps)
     const objectLiteral = (exportDefaultObject as ts.ExportAssignment).expression as ts.ObjectLiteralExpression;
     const setObjPos = getWrapperRangeSetter(objectLiteral);
-    const vue = ts.setTextRange(ts.createIdentifier('__vueEditorBridge'), { pos: objectLiteral.pos, end: objectLiteral.pos + 1 });
+    const vue = ts.setTextRange(ts.createIdentifier('__vueEditorBridge'), {
+      pos: objectLiteral.pos,
+      end: objectLiteral.pos + 1
+    });
     (exportDefaultObject as ts.ExportAssignment).expression = setObjPos(ts.createCall(vue, undefined, [objectLiteral]));
     setObjPos(((exportDefaultObject as ts.ExportAssignment).expression as ts.CallExpression).arguments!);
   }

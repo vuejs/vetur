@@ -9,7 +9,7 @@ export { IHTMLTagProvider } from './common';
 import * as ts from 'typescript';
 import * as fs from 'fs';
 
-export let allTagProviders : IHTMLTagProvider[] = [
+export let allTagProviders: IHTMLTagProvider[] = [
   getHTML5TagProvider(),
   getVueTagProvider(),
   getRouterTagProvider(),
@@ -29,7 +29,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     router: false,
     element: false,
     onsen: false,
-    bootstrap: false,
+    bootstrap: false
   };
   if (!workspacePath) {
     return settings;
@@ -49,12 +49,10 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     if (packageJson.dependencies['bootstrap-vue']) {
       settings['bootstrap'] = true;
     }
-  } catch (e) { }
+  } catch (e) {}
   return settings;
 }
 
 export function getEnabledTagProviders(tagProviderSetting: CompletionConfiguration) {
-  return allTagProviders.filter(
-    p => tagProviderSetting[p.getId()] !== false
-  );
+  return allTagProviders.filter(p => tagProviderSetting[p.getId()] !== false);
 }

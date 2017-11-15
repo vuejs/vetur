@@ -1,24 +1,29 @@
+/* tslint:disable:max-line-length */
 import { CompletionItem, CompletionItemKind } from 'vscode-languageserver-types';
 
 const builtIn = [
   {
     name: 'red(color[, value])',
-    desc: 'Return the red component of the given color, or set the red component to the optional second value argument.',
+    desc:
+      'Return the red component of the given color, or set the red component to the optional second value argument.',
     insertText: 'red'
   },
   {
     name: 'green(color[, value])',
-    desc: 'Return the green component of the given color, or set the green component to the optional second value argument.',
+    desc:
+      'Return the green component of the given color, or set the green component to the optional second value argument.',
     insertText: 'green'
   },
   {
     name: 'blue(color[, value])',
-    desc: 'Return the blue component of the given color, or set the blue component to the optional second value argument.',
+    desc:
+      'Return the blue component of the given color, or set the blue component to the optional second value argument.',
     insertText: 'blue'
   },
   {
     name: 'alpha(color[, value])',
-    desc: 'Return the alpha component of the given color, or set the alpha component to the optional second value argument.',
+    desc:
+      'Return the alpha component of the given color, or set the alpha component to the optional second value argument.',
     insertText: 'alpha'
   },
   {
@@ -38,12 +43,14 @@ const builtIn = [
   },
   {
     name: 'saturation(color[, value])',
-    desc: 'Return the saturation of the given color, or set the saturation component to the optional second value argument.',
+    desc:
+      'Return the saturation of the given color, or set the saturation component to the optional second value argument.',
     insertText: 'saturation'
   },
   {
     name: 'lightness(color[, value])',
-    desc: 'Return the lightness of the given color, or set the lightness component to the optional second value argument.',
+    desc:
+      'Return the lightness of the given color, or set the lightness component to the optional second value argument.',
     insertText: 'lightness'
   },
   {
@@ -123,17 +130,20 @@ const builtIn = [
   },
   {
     name: 'sin(angle)',
-    desc: 'Returns the value of sine for the given angle. If the angle is given as a degree unit, like 45deg, it is treated as a degree, otherwise it is treated as radians.',
+    desc:
+      'Returns the value of sine for the given angle. If the angle is given as a degree unit, like 45deg, it is treated as a degree, otherwise it is treated as radians.',
     insertText: 'sin'
   },
   {
     name: 'cos(angle)',
-    desc: 'Returns the value of cosine for the given angle. If the angle is given as a degree unit, like 45deg, it is treated as a degree, otherwise it is treated as radians.',
+    desc:
+      'Returns the value of cosine for the given angle. If the angle is given as a degree unit, like 45deg, it is treated as a degree, otherwise it is treated as radians.',
     insertText: 'cos'
   },
   {
     name: 'tan(angle)',
-    desc: 'Returns the value of tangent for the given angle. If the angle is given as a degree unit, like 45deg, it is treated as a degree, otherwise it is treated as radians.',
+    desc:
+      'Returns the value of tangent for the given angle. If the angle is given as a degree unit, like 45deg, it is treated as a degree, otherwise it is treated as radians.',
     insertText: 'tan'
   },
   {
@@ -168,7 +178,8 @@ const builtIn = [
   },
   {
     name: 'range(start, stop[, step])',
-    desc: 'Returns a list of units from start to stop (included) by given step. If step argument is omitted, it defaults to 1. The step must not be zero.',
+    desc:
+      'Returns a list of units from start to stop (included) by given step. If step argument is omitted, it defaults to 1. The step must not be zero.',
     insertText: 'range'
   },
   {
@@ -193,12 +204,14 @@ const builtIn = [
   },
   {
     name: 'split(delim, val)',
-    desc: 'The split()` method splits a string/ident into an array of strings by separating the string into substrings.',
+    desc:
+      'The split()` method splits a string/ident into an array of strings by separating the string into substrings.',
     insertText: 'split'
   },
   {
     name: 'substr(val, start, length)',
-    desc: 'The substr() method returns the characters in a string beginning at the specified location through the specified number of characters.',
+    desc:
+      'The substr() method returns the characters in a string beginning at the specified location through the specified number of characters.',
     insertText: 'substr'
   },
   {
@@ -228,17 +241,20 @@ const builtIn = [
   },
   {
     name: 'blend(top[, bottom])',
-    desc: 'Blends the given top color over the bottom one using the normal blending. The bottom argument is optional and is defaulted to #fff.',
+    desc:
+      'Blends the given top color over the bottom one using the normal blending. The bottom argument is optional and is defaulted to #fff.',
     insertText: 'blend'
   },
   {
     name: 'lighten(color, amount)',
-    desc: 'Lighten the given color by amount. This function is unit-sensitive, for example supporting percentages as shown below.',
+    desc:
+      'Lighten the given color by amount. This function is unit-sensitive, for example supporting percentages as shown below.',
     insertText: 'lighten'
   },
   {
     name: 'darken(color, amount)',
-    desc: 'Darken the given color by amount.This function is unit-sensitive, for example supporting percentages as shown below.',
+    desc:
+      'Darken the given color by amount.This function is unit-sensitive, for example supporting percentages as shown below.',
     insertText: 'darken'
   },
   {
@@ -293,12 +309,14 @@ const builtIn = [
   },
   {
     name: 'contrast(top[, bottom])',
-    desc: 'Returns the contrast ratio object between top and bottom colors, based on script underlying “contrast ratio” tool by Lea Verou.',
+    desc:
+      'Returns the contrast ratio object between top and bottom colors, based on script underlying “contrast ratio” tool by Lea Verou.',
     insertText: 'contrast'
   },
   {
     name: 'transparentify(top[, bottom, alpha])',
-    desc: 'Returns the transparent version of the given top color, as if it was blend over the given bottom color (or the closest to it, if it is possible).',
+    desc:
+      'Returns the transparent version of the given top color, as if it was blend over the given bottom color (or the closest to it, if it is possible).',
     insertText: 'transparentify'
   },
   {
@@ -313,7 +331,8 @@ const builtIn = [
   },
   {
     name: 's(fmt, …)',
-    desc: 'The s() function is similar to unquote(), in that it returns a Literal node, however it accepts a format string much like C’s sprintf(). Currently the only specifier is %s.',
+    desc:
+      'The s() function is similar to unquote(), in that it returns a Literal node, however it accepts a format string much like C’s sprintf(). Currently the only specifier is %s.',
     insertText: 's'
   },
   {
@@ -338,7 +357,8 @@ const builtIn = [
   },
   {
     name: 'current-media()',
-    desc: "current-media() function returns the string of the current block’s @media rule or '' if there is no @media above the block.",
+    desc:
+      "current-media() function returns the string of the current block’s @media rule or '' if there is no @media above the block.",
     insertText: 'current-media'
   },
   {
@@ -348,17 +368,20 @@ const builtIn = [
   },
   {
     name: '+prefix-classes(prefix)',
-    desc: 'Stylus comes with a block mixin prefix-classes that can be used for prefixing the classes inside any given Stylus’ block. For example:',
+    desc:
+      'Stylus comes with a block mixin prefix-classes that can be used for prefixing the classes inside any given Stylus’ block. For example:',
     insertText: '+prefix-classes'
   },
   {
     name: 'lookup(name)',
-    desc: 'Allows to lookup a variable with a given name, passed as a string. Returns null if the variable is undefined.',
+    desc:
+      'Allows to lookup a variable with a given name, passed as a string. Returns null if the variable is undefined.',
     insertText: 'lookup(name)'
   },
   {
     name: 'define(name, expr[, global])',
-    desc: 'Allows to create or overwrite a variable with a given name, passed as a string, onto current scope (or global scope if global is true).',
+    desc:
+      'Allows to create or overwrite a variable with a given name, passed as a string, onto current scope (or global scope if global is true).',
     insertText: 'define'
   },
   {
@@ -408,12 +431,14 @@ const builtIn = [
   },
   {
     name: 'image-size(path)',
-    desc: 'Returns the width and height of the image found at path. Lookups are performed in the same manner as @import, altered by the paths setting.',
+    desc:
+      'Returns the width and height of the image found at path. Lookups are performed in the same manner as @import, altered by the paths setting.',
     insertText: 'image-size'
   },
   {
     name: 'embedurl(path[, encoding])',
-    desc: 'Returns an inline image as a url() literal, encoded with encoding (available encodings: base64 (default), and utf8).',
+    desc:
+      'Returns an inline image as a url() literal, encoded with encoding (available encodings: base64 (default), and utf8).',
     insertText: 'embedurl'
   },
   {
@@ -423,17 +448,19 @@ const builtIn = [
   },
   {
     name: 'json(path[, options])',
-    desc: 'Convert a .json file into stylus variables or an object. Nested variable object keys are joined with a dash (-).',
+    desc:
+      'Convert a .json file into stylus variables or an object. Nested variable object keys are joined with a dash (-).',
     insertText: 'json'
   },
   {
     name: 'use(path)',
-    desc: 'You can use any given js-plugin at given path with use() function right inside your ‘.styl’ files, like this:',
+    desc:
+      'You can use any given js-plugin at given path with use() function right inside your ‘.styl’ files, like this:',
     insertText: 'use'
   }
 ];
 
-export default builtIn.map((item) => {
+export default builtIn.map(item => {
   const completionItem = CompletionItem.create(item.insertText);
   completionItem.detail = item.name;
   completionItem.insertText = item.insertText;
