@@ -35,7 +35,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</template>)
+    while: ^(?!\s*</template>)
     patterns:
       - include: text.jade
 
@@ -56,7 +56,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</template>)
+    while: ^(?!\s*</template>)
     patterns:
       - include: text.jade.slm
 
@@ -77,7 +77,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</template>)
+    while: ^(?!\s*</template>)
     patterns:
       - include: text.html.vue-html
 
@@ -98,7 +98,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</style>)
+    while: ^(?!\s*</style>)
     patterns:
       - include: source.sass
 
@@ -117,7 +117,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</style>)
+    while: ^(?!\s*</style>)
     patterns:
       - include: source.css.scss
 
@@ -138,7 +138,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</style>)
+    while: ^(?!\s*</style>)
     patterns:
       - include: source.css.less
 
@@ -159,7 +159,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</style>)
+    while: ^(?!\s*</style>)
     patterns:
       - include: source.stylus
 
@@ -180,7 +180,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</style>)
+    while: ^(?!\s*</style>)
     patterns:
       - include: source.css.postcss
 # css
@@ -200,7 +200,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</style>)
+    while: ^(?!\s*</style>)
     patterns:
       - include: source.css
 
@@ -221,7 +221,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</script>)
+    while: ^(?!\s*</script>)
     patterns:
       - include: source.ts
 
@@ -242,7 +242,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</script>)
+    while: ^(?!\s*</script>)
     patterns:
       - include: source.coffee
 
@@ -264,7 +264,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    end: (?=</script>)
+    while: ^(?!\s*</script>)
     patterns:
       - include: source.js
 
