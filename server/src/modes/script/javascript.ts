@@ -270,13 +270,15 @@ export function getJavascriptMode(
 
       const definitionResults: Definition = [];
       definitions.forEach(d => {
-        const definitionTargetDoc = getScriptDocByFsPath(fileFsPath);
-        if (definitionTargetDoc) {
-          definitionResults.push({
-            uri: Uri.file(d.fileName).toString(),
-            range: convertRange(definitionTargetDoc, d.textSpan)
-          });
-        }
+        const uri = Uri.file(d.fileName);
+        const definitionTargetDoc = getScriptDocByFsPath(uri.fsPath);
+        const range = definitionTargetDoc
+          ? convertRange(definitionTargetDoc, d.textSpan)
+          : Range.create(0, 0, 1, 1);
+        definitionResults.push({
+          uri: uri.toString(),
+          range
+        });
       });
       return definitionResults;
     },
