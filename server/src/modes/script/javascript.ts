@@ -269,15 +269,13 @@ export function getJavascriptMode(
       }
 
       const definitionResults: Definition = [];
+      const program = service.getProgram();
       definitions.forEach(d => {
-        const uri = Uri.file(d.fileName);
-        const definitionTargetDoc = getScriptDocByFsPath(uri.fsPath);
-        const range = definitionTargetDoc
-          ? convertRange(definitionTargetDoc, d.textSpan)
-          : Range.create(0, 0, 1, 1);
+        const sourceFile = program.getSourceFile(d.fileName);
+        const definitionTargetDoc = TextDocument.create(d.fileName, 'vue', 0, sourceFile.getText());
         definitionResults.push({
-          uri: uri.toString(),
-          range
+          uri: Uri.file(d.fileName).toString(),
+          range: convertRange(definitionTargetDoc, d.textSpan)
         });
       });
       return definitionResults;
