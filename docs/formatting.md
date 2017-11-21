@@ -39,7 +39,7 @@ VS Code's js/ts formatter built on TypeScript language service.
 
 Other settings are read from `javascript.format.*` and `typescript.format.*`.
 
-#### js-beautify-html
+#### js-beautify-html [deprecated]
 
 Alternative html formatter. Deprecated, turned off by default and will be removed soon.  
 js-beautify has many long-standing bugs that never get fixed. Use at your own risk.
