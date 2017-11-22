@@ -18,7 +18,8 @@ export function htmlFormat(
 
   const htmlFormattingOptions = _.assign(
     defaultHtmlOptions,
-    config.vetur.format.defaultFormatterOptions['js-beautify-html']
+    config.vetur.format.defaultFormatterOptions['js-beautify-html'],
+    { end_with_newline: false }
   );
 
   const beautifiedHtml = htmlBeautify(templateHead + value + templateTail, htmlFormattingOptions);

@@ -234,9 +234,9 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
-bootstrap-vue-helper-json@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/bootstrap-vue-helper-json/-/bootstrap-vue-helper-json-1.0.2.tgz#17dca204a7824ec6a15add41e83f69762219d99d"
+bootstrap-vue-helper-json@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue-helper-json/-/bootstrap-vue-helper-json-1.1.1.tgz#fca94c9d6c73774d5f2b69183cf135b758398068"
 
 brace-expansion@^1.1.7:
   version "1.1.8"
