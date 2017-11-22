@@ -19,7 +19,7 @@
     "bootstrap-vue-helper-json": "^1.0.1",
     "element-helper-json": "^1.0.0",
     "eslint": "^4.5.0",
-    "eslint-plugin-vue": "3.13.0",
+    "eslint-plugin-vue": "^3.14.0",
     "js-beautify": "^1.6.14",
     "lodash": "^4.17.4",
     "parse-gitignore": "^0.4.0",
