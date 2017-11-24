@@ -15,6 +15,9 @@ import {
   Hover,
   Range
 } from 'vscode-languageserver-types';
+import {
+  Color, ColorInformation, ColorPresentation
+} from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
 import { NULL_HOVER, NULL_COMPLETION, NULL_SIGNATURE } from '../modes/nullMode';
@@ -38,7 +41,8 @@ export interface VLS {
   findDocumentLinks(doc: TextDocument, documentContext: DocumentContext): DocumentLink[];
   findDefinition(doc: TextDocument, position: Position): Definition;
   findReferences(doc: TextDocument, position: Position): Location[];
-  findColorSymbols(doc: TextDocument): Range[];
+  findDocumentColors(doc: TextDocument): ColorInformation[];
+  getColorPresentations(doc: TextDocument, color: Color, range: Range): ColorPresentation[];
   removeDocument(doc: TextDocument): void;
   dispose(): void;
 }
@@ -150,14 +154,21 @@ export function getVls(): VLS {
       });
       return symbols;
     },
-    findColorSymbols(doc) {
-      const ranges: Range[] = [];
+    findDocumentColors(doc) {
+      const colors: ColorInformation[] = [];
       languageModes.getAllModesInDocument(doc).forEach(m => {
-        if (m.findColorSymbols) {
-          pushAll(ranges, m.findColorSymbols(doc));
+        if (m.findDocumentColors) {
+          pushAll(colors, m.findDocumentColors(doc));
         }
       });
-      return ranges;
+      return colors;
+    },
+    getColorPresentations(doc, color, range) {
+      const mode = languageModes.getModeAtPosition(doc, range.start);
+      if (mode && mode.getColorPresentations) {
+        return mode.getColorPresentations(doc, color, range);
+      }
+      return [];
     },
     doSignatureHelp(doc, position) {
       const mode = languageModes.getModeAtPosition(doc, position);
