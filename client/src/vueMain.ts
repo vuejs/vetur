@@ -8,12 +8,13 @@ import {
   LanguageClientOptions,
   ServerOptions,
   TransportKind,
-  Range,
-  RequestType,
   RevealOutputChannelOn
 } from 'vscode-languageclient';
-import { activateColorDecorations } from './colorDecorators';
 import { getGeneratedGrammar } from './grammar';
+import {
+  DocumentColorRequest, DocumentColorParams, ColorPresentationRequest, ColorPresentationParams
+} from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
+
 
 const EMPTY_ELEMENTS: string[] = [
   'area',
@@ -34,9 +35,6 @@ const EMPTY_ELEMENTS: string[] = [
   'wbr'
 ];
 
-namespace ColorSymbolRequest {
-  export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
-}
 
 export function activate(context: ExtensionContext) {
   /**
@@ -44,7 +42,8 @@ export function activate(context: ExtensionContext) {
    */
   context.subscriptions.push(
     vscode.commands.registerCommand('vetur.generateGrammar', () => {
-      const customBlocks: { [k: string]: string } = workspace.getConfiguration().get('vetur.grammar.customBlocks');
+      const customBlocks: { [k: string]: string } =
+        workspace.getConfiguration().get('vetur.grammar.customBlocks') || {};
       try {
         const generatedGrammar = getGeneratedGrammar(
           path.resolve(context.extensionPath, 'syntaxes/vue.json'),
@@ -91,17 +90,40 @@ export function activate(context: ExtensionContext) {
   const client = new LanguageClient('vue', 'Vue Language Server', serverOptions, clientOptions);
   const disposable = client.start();
   context.subscriptions.push(disposable);
-  const colorRequestor = (uri: string) => {
-    return client
-      .sendRequest(ColorSymbolRequest.type, uri)
-      .then(ranges => ranges.map(client.protocol2CodeConverter.asRange));
-  };
-  const isDecoratorEnabled = () => {
-    return workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
-  };
-  client.onReady().then(() => {
-    context.subscriptions.push(activateColorDecorations(colorRequestor, { vue: true }, isDecoratorEnabled));
-  });
+  const isDecoratorEnabled = workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
+
+  if (isDecoratorEnabled) {
+    const colorSubscription = languages.registerColorProvider(documentSelector, {
+      provideDocumentColors(doc) {
+        const params: DocumentColorParams = {
+          textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(doc)
+        };
+        return client.sendRequest(DocumentColorRequest.type, params)
+          .then(symbols => symbols.map(symbol => {
+            const range = client.protocol2CodeConverter.asRange(symbol.range);
+            const color = new vscode.Color(symbol.color.red, symbol.color.green, symbol.color.blue, symbol.color.alpha);
+            return new vscode.ColorInformation(range, color);
+          }));
+      },
+      provideColorPresentations(color, context) {
+        const params: ColorPresentationParams = {
+          textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(context.document),
+          color,
+          range: client.code2ProtocolConverter.asRange(context.range)
+        };
+        return client.sendRequest(ColorPresentationRequest.type, params)
+          .then(presentations => presentations.map(p => {
+            const presentation = new vscode.ColorPresentation(p.label);
+            presentation.textEdit =
+              p.textEdit && client.protocol2CodeConverter.asTextEdit(p.textEdit);
+            presentation.additionalTextEdits =
+              p.additionalTextEdits && client.protocol2CodeConverter.asTextEdits(p.additionalTextEdits);
+            return presentation;
+          }));
+      }
+    });
+    context.subscriptions.push(colorSubscription);
+  }
 
   languages.setLanguageConfiguration('vue-html', {
     wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
