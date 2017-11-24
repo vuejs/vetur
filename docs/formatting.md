@@ -26,7 +26,7 @@ Current default:
 
 Settings precedence:
 
-1. `.prettierrc` at project root. See format at https://github.com/prettier/prettier#configuration-file
+1. `.prettierrc` at project root. See format at https://prettier.io/docs/en/configuration.html
 2. `prettier.*`. You can install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) to get IntelliSense for settings, but Vetur will work without it.
 
 ESLint integration: `"prettier.eslintIntegration": true`. Settings are read from `.eslintrc`.
