@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 
 // Available grammar scopes
-const SCOPES = {
+const SCOPES: { [lang: string]: string } = {
   html: 'text.html.basic',
   jade: 'text.jade',
   pug: 'text.pug',
@@ -41,37 +41,37 @@ function makePattern(tag: string, scope: string) {
   return JSON.parse(`
   {
     "contentName": "${scope}.embedded.vue",
-    "begin": "(<)(${tag})(>)", 
+    "begin": "(<)(${tag})(>)",
     "beginCaptures": {
         "1": {
             "name": "punctuation.definition.tag.begin.html"
-        }, 
+        },
         "2": {
             "name": "entity.name.tag.style.html"
         },
         "3": {
             "name": "punctuation.definition.tag.end.html"
         }
-    }, 
-    "end": "(</)(${tag})(>)", 
+    },
+    "end": "(</)(${tag})(>)",
     "endCaptures": {
         "1": {
             "name": "punctuation.definition.tag.begin.html"
-        }, 
+        },
         "2": {
             "name": "entity.name.tag.style.html"
-        }, 
+        },
         "3": {
             "name": "punctuation.definition.tag.end.html"
         }
-    }, 
+    },
     "patterns": [
         {
             "include": "#tag-stuff"
-        }, 
+        },
         {
-            "while": "^(?!\s*</${tag}>)", 
-            "contentName": "${scope}", 
+            "while": "^(?!\s*</${tag}>)",
+            "contentName": "${scope}",
             "patterns": [
                 {
                     "include": "${scope}"

@@ -15,6 +15,9 @@ import {
   FormattingOptions,
   SymbolInformation
 } from 'vscode-languageserver-types';
+import {
+  Color, ColorInformation, ColorPresentation
+} from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 import { DocumentContext } from '../service';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -40,7 +43,9 @@ export interface LanguageMode {
   findDefinition?(document: TextDocument, position: Position): Definition;
   findReferences?(document: TextDocument, position: Position): Location[];
   format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
-  findColorSymbols?(document: TextDocument): Range[];
+  findDocumentColors?(document: TextDocument): ColorInformation[];
+  getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
+
   onDocumentRemoved(document: TextDocument): void;
   dispose(): void;
 }
