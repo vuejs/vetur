@@ -5,7 +5,7 @@ import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../languageModelCache';
-import { createUpdater, parseVue, isVue } from './preprocess';
+import { createUpdater, parseVueScript, parseVueTemplate, isVue, isVueTemplate } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
 
@@ -30,16 +30,22 @@ const vueSys: ts.System = {
     if (isVueProject(path)) {
       return ts.sys.fileExists(path.slice(0, -3));
     }
+    if (isVueTemplate(path)) {
+      return ts.sys.fileExists(path.slice(0, -9));
+    }
     return ts.sys.fileExists(path);
   },
   readFile(path, encoding) {
     if (isVueProject(path)) {
       const fileText = ts.sys.readFile(path.slice(0, -3), encoding);
-      return fileText ? parseVue(fileText) : fileText;
-    } else {
-      const fileText = ts.sys.readFile(path, encoding);
-      return fileText;
+      return fileText ? parseVueScript(fileText) : fileText;
     }
+    if (isVueTemplate(path)) {
+      const fileText = ts.sys.readFile(path.slice(0, -9), encoding);
+      return fileText ? parseVueTemplate(fileText) : fileText;
+    }
+    const fileText = ts.sys.readFile(path, encoding);
+    return fileText;
   }
 };
 
@@ -48,6 +54,9 @@ if (ts.sys.realpath) {
   vueSys.realpath = function (path) {
     if (isVueProject(path)) {
       return realpath(path.slice(0, -3)) + '.ts';
+    }
+    if (isVueTemplate(path)) {
+      return realpath(path.slice(0, -9)) + '.ts';
     }
     return realpath(path);
   };
@@ -110,11 +119,14 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
     if (!scriptDocs.has(fileFsPath)) {
-      if (fileFsPath.endsWith('.vue')) {
+      if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
         files.push(filePath);
       }
     }
-    if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
+    if (isVueTemplate(fileFsPath)) {
+      scriptDocs.set(fileFsPath, doc);
+      versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+    } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = jsDocuments.get(doc);
       const lastDoc = scriptDocs.get(fileFsPath);
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
@@ -217,7 +229,9 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       if (!doc && isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
-        fileText = parseVue(fileText);
+        fileText = parseVueScript(fileText);
+      } else if (isVueTemplate(fileName)) {
+        fileText = parseVueTemplate(fileText);
       }
       return {
         getText: (start, end) => fileText.substring(start, end),

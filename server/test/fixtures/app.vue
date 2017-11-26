@@ -4,7 +4,7 @@ import Comp2 from '@comp/comp2.vue';
 import test from 'mod';
 
 Comp.data();
-Comp2.props;
+Comp2.nextTick();
 test.test.toFixed();
 myGlobal.toFixed();
 

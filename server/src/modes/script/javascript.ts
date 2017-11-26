@@ -37,6 +37,7 @@ import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
 
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
+  doTemplateValidation(document: TextDocument): Diagnostic[];
 }
 
 export function getJavascriptMode(
@@ -44,7 +45,11 @@ export function getJavascriptMode(
   workspacePath: string | null | undefined
 ): ScriptMode {
   if (!workspacePath) {
-    return { ...nullMode, findComponents: () => [] };
+    return {
+      ...nullMode,
+      findComponents: () => [],
+      doTemplateValidation: () => []
+    };
   }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
@@ -84,6 +89,34 @@ export function getJavascriptMode(
         // so we can safely cast diag to TextSpan
         return {
           range: convertRange(scriptDoc, diag as ts.TextSpan),
+          severity: DiagnosticSeverity.Error,
+          message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
+        };
+      });
+    },
+    doTemplateValidation(doc: TextDocument): Diagnostic[] {
+      // Add suffix to process this doc as vue template.
+      const templateDoc = TextDocument.create(
+        doc.uri + '.template',
+        doc.languageId,
+        doc.version,
+        doc.getText()
+      );
+
+      const { service } = updateCurrentTextDocument(templateDoc);
+      if (!languageServiceIncludesFile(service, templateDoc.uri)) {
+        return [];
+      }
+
+      const fileFsPath = getFileFsPath(templateDoc.uri);
+      // We don't need syntactic diagnostics because
+      // compiled template is always valid JavaScript syntax.
+      const diagnostics = service.getSemanticDiagnostics(fileFsPath);
+
+      return diagnostics.map(diag => {
+        return {
+          // TODO: provide correct position
+          range: Range.create(templateDoc.positionAt(0), templateDoc.positionAt(templateDoc.getText().length - 1)),
           severity: DiagnosticSeverity.Error,
           message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
         };
