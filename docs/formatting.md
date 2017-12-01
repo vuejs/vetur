@@ -5,7 +5,7 @@ Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/
 ## Formatters
 
 Choose each language's default formatter in `vetur.format.defaultFormatter`.  
-**Setting a language's formatter to `none` disables formatter for thata language.**
+**Setting a language's formatter to `none` disables formatter for that language.**
 
 Current default: 
 
