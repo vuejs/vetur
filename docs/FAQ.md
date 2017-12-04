@@ -9,13 +9,39 @@
   - Mac: `~/.vscode/extensions/octref.vetur-<version>/client`
   - Linux: `~/.vscode/extensions/octref.vetur-<version>/client`
 
+  You can also try uninstall/reinstall Vetur.  
   More details at: https://github.com/vuejs/vetur/issues/352#issuecomment-318168811
 
 - If it says problem related to memory and cpu, try to add a `jsconfig.json` or `tsconfig.json` and only include Vue-related code: https://vuejs.github.io/vetur/setup.html
 
-## Vetur can't recognize components imported via absolute path.
+## Vetur can't recognize components imported using webpack's alias
 
-- You need to setup path mapping in `jsconfig.json` or `tsconfig.json`: https://www.typescriptlang.org/docs/handbook/module-resolution.html.
+- You need to setup path mapping in `jsconfig.json` or `tsconfig.json`: https://www.typescriptlang.org/docs/handbook/module-resolution.html. For example:
+
+  ```js
+  // Webpack
+  module.exports = {
+    resolve: {
+      alias: {
+        '@': 'src'
+      }
+    }
+  }
+  ```
+
+  ```json
+  // tsconfig.json
+  {
+    "compilerOptions": {
+      "paths": {
+        "@/*": [
+          "src/*"
+        ]
+      }
+    }
+  }
+  ```
+
 - You need to add `.vue` extension when importing SFC.
 
 More details at: https://github.com/vuejs/vetur/issues/423

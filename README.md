@@ -29,6 +29,10 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 - Refer to [setup](https://vuejs.github.io/vetur/setup.html) page for setting up.
 - Refer to each feature's own page for setting up specific features.
 
+## FAQ
+
+[FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
+
 ## Roadmap
 
 See [#188](https://github.com/vuejs/vetur/issues/188).
