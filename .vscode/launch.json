@@ -17,8 +17,7 @@
       ],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/client/out/**/*.js"],
-      "preLaunchTask": "npm-compile"
+      "outFiles": ["${workspaceRoot}/client/out/**/*.js"]
     },
     {
       "name": "server",
