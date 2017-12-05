@@ -15,7 +15,6 @@ import {
   DocumentColorRequest, DocumentColorParams, ColorPresentationRequest, ColorPresentationParams
 } from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 
-
 const EMPTY_ELEMENTS: string[] = [
   'area',
   'base',
@@ -34,7 +33,6 @@ const EMPTY_ELEMENTS: string[] = [
   'track',
   'wbr'
 ];
-
 
 export function activate(context: ExtensionContext) {
   /**
@@ -62,13 +60,12 @@ export function activate(context: ExtensionContext) {
   /**
    * Vue Language Server Initialization
    */
-  const serverModule = require.resolve('vue-language-server');
-  const debugServerModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
+  const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
   const debugOptions = { execArgv: ['--nolazy', '--inspect=6005'] };
 
   const serverOptions: ServerOptions = {
     run: { module: serverModule, transport: TransportKind.ipc },
-    debug: { module: debugServerModule, transport: TransportKind.ipc, options: debugOptions }
+    debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   };
 
   const documentSelector = ['vue'];
