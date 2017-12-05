@@ -22,7 +22,7 @@ export function getComponentTags(components: ComponentInfo[]): IHTMLTagProvider 
     getId: () => 'component',
     priority: Priority.UserCode,
     collectTags: collector => collectTagsDefault(collector, tags),
-    collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
+    collectAttributes: (tag: string, collector: (attribute: string, type?: string, documentation?: string) => void) => {
       collectAttributesDefault(tag, collector, tags, []);
     },
     collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {
