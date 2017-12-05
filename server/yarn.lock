@@ -2186,8 +2186,8 @@ verror@1.10.0:
     extsprintf "^1.2.0"
 
 vscode-css-languageservice@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/vscode-css-languageservice/-/vscode-css-languageservice-3.0.1.tgz#2fb8f33d959d289289154142e8c22ad501a0139b"
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/vscode-css-languageservice/-/vscode-css-languageservice-3.0.2.tgz#ae0c43836318455aa290c777556394d6127b8f6c"
   dependencies:
     vscode-languageserver-types "3.5.0"
     vscode-nls "^2.0.1"
