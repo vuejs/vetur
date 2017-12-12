@@ -1,11 +1,12 @@
 import * as ts from 'typescript';
 import * as path from 'path';
 
-import * as templateCompiler from 'vue-template-compiler';
-import * as templateTranspiler from 'vue-template-es2015-compiler';
-
 import { getDocumentRegions } from '../embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
+import { getFileUri } from '../../utils/paths';
+import { HTMLDocument } from '../template/parser/htmlParser';
+import { LanguageModelCache } from '../languageModelCache';
+import { transformTemplate, componentHelperName } from './transformTemplate';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -31,18 +32,24 @@ export function parseVueTemplate(text: string): string {
   if (template.languageId !== 'vue-html') {
     return '';
   }
-  return transformVueTemplate(template.getText());
+  return template.getText();
 }
 
 function isTSLike(scriptKind: ts.ScriptKind | undefined) {
   return scriptKind === ts.ScriptKind.TS || scriptKind === ts.ScriptKind.TSX;
 }
 
-export function createUpdater() {
+export function createUpdater(vueDocuments: LanguageModelCache<HTMLDocument>) {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
 
-  function modifySourceFile(fileName: string, sourceFile: ts.SourceFile, scriptKind?: ts.ScriptKind): void {
+  function modifySourceFile(
+    fileName: string,
+    sourceFile: ts.SourceFile,
+    scriptSnapshot: ts.IScriptSnapshot,
+    version: string,
+    scriptKind?: ts.ScriptKind
+  ): void {
     // store scriptKind info on sourceFile
     const hackSourceFile: any = sourceFile;
     hackSourceFile.__scriptKind = scriptKind;
@@ -51,7 +58,13 @@ export function createUpdater() {
       if (isVue(fileName) && !isTSLike(scriptKind)) {
         modifyVueScript(sourceFile);
       } else if (isVueTemplate(fileName)) {
-        modifyRender(sourceFile);
+        const doc = TextDocument.create(
+          getFileUri(fileName),
+          'vue',
+          Number(version),
+          scriptSnapshot.getText(0, scriptSnapshot.getLength())
+        );
+        injectVueTemplate(sourceFile, vueDocuments.get(doc));
       }
       hackSourceFile.__modified = true;
     }
@@ -66,7 +79,7 @@ export function createUpdater() {
     scriptKind?: ts.ScriptKind
   ): ts.SourceFile {
     const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
-    modifySourceFile(fileName, sourceFile, scriptKind);
+    modifySourceFile(fileName, sourceFile, scriptSnapshot, version, scriptKind);
     return sourceFile;
   }
 
@@ -80,7 +93,7 @@ export function createUpdater() {
     const hackSourceFile: any = sourceFile;
     const scriptKind = hackSourceFile.__scriptKind;
     sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
-    modifySourceFile(sourceFile.fileName, sourceFile, scriptKind);
+    modifySourceFile(sourceFile.fileName, sourceFile, scriptSnapshot, version, scriptKind);
     return sourceFile;
   }
 
@@ -128,9 +141,7 @@ function modifyVueScript(sourceFile: ts.SourceFile): void {
  * Wrap render function with component options in the script block
  * to validate its types
  */
-function modifyRender(sourceFile: ts.SourceFile): void {
-  annotateArguments(sourceFile);
-
+function injectVueTemplate(sourceFile: ts.SourceFile, html: HTMLDocument): void {
   // 1. add import statement for corresponding Vue file
   //    so that we acquire the component type from it.
   const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
@@ -147,8 +158,8 @@ function modifyRender(sourceFile: ts.SourceFile): void {
     setZeroPos(ts.createImportClause(undefined,
       setZeroPos(ts.createNamedImports([
         setZeroPos(ts.createImportSpecifier(
-          setZeroPos(ts.createIdentifier('RenderHelpers')),
-          setZeroPos(ts.createIdentifier('__VueRenderHelpers'))
+          undefined,
+          setZeroPos(ts.createIdentifier(componentHelperName))
         ))
       ]))
     )),
@@ -171,24 +182,19 @@ function modifyRender(sourceFile: ts.SourceFile): void {
   // 3. wrap render code with a function decralation
   //    with `this` type of component.
   const setRenderPos = getWrapperRangeSetter(sourceFile);
+  const statements = transformTemplate(html).map(exp => ts.createStatement(exp));
   const renderElement = setRenderPos(ts.createFunctionDeclaration(undefined, undefined, undefined,
     '__render',
     undefined,
     [setZeroPos(ts.createParameter(undefined, undefined, undefined,
       'this',
       undefined,
-      setZeroPos(ts.createIntersectionTypeNode([
-        setZeroPos(ts.createTypeReferenceNode(
-          setMinPos(ts.createIdentifier('__VueRenderHelpers')),
-          undefined
-        )),
-        setZeroPos(ts.createTypeQueryNode(
-          setMinPos(ts.createIdentifier('__component'))
-        ))
-      ]))
+      setZeroPos(setZeroPos(ts.createTypeQueryNode(
+        setMinPos(ts.createIdentifier('__component'))
+      )))
     ))],
     undefined,
-    setRenderPos(ts.createBlock(sourceFile.statements))
+    setRenderPos(ts.createBlock(statements))
   ));
 
   // 4. replace the original statements with wrapped code.
@@ -198,48 +204,6 @@ function modifyRender(sourceFile: ts.SourceFile): void {
     component,
     renderElement
   ]));
-}
-
-/**
- * Transform Vue template block to JavaScript code
- * to analyze template expression with type information.
- */
-function transformVueTemplate(template: string): string {
-  const compiled = templateCompiler.compile(template);
-
-  // TODO: handle errors
-  if (compiled.errors.length > 0) {
-    throw compiled.errors;
-  }
-
-  // We only need render function to type check.
-  return transpileWithWrap(compiled.render);
-}
-
-/**
- * Annotate all function argument type with `any`
- * to avoid implicit any error.
- */
-function annotateArguments(node: ts.Node): void {
-  ts.forEachChild(node, function next(node) {
-    switch (node.kind) {
-      case ts.SyntaxKind.FunctionExpression:
-        const fn = node as ts.FunctionExpression;
-        fn.parameters.forEach(param => {
-          param.type = ts.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword);
-        });
-      default:
-        ts.forEachChild(node, next);
-    }
-  });
-}
-
-function transpileWithWrap(code: string): string {
-  const pre = '(function(){';
-  const post = '})()';
-  return templateTranspiler(pre + code + post)
-    .slice(pre.length)
-    .slice(0, -post.length);
 }
 
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */

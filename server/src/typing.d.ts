@@ -21,8 +21,6 @@ declare module 'eslint' {
   }
 }
 
-declare module 'vue-template-compiler';
-declare module 'vue-template-es2015-compiler';
 declare module 'eslint-plugin-vue';
 declare module 'vscode-emmet-helper';
 declare module 'parse-gitignore';

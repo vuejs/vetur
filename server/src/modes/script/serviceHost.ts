@@ -5,9 +5,10 @@ import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../languageModelCache';
-import { createUpdater, parseVueScript, parseVueTemplate, isVue, isVueTemplate } from './preprocess';
+import { createUpdater, parseVueScript, isVue, isVueTemplate } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
+import { HTMLDocument } from '../template/parser/htmlParser';
 
 function isVueProject(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
@@ -41,8 +42,8 @@ const vueSys: ts.System = {
       return fileText ? parseVueScript(fileText) : fileText;
     }
     if (isVueTemplate(path)) {
-      const fileText = ts.sys.readFile(path.slice(0, -9), encoding);
-      return fileText ? parseVueTemplate(fileText) : fileText;
+      // The template is parsed in the preprocess phase
+      return ts.sys.readFile(path.slice(0, -9), encoding);
     }
     const fileText = ts.sys.readFile(path, encoding);
     return fileText;
@@ -80,7 +81,11 @@ function inferIsOldVersion(workspacePath: string): boolean {
   }
 }
 
-export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
+export function getServiceHost(
+  workspacePath: string,
+  jsDocuments: LanguageModelCache<TextDocument>,
+  vueDocuments: LanguageModelCache<HTMLDocument>
+) {
   let compilerOptions: ts.CompilerOptions = {
     allowNonTsExtensions: true,
     allowJs: true,
@@ -97,7 +102,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
 
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
-  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
+  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(vueDocuments);
   (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
   const configFilename =
@@ -125,7 +130,8 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     }
     if (isVueTemplate(fileFsPath)) {
       scriptDocs.set(fileFsPath, doc);
-      versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+      // The version must be the same as doc version
+      versions.set(fileFsPath, doc.version);
     } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = jsDocuments.get(doc);
       const lastDoc = scriptDocs.get(fileFsPath);
@@ -230,8 +236,6 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
         fileText = parseVueScript(fileText);
-      } else if (isVueTemplate(fileName)) {
-        fileText = parseVueTemplate(fileText);
       }
       return {
         getText: (start, end) => fileText.substring(start, end),

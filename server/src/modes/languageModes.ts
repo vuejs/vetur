@@ -28,6 +28,7 @@ import { getJavascriptMode } from './script/javascript';
 import { getVueHTMLMode } from './template';
 
 import { getStylusMode } from './style/stylus';
+import { parseHTMLDocument, HTMLDocument } from './template/parser/htmlParser';
 
 export interface LanguageMode {
   getId(): string;
@@ -67,14 +68,15 @@ export interface LanguageModeRange extends Range {
 
 export function getLanguageModes(workspacePath: string | null | undefined): LanguageModes {
   const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document => getDocumentRegions(document));
+  const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
 
   let modelCaches: LanguageModelCache<any>[] = [];
   modelCaches.push(documentRegions);
 
-  const jsMode = getJavascriptMode(documentRegions, workspacePath);
-  let modes: { [k: string]: LanguageMode } = {
+  const jsMode = getJavascriptMode(documentRegions, vueDocuments, workspacePath);
+  let modes: {[k: string]: LanguageMode} = {
     vue: getVueMode(),
-    'vue-html': getVueHTMLMode(documentRegions, workspacePath, jsMode),
+    'vue-html': getVueHTMLMode(documentRegions, vueDocuments, workspacePath, jsMode),
     css: getCSSMode(documentRegions),
     postcss: getPostCSSMode(documentRegions),
     scss: getSCSSMode(documentRegions),

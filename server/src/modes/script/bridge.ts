@@ -1,3 +1,5 @@
+import { componentHelperName } from './transformTemplate';
+
 // this bridge file will be injected into TypeScript service
 // it enable type checking and completion, yet still preserve precise option type
 
@@ -6,24 +8,10 @@ export const moduleName = 'vue-editor-bridge';
 export const fileName = 'vue-temp/vue-editor-bridge.ts';
 
 const renderHelpers = `
-export interface RenderHelpers {
-  _o: Function
-  _n: Function
-  _s: Function
-  _l: Function
-  _t: Function
-  _q: Function
-  _i: Function
-  _m: Function
-  _f: Function
-  _k: Function
-  _b: Function
-  _v: Function
-  _e: Function
-  _u: Function
-  _c: Function
-  _self: this
-}`;
+export interface ${componentHelperName} {
+  (tag: string, data: any, children: any[]): any;
+}
+`;
 
 export const oldContent = `
 import Vue from 'vue';

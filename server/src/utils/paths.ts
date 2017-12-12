@@ -14,3 +14,7 @@ export function getFilePath(documentUri: string): string {
     return Uri.parse(documentUri).path;
   }
 }
+
+export function getFileUri(documentPath: string): string {
+  return Uri.file(documentPath).toString();
+}

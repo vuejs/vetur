@@ -11,7 +11,6 @@ import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
-import { parseHTMLDocument } from './parser/htmlParser';
 import { doValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings } from './tagProviders';
@@ -24,6 +23,7 @@ type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode(
   documentRegions: DocumentRegionCache,
+  vueDocuments: LanguageModelCache<HTMLDocument>,
   workspacePath: string | null | undefined,
   scriptMode: ScriptMode
 ): LanguageMode {
@@ -32,7 +32,6 @@ export function getVueHTMLMode(
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
     documentRegions.get(document).getEmbeddedDocument('vue-html')
   );
-  const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
   let config: any = {};
 
@@ -47,7 +46,7 @@ export function getVueHTMLMode(
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
-      return doValidation(embedded, lintEngine);
+      return doValidation(embedded, lintEngine).concat(scriptMode.doTemplateValidation(document));
     },
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
