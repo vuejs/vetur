@@ -1,5 +1,20 @@
 # Changelog
 
+### 0.11.4 | 2017-12-14
+
+- Upgrade to latest prettier & prettier-eslint.
+- Upgrade to latest vscode-css-languageservice that has css grid support. #437.
+- Upgrade to latest eslint-plugin-vue.
+  - Fix an error reporting "v-model directives don't support dynamic input types. #554.
+  - Fix an error reporting "`key` must not be allowed in `<slot>`". #505.
+- Include `/server` in distribution instead of downloading from NPM to a different location. Fix a issue where VS Code has trouble finding the Language Server. #568.
+- Color Picker support. #559.
+- Fix a bug with imprecise find definition. #549.
+- Fix a vue-html grammar rule that does not highlight Vue templates after `</template>`. #548.
+- Upgrade grammar so broken syntax in each region will not affect syntax highlighting outside that specific region. #174.
+- Always ignore `end_with_newline` option in js-beautify so the template formats properly. #544.
+
+
 ### 0.11.3 | 2017-11-13 
 
 - Hot fix for a bug in formatting `<template>` with js-beautify where it adds `</template>` to the end. #539.
