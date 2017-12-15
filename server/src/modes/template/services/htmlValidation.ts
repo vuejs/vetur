@@ -21,8 +21,7 @@ export function doValidation(document: TextDocument, engine: CLIEngine): Diagnos
   if (rawText.replace(/\s/g, '') === '') {
     return [];
   }
-  // TODO: replace the last 11 consecutive spaces
-  const text = rawText.replace(/ {10}/, '<template>').replace(/\s{11}$/, '</template>');
+  const text = rawText.replace(/^\s*\n/, '<template>\n').replace(/\s*\n$/, '\n</template>');
   const report = engine.executeOnText(text, document.uri);
 
   return report.results[0] ? report.results[0].messages.map(toDiagnostic) : [];
