@@ -92,7 +92,7 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
-      const completions = service.getCompletionsAtPosition(fileFsPath, offset);
+      const completions = service.getCompletionsAtPosition(fileFsPath, offset, undefined);
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -125,7 +125,7 @@ export function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const details = service.getCompletionEntryDetails(fileFsPath, item.data.offset, item.label);
+      const details = service.getCompletionEntryDetails(fileFsPath, item.data.offset, item.label, undefined, undefined);
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);

@@ -6,6 +6,7 @@ import {
   collectAttributesDefault,
   collectValuesDefault,
   genAttribute,
+  AttributeCollector,
   Priority
 } from './common';
 
@@ -51,7 +52,7 @@ export function getRouterTagProvider(): IHTMLTagProvider {
     getId: () => 'router',
     priority: Priority.Framework,
     collectTags: collector => collectTagsDefault(collector, routerTags),
-    collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
+    collectAttributes: (tag: string, collector: AttributeCollector) => {
       collectAttributesDefault(tag, collector, routerTags, []);
     },
     collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {
