@@ -40,10 +40,12 @@
     "vscode-uri": "^1.0.1",
     "vue-onsenui-helper-json": "^1.0.2",
     "vuetify-helper-json": "^1.0.0",
+    "vue-eslint-parser": "^2.0.1-beta.2",
     "vue-template-compiler": "^2.5.3",
     "vue-template-es2015-compiler": "^1.6.0"
   },
   "devDependencies": {
+    "@types/estree": "^0.0.38",
     "@types/glob": "^5.0.34",
     "@types/js-beautify": "0.0.31",
     "@types/lodash": "^4.14.91",
