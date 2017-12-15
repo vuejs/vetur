@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.11.5 | 2017-12-15
+
+- Fix an error incorrectly reporting `<template>` should have end tag. #578.
+- Change Vetur's template linting to use [`essential`](https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention) instead of [`recommended`](https://github.com/vuejs/eslint-plugin-vue#priority-c-recommended-minimizing-arbitrary-choices-and-cognitive-overhead) rule set of `eslint-plugin-vue`. #579.
+- Nicer display of diagnostic error from `eslint-plugin-vue`.
+
 ### 0.11.4 | 2017-12-14
 
 - Upgrade to latest prettier & prettier-eslint.
