@@ -126,6 +126,10 @@ function getPropTypeDeclaration(prop: ts.Symbol, checker: ts.TypeChecker) {
   return declaration.getText();
 }
 
+function isStringLiteral(e: ts.Expression): e is ts.StringLiteral {
+    return e.kind === ts.SyntaxKind.StringLiteral;
+}
+
 function getArrayProps(compType: ts.Type, checker: ts.TypeChecker) {
   const propSymbol = checker.getPropertyOfType(compType, 'props');
   if (!propSymbol || !propSymbol.valueDeclaration) {
@@ -137,8 +141,8 @@ function getArrayProps(compType: ts.Type, checker: ts.TypeChecker) {
   }
   const propArray = propDef as ts.ArrayLiteralExpression;
   return propArray.elements
-    .filter(e => e.kind === ts.SyntaxKind.StringLiteral)
-    .map((e: ts.StringLiteral) => ({ name: hyphenate(e.text) }));
+    .filter(isStringLiteral)
+    .map(e => ({ name: hyphenate(e.text) }));
 }
 
 function getPropertyTypeOfType(tpe: ts.Type, property: string, checker: ts.TypeChecker) {

@@ -6,6 +6,7 @@ import {
   collectAttributesDefault,
   collectValuesDefault,
   genAttribute,
+  AttributeCollector,
   Priority
 } from './common';
 
@@ -115,7 +116,7 @@ export function getVueTagProvider(): IHTMLTagProvider {
     getId: () => 'vue',
     priority: Priority.Framework,
     collectTags: collector => collectTagsDefault(collector, vueTags),
-    collectAttributes: (tag: string, collector: (attribute: string, type: string, documentation?: string) => void) => {
+    collectAttributes: (tag: string, collector: AttributeCollector) => {
       collectAttributesDefault(tag, collector, vueTags, vueDirectives);
     },
     collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {

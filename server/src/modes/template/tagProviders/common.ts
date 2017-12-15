@@ -8,7 +8,7 @@ export interface Attribute {
   documentation?: string;
 }
 
-interface AttributeCollector {
+export interface AttributeCollector {
   (attribute: string, type?: string, documentation?: string): void;
 }
 interface StandaloneAttribute {
