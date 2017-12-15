@@ -9,8 +9,8 @@ function toDiagnostic(error: ESLintError): Diagnostic {
   const endColumn = error.endColumn ? error.endColumn - 1 : column;
   return {
     range: Range.create(line, column, endLine, endColumn),
-    message: error.message,
-    source: 'vue-language-server',
+    message: `\nRule: ${error.ruleId}\n${error.message}`,
+    source: 'eslint-plugin-vue',
     severity: error.severity === 1 ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error
   };
 }
