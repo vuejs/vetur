@@ -90,6 +90,25 @@ export function activate(context: ExtensionContext) {
   const isDecoratorEnabled = workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
 
   if (isDecoratorEnabled) {
+    client.onReady().then(registerColorProvider);
+  }
+
+  languages.setLanguageConfiguration('vue-html', {
+    wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
+    onEnterRules: [
+      {
+        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+        afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+        action: { indentAction: IndentAction.IndentOutdent }
+      },
+      {
+        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+        action: { indentAction: IndentAction.Indent }
+      }
+    ]
+  });
+
+  function registerColorProvider() {
     const colorSubscription = languages.registerColorProvider(documentSelector, {
       provideDocumentColors(doc) {
         const params: DocumentColorParams = {
@@ -121,19 +140,5 @@ export function activate(context: ExtensionContext) {
     });
     context.subscriptions.push(colorSubscription);
   }
-
-  languages.setLanguageConfiguration('vue-html', {
-    wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
-    onEnterRules: [
-      {
-        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-        afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
-        action: { indentAction: IndentAction.IndentOutdent }
-      },
-      {
-        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-        action: { indentAction: IndentAction.Indent }
-      }
-    ]
-  });
 }
+
