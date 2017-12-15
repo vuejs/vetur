@@ -21,7 +21,7 @@ export function doValidation(document: TextDocument, engine: CLIEngine): Diagnos
   if (rawText.replace(/\s/g, '') === '') {
     return [];
   }
-  const text = rawText.replace(/^\s*\n/, '<template>\n').replace(/\s*\n$/, '\n</template>');
+  const text = rawText.replace(/ {10}/, '<template>') + '</template>';
   const report = engine.executeOnText(text, document.uri);
 
   return report.results[0] ? report.results[0].messages.map(toDiagnostic) : [];
