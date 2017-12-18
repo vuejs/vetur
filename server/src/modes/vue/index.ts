@@ -7,7 +7,17 @@ export function getVueMode(): LanguageMode {
       return 'vue';
     },
     doComplete(document, position) {
-      return doScaffoldComplete();
+      const offset = document.offsetAt(position);
+      const text = document.getText().slice(0, offset);
+      const needBracket = /<\w*$/.test(text);
+      const ret = doScaffoldComplete();
+      // remove duplicate <
+      if (needBracket) {
+        ret.items.forEach(item => {
+          item.insertText = item.insertText!.slice(1);
+        });
+      }
+      return ret;
     },
     onDocumentRemoved() {},
     dispose() {}

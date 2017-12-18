@@ -9,8 +9,8 @@ function toDiagnostic(error: ESLintError): Diagnostic {
   const endColumn = error.endColumn ? error.endColumn - 1 : column;
   return {
     range: Range.create(line, column, endLine, endColumn),
-    message: error.message,
-    source: 'vue-language-server',
+    message: `\n[${error.ruleId}]\n${error.message}`,
+    source: 'eslint-plugin-vue',
     severity: error.severity === 1 ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error
   };
 }
@@ -21,8 +21,7 @@ export function doValidation(document: TextDocument, engine: CLIEngine): Diagnos
   if (rawText.replace(/\s/g, '') === '') {
     return [];
   }
-  // TODO: replace the last 11 consecutive spaces
-  const text = rawText.replace(/ {10}/, '<template>').replace(/\s{11}$/, '</template>');
+  const text = rawText.replace(/^\s*\n/, '<template>\n').replace(/\s*\n$/, '\n</template>');
   const report = engine.executeOnText(text, document.uri);
 
   return report.results[0] ? report.results[0].messages.map(toDiagnostic) : [];
@@ -32,6 +31,6 @@ export function createLintEngine() {
   return new CLIEngine({
     useEslintrc: false,
     ...configs.base,
-    ...configs.recommended
+    ...configs.essential
   });
 }

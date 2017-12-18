@@ -25,6 +25,7 @@ import {
   IHTMLTagProvider,
   IValueSets,
   Attribute,
+  AttributeCollector,
   collectTagsDefault,
   collectAttributesDefault,
   collectValuesDefault,
@@ -871,7 +872,7 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'html5',
     collectTags: (collector: (tag: string, label: string) => void) => collectTagsDefault(collector, HTML_TAGS),
-    collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+    collectAttributes: (tag: string, collector: AttributeCollector) => {
       collectAttributesDefault(tag, collector, HTML_TAGS, globalAttributes);
       eventHandlers.forEach(handler => {
         collector(handler, 'event');

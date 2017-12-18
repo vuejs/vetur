@@ -1,7 +1,7 @@
 {
   "name": "vue-language-server",
   "description": "vue-language-server",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "main": "dist/vueServerMain.js",
@@ -27,10 +27,11 @@
     "prettier-eslint": "^8.2.1",
     "stylus": "^0.54.5",
     "stylus-supremacy": "~2.5.0",
-    "typescript": "2.5.3",
+    "typescript": "^2.6.2",
     "vscode-css-languageservice": "^3.0.1",
     "vscode-emmet-helper": "^1.0.19",
     "vscode-languageserver": "^3.5.0",
+    "vscode-languageserver-types": "^3.5.0",
     "vscode-uri": "^1.0.1",
     "vue-onsenui-helper-json": "^1.0.0"
   },
