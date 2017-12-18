@@ -11,9 +11,6 @@
     "precommit": "npm run lint",
     "prepush": "npm run test",
     "lint": "tslint -p tslint.json",
-    "sync:server": "cd server && npm publish",
-    "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
-    "sync": "npm run sync:server || npm run sync:client",
     "test:server": "cd server && npm run compile && npm test",
     "test": "npm run lint && npm run test:server",
     "docs": "bash ./build/update-docs.sh"
@@ -280,6 +277,6 @@
   "devDependencies": {
     "husky": "^0.14.3",
     "tslint": "^5.8.0",
-    "typescript": "^2.3.4"
+    "typescript": "^2.6.2"
   }
 }
