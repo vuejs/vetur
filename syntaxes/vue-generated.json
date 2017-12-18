@@ -23,13 +23,13 @@
           "name": "punctuation.definition.tag.end.html"
         }
       },
-      "begin": "(<)(template)\\b(?=[^>]*/>$)",
+      "begin": "(<)(template)\\b(?=[^/>]*/>\\s*$)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.template.html"
         }
       },
       "patterns": [
@@ -45,7 +45,44 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.template.html"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.end.html"
+        }
+      },
+      "begin": "(<)(template)(?=[^>]*>[^/>]*</template>)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#tag-stuff"
+        },
+        {
+          "end": "(?=</template>)",
+          "begin": "(>)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "end": "(</)(template)(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
         },
         "3": {
           "name": "punctuation.definition.tag.end.html"
@@ -78,7 +115,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.template.html"
         }
       }
     },
@@ -89,7 +126,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.template.html"
         },
         "3": {
           "name": "punctuation.definition.tag.end.html"
@@ -122,7 +159,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.template.html"
         }
       }
     },
@@ -133,7 +170,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.template.html"
         },
         "3": {
           "name": "punctuation.definition.tag.end.html"
@@ -166,7 +203,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.template.html"
         }
       }
     },
@@ -189,6 +226,43 @@
       "patterns": [
         {
           "include": "#tag-stuff"
+        }
+      ]
+    },
+    {
+      "end": "(</)(style)(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.style.html"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.end.html"
+        }
+      },
+      "begin": "(<)(style)(?=[^>]*>[^/>]*</style>)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.style.html"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#tag-stuff"
+        },
+        {
+          "end": "(?=</style>)",
+          "begin": "(>)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          }
         }
       ]
     },
@@ -468,7 +542,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.script.html"
         }
       },
       "patterns": [
@@ -484,7 +558,44 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.script.html"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.end.html"
+        }
+      },
+      "begin": "(<)(script)(?=[^>]*>[^/>]*</script>)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.script.html"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#tag-stuff"
+        },
+        {
+          "end": "(?=</script>)",
+          "begin": "(>)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "end": "(</)(script)(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.script.html"
         },
         "3": {
           "name": "punctuation.definition.tag.end.html"
@@ -517,7 +628,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.script.html"
         }
       }
     },
@@ -528,7 +639,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.script.html"
         },
         "3": {
           "name": "punctuation.definition.tag.end.html"
@@ -561,7 +672,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.script.html"
         }
       }
     },
@@ -572,7 +683,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.script.html"
         },
         "3": {
           "name": "punctuation.definition.tag.end.html"
@@ -605,7 +716,7 @@
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
-          "name": "entity.name.tag.style.html"
+          "name": "entity.name.tag.script.html"
         }
       }
     },
