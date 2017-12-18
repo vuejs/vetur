@@ -33,7 +33,7 @@ patterns:
 # jade / pug
 
 - contentName: text.jade.embedded.vue
-  begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))(?![^>]*/>$)
+  begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -55,7 +55,7 @@ patterns:
 # slm
 
 - contentName: text.jade.slm.embedded.vue
-  begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))(?![^>]*/>$)
+  begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -77,7 +77,7 @@ patterns:
 # html
 
 - contentName: text.html.vue-html.embedded.vue
-  begin: (<)(template)(?![^>]*/>$)
+  begin: (<)(template)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -98,7 +98,7 @@ patterns:
 
 # style - single line
 
-- begin: (<)(style)\b(?=[^>]*/>$)
+- begin: (<)(style)\b(?=[^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -111,7 +111,7 @@ patterns:
 # sass / scss
 
 - contentName: source.sass.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))(?![^>]*/>$)
+  begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -131,7 +131,7 @@ patterns:
       - include: source.sass
 
 - contentName: source.css.scss.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))(?![^>]*/>$)
+  begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -153,7 +153,7 @@ patterns:
 # less
 
 - contentName: source.css.less.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))(?![^>]*/>$)
+  begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -174,8 +174,7 @@ patterns:
 
 # stylus
 
-- contentName: source.stylus.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('stylus'|"stylus"))(?![^>]*/>$)
+- begin: (<)(style)\b(?=[^>]*lang=('stylus'|"stylus"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -197,7 +196,7 @@ patterns:
 # postcss
 
 - contentName: source.css.postcss.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))(?![^>]*/>$)
+  begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -219,7 +218,7 @@ patterns:
 # css
 
 - contentName: source.css.embedded.vue
-  begin: (<)(style)(?![^>]*/>$)
+  begin: (<)(style)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -253,7 +252,7 @@ patterns:
 # ts
 
 - contentName: source.ts.embedded.vue
-  begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))(?![^>]*/>$)
+  begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -275,7 +274,7 @@ patterns:
 # coffee
 
 - contentName: source.coffee.embedded.vue
-  begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))(?![^>]*/>$)
+  begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -297,7 +296,7 @@ patterns:
 # js
 
 - contentName: source.js.embedded.vue
-  begin: (<)(script)(?![^>]*/>$)
+  begin: (<)(script)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
