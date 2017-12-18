@@ -81,7 +81,15 @@ function getPrettierOptions(
   if (!prettierrcOptions) {
     return prettierOptions;
   } else {
-    return _.assign(prettierOptions, prettierrcOptions);
+    // The only alternative parser that can be specified is `flow` for <script>
+    if (parser === 'babylon') {
+      return _.assign(prettierOptions, prettierrcOptions);
+    }
+
+    // Otherwise, use the parser specified by Vetur
+    return _.assign(prettierOptions, prettierrcOptions, {
+      parser
+    });
   }
 }
 
