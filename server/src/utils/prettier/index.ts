@@ -21,7 +21,7 @@ export function prettierify(
     return [toReplaceTextedit(prettierifiedCode, range, formatParams, initialIndent)];
   } catch (e) {
     console.log('Prettier format failed');
-    console.error(e);
+    console.error(e.message);
     return [];
   }
 }
@@ -46,7 +46,7 @@ export function prettierEslintify(
     return [toReplaceTextedit(prettierifiedCode, range, formatParams, initialIndent)];
   } catch (e) {
     console.log('Prettier-Eslint format failed');
-    console.error(e);
+    console.error(e.message);
     return [];
   }
 }
