@@ -7,13 +7,14 @@
   "version": "0.11.5",
   "publisher": "octref",
   "scripts": {
-    "compile": "tsc -p client",
+    "compile": "tsc -p .",
     "precommit": "npm run lint",
     "prepush": "npm run test",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
     "test": "npm run lint && npm run test:server",
-    "docs": "bash ./build/update-docs.sh"
+    "docs": "bash ./build/update-docs.sh",
+    "postinstall": "if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/vscode/bin/install; fi"
   },
   "repository": {
     "type": "git",
@@ -31,11 +32,14 @@
   "engines": {
     "vscode": "^1.18.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "vscode-languageclient": "^3.4.2",
+    "vscode-languageserver-types": "^3.4.0"
+  },
   "activationEvents": [
     "onLanguage:vue"
   ],
-  "main": "./client/out/vueMain",
+  "main": "./out/vueMain",
   "contributes": {
     "commands": [
       {
@@ -277,6 +281,8 @@
   "devDependencies": {
     "husky": "^0.14.3",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.2"
+    "@types/node": "^8.0.51",
+    "typescript": "^2.6.2",
+    "vscode": "^1.1.5"
   }
 }
