@@ -40,7 +40,6 @@ export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: str
 function makePattern(tag: string, scope: string) {
   return JSON.parse(`
   {
-    "contentName": "${scope}.embedded.vue",
     "begin": "(<)(${tag})(>)",
     "beginCaptures": {
         "1": {
@@ -70,7 +69,13 @@ function makePattern(tag: string, scope: string) {
             "include": "#tag-stuff"
         },
         {
-            "while": "^(?!\s*</${tag}>)",
+            "begin": "(>)",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.definition.tag.end.html"
+                }
+            },
+            "end": "(?=</${tag}>)",
             "contentName": "${scope}",
             "patterns": [
                 {

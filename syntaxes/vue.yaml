@@ -53,8 +53,7 @@ patterns:
 
 # jade / pug
 
-- contentName: text.jade.embedded.vue
-  begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))(?![^/>]*/>\s*$)
+- begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.template.html}
@@ -69,14 +68,13 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</template>)
+    end: (?=</template>)
     patterns:
       - include: text.jade
 
 # slm
 
-- contentName: text.jade.slm.embedded.vue
-  begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))(?![^/>]*/>\s*$)
+- begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.template.html}
@@ -91,14 +89,13 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</template>)
+    end: (?=</template>)
     patterns:
       - include: text.jade.slm
 
 # html
 
-- contentName: text.html.vue-html.embedded.vue
-  begin: (<)(template)(?![^/>]*/>\s*$)
+- begin: (<)(template)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.template.html}
@@ -113,7 +110,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</template>)
+    end: (?=</template>)
     patterns:
       - include: text.html.vue-html
 
@@ -151,8 +148,7 @@ patterns:
 
 # sass / scss
 
-- contentName: source.sass.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))(?![^/>]*/>\s*$)
+- begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -167,12 +163,11 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</style>)
+    end: (?=</style>)
     patterns:
       - include: source.sass
 
-- contentName: source.css.scss.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))(?![^/>]*/>\s*$)
+- begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -187,14 +182,13 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</style>)
+    end: (?=</style>)
     patterns:
       - include: source.css.scss
 
 # less
 
-- contentName: source.css.less.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))(?![^/>]*/>\s*$)
+- begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -209,7 +203,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</style>)
+    end: (?=</style>)
     patterns:
       - include: source.css.less
 
@@ -230,14 +224,13 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</style>)
+    end: (?=</style>)
     patterns:
       - include: source.stylus
 
 # postcss
 
-- contentName: source.css.postcss.embedded.vue
-  begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))(?![^/>]*/>\s*$)
+- begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -252,14 +245,13 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</style>)
+    end: (?=</style>)
     patterns:
       - include: source.css.postcss
 
 # css
 
-- contentName: source.css.embedded.vue
-  begin: (<)(style)(?![^/>]*/>\s*$)
+- begin: (<)(style)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -274,7 +266,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</style>)
+    end: (?=</style>)
     patterns:
       - include: source.css
 
@@ -312,8 +304,7 @@ patterns:
 
 # ts
 
-- contentName: source.ts.embedded.vue
-  begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))(?![^/>]*/>\s*$)
+- begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.script.html}
@@ -328,14 +319,13 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</script>)
+    end: (?=</script>)
     patterns:
       - include: source.ts
 
 # coffee
 
-- contentName: source.coffee.embedded.vue
-  begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))(?![^/>]*/>\s*$)
+- begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.script.html}
@@ -350,14 +340,13 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</script>)
+    end: (?=</script>)
     patterns:
       - include: source.coffee
 
 # js
 
-- contentName: source.js.embedded.vue
-  begin: (<)(script)(?![^/>]*/>\s*$)
+- begin: (<)(script)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.script.html}
@@ -372,7 +361,7 @@ patterns:
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
-    while: ^(?!</script>)
+    end: (?=</script>)
     patterns:
       - include: source.js
 
