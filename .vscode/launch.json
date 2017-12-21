@@ -17,7 +17,7 @@
       ],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/client/out/**/*.js"]
+      "outFiles": ["${workspaceRoot}/out/**/*.js"]
     },
     {
       "name": "server",
