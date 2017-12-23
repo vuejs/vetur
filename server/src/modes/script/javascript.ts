@@ -23,7 +23,7 @@ import {
   FormattingOptions
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions } from '../embeddedSupport';
+import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
@@ -49,6 +49,11 @@ export function getJavascriptMode(
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     return vueDocument.getEmbeddedDocumentByType('script');
+  });
+
+  const regionStart = getLanguageModelCache(10, 60, document => {
+    const vueDocument = documentRegions.get(document);
+    return vueDocument.getLanguageRangeByType('script');
   });
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
@@ -141,15 +146,7 @@ export function getJavascriptMode(
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
         if (details.codeActions) {
-          const textEdits: TextEdit[] = [];
-          for (const action of details.codeActions) {
-            for (const change of action.changes) {
-              textEdits.push(...change.textChanges.map(tc => ({
-                range: convertRange(doc, tc.span),
-                newText: tc.newText
-              })));
-            }
-          }
+          const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
         }
         delete item.data;
@@ -473,4 +470,35 @@ function convertOptions(
     indentSize: options.tabSize,
     baseIndentSize: options.tabSize * initialIndentLevel
   });
+}
+
+function convertCodeAction(
+  doc: TextDocument,
+  codeActions: ts.CodeAction[],
+  regionStart: LanguageModelCache<LanguageRange | undefined>) {
+  const textEdits: TextEdit[] = [];
+  for (const action of codeActions) {
+    for (const change of action.changes) {
+      textEdits.push(...change.textChanges.map(tc => {
+        // currently, only import codeAction is available
+        // change start of doc to start of script region
+        if (tc.span.start === 0 && tc.span.length === 0) {
+          const region = regionStart.get(doc);
+          if (region) {
+            const line = region.start.line;
+            return {
+              range: Range.create(line + 1, 0, line + 1, 0),
+              newText: tc.newText
+            };
+          }
+        }
+        return {
+          range: convertRange(doc, tc.span),
+          newText: tc.newText
+        };
+      }
+      ));
+    }
+  }
+  return textEdits;
 }
