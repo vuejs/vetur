@@ -92,7 +92,11 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
-      const completions = service.getCompletionsAtPosition(fileFsPath, offset, undefined);
+      const completions = service.getCompletionsAtPosition(
+        fileFsPath,
+        offset,
+        {includeExternalModuleExports: true}
+      );
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -112,7 +116,8 @@ export function getJavascriptMode(
               // data used for resolving item details (see 'doResolve')
               languageId: scriptDoc.languageId,
               uri: doc.uri,
-              offset
+              offset,
+              source: entry.source
             }
           };
         })
@@ -125,10 +130,28 @@ export function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const details = service.getCompletionEntryDetails(fileFsPath, item.data.offset, item.label, undefined, undefined);
+      const details = service.getCompletionEntryDetails(
+        fileFsPath,
+        item.data.offset,
+        item.label,
+        /*formattingOption*/ {},
+        item.data.source
+      );
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
+        if (details.codeActions) {
+          const textEdits: TextEdit[] = [];
+          for (const action of details.codeActions) {
+            for (const change of action.changes) {
+              textEdits.push(...change.textChanges.map(tc => ({
+                range: convertRange(doc, tc.span),
+                newText: tc.newText
+              })));
+            }
+          }
+          item.additionalTextEdits = textEdits;
+        }
         delete item.data;
       }
       return item;

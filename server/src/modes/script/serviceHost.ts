@@ -226,7 +226,8 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       };
     },
     getCurrentDirectory: () => workspacePath,
-    getDefaultLibFileName: ts.getDefaultLibFilePath
+    getDefaultLibFileName: ts.getDefaultLibFilePath,
+    getNewLine: () => '\n'
   };
 
   let jsLanguageService = ts.createLanguageService(host);
