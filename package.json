@@ -127,6 +127,11 @@
           "default": true,
           "description": "Use color decorators in vue"
         },
+        "vetur.completion.autoImport": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include completion for module export and auto import them."
+        },
         "vetur.grammar.customBlocks": {
           "type": "object",
           "default": {

@@ -100,7 +100,7 @@ export function getJavascriptMode(
       const completions = service.getCompletionsAtPosition(
         fileFsPath,
         offset,
-        {includeExternalModuleExports: true}
+        {includeExternalModuleExports: config.vetur.completion.autoImport}
       );
       if (!completions) {
         return { isIncomplete: false, items: [] };
@@ -145,7 +145,7 @@ export function getJavascriptMode(
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
-        if (details.codeActions) {
+        if (details.codeActions && config.vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
         }
