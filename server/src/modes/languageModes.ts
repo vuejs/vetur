@@ -1,7 +1,23 @@
 import {
-  CompletionItem, Location, SignatureHelp, Definition, TextEdit, TextDocument, Diagnostic, DocumentLink, Range,
-  Hover, DocumentHighlight, CompletionList, Position, FormattingOptions, SymbolInformation
+  CompletionItem,
+  Location,
+  SignatureHelp,
+  Definition,
+  TextEdit,
+  TextDocument,
+  Diagnostic,
+  DocumentLink,
+  Range,
+  Hover,
+  DocumentHighlight,
+  CompletionList,
+  Position,
+  FormattingOptions,
+  SymbolInformation
 } from 'vscode-languageserver-types';
+import {
+  Color, ColorInformation, ColorPresentation
+} from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 import { DocumentContext } from '../service';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -27,7 +43,9 @@ export interface LanguageMode {
   findDefinition?(document: TextDocument, position: Position): Definition;
   findReferences?(document: TextDocument, position: Position): Location[];
   format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
-  findColorSymbols?(document: TextDocument): Range[];
+  findDocumentColors?(document: TextDocument): ColorInformation[];
+  getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
+
   onDocumentRemoved(document: TextDocument): void;
   dispose(): void;
 }
@@ -54,7 +72,7 @@ export function getLanguageModes(workspacePath: string | null | undefined): Lang
   modelCaches.push(documentRegions);
 
   const jsMode = getJavascriptMode(documentRegions, workspacePath);
-  let modes: {[k: string]: LanguageMode} = {
+  let modes: { [k: string]: LanguageMode } = {
     vue: getVueMode(),
     'vue-html': getVueHTMLMode(documentRegions, workspacePath, jsMode),
     css: getCSSMode(documentRegions),
@@ -76,14 +94,17 @@ export function getLanguageModes(workspacePath: string | null | undefined): Lang
       return null;
     },
     getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
-      return documentRegions.get(document).getLanguageRanges(range).map(r => {
-        return {
-          start: r.start,
-          end: r.end,
-          mode: modes[r.languageId],
-          attributeValue: r.attributeValue
-        };
-      });
+      return documentRegions
+        .get(document)
+        .getLanguageRanges(range)
+        .map(r => {
+          return {
+            start: r.start,
+            end: r.end,
+            mode: modes[r.languageId],
+            attributeValue: r.attributeValue
+          };
+        });
     },
     getAllModesInDocument(document: TextDocument): LanguageMode[] {
       const result = [];

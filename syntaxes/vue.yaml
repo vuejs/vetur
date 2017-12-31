@@ -1,4 +1,4 @@
-# [PackageDev] target_format: plist, ext: tmLanguage
+# [PackageDev] target_format: json, ext: json
 ---
 name: Vue Component
 scopeName: source.vue
@@ -18,16 +18,49 @@ patterns:
   - name: invalid.illegal.bad-comments-or-CDATA.html
     match: --
 
-# jade / pug
+# template - single line
+# <template src="index.html" />
 
-- begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))
+- begin: (<)(template)\b(?=[^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.template.html}
+  end: (/>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+
+
+# template - single line
+# <template src="index.html"></template>
+
+- begin: (<)(template)(?=[^>]*>[^/>]*</template>)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.template.html}
   end: (</)(template)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.template.html}
+    '3': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+  - begin: (>)
+    beginCaptures:
+      '1': {name: punctuation.definition.tag.end.html}
+    end: (?=</template>)
+
+# jade / pug
+
+- begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))(?![^/>]*/>\s*$)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.template.html}
+  end: (</)(template)(>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.template.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
@@ -41,14 +74,14 @@ patterns:
 
 # slm
 
-- begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))
+- begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.template.html}
   end: (</)(template)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.template.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
@@ -62,14 +95,14 @@ patterns:
 
 # html
 
-- begin: (<)(template)
+- begin: (<)(template)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.template.html}
   end: (</)(template)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.template.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
@@ -81,9 +114,41 @@ patterns:
     patterns:
       - include: text.html.vue-html
 
+# style - single line
+# <style src="index.css" />
+
+- begin: (<)(style)\b(?=[^/>]*/>\s*$)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+  end: (/>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+
+# style - single line
+# <style src="index.css"></style>
+
+- begin: (<)(style)(?=[^>]*>[^/>]*</style>)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+  end: (</)(style)(>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+    '3': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+  - begin: (>)
+    beginCaptures:
+      '1': {name: punctuation.definition.tag.end.html}
+    end: (?=</style>)
+
 # sass / scss
 
-- begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))
+- begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -102,7 +167,7 @@ patterns:
     patterns:
       - include: source.sass
 
-- begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))
+- begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -123,7 +188,7 @@ patterns:
 
 # less
 
-- begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))
+- begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -144,7 +209,7 @@ patterns:
 
 # stylus
 
-- begin: (<)(style)\b(?=[^>]*lang=('stylus'|"stylus"))
+- begin: (<)(style)\b(?=[^>]*lang=('stylus'|"stylus"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -165,7 +230,7 @@ patterns:
 
 # postcss
 
-- begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))
+- begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -183,9 +248,10 @@ patterns:
     end: (?=</style>)
     patterns:
       - include: source.css.postcss
+
 # css
 
-- begin: (<)(style)
+- begin: (<)(style)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.style.html}
@@ -204,16 +270,48 @@ patterns:
     patterns:
       - include: source.css
 
-# ts
+# script - single line
+# <script src="index.js" />
 
-- begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))
+- begin: (<)(script)\b(?=[^>]*/>$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.script.html}
+  end: (/>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+
+# script - single line
+# <script src="index.js"></script>
+
+- begin: (<)(script)(?=[^>]*>[^/>]*</script>)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.script.html}
   end: (</)(script)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.script.html}
+    '3': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+  - begin: (>)
+    beginCaptures:
+      '1': {name: punctuation.definition.tag.end.html}
+    end: (?=</script>)
+
+# ts
+
+- begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))(?![^/>]*/>\s*$)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.script.html}
+  end: (</)(script)(>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.script.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
@@ -227,14 +325,14 @@ patterns:
 
 # coffee
 
-- begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))
+- begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.script.html}
   end: (</)(script)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.script.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
@@ -248,15 +346,14 @@ patterns:
 
 # js
 
-- contentName: source.js.embedded.vue
-  begin: (<)(script)
+- begin: (<)(script)(?![^/>]*/>\s*$)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.script.html}
   end: (</)(script)(>)
   endCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
-    '2': {name: entity.name.tag.style.html}
+    '2': {name: entity.name.tag.script.html}
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'

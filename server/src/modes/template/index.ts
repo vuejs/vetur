@@ -25,10 +25,13 @@ type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 export function getVueHTMLMode(
   documentRegions: DocumentRegionCache,
   workspacePath: string | null | undefined,
-  scriptMode: ScriptMode): LanguageMode {
+  scriptMode: ScriptMode
+): LanguageMode {
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
-  const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('vue-html'));
+  const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
+    documentRegions.get(document).getEmbeddedDocument('vue-html')
+  );
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
   let config: any = {};

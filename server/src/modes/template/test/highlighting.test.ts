@@ -5,15 +5,11 @@
 'use strict';
 
 import * as assert from 'assert';
-import {TextDocument} from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-types';
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { findDocumentHighlights } from '../services/htmlHighlighting';
 
-
-
 suite('HTML Highlighting', () => {
-
-
   function assertHighlights(value: string, expectedMatches: number[], elementName: string | null): void {
     const offset = value.indexOf('|');
     value = value.substr(0, offset) + value.substr(offset + 1);
@@ -31,7 +27,13 @@ suite('HTML Highlighting', () => {
       const actualEndOffset = document.offsetAt(highlights[i].range.end);
       assert.equal(actualEndOffset, expectedMatches[i] + elementName!.length);
 
-      assert.equal(document.getText().substring(actualStartOffset, actualEndOffset).toLowerCase(), elementName);
+      assert.equal(
+        document
+          .getText()
+          .substring(actualStartOffset, actualEndOffset)
+          .toLowerCase(),
+        elementName
+      );
     }
   }
 

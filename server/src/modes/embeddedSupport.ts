@@ -26,10 +26,10 @@ interface EmbeddedRegion {
   type: EmbeddedType;
 }
 
-const defaultType: {[type: string]: string} = {
+const defaultType: { [type: string]: string } = {
   template: 'vue-html',
   script: 'javascript',
-  style: 'css',
+  style: 'css'
 };
 
 export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
@@ -46,7 +46,9 @@ export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
     switch (token) {
       case TokenType.Styles:
         regions.push({
-          languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType) ? languageIdFromType : defaultType['style'],
+          languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType)
+            ? languageIdFromType
+            : defaultType['style'],
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd(),
           type: 'style'
@@ -82,7 +84,7 @@ export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
         } else {
           if (lastAttributeName === 'src' && lastTagName.toLowerCase() === 'script') {
             let value = scanner.getTokenText();
-            if (value[0] === '\'' || value[0] === '"') {
+            if (value[0] === "'" || value[0] === '"') {
               value = value.substr(1, value.length - 1);
             }
             importedScripts.push(value);
@@ -267,7 +269,11 @@ function getEmbeddedDocument(document: TextDocument, contents: EmbeddedRegion[],
   return TextDocument.create(document.uri, languageId, document.version, result);
 }
 
-function getEmbeddedDocumentByType(document: TextDocument, contents: EmbeddedRegion[], type: EmbeddedType): TextDocument {
+function getEmbeddedDocumentByType(
+  document: TextDocument,
+  contents: EmbeddedRegion[],
+  type: EmbeddedType
+): TextDocument {
   const oldContent = document.getText();
   let result = '';
   for (const c of contents) {

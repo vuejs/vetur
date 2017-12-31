@@ -96,10 +96,8 @@ export function doComplete(
         const endIndent = getLineIndent(afterOpenBracket - 1);
         if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
           const insertText = startIndent + '</' + tag + closeTag;
-          (item.textEdit = TextEdit.replace(
-            getReplaceRange(afterOpenBracket - 1 - endIndent.length),
-            insertText
-          )), (item.filterText = endIndent + '</' + tag + closeTag);
+          (item.textEdit = TextEdit.replace(getReplaceRange(afterOpenBracket - 1 - endIndent.length), insertText)),
+            (item.filterText = endIndent + '</' + tag + closeTag);
         }
         result.items.push(item);
         return result;

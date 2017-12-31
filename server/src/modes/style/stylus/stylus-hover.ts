@@ -1,10 +1,6 @@
-import {
-  TextDocument, Position, Hover, Range
-} from 'vscode-languageserver-types';
+import { TextDocument, Position, Hover, Range } from 'vscode-languageserver-types';
 
-import {
-  buildAst, findNodeAtPosition
-} from './parser';
+import { buildAst, findNodeAtPosition } from './parser';
 
 // import {
 //   inspect
@@ -34,7 +30,7 @@ export function stylusHover(document: TextDocument, position: Position): Hover {
     const lineno = node.lineno - 1;
     const column = node.column;
     return {
-      contents: item && item.desc || 'unknown property',
+      contents: (item && item.desc) || 'unknown property',
       range: Range.create(lineno, column, lineno, column + properties.length)
     };
   }

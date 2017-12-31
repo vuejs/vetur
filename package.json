@@ -1,22 +1,20 @@
 {
   "name": "vetur",
   "displayName": "Vetur",
-  "description": "Vue tooling for VSCode",
+  "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.10.1",
+  "version": "0.11.5",
   "publisher": "octref",
   "scripts": {
-    "compile": "tsc -p client",
+    "compile": "tsc -p .",
     "precommit": "npm run lint",
     "prepush": "npm run test",
-    "lint": "tslint 'server/src/**/*.ts' 'client/src/**/*.ts'",
-    "sync:server": "cd server && npm publish",
-    "sync:client": "cd client && yarn upgrade vue-language-server && yarn && tsc",
-    "sync": "npm run sync:server || npm run sync:client",
+    "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
     "test": "npm run lint && npm run test:server",
-    "doc": "bash ./build/update-docs.sh"
+    "docs": "bash ./build/update-docs.sh",
+    "postinstall": "if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/vscode/bin/install; fi"
   },
   "repository": {
     "type": "git",
@@ -32,14 +30,23 @@
     "Languages"
   ],
   "engines": {
-    "vscode": "^1.16.0"
+    "vscode": "^1.18.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "vscode-languageclient": "^3.4.2",
+    "vscode-languageserver-types": "^3.4.0"
+  },
   "activationEvents": [
     "onLanguage:vue"
   ],
-  "main": "./client/out/vueMain",
+  "main": "./out/vueMain",
   "contributes": {
+    "commands": [
+      {
+        "command": "vetur.generateGrammar",
+        "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
+      }
+    ],
     "breakpoints": [
       {
         "language": "vue"
@@ -77,7 +84,7 @@
       {
         "language": "vue",
         "scopeName": "source.vue",
-        "path": "./syntaxes/vue.tmLanguage",
+        "path": "./syntaxes/vue-generated.json",
         "embeddedLanguages": {
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
@@ -91,7 +98,11 @@
           "source.stylus": "stylus",
           "source.js": "javascript",
           "source.ts": "typescript",
-          "source.coffee": "coffeescript"
+          "source.coffee": "coffeescript",
+          "text.html.markdown": "md",
+          "source.yaml": "yaml",
+          "source.json": "json",
+          "source.php": "php"
         }
       },
       {
@@ -102,7 +113,7 @@
       {
         "language": "vue-html",
         "scopeName": "text.html.vue-html",
-        "path": "./syntaxes/vue-html.tmLanguage",
+        "path": "./syntaxes/vue-html.json",
         "embeddedLanguages": {
           "source.js": "javascript"
         }
@@ -115,6 +126,14 @@
           "type": "boolean",
           "default": true,
           "description": "Use color decorators in vue"
+        },
+        "vetur.grammar.customBlocks": {
+          "type": "object",
+          "default": {
+            "docs": "md",
+            "i18n": "json"
+          },
+          "description": "Mapping from custom block tag name to language name. Used for generating grammar to support syntax highlighting for custom blocks."
         },
         "vetur.validation.template": {
           "type": "boolean",
@@ -242,9 +261,7 @@
         "vetur.format.defaultFormatterOptions": {
           "type": "object",
           "default": {
-            "js-beautify-html": {
-
-            }
+            "js-beautify-html": {}
           },
           "description": "Options for all default formatters"
         },
@@ -263,7 +280,9 @@
   },
   "devDependencies": {
     "husky": "^0.14.3",
-    "tslint": "^5.4.3",
-    "typescript": "^2.3.4"
+    "tslint": "^5.8.0",
+    "@types/node": "^8.0.51",
+    "typescript": "^2.6.2",
+    "vscode": "^1.1.5"
   }
 }

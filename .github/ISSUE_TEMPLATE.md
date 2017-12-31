@@ -1,12 +1,12 @@
 - [ ] I have searched through existing issues
-- [ ] I have read through docs at https://vuejs.github.io/vetur/
-- [ ] I have read FAQ: https://github.com/vuejs/vetur/wiki/FAQ
+- [ ] I have read through [docs](https://vuejs.github.io/vetur)
+- [ ] I have read [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
 
 ## Info
 
 - Platform: <!-- Win/macOS/Linux -->
 - Vetur version:
-- VSCode version:
+- VS Code version:
 
 ## Problem
 

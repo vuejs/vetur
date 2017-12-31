@@ -1,5 +1,53 @@
 # Changelog
 
+### 0.11.5 | 2017-12-15
+
+- Fix an error incorrectly reporting `<template>` should have end tag. #578.
+- Change Vetur's template linting to use [`essential`](https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention) instead of [`recommended`](https://github.com/vuejs/eslint-plugin-vue#priority-c-recommended-minimizing-arbitrary-choices-and-cognitive-overhead) rule set of `eslint-plugin-vue`. #579.
+- Nicer display of diagnostic error from `eslint-plugin-vue`.
+
+### 0.11.4 | 2017-12-14
+
+- Upgrade to latest prettier & prettier-eslint.
+- Upgrade to latest vscode-css-languageservice that has css grid support. #437.
+- Upgrade to latest eslint-plugin-vue.
+  - Fix an error reporting "v-model directives don't support dynamic input types. #554.
+  - Fix an error reporting "`key` must not be allowed in `<slot>`". #505.
+- Include `/server` in distribution instead of downloading from NPM to a different location. Fix a issue where VS Code has trouble finding the Language Server. #568.
+- Color Picker support. #559.
+- Fix a bug with imprecise find definition. #549.
+- Fix a vue-html grammar rule that does not highlight Vue templates after `</template>`. #548.
+- Upgrade grammar so broken syntax in each region will not affect syntax highlighting outside that specific region. #174.
+- Always ignore `end_with_newline` option in js-beautify so the template formats properly. #544.
+
+
+### 0.11.3 | 2017-11-13 
+
+- Hot fix for a bug in formatting `<template>` with js-beautify where it adds `</template>` to the end. #539.
+
+### 0.11.2 | 2017-11-13 
+
+- Workaround a js-beautify bug which indents multi-line comment. #535.
+- Docs for generating grammar for custom blocks: https://vuejs.github.io/vetur/highlighting.html.
+- Allow `php` as one of the custom block language. #536.
+- Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
+- Pretty print generated gramamr so it's readable. (You can find it at ~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json).
+
+### 0.11.1 | 2017-11-10 
+
+- Syntax highlighting for Custom Block. #210.
+  - Added setting `vetur.grammar.customBlocks`.
+  - Added command "Vetur: Generate grammar from `vetur.grammar.customBlocks`".
+
+### 0.11.0 | 2017-11-06
+
+- Better completion order in js/ts. #489.
+- Fix some Stylus formatting issues. #471.
+- prettier-eslint support. #478.
+- Fix Vetur not correctly distinguishing js/ts regions. #504 and #476.
+- Fix a bug where Vetur misses completion item details. #418.
+- Prefer user jsconfig/tsconfig compilerOptions in Vue Language Server. #515 and #512.
+
 ### 0.10.1 | 2017-10-19
 
 - Remove range formatter. #100.
@@ -15,6 +63,8 @@
 - Disable non-functional postcss error-checking, since vscode-css-languageservice does not support it. #465.
 
 #### Vetur Formatting Changes
+
+See updated docs at: https://vuejs.github.io/vetur/formatting.html
 
 - Vetur now uses prettier for formatting css/scss/less/js/ts.
 - Vetur plans to use prettier for html formatting when it lands in prettier. Upstream issues [prettier/prettier#1882](https://github.com/prettier/prettier/issues/1882) [prettier/prettier#2097](https://github.com/prettier/prettier/issues/2097)
@@ -280,11 +330,11 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 ### 0.4.1 | 2017-03-02
 
 - Relax grammar to allow `<script type="text/babel">`. #70.
-- Move `files.associations` setup in README, as vue file is not associated with html by default in VSCode.
+- Move `files.associations` setup in README, as vue file is not associated with html by default in VS Code.
 
 ### 0.4.0 | 2017-02-27
 
-- Port new changes from VSCode's html extension, which fixes
+- Port new changes from VS Code's html extension, which fixes
   - Embedded formatter for html/css/scss/less/js
   - IntelliSense for html
 
@@ -305,7 +355,7 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 ### 0.3.5 | 2017-02-20
 
 - Add vue-html as a language. #44.
-- Remove vue-js and use VSCode's javascript grammar.
+- Remove vue-js and use VS Code's javascript grammar.
 
 ### 0.3.4 | 2017-02-19
 
@@ -339,7 +389,7 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 
 ### 0.2.0 | 2017-01-03
 
-- Language server based on VSCode's html extension. #2.
+- Language server based on VS Code's html extension. #2.
 - Basic SCSS and LESS language features.
 
 ### 0.1.2 | 2016-12-19

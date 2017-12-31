@@ -1,6 +1,10 @@
 # Vetur
 
-Vue tooling for VSCode, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
+[![](https://vsmarketplacebadge.apphb.com/version-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+[![](https://vsmarketplacebadge.apphb.com/installs-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+[![](https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+
+Vue tooling for VS Code, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
 
 Doc: https://vuejs.github.io/vetur
 
@@ -24,6 +28,10 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 - Try it with [Veturpack](https://github.com/octref/veturpack), a pre-configured Vue boilerplate based on [Vuepack](https://github.com/egoist/vuepack).
 - Refer to [setup](https://vuejs.github.io/vetur/setup.html) page for setting up.
 - Refer to each feature's own page for setting up specific features.
+
+## FAQ
+
+[FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
 
 ## Roadmap
 

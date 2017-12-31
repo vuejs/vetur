@@ -6,32 +6,48 @@ Vetur provides error-checking and linting.
 
 Install [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for the best linting experience. Vetur's template linting is only for quick start and does not support rule configuration.
 
-After you installed [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), you should go to VS Code settings and add `vue` and `vue-html` to `eslint.validate` property.
+After you installed [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), add `vue` to `eslint.validate` in VS Code config:
+
+```json
+{
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "vue",
+      "autoFix": true
+    },
+  ]
+}
+```
 
 When configured correctly, ESLint should work for both `<template>` and `<script>`.
 
 #### Linting for `<template>`
 
-Vetur automatically uses `eslint-plugin-vue@beta` for linting `<template>`. Linting configuration is based on eslint-plugin-vue's recommended rule set.
+Vetur automatically uses [`eslint-plugin-vue@next`](https://github.com/vuejs/eslint-plugin-vue) for linting `<template>`. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention).
 
 To turn it off, set `vetur.validation.template: false`.
 
-To configure linting rules, turn off vetur's template validation and install `eslint` and `eslint-plugin-vue@beta` locally as `devDependencies`, and set ESLint rules in `.eslintrc`.
+To configure linting rules:
+- Turn off Vetur's template validation with `vetur.validation.template: false`
+- `yarn add -D eslint eslint-plugin-vue@next`
+- Set ESLint rules in `.eslintrc`. An example:
+
+  ```json
+  {
+    "extends": [
+      "eslint:recommended",
+      "plugin:vue/recommended"
+    ],
+    "rules": {
+      "vue/html-self-closing": "off"
+    }
+  }
+  ```
 
 #### Linting TypeScript
 
 TSLint is not available yet. We do look forward to including it. See [#170](https://github.com/vuejs/vetur/issues/170).
 
 Meanwhile, TS compiler errors will be shown.
-
-#### ESLint Autofix On Save
-
-  ```json
-  "eslint.autoFixOnSave": true,
-  "eslint.validate": [
-    {
-      "language": "vue",
-      "autoFix": true
-    }
-  ]
-  ```

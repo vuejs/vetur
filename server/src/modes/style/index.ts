@@ -12,8 +12,10 @@ import { Priority } from './emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
-import { pretterify } from '../../utils/prettier';
+import { getFileFsPath } from '../../utils/paths';
+import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
+import { NULL_HOVER } from '../nullMode';
 
 export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
@@ -78,12 +80,12 @@ function getStyleMode(
         };
       });
       const lsCompletions = languageService.doComplete(embedded, position, stylesheets.get(embedded));
-      const lsItems = _.map(lsCompletions.items, i => {
+      const lsItems = lsCompletions ? _.map(lsCompletions.items, i => {
         return {
           ...i,
           sortText: Priority.Platform + i.label
         };
-      });
+      }) : [];
       return {
         isIncomplete: true,
         items: _.concat(emmetItems, lsItems)
@@ -91,7 +93,7 @@ function getStyleMode(
     },
     doHover(document, position) {
       const embedded = embeddedDocuments.get(document);
-      return languageService.doHover(embedded, position, stylesheets.get(embedded));
+      return languageService.doHover(embedded, position, stylesheets.get(embedded)) || NULL_HOVER;
     },
     findDocumentHighlight(document, position) {
       const embedded = embeddedDocuments.get(document);
@@ -109,9 +111,13 @@ function getStyleMode(
       const embedded = embeddedDocuments.get(document);
       return languageService.findReferences(embedded, position, stylesheets.get(embedded));
     },
-    findColorSymbols(document) {
+    findDocumentColors(document) {
       const embedded = embeddedDocuments.get(document);
-      return languageService.findColorSymbols(embedded, stylesheets.get(embedded));
+      return languageService.findDocumentColors(embedded, stylesheets.get(embedded));
+    },
+    getColorPresentations(document, color, range) {
+      const embedded = embeddedDocuments.get(document);
+      return languageService.getColorPresentations(embedded, stylesheets.get(embedded), color, range);
     },
     format(document, currRange, formattingOptions) {
       if (config.vetur.format.defaultFormatter[languageId] === 'none') {
@@ -126,7 +132,15 @@ function getStyleMode(
         scss: 'scss',
         less: 'less'
       };
-      return pretterify(value, range, needIndent, formattingOptions, config.prettier, parserMap[languageId]);
+      return prettierify(
+        value,
+        getFileFsPath(document.uri),
+        range,
+        needIndent,
+        formattingOptions,
+        config.prettier,
+        parserMap[languageId]
+      );
     },
     onDocumentRemoved(document) {
       embeddedDocuments.onDocumentRemoved(document);

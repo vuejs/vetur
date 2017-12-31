@@ -4,14 +4,16 @@ import Uri from 'vscode-uri';
 
 import { DocumentContext } from '../../../service';
 
-
 function stripQuotes(url: string): string {
-  return url
-    .replace(/^'([^']*)'$/, (substr, match1) => match1)
-    .replace(/^"([^"]*)"$/, (substr, match1) => match1);
+  return url.replace(/^'([^']*)'$/, (substr, match1) => match1).replace(/^"([^"]*)"$/, (substr, match1) => match1);
 }
 
-function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext, base: string): string | null {
+function getWorkspaceUrl(
+  modelAbsoluteUri: Uri,
+  tokenContent: string,
+  documentContext: DocumentContext,
+  base: string
+): string | null {
   if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
     return null;
   }
@@ -36,7 +38,14 @@ function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentCo
   return tokenContent;
 }
 
-function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string): DocumentLink | null {
+function createLink(
+  document: TextDocument,
+  documentContext: DocumentContext,
+  attributeValue: string,
+  startOffset: number,
+  endOffset: number,
+  base: string
+): DocumentLink | null {
   const documentUri = Uri.parse(document.uri);
   const tokenContent = stripQuotes(attributeValue);
   if (tokenContent.length === 0) {
@@ -88,7 +97,14 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
       case TokenType.AttributeValue:
         if (afterHrefOrSrc) {
           const attributeValue = scanner.getTokenText();
-          const link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base!);
+          const link = createLink(
+            document,
+            documentContext,
+            attributeValue,
+            scanner.getTokenOffset(),
+            scanner.getTokenEnd(),
+            base!
+          );
           if (link) {
             newLinks.push(link);
           }

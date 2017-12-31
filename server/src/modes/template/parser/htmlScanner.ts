@@ -30,7 +30,6 @@ export enum TokenType {
 }
 
 class MultiLineStream {
-
   private source: string;
   private len: number;
   private position: number;
@@ -134,8 +133,7 @@ class MultiLineStream {
   public advanceUntilChars(ch: number[]): boolean {
     while (this.position + ch.length <= this.source.length) {
       let i = 0;
-      for (; i < ch.length && this.source.charCodeAt(this.position + i) === ch[i]; i++) {
-      }
+      for (; i < ch.length && this.source.charCodeAt(this.position + i) === ch[i]; i++) {}
       if (i === ch.length) {
         return true;
       }
@@ -167,13 +165,12 @@ const _RAN = '>'.charCodeAt(0);
 const _FSL = '/'.charCodeAt(0);
 const _EQS = '='.charCodeAt(0);
 const _DQO = '"'.charCodeAt(0);
-const _SQO = '\''.charCodeAt(0);
+const _SQO = "'".charCodeAt(0);
 const _NWL = '\n'.charCodeAt(0);
 const _CAR = '\r'.charCodeAt(0);
 const _LFD = '\f'.charCodeAt(0);
 const _WSP = ' '.charCodeAt(0);
 const _TAB = '\t'.charCodeAt(0);
-
 
 export enum ScannerState {
   WithinContent,
@@ -200,12 +197,15 @@ export interface Scanner {
   getScannerState(): ScannerState;
 }
 
-const htmlScriptContents: {[lang: string]: boolean} = {
+const htmlScriptContents: { [lang: string]: boolean } = {
   'text/x-handlebars-template': true
 };
 
-export function createScanner(input: string, initialOffset = 0, initialState: ScannerState = ScannerState.WithinContent): Scanner {
-
+export function createScanner(
+  input: string,
+  initialOffset = 0,
+  initialState: ScannerState = ScannerState.WithinContent
+): Scanner {
   const stream = new MultiLineStream(input, initialOffset);
   let state = initialState;
   let tokenOffset = 0;
@@ -237,7 +237,9 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
     const oldState = state;
     const token = internalScan();
     if (token !== TokenType.EOS && offset === stream.pos()) {
-      console.log('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
+      console.log(
+        'Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state
+      );
       stream.advance(1);
       return finishToken(offset, TokenType.Unknown);
     }
@@ -253,7 +255,8 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 
     switch (state) {
       case ScannerState.WithinComment:
-        if (stream.advanceIfChars([_MIN, _MIN, _RAN])) { // -->
+        if (stream.advanceIfChars([_MIN, _MIN, _RAN])) {
+          // -->
           state = ScannerState.WithinContent;
           return finishToken(offset, TokenType.EndCommentTag);
         }
@@ -267,9 +270,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
         stream.advanceUntilChar(_RAN); // >
         return finishToken(offset, TokenType.Doctype);
       case ScannerState.WithinContent:
-        if (stream.advanceIfChar(_LAN)) { // <
-          if (!stream.eos() && stream.peekChar() === _BNG) { // !
-            if (stream.advanceIfChars([_BNG, _MIN, _MIN])) { // <!--
+        if (stream.advanceIfChar(_LAN)) {
+          // <
+          if (!stream.eos() && stream.peekChar() === _BNG) {
+            // !
+            if (stream.advanceIfChars([_BNG, _MIN, _MIN])) {
+              // <!--
               state = ScannerState.WithinComment;
               return finishToken(offset, TokenType.StartCommentTag);
             }
@@ -278,7 +284,8 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
               return finishToken(offset, TokenType.StartDoctypeTag);
             }
           }
-          if (stream.advanceIfChar(_FSL)) { // /
+          if (stream.advanceIfChar(_FSL)) {
+            // /
             state = ScannerState.AfterOpeningEndTag;
             return finishToken(offset, TokenType.EndTagOpen);
           }
@@ -293,7 +300,8 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
           state = ScannerState.WithinEndTag;
           return finishToken(offset, TokenType.EndTag);
         }
-        if (stream.skipWhitespace()) { // white space is not valid here
+        if (stream.skipWhitespace()) {
+          // white space is not valid here
           return finishToken(offset, TokenType.Whitespace, 'Tag name must directly follow the open bracket.');
         }
         state = ScannerState.WithinEndTag;
@@ -303,10 +311,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
         }
         return internalScan();
       case ScannerState.WithinEndTag:
-        if (stream.skipWhitespace()) { // white space is valid here
+        if (stream.skipWhitespace()) {
+          // white space is valid here
           return finishToken(offset, TokenType.Whitespace);
         }
-        if (stream.advanceIfChar(_RAN)) { // >
+        if (stream.advanceIfChar(_RAN)) {
+          // >
           state = ScannerState.WithinContent;
           return finishToken(offset, TokenType.EndTagClose);
         }
@@ -321,7 +331,8 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
           state = ScannerState.WithinTag;
           return finishToken(offset, TokenType.StartTag);
         }
-        if (stream.skipWhitespace()) { // white space is not valid here
+        if (stream.skipWhitespace()) {
+          // white space is not valid here
           return finishToken(offset, TokenType.Whitespace, 'Tag name must directly follow the open bracket.');
         }
         state = ScannerState.WithinTag;
@@ -343,11 +354,13 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
             return finishToken(offset, TokenType.AttributeName);
           }
         }
-        if (stream.advanceIfChars([_FSL, _RAN])) { // />
+        if (stream.advanceIfChars([_FSL, _RAN])) {
+          // />
           state = ScannerState.WithinContent;
           return finishToken(offset, TokenType.StartTagSelfClose);
         }
-        if (stream.advanceIfChar(_RAN)) { // >
+        if (stream.advanceIfChar(_RAN)) {
+          // >
           if (lastTag === 'script') {
             if (lastTypeValue && htmlScriptContents[lastTypeValue]) {
               // stay in html
@@ -419,11 +432,13 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
             }
           } else if (match === '-->') {
             sciptState = 1;
-          } else if (match[1] !== '/') { // <script
+          } else if (match[1] !== '/') {
+            // <script
             if (sciptState === 2) {
               sciptState = 3;
             }
-          } else { // </script
+          } else {
+            // </script
             if (sciptState === 3) {
               sciptState = 2;
             } else {

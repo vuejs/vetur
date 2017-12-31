@@ -24,11 +24,10 @@ import {
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
-import { getFileFsPath, getFilePath } from '../../utils/paths';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
-
-import { pretterify } from '../../utils/prettier';
+import { prettierify, prettierEslintify } from '../../utils/prettier';
+import { getFileFsPath, getFilePath } from '../../utils/paths';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -93,7 +92,7 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
-      const completions = service.getCompletionsAtPosition(fileFsPath, offset);
+      const completions = service.getCompletionsAtPosition(fileFsPath, offset, undefined);
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -111,7 +110,7 @@ export function getJavascriptMode(
             textEdit: range && TextEdit.replace(range, entry.name),
             data: {
               // data used for resolving item details (see 'doResolve')
-              languageId: doc.languageId,
+              languageId: scriptDoc.languageId,
               uri: doc.uri,
               offset
             }
@@ -126,7 +125,7 @@ export function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const details = service.getCompletionEntryDetails(fileFsPath, item.data.offset, item.label);
+      const details = service.getCompletionEntryDetails(fileFsPath, item.data.offset, item.label, undefined, undefined);
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
@@ -270,14 +269,14 @@ export function getJavascriptMode(
       }
 
       const definitionResults: Definition = [];
+      const program = service.getProgram();
       definitions.forEach(d => {
-        const definitionTargetDoc = getScriptDocByFsPath(fileFsPath);
-        if (definitionTargetDoc) {
-          definitionResults.push({
-            uri: Uri.file(d.fileName).toString(),
-            range: convertRange(definitionTargetDoc, d.textSpan)
-          });
-        }
+        const sourceFile = program.getSourceFile(d.fileName);
+        const definitionTargetDoc = TextDocument.create(d.fileName, 'vue', 0, sourceFile.getText());
+        definitionResults.push({
+          uri: Uri.file(d.fileName).toString(),
+          range: convertRange(definitionTargetDoc, d.textSpan)
+        });
       });
       return definitionResults;
     },
@@ -318,10 +317,15 @@ export function getJavascriptMode(
       }
 
       const needIndent = config.vetur.format.scriptInitialIndent;
+      const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
       if (defaultFormatter === 'prettier') {
-        return scriptDoc.languageId === 'javascript'
-          ? pretterify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, 'babylon')
-          : pretterify(scriptDoc.getText(), range, needIndent, formatParams, config.prettier, 'typescript');
+        const code = scriptDoc.getText();
+        const filePath = getFileFsPath(scriptDoc.uri);
+        if (config.prettier.eslintIntegration) {
+          return prettierEslintify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
+        } else {
+          return prettierify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
+        }
       } else {
         const initialIndentLevel = needIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =

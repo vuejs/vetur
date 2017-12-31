@@ -1,6 +1,6 @@
 # Setup
 
-### Overall
+## Overall
 
 - Set up a `jsconfig.json` or `tsconfig.json` that `include` all vue files and files that they import from, for example:
 
@@ -31,9 +31,15 @@
     }
   ```
 
+#### jsconfig vs tsconfig 
+
+- Use `tsconfig` for pure TS project.
+- Use `jsconfig` for pure JS project.
+- Use `jsconfig` or `tsconfig` with `allowJs: true` for mixed JS / TS project.
+
 ### Path mapping
 
-If you are using [Webapck's alias](https://webpack.js.org/configuration/resolve/) or [TypeScript's path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html) to resolve components, you need to update Vetur's `tsconfig.json` or `jsconfig.json`.
+If you are using [Webpack's alias](https://webpack.js.org/configuration/resolve/) or [TypeScript's path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html) to resolve components, you need to update Vetur's `tsconfig.json` or `jsconfig.json`.
 
 For example:
 

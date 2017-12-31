@@ -1,18 +1,23 @@
-import { createConnection, TextDocuments, InitializeParams, InitializeResult, RequestType } from 'vscode-languageserver';
+import {
+  createConnection,
+  TextDocuments,
+  InitializeParams,
+  InitializeResult
+} from 'vscode-languageserver';
 import { TextDocument, Diagnostic, Range, Position } from 'vscode-languageserver-types';
+import {
+  DocumentColorRequest, ColorPresentationRequest
+} from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
 import * as url from 'url';
 import * as path from 'path';
 
-namespace ColorSymbolRequest {
-  export const type: RequestType<string, Range[], any, any> = new RequestType('vue/colorSymbols');
-}
-
 // Create a connection for the server
-const connection = process.argv.length <= 2
-  ? createConnection(process.stdin, process.stdout) // no arg specified
-  : createConnection();
+const connection =
+  process.argv.length <= 2
+    ? createConnection(process.stdin, process.stdout) // no arg specified
+    : createConnection();
 
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
@@ -47,25 +52,25 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   if (initializationOptions) {
     config = initializationOptions.config;
   }
-
-  return {
-    capabilities: {
-      // Tell the client that the server works in FULL text document sync mode
-      textDocumentSync: documents.syncKind,
-      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '/', '@', '*'] },
-      signatureHelpProvider: { triggerCharacters: ['('] },
-      documentFormattingProvider: true,
-      hoverProvider: true,
-      documentHighlightProvider: true,
-      documentSymbolProvider: true,
-      definitionProvider: true,
-      referencesProvider: true
-    }
+  const capabilities = {
+    // Tell the client that the server works in FULL text document sync mode
+    textDocumentSync: documents.syncKind,
+    completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '/', '@', '*'] },
+    signatureHelpProvider: { triggerCharacters: ['('] },
+    documentFormattingProvider: true,
+    hoverProvider: true,
+    documentHighlightProvider: true,
+    documentSymbolProvider: true,
+    definitionProvider: true,
+    referencesProvider: true,
+    colorProvider: true
   };
+
+  return { capabilities };
 });
 
 // The settings have changed. Is send on server activation as well.
-connection.onDidChangeConfiguration((change) => {
+connection.onDidChangeConfiguration(change => {
   config = change.settings;
   vls.configure(config);
 
@@ -171,10 +176,18 @@ connection.onDocumentSymbol(documentSymbolParms => {
   return vls.findDocumentSymbols(document);
 });
 
-connection.onRequest(ColorSymbolRequest.type, uri => {
-  const document = documents.get(uri);
+connection.onRequest(DocumentColorRequest.type, params => {
+  const document = documents.get(params.textDocument.uri);
   if (document) {
-    return vls.findColorSymbols(document);
+    return vls.findDocumentColors(document);
+  }
+  return [];
+});
+
+connection.onRequest(ColorPresentationRequest.type, params => {
+  const document = documents.get(params.textDocument.uri);
+  if (document) {
+    return vls.getColorPresentations(document, params.color, params.range);
   }
   return [];
 });
