@@ -114,9 +114,10 @@ export function getJavascriptMode(
       const diagnostics = service.getSemanticDiagnostics(fileFsPath);
 
       return diagnostics.map(diag => {
+        // syntactic/semantic diagnostic always has start and length
+        // so we can safely cast diag to TextSpan
         return {
-          // TODO: provide correct position
-          range: Range.create(templateDoc.positionAt(0), templateDoc.positionAt(templateDoc.getText().length - 1)),
+          range: convertRange(templateDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
           message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
         };

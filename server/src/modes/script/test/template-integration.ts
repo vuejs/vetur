@@ -16,6 +16,10 @@ suite('template integrated test', () => {
     const doc = createTextDocument(filename);
     const diagnostics = scriptMode.doTemplateValidation(doc);
     assert.equal(diagnostics.length, 1, 'diagnostic count');
+    assert.deepEqual(diagnostics[0].range, {
+      start: { line: 1, character: 8 },
+      end: { line: 1, character: 16 }
+    });
     assert(/Property 'messaage' does not exist/.test(diagnostics[0].message), 'diagnostic message');
   });
 });
