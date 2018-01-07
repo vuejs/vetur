@@ -34,7 +34,6 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
-import { HTMLDocument } from '../template/parser/htmlParser';
 
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
@@ -43,7 +42,6 @@ export interface ScriptMode extends LanguageMode {
 
 export function getJavascriptMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
-  vueDocuments: LanguageModelCache<HTMLDocument>,
   workspacePath: string | null | undefined
 ): ScriptMode {
   if (!workspacePath) {
@@ -63,7 +61,7 @@ export function getJavascriptMode(
     return vueDocument.getLanguageRangeByType('script');
   });
 
-  const serviceHost = getServiceHost(workspacePath, jsDocuments, vueDocuments);
+  const serviceHost = getServiceHost(workspacePath, jsDocuments);
   const { updateCurrentTextDocument, getScriptDocByFsPath } = serviceHost;
   let config: any = {};
 

@@ -4,7 +4,7 @@ import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languag
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
 
-import { HTMLDocument } from './parser/htmlParser';
+import { parseHTMLDocument, HTMLDocument } from './parser/htmlParser';
 import { doComplete } from './services/htmlCompletion';
 import { doHover } from './services/htmlHover';
 import { findDocumentHighlights } from './services/htmlHighlighting';
@@ -23,7 +23,6 @@ type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode(
   documentRegions: DocumentRegionCache,
-  vueDocuments: LanguageModelCache<HTMLDocument>,
   workspacePath: string | null | undefined,
   scriptMode: ScriptMode
 ): LanguageMode {
@@ -32,6 +31,7 @@ export function getVueHTMLMode(
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
     documentRegions.get(document).getEmbeddedDocument('vue-html')
   );
+  const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
   let config: any = {};
 

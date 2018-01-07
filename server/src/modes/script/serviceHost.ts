@@ -8,7 +8,6 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVueScript, isVue, isVueTemplate } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
-import { HTMLDocument } from '../template/parser/htmlParser';
 
 function isVueProject(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
@@ -83,8 +82,7 @@ function inferIsOldVersion(workspacePath: string): boolean {
 
 export function getServiceHost(
   workspacePath: string,
-  jsDocuments: LanguageModelCache<TextDocument>,
-  vueDocuments: LanguageModelCache<HTMLDocument>
+  jsDocuments: LanguageModelCache<TextDocument>
 ) {
   let compilerOptions: ts.CompilerOptions = {
     allowNonTsExtensions: true,
@@ -102,7 +100,7 @@ export function getServiceHost(
 
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
-  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(vueDocuments);
+  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
   (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
   const configFilename =

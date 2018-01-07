@@ -1,11 +1,9 @@
 import * as ts from 'typescript';
 import * as path from 'path';
+import { parse } from 'vue-eslint-parser';
 
 import { getDocumentRegions } from '../embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
-import { getFileUri } from '../../utils/paths';
-import { HTMLDocument } from '../template/parser/htmlParser';
-import { LanguageModelCache } from '../languageModelCache';
 import { transformTemplate, componentHelperName } from './transformTemplate';
 
 export function isVue(filename: string): boolean {
@@ -39,7 +37,7 @@ function isTSLike(scriptKind: ts.ScriptKind | undefined) {
   return scriptKind === ts.ScriptKind.TS || scriptKind === ts.ScriptKind.TSX;
 }
 
-export function createUpdater(vueDocuments: LanguageModelCache<HTMLDocument>) {
+export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
 
@@ -57,16 +55,14 @@ export function createUpdater(vueDocuments: LanguageModelCache<HTMLDocument>) {
     if (!hackSourceFile.__modified) {
       if (isVue(fileName) && !isTSLike(scriptKind)) {
         modifyVueScript(sourceFile);
+        hackSourceFile.__modified = true;
       } else if (isVueTemplate(fileName)) {
-        const doc = TextDocument.create(
-          getFileUri(fileName),
-          'vue',
-          Number(version),
-          scriptSnapshot.getText(0, scriptSnapshot.getLength())
-        );
-        injectVueTemplate(sourceFile, vueDocuments.get(doc));
+        const code = scriptSnapshot.getText(0, scriptSnapshot.getLength());
+        const program = parse(code, { sourceType: 'module' });
+        const tsCode = transformTemplate(program, code);
+        injectVueTemplate(sourceFile, tsCode);
+        hackSourceFile.__modified = true;
       }
-      hackSourceFile.__modified = true;
     }
   }
 
@@ -141,7 +137,7 @@ function modifyVueScript(sourceFile: ts.SourceFile): void {
  * Wrap render function with component options in the script block
  * to validate its types
  */
-function injectVueTemplate(sourceFile: ts.SourceFile, html: HTMLDocument): void {
+function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression[]): void {
   // 1. add import statement for corresponding Vue file
   //    so that we acquire the component type from it.
   const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
@@ -182,7 +178,7 @@ function injectVueTemplate(sourceFile: ts.SourceFile, html: HTMLDocument): void 
   // 3. wrap render code with a function decralation
   //    with `this` type of component.
   const setRenderPos = getWrapperRangeSetter(sourceFile);
-  const statements = transformTemplate(html).map(exp => ts.createStatement(exp));
+  const statements = renderBlock.map(exp => ts.createStatement(exp));
   const renderElement = setRenderPos(ts.createFunctionDeclaration(undefined, undefined, undefined,
     '__render',
     undefined,

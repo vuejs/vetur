@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { HTMLDocument, Node, Attribute, Directive, Expression, Range } from '../template/parser/htmlParser';
+import { AST } from 'vue-eslint-parser';
 
 export const componentHelperName = '__veturComponentHelper';
 
@@ -9,85 +9,104 @@ export const componentHelperName = '__veturComponentHelper';
  * the regular Vue render function and does not work on runtime
  * because we just need type information for the template.
  */
-export function transformTemplate(html: HTMLDocument): ts.Expression[] {
-  const template = html.roots.find(node => {
-    return node.tag === 'template';
-  });
-  return template ? template.children.map(transformNode) : [];
+export function transformTemplate(program: AST.ESLintProgram, code: string): ts.Expression[] {
+  const template = program.templateBody;
+
+  if (!template) {
+    return [];
+  }
+
+  return template.children.map(c => transformChild(c, code));
 }
 
-function transformNode(node: Node): ts.Expression {
+function transformElement(node: AST.VElement, code: string): ts.Expression {
   return setTextRange(ts.createCall(
     ts.setTextRange(ts.createIdentifier(componentHelperName), { pos: 0, end: 0 }),
     undefined,
     [
       // Element / Component name
-      ts.createLiteral(JSON.stringify(node.tag)),
+      ts.createLiteral(node.name),
 
       // Attributes / Directives
-      transformAttributes(node.attributes, node.directives),
+      transformAttributes(node.startTag.attributes, code),
 
       // Children
-      transformChildren(node.children)
+      ts.createArrayLiteral(node.children.map(c => transformChild(c, code)))
     ]
   ), node);
 }
 
-function transformAttributes(
-  attributes: Record<string, Attribute> | undefined,
-  directives: Record<string, Directive[]> | undefined
-): ts.Expression {
-  const literalProps = !attributes ? [] : Object.keys(attributes).map(key => {
-    const attr = attributes[key];
+function transformAttributes(attrs: (AST.VAttribute | AST.VDirective)[], code: string): ts.Expression {
+  const literalProps = attrs.filter(isVAttribute).map(attr => {
     return setTextRange(ts.createPropertyAssignment(
-      setTextRange(ts.createIdentifier(attr.name.text), attr.name),
+      setTextRange(ts.createIdentifier(attr.key.name), attr.key),
       attr.value
-        ? setTextRange(ts.createLiteral(JSON.stringify(attr.value.text)), attr.value)
+        ? setTextRange(ts.createLiteral(attr.value.value), attr.value)
         : ts.createLiteral('true')
     ), attr);
   });
 
 
-  const boundProps = (!directives || !directives['v-bind']) ? [] : directives['v-bind'].map(bind => {
-    const name = bind.key.argument;
-    const exp = bind.value ? parseExpression(bind.value) : ts.createLiteral('true');
+  const boundProps = attrs.filter(isVBind).map(attr => {
+    const name = attr.key.argument;
+    const exp = (attr.value && attr.value.expression)
+      ? parseExpression(attr.value.expression as AST.ESLintExpression, code)
+      : ts.createLiteral('true');
 
     if (name) {
       return setTextRange(ts.createPropertyAssignment(
-        setTextRange(ts.createIdentifier(name), bind.key),
+        setTextRange(ts.createIdentifier(name), attr.key),
         exp
-      ), bind);
+      ), attr);
     } else {
-      return setTextRange(ts.createSpreadAssignment(exp), bind);
+      return setTextRange(ts.createSpreadAssignment(exp), attr);
     }
   });
 
 
-  const listeners = (!directives || !directives['v-on']) ? [] : directives['v-on'].map(listener => {
-    const name = listener.key.argument;
-    let exp = listener.value ? parseExpression(listener.value) : ts.createLiteral('true');
+  const listeners = attrs.filter(isVOn).map(attr => {
+    const name = attr.key.argument;
 
-    if (exp.kind === ts.SyntaxKind.CallExpression) {
-      exp = ts.createFunctionExpression(undefined, undefined, undefined, undefined,
-        [ts.createParameter(undefined, undefined, undefined,
-          '$event',
-          undefined,
-          ts.createTypeReferenceNode('Event', undefined)
-        )],
-        undefined,
-        ts.createBlock([
-          ts.createReturn(exp)
-        ])
-      );
+    let statements: ts.Statement[] = [];
+    if (attr.value && attr.value.expression) {
+      const exp = attr.value.expression as AST.VOnExpression;
+      statements = exp.body.map(st => transformStatement(st, code));
     }
+
+    if (statements.length === 1) {
+      const first = statements[0];
+
+      if (
+        ts.isExpressionStatement(first) &&
+        ts.isIdentifier(first.expression)
+      ) {
+        statements[0] = ts.setTextRange(ts.createStatement(
+          ts.setTextRange(ts.createCall(
+            first.expression,
+            undefined,
+            [ts.setTextRange(ts.createIdentifier('$event'), first)]
+          ), first)
+        ), first);
+      }
+    }
+
+    const exp = ts.createFunctionExpression(undefined, undefined, undefined, undefined,
+      [ts.createParameter(undefined, undefined, undefined,
+        '$event',
+        undefined,
+        ts.createTypeReferenceNode('Event', undefined)
+      )],
+      undefined,
+      ts.createBlock(statements)
+    );
 
     if (name) {
       return setTextRange(ts.createPropertyAssignment(
-        setTextRange(ts.createIdentifier(name), listener.key),
+        setTextRange(ts.createIdentifier(name), attr.key),
         exp
-      ), listener);
+      ), attr);
     } else {
-      return setTextRange(ts.createSpreadAssignment(exp), listener);
+      return setTextRange(ts.createSpreadAssignment(exp), attr);
     }
   });
 
@@ -99,42 +118,82 @@ function transformAttributes(
   ]);
 }
 
-function transformChildren(children: Node[]): ts.Expression {
-  return ts.createArrayLiteral(children.map(transformNode));
+function transformChild(child: AST.VElement | AST.VExpressionContainer | AST.VText, code: string): ts.Expression {
+  switch (child.type) {
+    case 'VElement':
+      return transformElement(child, code);
+    case 'VExpressionContainer':
+      // Never appear v-for / v-on expression here
+      const exp = child.expression as AST.ESLintExpression | null;
+      return exp ? parseExpression(exp, code) : ts.createLiteral('""');
+    case 'VText':
+      return ts.createLiteral(child.value);
+  }
 }
 
-function parseExpression(expression: Expression): ts.Expression {
-  const source = ts.createSourceFile('/tmp/parsed.ts', expression.expression, ts.ScriptTarget.Latest);
+function transformStatement(statement: AST.ESLintStatement, code: string): ts.Statement {
+  if (statement.type !== 'ExpressionStatement') {
+    console.error('Unexpected statement type:', statement.type);
+    return ts.createStatement(ts.createLiteral('""'));
+  }
+
+  return setTextRange(ts.createStatement(
+    parseExpression(statement.expression, code)
+  ), statement);
+}
+
+function parseExpression(expression: AST.ESLintExpression, code: string): ts.Expression {
+  const [start, end] = expression.range;
+  const expStr = code.slice(start, end);
+  const source = ts.createSourceFile('/tmp/parsed.ts', expStr, ts.ScriptTarget.Latest);
   const statement = source.statements[0];
 
-  if (statement.kind !== ts.SyntaxKind.ExpressionStatement) {
+  if (!statement || !ts.isExpressionStatement(statement)) {
     console.error('Unexpected statement kind:', statement.kind);
     return ts.createLiteral('""');
   }
 
   ts.forEachChild(statement, function next(node) {
     ts.setTextRange(node, {
-      pos: expression.start + node.pos,
-      end: expression.start + node.end
+      pos: start + node.pos,
+      end: start + node.end
     });
     ts.forEachChild(node, next);
   });
 
-  return injectThisForIdentifier((statement as ts.ExpressionStatement).expression, []);
+  return injectThisForIdentifier(statement.expression, []);
 }
 
 function injectThisForIdentifier(expression: ts.Expression, scope: ts.Identifier[]): ts.Expression {
+  let res;
   switch (expression.kind) {
     case ts.SyntaxKind.Identifier:
-      return ts.createPropertyAccess(ts.createThis(), expression as ts.Identifier);
+      res = ts.createPropertyAccess(
+        ts.setTextRange(ts.createThis(), expression),
+        expression as ts.Identifier
+      );
+      break;
     default:
       return expression;
   }
+  return ts.setTextRange(res, expression);
 }
 
-function setTextRange<T extends ts.TextRange>(range: T, location: Range): T {
+function isVAttribute(node: AST.VAttribute | AST.VDirective): node is AST.VAttribute {
+  return !node.directive;
+}
+
+function isVBind(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  return node.directive && node.key.name === 'bind';
+}
+
+function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  return node.directive && node.key.name === 'on';
+}
+
+function setTextRange<T extends ts.TextRange>(range: T, location: AST.HasLocation): T {
   return ts.setTextRange(range, {
-    pos: location.start,
-    end: location.end
+    pos: location.range[0],
+    end: location.range[1]
   });
 }
