@@ -208,9 +208,9 @@ export function getJavascriptMode(
         return occurrences.map(entry => {
           return {
             range: convertRange(scriptDoc, entry.textSpan),
-            kind: <DocumentHighlightKind>(entry.isWriteAccess
+            kind: entry.isWriteAccess
               ? DocumentHighlightKind.Write
-              : DocumentHighlightKind.Text)
+              : DocumentHighlightKind.Text
           };
         });
       }
@@ -224,37 +224,37 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const items = service.getNavigationBarItems(fileFsPath);
-      if (items) {
-        const result: SymbolInformation[] = [];
-        const existing: { [k: string]: boolean } = {};
-        const collectSymbols = (item: ts.NavigationBarItem, containerLabel?: string) => {
-          const sig = item.text + item.kind + item.spans[0].start;
-          if (item.kind !== 'script' && !existing[sig]) {
-            const symbol: SymbolInformation = {
-              name: item.text,
-              kind: convertSymbolKind(item.kind),
-              location: {
-                uri: doc.uri,
-                range: convertRange(scriptDoc, item.spans[0])
-              },
-              containerName: containerLabel
-            };
-            existing[sig] = true;
-            result.push(symbol);
-            containerLabel = item.text;
-          }
-
-          if (item.childItems && item.childItems.length > 0) {
-            for (const child of item.childItems) {
-              collectSymbols(child, containerLabel);
-            }
-          }
-        };
-
-        items.forEach(item => collectSymbols(item));
-        return result;
+      if (!items) {
+        return [];
       }
-      return [];
+      const result: SymbolInformation[] = [];
+      const existing: { [k: string]: boolean } = {};
+      const collectSymbols = (item: ts.NavigationBarItem, containerLabel?: string) => {
+        const sig = item.text + item.kind + item.spans[0].start;
+        if (item.kind !== 'script' && !existing[sig]) {
+          const symbol: SymbolInformation = {
+            name: item.text,
+            kind: convertSymbolKind(item.kind),
+            location: {
+              uri: doc.uri,
+              range: convertRange(scriptDoc, item.spans[0])
+            },
+            containerName: containerLabel
+          };
+          existing[sig] = true;
+          result.push(symbol);
+          containerLabel = item.text;
+        }
+
+        if (item.childItems && item.childItems.length > 0) {
+          for (const child of item.childItems) {
+            collectSymbols(child, containerLabel);
+          }
+        }
+      };
+
+      items.forEach(item => collectSymbols(item));
+      return result;
     },
     findDefinition(doc: TextDocument, position: Position): Definition {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -337,19 +337,19 @@ export function getJavascriptMode(
         const end = scriptDoc.offsetAt(range.end);
         const edits = service.getFormattingEditsForRange(fileFsPath, start, end, convertedFormatSettings);
 
-        if (edits) {
-          const result = [];
-          for (const edit of edits) {
-            if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
-              result.push({
-                range: convertRange(scriptDoc, edit.span),
-                newText: edit.newText
-              });
-            }
-          }
-          return result;
+        if (!edits) {
+          return [];
         }
-        return [];
+        const result = [];
+        for (const edit of edits) {
+          if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
+            result.push({
+              range: convertRange(scriptDoc, edit.span),
+              newText: edit.newText
+            });
+          }
+        }
+        return result;
       }
     },
     findComponents(doc: TextDocument) {
@@ -379,7 +379,7 @@ function convertRange(document: TextDocument, span: ts.TextSpan): Range {
   return Range.create(startPosition, endPosition);
 }
 
-function convertKind(kind: string): CompletionItemKind {
+function convertKind(kind: ts.ScriptElementKind): CompletionItemKind {
   switch (kind) {
     case 'primitive type':
     case 'keyword':
@@ -412,7 +412,7 @@ function convertKind(kind: string): CompletionItemKind {
   return CompletionItemKind.Property;
 }
 
-function convertSymbolKind(kind: string): SymbolKind {
+function convertSymbolKind(kind: ts.ScriptElementKind): SymbolKind {
   switch (kind) {
     case 'var':
     case 'local var':
