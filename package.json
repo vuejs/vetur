@@ -9,7 +9,7 @@
   "scripts": {
     "compile": "tsc -p .",
     "precommit": "lint-staged",
-    "prepush": "npm run test",
+    "prepush": "npm run test:server",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
     "test": "npm run lint && npm run test:server",
