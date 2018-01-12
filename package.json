@@ -8,13 +8,16 @@
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p .",
-    "precommit": "npm run lint",
+    "precommit": "lint-staged",
     "prepush": "npm run test",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
     "test": "npm run lint && npm run test:server",
     "docs": "bash ./build/update-docs.sh",
     "postinstall": "if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/vscode/bin/install; fi"
+  },
+  "lint-staged": {
+    "*.ts": ["tslint --fix", "git add"]
   },
   "repository": {
     "type": "git",
@@ -279,9 +282,10 @@
     }
   },
   "devDependencies": {
-    "husky": "^0.14.3",
-    "tslint": "^5.8.0",
     "@types/node": "^8.0.51",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.0.0",
+    "tslint": "^5.8.0",
     "typescript": "^2.6.2",
     "vscode": "^1.1.5"
   }
