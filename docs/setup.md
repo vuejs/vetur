@@ -2,7 +2,7 @@
 
 ## Overall
 
-- Set up a `jsconfig.json` or `tsconfig.json` that `include` all vue files and files that they import from, for example:
+- At project root create a `jsconfig.json` or `tsconfig.json` that `include` all vue files and files that they import from, for example:
 
 - `jsconfig.json`
 
@@ -31,7 +31,7 @@
     }
   ```
 
-#### jsconfig vs tsconfig 
+#### jsconfig vs tsconfig
 
 - Use `tsconfig` for pure TS project.
 - Use `jsconfig` for pure JS project.

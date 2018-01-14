@@ -1,13 +1,13 @@
 # Formatting
 
-Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.  
+Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.
 
 ## Formatters
 
-Choose each language's default formatter in `vetur.format.defaultFormatter`.  
+Choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
 **Setting a language's formatter to `none` disables formatter for that language.**
 
-Current default: 
+Current default:
 
 ```json
 "vetur.format.defaultFormatter": {
@@ -41,7 +41,7 @@ Other settings are read from `javascript.format.*` and `typescript.format.*`.
 
 #### js-beautify-html [deprecated]
 
-Alternative html formatter. Deprecated, turned off by default and will be removed soon.  
+Alternative html formatter. Deprecated, turned off by default and will be removed soon.
 js-beautify has many long-standing bugs that never get fixed. Use at your own risk.
 
 `tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
