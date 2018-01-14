@@ -15,6 +15,11 @@
     "dist",
     "bin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vuejs/vetur.git"
+  },
+  "homepage": "https://github.com/vuejs/vetur/tree/master/server",
   "dependencies": {
     "bootstrap-vue-helper-json": "^1.1.1",
     "element-helper-json": "^2.0.2",
