@@ -309,7 +309,7 @@
             ]
         }, 
         "vue-directives": {
-            "end": "(?<='|\")", 
+            "end": "(?<=[\s<>=`\"'])", 
             "name": "meta.directive.vue", 
             "begin": "((?:\\b(v-)|(:|@))([a-zA-Z\\-]+)(?:\\:([a-zA-Z\\-]+))?(?:\\.([a-zA-Z\\-]+))*)\\s*(=)", 
             "captures": {
