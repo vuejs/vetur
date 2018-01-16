@@ -11,6 +11,7 @@ export interface LanguageRange extends Range {
 export interface VueDocumentRegions {
   getEmbeddedDocument(languageId: string): TextDocument;
   getEmbeddedDocumentByType(type: EmbeddedType): TextDocument;
+  getLanguageRangeByType(type: EmbeddedType): LanguageRange | undefined;
   getLanguageRanges(range: Range): LanguageRange[];
   getLanguageAtPosition(position: Position): string;
   getLanguagesInDocument(): string[];
@@ -102,6 +103,7 @@ export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
 
   return {
     getLanguageRanges: (range: Range) => getLanguageRanges(document, regions, range),
+    getLanguageRangeByType: (type: EmbeddedType) => getLanguageRangeByType(document, regions, type),
     getEmbeddedDocument: (languageId: string) => getEmbeddedDocument(document, regions, languageId),
     getEmbeddedDocumentByType: (type: EmbeddedType) => getEmbeddedDocumentByType(document, regions, type),
     getLanguageAtPosition: (position: Position) => getLanguageAtPosition(document, regions, position),
@@ -284,4 +286,20 @@ function getEmbeddedDocumentByType(
     }
   }
   return TextDocument.create(document.uri, defaultType[type], document.version, result);
+}
+
+function getLanguageRangeByType(
+  document: TextDocument,
+  contents: EmbeddedRegion[],
+  type: EmbeddedType
+): LanguageRange | undefined {
+  for (const c of contents) {
+    if (c.type === type) {
+      return {
+        start: document.positionAt(c.start),
+        end: document.positionAt(c.end),
+        languageId: c.languageId
+      };
+    }
+  }
 }

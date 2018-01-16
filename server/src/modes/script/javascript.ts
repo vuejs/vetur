@@ -23,7 +23,7 @@ import {
   FormattingOptions
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions } from '../embeddedSupport';
+import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
 import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
@@ -49,6 +49,11 @@ export function getJavascriptMode(
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
     return vueDocument.getEmbeddedDocumentByType('script');
+  });
+
+  const regionStart = getLanguageModelCache(10, 60, document => {
+    const vueDocument = documentRegions.get(document);
+    return vueDocument.getLanguageRangeByType('script');
   });
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
@@ -92,7 +97,11 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
-      const completions = service.getCompletionsAtPosition(fileFsPath, offset, undefined);
+      const completions = service.getCompletionsAtPosition(
+        fileFsPath,
+        offset,
+        {includeExternalModuleExports: config.vetur.completion.autoImport}
+      );
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -112,7 +121,8 @@ export function getJavascriptMode(
               // data used for resolving item details (see 'doResolve')
               languageId: scriptDoc.languageId,
               uri: doc.uri,
-              offset
+              offset,
+              source: entry.source
             }
           };
         })
@@ -125,10 +135,20 @@ export function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const details = service.getCompletionEntryDetails(fileFsPath, item.data.offset, item.label, undefined, undefined);
+      const details = service.getCompletionEntryDetails(
+        fileFsPath,
+        item.data.offset,
+        item.label,
+        /*formattingOption*/ {},
+        item.data.source
+      );
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
+        if (details.codeActions && config.vetur.completion.autoImport) {
+          const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
+          item.additionalTextEdits = textEdits;
+        }
         delete item.data;
       }
       return item;
@@ -450,4 +470,35 @@ function convertOptions(
     indentSize: options.tabSize,
     baseIndentSize: options.tabSize * initialIndentLevel
   });
+}
+
+function convertCodeAction(
+  doc: TextDocument,
+  codeActions: ts.CodeAction[],
+  regionStart: LanguageModelCache<LanguageRange | undefined>) {
+  const textEdits: TextEdit[] = [];
+  for (const action of codeActions) {
+    for (const change of action.changes) {
+      textEdits.push(...change.textChanges.map(tc => {
+        // currently, only import codeAction is available
+        // change start of doc to start of script region
+        if (tc.span.start === 0 && tc.span.length === 0) {
+          const region = regionStart.get(doc);
+          if (region) {
+            const line = region.start.line;
+            return {
+              range: Range.create(line + 1, 0, line + 1, 0),
+              newText: tc.newText
+            };
+          }
+        }
+        return {
+          range: convertRange(doc, tc.span),
+          newText: tc.newText
+        };
+      }
+      ));
+    }
+  }
+  return textEdits;
 }
