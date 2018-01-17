@@ -161,7 +161,7 @@ repository:
   vue-directives:
     name: meta.directive.vue
     begin: ((?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*)\s*(=)
-    end: (?<='|")
+    end: (?<='|")|(?=[<>`])
     captures:
       '1': {name: entity.other.attribute-name.html}
       '7': {name: punctuation.separator.key-value.html}
