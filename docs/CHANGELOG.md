@@ -1,13 +1,14 @@
 # Changelog
 
-### 0.11.6 | 2018-01-15
+### 0.11.6 | 2018-01-16
 
-- Fix dulplicate bracket in scaffold completion. Fix #367.
-- Support single line, self-closing blocks in template syntax highlight. Fix #591.
-- Specify prettier's parser option in formatting. Fix #574.
-- Optimize vsix size, now vetur is 33% smaller.
-- upgrade Stylus Supermacy, the stylus formatter.
-- allow quoteless attribute value in syntax. Fix #639.
+- Basic Vuetify completion. #647.
+- Add auto import. #606.
+- Optimize vsix size to reduce bundle size by 33%.
+- Only read parser option for using prettier for script section. #574.
+- Fix syntax highlighting for single line, self-closing template/style/script. #591.
+- Fix "Language client is not ready yet" error. #576.
+- Fix dulplicate bracket in scaffold completion. #367.
 
 ### 0.11.5 | 2017-12-15
 
