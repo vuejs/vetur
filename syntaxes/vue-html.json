@@ -341,7 +341,7 @@
                     "name": "source.directive.vue"
                 }
             ], 
-            "end": "(?<='|\")|(?=[<>`])", 
+            "end": "(?<='|\")|(?=[\\s<>`])", 
             "name": "meta.directive.vue"
         }, 
         "tag-generic-attribute": {
