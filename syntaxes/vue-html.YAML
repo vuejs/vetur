@@ -120,7 +120,7 @@ patterns:
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.inline.any.html}
-  end: '((?: ?/)?>)'
+  end: (/?>)
   endCaptures:
     '1': {name: punctuation.definition.tag.end.html}
   patterns:
@@ -131,7 +131,7 @@ patterns:
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
     '2': {name: entity.name.tag.other.html}
-  end: (>)
+  end: (/?>)
   endCaptures:
     '1': {name: punctuation.definition.tag.end.html}
   patterns:

@@ -49,3 +49,11 @@ More details at: https://github.com/vuejs/vetur/issues/423
 ## .vue file cannot be imported in TS file.
 
 You need to add `declare module '*.vue'` in your dts files: https://github.com/Microsoft/TypeScript-Vue-Starter#single-file-components.
+
+## Formatting doesn't work in template section.
+
+Vetur by default does **not** format html.  
+See https://github.com/vuejs/vetur/blob/master/CHANGELOG.md#vetur-formatting-changes for more detail.
+
+If template still gets no formatting after enabling js-beautify, it is probably caused by [prettier-vscode](https://github.com/prettier/prettier-vscode) extension.  
+You can disable it for Vue: https://github.com/prettier/prettier-vscode#prettierdisablelanguages-default-
