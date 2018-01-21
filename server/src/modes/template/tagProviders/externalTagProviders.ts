@@ -12,10 +12,14 @@ import * as bootstrapAttributes from 'bootstrap-vue-helper-json/attributes.json'
 import * as vuetifyTags from 'vuetify-helper-json/tags.json';
 import * as vuetifyAttributes from 'vuetify-helper-json/attributes.json';
 
+import * as quasarTags from 'quasar-helper-json/quasar-tags.json';
+import * as quasarAttributes from 'quasar-helper-json/quasar-attributes.json';
+
 export const elementTagProvider = getExternalTagProvider('element', elementTags, elementAttributes);
 export const onsenTagProvider = getExternalTagProvider('onsen', onsenTags, onsenAttributes);
 export const bootstrapTagProvider = getExternalTagProvider('bootstrap', bootstrapTags, bootstrapAttributes);
 export const vuetifyTagProvider = getExternalTagProvider('vuetify', vuetifyTags, vuetifyAttributes);
+export const quasarTagProvider = getExternalTagProvider('quasar', quasarTags, quasarAttributes);
 
 export function getExternalTagProvider(id: string, tags: any, attributes: any): IHTMLTagProvider {
   function findAttributeDetail(tag: string, attr: string) {
