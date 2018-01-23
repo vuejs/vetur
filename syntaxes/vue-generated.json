@@ -961,16 +961,13 @@
       ]
     },
     {
-      "begin": "(<)(docs)(>)",
+      "begin": "(<)(docs)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
           "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
         }
       },
       "end": "(</)(docs)(>)",
@@ -1007,16 +1004,13 @@
       ]
     },
     {
-      "begin": "(<)(i18n)(>)",
+      "begin": "(<)(i18n)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
           "name": "entity.name.tag.style.html"
-        },
-        "3": {
-          "name": "punctuation.definition.tag.end.html"
         }
       },
       "end": "(</)(i18n)(>)",

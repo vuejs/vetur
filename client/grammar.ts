@@ -40,16 +40,13 @@ export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: str
 function makePattern(tag: string, scope: string) {
   return JSON.parse(`
   {
-    "begin": "(<)(${tag})(>)",
+    "begin": "(<)(${tag})",
     "beginCaptures": {
         "1": {
             "name": "punctuation.definition.tag.begin.html"
         },
         "2": {
             "name": "entity.name.tag.style.html"
-        },
-        "3": {
-            "name": "punctuation.definition.tag.end.html"
         }
     },
     "end": "(</)(${tag})(>)",
