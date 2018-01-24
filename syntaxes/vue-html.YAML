@@ -161,7 +161,7 @@ repository:
   vue-directives:
     name: meta.directive.vue
     begin: ((?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*)\s*(=)
-    end: (?<='|")
+    end: (?<='|")|(?=[\s<>`])
     captures:
       '1': {name: entity.other.attribute-name.html}
       '7': {name: punctuation.separator.key-value.html}
@@ -258,6 +258,10 @@ repository:
       captures:
         '0': {name: meta.toc-list.id.html}
 
+  unquoted-attribute:
+    match: (?<==)(?:[^\s<>/'"]|/(?!>))+
+    name: string.unquoted.html
+
   tag-stuff:
     patterns:
     - include: '#vue-directives'
@@ -265,3 +269,4 @@ repository:
     - include: '#tag-generic-attribute'
     - include: '#string-double-quoted'
     - include: '#string-single-quoted'
+    - include: '#unquoted-attribute'
