@@ -60,9 +60,10 @@ export default {
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
       insertText: `<script lang="ts">
-export default {
+import Vue from 'vue'
+export default Vue.extend({
   \${0}
-}
+})
 </script>
 `
     },
