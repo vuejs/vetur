@@ -100,7 +100,9 @@ export function getJavascriptMode(
       const completions = service.getCompletionsAtPosition(
         fileFsPath,
         offset,
-        {includeExternalModuleExports: config.vetur.completion.autoImport}
+        {
+          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
+        }
       );
       if (!completions) {
         return { isIncomplete: false, items: [] };
