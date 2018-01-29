@@ -64,7 +64,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       return stylusHover(embedded, position);
     },
     format(document, range, formatParams) {
-      if (config.vetur.format.defaultFormatter.stylus === 'none') {
+      if (_.get(config, 'vetur.format.defaultFormatter.stylus') === 'none') {
         return [];
       }
 

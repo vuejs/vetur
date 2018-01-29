@@ -22,6 +22,7 @@ import {
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
 import { NULL_HOVER, NULL_COMPLETION, NULL_SIGNATURE } from '../modes/nullMode';
 import { format } from './formatting';
+import * as _ from 'lodash';
 
 export interface DocumentContext {
   resolveReference(ref: string, base?: string): string;
@@ -64,7 +65,7 @@ export function getVls(): VLS {
       languageModes = getLanguageModes(workspacePath);
     },
     configure(config) {
-      const veturValidationOptions = config.vetur.validation;
+      const veturValidationOptions = _.get(config, 'vetur.validation') || {};
       validation['vue-html'] = veturValidationOptions.template;
       validation.css = veturValidationOptions.style;
       validation.postcss = veturValidationOptions.style;
