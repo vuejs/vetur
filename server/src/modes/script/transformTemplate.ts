@@ -3,6 +3,15 @@ import { AST } from 'vue-eslint-parser';
 
 export const componentHelperName = '__veturComponentHelper';
 
+// Allowed global variables in templates.
+// From: https://github.com/vuejs/vue/blob/dev/src/core/instance/proxy.js
+export const globalScope = (
+  'Infinity,undefined,NaN,isFinite,isNaN,' +
+  'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
+  'Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,' +
+  'require'
+).split(',');
+
 /**
  * Transform template AST to TypeScript AST.
  * Note: The returned TS AST is not compatible with
@@ -161,22 +170,130 @@ function parseExpression(expression: AST.ESLintExpression, code: string): ts.Exp
     ts.forEachChild(node, next);
   });
 
-  return injectThisForIdentifier(statement.expression, []);
+  return injectThis(statement.expression, []);
 }
 
-function injectThisForIdentifier(expression: ts.Expression, scope: ts.Identifier[]): ts.Expression {
+export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
   let res;
-  switch (expression.kind) {
-    case ts.SyntaxKind.Identifier:
+  if (ts.isIdentifier(exp)) {
+    if (scope.find(id => id === exp.text) === undefined) {
       res = ts.createPropertyAccess(
-        ts.setTextRange(ts.createThis(), expression),
-        expression as ts.Identifier
+        ts.setTextRange(ts.createThis(), exp),
+        exp
       );
-      break;
-    default:
-      return expression;
+    } else {
+      return exp;
+    }
+  } else if (ts.isPropertyAccessExpression(exp)) {
+    res = ts.createPropertyAccess(
+      injectThis(exp.expression, scope),
+      exp.name
+    );
+  } else if (ts.isPrefixUnaryExpression(exp)) {
+    res = ts.createPrefix(
+      exp.operator,
+      injectThis(exp.operand, scope)
+    );
+  } else if (ts.isPostfixUnaryExpression(exp)) {
+    res = ts.createPostfix(
+      injectThis(exp.operand, scope),
+      exp.operator
+    );
+  } else if (exp.kind === ts.SyntaxKind.TypeOfExpression) {
+    // Manually check `kind` for typeof expression
+    // since ts.isTypeOfExpression is not working.
+    res = ts.createTypeOf(
+      injectThis((exp as ts.TypeOfExpression).expression, scope)
+    );
+  } else if (ts.isDeleteExpression(exp)) {
+    res = ts.createDelete(
+      injectThis(exp.expression, scope)
+    );
+  } else if (ts.isVoidExpression(exp)) {
+    res = ts.createVoid(
+      injectThis(exp.expression, scope)
+    );
+  } else if (ts.isBinaryExpression(exp)) {
+    res = ts.createBinary(
+      injectThis(exp.left, scope),
+      exp.operatorToken,
+      injectThis(exp.right, scope)
+    );
+  } else if (ts.isConditionalExpression(exp)) {
+    res = ts.createConditional(
+      injectThis(exp.condition, scope),
+      injectThis(exp.whenTrue, scope),
+      injectThis(exp.whenFalse, scope)
+    );
+  } else if (ts.isCallExpression(exp)) {
+    res = ts.createCall(
+      injectThis(exp.expression, scope),
+      exp.typeArguments,
+      exp.arguments.map(arg => injectThis(arg, scope))
+    );
+  } else if (ts.isParenthesizedExpression(exp)) {
+    res = ts.createParen(
+      injectThis(exp.expression, scope)
+    );
+  } else if (ts.isObjectLiteralExpression(exp)) {
+    res = ts.createObjectLiteral(
+      exp.properties.map(p => injectThisForObjectLiteralElement(p, scope))
+    );
+  } else if (ts.isArrowFunction(exp) && !ts.isBlock(exp.body)) {
+    res = ts.createArrowFunction(
+      exp.modifiers,
+      exp.typeParameters,
+      exp.parameters,
+      exp.type,
+      exp.equalsGreaterThanToken,
+      injectThis(
+        exp.body,
+        scope.concat(flatMap(exp.parameters, collectScope))
+      )
+    );
+  } else {
+    return exp;
   }
-  return ts.setTextRange(res, expression);
+  return ts.setTextRange(res, exp);
+}
+
+function injectThisForObjectLiteralElement(
+  el: ts.ObjectLiteralElementLike,
+  scope: string[]
+): ts.ObjectLiteralElementLike {
+  let res;
+  if (ts.isPropertyAssignment(el)) {
+    res = ts.createPropertyAssignment(
+      el.name,
+      injectThis(el.initializer, scope)
+    );
+  } else if (ts.isShorthandPropertyAssignment(el)) {
+    res = ts.createPropertyAssignment(
+      el.name,
+      injectThis(el.name, scope)
+    );
+  } else if (ts.isSpreadAssignment(el)) {
+    res = ts.createSpreadAssignment(
+      injectThis(el.expression, scope)
+    );
+  } else {
+    return el;
+  }
+  return ts.setTextRange(res, el);
+}
+
+function collectScope(param: ts.ParameterDeclaration | ts.BindingElement): string[] {
+  const binding = param.name;
+  if (ts.isIdentifier(binding)) {
+    return [binding.text];
+  } else if (ts.isObjectBindingPattern(binding)) {
+    return flatMap(binding.elements, collectScope);
+  } else if (ts.isArrayBindingPattern(binding)) {
+    const filtered = binding.elements.filter(ts.isBindingElement);
+    return flatMap(filtered, collectScope);
+  } else {
+    return [];
+  }
 }
 
 function isVAttribute(node: AST.VAttribute | AST.VDirective): node is AST.VAttribute {
@@ -189,6 +306,12 @@ function isVBind(node: AST.VAttribute | AST.VDirective): node is AST.VDirective 
 
 function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
   return node.directive && node.key.name === 'on';
+}
+
+function flatMap<T extends ts.Node, R>(list: ReadonlyArray<T>, fn: (value: T) => R[]): R[] {
+  return list.reduce<R[]>((acc, item) => {
+    return acc.concat(fn(item));
+  }, []);
 }
 
 function setTextRange<T extends ts.TextRange>(range: T, location: AST.HasLocation): T {
