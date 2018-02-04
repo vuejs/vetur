@@ -22,4 +22,11 @@ suite('template integrated test', () => {
     });
     assert(/Property 'messaage' does not exist/.test(diagnostics[0].message), 'diagnostic message');
   });
+
+  test('validate: comp4.vue', () => {
+    const filename = path.join(workspace + '/component/comp4.vue');
+    const doc = createTextDocument(filename);
+    const diagnostics = scriptMode.doTemplateValidation(doc);
+    assert.equal(diagnostics.length, 0, 'diagnostic count');
+  });
 });

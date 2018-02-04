@@ -2,10 +2,11 @@ import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
 
 export const componentHelperName = '__veturComponentHelper';
+export const iterationHelperName = '__veturIterationHelper';
 
 // Allowed global variables in templates.
 // From: https://github.com/vuejs/vue/blob/dev/src/core/instance/proxy.js
-export const globalScope = (
+const globalScope = (
   'Infinity,undefined,NaN,isFinite,isNaN,' +
   'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
   'Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,' +
@@ -25,11 +26,12 @@ export function transformTemplate(program: AST.ESLintProgram, code: string): ts.
     return [];
   }
 
-  return template.children.map(c => transformChild(c, code));
+  return template.children.map(c => transformChild(c, code, globalScope));
 }
 
-function transformElement(node: AST.VElement, code: string): ts.Expression {
-  return setTextRange(ts.createCall(
+function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
+  const newScope = scope.concat(node.variables.map(v => v.id.name));
+  const element = setTextRange(ts.createCall(
     ts.setTextRange(ts.createIdentifier(componentHelperName), { pos: 0, end: 0 }),
     undefined,
     [
@@ -37,15 +39,46 @@ function transformElement(node: AST.VElement, code: string): ts.Expression {
       ts.createLiteral(node.name),
 
       // Attributes / Directives
-      transformAttributes(node.startTag.attributes, code),
+      transformAttributes(node.startTag.attributes, code, newScope),
 
       // Children
-      ts.createArrayLiteral(node.children.map(c => transformChild(c, code)))
+      ts.createArrayLiteral(node.children.map(c => transformChild(c, code, newScope)))
     ]
   ), node);
+
+  const vFor = node.startTag.attributes.find(isVFor);
+  if (!vFor || !vFor.value) {
+    return element;
+  } else {
+    // Convert v-for directive to the iteration helper
+    const exp = vFor.value.expression as AST.VForExpression;
+
+    return setTextRange(ts.createCall(
+      setTextRange(ts.createIdentifier(iterationHelperName), exp.right),
+      undefined,
+      [
+        // Iteration target
+        parseExpression(exp.right, code, scope),
+
+        // Callback
+        setTextRange(ts.createArrowFunction(
+          undefined,
+          undefined,
+          parseParams(exp.left, code, scope),
+          undefined,
+          setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), exp),
+          element
+        ), exp)
+      ]
+    ), exp);
+  }
 }
 
-function transformAttributes(attrs: (AST.VAttribute | AST.VDirective)[], code: string): ts.Expression {
+function transformAttributes(
+  attrs: (AST.VAttribute | AST.VDirective)[],
+  code: string,
+  scope: string[]
+): ts.Expression {
   const literalProps = attrs.filter(isVAttribute).map(attr => {
     return setTextRange(ts.createPropertyAssignment(
       setTextRange(ts.createIdentifier(attr.key.name), attr.key),
@@ -59,7 +92,7 @@ function transformAttributes(attrs: (AST.VAttribute | AST.VDirective)[], code: s
   const boundProps = attrs.filter(isVBind).map(attr => {
     const name = attr.key.argument;
     const exp = (attr.value && attr.value.expression)
-      ? parseExpression(attr.value.expression as AST.ESLintExpression, code)
+      ? parseExpression(attr.value.expression as AST.ESLintExpression, code, scope)
       : ts.createLiteral('true');
 
     if (name) {
@@ -79,7 +112,7 @@ function transformAttributes(attrs: (AST.VAttribute | AST.VDirective)[], code: s
     let statements: ts.Statement[] = [];
     if (attr.value && attr.value.expression) {
       const exp = attr.value.expression as AST.VOnExpression;
-      statements = exp.body.map(st => transformStatement(st, code));
+      statements = exp.body.map(st => transformStatement(st, code, scope));
     }
 
     if (statements.length === 1) {
@@ -127,34 +160,57 @@ function transformAttributes(attrs: (AST.VAttribute | AST.VDirective)[], code: s
   ]);
 }
 
-function transformChild(child: AST.VElement | AST.VExpressionContainer | AST.VText, code: string): ts.Expression {
+function transformChild(
+  child: AST.VElement | AST.VExpressionContainer | AST.VText,
+  code: string,
+  scope: string[]
+): ts.Expression {
   switch (child.type) {
     case 'VElement':
-      return transformElement(child, code);
+      return transformElement(child, code, scope);
     case 'VExpressionContainer':
       // Never appear v-for / v-on expression here
       const exp = child.expression as AST.ESLintExpression | null;
-      return exp ? parseExpression(exp, code) : ts.createLiteral('""');
+      return exp ? parseExpression(exp, code, scope) : ts.createLiteral('""');
     case 'VText':
       return ts.createLiteral(child.value);
   }
 }
 
-function transformStatement(statement: AST.ESLintStatement, code: string): ts.Statement {
+function transformStatement(statement: AST.ESLintStatement, code: string, scope: string[]): ts.Statement {
   if (statement.type !== 'ExpressionStatement') {
     console.error('Unexpected statement type:', statement.type);
     return ts.createStatement(ts.createLiteral('""'));
   }
 
   return setTextRange(ts.createStatement(
-    parseExpression(statement.expression, code)
+    parseExpression(statement.expression, code, scope)
   ), statement);
 }
 
-function parseExpression(expression: AST.ESLintExpression, code: string): ts.Expression {
+function parseExpression(expression: AST.ESLintExpression, code: string, scope: string[]): ts.Expression {
   const [start, end] = expression.range;
   const expStr = code.slice(start, end);
-  const source = ts.createSourceFile('/tmp/parsed.ts', expStr, ts.ScriptTarget.Latest);
+  return parseExpressionImpl(expStr, start, scope);
+}
+
+function parseParams(
+  params: AST.ESLintPattern[],
+  code: string,
+  scope: string[]
+): ts.NodeArray<ts.ParameterDeclaration> {
+  const start = params[0].range[0];
+  const end = params[params.length - 1].range[1];
+  const paramsStr = code.slice(start, end);
+  // Wrap parameters with an arrow function to extract them as ts parameter declarations.
+  const arrowFnStr = '(' + paramsStr + ') => {}';
+
+  const exp = parseExpressionImpl(arrowFnStr, start, scope) as ts.ArrowFunction;
+  return exp.parameters;
+}
+
+function parseExpressionImpl(exp: string, offset: number, scope: string[]): ts.Expression {
+  const source = ts.createSourceFile('/tmp/parsed.ts', exp, ts.ScriptTarget.Latest);
   const statement = source.statements[0];
 
   if (!statement || !ts.isExpressionStatement(statement)) {
@@ -164,19 +220,19 @@ function parseExpression(expression: AST.ESLintExpression, code: string): ts.Exp
 
   ts.forEachChild(statement, function next(node) {
     ts.setTextRange(node, {
-      pos: start + node.pos,
-      end: start + node.end
+      pos: offset + node.pos,
+      end: offset + node.end
     });
     ts.forEachChild(node, next);
   });
 
-  return injectThis(statement.expression, []);
+  return injectThis(statement.expression, scope);
 }
 
 export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
   let res;
   if (ts.isIdentifier(exp)) {
-    if (scope.find(id => id === exp.text) === undefined) {
+    if (scope.indexOf(exp.text) < 0) {
       res = ts.createPropertyAccess(
         ts.setTextRange(ts.createThis(), exp),
         exp
@@ -306,6 +362,10 @@ function isVBind(node: AST.VAttribute | AST.VDirective): node is AST.VDirective 
 
 function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
   return node.directive && node.key.name === 'on';
+}
+
+function isVFor(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  return node.directive && node.key.name === 'for';
 }
 
 function flatMap<T extends ts.Node, R>(list: ReadonlyArray<T>, fn: (value: T) => R[]): R[] {

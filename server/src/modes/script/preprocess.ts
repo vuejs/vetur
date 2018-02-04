@@ -4,7 +4,7 @@ import { parse } from 'vue-eslint-parser';
 
 import { getDocumentRegions } from '../embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
-import { transformTemplate, componentHelperName } from './transformTemplate';
+import { transformTemplate, componentHelperName, iterationHelperName } from './transformTemplate';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -156,6 +156,10 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
         setZeroPos(ts.createImportSpecifier(
           undefined,
           setZeroPos(ts.createIdentifier(componentHelperName))
+        )),
+        setZeroPos(ts.createImportSpecifier(
+          undefined,
+          setZeroPos(ts.createIdentifier(iterationHelperName))
         ))
       ]))
     )),
