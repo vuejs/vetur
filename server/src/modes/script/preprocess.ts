@@ -4,7 +4,7 @@ import { parse } from 'vue-eslint-parser';
 
 import { getDocumentRegions } from '../embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
-import { transformTemplate, componentHelperName, iterationHelperName } from './transformTemplate';
+import { transformTemplate, componentHelperName, iterationHelperName, renderHelperName } from './transformTemplate';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -155,6 +155,10 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
       setZeroPos(ts.createNamedImports([
         setZeroPos(ts.createImportSpecifier(
           undefined,
+          setZeroPos(ts.createIdentifier(renderHelperName))
+        )),
+        setZeroPos(ts.createImportSpecifier(
+          undefined,
           setZeroPos(ts.createIdentifier(componentHelperName))
         )),
         setZeroPos(ts.createImportSpecifier(
@@ -183,18 +187,26 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
   //    with `this` type of component.
   const setRenderPos = getWrapperRangeSetter(sourceFile);
   const statements = renderBlock.map(exp => ts.createStatement(exp));
-  const renderElement = setRenderPos(ts.createFunctionDeclaration(undefined, undefined, undefined,
-    '__render',
-    undefined,
-    [setZeroPos(ts.createParameter(undefined, undefined, undefined,
-      'this',
+  const renderElement = setRenderPos(ts.createStatement(
+    setRenderPos(ts.createCall(
+      setRenderPos(ts.createIdentifier(renderHelperName)),
       undefined,
-      setZeroPos(setZeroPos(ts.createTypeQueryNode(
-        setMinPos(ts.createIdentifier('__component'))
-      )))
-    ))],
-    undefined,
-    setRenderPos(ts.createBlock(statements))
+      [
+        // Reference to the component
+        setRenderPos(ts.createIdentifier('__component')),
+
+        // A function simulating the render function
+        setRenderPos(ts.createFunctionExpression(
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          [],
+          undefined,
+          setRenderPos(ts.createBlock(statements))
+        ))
+      ]
+    ))
   ));
 
   // 4. replace the original statements with wrapped code.
