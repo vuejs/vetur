@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
 
+export const renderHelperName = '__veturRenderHelper';
 export const componentHelperName = '__veturComponentHelper';
 export const iterationHelperName = '__veturIterationHelper';
 
@@ -47,7 +48,7 @@ function transformElement(node: AST.VElement, code: string, scope: string[]): ts
   ), node);
 
   const vFor = node.startTag.attributes.find(isVFor);
-  if (!vFor || !vFor.value) {
+  if (!vFor || !vFor.value || !vFor.value.expression) {
     return element;
   } else {
     // Convert v-for directive to the iteration helper
@@ -205,7 +206,8 @@ function parseParams(
   // Wrap parameters with an arrow function to extract them as ts parameter declarations.
   const arrowFnStr = '(' + paramsStr + ') => {}';
 
-  const exp = parseExpressionImpl(arrowFnStr, start, scope) as ts.ArrowFunction;
+  // Decrement the offset since the expression now has the open parenthesis.
+  const exp = parseExpressionImpl(arrowFnStr, start - 1, scope) as ts.ArrowFunction;
   return exp.parameters;
 }
 
