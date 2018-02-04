@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as ts from 'typescript';
-import { injectThis, globalScope } from '../transformTemplate';
+import { injectThis } from '../transformTemplate';
 
 suite('transformTemplate', () => {
   suite('`this` injection', () => {
@@ -14,7 +14,7 @@ suite('transformTemplate', () => {
       assert.equal(st.kind, ts.SyntaxKind.ExpressionStatement, 'Input ts code must be an expression');
 
       const exp = st.expression;
-      const output = injectThis(exp, globalScope.concat(scope));
+      const output = injectThis(exp, scope);
 
       const printer = ts.createPrinter();
       const outputStr = printer.printNode(ts.EmitHint.Expression, output, source);
@@ -33,13 +33,6 @@ suite('transformTemplate', () => {
         'foo',
         'foo',
         ['foo']
-      );
-    });
-
-    test('Identifier: global variables', () => {
-      check(
-        'String(undefined)',
-        'String(undefined)'
       );
     });
 
