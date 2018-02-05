@@ -144,8 +144,8 @@ function modifyVueScript(sourceFile: ts.SourceFile): void {
  * to validate its types
  */
 function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression[]): void {
-  // 1. add import statement for corresponding Vue file
-  //    so that we acquire the component type from it.
+  // add import statement for corresponding Vue file
+  // so that we acquire the component type from it.
   const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
   const vueFilePath = './' + path.basename(sourceFile.fileName.slice(0, -9));
   const componentImport = setZeroPos(ts.createImportDeclaration(undefined,
@@ -176,21 +176,8 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
     setZeroPos(ts.createLiteral('vue-editor-bridge'))
   ));
 
-  // 2. add a variable declaration of the component instance
-  const setMinPos = getWrapperRangeSetter({ pos: 0, end: 1 });
-  const component = setZeroPos(ts.createVariableStatement(undefined, [
-    setZeroPos(ts.createVariableDeclaration('__component', undefined,
-      setZeroPos(ts.createNew(
-        // we need set 1 or more length for identifier node to acquire a type from it.
-        setMinPos(ts.createIdentifier('__Component')),
-        undefined,
-        undefined
-      ))
-    ))
-  ]));
-
-  // 3. wrap render code with a function decralation
-  //    with `this` type of component.
+  // wrap render code with a function decralation
+  // with `this` type of component.
   const setRenderPos = getWrapperRangeSetter(sourceFile);
   const statements = renderBlock.map(exp => ts.createStatement(exp));
   const renderElement = setRenderPos(ts.createStatement(
@@ -199,7 +186,7 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
       undefined,
       [
         // Reference to the component
-        setRenderPos(ts.createIdentifier('__component')),
+        setRenderPos(ts.createIdentifier('__Component')),
 
         // A function simulating the render function
         setRenderPos(ts.createFunctionExpression(
@@ -215,11 +202,10 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
     ))
   ));
 
-  // 4. replace the original statements with wrapped code.
+  // replace the original statements with wrapped code.
   sourceFile.statements = setRenderPos(ts.createNodeArray([
     componentImport,
     helperImport,
-    component,
     renderElement
   ]));
 }

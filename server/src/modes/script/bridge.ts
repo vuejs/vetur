@@ -9,7 +9,7 @@ export const fileName = 'vue-temp/vue-editor-bridge.ts';
 
 const renderHelpers = `
 export declare const ${renderHelperName}: {
-  <T>(component: T, fn: (this: T) => any): any;
+  <T>(Component: (new (...args: any[]) => T), fn: (this: T) => any): any;
 };
 export declare const ${componentHelperName}: {
   (tag: string, data: any, children: any[]): any;
