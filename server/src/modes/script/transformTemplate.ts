@@ -212,7 +212,9 @@ function parseParams(
 }
 
 function parseExpressionImpl(exp: string, offset: number, scope: string[]): ts.Expression {
-  const source = ts.createSourceFile('/tmp/parsed.ts', exp, ts.ScriptTarget.Latest);
+  // Add parenthesis to deal with object literal expression
+  const wrappedExp = '(' + exp + ')';
+  const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest);
   const statement = source.statements[0];
 
   if (!statement || !ts.isExpressionStatement(statement)) {
@@ -221,14 +223,16 @@ function parseExpressionImpl(exp: string, offset: number, scope: string[]): ts.E
   }
 
   ts.forEachChild(statement, function next(node) {
+    // Decrement offset for added parenthesis
     ts.setTextRange(node, {
-      pos: offset + node.pos,
-      end: offset + node.end
+      pos: offset - 1 + node.pos,
+      end: offset - 1 + node.end
     });
     ts.forEachChild(node, next);
   });
 
-  return injectThis(statement.expression, scope);
+  const parenthesis = statement.expression as ts.ParenthesizedExpression;
+  return injectThis(parenthesis.expression, scope);
 }
 
 export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {

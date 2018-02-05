@@ -29,4 +29,12 @@ suite('template integrated test', () => {
     const diagnostics = scriptMode.doTemplateValidation(doc);
     assert.equal(diagnostics.length, 0, 'diagnostic count');
   });
+
+  test('validate: comp5.vue', () => {
+    const filename = path.join(workspace + '/component/comp5.vue');
+    const doc = createTextDocument(filename);
+    const diagnostics = scriptMode.doTemplateValidation(doc);
+    assert.equal(diagnostics.length, 1, 'diagnostic count');
+    assert(/Property 'bar' does not exist/.test(diagnostics[0].message), 'diagnostic message');
+  });
 });
