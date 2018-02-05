@@ -1,7 +1,10 @@
 <template>
   <div>
     <p v-for="(item, i) in list" :key="i">{{ item + i }}</p>
-    <p v-for="(value, key, i) in obj" :key="key">{{ value + key + i }}</p>
+    <p v-for="(value, key, i) in obj" :key="key">
+      <span>{{ value + key + i }}</span>
+      <span>{{ notExists }}</span>
+    </p>
   </div>
 </template>
 

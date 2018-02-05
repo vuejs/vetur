@@ -11,8 +11,8 @@ const documentRegions = getLanguageModelCache(10, 60, document => getDocumentReg
 const scriptMode = getJavascriptMode(documentRegions, workspace);
 
 suite('template integrated test', () => {
-  test('validate: comp3.vue', () => {
-    const filename = path.join(workspace + '/component/comp3.vue');
+  test('validate: expression.vue', () => {
+    const filename = path.join(workspace + '/component/template-checking/expression.vue');
     const doc = createTextDocument(filename);
     const diagnostics = scriptMode.doTemplateValidation(doc);
     assert.equal(diagnostics.length, 1, 'diagnostic count');
@@ -23,15 +23,16 @@ suite('template integrated test', () => {
     assert(/Property 'messaage' does not exist/.test(diagnostics[0].message), 'diagnostic message');
   });
 
-  test('validate: comp4.vue', () => {
-    const filename = path.join(workspace + '/component/comp4.vue');
+  test('validate: v-for.vue', () => {
+    const filename = path.join(workspace + '/component/template-checking/v-for.vue');
     const doc = createTextDocument(filename);
     const diagnostics = scriptMode.doTemplateValidation(doc);
-    assert.equal(diagnostics.length, 0, 'diagnostic count');
+    assert.equal(diagnostics.length, 1, 'diagnostic count');
+    assert(/Property 'notExists' does not exist/.test(diagnostics[0].message), 'diagnostic message');
   });
 
-  test('validate: comp5.vue', () => {
-    const filename = path.join(workspace + '/component/comp5.vue');
+  test('validate: object-literal.vue', () => {
+    const filename = path.join(workspace + '/component/template-checking/object-literal.vue');
     const doc = createTextDocument(filename);
     const diagnostics = scriptMode.doTemplateValidation(doc);
     assert.equal(diagnostics.length, 1, 'diagnostic count');
