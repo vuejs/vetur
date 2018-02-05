@@ -14,6 +14,8 @@ const globalScope = (
   'require'
 ).split(',');
 
+const vOnScope = ['$event', 'arguments'];
+
 /**
  * Transform template AST to TypeScript AST.
  * Note: The returned TS AST is not compatible with
@@ -113,16 +115,14 @@ function transformAttributes(
     let statements: ts.Statement[] = [];
     if (attr.value && attr.value.expression) {
       const exp = attr.value.expression as AST.VOnExpression;
-      statements = exp.body.map(st => transformStatement(st, code, scope));
+      const newScope = scope.concat(vOnScope);
+      statements = exp.body.map(st => transformStatement(st, code, newScope));
     }
 
     if (statements.length === 1) {
       const first = statements[0];
 
-      if (
-        ts.isExpressionStatement(first) &&
-        ts.isIdentifier(first.expression)
-      ) {
+      if (isPathToIdentifier(first)) {
         statements[0] = ts.setTextRange(ts.createStatement(
           ts.setTextRange(ts.createCall(
             first.expression,
@@ -133,15 +133,18 @@ function transformAttributes(
       }
     }
 
-    const exp = ts.createFunctionExpression(undefined, undefined, undefined, undefined,
-      [ts.createParameter(undefined, undefined, undefined,
-        '$event',
-        undefined,
-        ts.createTypeReferenceNode('Event', undefined)
-      )],
+    const exp = setTextRange(ts.createArrowFunction(undefined, undefined,
+      [
+        setTextRange(ts.createParameter(undefined, undefined, undefined,
+          '$event',
+          undefined,
+          setTextRange(ts.createTypeReferenceNode('Event', undefined), attr)
+        ), attr)
+      ],
       undefined,
-      ts.createBlock(statements)
-    );
+      setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), attr),
+      setTextRange(ts.createBlock(statements), attr)
+    ), attr);
 
     if (name) {
       return setTextRange(ts.createPropertyAssignment(
@@ -355,6 +358,15 @@ function collectScope(param: ts.ParameterDeclaration | ts.BindingElement): strin
     return flatMap(filtered, collectScope);
   } else {
     return [];
+  }
+}
+
+function isPathToIdentifier(statement: ts.Statement): statement is ts.ExpressionStatement {
+  if (ts.isExpressionStatement(statement)) {
+    const exp = statement.expression;
+    return ts.isIdentifier(exp) || ts.isPropertyAccessExpression(exp);
+  } else {
+    return false;
   }
 }
 
