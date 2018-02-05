@@ -103,15 +103,15 @@ export function getJavascriptMode(
         doc.getText()
       );
 
-      const { service } = updateCurrentTextDocument(templateDoc);
-      if (!languageServiceIncludesFile(service, templateDoc.uri)) {
+      const { templateService } = updateCurrentTextDocument(templateDoc);
+      if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
         return [];
       }
 
       const fileFsPath = getFileFsPath(templateDoc.uri);
       // We don't need syntactic diagnostics because
       // compiled template is always valid JavaScript syntax.
-      const diagnostics = service.getSemanticDiagnostics(fileFsPath);
+      const diagnostics = templateService.getSemanticDiagnostics(fileFsPath);
 
       return diagnostics.map(diag => {
         // syntactic/semantic diagnostic always has start and length
