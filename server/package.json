@@ -40,8 +40,6 @@
     "vscode-uri": "^1.0.1",
     "vue-eslint-parser": "^2.0.1-beta.2",
     "vue-onsenui-helper-json": "^1.0.2",
-    "vue-template-compiler": "^2.5.3",
-    "vue-template-es2015-compiler": "^1.6.0",
     "vuetify-helper-json": "^1.0.0"
   },
   "devDependencies": {
