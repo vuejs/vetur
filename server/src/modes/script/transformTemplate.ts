@@ -5,8 +5,10 @@ export const renderHelperName = '__veturRenderHelper';
 export const componentHelperName = '__veturComponentHelper';
 export const iterationHelperName = '__veturIterationHelper';
 
-// Allowed global variables in templates.
-// From: https://github.com/vuejs/vue/blob/dev/src/core/instance/proxy.js
+/**
+ * Allowed global variables in templates.
+ * Borrowed from: https://github.com/vuejs/vue/blob/dev/src/core/instance/proxy.js
+ */
 const globalScope = (
   'Infinity,undefined,NaN,isFinite,isNaN,' +
   'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
@@ -21,6 +23,9 @@ const vOnScope = ['$event', 'arguments'];
  * Note: The returned TS AST is not compatible with
  * the regular Vue render function and does not work on runtime
  * because we just need type information for the template.
+ * Each TypeScript node should be set a range because
+ * the compiler may clash or do incorrect type inference
+ * when it has an invalid range.
  */
 export function transformTemplate(program: AST.ESLintProgram, code: string): ts.Expression[] {
   const template = program.templateBody;
@@ -32,6 +37,12 @@ export function transformTemplate(program: AST.ESLintProgram, code: string): ts.
   return template.children.map(c => transformChild(c, code, globalScope));
 }
 
+/**
+ * Transform an HTML to TypeScript AST.
+ * It will be a call expression like Vue's $createElement.
+ * e.g.
+ * __veturComponentHelper('div', { props: { title: this.foo } }, [ ...children... ]);
+ */
 function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
   const newScope = scope.concat(node.variables.map(v => v.id.name));
   const element = setTextRange(ts.createCall(
@@ -82,86 +93,116 @@ function transformAttributes(
   code: string,
   scope: string[]
 ): ts.Expression {
-  const literalProps = attrs.filter(isVAttribute).map(attr => {
-    return setTextRange(ts.createPropertyAssignment(
-      setTextRange(ts.createIdentifier(attr.key.name), attr.key),
-      attr.value
-        ? setTextRange(ts.createLiteral(attr.value.value), attr.value)
-        : ts.createLiteral('true')
-    ), attr);
-  });
+  // Normal attributes
+  // e.g. class="title"
+  const literalProps = attrs
+    .filter(isVAttribute)
+    .map(transformNativeAttribute);
 
+  // v-bind directives
+  // e.g. :class="{ selected: foo }"
+  const boundProps = attrs
+    .filter(isVBind)
+    .map(vBind => transformVBind(vBind, code, scope));
 
-  const boundProps = attrs.filter(isVBind).map(attr => {
-    const name = attr.key.argument;
-    const exp = (attr.value && attr.value.expression)
-      ? parseExpression(attr.value.expression as AST.ESLintExpression, code, scope)
-      : ts.createLiteral('true');
+  // v-on directives
+  // e.g. @click="onClick"
+  const listeners = attrs
+    .filter(isVOn)
+    .map(vOn => transformVOn(vOn, code, scope));
 
-    if (name) {
-      return setTextRange(ts.createPropertyAssignment(
-        setTextRange(ts.createIdentifier(name), attr.key),
-        exp
-      ), attr);
-    } else {
-      return setTextRange(ts.createSpreadAssignment(exp), attr);
-    }
-  });
-
-
-  const listeners = attrs.filter(isVOn).map(attr => {
-    const name = attr.key.argument;
-
-    let statements: ts.Statement[] = [];
-    if (attr.value && attr.value.expression) {
-      const exp = attr.value.expression as AST.VOnExpression;
-      const newScope = scope.concat(vOnScope);
-      statements = exp.body.map(st => transformStatement(st, code, newScope));
-    }
-
-    if (statements.length === 1) {
-      const first = statements[0];
-
-      if (isPathToIdentifier(first)) {
-        statements[0] = ts.setTextRange(ts.createStatement(
-          ts.setTextRange(ts.createCall(
-            first.expression,
-            undefined,
-            [ts.setTextRange(ts.createIdentifier('$event'), first)]
-          ), first)
-        ), first);
-      }
-    }
-
-    const exp = setTextRange(ts.createArrowFunction(undefined, undefined,
-      [
-        setTextRange(ts.createParameter(undefined, undefined, undefined,
-          '$event',
-          undefined,
-          setTextRange(ts.createTypeReferenceNode('Event', undefined), attr)
-        ), attr)
-      ],
-      undefined,
-      setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), attr),
-      setTextRange(ts.createBlock(statements), attr)
-    ), attr);
-
-    if (name) {
-      return setTextRange(ts.createPropertyAssignment(
-        setTextRange(ts.createIdentifier(name), attr.key),
-        exp
-      ), attr);
-    } else {
-      return setTextRange(ts.createSpreadAssignment(exp), attr);
-    }
-  });
-
+  // Fold all AST into VNodeData-like object
+  // example output:
+  // {
+  //   props: { class: 'title' },
+  //   on: { click: ($event) => onClick($event) }
+  // }
   return ts.createObjectLiteral([
     ts.createPropertyAssignment('props', ts.createObjectLiteral(
       [...literalProps, ...boundProps]
     )),
     ts.createPropertyAssignment('on', ts.createObjectLiteral(listeners))
   ]);
+}
+
+function transformNativeAttribute(attr: AST.VAttribute): ts.ObjectLiteralElementLike {
+  return setTextRange(ts.createPropertyAssignment(
+    setTextRange(ts.createIdentifier(attr.key.name), attr.key),
+    attr.value
+      ? setTextRange(ts.createLiteral(attr.value.value), attr.value)
+      : ts.createLiteral('true')
+  ), attr);
+}
+
+function transformVBind(vBind: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
+  const name = vBind.key.argument;
+  const exp = (vBind.value && vBind.value.expression)
+    ? parseExpression(vBind.value.expression as AST.ESLintExpression, code, scope)
+    : ts.createLiteral('true');
+
+  if (name) {
+    // Attribute name is specified
+    // e.g. :value="foo"
+    return setTextRange(ts.createPropertyAssignment(
+      setTextRange(ts.createIdentifier(name), vBind.key),
+      exp
+    ), vBind);
+  } else {
+    // Attribute name is omitted
+    // e.g. v-bind="{ value: foo }"
+    return setTextRange(ts.createSpreadAssignment(exp), vBind);
+  }
+}
+
+function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
+  const name = vOn.key.argument;
+
+  let statements: ts.Statement[] = [];
+  if (vOn.value && vOn.value.expression) {
+    const exp = vOn.value.expression as AST.VOnExpression;
+    const newScope = scope.concat(vOnScope);
+    statements = exp.body.map(st => transformStatement(st, code, newScope));
+  }
+
+  if (statements.length === 1) {
+    const first = statements[0];
+
+    if (isPathToIdentifier(first)) {
+      statements[0] = ts.setTextRange(ts.createStatement(
+        ts.setTextRange(ts.createCall(
+          first.expression,
+          undefined,
+          [ts.setTextRange(ts.createIdentifier('$event'), first)]
+        ), first)
+      ), first);
+    }
+  }
+
+  const exp = setTextRange(ts.createArrowFunction(undefined, undefined,
+    [
+      setTextRange(ts.createParameter(undefined, undefined, undefined,
+        '$event',
+        undefined,
+        setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
+      ), vOn)
+    ],
+    undefined,
+    setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), vOn),
+    setTextRange(ts.createBlock(statements), vOn)
+  ), vOn);
+
+  if (name) {
+    // Event name is specified
+    // e.g. @click="onClick"
+    return setTextRange(ts.createPropertyAssignment(
+      setTextRange(ts.createIdentifier(name), vOn.key),
+      exp
+    ), vOn);
+  } else {
+    // Event name is omitted
+    // e.g. v-on="{ click: onClick }"
+    return setTextRange(ts.createSpreadAssignment(exp), vOn);
+  }
 }
 
 function transformChild(
@@ -347,6 +388,14 @@ function injectThisForObjectLiteralElement(
   return ts.setTextRange(res, el);
 }
 
+/**
+ * Collect newly added variable names from function parameters.
+ * e.g.
+ * If the function parameters look like following:
+ *   (foo, { bar, baz: qux }) => { ... }
+ * The output should be:
+ *   ['foo', 'bar', 'qux']
+ */
 function collectScope(param: ts.ParameterDeclaration | ts.BindingElement): string[] {
   const binding = param.name;
   if (ts.isIdentifier(binding)) {
@@ -361,6 +410,14 @@ function collectScope(param: ts.ParameterDeclaration | ts.BindingElement): strin
   }
 }
 
+/**
+ * Return `true` if the statement is a simple path to the identifier.
+ * Examples of `simple path`:
+ *   foo
+ *   this.foo.bar
+ *   list[1]
+ *   record['key']
+ */
 function isPathToIdentifier(statement: ts.Statement): statement is ts.ExpressionStatement {
   if (ts.isExpressionStatement(statement)) {
     const exp = statement.expression;
