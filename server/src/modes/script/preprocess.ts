@@ -21,16 +21,20 @@ export function parseVueScript(text: string): string {
   return script.getText() || 'export default {};';
 }
 
-export function parseVueTemplate(text: string): string {
+function parseVueTemplate(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getDocumentRegions(doc);
   const template = regions.getEmbeddedDocumentByType('template');
 
-  // TODO: support other template format
   if (template.languageId !== 'vue-html') {
     return '';
   }
-  return template.getText();
+  const rawText = template.getText();
+  // skip checking on empty template
+  if (rawText.replace(/\s/g, '') === '') {
+    return '';
+  }
+  return rawText.replace(/^\s*\n/, '<template>\n').replace(/\s*\n$/, '\n</template>');
 }
 
 function isTSLike(scriptKind: ts.ScriptKind | undefined) {
@@ -57,7 +61,9 @@ export function createUpdater() {
         modifyVueScript(sourceFile);
         hackSourceFile.__modified = true;
       } else if (isVueTemplate(fileName)) {
-        const code = scriptSnapshot.getText(0, scriptSnapshot.getLength());
+        // TODO: share the logic of transforming the code into AST
+        // with the template mode
+        const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
         const program = parse(code, { sourceType: 'module' });
         const tsCode = transformTemplate(program, code);
         injectVueTemplate(sourceFile, tsCode);
