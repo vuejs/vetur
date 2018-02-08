@@ -1,9 +1,9 @@
 import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
 
-export const renderHelperName = '__veturRenderHelper';
-export const componentHelperName = '__veturComponentHelper';
-export const iterationHelperName = '__veturIterationHelper';
+export const renderHelperName = '__vlsRenderHelper';
+export const componentHelperName = '__vlsComponentHelper';
+export const iterationHelperName = '__vlsIterationHelper';
 
 /**
  * Allowed global variables in templates.
@@ -41,7 +41,7 @@ export function transformTemplate(program: AST.ESLintProgram, code: string): ts.
  * Transform an HTML to TypeScript AST.
  * It will be a call expression like Vue's $createElement.
  * e.g.
- * __veturComponentHelper('div', { props: { title: this.foo } }, [ ...children... ]);
+ * __vlsComponentHelper('div', { props: { title: this.foo } }, [ ...children... ]);
  */
 function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
   const newScope = scope.concat(node.variables.map(v => v.id.name));
