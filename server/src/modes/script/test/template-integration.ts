@@ -69,24 +69,17 @@ suite('template integrated test', () => {
   test('validate: v-on.vue', () => {
     check('v-on.vue', [
       {
-        includes: 'Argument of type \'Event\' is not assignable to parameter of type \'string\'',
-        range: {
-          start: { line: 9, character: 20 },
-          end: { line: 9, character: 30 }
-        }
-      },
-      {
         includes: 'Argument of type \'123\' is not assignable to parameter of type \'string\'',
         range: {
-          start: { line: 10, character: 31 },
-          end: { line: 10, character: 34 }
+          start: { line: 9, character: 31 },
+          end: { line: 9, character: 34 }
         }
       },
       {
         includes: 'Type \'"test"\' is not assignable to type \'number\'',
         range: {
-          start: { line: 11, character: 20 },
-          end: { line: 11, character: 24 }
+          start: { line: 10, character: 20 },
+          end: { line: 10, character: 24 }
         }
       }
     ]);

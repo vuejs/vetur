@@ -157,39 +157,40 @@ function transformVBind(vBind: AST.VDirective, code: string, scope: string[]): t
 function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
   const name = vOn.key.argument;
 
-  let statements: ts.Statement[] = [];
+  let exp: ts.Expression;
   if (vOn.value && vOn.value.expression) {
-    const exp = vOn.value.expression as AST.VOnExpression;
+    const vOnExp = vOn.value.expression as AST.VOnExpression;
     const newScope = scope.concat(vOnScope);
-    statements = exp.body.map(st => transformStatement(st, code, newScope));
-  }
+    const statements = vOnExp.body.map(st => transformStatement(st, code, newScope));
 
-  if (statements.length === 1) {
     const first = statements[0];
-
-    if (isPathToIdentifier(first)) {
-      statements[0] = ts.setTextRange(ts.createStatement(
-        ts.setTextRange(ts.createCall(
-          first.expression,
-          undefined,
-          [ts.setTextRange(ts.createIdentifier('$event'), first)]
-        ), first)
-      ), first);
-    }
-  }
-
-  const exp = setTextRange(ts.createArrowFunction(undefined, undefined,
-    [
-      setTextRange(ts.createParameter(undefined, undefined, undefined,
-        '$event',
+    if (statements.length === 1 && isPathToIdentifier(first)) {
+      // The v-on expression is simple path to a method
+      // e.g. @click="onClick"
+      exp = first.expression;
+    } else {
+      // The v-on has some complex expressions or statements.
+      // Then wrap them with a function so that they can use `$event` and `arguments`.
+      // e.g.
+      //   @click="onClick($event, 'test')"
+      //   @click="value = "foo""
+      exp = setTextRange(ts.createArrowFunction(undefined, undefined,
+        [
+          setTextRange(ts.createParameter(undefined, undefined, undefined,
+            '$event',
+            undefined,
+            setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
+          ), vOn)
+        ],
         undefined,
-        setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
-      ), vOn)
-    ],
-    undefined,
-    setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), vOn),
-    setTextRange(ts.createBlock(statements), vOn)
-  ), vOn);
+        setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), vOn),
+        setTextRange(ts.createBlock(statements), vOn)
+      ), vOn);
+    }
+  } else {
+    // There are no statement in v-on value
+    exp = ts.createLiteral(true);
+  }
 
   if (name) {
     // Event name is specified

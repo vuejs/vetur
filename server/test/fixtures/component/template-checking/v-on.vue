@@ -7,7 +7,6 @@
     <button @click="test = 123">Expression Test</button>
 
     <!-- Providing errors -->
-    <button @click="passString">Invalid Argument Type (reference)</button>
     <button @click="passString(123)">Invalid Argument Type</button>
     <button @click="test = 'test'">Invalid Update Type</button>
   </div>
