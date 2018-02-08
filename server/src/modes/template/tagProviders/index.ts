@@ -37,7 +37,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     return settings;
   }
   try {
-    const packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
+    const packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json') || '';
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
     if (packageJson.dependencies['vue-router']) {
       settings['router'] = true;
