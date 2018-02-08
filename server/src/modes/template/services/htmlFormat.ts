@@ -16,9 +16,10 @@ export function htmlFormat(
   defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
   defaultHtmlOptions.indent_size = formattingOptions.tabSize;
 
+  const jsBeautifyOption = _.get(config, 'vetur.format.defaultFormatterOptions.js-beautify-html');
   const htmlFormattingOptions = _.assign(
     defaultHtmlOptions,
-    config.vetur.format.defaultFormatterOptions['js-beautify-html'],
+    jsBeautifyOption,
     { end_with_newline: false }
   );
 

@@ -120,12 +120,12 @@ function getStyleMode(
       return languageService.getColorPresentations(embedded, stylesheets.get(embedded), color, range);
     },
     format(document, currRange, formattingOptions) {
-      if (config.vetur.format.defaultFormatter[languageId] === 'none') {
+      if (_.get(config, 'vetur.format.defaultFormatter', {})[languageId] === 'none') {
         return [];
       }
 
       const { value, range } = getValueAndRange(document, currRange);
-      const needIndent = config.vetur.format.styleInitialIndent;
+      const needIndent = _.get(config, 'vetur.format.styleInitialIndent');
       const parserMap: { [k: string]: ParserOption } = {
         css: 'css',
         postcss: 'css',
@@ -138,7 +138,7 @@ function getStyleMode(
         range,
         needIndent,
         formattingOptions,
-        config.prettier,
+        _.get(config, 'prettier', {}),
         parserMap[languageId]
       );
     },

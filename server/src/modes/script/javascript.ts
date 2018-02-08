@@ -97,13 +97,9 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
-      const completions = service.getCompletionsAtPosition(
-        fileFsPath,
-        offset,
-        {
-          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
-        }
-      );
+      const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        includeExternalModuleExports: _.get(config, 'vetur.completion.autoImport')
+      });
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -147,7 +143,7 @@ export function getJavascriptMode(
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
-        if (details.codeActions && config.vetur.completion.autoImport) {
+        if (details.codeActions && _.get(config, 'vetur.completion.autoImport')) {
           const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
         }
@@ -230,9 +226,7 @@ export function getJavascriptMode(
         return occurrences.map(entry => {
           return {
             range: convertRange(scriptDoc, entry.textSpan),
-            kind: entry.isWriteAccess
-              ? DocumentHighlightKind.Write
-              : DocumentHighlightKind.Text
+            kind: entry.isWriteAccess ? DocumentHighlightKind.Write : DocumentHighlightKind.Text
           };
         });
       }
@@ -331,27 +325,30 @@ export function getJavascriptMode(
 
       const defaultFormatter =
         scriptDoc.languageId === 'javascript'
-          ? config.vetur.format.defaultFormatter.js
-          : config.vetur.format.defaultFormatter.ts;
+          ? _.get(config, 'vetur.format.defaultFormatter.js')
+          : _.get(config, 'vetur.format.defaultFormatter.ts');
 
       if (defaultFormatter === 'none') {
         return [];
       }
 
-      const needIndent = config.vetur.format.scriptInitialIndent;
+      const needIndent = _.get(config, 'vetur.format.scriptInitialIndent');
       const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
       if (defaultFormatter === 'prettier') {
         const code = scriptDoc.getText();
         const filePath = getFileFsPath(scriptDoc.uri);
-        if (config.prettier.eslintIntegration) {
-          return prettierEslintify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
+        const prettierConfig = _.get(config, 'prettier');
+        if (_.get(config, 'prettier.eslintIntegration')) {
+          return prettierEslintify(code, filePath, range, needIndent, formatParams, prettierConfig, parser);
         } else {
-          return prettierify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
+          return prettierify(code, filePath, range, needIndent, formatParams, prettierConfig, parser);
         }
       } else {
         const initialIndentLevel = needIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
-          scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
+          scriptDoc.languageId === 'javascript'
+            ? _.get(config, 'javascript.format')
+            : _.get(config, 'typescript.format');
         const convertedFormatSettings = convertOptions(formatSettings, formatParams, initialIndentLevel);
 
         const fileFsPath = getFileFsPath(doc.uri);
@@ -477,29 +474,31 @@ function convertOptions(
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
-  regionStart: LanguageModelCache<LanguageRange | undefined>) {
+  regionStart: LanguageModelCache<LanguageRange | undefined>
+) {
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
-      textEdits.push(...change.textChanges.map(tc => {
-        // currently, only import codeAction is available
-        // change start of doc to start of script region
-        if (tc.span.start === 0 && tc.span.length === 0) {
-          const region = regionStart.get(doc);
-          if (region) {
-            const line = region.start.line;
-            return {
-              range: Range.create(line + 1, 0, line + 1, 0),
-              newText: tc.newText
-            };
+      textEdits.push(
+        ...change.textChanges.map(tc => {
+          // currently, only import codeAction is available
+          // change start of doc to start of script region
+          if (tc.span.start === 0 && tc.span.length === 0) {
+            const region = regionStart.get(doc);
+            if (region) {
+              const line = region.start.line;
+              return {
+                range: Range.create(line + 1, 0, line + 1, 0),
+                newText: tc.newText
+              };
+            }
           }
-        }
-        return {
-          range: convertRange(doc, tc.span),
-          newText: tc.newText
-        };
-      }
-      ));
+          return {
+            range: convertRange(doc, tc.span),
+            newText: tc.newText
+          };
+        })
+      );
     }
   }
   return textEdits;
