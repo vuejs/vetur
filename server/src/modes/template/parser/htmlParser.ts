@@ -3,7 +3,7 @@ import { isEmptyElement } from '../tagProviders/htmlTags';
 import { TextDocument } from 'vscode-languageserver-types';
 
 export class Node {
-  public tag!: string;
+  public tag?: string;
   public closed!: boolean;
   public endTagStart!: number;
   public attributes!: { [name: string]: string };
