@@ -4,11 +4,15 @@ import { TextDocument } from 'vscode-languageserver-types';
 
 export class Node {
   public tag?: string;
-  public closed!: boolean;
-  public endTagStart!: number;
-  public attributes!: { [name: string]: string };
+  public closed?: boolean;
+  public endTagStart?: number;
+  public attributes?: { [name: string]: string };
   public get attributeNames(): string[] {
-    return Object.keys(this.attributes);
+    if(this.attributes) {
+      return Object.keys(this.attributes);
+    }
+
+    return [];
   }
   constructor(public start: number, public end: number, public children: Node[], public parent: Node) {}
   public isSameTag(tagInLowerCase: string) {
@@ -70,7 +74,7 @@ export function parse(text: string): HTMLDocument {
   let endTagStart = -1;
   let pendingAttribute = '';
   let token = scanner.scan();
-  let attributes: { [k: string]: string } = {};
+  let attributes: { [k: string]: string } | undefined = {};
   while (token !== TokenType.EOS) {
     switch (token) {
       case TokenType.StartTagOpen:
