@@ -32,7 +32,7 @@
     "prettier-eslint": "^8.3.1",
     "stylus": "^0.54.5",
     "stylus-supremacy": "~2.7.3",
-    "typescript": "^2.6.2",
+    "typescript": "^2.7.1",
     "vscode-css-languageservice": "^3.0.3",
     "vscode-emmet-helper": "^1.1.19",
     "vscode-languageserver": "^3.5.0",

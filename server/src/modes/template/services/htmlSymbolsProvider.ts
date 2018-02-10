@@ -39,6 +39,10 @@ function provideFileSymbolsInternal(
 function nodeToName(node: Node): string {
   let name = node.tag;
 
+  if(!name) {
+    return '';
+  }
+
   if (node.attributes) {
     const id = node.attributes['id'];
     const classes = node.attributes['class'];

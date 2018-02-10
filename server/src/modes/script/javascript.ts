@@ -101,7 +101,8 @@ export function getJavascriptMode(
         fileFsPath,
         offset,
         {
-          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
+          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
+          includeInsertTextCompletions: false
         }
       );
       if (!completions) {
@@ -293,7 +294,7 @@ export function getJavascriptMode(
       const definitionResults: Definition = [];
       const program = service.getProgram();
       definitions.forEach(d => {
-        const sourceFile = program.getSourceFile(d.fileName);
+        const sourceFile = program.getSourceFile(d.fileName)!;
         const definitionTargetDoc = TextDocument.create(d.fileName, 'vue', 0, sourceFile.getText());
         definitionResults.push({
           uri: Uri.file(d.fileName).toString(),
