@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.11.7 | 2018-01-28
+
+- Better default scaffold template for TypeScript. #669.
+- Partial support for quoteless attribute value in HTML5. #648.
+- Fix a grammar error for custom blocks. #664.
+- Mark the `/` as `tag.end.html` in self-closing component. #650.
+- Fix a Stylus formatting issue where it adds extra parentheses. #638.
+
 ### 0.11.6 | 2018-01-16
 
 - Basic Vuetify completion. #647.

@@ -27,7 +27,7 @@ export function testDSL(setup: CompletionTestSetup): (text: TemplateStringsArray
 }
 
 export class CompletionAsserter {
-  lastMatch: CompletionItem;
+  lastMatch!: CompletionItem;
   constructor(public items: CompletionItem[], public doc: TextDocument) {}
   count(expect: number) {
     const actual = this.items.length;
