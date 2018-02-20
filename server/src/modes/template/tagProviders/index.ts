@@ -2,7 +2,13 @@ import { IHTMLTagProvider } from './common';
 import { getHTML5TagProvider } from './htmlTags';
 import { getVueTagProvider } from './vueTags';
 import { getRouterTagProvider } from './routerTags';
-import { elementTagProvider, onsenTagProvider, bootstrapTagProvider, vuetifyTagProvider } from './externalTagProviders';
+import {
+  elementTagProvider,
+  onsenTagProvider,
+  bootstrapTagProvider,
+  vuetifyTagProvider,
+  quasarTagProvider
+} from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
 
@@ -16,7 +22,8 @@ export let allTagProviders: IHTMLTagProvider[] = [
   elementTagProvider,
   onsenTagProvider,
   bootstrapTagProvider,
-  vuetifyTagProvider
+  vuetifyTagProvider,
+  quasarTagProvider
 ];
 
 export interface CompletionConfiguration {
@@ -31,7 +38,8 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     element: false,
     onsen: false,
     bootstrap: false,
-    vuetify: false
+    vuetify: false,
+    quasar: false
   };
   if (!workspacePath) {
     return settings;
@@ -56,6 +64,12 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
     if (packageJson.dependencies['vuetify']) {
       settings['vuetify'] = true;
+    }
+    if (
+      packageJson.dependencies['quasar-framework'] ||
+      packageJson.dependencies['quasar-cli']
+    ) {
+      settings['quasar'] = true;
     }
   } catch (e) {}
   return settings;

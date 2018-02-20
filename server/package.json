@@ -30,6 +30,7 @@
     "parse-gitignore": "^0.4.0",
     "prettier": "^1.9.2",
     "prettier-eslint": "^8.3.1",
+    "quasar-helper-json": "^1.0.0",
     "stylus": "^0.54.5",
     "stylus-supremacy": "~2.7.3",
     "typescript": "^2.7.1",
