@@ -384,7 +384,7 @@ export function getJavascriptMode(
       jsDocuments.onDocumentRemoved(document);
     },
     dispose() {
-      serviceHost.getService().dispose();
+      serviceHost.dispose();
       jsDocuments.dispose();
     }
   };

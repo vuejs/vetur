@@ -8,6 +8,7 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
+import * as chokidar from 'chokidar';
 
 // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
 // NOTE: this is a global hack that all ts instances after is changed
@@ -68,6 +69,19 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     ...parsedConfig.options
   };
   compilerOptions.allowNonTsExtensions = true;
+  const watcher = chokidar.watch(workspacePath, {
+    ignoreInitial: true,
+    ignored: defaultIgnorePatterns(workspacePath)
+  });
+
+  watcher
+    .on('change', filterNonScript(path => {
+      const ver = versions.get(path) || 0;
+      versions.set(path, ver + 1);
+    }))
+    .on('add', filterNonScript(path => {
+      files.push(path);
+    }));
 
   function updateCurrentTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
@@ -198,7 +212,10 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   return {
     updateCurrentTextDocument,
     getScriptDocByFsPath,
-    getService: () => jsLanguageService
+    dispose: () => {
+      watcher.close();
+      jsLanguageService.dispose();
+    },
   };
 }
 
@@ -256,4 +273,13 @@ function getParsedConfig(workspacePath: string) {
     /*resolutionStack*/ undefined,
     [{ extension: 'vue', isMixedContent: true }]
   );
+}
+
+function filterNonScript(func: (path: string) => void) {
+  return (path: string) => {
+    if (!/(tsx?|vue|jsx?)$/.test(path)) {
+      return;
+    }
+    func(path);
+  };
 }
