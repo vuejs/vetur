@@ -74,13 +74,14 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     ignored: defaultIgnorePatterns(workspacePath)
   });
 
-  watcher.on('change', function (path: string) {
-    if (!/(tsx?|vue|jsx?)$/.test(path)) {
-      return;
-    }
-    const ver = versions.get(path) || 0;
-    versions.set(path, ver + 1);
-  });
+  watcher
+    .on('change', filterNonScript(path => {
+      const ver = versions.get(path) || 0;
+      versions.set(path, ver + 1);
+    }))
+    .on('add', filterNonScript(path => {
+      files.push(path);
+    }));
 
   function updateCurrentTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
@@ -272,4 +273,13 @@ function getParsedConfig(workspacePath: string) {
     /*resolutionStack*/ undefined,
     [{ extension: 'vue', isMixedContent: true }]
   );
+}
+
+function filterNonScript(func: (path: string) => void) {
+  return (path: string) => {
+    if (!/(tsx?|vue|jsx?)$/.test(path)) {
+      return;
+    }
+    func(path);
+  };
 }
