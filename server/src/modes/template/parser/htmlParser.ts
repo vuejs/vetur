@@ -6,6 +6,7 @@ export class Node {
   public tag?: string;
   public closed?: boolean;
   public endTagStart?: number;
+  public isInterpolation: boolean;
   public attributes?: { [name: string]: string };
   public get attributeNames(): string[] {
     if(this.attributes) {
@@ -14,7 +15,9 @@ export class Node {
 
     return [];
   }
-  constructor(public start: number, public end: number, public children: Node[], public parent: Node) {}
+  constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
+    this.isInterpolation = false;
+  }
   public isSameTag(tagInLowerCase: string) {
     return (
       this.tag &&
@@ -119,6 +122,18 @@ export function parse(text: string): HTMLDocument {
           curr.end = scanner.getTokenEnd();
           curr = curr.parent;
         }
+        break;
+      case TokenType.StartInterpolation: {
+        const child = new Node(scanner.getTokenOffset(), text.length, [], curr);
+        child.isInterpolation = true;
+        curr.children.push(child);
+        curr = child;
+        break;
+      }
+      case TokenType.EndInterpolation:
+        curr.end = scanner.getTokenEnd();
+        curr.closed = true;
+        curr = curr.parent;
         break;
       case TokenType.AttributeName:
         pendingAttribute = scanner.getTokenText();
