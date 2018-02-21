@@ -84,7 +84,7 @@ export function doComplete(
     let curr = node;
     while (curr) {
       const tag = curr.tag;
-      if (tag && (!curr.closed || curr.endTagStart > offset)) {
+      if (tag && (!curr.closed || curr.endTagStart && (curr.endTagStart > offset))) {
         const item: CompletionItem = {
           label: '/' + tag,
           kind: CompletionItemKind.Property,

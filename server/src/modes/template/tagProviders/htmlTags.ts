@@ -51,7 +51,7 @@ export const EMPTY_ELEMENTS: string[] = [
   'wbr'
 ];
 
-export function isEmptyElement(e: string): boolean {
+export function isEmptyElement(e: string | undefined): boolean {
   return !!e && binarySearch(EMPTY_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
 }
 
