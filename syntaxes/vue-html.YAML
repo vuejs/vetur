@@ -1,6 +1,6 @@
 # [PackageDev] target_format: json, ext: json
 ---
-name: Vue HTML
+name: Vue Template
 scopeName: text.html.vue-html
 fileTypes: []
 uuid: ca2e4260-5d62-45bf-8cf1-d8b5cc19c8f8

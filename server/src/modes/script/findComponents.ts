@@ -15,7 +15,7 @@ export interface ComponentInfo {
 
 export function findComponents(service: ts.LanguageService, fileFsPath: string): ComponentInfo[] {
   const program = service.getProgram();
-  const sourceFile = program.getSourceFile(fileFsPath);
+  const sourceFile = program.getSourceFile(fileFsPath)!;
   const exportStmt = sourceFile.statements.filter(st => st.kind === ts.SyntaxKind.ExportAssignment);
   if (exportStmt.length === 0) {
     return [];

@@ -8,21 +8,13 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVueScript, isVue, isVueTemplate } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
+import * as chokidar from 'chokidar';
 
-function isVueProject(path: string) {
-  return path.endsWith('.vue.ts') && !path.includes('node_modules');
-}
-
-function defaultIgnorePatterns(workspacePath: string) {
-  const nodeModules = ['node_modules', '**/node_modules/*'];
-  const gitignore = ts.findConfigFile(workspacePath, ts.sys.fileExists, '.gitignore');
-  if (!gitignore) {
-    return nodeModules;
-  }
-  const parsed: string[] = parseGitIgnore(gitignore);
-  const filtered = parsed.filter(s => !s.startsWith('!'));
-  return nodeModules.concat(filtered);
-}
+// Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
+// NOTE: this is a global hack that all ts instances after is changed
+const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
+(ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
+(ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
 
 const vueSys: ts.System = {
   ...ts.sys,
@@ -62,60 +54,43 @@ if (ts.sys.realpath) {
   };
 }
 
-function getScriptKind(langId: string): ts.ScriptKind {
-  return langId === 'typescript' ? ts.ScriptKind.TS : langId === 'tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.JS;
-}
+const defaultCompilerOptions: ts.CompilerOptions = {
+  allowNonTsExtensions: true,
+  allowJs: true,
+  lib: ['lib.dom.d.ts', 'lib.es2017.d.ts'],
+  target: ts.ScriptTarget.Latest,
+  moduleResolution: ts.ModuleResolutionKind.NodeJs,
+  module: ts.ModuleKind.CommonJS,
+  jsx: ts.JsxEmit.Preserve,
+  allowSyntheticDefaultImports: true
+};
 
-function inferIsOldVersion(workspacePath: string): boolean {
-  const packageJSONPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
-  try {
-    const packageJSON = packageJSONPath && JSON.parse(ts.sys.readFile(packageJSONPath)!);
-    const vueStr = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
-    // use a sloppy method to infer version, to reduce dep on semver or so
-    const vueDep = vueStr.match(/\d+\.\d+/)[0];
-    const sloppyVersion = parseFloat(vueDep);
-    return sloppyVersion < 2.5;
-  } catch (e) {
-    return true;
-  }
-}
-
-export function getServiceHost(
-  workspacePath: string,
-  jsDocuments: LanguageModelCache<TextDocument>
-) {
-  let compilerOptions: ts.CompilerOptions = {
-    allowNonTsExtensions: true,
-    allowJs: true,
-    lib: ['lib.dom.d.ts', 'lib.es2017.d.ts'],
-    target: ts.ScriptTarget.Latest,
-    moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    module: ts.ModuleKind.CommonJS,
-    jsx: ts.JsxEmit.Preserve,
-    allowSyntheticDefaultImports: true
-  };
+export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let currentScriptDoc: TextDocument;
   const versions = new Map<string, number>();
   const scriptDocs = new Map<string, TextDocument>();
 
-  // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
-  // NOTE: Typescript 2.3 should add an API to allow this, and then this code should use that API.
-  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
-  (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
-  (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
-  const configFilename =
-    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
-    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
-  const configJson = (configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config) || {
-    exclude: defaultIgnorePatterns(workspacePath)
-  };
-  const parsedConfig = ts.parseJsonConfigFileContent(configJson, ts.sys, workspacePath, {}, configFilename, undefined, [
-    { extension: 'vue', isMixedContent: true }
-  ]);
+  const parsedConfig = getParsedConfig(workspacePath);
   const files = parsedConfig.fileNames;
   const isOldVersion = inferIsOldVersion(workspacePath);
-  compilerOptions = { ...compilerOptions, ...parsedConfig.options };
+  const compilerOptions = {
+    ...defaultCompilerOptions,
+    ...parsedConfig.options
+  };
   compilerOptions.allowNonTsExtensions = true;
+  const watcher = chokidar.watch(workspacePath, {
+    ignoreInitial: true,
+    ignored: defaultIgnorePatterns(workspacePath)
+  });
+
+  watcher
+    .on('change', filterNonScript(path => {
+      const ver = versions.get(path) || 0;
+      versions.set(path, ver + 1);
+    }))
+    .on('add', filterNonScript(path => {
+      files.push(path);
+    }));
 
   function updateCurrentTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
@@ -265,10 +240,74 @@ export function getServiceHost(
   return {
     updateCurrentTextDocument,
     getScriptDocByFsPath,
-    getService: () => jsLanguageService
+    dispose: () => {
+      watcher.close();
+      jsLanguageService.dispose();
+    },
   };
 }
 
 function getNormalizedFileFsPath(fileName: string): string {
   return Uri.file(fileName).fsPath;
+}
+
+function isVueProject(path: string) {
+  return path.endsWith('.vue.ts') && !path.includes('node_modules');
+}
+
+function defaultIgnorePatterns(workspacePath: string) {
+  const nodeModules = ['node_modules', '**/node_modules/*'];
+  const gitignore = ts.findConfigFile(workspacePath, ts.sys.fileExists, '.gitignore');
+  if (!gitignore) {
+    return nodeModules;
+  }
+  const parsed: string[] = parseGitIgnore(gitignore);
+  const filtered = parsed.filter(s => !s.startsWith('!'));
+  return nodeModules.concat(filtered);
+}
+
+function getScriptKind(langId: string): ts.ScriptKind {
+  return langId === 'typescript' ? ts.ScriptKind.TS : langId === 'tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.JS;
+}
+
+function inferIsOldVersion(workspacePath: string): boolean {
+  const packageJSONPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
+  try {
+    const packageJSON = packageJSONPath && JSON.parse(ts.sys.readFile(packageJSONPath)!);
+    const vueStr = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
+    // use a sloppy method to infer version, to reduce dep on semver or so
+    const vueDep = vueStr.match(/\d+\.\d+/)[0];
+    const sloppyVersion = parseFloat(vueDep);
+    return sloppyVersion < 2.5;
+  } catch (e) {
+    return true;
+  }
+}
+
+function getParsedConfig(workspacePath: string) {
+  const configFilename =
+    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
+    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
+  const configJson = (configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config) || {
+    exclude: defaultIgnorePatterns(workspacePath)
+  };
+  // existingOptions should be empty since it always takes priority
+  return ts.parseJsonConfigFileContent(
+    configJson,
+    ts.sys,
+    workspacePath,
+    /*existingOptions*/ {},
+    configFilename,
+    /*resolutionStack*/ undefined,
+    [{ extension: 'vue', isMixedContent: true }]
+  );
+}
+
+function filterNonScript(func: (path: string) => void) {
+  return (path: string) => {
+    if (!/(tsx?|vue|jsx?)$/.test(path)) {
+      return;
+    }
+    func(path);
+  };
 }

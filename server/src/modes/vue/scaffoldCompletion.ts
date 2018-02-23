@@ -8,7 +8,7 @@ export function doScaffoldComplete(): CompletionList {
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
       insertText: `<template>
-  \${0}
+\t\${0}
 </template>
 
 <script>
@@ -28,7 +28,7 @@ export default {
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
       insertText: `<template>
-  \${0}
+\t\${0}
 </template>
 `
     },
@@ -38,7 +38,7 @@ export default {
       kind: CompletionItemKind.Snippet,
       insertTextFormat: InsertTextFormat.Snippet,
       insertText: `<template lang="pug">
-  \${0}
+\t\${0}
 </template>
 `
     },
@@ -49,7 +49,7 @@ export default {
       insertTextFormat: InsertTextFormat.Snippet,
       insertText: `<script>
 export default {
-  \${0}
+\t\${0}
 }
 </script>
 `
@@ -62,7 +62,7 @@ export default {
       insertText: `<script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-  \${0}
+\t\${0}
 })
 </script>
 `
