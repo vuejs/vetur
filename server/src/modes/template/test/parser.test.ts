@@ -9,7 +9,7 @@ import { Node, parse } from '../parser/htmlParser';
 
 suite('HTML Parser', () => {
   function toJSON(node: Node): any {
-    return {
+    const ret: any = {
       tag: node.tag,
       start: node.start,
       end: node.end,
@@ -17,6 +17,10 @@ suite('HTML Parser', () => {
       closed: node.closed,
       children: node.children.map(toJSON)
     };
+    if (node.isInterpolation) {
+      ret.isInterpolation = true;
+    }
+    return ret;
   }
 
   function toJSONWithAttributes(node: Node): any {
@@ -152,6 +156,56 @@ suite('HTML Parser', () => {
             children: [{ tag: 'span', start: 9, end: 15, endTagStart: void 0, closed: false, children: [] }]
           }
         ]
+      }
+    ]);
+  });
+
+  test('Interpolation', () => {
+    assertDocument('{{test}}', [
+      {
+        tag: undefined,
+        start: 0,
+        end: 8,
+        closed: true,
+        endTagStart: undefined,
+        isInterpolation: true,
+        children: []
+      }
+    ]);
+    assertDocument('<div>{{test}}</div>', [
+      {
+        tag: 'div',
+        start: 0,
+        end: 19,
+        closed: true,
+        endTagStart: 13,
+        children: [{
+          tag: undefined,
+          start: 5,
+          end: 13,
+          closed: true,
+          endTagStart: undefined,
+          isInterpolation: true,
+          children: [],
+        }]
+      }
+    ]);
+    assertDocument('<div>{{test}}', [
+      {
+        tag: 'div',
+        start: 0,
+        end: 13,
+        closed: false,
+        endTagStart: undefined,
+        children: [{
+          tag: undefined,
+          start: 5,
+          end: 13,
+          closed: true,
+          endTagStart: undefined,
+          isInterpolation: true,
+          children: [],
+        }]
       }
     ]);
   });
