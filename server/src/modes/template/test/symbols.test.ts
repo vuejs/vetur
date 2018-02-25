@@ -26,10 +26,10 @@ suite('HTML Symbols', () => {
 
   test('Simple', () => {
     testSymbolsFor('<div></div>', [
-      <SymbolInformation>{
+      {
         containerName: '',
         name: 'div',
-        kind: <SymbolKind>SymbolKind.Field,
+        kind: SymbolKind.Field,
         location: Location.create(TEST_URI, Range.create(0, 0, 0, 11))
       }
     ]);
@@ -37,13 +37,13 @@ suite('HTML Symbols', () => {
       {
         containerName: '',
         name: 'div',
-        kind: <SymbolKind>SymbolKind.Field,
+        kind: SymbolKind.Field,
         location: Location.create(TEST_URI, Range.create(0, 0, 0, 53))
       },
       {
         containerName: 'div',
         name: 'input#test.checkbox',
-        kind: <SymbolKind>SymbolKind.Field,
+        kind: SymbolKind.Field,
         location: Location.create(TEST_URI, Range.create(0, 5, 0, 47))
       }
     ]);
@@ -128,5 +128,16 @@ suite('HTML Symbols', () => {
     ];
 
     testSymbolsFor(content, expected);
+  });
+
+  test('Interpolation', () => {
+    testSymbolsFor('<div>{{test}}</div>', [
+      {
+        containerName: '',
+        name: 'div',
+        kind: SymbolKind.Field,
+        location: Location.create(TEST_URI, Range.create(0, 0, 0, 19))
+      }
+    ]);
   });
 });

@@ -17,6 +17,9 @@ function provideFileSymbolsInternal(
   container: string,
   symbols: SymbolInformation[]
 ): void {
+  if (node.isInterpolation) {
+    return;
+  }
   const name = nodeToName(node);
   const location = Location.create(
     document.uri,
