@@ -250,6 +250,9 @@ suite('HTML Completion', () => {
       .hasNo('div');
     html`<div>{{d|`
       .hasNo('div');
+    html`<div>{{d}}</|`
+      .has('/div')
+      .become('<div>{{d}}</div>');
   });
 
   test('Vue complete', function () {
