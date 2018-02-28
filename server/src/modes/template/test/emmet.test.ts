@@ -24,6 +24,8 @@ suite('Emmet Completion', () => {
 </ul>`
     );
 
+    vueHtml`{{ul>li*3|}}`.hasNo(`ul>li*3`);
+
     vueHtml`div+p|`.has(`div+p`).become(
       `<div>\${1}</div>
 <p>\${0}</p>`
