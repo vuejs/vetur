@@ -35,6 +35,7 @@ suite('HTML Hover', () => {
     html`<html></html|>`.hasHoverAt('</html>', 8);
     html`<|component></component>`.hasHoverAt('<component>', 1);
     html`<html></html>|`.hasNothing();
+    html`<div>{{tes|t}}</div>`.hasNothing();
   });
 
   test('Attribute', function () {
