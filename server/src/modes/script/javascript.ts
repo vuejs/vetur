@@ -35,6 +35,10 @@ import * as _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
 
+// VLS cannot provide area specific triggerChar
+// skip completion when trigger is only for template
+const TEMPLATE_TRIGGERS = ['/', '*', ':'];
+
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
 }
@@ -97,6 +101,10 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
+      const triggerChar = doc.getText()[offset - 1];
+      if (TEMPLATE_TRIGGERS.includes(triggerChar)) {
+        return { isIncomplete: false, items: [] };
+      }
       const completions = service.getCompletionsAtPosition(
         fileFsPath,
         offset,
