@@ -303,7 +303,7 @@ export function getJavascriptMode(
       const program = service.getProgram();
       definitions.forEach(d => {
         const sourceFile = program.getSourceFile(d.fileName)!;
-        const definitionTargetDoc = TextDocument.create(d.fileName, 'vue', 0, sourceFile.getText());
+        const definitionTargetDoc = TextDocument.create(d.fileName, 'vue', 0, sourceFile.getFullText());
         definitionResults.push({
           uri: Uri.file(d.fileName).toString(),
           range: convertRange(definitionTargetDoc, d.textSpan)

@@ -10,15 +10,15 @@ Choose each language's default formatter in VS Code config, `vetur.format.defaul
 Current default:
 
 ```json
-"vetur.format.defaultFormatter": {
-  "html": "none",
-  "css": "prettier",
-  "postcss": "prettier",
-  "scss": "prettier",
-  "less": "prettier",
-  "js": "prettier",
-  "ts": "prettier",
-  "stylus": "stylus-supremacy"
+{
+  "vetur.format.defaultFormatter.html": "none",
+  "vetur.format.defaultFormatter.css": "prettier",
+  "vetur.format.defaultFormatter.postcss": "prettier",
+  "vetur.format.defaultFormatter.scss": "prettier",
+  "vetur.format.defaultFormatter.less": "prettier",
+  "vetur.format.defaultFormatter.stylus": "stylus-supremacy",
+  "vetur.format.defaultFormatter.js": "prettier",
+  "vetur.format.defaultFormatter.ts": "prettier"
 }
 ```
 
