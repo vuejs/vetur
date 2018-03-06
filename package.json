@@ -133,7 +133,12 @@
         "vetur.completion.autoImport": {
           "type": "boolean",
           "default": true,
-          "description": "Include completion for module export and auto import them."
+          "description": "Include completion for module export and auto import them"
+        },
+        "vetur.completion.useScaffoldSnippets": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable Vetur's built-in scaffolding snippets"
         },
         "vetur.grammar.customBlocks": {
           "type": "object",
