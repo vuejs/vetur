@@ -851,7 +851,7 @@ suite('HTML Scanner', () => {
         input: '{{interpolation}}',
         tokens: [
           { offset: 0, type: TokenType.StartInterpolation },
-          { offset: 2, type: TokenType.Interpolation },
+          { offset: 2, type: TokenType.InterpolationContent },
           { offset: 15, type: TokenType.EndInterpolation },
         ]
       },
@@ -860,7 +860,7 @@ suite('HTML Scanner', () => {
         tokens: [
           { offset: 0, type: TokenType.Content },
           { offset: 3, type: TokenType.StartInterpolation },
-          { offset: 5, type: TokenType.Interpolation },
+          { offset: 5, type: TokenType.InterpolationContent },
           { offset: 18, type: TokenType.EndInterpolation },
         ]
       },
@@ -869,7 +869,7 @@ suite('HTML Scanner', () => {
         tokens: [
           { offset: 0, type: TokenType.Content },
           { offset: 3, type: TokenType.StartInterpolation },
-          { offset: 5, type: TokenType.Interpolation },
+          { offset: 5, type: TokenType.InterpolationContent },
           { offset: 18, type: TokenType.EndInterpolation },
           { offset: 20, type: TokenType.Content },
         ]
@@ -883,7 +883,7 @@ suite('HTML Scanner', () => {
           { offset: 1, type: TokenType.StartTag, content: 'div' },
           { offset: 4, type: TokenType.StartTagClose },
           { offset: 5, type: TokenType.StartInterpolation },
-          { offset: 7, type: TokenType.Interpolation },
+          { offset: 7, type: TokenType.InterpolationContent },
           { offset: 20, type: TokenType.EndInterpolation },
           { offset: 22, type: TokenType.EndTagOpen },
           { offset: 24, type: TokenType.EndTag, content: 'div' },
@@ -897,7 +897,7 @@ suite('HTML Scanner', () => {
           { offset: 1, type: TokenType.StartTag, content: 'div' },
           { offset: 4, type: TokenType.StartTagClose },
           { offset: 5, type: TokenType.StartInterpolation },
-          { offset: 7, type: TokenType.Interpolation },
+          { offset: 7, type: TokenType.InterpolationContent },
           { offset: 20, type: TokenType.EndInterpolation },
           { offset: 22, type: TokenType.EndTagOpen },
           { offset: 24, type: TokenType.EndTag, content: 'div' },
@@ -910,7 +910,7 @@ suite('HTML Scanner', () => {
         input: '{{interpolation',
         tokens: [
           { offset: 0, type: TokenType.StartInterpolation },
-          { offset: 2, type: TokenType.Interpolation },
+          { offset: 2, type: TokenType.InterpolationContent },
         ]
       }
     ]);

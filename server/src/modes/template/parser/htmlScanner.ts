@@ -24,7 +24,7 @@ export enum TokenType {
   Doctype,
   EndDoctypeTag,
   Content,
-  Interpolation,
+  InterpolationContent,
   Whitespace,
   Unknown,
   Script,
@@ -310,7 +310,7 @@ export function createScanner(
           return finishToken(offset, TokenType.EndInterpolation);
          }
         stream.advanceUntilChars([_RCR, _RCR]);
-        return finishToken(offset, TokenType.Interpolation);
+        return finishToken(offset, TokenType.InterpolationContent);
       case ScannerState.AfterOpeningEndTag:
         const tagName = nextElementName();
         if (tagName.length > 0) {
