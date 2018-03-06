@@ -35,9 +35,9 @@ import * as _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
 
-// VLS cannot provide area specific triggerChar
-// skip completion when trigger is only for template
-const TEMPLATE_TRIGGERS = ['/', '*', ':'];
+// Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
+// https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
+const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
@@ -102,7 +102,7 @@ export function getJavascriptMode(
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
       const triggerChar = doc.getText()[offset - 1];
-      if (TEMPLATE_TRIGGERS.includes(triggerChar)) {
+      if (NON_SCRIPT_TRIGGERS.includes(triggerChar)) {
         return { isIncomplete: false, items: [] };
       }
       const completions = service.getCompletionsAtPosition(
