@@ -26,7 +26,7 @@ export function doComplete(
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
-  if (!node) {
+  if (!node || node.isInterpolation) {
     return result;
   }
   const text = document.getText();

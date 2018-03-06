@@ -12,9 +12,11 @@ export enum TokenType {
   StartTagClose,
   StartTagSelfClose,
   StartTag,
+  StartInterpolation,
   EndTagOpen,
   EndTagClose,
   EndTag,
+  EndInterpolation,
   DelimiterAssign,
   AttributeName,
   AttributeValue,
@@ -22,6 +24,7 @@ export enum TokenType {
   Doctype,
   EndDoctypeTag,
   Content,
+  InterpolationContent,
   Whitespace,
   Unknown,
   Script,
@@ -171,9 +174,12 @@ const _CAR = '\r'.charCodeAt(0);
 const _LFD = '\f'.charCodeAt(0);
 const _WSP = ' '.charCodeAt(0);
 const _TAB = '\t'.charCodeAt(0);
+const _LCR = '{'.charCodeAt(0);
+const _RCR = '}'.charCodeAt(0);
 
 export enum ScannerState {
   WithinContent,
+  WithinInterpolation,
   AfterOpeningStartTag,
   AfterOpeningEndTag,
   WithinDoctype,
@@ -292,8 +298,19 @@ export function createScanner(
           state = ScannerState.AfterOpeningStartTag;
           return finishToken(offset, TokenType.StartTagOpen);
         }
-        stream.advanceUntilChar(_LAN);
+        if (stream.advanceIfChars([_LCR, _LCR])) {
+          state = ScannerState.WithinInterpolation;
+          return finishToken(offset, TokenType.StartInterpolation);
+        }
+        stream.advanceUntilRegExp(/<|{{/);
         return finishToken(offset, TokenType.Content);
+      case ScannerState.WithinInterpolation:
+        if (stream.advanceIfChars([_RCR, _RCR])) {
+          state = ScannerState.WithinContent;
+          return finishToken(offset, TokenType.EndInterpolation);
+         }
+        stream.advanceUntilChars([_RCR, _RCR]);
+        return finishToken(offset, TokenType.InterpolationContent);
       case ScannerState.AfterOpeningEndTag:
         const tagName = nextElementName();
         if (tagName.length > 0) {

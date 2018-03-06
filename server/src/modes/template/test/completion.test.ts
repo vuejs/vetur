@@ -241,6 +241,20 @@ suite('HTML Completion', () => {
       </div>`);
   });
 
+  test('Complete interpolation', () => {
+    html`{{|}}`
+      .hasNo('div');
+    html`{{d|}}`
+      .hasNo('div');
+    html`<div>{{d|}}</div>`
+      .hasNo('div');
+    html`<div>{{d|`
+      .hasNo('div');
+    html`<div>{{d}}</|`
+      .has('/div')
+      .become('<div>{{d}}</div>');
+  });
+
   test('Vue complete', function () {
     html`<transition type=|></transition>`
       .has('transition')

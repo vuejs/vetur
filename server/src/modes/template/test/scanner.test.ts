@@ -845,4 +845,74 @@ suite('HTML Scanner', () => {
       }
     ]);
   });
+  test('interpolation', () => {
+    assertTokens([
+      {
+        input: '{{interpolation}}',
+        tokens: [
+          { offset: 0, type: TokenType.StartInterpolation },
+          { offset: 2, type: TokenType.InterpolationContent },
+          { offset: 15, type: TokenType.EndInterpolation },
+        ]
+      },
+      {
+        input: 'div{{interpolation}}',
+        tokens: [
+          { offset: 0, type: TokenType.Content },
+          { offset: 3, type: TokenType.StartInterpolation },
+          { offset: 5, type: TokenType.InterpolationContent },
+          { offset: 18, type: TokenType.EndInterpolation },
+        ]
+      },
+      {
+        input: 'div{{interpolation}}div',
+        tokens: [
+          { offset: 0, type: TokenType.Content },
+          { offset: 3, type: TokenType.StartInterpolation },
+          { offset: 5, type: TokenType.InterpolationContent },
+          { offset: 18, type: TokenType.EndInterpolation },
+          { offset: 20, type: TokenType.Content },
+        ]
+      }
+    ]);
+    assertTokens([
+      {
+        input: '<div>{{interpolation}}</div>',
+        tokens: [
+          { offset: 0, type: TokenType.StartTagOpen },
+          { offset: 1, type: TokenType.StartTag, content: 'div' },
+          { offset: 4, type: TokenType.StartTagClose },
+          { offset: 5, type: TokenType.StartInterpolation },
+          { offset: 7, type: TokenType.InterpolationContent },
+          { offset: 20, type: TokenType.EndInterpolation },
+          { offset: 22, type: TokenType.EndTagOpen },
+          { offset: 24, type: TokenType.EndTag, content: 'div' },
+          { offset: 27, type: TokenType.EndTagClose },
+        ]
+      },
+      {
+        input: '<div>{{interpolation}}</div>',
+        tokens: [
+          { offset: 0, type: TokenType.StartTagOpen },
+          { offset: 1, type: TokenType.StartTag, content: 'div' },
+          { offset: 4, type: TokenType.StartTagClose },
+          { offset: 5, type: TokenType.StartInterpolation },
+          { offset: 7, type: TokenType.InterpolationContent },
+          { offset: 20, type: TokenType.EndInterpolation },
+          { offset: 22, type: TokenType.EndTagOpen },
+          { offset: 24, type: TokenType.EndTag, content: 'div' },
+          { offset: 27, type: TokenType.EndTagClose },
+        ]
+      }
+    ]);
+    assertTokens([
+      {
+        input: '{{interpolation',
+        tokens: [
+          { offset: 0, type: TokenType.StartInterpolation },
+          { offset: 2, type: TokenType.InterpolationContent },
+        ]
+      }
+    ]);
+  });
 });
