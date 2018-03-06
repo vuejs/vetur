@@ -25,13 +25,14 @@ When configured correctly, ESLint should work for both `<template>` and `<script
 
 #### Linting for `<template>`
 
-Vetur automatically uses [`eslint-plugin-vue@next`](https://github.com/vuejs/eslint-plugin-vue) for linting `<template>`. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention).
+Vetur automatically uses [`eslint-plugin-vue`](https://github.com/vuejs/eslint-plugin-vue) for linting `<template>`. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention).
 
 To turn it off, set `vetur.validation.template: false`.
 
 To configure linting rules:
+
 - Turn off Vetur's template validation with `vetur.validation.template: false`
-- `yarn add -D eslint eslint-plugin-vue@next`
+- `yarn add -D eslint eslint-plugin-vue`
 - Set ESLint rules in `.eslintrc`. An example:
 
   ```json
@@ -45,6 +46,8 @@ To configure linting rules:
     }
   }
   ```
+
+You can also checkout [Veturpack](https://github.com/octref/veturpack) to see how to setup `eslint-plugin-vue`.
 
 #### Linting TypeScript
 
