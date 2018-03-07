@@ -53,7 +53,7 @@ export function getVueHTMLMode(
       const embedded = embeddedDocuments.get(document);
       const components = scriptMode.findComponents(document);
       const tagProviders = enabledTagProviders.concat(getComponentTags(components));
-      return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders);
+      return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders, config.emmet);
     },
     doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

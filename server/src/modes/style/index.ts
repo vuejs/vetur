@@ -1,4 +1,4 @@
-import { TextDocument, Position, Range, CompletionList } from 'vscode-languageserver-types';
+import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 import {
   getCSSLanguageService,
   getSCSSLanguageService,
@@ -66,19 +66,6 @@ function getStyleMode(
     doComplete(document, position) {
       const embedded = embeddedDocuments.get(document);
       const emmetSyntax = languageId === 'postcss' ? 'css' : languageId;
-      const emmetCompletions: CompletionList = emmet.doComplete(document, position, emmetSyntax, {
-        useNewEmmet: true,
-        showExpandedAbbreviation: true,
-        showAbbreviationSuggestions: true,
-        syntaxProfiles: {},
-        variables: {}
-      });
-      const emmetItems = _.map(emmetCompletions.items, i => {
-        return {
-          ...i,
-          sortText: Priority.Emmet + i.label
-        };
-      });
       const lsCompletions = languageService.doComplete(embedded, position, stylesheets.get(embedded));
       const lsItems = lsCompletions ? _.map(lsCompletions.items, i => {
         return {
@@ -86,10 +73,22 @@ function getStyleMode(
           sortText: Priority.Platform + i.label
         };
       }) : [];
-      return {
-        isIncomplete: true,
-        items: _.concat(emmetItems, lsItems)
-      };
+
+      const emmetCompletions = emmet.doComplete(document, position, emmetSyntax, config.emmet);
+      if (!emmetCompletions) {
+        return { isIncomplete: false, items: lsItems };
+      } else {
+        const emmetItems = _.map(emmetCompletions.items, i => {
+          return {
+            ...i,
+            sortText: Priority.Emmet + i.label
+          };
+        });
+        return {
+          isIncomplete: emmetCompletions.isIncomplete,
+          items: _.concat(emmetItems, lsItems)
+        };
+      }
     },
     doHover(document, position) {
       const embedded = embeddedDocuments.get(document);

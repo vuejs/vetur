@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@emmetio/extract-abbreviation@^0.1.1":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@emmetio/extract-abbreviation/-/extract-abbreviation-0.1.2.tgz#e1f1c06349f4b1a00241ba1ba8a719062f9194b0"
+"@emmetio/extract-abbreviation@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@emmetio/extract-abbreviation/-/extract-abbreviation-0.1.6.tgz#e4a9856c1057f0aff7d443b8536477c243abe28c"
 
 "@types/chokidar@^1.7.4":
   version "1.7.5"
@@ -1559,6 +1559,10 @@ json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
+jsonc-parser@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/jsonc-parser/-/jsonc-parser-1.0.2.tgz#3fe86c0237db206fe5693872d93eec3bc3b05055"
+
 jsonify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
@@ -2794,11 +2798,12 @@ vscode-css-languageservice@^3.0.3:
     vscode-nls "^2.0.1"
 
 vscode-emmet-helper@^1.1.19:
-  version "1.1.19"
-  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-1.1.19.tgz#e5b607076171555c6be3655a8eb11c17f980b2dd"
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-1.2.0.tgz#6b9311be065c9c99d5de2dae18ea0730d9cfb734"
   dependencies:
-    "@emmetio/extract-abbreviation" "^0.1.1"
-    vscode-languageserver-types "^3.0.3"
+    "@emmetio/extract-abbreviation" "0.1.6"
+    jsonc-parser "^1.0.0"
+    vscode-languageserver-types "^3.6.0-next.1"
 
 vscode-jsonrpc@^3.5.0:
   version "3.5.0"
@@ -2811,13 +2816,13 @@ vscode-languageserver-protocol@^3.5.0:
     vscode-jsonrpc "^3.5.0"
     vscode-languageserver-types "^3.5.0"
 
-vscode-languageserver-types@3.5.0, vscode-languageserver-types@^3.5.0:
+vscode-languageserver-types@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.5.0.tgz#e48d79962f0b8e02de955e3f524908e2b19c0374"
 
-vscode-languageserver-types@^3.0.3:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.3.0.tgz#8964dc7c2247536fbefd2d6836bf3febac80dd00"
+vscode-languageserver-types@^3.5.0, vscode-languageserver-types@^3.6.0-next.1:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.6.0.tgz#0bba63b0fa82a714394a4478f55a596ee4ed7d0a"
 
 vscode-languageserver@^3.5.0:
   version "3.5.0"

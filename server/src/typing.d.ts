@@ -22,6 +22,5 @@ declare module 'eslint' {
 }
 
 declare module 'eslint-plugin-vue';
-declare module 'vscode-emmet-helper';
 declare module 'parse-gitignore';
 declare module '*.json';

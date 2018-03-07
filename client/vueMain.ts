@@ -75,7 +75,7 @@ export function activate(context: ExtensionContext) {
     documentSelector,
     synchronize: {
       // the settings to synchronize
-      configurationSection: ['vetur', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy']
+      configurationSection: ['vetur', 'emmet', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy']
     },
     initializationOptions: {
       config

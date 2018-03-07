@@ -17,7 +17,7 @@ const setup: CompletionTestSetup = {
   docUri: 'test://test/test.html',
   doComplete(doc, pos) {
     const htmlDoc = parseHTMLDocument(doc);
-    return doComplete(doc, pos, htmlDoc, allTagProviders);
+    return doComplete(doc, pos, htmlDoc, allTagProviders, {});
   }
 };
 
@@ -347,7 +347,7 @@ suite('HTML Completion', () => {
         doComplete(doc, pos) {
           const htmlDoc = parseHTMLDocument(doc);
           const enabledTagProviders = getEnabledTagProviders(settings);
-          return doComplete(doc, pos, htmlDoc, enabledTagProviders);
+          return doComplete(doc, pos, htmlDoc, enabledTagProviders, {});
         }
       });
     }

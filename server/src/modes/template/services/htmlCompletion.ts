@@ -17,7 +17,8 @@ export function doComplete(
   document: TextDocument,
   position: Position,
   htmlDocument: HTMLDocument,
-  tagProviders: IHTMLTagProvider[]
+  tagProviders: IHTMLTagProvider[],
+  emmetConfig: emmet.EmmetConfiguration
 ): CompletionList {
   const result: CompletionList = {
     isIncomplete: false,
@@ -276,14 +277,7 @@ export function doComplete(
         break;
       default:
         if (offset <= scanner.getTokenEnd()) {
-          return emmet.doComplete(document, position, 'html', {
-            useNewEmmet: true,
-            showExpandedAbbreviation: 'always',
-            showAbbreviationSuggestions: true,
-            syntaxProfiles: {},
-            variables: {},
-            preferences: {}
-          });
+          return emmet.doComplete(document, position, 'html', emmetConfig);
         }
         break;
     }
