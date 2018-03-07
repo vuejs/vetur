@@ -275,9 +275,14 @@ export function doComplete(
           }
         }
         break;
-      default:
+      case TokenType.Content:
         if (offset <= scanner.getTokenEnd()) {
           return emmet.doComplete(document, position, 'html', emmetConfig);
+        }
+        break;
+      default:
+        if (offset <= scanner.getTokenEnd()) {
+          return result;
         }
         break;
     }

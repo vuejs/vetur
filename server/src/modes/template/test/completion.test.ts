@@ -195,7 +195,6 @@ suite('HTML Completion', () => {
     html`<li/|>`.count(0);
     html`  <div/|   `.count(0);
     html`<li><br/|>`.count(0);
-    html`<li><br>a/|`.count(0);
 
     html`<foo><br/></ f|>`.has('/foo').become('<foo><br/></foo>');
     html`<li><div/></|`.has('/li').become('<li><div/></li>');
