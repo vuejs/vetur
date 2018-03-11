@@ -34,7 +34,6 @@ export function createUpdater() {
       scriptKind?: ts.ScriptKind
     ): ts.SourceFile {
       const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
-      // store scriptKind info on sourceFile
       scriptKindTracker.set(sourceFile, scriptKind);
       if (isVue(fileName) && !isTSLike(scriptKind)) {
         modifyVueSource(sourceFile);
