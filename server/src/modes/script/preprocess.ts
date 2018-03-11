@@ -22,6 +22,8 @@ function isTSLike(scriptKind: ts.ScriptKind | undefined) {
 export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
+  const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind|undefined>();
+
   return {
     createLanguageServiceSourceFile(
       fileName: string,
@@ -33,8 +35,7 @@ export function createUpdater() {
     ): ts.SourceFile {
       const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
       // store scriptKind info on sourceFile
-      const hackSourceFile: any = sourceFile;
-      hackSourceFile.__scriptKind = scriptKind;
+      scriptKindTracker.set(sourceFile, scriptKind);
       if (isVue(fileName) && !isTSLike(scriptKind)) {
         modifyVueSource(sourceFile);
       }
@@ -47,13 +48,11 @@ export function createUpdater() {
       textChangeRange: ts.TextChangeRange,
       aggressiveChecks?: boolean
     ): ts.SourceFile {
-      let hackSourceFile: any = sourceFile;
-      const scriptKind = hackSourceFile.__scriptKind;
-      sourceFile = hackSourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
+      const scriptKind = scriptKindTracker.get(sourceFile);
+      sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
       if (isVue(sourceFile.fileName) && !isTSLike(scriptKind)) {
         modifyVueSource(sourceFile);
       }
-      hackSourceFile.__scriptKind = scriptKind;
       return sourceFile;
     }
   };
