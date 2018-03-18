@@ -28,10 +28,11 @@ import { getJavascriptMode } from './script/javascript';
 import { getVueHTMLMode } from './template';
 
 import { getStylusMode } from './style/stylus';
+import { VLSConfig } from '../config';
 
 export interface LanguageMode {
   getId(): string;
-  configure?(options: any): void;
+  configure?(options: VLSConfig): void;
   doValidation?(document: TextDocument): Diagnostic[];
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;

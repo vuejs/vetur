@@ -11,17 +11,18 @@ import { VueDocumentRegions } from '../../embeddedSupport';
 import { provideCompletionItems } from './completion-item';
 import { provideDocumentSymbols } from './symbols-finder';
 import { stylusHover } from './stylus-hover';
+import { VLSConfig } from '../../../config';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
     documentRegions.get(document).getEmbeddedDocument('stylus')
   );
   let baseIndentShifted = false;
-  let config: any = {};
+  let config: VLSConfig;
   return {
     getId: () => 'stylus',
     configure(c) {
-      baseIndentShifted = _.get(c, 'vetur.format.styleInitialIndent', false);
+      baseIndentShifted = c.vetur.format.styleInitialIndent;
       config = c;
     },
     onDocumentRemoved() {},

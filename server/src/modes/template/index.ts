@@ -17,6 +17,7 @@ import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings } from './tagProviders';
 import { ScriptMode } from '../script/javascript';
 import { getComponentTags, getEnabledTagProviders } from './tagProviders';
+import { VLSConfig } from '../../config';
 
 import * as _ from 'lodash';
 
@@ -34,7 +35,7 @@ export function getVueHTMLMode(
   );
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
-  let config: any = {};
+  let config: VLSConfig;
 
   return {
     getId() {

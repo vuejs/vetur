@@ -22,6 +22,7 @@ import {
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
 import { NULL_HOVER, NULL_COMPLETION, NULL_SIGNATURE } from '../modes/nullMode';
 import { format } from './formatting';
+import { VLSConfig } from '../config';
 
 export interface DocumentContext {
   resolveReference(ref: string, base?: string): string;
@@ -29,7 +30,7 @@ export interface DocumentContext {
 
 export interface VLS {
   initialize(workspacePath: string | null | undefined): void;
-  configure(config: any): void;
+  configure(config: VLSConfig): void;
   format(doc: TextDocument, range: Range, formattingOptions: FormattingOptions): TextEdit[];
   validate(doc: TextDocument): Diagnostic[];
   doComplete(doc: TextDocument, position: Position): CompletionList;

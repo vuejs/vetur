@@ -19,7 +19,7 @@ const html = hoverDSL({
 });
 
 suite('HTML Hover', () => {
-  test('Single', function (): any {
+  test('Single', function () {
     html`|<html></html>`.hasNothing();
     html`<|html></html>`.hasHoverAt('<html>', 1);
     html`<h|tml></html>`.hasHoverAt('<html>', 1);

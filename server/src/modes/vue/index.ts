@@ -1,8 +1,9 @@
 import { LanguageMode } from '../languageModes';
 import { doScaffoldComplete } from './scaffoldCompletion';
+import { VLSConfig } from '../../config';
 
 export function getVueMode(): LanguageMode {
-  let config: any = {};
+  let config: VLSConfig;
 
   return {
     getId() {

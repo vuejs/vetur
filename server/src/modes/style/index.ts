@@ -16,6 +16,7 @@ import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
 import { NULL_HOVER } from '../nullMode';
+import { VLSConfig } from '../../config';
 
 export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
@@ -45,7 +46,7 @@ function getStyleMode(
     documentRegions.get(document).getEmbeddedDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
-  let config: any = {};
+  let config: VLSConfig;
 
   return {
     getId() {
@@ -120,6 +121,9 @@ function getStyleMode(
     },
     format(document, currRange, formattingOptions) {
       if (config.vetur.format.defaultFormatter[languageId] === 'none') {
+        return [];
+      }
+      if (!config.prettier) {
         return [];
       }
 

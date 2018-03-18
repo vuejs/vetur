@@ -34,6 +34,7 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
+import { VLSConfig } from '../../config';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -62,7 +63,7 @@ export function getJavascriptMode(
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
   const { updateCurrentTextDocument, getScriptDocByFsPath } = serviceHost;
-  let config: any = {};
+  let config: VLSConfig;
 
   return {
     getId() {
@@ -109,7 +110,7 @@ export function getJavascriptMode(
         fileFsPath,
         offset,
         {
-          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
+          includeExternalModuleExports: config.vetur.completion.autoImport,
           includeInsertTextCompletions: false
         }
       );
@@ -352,6 +353,9 @@ export function getJavascriptMode(
       if (defaultFormatter === 'prettier') {
         const code = scriptDoc.getText();
         const filePath = getFileFsPath(scriptDoc.uri);
+        if (!config.prettier) {
+          return [];
+        }
         if (config.prettier.eslintIntegration) {
           return prettierEslintify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
         } else {

@@ -10,8 +10,10 @@ import {
 } from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 import Uri from 'vscode-uri';
 import { DocumentContext, getVls } from './service';
+import { VLSConfig, getDefaultConfig } from './config';
 import * as url from 'url';
 import * as path from 'path';
+import * as _ from 'lodash';
 
 // Create a connection for the server
 const connection =
@@ -30,7 +32,7 @@ const documents = new TextDocuments();
 documents.listen(connection);
 
 let workspacePath: string | null | undefined;
-let config: any = {};
+let config: VLSConfig;
 const vls = getVls();
 
 // After the server has started the client sends an initilize request. The server receives
@@ -50,7 +52,10 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   });
 
   if (initializationOptions) {
-    config = initializationOptions.config;
+    config = _.merge(
+      getDefaultConfig(),
+      initializationOptions.config,
+    );
   }
   const capabilities = {
     // Tell the client that the server works in FULL text document sync mode
@@ -71,7 +76,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration(change => {
-  config = change.settings;
+  config = _.merge(getDefaultConfig(), change.settings);
   vls.configure(config);
 
   // Update formatting setting

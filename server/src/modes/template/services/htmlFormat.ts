@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
+import { VLSConfig } from '../../../config';
 
 const templateHead = '<template>';
 const templateTail = '</template>';
@@ -9,7 +10,7 @@ export function htmlFormat(
   document: TextDocument,
   currRange: Range,
   formattingOptions: FormattingOptions,
-  config: any
+  config: VLSConfig
 ): TextEdit[] {
   const { value, range } = getValueAndRange(document, currRange);
 
