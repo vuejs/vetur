@@ -11,6 +11,7 @@ import { CompletionTestSetup, testDSL, CompletionAsserter } from '../../test-uti
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { doComplete } from '../services/htmlCompletion';
 import { allTagProviders, getEnabledTagProviders } from '../tagProviders';
+import { MarkupKind } from 'vscode-languageserver-types';
 
 const setup: CompletionTestSetup = {
   langId: 'vue-html',
@@ -22,6 +23,8 @@ const setup: CompletionTestSetup = {
 };
 
 const html = testDSL(setup);
+
+const makeDoc = (doc: string) => ({ kind: MarkupKind.Markdown, value: doc });
 
 suite('HTML Completion', () => {
   test('Complete Start Tag', () => {
@@ -353,22 +356,22 @@ suite('HTML Completion', () => {
     const noHTML = configured({ html5: false, element: true, router: false });
     noHTML`<|`
       .has('el-input')
-      .withDoc('Input data using mouse or keyboard.')
+      .withDoc(makeDoc('Input data using mouse or keyboard.'))
       .hasNo('div');
 
     noHTML`<el-input |`
       .has('placeholder')
       .hasNo('text-color')
       .has('on-icon-click')
-      .withDoc('hook function when clicking on the input icon')
+      .withDoc(makeDoc('hook function when clicking on the input icon'))
       .has('auto-complete')
       .become('<el-input auto-complete="$1"');
 
     noHTML`<el-cascader expand-trigger=|`.has('click').has('hover');
 
-    noHTML`<el-tooltip |`.has('content').withDoc('display content, can be overridden by slot#content');
+    noHTML`<el-tooltip |`.has('content').withDoc(makeDoc('display content, can be overridden by slot#content'));
 
-    noHTML`<el-popover |`.has('content').withDoc('popover content, can be replaced with a default slot');
+    noHTML`<el-popover |`.has('content').withDoc(makeDoc('popover content, can be replaced with a default slot'));
 
     const vueHTML = configured({ html5: true, element: false, router: false });
     vueHTML`<|`

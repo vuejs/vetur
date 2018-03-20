@@ -6,7 +6,8 @@ import {
   Range,
   TextEdit,
   InsertTextFormat,
-  CompletionItem
+  CompletionItem,
+  MarkupKind
 } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
@@ -50,7 +51,7 @@ export function doComplete(
         result.items.push({
           label: tag,
           kind: CompletionItemKind.Property,
-          documentation: label,
+          documentation: { kind: MarkupKind.Markdown, value: label },
           textEdit: TextEdit.replace(range, tag),
           sortText: priority + tag,
           insertTextFormat: InsertTextFormat.PlainText
@@ -155,7 +156,7 @@ export function doComplete(
           textEdit: TextEdit.replace(range, codeSnippet),
           insertTextFormat: InsertTextFormat.Snippet,
           sortText: priority + attribute,
-          documentation
+          documentation: { kind: MarkupKind.Markdown, value: documentation || `No docs for ${attribute}` }
         });
       });
     });

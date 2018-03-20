@@ -5,7 +5,8 @@ import {
   CompletionItemKind,
   Position,
   CompletionItem,
-  TextEdit
+  TextEdit,
+  MarkupContent
 } from 'vscode-languageserver-types';
 
 export interface CompletionTestSetup {
@@ -45,8 +46,8 @@ export class CompletionAsserter {
     this.lastMatch = matches[0];
     return this;
   }
-  withDoc(doc: string) {
-    assert.equal(this.lastMatch.documentation, doc);
+  withDoc(doc: string | MarkupContent) {
+    assert.deepEqual(this.lastMatch.documentation, doc);
     return this;
   }
   withKind(kind: CompletionItemKind) {
