@@ -24,7 +24,7 @@ export function doHover(
       provider.collectTags((t, label) => {
         if (t === tag) {
           const tagLabel = open ? '<' + tag + '>' : '</' + tag + '>';
-          hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(label)], range };
+          hover = { contents: [{ language: 'html', value: tagLabel }, label], range };
         }
       });
       if (hover) {
