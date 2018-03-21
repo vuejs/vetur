@@ -28,6 +28,7 @@ import { getServiceHost } from './serviceHost';
 import { findComponents, ComponentInfo } from './findComponents';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
+import { addExtensions } from './preprocess';
 
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
@@ -70,6 +71,7 @@ export function getJavascriptMode(
     },
     configure(c) {
       config = c;
+      addExtensions(config.vetur.extensions);
     },
     doValidation(doc: TextDocument): Diagnostic[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);

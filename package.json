@@ -287,6 +287,10 @@
           "type": "boolean",
           "default": false,
           "description": "Whether to have initial indent for <script> region"
+        },
+        "vetur.extensions": {
+          "type": "array",
+          "description": "The file extension associated with the language, default \".vue\"."
         }
       }
     }

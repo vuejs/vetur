@@ -88,7 +88,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
     if (!scriptDocs.has(fileFsPath)) {
-      if (fileFsPath.endsWith('.vue')) {
+      if (isVue(fileFsPath)) {
         files.push(filePath);
       }
     }

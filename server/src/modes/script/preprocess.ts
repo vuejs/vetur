@@ -4,8 +4,19 @@ import * as path from 'path';
 import { getDocumentRegions } from '../embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
 
+const extension = '.vue';
+let extensions: Array<string> = [extension];
+
+export function addExtensions(userExtensions: any) {
+  if (Array.isArray(userExtensions)) {
+    extensions = [extension, ...userExtensions];
+  } else {
+    extensions = [extension];
+  }
+}
+
 export function isVue(filename: string): boolean {
-  return path.extname(filename) === '.vue';
+  return extensions.includes(path.extname(filename));
 }
 
 export function parseVue(text: string): string {
@@ -22,7 +33,7 @@ function isTSLike(scriptKind: ts.ScriptKind | undefined) {
 export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
-  const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind|undefined>();
+  const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
 
   return {
     createLanguageServiceSourceFile(
