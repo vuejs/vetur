@@ -57,3 +57,20 @@ See https://github.com/vuejs/vetur/blob/master/CHANGELOG.md#vetur-formatting-cha
 
 If template still gets no formatting after enabling js-beautify, it is probably caused by [prettier-vscode](https://github.com/prettier/prettier-vscode) extension.  
 You can disable it for Vue: https://github.com/prettier/prettier-vscode#prettierdisablelanguages-default-
+
+## Install from source.
+
+To build and install the extension from source, you need to install [`vsce`](https://code.visualstudio.com/docs/extensions/publish-extension).
+
+Then, clone the repository and compile it.
+
+```
+git clone https://github.com/vuejs/vetur
+cd vetur
+yarn 
+cd server && yarn && yarn compile 
+cd ../ && yarn compile 
+vsce package
+```
+  
+Now you'll find `vetur-{version}.vsix`, you can install it by editor command "Install from VSIX".
