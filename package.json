@@ -17,7 +17,10 @@
     "postinstall": "if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/vscode/bin/install; fi"
   },
   "lint-staged": {
-    "*.ts": ["tslint --fix", "git add"]
+    "*.ts": [
+      "tslint --fix",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -296,7 +299,7 @@
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
     "tslint": "^5.8.0",
-    "typescript": "^2.7.1",
+    "typescript": "^2.8.1",
     "vscode": "^1.1.5"
   }
 }
