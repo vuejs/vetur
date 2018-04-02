@@ -72,7 +72,8 @@ function getPrettierOptions(
     jsxBracketSameLine: prettierVSCodeConfig.jsxBracketSameLine,
     parser,
     semi: prettierVSCodeConfig.semi,
-    useTabs: prettierVSCodeConfig.useTabs
+    useTabs: prettierVSCodeConfig.useTabs,
+    arrowParens: prettierVSCodeConfig.arrowParens
   };
 
   const prettier = require('prettier') as Prettier;
