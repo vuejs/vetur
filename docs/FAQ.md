@@ -7,7 +7,7 @@ This is probably caused by VS Code not installing Vetur properly. Try these meth
 - Run command: `Developer: Reinstall Extension` for Vetur.
 - Remove Vetur in your [extensions folder](https://code.visualstudio.com/docs/editor/extension-gallery#_common-questions) and do a clean reinstall.
 - (Windows): Try reinstall Vetur with admin permission.
-- If nothing above works, download pre-packaged vsix file and install Vetur through vsix.
+- If nothing above works, download [pre-packaged vsix file](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.7/vspackage) and [install through vsix](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
 
 ## Vetur Crash
 
