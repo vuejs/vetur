@@ -1,5 +1,14 @@
 # FAQ
 
+## No Syntax Highlighting & No Language Features working
+
+This is probably caused by VS Code not installing Vetur properly. Try these methods:
+
+- Run command: `Developer: Reinstall Extension` for Vetur.
+- Remove Vetur in your [extensions folder](https://code.visualstudio.com/docs/editor/extension-gallery#_common-questions) and do a clean reinstall.
+- (Windows): Try reinstall Vetur with admin permission.
+- If nothing above works, download pre-packaged vsix file and install Vetur through vsix.
+
 ## Vetur Crash
 
 - If it says `cannot find module <some-module>`, go to Vetur's client code installation directory and run `yarn` or `npm install`.
