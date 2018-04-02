@@ -55,7 +55,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   const capabilities = {
     // Tell the client that the server works in FULL text document sync mode
     textDocumentSync: documents.syncKind,
-    completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '/', '@', '*'] },
+    completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '\'', '/', '@', '*'] },
     signatureHelpProvider: { triggerCharacters: ['('] },
     documentFormattingProvider: true,
     hoverProvider: true,
