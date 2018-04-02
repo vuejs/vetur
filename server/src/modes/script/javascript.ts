@@ -61,7 +61,7 @@ export function getJavascriptMode(
   });
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
-  const { updateCurrentTextDocument, getScriptDocByFsPath } = serviceHost;
+  const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
   return {
@@ -302,8 +302,7 @@ export function getJavascriptMode(
       const definitionResults: Definition = [];
       const program = service.getProgram();
       definitions.forEach(d => {
-        const sourceFile = program.getSourceFile(d.fileName)!;
-        const definitionTargetDoc = TextDocument.create(d.fileName, 'vue', 0, sourceFile.getFullText());
+        const definitionTargetDoc = getSourceDoc(d.fileName, program);
         definitionResults.push({
           uri: Uri.file(d.fileName).toString(),
           range: convertRange(definitionTargetDoc, d.textSpan)
@@ -324,8 +323,9 @@ export function getJavascriptMode(
       }
 
       const referenceResults: Location[] = [];
+      const program = service.getProgram();
       references.forEach(r => {
-        const referenceTargetDoc = getScriptDocByFsPath(fileFsPath);
+        const referenceTargetDoc = getSourceDoc(r.fileName, program);
         if (referenceTargetDoc) {
           referenceResults.push({
             uri: Uri.file(r.fileName).toString(),
@@ -396,6 +396,11 @@ export function getJavascriptMode(
       jsDocuments.dispose();
     }
   };
+}
+
+function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
+  const sourceFile = program.getSourceFile(fileName)!;
+  return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
 }
 
 function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
