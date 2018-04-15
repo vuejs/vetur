@@ -208,6 +208,10 @@ suite('Embedded Support', () => {
     .template(`<div><template>`)
     .run();
 
+  testcase('ill formed template11')
+    .template(`div(v-bind:prop="x <= 1")`, 'pug')
+    .run();
+
   test('oneline style', () => {
     const content = `
 <style lang="scss"></style>
