@@ -124,6 +124,16 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
   let unClosedTemplate = 1;
   let lastAttributeName = null;
   while (unClosedTemplate !== 0) {
+    // skip parsing on non html syntax, just search terminator
+    if (languageId !== 'vue-html' && start !== 0) {
+      token = scanner.scanForRegexp(/<\/template>/);
+      if (token === TokenType.EOS) {
+        return null;
+      }
+      // forward to endTagStart </
+      scanner.scan();
+      break;
+    }
     token = scanner.scan();
     if (token === TokenType.EOS) {
       return null;
