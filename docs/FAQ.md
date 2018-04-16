@@ -42,6 +42,7 @@ This is probably caused by VS Code not installing Vetur properly. Try these meth
   // tsconfig.json
   {
     "compilerOptions": {
+      "baseUrl": ".",
       "paths": {
         "@/*": [
           "src/*"
