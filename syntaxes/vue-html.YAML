@@ -160,7 +160,7 @@ repository:
 
   vue-directives:
     name: meta.directive.vue
-    begin: ((?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*)\s*(=)
+    begin: ((?:\b(v-)|(:|@))([a-zA-Z0-9\-]+)(?:\:([a-zA-Z0-9\-]+))?(?:\.([a-zA-Z0-9\-]+))*)\s*(=)
     end: (?<='|")|(?=[\s<>`])
     captures:
       '1': {name: entity.other.attribute-name.html}
