@@ -194,6 +194,7 @@ export enum ScannerState {
 
 export interface Scanner {
   scan(): TokenType;
+  scanForRegexp(regexp: RegExp): TokenType;
   getTokenType(): TokenType;
   getTokenOffset(): number;
   getTokenLength(): number;
@@ -482,8 +483,19 @@ export function createScanner(
     state = ScannerState.WithinContent;
     return finishToken(offset, TokenType.Unknown, errorMessage);
   }
+
+  function scanForRegexp(regexp: RegExp): TokenType {
+    const offset = stream.pos();
+    state = ScannerState.WithinContent;
+    if (stream.advanceUntilRegExp(regexp)) {
+      return finishToken(offset, TokenType.Unknown);
+    }
+    return finishToken(offset, TokenType.EOS);
+  }
+
   return {
     scan,
+    scanForRegexp,
     getTokenType: () => tokenType,
     getTokenOffset: () => tokenOffset,
     getTokenLength: () => stream.pos() - tokenOffset,
