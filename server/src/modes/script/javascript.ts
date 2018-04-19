@@ -350,7 +350,7 @@ export function getJavascriptMode(
       const needIndent = config.vetur.format.scriptInitialIndent;
       const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
       if (defaultFormatter === 'prettier') {
-        const code = scriptDoc.getText();
+        const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
         if (config.prettier.eslintIntegration) {
           return prettierEslintify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
