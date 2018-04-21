@@ -33,7 +33,7 @@
     "prettier": "^1.11.1",
     "prettier-eslint": "^8.8.1",
     "stylus": "^0.54.5",
-    "stylus-supremacy": "~2.7.3",
+    "stylus-supremacy": "^2.10.0",
     "typescript": "^2.8.1",
     "vscode-css-languageservice": "^3.0.3",
     "vscode-emmet-helper": "^1.1.19",
