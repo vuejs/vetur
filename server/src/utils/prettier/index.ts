@@ -40,6 +40,7 @@ export function prettierEslintify(
     const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
     const prettierifiedCode = prettierEslint({
+      filePath: require('path').dirname(filePath),
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
