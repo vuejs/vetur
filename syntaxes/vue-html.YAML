@@ -74,6 +74,17 @@ patterns:
   patterns:
   - include: '#tag-stuff'
 
+# template - single line
+- begin: (<)(template)\b(?=[^/>]*/>\s*$)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+  end: (/>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+
 - begin: (<)(template)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
