@@ -2,7 +2,7 @@
 
 Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.
 
-**html formatting is disabled by default. See [js-beautify-html](#js-beautify-html-deprecated).
+**html formatting is disabled by default. See [js-beautify-html](#js-beautify-html-deprecated).**
 
 ## Formatters
 
