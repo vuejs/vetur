@@ -1,5 +1,16 @@
 # Changelog
 
+### 0.11.8 | 2018-05-14
+
+- Update TypeScript Version to allow usage of `!` for definite assignment assertions.
+- Add single quote as trigger character. Fix #743
+- Add `arrowParens` option for Prettier
+- Upgrade vscode-emmet-helper. Fix #412. Fix #426
+- Add `vetur.completion.useScaffoldSnippets`. Fix #698
+- Skip template completion trigger in script. Fix #705
+- Fix script definition lookup position error. Fix #741
+- Add a crude file watcher. Now Vetur will pick up text change in TS/JS. Note this feature is experimental. Partially fix #355
+
 ### 0.11.7 | 2018-01-28
 
 - Better default scaffold template for TypeScript. #669.
