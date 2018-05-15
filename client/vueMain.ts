@@ -68,10 +68,7 @@ export function activate(context: ExtensionContext) {
     debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   };
 
-  const documentSelector = [
-    { language: 'vue', scheme: 'file' },
-    { language: 'vue', scheme: 'untitled' }
-  ];
+  const documentSelector = ['vue'];
   const config = workspace.getConfiguration();
 
   const clientOptions: LanguageClientOptions = {
