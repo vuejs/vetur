@@ -83,8 +83,7 @@ export function activate(context: ExtensionContext) {
     revealOutputChannelOn: RevealOutputChannelOn.Never
   };
 
-  // Create the language client and start the client.
-  const client = new LanguageClient('vue', 'Vue Language Server', serverOptions, clientOptions);
+  const client = new LanguageClient('vetur', 'Vue Language Server', serverOptions, clientOptions);
   const disposable = client.start();
   context.subscriptions.push(disposable);
   const isDecoratorEnabled = workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');

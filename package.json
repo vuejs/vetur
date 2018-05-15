@@ -17,24 +17,14 @@
     "postinstall": "if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/vscode/bin/install; fi"
   },
   "lint-staged": {
-    "*.ts": [
-      "tslint --fix",
-      "git add"
-    ]
+    "*.ts": ["tslint --fix", "git add"]
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/vuejs/vetur.git"
   },
-  "keywords": [
-    "vetur",
-    "Vue",
-    "vue",
-    "vuejs"
-  ],
-  "categories": [
-    "Programming Languages"
-  ],
+  "keywords": ["vetur", "Vue", "vue", "vuejs"],
+  "categories": ["Programming Languages"],
   "engines": {
     "vscode": "^1.18.0"
   },
@@ -42,9 +32,7 @@
     "vscode-languageclient": "^3.4.2",
     "vscode-languageserver-types": "^3.4.0"
   },
-  "activationEvents": [
-    "onLanguage:vue"
-  ],
+  "activationEvents": ["onLanguage:vue"],
   "main": "./out/vueMain",
   "contributes": {
     "commands": [
@@ -61,28 +49,18 @@
     "languages": [
       {
         "id": "vue",
-        "aliases": [
-          "Vue",
-          "vue"
-        ],
-        "extensions": [
-          ".vue"
-        ],
+        "aliases": ["Vue", "vue"],
+        "extensions": [".vue"],
         "configuration": "./languages/vue-language-configuration.json"
       },
       {
         "id": "vue-html",
-        "aliases": [
-          "Vue-html"
-        ],
+        "aliases": ["Vue-html"],
         "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
         "id": "postcss",
-        "aliases": [
-          "PostCSS",
-          "POSTCSS"
-        ],
+        "aliases": ["PostCSS", "POSTCSS"],
         "configuration": "./languages/postcss-language-configuration.json"
       }
     ],
@@ -150,7 +128,8 @@
             "docs": "md",
             "i18n": "json"
           },
-          "description": "Mapping from custom block tag name to language name. Used for generating grammar to support syntax highlighting for custom blocks."
+          "description":
+            "Mapping from custom block tag name to language name. Used for generating grammar to support syntax highlighting for custom blocks."
         },
         "vetur.validation.template": {
           "type": "boolean",
@@ -170,104 +149,56 @@
         "vetur.format.defaultFormatter.html": {
           "type": "string",
           "default": "none",
-          "enum": [
-            "none",
-            "js-beautify-html"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "html formatter of js-beautify"
-          ],
+          "enum": ["none", "js-beautify-html"],
+          "enumDescriptions": ["disable formatting", "html formatter of js-beautify"],
           "description": "Default formatter for <template> region"
         },
         "vetur.format.defaultFormatter.css": {
           "type": "string",
           "default": "prettier",
-          "enum": [
-            "none",
-            "prettier"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "css formatter using css parser from prettier"
-          ],
+          "enum": ["none", "prettier"],
+          "enumDescriptions": ["disable formatting", "css formatter using css parser from prettier"],
           "description": "Default formatter for <style> region"
         },
         "vetur.format.defaultFormatter.postcss": {
           "type": "string",
           "default": "prettier",
-          "enum": [
-            "none",
-            "prettier"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "postcss formatter using css parser from prettier"
-          ],
+          "enum": ["none", "prettier"],
+          "enumDescriptions": ["disable formatting", "postcss formatter using css parser from prettier"],
           "description": "Default formatter for <style lang='postcss'> region"
         },
         "vetur.format.defaultFormatter.scss": {
           "type": "string",
           "default": "prettier",
-          "enum": [
-            "none",
-            "prettier"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "scss formatter using scss parser from prettier"
-          ],
+          "enum": ["none", "prettier"],
+          "enumDescriptions": ["disable formatting", "scss formatter using scss parser from prettier"],
           "description": "Default formatter for <style lang='scss'> region"
         },
         "vetur.format.defaultFormatter.less": {
           "type": "string",
           "default": "prettier",
-          "enum": [
-            "none",
-            "prettier"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "less formatter using postcss parser from prettier"
-          ],
+          "enum": ["none", "prettier"],
+          "enumDescriptions": ["disable formatting", "less formatter using postcss parser from prettier"],
           "description": "Default formatter for <style lang='less'> region"
         },
         "vetur.format.defaultFormatter.stylus": {
           "type": "string",
           "default": "stylus-supremacy",
-          "enum": [
-            "none",
-            "stylus-supremacy"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "stylus formatter from stylus-supremacy"
-          ],
+          "enum": ["none", "stylus-supremacy"],
+          "enumDescriptions": ["disable formatting", "stylus formatter from stylus-supremacy"],
           "description": "Default formatter for <style lang='stylus'> region"
         },
         "vetur.format.defaultFormatter.js": {
           "type": "string",
           "default": "prettier",
-          "enum": [
-            "none",
-            "prettier",
-            "vscode-typescript"
-          ],
-          "enumDescriptions": [
-            "disable formatting",
-            "js formatter from prettier",
-            "js formatter from TypeScript"
-          ],
+          "enum": ["none", "prettier", "vscode-typescript"],
+          "enumDescriptions": ["disable formatting", "js formatter from prettier", "js formatter from TypeScript"],
           "description": "Default formatter for <script> region"
         },
         "vetur.format.defaultFormatter.ts": {
           "type": "string",
           "default": "prettier",
-          "enum": [
-            "none",
-            "prettier",
-            "vscode-typescript"
-          ],
+          "enum": ["none", "prettier", "vscode-typescript"],
           "enumDescriptions": [
             "disable formatting",
             "ts formatter using typescript parser from prettier",
@@ -291,6 +222,12 @@
           "type": "boolean",
           "default": false,
           "description": "Whether to have initial indent for <script> region"
+        },
+        "vetur.trace.server": {
+          "type": "string",
+          "enum": ["off", "messages", "verbose"],
+          "default": "off",
+          "description": "Traces the communication between VS Code and Vue Language Server."
         }
       }
     }
