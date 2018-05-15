@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.11.9 | 2018-05-14
+### 0.12.1 | 2018-05-14
 
 - Haml syntax highlighting. #739.
 - Remove restricted file schemes for live share.
