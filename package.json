@@ -96,6 +96,7 @@
           "text.html.vue-html": "vue-html",
           "text.jade": "jade",
           "text.pug": "pug",
+          "text.haml": "haml",
           "source.css": "css",
           "source.css.scss": "scss",
           "source.css.less": "less",

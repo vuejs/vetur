@@ -1,11 +1,72 @@
 {
-  "scopeName": "source.vue",
-  "fileTypes": [
-    "vue"
-  ],
-  "uuid": "5512c10d-4cc5-434c-b8fc-53b912f55ab3",
-  "name": "Vue Component",
   "repository": {
+    "string-double-quoted": {
+      "end": "\"",
+      "name": "string.quoted.double.html",
+      "begin": "\"",
+      "patterns": [
+        {
+          "include": "#vue-interpolations"
+        },
+        {
+          "include": "#entities"
+        }
+      ],
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.html"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.html"
+        }
+      }
+    },
+    "entities": {
+      "patterns": [
+        {
+          "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
+          "name": "constant.character.entity.html",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.entity.html"
+            },
+            "3": {
+              "name": "punctuation.definition.entity.html"
+            }
+          }
+        },
+        {
+          "match": "&",
+          "name": "invalid.illegal.bad-ampersand.html"
+        }
+      ]
+    },
+    "vue-interpolations": {
+      "patterns": [
+        {
+          "end": "\\}\\}\\}?",
+          "name": "expression.embbeded.vue",
+          "begin": "\\{\\{\\{?",
+          "patterns": [
+            {
+              "include": "source.js"
+            }
+          ],
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.generic.begin.html"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.generic.end.html"
+            }
+          }
+        }
+      ]
+    },
     "tag-stuff": {
       "patterns": [
         {
@@ -25,9 +86,100 @@
         }
       ]
     },
+    "string-single-quoted": {
+      "end": "'",
+      "name": "string.quoted.single.html",
+      "begin": "'",
+      "patterns": [
+        {
+          "include": "#vue-interpolations"
+        },
+        {
+          "include": "#entities"
+        }
+      ],
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.html"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.html"
+        }
+      }
+    },
+    "tag-id-attribute": {
+      "end": "(?<='|\")",
+      "name": "meta.attribute-with-value.id.html",
+      "begin": "\\b(id)\\b\\s*(=)",
+      "captures": {
+        "1": {
+          "name": "entity.other.attribute-name.id.html"
+        },
+        "2": {
+          "name": "punctuation.separator.key-value.html"
+        }
+      },
+      "patterns": [
+        {
+          "end": "\"",
+          "name": "string.quoted.double.html",
+          "begin": "\"",
+          "patterns": [
+            {
+              "include": "#vue-interpolations"
+            },
+            {
+              "include": "#entities"
+            }
+          ],
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.html"
+            }
+          },
+          "contentName": "meta.toc-list.id.html",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.html"
+            }
+          }
+        },
+        {
+          "end": "'",
+          "name": "string.quoted.single.html",
+          "begin": "'",
+          "patterns": [
+            {
+              "include": "#vue-interpolations"
+            },
+            {
+              "include": "#entities"
+            }
+          ],
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.html"
+            }
+          },
+          "contentName": "meta.toc-list.id.html",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.html"
+            }
+          }
+        }
+      ]
+    },
+    "tag-generic-attribute": {
+      "match": "\\b([a-zA-Z\\-:]+)",
+      "name": "entity.other.attribute-name.html"
+    },
     "vue-directives": {
       "end": "(?<='|\")",
       "name": "meta.directive.vue",
+      "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-]+)(?:\\:([a-zA-Z\\-]+))?(?:\\.([a-zA-Z\\-]+))*\\s*(=)",
       "captures": {
         "1": {
           "name": "entity.other.attribute-name.html"
@@ -48,148 +200,21 @@
           "name": "punctuation.separator.key-value.html"
         }
       },
-      "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-]+)(?:\\:([a-zA-Z\\-]+))?(?:\\.([a-zA-Z\\-]+))*\\s*(=)",
       "patterns": [
         {
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.begin.html"
-            }
-          },
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.end.html"
-            }
-          },
           "end": "\"",
           "name": "source.directive.vue",
-          "patterns": [
-            {
-              "include": "source.js"
-            }
-          ],
-          "begin": "\""
-        },
-        {
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.begin.html"
-            }
-          },
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.end.html"
-            }
-          },
-          "end": "'",
-          "name": "source.directive.vue",
-          "patterns": [
-            {
-              "include": "source.js"
-            }
-          ],
-          "begin": "'"
-        }
-      ]
-    },
-    "entities": {
-      "patterns": [
-        {
-          "name": "constant.character.entity.html",
-          "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
-          "captures": {
-            "1": {
-              "name": "punctuation.definition.entity.html"
-            },
-            "3": {
-              "name": "punctuation.definition.entity.html"
-            }
-          }
-        },
-        {
-          "name": "invalid.illegal.bad-ampersand.html",
-          "match": "&"
-        }
-      ]
-    },
-    "vue-interpolations": {
-      "patterns": [
-        {
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.generic.begin.html"
-            }
-          },
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.generic.end.html"
-            }
-          },
-          "end": "\\}\\}\\}?",
-          "name": "expression.embbeded.vue",
-          "patterns": [
-            {
-              "include": "source.js"
-            }
-          ],
-          "begin": "\\{\\{\\{?"
-        }
-      ]
-    },
-    "string-single-quoted": {
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.begin.html"
-        }
-      },
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.html"
-        }
-      },
-      "end": "'",
-      "name": "string.quoted.single.html",
-      "patterns": [
-        {
-          "include": "#vue-interpolations"
-        },
-        {
-          "include": "#entities"
-        }
-      ],
-      "begin": "'"
-    },
-    "tag-id-attribute": {
-      "end": "(?<='|\")",
-      "name": "meta.attribute-with-value.id.html",
-      "captures": {
-        "1": {
-          "name": "entity.other.attribute-name.id.html"
-        },
-        "2": {
-          "name": "punctuation.separator.key-value.html"
-        }
-      },
-      "begin": "\\b(id)\\b\\s*(=)",
-      "patterns": [
-        {
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.begin.html"
-            }
-          },
-          "contentName": "meta.toc-list.id.html",
-          "end": "\"",
-          "name": "string.quoted.double.html",
-          "patterns": [
-            {
-              "include": "#vue-interpolations"
-            },
-            {
-              "include": "#entities"
-            }
-          ],
           "begin": "\"",
+          "patterns": [
+            {
+              "include": "source.js"
+            }
+          ],
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.html"
+            }
+          },
           "endCaptures": {
             "0": {
               "name": "punctuation.definition.string.end.html"
@@ -197,23 +222,19 @@
           }
         },
         {
+          "end": "'",
+          "name": "source.directive.vue",
+          "begin": "'",
+          "patterns": [
+            {
+              "include": "source.js"
+            }
+          ],
           "beginCaptures": {
             "0": {
               "name": "punctuation.definition.string.begin.html"
             }
           },
-          "contentName": "meta.toc-list.id.html",
-          "end": "'",
-          "name": "string.quoted.single.html",
-          "patterns": [
-            {
-              "include": "#vue-interpolations"
-            },
-            {
-              "include": "#entities"
-            }
-          ],
-          "begin": "'",
           "endCaptures": {
             "0": {
               "name": "punctuation.definition.string.end.html"
@@ -221,54 +242,27 @@
           }
         }
       ]
-    },
-    "string-double-quoted": {
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.begin.html"
-        }
-      },
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.html"
-        }
-      },
-      "end": "\"",
-      "name": "string.quoted.double.html",
-      "patterns": [
-        {
-          "include": "#vue-interpolations"
-        },
-        {
-          "include": "#entities"
-        }
-      ],
-      "begin": "\""
-    },
-    "tag-generic-attribute": {
-      "name": "entity.other.attribute-name.html",
-      "match": "\\b([a-zA-Z\\-:]+)"
     }
   },
+  "uuid": "5512c10d-4cc5-434c-b8fc-53b912f55ab3",
   "patterns": [
     {
       "end": "--\\s*>",
       "name": "comment.block.html",
+      "begin": "<!--",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.html"
         }
       },
-      "begin": "<!--",
       "patterns": [
         {
-          "name": "invalid.illegal.bad-comments-or-CDATA.html",
-          "match": "--"
+          "match": "--",
+          "name": "invalid.illegal.bad-comments-or-CDATA.html"
         }
       ]
     },
     {
-      "end": "(/>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -277,6 +271,7 @@
           "name": "entity.name.tag.template.html"
         }
       },
+      "end": "(/>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.end.html"
@@ -290,7 +285,6 @@
       ]
     },
     {
-      "end": "(</)(template)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -299,6 +293,7 @@
           "name": "entity.name.tag.template.html"
         }
       },
+      "end": "(</)(template)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -316,18 +311,17 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</template>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</template>)",
           "begin": "(>)"
         }
       ]
     },
     {
-      "end": "(</)(template)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -336,6 +330,7 @@
           "name": "entity.name.tag.template.html"
         }
       },
+      "end": "(</)(template)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -353,12 +348,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</template>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</template>)",
           "contentName": "text.jade",
           "begin": "(>)",
           "patterns": [
@@ -370,7 +365,6 @@
       ]
     },
     {
-      "end": "(</)(template)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -379,6 +373,50 @@
           "name": "entity.name.tag.template.html"
         }
       },
+      "end": "(</)(template)(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.end.html"
+        }
+      },
+      "begin": "(<)(template)\\b(?=[^>]*lang=('haml'|\"haml\"))(?![^/>]*/>\\s*$)",
+      "patterns": [
+        {
+          "include": "#tag-stuff"
+        },
+        {
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          },
+          "end": "(?=</template>)",
+          "contentName": "text.haml",
+          "begin": "(>)",
+          "patterns": [
+            {
+              "include": "text.haml"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
+        }
+      },
+      "end": "(</)(template)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -396,12 +434,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</template>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</template>)",
           "contentName": "text.jade.slm",
           "begin": "(>)",
           "patterns": [
@@ -413,7 +451,6 @@
       ]
     },
     {
-      "end": "(</)(template)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -422,6 +459,7 @@
           "name": "entity.name.tag.template.html"
         }
       },
+      "end": "(</)(template)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -439,12 +477,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</template>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</template>)",
           "contentName": "text.html.vue-html",
           "begin": "(>)",
           "patterns": [
@@ -456,7 +494,6 @@
       ]
     },
     {
-      "end": "(/>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -465,6 +502,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(/>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.end.html"
@@ -478,7 +516,6 @@
       ]
     },
     {
-      "end": "(</)(style)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -487,6 +524,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(</)(style)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -504,18 +542,17 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</style>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</style>)",
           "begin": "(>)"
         }
       ]
     },
     {
-      "end": "(</)(style)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -524,6 +561,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(</)(style)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -541,12 +579,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</style>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</style>)",
           "contentName": "source.sass",
           "begin": "(>)",
           "patterns": [
@@ -558,7 +596,6 @@
       ]
     },
     {
-      "end": "(</)(style)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -567,6 +604,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(</)(style)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -584,12 +622,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</style>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</style>)",
           "contentName": "source.css.scss",
           "begin": "(>)",
           "patterns": [
@@ -601,7 +639,6 @@
       ]
     },
     {
-      "end": "(</)(style)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -610,6 +647,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(</)(style)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -627,12 +665,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</style>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</style>)",
           "contentName": "source.css.less",
           "begin": "(>)",
           "patterns": [
@@ -644,7 +682,6 @@
       ]
     },
     {
-      "end": "(</)(style)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -653,6 +690,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(</)(style)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -670,12 +708,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</style>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</style>)",
           "contentName": "source.stylus",
           "begin": "(>)",
           "patterns": [
@@ -687,7 +725,6 @@
       ]
     },
     {
-      "end": "(</)(style)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -696,6 +733,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(</)(style)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -713,12 +751,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</style>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</style>)",
           "contentName": "source.css.postcss",
           "begin": "(>)",
           "patterns": [
@@ -730,7 +768,6 @@
       ]
     },
     {
-      "end": "(</)(style)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -739,6 +776,7 @@
           "name": "entity.name.tag.style.html"
         }
       },
+      "end": "(</)(style)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -756,12 +794,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</style>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</style>)",
           "contentName": "source.css",
           "begin": "(>)",
           "patterns": [
@@ -773,7 +811,6 @@
       ]
     },
     {
-      "end": "(/>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -782,6 +819,7 @@
           "name": "entity.name.tag.script.html"
         }
       },
+      "end": "(/>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.end.html"
@@ -795,7 +833,6 @@
       ]
     },
     {
-      "end": "(</)(script)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -804,6 +841,7 @@
           "name": "entity.name.tag.script.html"
         }
       },
+      "end": "(</)(script)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -821,18 +859,17 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</script>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</script>)",
           "begin": "(>)"
         }
       ]
     },
     {
-      "end": "(</)(script)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -841,6 +878,7 @@
           "name": "entity.name.tag.script.html"
         }
       },
+      "end": "(</)(script)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -858,12 +896,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</script>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</script>)",
           "contentName": "source.ts",
           "begin": "(>)",
           "patterns": [
@@ -875,7 +913,6 @@
       ]
     },
     {
-      "end": "(</)(script)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -884,6 +921,7 @@
           "name": "entity.name.tag.script.html"
         }
       },
+      "end": "(</)(script)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -901,12 +939,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</script>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</script>)",
           "contentName": "source.coffee",
           "begin": "(>)",
           "patterns": [
@@ -918,7 +956,6 @@
       ]
     },
     {
-      "end": "(</)(script)(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -927,6 +964,7 @@
           "name": "entity.name.tag.script.html"
         }
       },
+      "end": "(</)(script)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -944,12 +982,12 @@
           "include": "#tag-stuff"
         },
         {
-          "end": "(?=</script>)",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
+          "end": "(?=</script>)",
           "contentName": "source.js",
           "begin": "(>)",
           "patterns": [
@@ -1046,5 +1084,10 @@
         }
       ]
     }
-  ]
+  ],
+  "scopeName": "source.vue",
+  "fileTypes": [
+    "vue"
+  ],
+  "name": "Vue Component"
 }
