@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.11.9 | 2018-05-14
+
+- Haml syntax highlighting. #739.
+- Remove restricted file schemes for live share.
+- Fix an issue where Vetur failed to read emmet configs and cause emmet and other completions to fail.
+
 ### 0.11.8 | 2018-05-14
 
 - Update TypeScript Version to allow usage of `!` for definite assignment assertions.
