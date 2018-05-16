@@ -32,7 +32,7 @@ Vetur provides a setting `vetur.grammar.customBlocks` that defaults to:
 
 You can
   - change `vetur.grammar.customBlocks`
-  - run the command "Vetur: Generate grammar from `vetur.grammar.customBlocks`" 
+  - run the command "Vetur: Generate grammar from `vetur.grammar.customBlocks`
   - restart VS Code
 to get syntax highlighting for custom blocks.
 
