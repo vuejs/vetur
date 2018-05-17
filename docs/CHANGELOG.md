@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.12.2 | 2018-05-17
+
+- Temporarily disable file watcher for perf problem & will bring it back in next version. #789.
+
 ### 0.12.1 | 2018-05-14
 
 - Haml syntax highlighting. #739.
