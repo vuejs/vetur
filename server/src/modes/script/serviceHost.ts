@@ -56,7 +56,11 @@ const defaultCompilerOptions: ts.CompilerOptions = {
   allowSyntheticDefaultImports: true
 };
 
-export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
+export function getServiceHost(
+  workspacePath: string,
+  jsDocuments: LanguageModelCache<TextDocument>,
+  enableExperimentalWatcher: boolean
+) {
   let currentScriptDoc: TextDocument;
   const versions = new Map<string, number>();
   const scriptDocs = new Map<string, TextDocument>();
@@ -74,14 +78,22 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     ignored: defaultIgnorePatterns(workspacePath)
   });
 
-  watcher
-    .on('change', filterNonScript(path => {
-      const ver = versions.get(path) || 0;
-      versions.set(path, ver + 1);
-    }))
-    .on('add', filterNonScript(path => {
-      files.push(path);
-    }));
+  if (enableExperimentalWatcher) {
+    watcher
+      .on(
+        'change',
+        filterNonScript(path => {
+          const ver = versions.get(path) || 0;
+          versions.set(path, ver + 1);
+        })
+      )
+      .on(
+        'add',
+        filterNonScript(path => {
+          files.push(path);
+        })
+      );
+  }
 
   function updateCurrentTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
@@ -213,9 +225,11 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     updateCurrentTextDocument,
     getScriptDocByFsPath,
     dispose: () => {
-      watcher.close();
+      if (enableExperimentalWatcher && watcher) {
+        watcher.close();
+      }
       jsLanguageService.dispose();
-    },
+    }
   };
 }
 
