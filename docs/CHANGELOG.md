@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.12.3 | 2018-05-17
+
+- Removed chokidar watcher.
+
 ### 0.12.2 | 2018-05-17
 
 - Temporarily disable file watcher for perf problem & will bring it back in next version. #789.
