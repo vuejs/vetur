@@ -21,9 +21,7 @@
   },
   "homepage": "https://github.com/vuejs/vetur/tree/master/server",
   "dependencies": {
-    "@types/chokidar": "^1.7.4",
     "bootstrap-vue-helper-json": "^1.1.1",
-    "chokidar": "^2.0.2",
     "element-helper-json": "^2.0.2",
     "eslint": "^4.13.1",
     "eslint-plugin-vue": "^4.0.0",

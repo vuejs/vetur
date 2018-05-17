@@ -60,7 +60,7 @@ export function getJavascriptMode(
     return vueDocument.getLanguageRangeByType('script');
   });
 
-  const serviceHost = getServiceHost(workspacePath, jsDocuments, false);
+  const serviceHost = getServiceHost(workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
