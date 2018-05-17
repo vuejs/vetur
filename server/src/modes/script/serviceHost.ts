@@ -73,12 +73,13 @@ export function getServiceHost(
     ...parsedConfig.options
   };
   compilerOptions.allowNonTsExtensions = true;
-  const watcher = chokidar.watch(workspacePath, {
-    ignoreInitial: true,
-    ignored: defaultIgnorePatterns(workspacePath)
-  });
 
   if (enableExperimentalWatcher) {
+    const watcher = chokidar.watch(workspacePath, {
+      ignoreInitial: true,
+      ignored: defaultIgnorePatterns(workspacePath)
+    });
+
     watcher
       .on(
         'change',
