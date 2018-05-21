@@ -1,6 +1,24 @@
 # Setup
 
-## Overall
+## Extensions
+
+- Install [Sass](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented) for sass syntax highlighting.
+- Install [language-stylus](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for stylus syntax highlighting.
+- Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for linting vue and js files.
+
+## VS Code Config
+
+- Add `vue` to your `eslint.validate` setting, for example:
+
+  ```json
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue"
+  ]
+  ```
+
+## Project Setup
 
 - At project root create a `jsconfig.json` or `tsconfig.json` that `include` all vue files and files that they import from, for example:
 
@@ -75,24 +93,3 @@ index.vue
 import a from 'components/a.vue'
 import b from 'components/b.vue
 ```
-
-### ESLint
-
-- Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- Add `vue` to your `eslint.validate` setting, for example:
-
-  ```json
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "vue"
-  ]
-  ```
-
-### Sass
-
-- Install [Sass extension](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented) for Sass support
-
-### Stylus
-
-- Install [Stylus extension](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for Stylus support
