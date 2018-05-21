@@ -33,7 +33,7 @@ import Uri from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 
-import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
+import { nullMode, NULL_SIGNATURE } from '../nullMode';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -48,7 +48,10 @@ export function getJavascriptMode(
   workspacePath: string | null | undefined
 ): ScriptMode {
   if (!workspacePath) {
-    return { ...nullMode, findComponents: () => [] };
+    return {
+      ...nullMode,
+      findComponents: () => []
+    };
   }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
@@ -142,7 +145,7 @@ export function getJavascriptMode(
     doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
       const { service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
-        return NULL_COMPLETION;
+        return item;
       }
 
       const fileFsPath = getFileFsPath(doc.uri);

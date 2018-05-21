@@ -8,8 +8,8 @@ import * as assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-types';
 import * as url from 'url';
 
-import { DocumentContext } from '../../../service';
 import { findDocumentLinks } from '../services/htmlLinks';
+import { DocumentContext } from '../../../types';
 
 suite('HTML Link Detection', () => {
   function getDocumentContext(documentUrl: string): DocumentContext {

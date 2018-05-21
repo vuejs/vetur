@@ -18,7 +18,6 @@ import {
 import {
   Color, ColorInformation, ColorPresentation
 } from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
-import { DocumentContext } from '../service';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
@@ -26,8 +25,8 @@ import { getVueMode } from './vue';
 import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from './style';
 import { getJavascriptMode } from './script/javascript';
 import { getVueHTMLMode } from './template';
-
 import { getStylusMode } from './style/stylus';
+import { DocumentContext } from '../types';
 
 export interface LanguageMode {
   getId(): string;
