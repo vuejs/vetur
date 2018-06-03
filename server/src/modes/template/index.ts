@@ -1,9 +1,9 @@
+import * as _ from 'lodash';
+
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { DocumentContext } from '../../service';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
-
 import { HTMLDocument } from './parser/htmlParser';
 import { doComplete } from './services/htmlCompletion';
 import { doHover } from './services/htmlHover';
@@ -17,8 +17,7 @@ import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings } from './tagProviders';
 import { ScriptMode } from '../script/javascript';
 import { getComponentTags, getEnabledTagProviders } from './tagProviders';
-
-import * as _ from 'lodash';
+import { DocumentContext } from '../../types';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
