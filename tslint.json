@@ -20,7 +20,6 @@
     "quotemark": [true, "single", "avoid-escape"],
     "whitespace": true,
     "semicolon": [true, "always"],
-    "space-before-function-paren": [true, {"anonymous": "always", "named": "never"}],
     "triple-equals": true,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   },

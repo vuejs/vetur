@@ -45,6 +45,7 @@ export interface LanguageMode {
   findDocumentColors?(document: TextDocument): ColorInformation[];
   getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
 
+  onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;
   dispose(): void;
 }

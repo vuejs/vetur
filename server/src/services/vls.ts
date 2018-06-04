@@ -29,7 +29,8 @@ import {
   TextDocumentPositionParams,
   DocumentLinkParams,
   DocumentFormattingParams,
-  DidChangeConfigurationParams
+  DidChangeConfigurationParams,
+  FileChangeType
 } from 'vscode-languageserver';
 import Uri from 'vscode-uri';
 import * as path from 'path';
@@ -102,6 +103,15 @@ export class VLS {
     });
     this.documentService.onDidClose(e => {
       this.removeDocument(e.document);
+    });
+    this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
+      const jsMode = this.languageModes.getMode('javascript');
+      changes.forEach(c => {
+        if (c.type === FileChangeType.Changed) {
+          const fsPath = Uri.parse(c.uri).fsPath;
+          jsMode.onDocumentChanged!(fsPath);
+        }
+      });
     });
   }
 

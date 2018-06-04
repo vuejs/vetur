@@ -36,7 +36,7 @@ const vueSys: ts.System = {
 
 if (ts.sys.realpath) {
   const realpath = ts.sys.realpath;
-  vueSys.realpath = function (path) {
+  vueSys.realpath = function(path) {
     if (isVueProject(path)) {
       return realpath(path.slice(0, -3)) + '.ts';
     }
@@ -55,10 +55,7 @@ const defaultCompilerOptions: ts.CompilerOptions = {
   allowSyntheticDefaultImports: true
 };
 
-export function getServiceHost(
-  workspacePath: string,
-  jsDocuments: LanguageModelCache<TextDocument>
-) {
+export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
   let currentScriptDoc: TextDocument;
   const versions = new Map<string, number>();
   const scriptDocs = new Map<string, TextDocument>();
@@ -96,6 +93,11 @@ export function getServiceHost(
       service: jsLanguageService,
       scriptDoc: currentScriptDoc
     };
+  }
+
+  function updateTypescriptDocument(filePath: string) {
+    const ver = versions.get(filePath) || 0;
+    versions.set(filePath, ver + 1);
   }
 
   function getScriptDocByFsPath(fsPath: string) {
@@ -200,6 +202,7 @@ export function getServiceHost(
   let jsLanguageService = ts.createLanguageService(host);
   return {
     updateCurrentTextDocument,
+    updateTypescriptDocument,
     getScriptDocByFsPath,
     dispose: () => {
       jsLanguageService.dispose();
