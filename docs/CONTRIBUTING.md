@@ -28,8 +28,9 @@ To compile:
 
 ```bash
 yarn
-cd server && yarn && yarn compile
-cd ../client && yarn
+cd server && yarn && cd ..
+yarn compile or
+yarn watch
 ```
 
 To debug:
@@ -39,10 +40,11 @@ To debug:
 - As the client launches the language server lazily, open any .vue file so that the server is started. 
 - Run the server configuration which binds the server code to port 6005 to enable debugging.
 - At this point breakpoints in both server and client code should work. 
+- Alternatively, you can run the 'all' compound debug config too. You need to make sure to open a .vue file within 10 seconds so the server can be started and attached to
 
 It should look like this:
 
-![VScode Debugging](images/debug.png)
+![VScode Debugging](https://vuejs.github.io/vetur/images/debug.png)
 
 #### Grammar Dev Guide
 
@@ -53,7 +55,7 @@ It should look like this:
 
 > Tip: In VS Code, use F1 -> Inspect TM Scopes:
 
-![scope](./images/scope.png)
+![scope](https://github.com/vuejs/vetur/blob/master/asset/scope.png)
 
 ## Doc
 
