@@ -95,7 +95,8 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     };
   }
 
-  function updateTypescriptDocument(filePath: string) {
+  // External Documents: JS/TS, non Vue documents
+  function updateExternalDocument(filePath: string) {
     const ver = versions.get(filePath) || 0;
     versions.set(filePath, ver + 1);
   }
@@ -202,7 +203,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   let jsLanguageService = ts.createLanguageService(host);
   return {
     updateCurrentTextDocument,
-    updateTypescriptDocument,
+    updateExternalDocument,
     getScriptDocByFsPath,
     dispose: () => {
       jsLanguageService.dispose();

@@ -112,6 +112,10 @@ export class VLS {
           jsMode.onDocumentChanged!(fsPath);
         }
       });
+
+      this.documentService.getAllDocuments().forEach(d => {
+        this.triggerValidation(d);
+      });
     });
   }
 

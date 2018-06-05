@@ -395,7 +395,7 @@ export function getJavascriptMode(
       jsDocuments.onDocumentRemoved(document);
     },
     onDocumentChanged(filePath: string) {
-      serviceHost.updateTypescriptDocument(filePath);
+      serviceHost.updateExternalDocument(filePath);
     },
     dispose() {
       serviceHost.dispose();
