@@ -2,6 +2,16 @@
 
 Vetur provides error-checking and linting.
 
+## Error Checking
+
+Vetur has error checking for the following languages:
+
+- `<template>`: `html`
+- `<style>`: `css`, `scss`, `less`
+- `<script>`: `js`, `ts`
+
+You can selectively turn error checking off by `vetur.validation.[template/style/script]`.
+
 ## Linting
 
 Install [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for the best linting experience. Vetur's template linting is only for quick start and does not support rule configuration.
