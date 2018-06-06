@@ -97,7 +97,6 @@
         "embeddedLanguages": {
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
-          "text.jade": "jade",
           "text.pug": "pug",
           "text.haml": "haml",
           "source.css": "css",
