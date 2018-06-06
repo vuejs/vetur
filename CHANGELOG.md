@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.12.4 | 2018-06-05
+
+- Improved file watching that updates completion and diagnostics in Vue files when TS/JS file changes. #355
+
 ### 0.12.3 | 2018-05-17
 
 - Removed chokidar watcher.
