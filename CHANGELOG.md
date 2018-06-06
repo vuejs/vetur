@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.12.5 | 2018-06-06
+
+- Use `source.js#expression` for Vue interpolation values. Fix #811 and #804
+- Fix a pug syntax highlighting issue. #812
+
 ### 0.12.4 | 2018-06-05
 
 - Improved file watching that updates completion and diagnostics in Vue files when TS/JS file changes. #355
