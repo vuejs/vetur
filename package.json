@@ -4,7 +4,7 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p . && tsc -p server",
@@ -39,7 +39,7 @@
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.18.0"
+    "vscode": "^1.24.0"
   },
   "dependencies": {
     "vscode-languageclient": "^3.4.2",
