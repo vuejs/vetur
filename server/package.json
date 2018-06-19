@@ -22,6 +22,7 @@
   "homepage": "https://github.com/vuejs/vetur/tree/master/server",
   "dependencies": {
     "bootstrap-vue-helper-json": "^1.1.1",
+    "buefy-helper-json": "^1.0.1",
     "element-helper-json": "^2.0.2",
     "eslint": "^4.13.1",
     "eslint-plugin-vue": "^4.0.0",
