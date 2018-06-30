@@ -404,7 +404,7 @@ repository:
 
   vue-directives:
     name: meta.directive.vue
-    begin: (?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*\s*(=)
+    begin: (?:\b(v-)|(:|@))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
     end: (?<='|")
     captures:
       '1': {name: entity.other.attribute-name.html}
@@ -469,7 +469,7 @@ repository:
 
   tag-generic-attribute:
     name: entity.other.attribute-name.html
-    match: \b([a-zA-Z\-:]+)
+    match: \b([a-zA-Z\-:_]+)
 
   tag-id-attribute:
     name: meta.attribute-with-value.id.html
