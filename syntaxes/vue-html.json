@@ -104,7 +104,7 @@
                     "name": "punctuation.separator.key-value.html"
                 }
             }, 
-            "begin": "((?:\\b(v-)|(:|@))([a-zA-Z0-9\\-]+)(?:\\:([a-zA-Z0-9\\-]+))?(?:\\.([a-zA-Z0-9\\-]+))*)\\s*(=)", 
+            "begin": "((?:\\b(v-)|(:|@))([a-zA-Z0-9\\-_]+)(?:\\:([a-zA-Z0-9\\-_]+))?(?:\\.([a-zA-Z0-9\\-_]+))*)\\s*(=)", 
             "end": "(?<='|\")|(?=[\\s<>`])", 
             "name": "meta.directive.vue", 
             "patterns": [
@@ -151,7 +151,7 @@
             ]
         }, 
         "tag-generic-attribute": {
-            "match": "(?<=[^=])\\b([a-zA-Z0-9:-]+)", 
+            "match": "(?<=[^=])\\b([a-zA-Z0-9:\\-_]+)", 
             "name": "entity.other.attribute-name.html"
         }, 
         "tag-id-attribute": {
