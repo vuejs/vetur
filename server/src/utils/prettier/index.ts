@@ -40,7 +40,9 @@ export function prettierEslintify(
     const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
     const prettierifiedCode = prettierEslint({
-      filePath: require('path').dirname(filePath),
+      // filePath will lead to Error: No parser could be inferred for file
+      // maybe pass the vue file's content as text and the corresponding filePath?
+      // filePath: require('path').dirname(filePath),
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
