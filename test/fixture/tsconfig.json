@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "lib": [
+      "es5", "es2015.collection", "es2015.promise", "dom", "es2016.array.include"
+    ],
+    "allowJs": true
+  }
+}
