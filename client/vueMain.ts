@@ -74,8 +74,8 @@ export function activate(context: ExtensionContext) {
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      // the settings to synchronize
-      configurationSection: ['vetur', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy']
+      configurationSection: ['vetur', 'emmet', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy'],
+      fileEvents: vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', true, false, true)
     },
     initializationOptions: {
       config
@@ -83,8 +83,7 @@ export function activate(context: ExtensionContext) {
     revealOutputChannelOn: RevealOutputChannelOn.Never
   };
 
-  // Create the language client and start the client.
-  const client = new LanguageClient('vue', 'Vue Language Server', serverOptions, clientOptions);
+  const client = new LanguageClient('vetur', 'Vue Language Server', serverOptions, clientOptions);
   const disposable = client.start();
   context.subscriptions.push(disposable);
   const isDecoratorEnabled = workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');

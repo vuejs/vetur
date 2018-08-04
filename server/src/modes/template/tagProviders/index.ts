@@ -2,7 +2,13 @@ import { IHTMLTagProvider } from './common';
 import { getHTML5TagProvider } from './htmlTags';
 import { getVueTagProvider } from './vueTags';
 import { getRouterTagProvider } from './routerTags';
-import { elementTagProvider, onsenTagProvider, bootstrapTagProvider, vuetifyTagProvider } from './externalTagProviders';
+import {
+  elementTagProvider,
+  onsenTagProvider,
+  bootstrapTagProvider,
+  buefyTagProvider,
+  vuetifyTagProvider
+} from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
 
@@ -16,6 +22,7 @@ export let allTagProviders: IHTMLTagProvider[] = [
   elementTagProvider,
   onsenTagProvider,
   bootstrapTagProvider,
+  buefyTagProvider,
   vuetifyTagProvider
 ];
 
@@ -31,6 +38,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     element: false,
     onsen: false,
     bootstrap: false,
+    buefy: false,
     vuetify: false
   };
   if (!workspacePath) {
@@ -53,6 +61,9 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
     if (packageJson.dependencies['bootstrap-vue']) {
       settings['bootstrap'] = true;
+    }
+    if (packageJson.dependencies['buefy']) {
+      settings['buefy'] = true;
     }
     if (packageJson.dependencies['vuetify']) {
       settings['vuetify'] = true;

@@ -5,7 +5,7 @@ out/
 
 server/dist
 
-docs/_book
+docs/.vuepress/dist
 
 *.zip
 *.vsix

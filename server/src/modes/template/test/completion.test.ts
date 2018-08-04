@@ -17,7 +17,7 @@ const setup: CompletionTestSetup = {
   docUri: 'test://test/test.html',
   doComplete(doc, pos) {
     const htmlDoc = parseHTMLDocument(doc);
-    return doComplete(doc, pos, htmlDoc, allTagProviders);
+    return doComplete(doc, pos, htmlDoc, allTagProviders, {});
   }
 };
 
@@ -195,7 +195,6 @@ suite('HTML Completion', () => {
     html`<li/|>`.count(0);
     html`  <div/|   `.count(0);
     html`<li><br/|>`.count(0);
-    html`<li><br>a/|`.count(0);
 
     html`<foo><br/></ f|>`.has('/foo').become('<foo><br/></foo>');
     html`<li><div/></|`.has('/li').become('<li><div/></li>');
@@ -239,6 +238,20 @@ suite('HTML Completion', () => {
     <body>
       <div>
       </div>`);
+  });
+
+  test('Complete interpolation', () => {
+    html`{{|}}`
+      .hasNo('div');
+    html`{{d|}}`
+      .hasNo('div');
+    html`<div>{{d|}}</div>`
+      .hasNo('div');
+    html`<div>{{d|`
+      .hasNo('div');
+    html`<div>{{d}}</|`
+      .has('/div')
+      .become('<div>{{d}}</div>');
   });
 
   test('Vue complete', function () {
@@ -333,7 +346,7 @@ suite('HTML Completion', () => {
         doComplete(doc, pos) {
           const htmlDoc = parseHTMLDocument(doc);
           const enabledTagProviders = getEnabledTagProviders(settings);
-          return doComplete(doc, pos, htmlDoc, enabledTagProviders);
+          return doComplete(doc, pos, htmlDoc, enabledTagProviders, {});
         }
       });
     }

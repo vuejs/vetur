@@ -1,5 +1,14 @@
 # FAQ
 
+## No Syntax Highlighting & No Language Features working
+
+This is probably caused by VS Code not installing Vetur properly. Try these methods:
+
+- Run command: `Developer: Reinstall Extension` for Vetur.
+- Remove Vetur in your [extensions folder](https://code.visualstudio.com/docs/editor/extension-gallery#_common-questions) and do a clean reinstall.
+- (Windows): Try reinstall Vetur with admin permission.
+- If nothing above works, download the [latest pre-packaged vsix file](https://github.com/vuejs/vetur/releases) and [install through vsix](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
+
 ## Vetur Crash
 
 - If it says `cannot find module <some-module>`, go to Vetur's client code installation directory and run `yarn` or `npm install`.
@@ -33,6 +42,7 @@
   // tsconfig.json
   {
     "compilerOptions": {
+      "baseUrl": ".",
       "paths": {
         "@/*": [
           "src/*"
@@ -57,3 +67,20 @@ See https://github.com/vuejs/vetur/blob/master/CHANGELOG.md#vetur-formatting-cha
 
 If template still gets no formatting after enabling js-beautify, it is probably caused by [prettier-vscode](https://github.com/prettier/prettier-vscode) extension.  
 You can disable it for Vue: https://github.com/prettier/prettier-vscode#prettierdisablelanguages-default-
+
+## Install from source.
+
+To build and install the extension from source, you need to install [`vsce`](https://code.visualstudio.com/docs/extensions/publish-extension).
+
+Then, clone the repository and compile it.
+
+```
+git clone https://github.com/vuejs/vetur
+cd vetur
+yarn 
+cd server && yarn && yarn compile 
+cd ../ && yarn compile 
+vsce package
+```
+  
+Now you'll find `vetur-{version}.vsix`, you can install it by editor command "Install from VSIX".

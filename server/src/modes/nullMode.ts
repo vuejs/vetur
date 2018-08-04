@@ -12,8 +12,7 @@ export const NULL_SIGNATURE = {
 
 export const NULL_COMPLETION = {
   isIncomplete: false,
-  items: [],
-  label: ''
+  items: []
 };
 
 export const nullMode: LanguageMode = {

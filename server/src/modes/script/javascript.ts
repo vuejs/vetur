@@ -33,7 +33,11 @@ import Uri from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 
-import { nullMode, NULL_SIGNATURE, NULL_COMPLETION } from '../nullMode';
+import { nullMode, NULL_SIGNATURE } from '../nullMode';
+
+// Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
+// https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
+const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
 export interface ScriptMode extends LanguageMode {
   findComponents(document: TextDocument): ComponentInfo[];
@@ -62,7 +66,7 @@ export function getJavascriptMode(
   });
 
   const serviceHost = getServiceHost(workspacePath, jsDocuments);
-  const { updateCurrentTextDocument, getScriptDocByFsPath } = serviceHost;
+  const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
   return {
@@ -131,6 +135,10 @@ export function getJavascriptMode(
 
       const fileFsPath = getFileFsPath(doc.uri);
       const offset = scriptDoc.offsetAt(position);
+      const triggerChar = doc.getText()[offset - 1];
+      if (NON_SCRIPT_TRIGGERS.includes(triggerChar)) {
+        return { isIncomplete: false, items: [] };
+      }
       const completions = service.getCompletionsAtPosition(
         fileFsPath,
         offset,
@@ -168,7 +176,7 @@ export function getJavascriptMode(
     doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
       const { service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
-        return NULL_COMPLETION;
+        return item;
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
@@ -328,8 +336,7 @@ export function getJavascriptMode(
       const definitionResults: Definition = [];
       const program = service.getProgram();
       definitions.forEach(d => {
-        const sourceFile = program.getSourceFile(d.fileName)!;
-        const definitionTargetDoc = TextDocument.create(d.fileName, 'vue', 0, sourceFile.getFullText());
+        const definitionTargetDoc = getSourceDoc(d.fileName, program);
         definitionResults.push({
           uri: Uri.file(d.fileName).toString(),
           range: convertRange(definitionTargetDoc, d.textSpan)
@@ -350,8 +357,9 @@ export function getJavascriptMode(
       }
 
       const referenceResults: Location[] = [];
+      const program = service.getProgram();
       references.forEach(r => {
-        const referenceTargetDoc = getScriptDocByFsPath(fileFsPath);
+        const referenceTargetDoc = getSourceDoc(r.fileName, program);
         if (referenceTargetDoc) {
           referenceResults.push({
             uri: Uri.file(r.fileName).toString(),
@@ -417,11 +425,19 @@ export function getJavascriptMode(
     onDocumentRemoved(document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);
     },
+    onDocumentChanged(filePath: string) {
+      serviceHost.updateExternalDocument(filePath);
+    },
     dispose() {
       serviceHost.dispose();
       jsDocuments.dispose();
     }
   };
+}
+
+function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
+  const sourceFile = program.getSourceFile(fileName)!;
+  return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
 }
 
 function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {

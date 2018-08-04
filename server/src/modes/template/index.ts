@@ -1,5 +1,6 @@
+import * as _ from 'lodash';
+
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { DocumentContext } from '../../service';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions } from '../embeddedSupport';
@@ -16,8 +17,7 @@ import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings } from './tagProviders';
 import { ScriptMode } from '../script/javascript';
 import { getComponentTags, getEnabledTagProviders } from './tagProviders';
-
-import * as _ from 'lodash';
+import { DocumentContext } from '../../types';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
@@ -52,7 +52,7 @@ export function getVueHTMLMode(
       const embedded = embeddedDocuments.get(document);
       const components = scriptMode.findComponents(document);
       const tagProviders = enabledTagProviders.concat(getComponentTags(components));
-      return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders);
+      return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders, config.emmet);
     },
     doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

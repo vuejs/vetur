@@ -1,5 +1,39 @@
 # Changelog
 
+### 0.12.5 | 2018-06-06
+
+- Use `source.js#expression` for Vue interpolation values. Fix #811 and #804
+- Fix a pug syntax highlighting issue. #812
+
+### 0.12.4 | 2018-06-05
+
+- Improved file watching that updates completion and diagnostics in Vue files when TS/JS file changes. #355
+
+### 0.12.3 | 2018-05-17
+
+- Removed chokidar watcher.
+
+### 0.12.2 | 2018-05-17
+
+- Temporarily disable file watcher for perf problem & will bring it back in next version. #789.
+
+### 0.12.1 | 2018-05-14
+
+- Haml syntax highlighting. #739.
+- Remove restricted file schemes for live share.
+- Fix an issue where Vetur failed to read emmet configs and cause emmet and other completions to fail.
+
+### 0.11.8 | 2018-05-14
+
+- Update TypeScript Version to allow usage of `!` for definite assignment assertions.
+- Add single quote as trigger character. Fix #743
+- Add `arrowParens` option for Prettier
+- Upgrade vscode-emmet-helper. Fix #412. Fix #426
+- Add `vetur.completion.useScaffoldSnippets`. Fix #698
+- Skip template completion trigger in script. Fix #705
+- Fix script definition lookup position error. Fix #741
+- Add a crude file watcher. Now Vetur will pick up text change in TS/JS. Note this feature is experimental. Partially fix #355
+
 ### 0.11.7 | 2018-01-28
 
 - Better default scaffold template for TypeScript. #669.
@@ -49,7 +83,7 @@
 - Docs for generating grammar for custom blocks: https://vuejs.github.io/vetur/highlighting.html.
 - Allow `php` as one of the custom block language. #536.
 - Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
-- Pretty print generated gramamr so it's readable. (You can find it at ~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json).
+- Pretty print generated gramamr so it's readable. (You can find it at `~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json`).
 
 ### 0.11.1 | 2017-11-10
 
@@ -261,7 +295,7 @@ Shoutout to @HerringtonDarkholme who helped implementing many new features!
 
 ### 0.6.9 | 2017-05-14
 
-- Update grammar to allow tags like <template-component> in vue-html. #189.
+- Update grammar to allow tags like `<template-component>` in vue-html. #189.
 - Update grammar to allow html comments outside all regions. #195.
 - Handle new file creation so vetur's IntelliSense work on it. #192.
 - Enable breakpoints for vue files. Doc for debugging coming later in #201.

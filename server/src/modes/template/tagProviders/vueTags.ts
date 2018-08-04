@@ -28,7 +28,7 @@ const vueDirectives = [
   genAttribute('v-bind', u, 'Dynamically binds one or more attributes, or a component prop to an expression.'),
   genAttribute('v-model', u, 'Creates a two-way binding on a form input element or a component.'),
   genAttribute('v-pre', 'v', 'Skips compilation for this element and all its children.'),
-  genAttribute('v-cloak', 'v', 'Indicates Vue instannce on the element has NOT finishes compilation.'),
+  genAttribute('v-cloak', 'v', 'Indicates Vue instance for this element has NOT finished compilation.'),
   genAttribute('v-once', 'v', 'Render the element and component once only.'),
   genAttribute('key', u, 'Hint at VNodes identity for VDom diffing, e.g. list rendering'),
   genAttribute('ref', u, 'Register a reference to an element or a child component.'),

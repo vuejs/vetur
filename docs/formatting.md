@@ -2,6 +2,12 @@
 
 Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.
 
+**Vetur only has a "whole document formatter" and cannot format arbitrary ranges.**  
+**As a result, only `Format Document` command will be available.**  
+**`Format Selection` command wouldn't work.**
+
+**html formatting is disabled by default. See [js-beautify-html](#js-beautify-html-deprecated).**
+
 ## Formatters
 
 Choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
@@ -42,7 +48,7 @@ Other settings are read from `javascript.format.*` and `typescript.format.*`.
 #### js-beautify-html [deprecated]
 
 Alternative html formatter. Deprecated, turned off by default and will be removed soon.
-js-beautify has many long-standing bugs that never get fixed. Use at your own risk.
+js-beautify is not actively maintained and has many long-standing bugs. Use at your own risk.
 
 `tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
 

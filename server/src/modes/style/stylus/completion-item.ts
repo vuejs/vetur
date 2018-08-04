@@ -154,8 +154,8 @@ function isVisible(useSite: number[] | undefined, defSite: number[] | undefined)
   if (useSite.length < defSite.length) {
     return false;
   }
-  for (const [use, def] of _.zip(useSite, defSite)) {
-    if (use > def) {
+  for (const [use, def] of _.zip(useSite!, defSite)) {
+    if (use && def && use > def) {
       return false;
     }
   }

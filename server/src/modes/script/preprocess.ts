@@ -44,6 +44,8 @@ function isTSLike(scriptKind: ts.ScriptKind | undefined) {
 export function createUpdater() {
   const clssf = ts.createLanguageServiceSourceFile;
   const ulssf = ts.updateLanguageServiceSourceFile;
+  const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind|undefined>();
+  const modificationTracker = new WeakSet<ts.SourceFile>();
 
   function modifySourceFile(
     fileName: string,
@@ -52,23 +54,24 @@ export function createUpdater() {
     version: string,
     scriptKind?: ts.ScriptKind
   ): void {
-    // store scriptKind info on sourceFile
-    const hackSourceFile: any = sourceFile;
-    hackSourceFile.__scriptKind = scriptKind;
+    if (modificationTracker.has(sourceFile)) {
+      return;
+    }
 
-    if (!hackSourceFile.__modified) {
-      if (isVue(fileName) && !isTSLike(scriptKind)) {
-        modifyVueScript(sourceFile);
-        hackSourceFile.__modified = true;
-      } else if (isVueTemplate(fileName)) {
-        // TODO: share the logic of transforming the code into AST
-        // with the template mode
-        const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
-        const program = parse(code, { sourceType: 'module' });
-        const tsCode = transformTemplate(program, code);
-        injectVueTemplate(sourceFile, tsCode);
-        hackSourceFile.__modified = true;
-      }
+    if (isVue(fileName) && !isTSLike(scriptKind)) {
+      modifyVueScript(sourceFile);
+      modificationTracker.add(sourceFile);
+      return;
+    }
+
+    if (isVueTemplate(fileName)) {
+      // TODO: share the logic of transforming the code into AST
+      // with the template mode
+      const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
+      const program = parse(code, { sourceType: 'module' });
+      const tsCode = transformTemplate(program, code);
+      injectVueTemplate(sourceFile, tsCode);
+      modificationTracker.add(sourceFile);
     }
   }
 
@@ -81,6 +84,7 @@ export function createUpdater() {
     scriptKind?: ts.ScriptKind
   ): ts.SourceFile {
     const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
+    scriptKindTracker.set(sourceFile, scriptKind);
     modifySourceFile(fileName, sourceFile, scriptSnapshot, version, scriptKind);
     return sourceFile;
   }
@@ -92,8 +96,7 @@ export function createUpdater() {
     textChangeRange: ts.TextChangeRange,
     aggressiveChecks?: boolean
   ): ts.SourceFile {
-    const hackSourceFile: any = sourceFile;
-    const scriptKind = hackSourceFile.__scriptKind;
+    const scriptKind = scriptKindTracker.get(sourceFile);
     sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
     modifySourceFile(sourceFile.fileName, sourceFile, scriptSnapshot, version, scriptKind);
     return sourceFile;

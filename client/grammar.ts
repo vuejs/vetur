@@ -7,8 +7,8 @@ import * as fs from 'fs';
 // Available grammar scopes
 const SCOPES: { [lang: string]: string } = {
   html: 'text.html.basic',
-  jade: 'text.jade',
   pug: 'text.pug',
+  haml: 'text.haml',
   css: 'source.css',
   scss: 'source.css.scss',
   less: 'source.css.less',

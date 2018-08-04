@@ -29,19 +29,6 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
     doComplete(document, position) {
       const embedded = embeddedDocuments.get(document);
 
-      const emmetCompletions: CompletionList = emmet.doComplete(document, position, 'stylus', {
-        useNewEmmet: true,
-        showExpandedAbbreviation: true,
-        showAbbreviationSuggestions: true,
-        syntaxProfiles: {},
-        variables: {}
-      });
-      const emmetItems = _.map(emmetCompletions.items, i => {
-        return {
-          ...i,
-          sortText: Priority.Emmet + i.label
-        };
-      });
       const lsCompletions = provideCompletionItems(embedded, position);
       const lsItems = _.map(lsCompletions.items, i => {
         return {
@@ -50,10 +37,21 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
         };
       });
 
-      return {
-        isIncomplete: true,
-        items: _.concat(emmetItems, lsItems)
-      };
+      const emmetCompletions: CompletionList = emmet.doComplete(document, position, 'stylus', config.emmet);
+      if (!emmetCompletions) {
+        return { isIncomplete: false, items: lsItems };
+      } else {
+        const emmetItems = _.map(emmetCompletions.items, i => {
+          return {
+            ...i,
+            sortText: Priority.Emmet + i.label
+          };
+        });
+        return {
+          isIncomplete: emmetCompletions.isIncomplete,
+          items: _.concat(emmetItems, lsItems)
+        };
+      }
     },
     findDocumentSymbols(document) {
       const embedded = embeddedDocuments.get(document);

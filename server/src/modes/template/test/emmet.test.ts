@@ -8,7 +8,7 @@ const setup: CompletionTestSetup = {
   docUri: 'test://test/test.html',
   doComplete(doc, pos) {
     const htmlDoc = parseHTMLDocument(doc);
-    return doComplete(doc, pos, htmlDoc, []);
+    return doComplete(doc, pos, htmlDoc, [], {});
   }
 };
 
@@ -23,6 +23,8 @@ suite('Emmet Completion', () => {
 \t<li>\${0}</li>
 </ul>`
     );
+
+    vueHtml`{{ul>li*3|}}`.hasNo(`ul>li*3`);
 
     vueHtml`div+p|`.has(`div+p`).become(
       `<div>\${1}</div>

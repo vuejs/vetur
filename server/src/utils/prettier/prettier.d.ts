@@ -14,6 +14,7 @@ export interface PrettierConfig {
   parser: ParserOption;
   semi: boolean;
   useTabs: boolean;
+  arrowParens: 'avoid' | 'always';
 }
 /**
  * prettier-vscode specific configuration

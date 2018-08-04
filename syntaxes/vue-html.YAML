@@ -74,6 +74,17 @@ patterns:
   patterns:
   - include: '#tag-stuff'
 
+# template - single line
+- begin: (<)(template)\b(?=[^/>]*/>\s*$)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.html}
+    '2': {name: entity.name.tag.style.html}
+  end: (/>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.html}
+  patterns:
+  - include: '#tag-stuff'
+
 - begin: (<)(template)
   beginCaptures:
     '1': {name: punctuation.definition.tag.begin.html}
@@ -156,11 +167,11 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.generic.end.html}
       patterns:
-      - include: source.js
+      - include: source.js#expression
 
   vue-directives:
     name: meta.directive.vue
-    begin: ((?:\b(v-)|(:|@))([a-zA-Z\-]+)(?:\:([a-zA-Z\-]+))?(?:\.([a-zA-Z\-]+))*)\s*(=)
+    begin: ((?:\b(v-)|(:|@))([a-zA-Z0-9\-_]+)(?:\:([a-zA-Z0-9\-_]+))?(?:\.([a-zA-Z0-9\-_]+))*)\s*(=)
     end: (?<='|")|(?=[\s<>`])
     captures:
       '1': {name: entity.other.attribute-name.html}
@@ -174,7 +185,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: source.js
+      - include: source.js#expression
     - name: source.directive.vue
       begin: ''''
       beginCaptures:
@@ -183,7 +194,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: source.js
+      - include: source.js#expression
 
   entities:
     patterns:
@@ -221,7 +232,7 @@ repository:
 
   tag-generic-attribute:
     name: entity.other.attribute-name.html
-    match: (?<=[^=])\b([a-zA-Z0-9:-]+)
+    match: (?<=[^=])\b([a-zA-Z0-9:\-_]+)
 
   tag-id-attribute:
     name: meta.attribute-with-value.id.html

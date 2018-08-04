@@ -40,6 +40,7 @@ export function prettierEslintify(
     const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
     const prettierifiedCode = prettierEslint({
+      filePath: require('path').dirname(filePath),
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
@@ -72,7 +73,8 @@ function getPrettierOptions(
     jsxBracketSameLine: prettierVSCodeConfig.jsxBracketSameLine,
     parser,
     semi: prettierVSCodeConfig.semi,
-    useTabs: prettierVSCodeConfig.useTabs
+    useTabs: prettierVSCodeConfig.useTabs,
+    arrowParens: prettierVSCodeConfig.arrowParens
   };
 
   const prettier = require('prettier') as Prettier;

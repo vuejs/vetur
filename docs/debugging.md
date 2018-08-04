@@ -1,7 +1,3 @@
 # Debugging
 
-#### [To Write]
-
-- Features
-- Sample project
-- Setup
+See [https://github.com/Microsoft/vscode-recipes/tree/master/vuejs-cli](https://github.com/Microsoft/vscode-recipes/tree/master/vuejs-cli).
