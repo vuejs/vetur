@@ -1,5 +1,12 @@
 # Changelog
 
+### 0.12.6 | 2018-08-06
+
+- Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. Fix #840.
+- Fix syntax highlight for `:snake_case` properties in HTML. Thanks to contribution from [@davidhewitt](https://github.com/davidhewitt). #830.
+- Auto completion for [Buefy](https://buefy.github.io) framework. Thanks to contribution from [@jtommy](https://github.com/jtommy). #824.
+- Fix description for `v-cloak`. Thanks to contribution by [@snkashis](https://github.com/snkashis). #816.
+
 ### 0.12.5 | 2018-06-06
 
 - Use `source.js#expression` for Vue interpolation values. Fix #811 and #804
