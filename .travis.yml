@@ -3,11 +3,17 @@ os:
   - osx
   - linux
 node_js: 6
+
 before_install:
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then
+      export CXX="g++-4.9" CC="gcc-4.9" DISPLAY=:99.0;
+      sh -e /etc/init.d/xvfb start;
+      sleep 3;
+    fi
   - npm i -g yarn
+
 before_script:
+  - node ./node_modules/vscode/bin/install
   - cd server && yarn
-  - node ./node_modules/vscode/bin/install
   - cd ..
-  - node ./node_modules/vscode/bin/install
 cache: yarn
