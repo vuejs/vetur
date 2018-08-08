@@ -1,7 +1,6 @@
-import * as vscode from 'vscode';
-import * as assert from 'assert';
 import { getDocUri, activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
 import { position } from '../util';
+import { testCompletion } from './helper';
 
 describe('Should autocomplete for <template>', () => {
   const templateDocUri = getDocUri('client/completion/template/Basic.vue');
@@ -39,19 +38,3 @@ describe('Should autocomplete for <template>', () => {
 
   });
 });
-
-async function testCompletion(docUri: vscode.Uri, position: vscode.Position, expectedItems: string[]) {
-  await showFile(docUri);
-
-  const result = (await vscode.commands.executeCommand(
-    'vscode.executeCompletionItemProvider',
-    docUri,
-    position
-  )) as vscode.CompletionList;
-
-  expectedItems.forEach(ei => {
-    assert.ok(result.items.some(i => {
-      return i.label === ei;
-    }));
-  });
-}

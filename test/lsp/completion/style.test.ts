@@ -32,5 +32,4 @@ describe('Should autocomplete for <style>', () => {
       await testCompletion(templateDocUri, position(30, 3), ['width', 'word-wrap']);
     });
   });
-
 });
