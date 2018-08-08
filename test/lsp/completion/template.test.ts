@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import { getDocUri, activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
 import { position } from '../util';
 
-describe('Should autocomplete', () => {
+describe('Should autocomplete for <template>', () => {
   const templateDocUri = getDocUri('client/completion/template/Basic.vue');
   const templateFrameworkDocUri = getDocUri('client/completion/template/Framework.vue');
 

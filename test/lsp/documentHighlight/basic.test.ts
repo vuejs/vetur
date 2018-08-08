@@ -3,8 +3,8 @@ import * as assert from 'assert';
 import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
 import { position, sameLineRange } from '../util';
 
-describe('Should do highlight', () => {
-  const docUri = getDocUri('client/highlight/Basic.vue');
+describe('Should do documentHighlight', () => {
+  const docUri = getDocUri('client/documentHighlight/Basic.vue');
 
   before('activate', async () => {
     await activateLS();
@@ -12,21 +12,21 @@ describe('Should do highlight', () => {
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
-  it('shows highlight for <div> tags', async () => {
+  it('shows highlights for <div> tags', async () => {
     await testHighlight(docUri, position(2, 5), [
       { kind: vscode.DocumentHighlightKind.Read, range: sameLineRange(2, 5, 8) },
       { kind: vscode.DocumentHighlightKind.Read, range: sameLineRange(2, 20, 23) }
     ]);
   });
 
-  it('shows highlight for this.msg', async () => {
+  it('shows highlights for this.msg', async () => {
     await testHighlight(docUri, position(23, 6), [
       { kind: vscode.DocumentHighlightKind.Write, range: sameLineRange(23, 6, 9) },
       { kind: vscode.DocumentHighlightKind.Text, range: sameLineRange(33, 23, 26) }
     ]);
   });
 
-  it('shows highlight for Item', async () => {
+  it('shows highlights for Item', async () => {
     await testHighlight(docUri, position(20, 16), [
       { kind: vscode.DocumentHighlightKind.Write, range: sameLineRange(17, 7, 11) },
       { kind: vscode.DocumentHighlightKind.Write, range: sameLineRange(20, 16, 20) }
