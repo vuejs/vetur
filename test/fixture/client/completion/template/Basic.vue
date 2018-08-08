@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Item from './1.Item.vue'
+import Item from './Item.vue'
 
 export default {
   components: {
