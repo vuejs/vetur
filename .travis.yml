@@ -2,6 +2,7 @@ language: node_js
 node_js: 6
 before_script:
   - npm install yarn -g
+  - yarn
   - cd server && yarn
   - cd ..
 cache: yarn
