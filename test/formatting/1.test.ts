@@ -1,6 +1,8 @@
-import { getDocUri, testFormat } from '../helper';
+import { getDocUri, testFormat, activateLS } from '../helper';
 
 describe('Should format', () => {
+  before('activate', () => activateLS());
+
   const docUri = getDocUri('client/views/Home.vue');
   const expectedDocUri = getDocUri('client/views/Home.expected.vue');
 

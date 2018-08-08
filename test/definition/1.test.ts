@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
-import { testDefinition, getDocUri } from '../helper';
+import { testDefinition, getDocUri, activateLS } from '../helper';
 
 describe('Should find definition', () => {
+  before('activate', () => activateLS());
+
   const docUri = getDocUri('client/components/Counter.vue');
 
   it('find definition', async () => {
