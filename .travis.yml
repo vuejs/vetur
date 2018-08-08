@@ -1,9 +1,13 @@
 language: node_js
+os:
+  - osx
+  - linux
 node_js: 6
 before_install:
   - npm i -g yarn
 before_script:
-  - yarn
   - cd server && yarn
+  - node ./node_modules/vscode/bin/install
   - cd ..
+  - node ./node_modules/vscode/bin/install
 cache: yarn
