@@ -40,7 +40,7 @@
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.24.0"
+    "vscode": "^1.25.0"
   },
   "dependencies": {
     "vscode-languageclient": "^3.4.2",
