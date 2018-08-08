@@ -1,0 +1,11 @@
+import * as vscode from 'vscode';
+
+export function position(line: number, char: number) {
+  return new vscode.Position(line, char);
+}
+export function range(startLine: number, startChar: number, endLine: number, endChar: number) {
+  return new vscode.Range(position(startLine, startChar), position(endLine, endChar));
+}
+export function location(uri: vscode.Uri, startLine: number, startChar: number, endLine: number, endChar: number) {
+  return new vscode.Location(uri, range(startLine, startChar, endLine, endChar));
+}

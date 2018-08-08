@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { getDocUri, activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { position } from '../util';
 
 describe('Should autocomplete', () => {
   const templateDocUri = getDocUri('client/completion/template/Basic.vue');
@@ -15,25 +16,25 @@ describe('Should autocomplete', () => {
 
   describe('Should complete <template> section', () => {
     it('completes directives such as v-if', async () => {
-      await testCompletion(templateDocUri, new vscode.Position(1, 8), ['v-if', 'v-cloak']);
+      await testCompletion(templateDocUri, position(1, 8), ['v-if', 'v-cloak']);
     });
 
     it('completes html tags', async () => {
-      await testCompletion(templateDocUri, new vscode.Position(2, 6), ['img', 'iframe']);
+      await testCompletion(templateDocUri, position(2, 6), ['img', 'iframe']);
     });
 
     it('completes imported components', async () => {
-      await testCompletion(templateDocUri, new vscode.Position(2, 6), ['item']);
+      await testCompletion(templateDocUri, position(2, 6), ['item']);
     });
   });
 
   describe('Should complete element-ui components', () => {
     it('completes <el-button> and <el-card>', async () => {
-      await testCompletion(templateFrameworkDocUri, new vscode.Position(2, 5), ['el-button', 'el-card']);
+      await testCompletion(templateFrameworkDocUri, position(2, 5), ['el-button', 'el-card']);
     });
 
     it('completes attributes for <el-button>', async () => {
-      await testCompletion(templateFrameworkDocUri, new vscode.Position(1, 14), ['size', 'type', 'plain']);
+      await testCompletion(templateFrameworkDocUri, position(1, 14), ['size', 'type', 'plain']);
     });
 
   });
