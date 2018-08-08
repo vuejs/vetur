@@ -1,6 +1,12 @@
 <template>
-  <div class="page">
-    <counter></counter>
+  <div   class="page">
+    <counter>
+
+
+          </counter>
+
+
+
   </div>
 </template>
 
@@ -13,5 +19,7 @@ export default {
 
 
   }
-};
+}
+
+
 </script>

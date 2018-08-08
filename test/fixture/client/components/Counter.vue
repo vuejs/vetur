@@ -15,6 +15,7 @@
 
 <script>
 import * as _ from 'lodash'
+import Item from './Item.vue'
 
 export default {
   data () {
