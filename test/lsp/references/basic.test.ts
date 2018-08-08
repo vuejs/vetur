@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { position, location } from '../util';
+import { position, location, sameLineLocation } from '../util';
 
 describe('Should find references', () => {
   const docUri = getDocUri('client/references/Basic.vue');
@@ -14,8 +14,8 @@ describe('Should find references', () => {
 
   it('finds references for this.msg', async () => {
     await testReferences(docUri, position(33, 23), [
-      location(docUri, 23, 6, 23, 9),
-      location(docUri, 33, 23, 33, 26)
+      sameLineLocation(docUri, 23, 6, 9),
+      sameLineLocation(docUri, 33, 23, 26)
     ]);
   });
 
@@ -23,24 +23,24 @@ describe('Should find references', () => {
     const lodashDtsUri = getDocUri('node_modules/@types/lodash/index.d.ts');
     await testReferences(docUri, position(16, 12), [
       location(docUri, 16, 12, 16, 13),
-      location(lodashDtsUri, 243, 9, 243, 10),
-      location(lodashDtsUri, 246, 12, 246, 13)
+      sameLineLocation(lodashDtsUri, 243, 9, 10),
+      sameLineLocation(lodashDtsUri, 246, 12, 13)
     ]);
   });
 
   it('finds references for Vue#data', async () => {
     const vueOptionsDtsUri = getDocUri('node_modules/vue/types/options.d.ts');
     await testReferences(docUri, position(21, 2), [
-      location(vueOptionsDtsUri, 58, 2, 58, 6),
-      location(docUri, 21, 2, 21, 6)
+      sameLineLocation(vueOptionsDtsUri, 58, 2, 6),
+      sameLineLocation(docUri, 21, 2, 6)
     ]);
   });
 
   it('finds references for imported Vue files', async () => {
     const itemUri = getDocUri('client/references/Basic.Item.vue');
     await testReferences(docUri, position(20, 16), [
-      location(docUri, 17, 7, 17, 11),
-      location(itemUri, 5, 7, 5, 14)
+      sameLineLocation(docUri, 17, 7, 11),
+      sameLineLocation(itemUri, 5, 7, 14)
     ]);
   });
 });

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { location, position } from '../util';
+import { location, position, sameLineLocation } from '../util';
 
 describe('Should find definition', () => {
   const docUri = getDocUri('client/definition/Basic.vue');
@@ -13,17 +13,17 @@ describe('Should find definition', () => {
   });
 
   it('finds definition for this.msg', async () => {
-    await testDefinition(docUri, position(32, 23), location(docUri, 22, 6, 22, 9));
+    await testDefinition(docUri, position(32, 23), sameLineLocation(docUri, 22, 6, 9));
   });
 
   it('finds definition for lodash', async () => {
     const lodashDtsUri = getDocUri('node_modules/@types/lodash/index.d.ts');
-    await testDefinition(docUri, position(16, 12), location(lodashDtsUri, 246, 12, 246, 13));
+    await testDefinition(docUri, position(16, 12), sameLineLocation(lodashDtsUri, 246, 12, 13));
   });
 
   it('finds definition for Vue#data', async () => {
     const vueOptionsDtsUri = getDocUri('node_modules/vue/types/options.d.ts');
-    await testDefinition(docUri, position(20, 2), location(vueOptionsDtsUri, 58, 2, 58, 6));
+    await testDefinition(docUri, position(20, 2), sameLineLocation(vueOptionsDtsUri, 58, 2, 6));
   });
 
   it('finds definition for imported Vue files', async () => {
