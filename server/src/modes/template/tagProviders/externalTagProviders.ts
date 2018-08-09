@@ -1,3 +1,7 @@
+import * as ts from 'typescript';
+import * as fs from 'fs';
+import { join } from 'path';
+
 import { IHTMLTagProvider, Priority } from './common';
 
 import * as elementTags from 'element-helper-json/element-tags.json';
@@ -20,6 +24,20 @@ export const onsenTagProvider = getExternalTagProvider('onsen', onsenTags, onsen
 export const bootstrapTagProvider = getExternalTagProvider('bootstrap', bootstrapTags, bootstrapAttributes);
 export const buefyTagProvider = getExternalTagProvider('buefy', buefyTags, buefyAttributes);
 export const vuetifyTagProvider = getExternalTagProvider('vuetify', vuetifyTags, vuetifyAttributes);
+
+export function getQuasarTagProvider(workspacePath: string, pkg: any): IHTMLTagProvider | null {
+  const base = 'node_modules/quasar-framework';
+  const tagsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, join(base, pkg.vetur.tags));
+  const attrsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, join(base, pkg.vetur.attributes));
+
+  return tagsPath && attrsPath
+    ? getExternalTagProvider(
+      'quasar',
+      JSON.parse(fs.readFileSync(tagsPath, 'utf-8')),
+      JSON.parse(fs.readFileSync(attrsPath, 'utf-8'))
+    )
+    : null;
+}
 
 export function getExternalTagProvider(id: string, tags: any, attributes: any): IHTMLTagProvider {
   function findAttributeDetail(tag: string, attr: string) {
