@@ -3,6 +3,6 @@
   "files.exclude": {
     "server/dist": true,
     "docs/_book": true,
-    "client/out": true
+    "dist": true
   }
 }

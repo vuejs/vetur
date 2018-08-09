@@ -42,13 +42,14 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
     documentFormattingProvider: true,
     hoverProvider: true,
     documentHighlightProvider: true,
+    documentLinkProvider: true,
     documentSymbolProvider: true,
     definitionProvider: true,
     referencesProvider: true,
     colorProvider: true
   };
 
-  return { capabilities };
+  return { capabilities: (capabilities as any) };
 });
 
 connection.listen();
