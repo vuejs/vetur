@@ -3,7 +3,7 @@ import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '..
 import { position, sameLineRange, range } from '../util';
 import { testDiagnostics } from './helper';
 
-describe('Should find cmmon diagnostics for all regions', () => {
+describe('Should find common diagnostics for all regions', () => {
   const docUri = getDocUri('client/diagnostics/Basic.vue');
 
   before('activate', async () => {
