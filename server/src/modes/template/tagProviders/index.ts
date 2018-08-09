@@ -7,13 +7,15 @@ import {
   onsenTagProvider,
   bootstrapTagProvider,
   buefyTagProvider,
-  vuetifyTagProvider
+  vuetifyTagProvider,
+  getQuasarTagProvider
 } from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';
 import * as fs from 'fs';
+import { join } from 'path';
 
 export let allTagProviders: IHTMLTagProvider[] = [
   getHTML5TagProvider(),
@@ -39,7 +41,8 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     onsen: false,
     bootstrap: false,
     buefy: false,
-    vuetify: false
+    vuetify: false,
+    quasar: false
   };
   if (!workspacePath) {
     return settings;
@@ -67,6 +70,22 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
     if (packageJson.dependencies['vuetify']) {
       settings['vuetify'] = true;
+    }
+
+    const quasarPath = ts.findConfigFile(
+      workspacePath,
+      ts.sys.fileExists,
+      join('node_modules', 'quasar-framework', 'package.json')
+    );
+    if (quasarPath) {
+      const quasarPkg = JSON.parse(fs.readFileSync(quasarPath, 'utf-8'));
+      if (quasarPkg.vetur) {
+        const provider = getQuasarTagProvider(workspacePath, quasarPkg);
+        if (provider !== null) {
+          allTagProviders.push(provider);
+          settings['quasar'] = true;
+        }
+      }
     }
   } catch (e) {}
   return settings;

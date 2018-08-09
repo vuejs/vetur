@@ -5,6 +5,7 @@ import { testCompletion } from './helper';
 describe('Should autocomplete for <template>', () => {
   const templateDocUri = getDocUri('client/completion/template/Basic.vue');
   const templateFrameworkDocUri = getDocUri('client/completion/template/Framework.vue');
+  const templateQuasarDocUri = getDocUri('client/completion/template/Quasar.vue');
 
   before('activate', async () => {
     await activateLS();
@@ -35,6 +36,15 @@ describe('Should autocomplete for <template>', () => {
     it('completes attributes for <el-button>', async () => {
       await testCompletion(templateFrameworkDocUri, position(1, 14), ['size', 'type', 'plain']);
     });
+  });
 
+  describe('Should complete Quasar components', () => {
+    it('completes <q-btn>', async () => {
+      await testCompletion(templateQuasarDocUri, position(2, 5), ['q-btn']);
+    });
+
+    it('completes attributes for <q-btn>', async () => {
+      await testCompletion(templateQuasarDocUri, position(1, 10), ['label', 'icon']);
+    });
   });
 });
