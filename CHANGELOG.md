@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.12.7 | Someday
+
+- Add completion for [Quasar Framework](https://github.com/vuejs/vetur/pull/865). Thanks to contribution from [@rstoenescu](https://github.com/rstoenescu). #865.
+
 ### 0.12.6 | 2018-08-06
 
 - Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. Fix #840.
