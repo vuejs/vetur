@@ -9,6 +9,8 @@ describe('Should autocomplete for <script>', () => {
     await activateLS();
     await showFile(scriptDocUri);
     await sleep(FILE_LOAD_SLEEP_TIME);
+    // TS LS completion starts slow.
+    await sleep(1500);
   });
 
   it('completes module names when importing', async () => {
