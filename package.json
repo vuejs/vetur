@@ -18,7 +18,7 @@
     "test:e2e": "sh ./test/e2e.sh",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "postinstall": "if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/vscode/bin/install; fi"
+    "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "lint-staged": {
     "*.ts": [
