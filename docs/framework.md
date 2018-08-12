@@ -1,6 +1,16 @@
 # Framework Support
 
-Vetur currently provides framework support for Element UI and Onsen UI.
+Vue frameworks can define custom components used in `<template>` region. For example, `vue-router` provides `<router-link>` component that could have attributes such as `to` and `replace`. Vetur currently provides autocomplete support for the component names and attributes.
+
+Vetur currently provides framework support for the following vue libraries:
+
+- [Vue Router](https://router.vuejs.org/)
+- [Element UI](https://element.eleme.io/#/)
+- [Onsen UI](https://onsen.io/)
+- [Bootstrap Vue](https://bootstrap-vue.js.org/)
+- [Buefy](https://buefy.github.io/#/)
+- [Vuetify](https://vuetifyjs.com/en/)
+- [Quasar Framework](https://quasar-framework.org/)
 
 #### Usage
 
