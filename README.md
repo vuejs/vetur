@@ -48,7 +48,7 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 
 ## Roadmap
 
-See [#188](https://github.com/vuejs/vetur/issues/188).
+See [#873](https://github.com/vuejs/vetur/issues/873).
 
 ## Contribution
 
