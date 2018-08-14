@@ -52,9 +52,11 @@ This is probably caused by VS Code not installing Vetur properly. Try these meth
   }
   ```
 
+## Vetur cannot recognize my Vue component import, such as `import Comp from './comp'`
+
 - You need to add `.vue` extension when importing SFC.
 
-More details at: https://github.com/vuejs/vetur/issues/423
+More details at: https://github.com/vuejs/vetur/issues/423#issuecomment-340235722
 
 ## .vue file cannot be imported in TS file.
 
