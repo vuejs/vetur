@@ -48,14 +48,17 @@
     "@types/lodash": "^4.14.91",
     "@types/mocha": "^2.2.44",
     "@types/node": "^8.5.1",
+    "codecov": "^3.0.4",
     "glob": "^7.1.2",
     "mocha": "^4.0.1",
+    "nyc": "^12.0.2",
     "source-map-support": "^0.5.0"
   },
   "scripts": {
     "compile": "tsc -p .",
     "watch": "tsc --watch",
     "test": "mocha",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "newVersion": "yarn version --new-version patch -m \"vls %s\"",
     "preversion": "npm run compile && npm test",
     "prepublishOnly": "npm run compile"

@@ -21,4 +21,7 @@ install:
 script:
   - yarn test
 
+after_success:
+  - cd server && yarn coverage && cd ..
+
 cache: yarn

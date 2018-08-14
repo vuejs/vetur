@@ -10,3 +10,6 @@ docs/.vuepress/dist
 
 *.zip
 *.vsix
+
+.nyc_output
+coverage.lcov
