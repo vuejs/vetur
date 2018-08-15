@@ -4,6 +4,8 @@ import { FormattingOptions, TextEdit, Range } from 'vscode-languageserver-types'
 import { ParserOption, Prettier, PrettierConfig, PrettierVSCodeConfig, PrettierEslintFormat } from './prettier';
 import { indentSection } from '../strings';
 
+import { requireLocalPkg } from './requirePkg';
+
 export function prettierify(
   code: string,
   filePath: string,
@@ -14,7 +16,7 @@ export function prettierify(
   parser: ParserOption
 ): TextEdit[] {
   try {
-    const prettier = require('prettier') as Prettier;
+    const prettier = requireLocalPkg(filePath, 'prettier') as Prettier;
     const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
@@ -36,7 +38,7 @@ export function prettierEslintify(
   parser: ParserOption
 ): TextEdit[] {
   try {
-    const prettierEslint = require('prettier-eslint') as PrettierEslintFormat;
+    const prettierEslint = requireLocalPkg(filePath, 'prettier-eslint') as PrettierEslintFormat;
     const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
     const prettierifiedCode = prettierEslint({
