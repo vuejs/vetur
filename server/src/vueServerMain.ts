@@ -24,7 +24,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   if (!workspacePath) {
     console.error('No workspace path found. Vetur initialization failed');
     return {
-      capabilities: { }
+      capabilities: {}
     };
   }
 
@@ -35,21 +35,23 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
     vls.configure(initializationOptions.config);
   }
 
-  const capabilities = {
-    textDocumentSync: (TextDocumentSyncKind.Full as any),
-    completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '\'', '/', '@', '*'] },
-    signatureHelpProvider: { triggerCharacters: ['('] },
-    documentFormattingProvider: true,
-    hoverProvider: true,
-    documentHighlightProvider: true,
-    documentLinkProvider: true,
-    documentSymbolProvider: true,
-    definitionProvider: true,
-    referencesProvider: true,
-    colorProvider: true
+  return {
+    capabilities: {
+      textDocumentSync: TextDocumentSyncKind.Full,
+      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
+      signatureHelpProvider: { triggerCharacters: ['('] },
+      documentFormattingProvider: true,
+      hoverProvider: true,
+      documentHighlightProvider: true,
+      documentLinkProvider: {
+        resolveProvider: false
+      },
+      documentSymbolProvider: true,
+      definitionProvider: true,
+      referencesProvider: true,
+      colorProvider: true
+    }
   };
-
-  return { capabilities: (capabilities as any) };
 });
 
 connection.listen();

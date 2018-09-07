@@ -36,8 +36,8 @@
     "typescript": "^2.8.3",
     "vscode-css-languageservice": "^3.0.3",
     "vscode-emmet-helper": "^1.1.19",
-    "vscode-languageserver": "^3.5.0",
-    "vscode-languageserver-types": "^3.5.0",
+    "vscode-languageserver": "^5.0.3",
+    "vscode-languageserver-types": "^3.12.0",
     "vscode-uri": "^1.0.1",
     "vue-onsenui-helper-json": "^1.0.2",
     "vuetify-helper-json": "^1.0.0"
