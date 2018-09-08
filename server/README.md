@@ -50,3 +50,13 @@ There are two ways to integrate `vue-language-server` into editors:
     }
   }
   ```
+
+3. As extension of [coc.nvim](https://github.com/neoclide/coc.nvim)
+
+  Install [coc.nvim](https://github.com/neoclide/coc.nvim) in your vim/neovim.
+
+  Then, run vim command
+
+  ```
+  :CocInstall coc-vetur
+  ```
