@@ -11,9 +11,6 @@ import {
   RevealOutputChannelOn
 } from 'vscode-languageclient';
 import { getGeneratedGrammar } from './grammar';
-import {
-  DocumentColorRequest, DocumentColorParams, ColorPresentationRequest, ColorPresentationParams
-} from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 
 const EMPTY_ELEMENTS: string[] = [
   'area',
@@ -86,11 +83,11 @@ export function activate(context: ExtensionContext) {
   const client = new LanguageClient('vetur', 'Vue Language Server', serverOptions, clientOptions);
   const disposable = client.start();
   context.subscriptions.push(disposable);
-  const isDecoratorEnabled = workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
+  // const isDecoratorEnabled = workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
 
-  if (isDecoratorEnabled) {
-    client.onReady().then(registerColorProvider);
-  }
+  // if (isDecoratorEnabled) {
+  //   client.onReady().then(registerColorProvider);
+  // }
 
   languages.setLanguageConfiguration('vue-html', {
     wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
@@ -106,38 +103,5 @@ export function activate(context: ExtensionContext) {
       }
     ]
   });
-
-  function registerColorProvider() {
-    const colorSubscription = languages.registerColorProvider(documentSelector, {
-      provideDocumentColors(doc) {
-        const params: DocumentColorParams = {
-          textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(doc)
-        };
-        return client.sendRequest(DocumentColorRequest.type, params)
-          .then(symbols => symbols.map(symbol => {
-            const range = client.protocol2CodeConverter.asRange(symbol.range);
-            const color = new vscode.Color(symbol.color.red, symbol.color.green, symbol.color.blue, symbol.color.alpha);
-            return new vscode.ColorInformation(range, color);
-          }));
-      },
-      provideColorPresentations(color, context) {
-        const params: ColorPresentationParams = {
-          textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(context.document),
-          color,
-          range: client.code2ProtocolConverter.asRange(context.range)
-        };
-        return client.sendRequest(ColorPresentationRequest.type, params)
-          .then(presentations => presentations.map(p => {
-            const presentation = new vscode.ColorPresentation(p.label);
-            presentation.textEdit =
-              p.textEdit && client.protocol2CodeConverter.asTextEdit(p.textEdit);
-            presentation.additionalTextEdits =
-              p.additionalTextEdits && client.protocol2CodeConverter.asTextEdits(p.additionalTextEdits);
-            return presentation;
-          }));
-      }
-    });
-    context.subscriptions.push(colorSubscription);
-  }
 }
 

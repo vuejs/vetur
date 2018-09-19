@@ -15,7 +15,7 @@ describe('Should do hover', () => {
   it('shows hover for <img> tag', async () => {
     await testHover(docUri, position(4, 7), {
       contents: [
-        '```html\n<img>\n```\n',
+        '\n```html\n<img>\n```\n',
         'An img element represents an image\\.'
       ],
       range: sameLineRange(4, 7, 10)
@@ -25,7 +25,7 @@ describe('Should do hover', () => {
   it('shows hover for this.msg', async () => {
     await testHover(docUri, position(33, 23), {
       contents: [
-        '```ts\n(property) msg: string\n```\n',
+        '\n```ts\n(property) msg: string\n```\n'
       ],
       range: sameLineRange(33, 23, 26)
     });
