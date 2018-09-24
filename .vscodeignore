@@ -1,0 +1,9 @@
+.github/
+.vscode/
+.vscode-test/
+build/
+docs/
+client/
+test/
+
+.**
