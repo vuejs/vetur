@@ -154,7 +154,8 @@ export function getJavascriptMode(
         item.data.offset,
         item.label,
         /*formattingOption*/ {},
-        item.data.source
+        item.data.source,
+        { }
       );
       if (details) {
         item.detail = ts.displayPartsToString(details.displayParts);
@@ -196,7 +197,7 @@ export function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position));
+      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), {});
       if (!signHelp) {
         return NULL_SIGNATURE;
       }
@@ -304,6 +305,9 @@ export function getJavascriptMode(
 
       const definitionResults: Definition = [];
       const program = service.getProgram();
+      if (!program) {
+        return null;
+      }
       definitions.forEach(d => {
         const definitionTargetDoc = getSourceDoc(d.fileName, program);
         definitionResults.push({
@@ -327,6 +331,9 @@ export function getJavascriptMode(
 
       const referenceResults: Location[] = [];
       const program = service.getProgram();
+      if (!program) {
+        return [];
+      }
       references.forEach(r => {
         const referenceTargetDoc = getSourceDoc(r.fileName, program);
         if (referenceTargetDoc) {
@@ -410,7 +417,7 @@ function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
 }
 
 function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
-  const filePaths = ls.getProgram().getRootFileNames();
+  const filePaths = ls.getProgram()!.getRootFileNames();
   const filePath = getFilePath(documentUri);
   return filePaths.includes(filePath);
 }

@@ -47,7 +47,6 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
 }
 
 const defaultHtmlOptions: HTMLBeautifyOptions = {
-  brace_style: 'collapse', // [collapse|expand|end-expand|none]
   end_with_newline: false, // End output with newline
   indent_char: ' ', // Indentation character
   indent_handlebars: false, // e.g. {{#foo}}, {{/foo}}
