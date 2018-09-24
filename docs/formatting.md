@@ -4,7 +4,7 @@ Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/
 
 **Vetur only has a "whole document formatter" and cannot format arbitrary ranges.**  
 **As a result, only `Format Document` command will be available.**  
-**`Format Selection` command wouldn't work.**
+**`Format Selection` command wouldn't work, and there is no**
 
 **html formatting is disabled by default. See [js-beautify-html](#js-beautify-html-deprecated).**
 
