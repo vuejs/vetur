@@ -70,9 +70,6 @@ export function getVueHTMLMode(
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-      if (config.vetur.format.defaultFormatter.html === 'none') {
-        return [];
-      }
       return htmlFormat(document, range, formattingOptions, config);
     },
     findDefinition(document: TextDocument, position: Position) {
