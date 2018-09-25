@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.12.7 | 2018-09-24
+
+- Add completion for [Quasar Framework](https://github.com/vuejs/vetur/pull/865). Thanks to contribution from [@rstoenescu](https://github.com/rstoenescu). #865.
+- Many dependency upgrade, including `vscode-languageserver`, `vscode-languageclient` from V3 to V5, `js-beautify` to 1.8.6, `prettier` to 1.14.3, etc.
+- More test coverage. #863.
+
 ### 0.12.6 | 2018-08-06
 
 - Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. Fix #840.
