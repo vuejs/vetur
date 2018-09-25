@@ -7,6 +7,7 @@ import {
   SignatureHelp,
   SignatureInformation,
   ParameterInformation,
+  Command,
   Definition,
   TextEdit,
   TextDocument,
@@ -21,7 +22,10 @@ import {
   CompletionList,
   Position,
   FormattingOptions,
+<<<<<<< HEAD
   DiagnosticTag
+=======
+>>>>>>> Experimental support for quick fixes.
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
@@ -75,6 +79,7 @@ export async function getJavascriptMode(
   const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
+  let supportedCodeFixCodes: Set<number>;
 
   return {
     getId() {
@@ -367,6 +372,67 @@ export async function getJavascriptMode(
         }
       });
       return referenceResults;
+    },
+    getCodeActions(doc, range, _formatParams, context) {
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const filePath = getFileFsPath(scriptDoc.uri);
+      const start = scriptDoc.offsetAt(range.start);
+      const end = scriptDoc.offsetAt(range.end);
+      if (!supportedCodeFixCodes) {
+        supportedCodeFixCodes = new Set(ts.getSupportedCodeFixes().map(Number).filter(x => !isNaN(x)));
+      }
+      const fixableDiagnosticCodes = context.diagnostics.map(d => +d.code!).filter(c => supportedCodeFixCodes.has(c));
+      if (!fixableDiagnosticCodes) {
+        return [];
+      }
+
+      //const needIndent = config.vetur.format.scriptInitialIndent;
+      const formatSettings = config.typescript.format;
+      //const initialIndentLevel = needIndent ? 1 : 0;
+      // TODO: handle indent & format settings
+      const convertedFormatSettings = formatSettings;
+
+      const result: Command[] = [];
+      const fixes = service.getCodeFixesAtPosition(
+        filePath,
+        start,
+        end,
+        fixableDiagnosticCodes,
+        convertedFormatSettings,
+        /*preferences*/ {}
+      );
+
+      if (!fixes) {
+        return result;
+      }
+
+      for (const fix of fixes) {
+        const uriTextEditMapping: Record<string, TextEdit[]> = {};
+        for (const { fileName, textChanges } of fix.changes) {
+          const targetDoc = getSourceDoc(fileName, service.getProgram()!);
+          const edits = textChanges.map(({ newText, span }) => ({
+            newText,
+            range: convertRange(targetDoc, span),
+          }));
+          const uri = Uri.file(fileName).toString();
+          if (uriTextEditMapping[uri]) {
+            uriTextEditMapping[uri].push(...edits);
+          }
+          else {
+            uriTextEditMapping[uri] = edits;
+          }
+        }
+
+        result.push({
+          title: fix.description,
+          command: 'vetur.applyWorkspaceEdits',
+          arguments: [{
+            changes: uriTextEditMapping
+          }]
+        });
+      }
+
+      return result;
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);

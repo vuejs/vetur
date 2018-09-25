@@ -11,6 +11,11 @@ export function activate(context: vscode.ExtensionContext) {
    */
   context.subscriptions.push(
     vscode.commands.registerCommand('vetur.generateGrammar', generateGrammarCommandHandler(context.extensionPath))
+
+    vscode.commands.registerCommand('vetur.applyWorkspaceEdits', (args: WorkspaceEdit) => {
+      const edit = client.protocol2CodeConverter.asWorkspaceEdit(args)!;
+      vscode.workspace.applyEdit(edit);
+    })
   );
 
   registerLanguageConfigurations();

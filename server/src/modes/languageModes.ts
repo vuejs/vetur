@@ -14,9 +14,11 @@ import {
   Position,
   FormattingOptions,
   SymbolInformation,
+  CodeActionContext,
   ColorInformation,
   Color,
-  ColorPresentation
+  ColorPresentation,
+  Command,
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -41,6 +43,11 @@ export interface LanguageMode {
   updateFileInfo?(doc: TextDocument): void;
 
   doValidation?(document: TextDocument): Diagnostic[];
+  getCodeActions?(
+    document: TextDocument,
+    range: Range,
+    formatParams: FormattingOptions,
+    context: CodeActionContext): Command[];
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
   doHover?(document: TextDocument, position: Position): Hover;
