@@ -175,10 +175,12 @@
           "default": "none",
           "enum": [
             "none",
+            "prettyhtml",
             "js-beautify-html"
           ],
           "enumDescriptions": [
             "disable formatting",
+            "prettyhtml",
             "html formatter of js-beautify"
           ],
           "description": "Default formatter for <template> region"
