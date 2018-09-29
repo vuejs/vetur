@@ -15,6 +15,13 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('vetur.applyWorkspaceEdits', (args: WorkspaceEdit) => {
       const edit = client.protocol2CodeConverter.asWorkspaceEdit(args)!;
       vscode.workspace.applyEdit(edit);
+    }),
+
+    vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
+      client.sendRequest<vscode.Command | undefined>('requestCodeActionEdits', args)
+        .then(command =>
+          command && vscode.commands.executeCommand(command.command, ...command.arguments!)
+        );
     })
   );
 

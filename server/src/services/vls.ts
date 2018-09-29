@@ -9,15 +9,12 @@ import {
   IConnection,
   TextDocumentPositionParams,
   ColorPresentationParams,
-<<<<<<< HEAD
   InitializeParams,
   ServerCapabilities,
   TextDocumentSyncKind,
   DocumentFormattingRequest,
-  Disposable
-=======
+  Disposable,
   CodeActionParams
->>>>>>> Experimental support for quick fixes.
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -43,11 +40,11 @@ import {
 import Uri from 'vscode-uri';
 import { LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
-import { DocumentContext } from '../types';
-import { DocumentService } from './documentService';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
 import * as _ from 'lodash';
+import { DocumentContext, RefactorAction } from '../types';
+import { DocumentService } from './documentService';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -146,6 +143,8 @@ export class VLS {
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
+
+    this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
   }
 
   private async setupDynamicFormatters(settings: any) {
@@ -377,13 +376,8 @@ export class VLS {
     return NULL_SIGNATURE;
   }
 
-<<<<<<< HEAD
-  /**
-   * Validations
-   */
-=======
   onCodeAction({ textDocument, range, context }: CodeActionParams) {
-    const doc = this.documentService.getDocument(textDocument.uri);
+    const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, range.start);
     if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
       throw new Error("Vetur/VLS can't handle ranges across different sections of a .vue file.");
@@ -392,10 +386,19 @@ export class VLS {
       // TODO: funnel formatParams?
       return mode.getCodeActions(doc, range, /*formatParams*/ {} as any, context);
     }
-
     return [];
   }
->>>>>>> Experimental support for quick fixes.
+
+  getRefactorEdits(refactorAction: RefactorAction) {
+    const uri = Uri.file(refactorAction.fileName).toString();
+    const doc = this.documentService.getDocument(uri)!;
+    const startPos = doc.positionAt(refactorAction.textRange.pos);
+    const mode = this.languageModes.getModeAtPosition(doc, startPos);
+    if (mode && mode.getRefactorEdits) {
+      return mode.getRefactorEdits(doc, refactorAction);
+    }
+    return undefined;
+  }
 
   private triggerValidation(textDocument: TextDocument): void {
     this.cleanPendingValidation(textDocument);

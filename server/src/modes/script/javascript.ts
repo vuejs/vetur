@@ -22,10 +22,7 @@ import {
   CompletionList,
   Position,
   FormattingOptions,
-<<<<<<< HEAD
   DiagnosticTag
-=======
->>>>>>> Experimental support for quick fixes.
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
@@ -42,6 +39,7 @@ import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
+import { RefactorAction } from '../../types';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -375,7 +373,7 @@ export async function getJavascriptMode(
     },
     getCodeActions(doc, range, _formatParams, context) {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
-      const filePath = getFileFsPath(scriptDoc.uri);
+      const fileName = getFileFsPath(scriptDoc.uri);
       const start = scriptDoc.offsetAt(range.start);
       const end = scriptDoc.offsetAt(range.end);
       if (!supportedCodeFixCodes) {
@@ -394,45 +392,47 @@ export async function getJavascriptMode(
 
       const result: Command[] = [];
       const fixes = service.getCodeFixesAtPosition(
-        filePath,
+        fileName,
         start,
         end,
         fixableDiagnosticCodes,
         convertedFormatSettings,
         /*preferences*/ {}
       );
+      collectQuickFixCommands(fixes, service, result);
 
-      if (!fixes) {
-        return result;
-      }
-
-      for (const fix of fixes) {
-        const uriTextEditMapping: Record<string, TextEdit[]> = {};
-        for (const { fileName, textChanges } of fix.changes) {
-          const targetDoc = getSourceDoc(fileName, service.getProgram()!);
-          const edits = textChanges.map(({ newText, span }) => ({
-            newText,
-            range: convertRange(targetDoc, span),
-          }));
-          const uri = Uri.file(fileName).toString();
-          if (uriTextEditMapping[uri]) {
-            uriTextEditMapping[uri].push(...edits);
-          }
-          else {
-            uriTextEditMapping[uri] = edits;
-          }
-        }
-
-        result.push({
-          title: fix.description,
-          command: 'vetur.applyWorkspaceEdits',
-          arguments: [{
-            changes: uriTextEditMapping
-          }]
-        });
-      }
+      const textRange = { pos: start, end };
+      const refactorings = service.getApplicableRefactors(
+        fileName,
+        textRange,
+        /*preferences*/ {}
+      );
+      collectRefactoringCommands(
+        refactorings,
+        fileName,
+        formatSettings,
+        textRange,
+        result
+      );
 
       return result;
+    },
+    getRefactorEdits(doc: TextDocument, args: RefactorAction) {
+      const { service } = updateCurrentTextDocument(doc);
+      const response = service.getEditsForRefactor(
+        args.fileName,
+        args.formatOptions,
+        args.textRange,
+        args.refactorName,
+        args.actionName,
+        args.preferences,
+      );
+      if (!response) {
+        // TODO: What happens when there's no response?
+        return createApplyCodeActionCommand('', {});
+      }
+      const uriMapping = createUriMappingForEdits(response.edits, service);
+      return createApplyCodeActionCommand('', uriMapping);
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -501,6 +501,87 @@ export async function getJavascriptMode(
       jsDocuments.dispose();
     }
   };
+}
+
+function collectRefactoringCommands(
+    refactorings: ts.ApplicableRefactorInfo[],
+    fileName: string,
+    formatSettings: any,
+    textRange: { pos: number; end: number; },
+    result: Command[]) {
+  const actions: RefactorAction[] = [];
+  for (const refactoring of refactorings) {
+    const refactorName = refactoring.name;
+    if (refactoring.inlineable) {
+      actions.push({
+        fileName,
+        formatOptions: formatSettings,
+        textRange,
+        refactorName,
+        actionName: refactorName,
+        preferences: {},
+        description: refactoring.description,
+      });
+    }
+    else {
+      actions.push(...refactoring.actions.map(action => ({
+        fileName,
+        formatOptions: formatSettings,
+        textRange,
+        refactorName,
+        actionName: action.name,
+        preferences: {},
+        description: action.description,
+      })));
+    }
+  }
+  for (const action of actions) {
+    result.push({
+      command: 'vetur.chooseTypeScriptRefactoring',
+      title: action.description,
+      arguments: [action],
+    });
+  }
+}
+
+function collectQuickFixCommands(
+    fixes: ReadonlyArray<ts.CodeFixAction>,
+    service: ts.LanguageService,
+    result: Command[]) {
+  for (const fix of fixes) {
+    const uriTextEditMapping = createUriMappingForEdits(fix.changes, service);
+    result.push(createApplyCodeActionCommand(fix.description, uriTextEditMapping));
+  }
+}
+
+function createApplyCodeActionCommand(title: string, uriTextEditMapping: Record<string, TextEdit[]>): Command {
+  return {
+    title,
+    command: 'vetur.applyWorkspaceEdits',
+    arguments: [{
+      changes: uriTextEditMapping
+    }]
+  };
+}
+
+function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.LanguageService) {
+  const program = service.getProgram()!;
+  const result: Record<string, TextEdit[]> = {};
+  for (const { fileName, textChanges } of changes) {
+    const targetDoc = getSourceDoc(fileName, program);
+    const edits = textChanges.map(({ newText, span }) => ({
+      newText,
+      range: convertRange(targetDoc, span),
+    }));
+    const uri = Uri.file(fileName).toString();
+    if (result[uri]) {
+      result[uri].push(...edits);
+    }
+    else {
+      result[uri] = edits;
+    }
+  }
+  return result;
 }
 
 function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
