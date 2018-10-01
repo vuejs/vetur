@@ -113,18 +113,27 @@
   resolved "https://registry.yarnpkg.com/@emmetio/extract-abbreviation/-/extract-abbreviation-0.1.6.tgz#e4a9856c1057f0aff7d443b8536477c243abe28c"
   integrity sha512-Ce3xE2JvTSEbASFbRbA1gAIcMcZWdS2yUYRaQbeM0nbOzaZrUYfa3ePtcriYRZOZmr+CkKA+zbjhvTpIOAYVcw==
 
-"@starptech/prettyhtml-formatter@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-formatter/-/prettyhtml-formatter-0.0.60.tgz#07bfe8027ae468a5c30620ebfc328b226be3779c"
+"@starptech/hast-util-from-webparser@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@starptech/hast-util-from-webparser/-/hast-util-from-webparser-0.1.5.tgz#840d06fb3b6129d401dfce50e08b490f58ae6d6b"
   dependencies:
-    "@starptech/prettyhtml-hast-to-html" "^0.0.60"
-    "@starptech/prettyhtml-rehype-parse" "^0.0.60"
+    "@starptech/prettyhtml-hastscript" "^0.1.5"
+    "@starptech/webparser" "^0.1.5"
+    property-information "^4.2.0"
+
+"@starptech/prettyhtml-formatter@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-formatter/-/prettyhtml-formatter-0.1.5.tgz#6240e2af4f5dd9bc9fef443af87495e7aa77c526"
+  dependencies:
+    "@starptech/prettyhtml-hast-to-html" "^0.1.5"
+    "@starptech/rehype-webparser" "^0.1.5"
+    "@starptech/webparser" "^0.1.5"
     hast-util-is-element "^1.0.1"
     hast-util-to-string "^1.0.1"
     html-void-elements "^1.0.3"
     html-whitespace-sensitive-tag-names "^1.0.0"
     is-hidden "^1.1.1"
-    prettier "^1.14.2"
+    prettier "^1.14.3"
     rehype-minify-whitespace "^2.0.3"
     repeat-string "^1.6.1"
     to-vfile "^5.0.1"
@@ -134,9 +143,9 @@
     unist-util-visit-parents "^2.0.1"
     xtend "^4.0.1"
 
-"@starptech/prettyhtml-hast-to-html@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-hast-to-html/-/prettyhtml-hast-to-html-0.0.60.tgz#36f92d83dfab8734c9314c0d33be1b9bc4bd0588"
+"@starptech/prettyhtml-hast-to-html@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-hast-to-html/-/prettyhtml-hast-to-html-0.1.5.tgz#32b897b5963ace63ef11dd27c15b7cbe1655ed29"
   dependencies:
     ccount "^1.0.3"
     comma-separated-tokens "^1.0.5"
@@ -150,51 +159,42 @@
     unist-util-is "^2.1.2"
     xtend "^4.0.1"
 
-"@starptech/prettyhtml-hast-util-from-parse@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-hast-util-from-parse/-/prettyhtml-hast-util-from-parse-0.0.60.tgz#9ae002ccc7ec68d2bedbc1a23d653c45ac7e020f"
-  dependencies:
-    "@starptech/prettyhtml-hastscript" "^0.0.60"
-    ccount "^1.0.3"
-    property-information "^4.2.0"
-    web-namespaces "^1.1.2"
-    xtend "^4.0.1"
-
-"@starptech/prettyhtml-hastscript@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-hastscript/-/prettyhtml-hastscript-0.0.60.tgz#b2605620a0f86b85ac6bca40285de2f70fe8a8be"
+"@starptech/prettyhtml-hastscript@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-hastscript/-/prettyhtml-hastscript-0.1.5.tgz#7287fd16900ba753c203d3aabfa11a95a887da5b"
   dependencies:
     comma-separated-tokens "^1.0.5"
     hast-util-parse-selector "^2.2.0"
     property-information "^4.2.0"
     space-separated-tokens "^1.1.2"
 
-"@starptech/prettyhtml-parse@^0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-parse/-/prettyhtml-parse-0.0.25.tgz#e49064835bf3fdcd4978b7a15fe3d58973ab9d4d"
-
-"@starptech/prettyhtml-rehype-parse@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-rehype-parse/-/prettyhtml-rehype-parse-0.0.60.tgz#aa4fe04bb8def6e7231ef7551e7491b9f1b5e37c"
+"@starptech/prettyhtml@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml/-/prettyhtml-0.1.6.tgz#859fbdf7df2673ca5fa396c84c026f91ac9896de"
   dependencies:
-    "@starptech/prettyhtml-hast-util-from-parse" "^0.0.60"
-    "@starptech/prettyhtml-parse" "^0.0.25"
-    xtend "^4.0.1"
-
-"@starptech/prettyhtml@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml/-/prettyhtml-0.0.60.tgz#2f9521da38a72c845a838e0f36bdeb0a309b7116"
-  dependencies:
-    "@starptech/prettyhtml-formatter" "^0.0.60"
-    "@starptech/prettyhtml-rehype-parse" "^0.0.60"
+    "@starptech/prettyhtml-formatter" "^0.1.5"
+    "@starptech/rehype-webparser" "^0.1.5"
+    "@starptech/webparser" "^0.1.5"
     meow "^5.0.0"
-    prettier "^1.14.2"
+    prettier "^1.14.3"
     rehype-sort-attribute-values "^1.0.1"
     unified "^7.0.0"
     unified-engine "^6.0.1"
     update-notifier "^2.5.0"
     vfile "^3.0.0"
     vfile-reporter "^5.0.0"
+
+"@starptech/rehype-webparser@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@starptech/rehype-webparser/-/rehype-webparser-0.1.5.tgz#34ebef3467462d696cb768a6cab9340d70944056"
+  dependencies:
+    "@starptech/hast-util-from-webparser" "^0.1.5"
+    "@starptech/webparser" "^0.1.5"
+    vfile-message "^1.0.1"
+
+"@starptech/webparser@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@starptech/webparser/-/webparser-0.1.5.tgz#8017c84e49ba6449a6594b26cc9e64bf09410465"
 
 "@types/commander@^2.11.0":
   version "2.12.2"
@@ -3447,7 +3447,7 @@ prettier-eslint@^8.8.1:
     typescript-eslint-parser "^16.0.0"
     vue-eslint-parser "^2.0.2"
 
-prettier@^1.11.1, prettier@^1.14.2, prettier@^1.7.0:
+prettier@^1.11.1, prettier@^1.14.3, prettier@^1.7.0:
   version "1.14.3"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.14.3.tgz#90238dd4c0684b7edce5f83b0fb7328e48bd0895"
   integrity sha512-qZDVnCrnpsRJJq5nSsiHCE3BYMED2OtsI+cmzIzF1QIfqm5ALf8tEJcO27zV1gKNKRPdhjO0dNWnrzssDQ1tFg==
@@ -4661,7 +4661,7 @@ vfile-location@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vfile-location/-/vfile-location-2.0.3.tgz#083ba80e50968e8d420be49dd1ea9a992131df77"
 
-vfile-message@^1.0.0:
+vfile-message@^1.0.0, vfile-message@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/vfile-message/-/vfile-message-1.0.1.tgz#51a2ccd8a6b97a7980bb34efb9ebde9632e93677"
   dependencies:
@@ -4775,10 +4775,6 @@ wcwidth@^1.0.0:
   integrity sha1-8LDc+RW8X/FSivrbLA4XtTLaL+g=
   dependencies:
     defaults "^1.0.3"
-
-web-namespaces@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.2.tgz#c8dc267ab639505276bae19e129dbd6ae72b22b4"
 
 which-module@^2.0.0:
   version "2.0.0"
