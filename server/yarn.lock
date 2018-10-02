@@ -3102,9 +3102,9 @@ stylint@^1.5.9:
     user-home "2.0.0"
     yargs "4.7.1"
 
-stylus-supremacy@~2.12.0:
-  version "2.12.5"
-  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.12.5.tgz#9baa77da6908ece01ee589aebbc4d3bb9a385c11"
+stylus-supremacy@^2.12.6:
+  version "2.12.6"
+  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.12.6.tgz#d9b12369aec8d9cb4d5789b7b1d6045df45a30ab"
   dependencies:
     glob "^7.1.3"
     js-yaml "^3.12.0"
