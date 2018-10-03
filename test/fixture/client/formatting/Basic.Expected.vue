@@ -1,9 +1,6 @@
 <template>
   <div class="page">
-    <counter>
-
-    </counter>
-
+    <counter></counter>
   </div>
 </template>
 

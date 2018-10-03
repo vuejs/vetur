@@ -14,14 +14,19 @@ describe('Should format', () => {
   const docUri = getDocUri('client/formatting/Basic.vue');
   const expectedDocUri = getDocUri('client/formatting/Basic.Expected.vue');
 
+  const docUri2 = getDocUri('client/formatting/VueHNUserView.vue');
+  const expectedDocUri2 = getDocUri('client/formatting/VueHNUserView.Expected.vue');
+
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
+    await showFile(docUri2);
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('formats', async () => {
     await testFormat(docUri, expectedDocUri);
+    await testFormat(docUri2, expectedDocUri2);
   });
 });
 
