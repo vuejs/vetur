@@ -6,9 +6,14 @@ Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/
 **As a result, only `Format Document` command will be available.**  
 **`Format Selection` command wouldn't work, and there is no**
 
-**html formatting is disabled by default. See [js-beautify-html](#js-beautify-html-deprecated).**
-
 ## Formatters
+
+These formatters are available:
+
+- [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
+- [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
+- [`stylus-supremacy'](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
+- [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 
 Choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
 **Setting a language's formatter to `none` disables formatter for that language.**
@@ -37,6 +42,25 @@ Settings precedence:
 
 ESLint integration: `"prettier.eslintIntegration": true`. Settings are read from `.eslintrc`.
 
+#### prettyhtml
+
+**This will likely become the default html formatter soon.**
+
+https://github.com/Prettyhtml/prettyhtml
+
+`tabWidth` and `useTabs` are read from `editor.tabSize` and `editor.insertSpaces`.
+
+Other settings include:
+
+```json
+"vetur.format.defaultFormatterOptions": {
+  "prettyhtml": {
+    "printWidth": 100, // No line exceeds 100 characters
+    "singleQuote": false // Prefer double quotes over single quotes
+  }
+}
+```
+
 #### vscode-typescript
 
 VS Code's js/ts formatter built on TypeScript language service.
@@ -47,8 +71,7 @@ Other settings are read from `javascript.format.*` and `typescript.format.*`.
 
 #### js-beautify-html [deprecated]
 
-Alternative html formatter. Deprecated, turned off by default and will be removed soon.
-js-beautify is not actively maintained and has many long-standing bugs. Use at your own risk.
+Alternative html formatter. Deprecated and turned off by default. Use at your own risk.
 
 `tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
 
@@ -75,7 +98,3 @@ Other settings are read from `stylusSupremacy.*`. You can install [Stylus Suprem
   "stylusSupremacy.insertSemicolons": false
 }
 ```
-
-## Plan
-
-I plan to contribute to [reshape](https://github.com/reshape/reshape) formatter and drop js-beautify eventually.

@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
+import * as prettyhtml from '@starptech/prettyhtml';
 
 const templateHead = '<template>';
 const templateTail = '</template>';
@@ -11,18 +12,19 @@ export function htmlFormat(
   formattingOptions: FormattingOptions,
   config: any
 ): TextEdit[] {
+  if (config.vetur.format.defaultFormatter.html === 'none') {
+    return [];
+  }
+
   const { value, range } = getValueAndRange(document, currRange);
 
-  defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
-  defaultHtmlOptions.indent_size = formattingOptions.tabSize;
+  let beautifiedHtml: string;
+  if (config.vetur.format.defaultFormatter.html === 'prettyhtml') {
+    beautifiedHtml = formatWithPrettyHtml(templateHead + value + templateTail, formattingOptions, config);
+  } else {
+    beautifiedHtml = formatWithJsBeautify(templateHead + value + templateTail, formattingOptions, config);
+  }
 
-  const htmlFormattingOptions = _.assign(
-    defaultHtmlOptions,
-    config.vetur.format.defaultFormatterOptions['js-beautify-html'],
-    { end_with_newline: false }
-  );
-
-  const beautifiedHtml = htmlBeautify(templateHead + value + templateTail, htmlFormattingOptions);
   const wrappedHtml = beautifiedHtml.substring(templateHead.length, beautifiedHtml.length - templateTail.length);
   return [
     {
@@ -30,6 +32,33 @@ export function htmlFormat(
       newText: wrappedHtml
     }
   ];
+}
+
+function formatWithPrettyHtml(input: string, formattingOptions: FormattingOptions, config: any): string {
+  const result = prettyhtml(input, {
+    useTabs: !formattingOptions.insertSpaces,
+    tabWidth: formattingOptions.tabSize,
+    usePrettier: true,
+    prettier: {
+      ...config.prettier
+    },
+    ...config.vetur.format.defaultFormatterOptions['prettyhtml']
+  });
+  return result.trim();
+}
+
+function formatWithJsBeautify(input: string, formattingOptions: FormattingOptions, config: any): string {
+  const htmlFormattingOptions = _.assign(
+    defaultHtmlOptions,
+    {
+      indent_with_tabs: !formattingOptions.insertSpaces,
+      indent_size: formattingOptions.tabSize
+    },
+    config.vetur.format.defaultFormatterOptions['js-beautify-html'],
+    { end_with_newline: false }
+  );
+
+  return htmlBeautify(input, htmlFormattingOptions);
 }
 
 function getValueAndRange(document: TextDocument, currRange: Range): { value: string; range: Range } {
