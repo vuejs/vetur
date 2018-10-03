@@ -20,7 +20,7 @@ export function htmlFormat(
 
   let beautifiedHtml: string;
   if (config.vetur.format.defaultFormatter.html === 'prettyhtml') {
-    beautifiedHtml = formatWithPrettyHtml(templateHead + value + templateTail);
+    beautifiedHtml = formatWithPrettyHtml(templateHead + value + templateTail, formattingOptions, config);
   } else {
     beautifiedHtml = formatWithJsBeautify(templateHead + value + templateTail, formattingOptions, config);
   }
@@ -34,8 +34,16 @@ export function htmlFormat(
   ];
 }
 
-function formatWithPrettyHtml(input: string): string {
-  const result = prettyhtml(input, {});
+function formatWithPrettyHtml(input: string, formattingOptions: FormattingOptions, config: any): string {
+  const result = prettyhtml(input, {
+    useTabs: !formattingOptions.insertSpaces,
+    tabWidth: formattingOptions.tabSize,
+    usePrettier: true,
+    prettier: {
+      ...config.prettier
+    },
+    ...config.vetur.format.defaultFormatterOptions['prettyhtml']
+  });
   return result.trim();
 }
 
