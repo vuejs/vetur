@@ -3,10 +3,10 @@
 ### 0.13.0 | 2018-10-04
 
 - Revert TS to 2.8.4, which is the same minor version as 0.12.6 release for perf issues. #913.
-- prettyhtml support. Thanks to contribution from [@StarpTech](https://github.com/StarpTech). #561 and #491.
+- [prettyhtml](https://github.com/Prettyhtml/prettyhtml) support. Thanks to contribution from [@StarpTech](https://github.com/StarpTech). #561 and #491.
 - Default `unformatted` option to an empty array to accommodate js-beautify's new behavior. #921.
-- Fix a stylus formatting error when stylus code contains comments. Thanks to contribution from [@ThisIsManta](https://github.com/ThisIsManta) #918.
-- If local prettier exists in `node_modules`, prefer using it instead of bundled version of prettier. Thanks to contribution from [@maeldur](https://github.com/maeldur) Fix #876.
+- Fix a stylus formatting error when stylus code contains comments. Thanks to contribution from [@ThisIsManta](https://github.com/ThisIsManta). #918.
+- If local prettier exists in `node_modules`, prefer using it instead of bundled version of prettier. Thanks to contribution from [@maeldur](https://github.com/maeldur). #876.
 
 ### 0.12.7 | 2018-09-24
 
