@@ -83,11 +83,6 @@ export function activate(context: ExtensionContext) {
   const client = new LanguageClient('vetur', 'Vue Language Server', serverOptions, clientOptions);
   const disposable = client.start();
   context.subscriptions.push(disposable);
-  // const isDecoratorEnabled = workspace.getConfiguration().get<boolean>('vetur.colorDecorators.enable');
-
-  // if (isDecoratorEnabled) {
-  //   client.onReady().then(registerColorProvider);
-  // }
 
   languages.setLanguageConfiguration('vue-html', {
     wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
