@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.13.0 | 2018-10-04
+
+- Revert TS to 2.8.4, which is the same minor version as 0.12.6 release for perf issues. #913.
+- prettyhtml support. Thanks to contribution from [@StarpTech](https://github.com/StarpTech). #561 and #491.
+- Default `unformatted` option to an empty array to accommodate js-beautify's new behavior. #921.
+- Fix a stylus formatting error when stylus code contains comments. Thanks to contribution from [@ThisIsManta](https://github.com/ThisIsManta) #918.
+- If local prettier exists in `node_modules`, prefer using it instead of bundled version of prettier. Thanks to contribution from [@maeldur](https://github.com/maeldur) Fix #876.
+
 ### 0.12.7 | 2018-09-24
 
 - Fix a oversized publish that's 200MB (normal publish should be around 30MB). #898.
@@ -9,7 +17,7 @@
 
 ### 0.12.6 | 2018-08-06
 
-- Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. Fix #840.
+- Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. #840.
 - Fix syntax highlight for `:snake_case` properties in HTML. Thanks to contribution from [@davidhewitt](https://github.com/davidhewitt). #830.
 - Auto completion for [Buefy](https://buefy.github.io) framework. Thanks to contribution from [@jtommy](https://github.com/jtommy). #824.
 - Fix description for `v-cloak`. Thanks to contribution by [@snkashis](https://github.com/snkashis). #816.
@@ -87,19 +95,19 @@
 - Always ignore `end_with_newline` option in js-beautify so the template formats properly. #544.
 
 
-### 0.11.3 | 2017-11-13
+### 0.11.3 | 2017-11-13 
 
 - Hot fix for a bug in formatting `<template>` with js-beautify where it adds `</template>` to the end. #539.
 
-### 0.11.2 | 2017-11-13
+### 0.11.2 | 2017-11-13 
 
 - Workaround a js-beautify bug which indents multi-line comment. #535.
 - Docs for generating grammar for custom blocks: https://vuejs.github.io/vetur/highlighting.html.
 - Allow `php` as one of the custom block language. #536.
 - Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
-- Pretty print generated gramamr so it's readable. (You can find it at `~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json`).
+- Pretty print generated gramamr so it's readable. (You can find it at ~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json).
 
-### 0.11.1 | 2017-11-10
+### 0.11.1 | 2017-11-10 
 
 - Syntax highlighting for Custom Block. #210.
   - Added setting `vetur.grammar.customBlocks`.
@@ -309,7 +317,7 @@ Shoutout to @HerringtonDarkholme who helped implementing many new features!
 
 ### 0.6.9 | 2017-05-14
 
-- Update grammar to allow tags like `<template-component>` in vue-html. #189.
+- Update grammar to allow tags like <template-component> in vue-html. #189.
 - Update grammar to allow html comments outside all regions. #195.
 - Handle new file creation so vetur's IntelliSense work on it. #192.
 - Enable breakpoints for vue files. Doc for debugging coming later in #201.

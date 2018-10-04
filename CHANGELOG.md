@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.13.0 | 2018-10-04
+
+- Revert TS to 2.8.4, which is the same minor version as 0.12.6 release for perf issues. #913.
+- prettyhtml support. Thanks to contribution from [@StarpTech](https://github.com/StarpTech). #561 and #491.
+- Default `unformatted` option to an empty array to accommodate js-beautify's new behavior. #921.
+- Fix a stylus formatting error when stylus code contains comments. Thanks to contribution from [@ThisIsManta](https://github.com/ThisIsManta) #918.
+- If local prettier exists in `node_modules`, prefer using it instead of bundled version of prettier. Thanks to contribution from [@maeldur](https://github.com/maeldur) Fix #876.
+
 ### 0.12.7 | 2018-09-24
 
 - Fix a oversized publish that's 200MB (normal publish should be around 30MB). #898.
@@ -9,7 +17,7 @@
 
 ### 0.12.6 | 2018-08-06
 
-- Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. Fix #840.
+- Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. #840.
 - Fix syntax highlight for `:snake_case` properties in HTML. Thanks to contribution from [@davidhewitt](https://github.com/davidhewitt). #830.
 - Auto completion for [Buefy](https://buefy.github.io) framework. Thanks to contribution from [@jtommy](https://github.com/jtommy). #824.
 - Fix description for `v-cloak`. Thanks to contribution by [@snkashis](https://github.com/snkashis). #816.
