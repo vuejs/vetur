@@ -89,7 +89,7 @@ jsconfig.json:
 
 index.vue
 
-```html
+```javascript
 import a from 'components/a.vue'
-import b from 'components/b.vue
+import b from 'components/b.vue'
 ```
