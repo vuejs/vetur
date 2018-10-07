@@ -4819,7 +4819,7 @@ vfile@^3.0.0:
     unist-util-stringify-position "^1.0.0"
     vfile-message "^1.0.0"
 
-vscode-css-languageservice@^3.0.3:
+vscode-css-languageservice@^3.0.11:
   version "3.0.11"
   resolved "https://registry.yarnpkg.com/vscode-css-languageservice/-/vscode-css-languageservice-3.0.11.tgz#0e75e1870d59fddbfb6021efd5d80df08c9faaeb"
   integrity sha512-XweDpjcD+VMguJMcr5V1OHE3GclVWJ7DpojpxrlsGCJlUumY/Xrv4VcMta6z7wUBwsmOeyogT5Hf/L2SzBg6Jw==
