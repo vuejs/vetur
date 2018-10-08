@@ -100,22 +100,22 @@
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/@emmetio/extract-abbreviation/-/extract-abbreviation-0.1.6.tgz#e4a9856c1057f0aff7d443b8536477c243abe28c"
 
-"@starptech/hast-util-from-webparser@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@starptech/hast-util-from-webparser/-/hast-util-from-webparser-0.2.0.tgz#9f833a18a0db355920c85bfb3ede8fa4c4bb9107"
+"@starptech/hast-util-from-webparser@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/hast-util-from-webparser/-/hast-util-from-webparser-0.2.2.tgz#02b549f034431b21c7ff9042bfc89425ad779fe7"
   dependencies:
-    "@starptech/prettyhtml-hastscript" "^0.2.0"
-    "@starptech/webparser" "^0.2.0"
+    "@starptech/prettyhtml-hastscript" "^0.2.2"
+    "@starptech/webparser" "^0.2.2"
     property-information "^4.2.0"
 
-"@starptech/prettyhtml-formatter@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/@starptech/prettyhtml-formatter/-/prettyhtml-formatter-0.2.1.tgz#a30587fd5af04c4b0d43429bc777c69fffbfbd75"
+"@starptech/prettyhtml-formatter@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/prettyhtml-formatter/-/prettyhtml-formatter-0.2.2.tgz#84324609c3a2a23deda1bd373a124c8f7247991a"
   dependencies:
-    "@starptech/prettyhtml-hast-to-html" "^0.2.0"
-    "@starptech/rehype-minify-whitespace" "^0.2.1"
-    "@starptech/rehype-webparser" "^0.2.0"
-    "@starptech/webparser" "^0.2.0"
+    "@starptech/prettyhtml-hast-to-html" "^0.2.2"
+    "@starptech/rehype-minify-whitespace" "^0.2.2"
+    "@starptech/rehype-webparser" "^0.2.2"
+    "@starptech/webparser" "^0.2.2"
     hast-util-is-element "^1.0.1"
     hast-util-to-string "^1.0.1"
     html-void-elements "^1.0.3"
@@ -130,9 +130,9 @@
     unist-util-visit-parents "^2.0.1"
     xtend "^4.0.1"
 
-"@starptech/prettyhtml-hast-to-html@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@starptech/prettyhtml-hast-to-html/-/prettyhtml-hast-to-html-0.2.0.tgz#e52587f76673a85c1648463f782d2f8d126f8c55"
+"@starptech/prettyhtml-hast-to-html@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/prettyhtml-hast-to-html/-/prettyhtml-hast-to-html-0.2.2.tgz#46576def7c28a75becf82049707ef4b2c2bb26b2"
   dependencies:
     ccount "^1.0.3"
     comma-separated-tokens "^1.0.5"
@@ -146,22 +146,22 @@
     unist-util-is "^2.1.2"
     xtend "^4.0.1"
 
-"@starptech/prettyhtml-hastscript@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@starptech/prettyhtml-hastscript/-/prettyhtml-hastscript-0.2.0.tgz#999eea5324fb433f673f5bb24ead5dd3ac537a37"
+"@starptech/prettyhtml-hastscript@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/prettyhtml-hastscript/-/prettyhtml-hastscript-0.2.2.tgz#8b202640aedb3d27e2359008e69af3000d756970"
   dependencies:
     comma-separated-tokens "^1.0.5"
     hast-util-parse-selector "^2.2.0"
     property-information "^4.2.0"
     space-separated-tokens "^1.1.2"
 
-"@starptech/prettyhtml@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/@starptech/prettyhtml/-/prettyhtml-0.2.1.tgz#a87f2283175e080e8f54a232f5f18eebf34746f5"
+"@starptech/prettyhtml@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/prettyhtml/-/prettyhtml-0.2.2.tgz#84ccc7af9f68b724931de0c09c3dc8c7c518cf37"
   dependencies:
-    "@starptech/prettyhtml-formatter" "^0.2.1"
-    "@starptech/rehype-webparser" "^0.2.0"
-    "@starptech/webparser" "^0.2.0"
+    "@starptech/prettyhtml-formatter" "^0.2.2"
+    "@starptech/rehype-webparser" "^0.2.2"
+    "@starptech/webparser" "^0.2.2"
     meow "^5.0.0"
     prettier "^1.14.3"
     rehype-sort-attribute-values "^1.0.1"
@@ -171,9 +171,9 @@
     vfile "^3.0.0"
     vfile-reporter "^5.0.0"
 
-"@starptech/rehype-minify-whitespace@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/@starptech/rehype-minify-whitespace/-/rehype-minify-whitespace-0.2.1.tgz#82806038603ece7bdedef3e615cc97d607c727e5"
+"@starptech/rehype-minify-whitespace@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/rehype-minify-whitespace/-/rehype-minify-whitespace-0.2.2.tgz#c5b178da1e152da21a85cc5c6ee9a2a82f544bda"
   dependencies:
     collapse-white-space "^1.0.4"
     hast-util-embedded "^1.0.1"
@@ -184,17 +184,16 @@
     unist-util-is "^2.1.2"
     unist-util-modify-children "^1.1.2"
 
-"@starptech/rehype-webparser@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@starptech/rehype-webparser/-/rehype-webparser-0.2.0.tgz#45d5b3d37cb687e0653497ee272d3d2e8a95b99f"
+"@starptech/rehype-webparser@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/rehype-webparser/-/rehype-webparser-0.2.2.tgz#37513138a739c2e90ffc10232125e71a5b3257a6"
   dependencies:
-    "@starptech/hast-util-from-webparser" "^0.2.0"
-    "@starptech/webparser" "^0.2.0"
-    vfile-message "^1.0.1"
+    "@starptech/hast-util-from-webparser" "^0.2.2"
+    "@starptech/webparser" "^0.2.2"
 
-"@starptech/webparser@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@starptech/webparser/-/webparser-0.2.0.tgz#074ef4c1422816d5f30c732b52795a0794d3ba4d"
+"@starptech/webparser@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/@starptech/webparser/-/webparser-0.2.2.tgz#fe0782459386ca4ae34c15b0575fd24ddd38acb1"
 
 "@types/commander@^2.11.0":
   version "2.12.2"
@@ -4118,7 +4117,7 @@ vfile-location@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vfile-location/-/vfile-location-2.0.3.tgz#083ba80e50968e8d420be49dd1ea9a992131df77"
 
-vfile-message@^1.0.0, vfile-message@^1.0.1:
+vfile-message@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/vfile-message/-/vfile-message-1.0.1.tgz#51a2ccd8a6b97a7980bb34efb9ebde9632e93677"
   dependencies:
