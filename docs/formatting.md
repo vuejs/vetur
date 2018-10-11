@@ -98,3 +98,36 @@ Other settings are read from `stylusSupremacy.*`. You can install [Stylus Suprem
   "stylusSupremacy.insertSemicolons": false
 }
 ```
+
+#### Example config for Visual Studio Code, prettier, prettier-eslint integration
+
+If you use prettier and prettier-eslint integration in Visual Studio Code, to enable formatting on `template`, `script` and `style` sections of vue files, you may use user settings below. Descriptions are provided in comments.
+
+```js
+{
+  "prettier.eslintIntegration": true,
+  "eslint.autoFixOnSave": true,
+  
+  "[vue]": {
+    "editor.formatOnSave": true
+  },
+
+  // Enable formatter for <template> in vue files, which is disabled by default in vetur.
+  "vetur.format.defaultFormatter.html": "prettyhtml",
+
+  // To enable vue in prettier, which is disabled by default. See: https://github.com/prettier/prettier-vscode#prettierdisablelanguages-default-vue
+  "prettier.disableLanguages": [],
+  
+  // Enable vue in eslint
+  "eslint.options": { "extensions": [".html", ".js", ".vue", ".jsx"] },
+  
+  // Enable autofix of vue in eslint
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+}
+```
