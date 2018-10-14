@@ -36,7 +36,7 @@ yarn watch
 To debug:
 
 - The extension has 2 configurations for debugging i.e client and server. 
-- Run the client configurtion first. 
+- Run the client configuration first. 
 - As the client launches the language server lazily, open any .vue file so that the server is started. 
 - Run the server configuration which binds the server code to port 6005 to enable debugging.
 - At this point breakpoints in both server and client code should work. 
