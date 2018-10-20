@@ -1,5 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S-P${PATH}:/usr/local/bin:/usr/bin bash
 
+# FIXME: Stop hardcoding this once the document symbols API is fixed.
+export CODE_VERSION="1.27.2"
 export CODE_TESTS_PATH="$(pwd)/dist/test"
 export CODE_TESTS_WORKSPACE="$(pwd)/test/fixture"
 
