@@ -130,6 +130,24 @@ export class VLS {
     });
   }
 
+  /**
+   * Custom Notifications
+   */
+
+  displayInfoMessage(msg: string): void {
+    this.lspConnection.sendNotification('$/displayInfo', msg);
+  }
+  displayWarningMessage(msg: string): void {
+    this.lspConnection.sendNotification('$/displayWarning', msg);
+  }
+  displayErrorMessage(msg: string): void {
+    this.lspConnection.sendNotification('$/displayError', msg);
+  }
+
+  /**
+   * Language Features
+   */
+
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const fullDocRange = Range.create(Position.create(0, 0), doc.positionAt(doc.getText().length));
@@ -137,28 +155,27 @@ export class VLS {
     const modeRanges = this.languageModes.getModesInRange(doc, fullDocRange);
     const allEdits: TextEdit[] = [];
 
+    const errMessages: string[] = [];
+
     modeRanges.forEach(range => {
       if (range.mode && range.mode.format) {
-        const edits = range.mode.format(doc, range, options);
-        for (const edit of edits) {
-          allEdits.push(edit);
+        try {
+          const edits = range.mode.format(doc, range, options);
+          for (const edit of edits) {
+            allEdits.push(edit);
+          }
+        } catch (err) {
+          errMessages.push(err.toString());
         }
       }
     });
 
-    return allEdits;
-  }
-
-  doValidate(doc: TextDocument): Diagnostic[] {
-    const diagnostics: Diagnostic[] = [];
-    if (doc.languageId === 'vue') {
-      this.languageModes.getAllModesInDocument(doc).forEach(mode => {
-        if (mode.doValidation && this.validation[mode.getId()]) {
-          pushAll(diagnostics, mode.doValidation(doc));
-        }
-      });
+    if (errMessages.length !== 0) {
+      this.displayErrorMessage('Formatting failed: "' + errMessages.join('\n') + '"');
+      return [];
     }
-    return diagnostics;
+
+    return allEdits;
   }
 
   onCompletion({ textDocument, position }: TextDocumentPositionParams): CompletionList {
@@ -289,6 +306,10 @@ export class VLS {
     return NULL_SIGNATURE;
   }
 
+  /**
+   * Validations
+   */
+
   private triggerValidation(textDocument: TextDocument): void {
     this.cleanPendingValidation(textDocument);
     this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
@@ -308,6 +329,18 @@ export class VLS {
   validateTextDocument(textDocument: TextDocument): void {
     const diagnostics: Diagnostic[] = this.doValidate(textDocument);
     this.lspConnection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+  }
+
+  doValidate(doc: TextDocument): Diagnostic[] {
+    const diagnostics: Diagnostic[] = [];
+    if (doc.languageId === 'vue') {
+      this.languageModes.getAllModesInDocument(doc).forEach(mode => {
+        if (mode.doValidation && this.validation[mode.getId()]) {
+          pushAll(diagnostics, mode.doValidation(doc));
+        }
+      });
+    }
+    return diagnostics;
   }
 
   removeDocument(doc: TextDocument): void {
