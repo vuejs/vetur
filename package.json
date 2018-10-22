@@ -337,6 +337,7 @@
     }
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.117",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.11.0",
     "husky": "^1.0.0-rc.15",
