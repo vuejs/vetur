@@ -44,7 +44,7 @@ function formatWithPrettyHtml(input: string, formattingOptions: FormattingOption
     },
     ...config.vetur.format.defaultFormatterOptions['prettyhtml']
   });
-  return result.trim();
+  return result.contents.trim();
 }
 
 function formatWithJsBeautify(input: string, formattingOptions: FormattingOptions, config: any): string {
