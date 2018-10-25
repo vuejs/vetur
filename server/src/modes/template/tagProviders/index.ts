@@ -8,7 +8,8 @@ import {
   bootstrapTagProvider,
   buefyTagProvider,
   vuetifyTagProvider,
-  getQuasarTagProvider
+  getQuasarTagProvider,
+  getExternalTagProvider
 } from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
@@ -84,6 +85,21 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
         if (provider !== null) {
           allTagProviders.push(provider);
           settings['quasar'] = true;
+        }
+      }
+    }
+
+    for(const dep in packageJson.dependencies) {
+      const runtimePath = ts.findConfigFile(
+        workspacePath,
+        ts.sys.fileExists,
+        join('node_modules', dep, 'component-description.json')
+      );      
+      if (runtimePath) {
+        const provider = JSON.parse(fs.readFileSync(runtimePath, 'utf-8'));
+        if (provider) {
+          allTagProviders.push(getExternalTagProvider(dep, provider.tags, provider.attributes));
+          settings[dep] = true;
         }
       }
     }
