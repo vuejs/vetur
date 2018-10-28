@@ -41,28 +41,9 @@ export function prettierEslintify(
     const prettierEslint = requireLocalPkg(filePath, 'prettier-eslint') as PrettierEslintFormat;
     const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
 
-    const extensionMap: { [k in ParserOption]: string } = {
-      babylon: '.js',
-      flow: '.js',
-      css: '.css',
-      scss: '.scss',
-      less: '.less',
-      typescript: '.ts',
-      json: '.json',
-      graphql: '.graphql',
-    };
-
-    const path = require('path');
-    const newExtension = extensionMap[parser];
-    const newFileName = path.basename(filePath, path.extname(filePath));
-    const newFilePath = path.format({
-      dir: path.dirname(filePath),
-      name: newFileName,
-      ext: newExtension
-    });
-
     const prettierifiedCode = prettierEslint({
-      filePath: newFilePath,
+      filePath: require('path').dirname(filePath),
+      prettierOptions: { parser },
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
