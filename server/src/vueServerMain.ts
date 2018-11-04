@@ -31,7 +31,7 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
   console.log('Vetur initialized');
   const vls = new VLS(workspacePath, connection);
 
-  if (initializationOptions) {
+  if (initializationOptions && initializationOptions.config) {
     vls.configure(initializationOptions.config);
   }
 
