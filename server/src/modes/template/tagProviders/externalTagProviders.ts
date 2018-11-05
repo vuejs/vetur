@@ -25,14 +25,18 @@ export const bootstrapTagProvider = getExternalTagProvider('bootstrap', bootstra
 export const buefyTagProvider = getExternalTagProvider('buefy', buefyTags, buefyAttributes);
 export const vuetifyTagProvider = getExternalTagProvider('vuetify', vuetifyTags, vuetifyAttributes);
 
-export function getQuasarTagProvider(workspacePath: string, pkg: any): IHTMLTagProvider | null {
-  const base = 'node_modules/quasar-framework';
+export function getRuntimeTagProvider(workspacePath: string, pkg: any, dep: string): IHTMLTagProvider | null {
+  const base = 'node_modules/' + dep;
+  if (!pkg.vetur) {
+    return null;
+  }
+
   const tagsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, join(base, pkg.vetur.tags));
   const attrsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, join(base, pkg.vetur.attributes));
-
+  
   return tagsPath && attrsPath
     ? getExternalTagProvider(
-      'quasar',
+      dep,
       JSON.parse(fs.readFileSync(tagsPath, 'utf-8')),
       JSON.parse(fs.readFileSync(attrsPath, 'utf-8'))
     )

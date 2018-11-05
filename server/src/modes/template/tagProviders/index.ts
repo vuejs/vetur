@@ -8,8 +8,7 @@ import {
   bootstrapTagProvider,
   buefyTagProvider,
   vuetifyTagProvider,
-  getQuasarTagProvider,
-  getExternalTagProvider
+  getRuntimeTagProvider
 } from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
@@ -73,35 +72,29 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       settings['vuetify'] = true;
     }
 
-    const quasarPath = ts.findConfigFile(
-      workspacePath,
-      ts.sys.fileExists,
-      join('node_modules', 'quasar-framework', 'package.json')
-    );
-    if (quasarPath) {
-      const quasarPkg = JSON.parse(fs.readFileSync(quasarPath, 'utf-8'));
-      if (quasarPkg.vetur) {
-        const provider = getQuasarTagProvider(workspacePath, quasarPkg);
-        if (provider !== null) {
-          allTagProviders.push(provider);
-          settings['quasar'] = true;
-        }
-      }
-    }
-
     for(const dep in packageJson.dependencies) {
-      const runtimePath = ts.findConfigFile(
+      const runtimePkgPath = ts.findConfigFile(
         workspacePath,
         ts.sys.fileExists,
-        join('node_modules', dep, 'component-description.json')
-      );      
-      if (runtimePath) {
-        const provider = JSON.parse(fs.readFileSync(runtimePath, 'utf-8'));
-        if (provider) {
-          allTagProviders.push(getExternalTagProvider(dep, provider.tags, provider.attributes));
-          settings[dep] = true;
-        }
+        join('node_modules', dep, 'package.json')
+      );    
+      
+      if (!runtimePkgPath) {
+        continue;
       }
+
+      const runtimePkg = JSON.parse(fs.readFileSync(runtimePkgPath, 'utf-8'));
+      if (!runtimePkg) {
+        continue;
+      }
+
+      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg, dep);
+      if (!tagProvider) {
+        continue;
+      }
+
+      allTagProviders.push(tagProvider);
+      settings[dep] = true;
     }
   } catch (e) {}
   return settings;
