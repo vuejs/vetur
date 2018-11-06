@@ -4,6 +4,11 @@
 build/
 docs/
 client/
-test/
+**/test/
 
 .**
+
+**/*.map
+**/*.ts
+**/tsconfig.json
+**/tslint.json
