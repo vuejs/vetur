@@ -5,10 +5,10 @@ build/
 docs/
 client/
 **/test/
+server/src/
 
 .**
 
 **/*.map
-**/*.ts
 **/tsconfig.json
 **/tslint.json
