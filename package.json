@@ -305,7 +305,9 @@
             }
           },
           "default": {
-            "js-beautify-html": {},
+            "js-beautify-html": {
+              "wrap_attributes": "force-expand-multiline"
+            },
             "prettyhtml": {
               "printWidth": 100,
               "singleQuote": false
