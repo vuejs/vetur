@@ -142,10 +142,20 @@
           "default": true,
           "description": "Include completion for module export and auto import them"
         },
+        
         "vetur.completion.useScaffoldSnippets": {
           "type": "boolean",
           "default": true,
           "description": "Enable/disable Vetur's built-in scaffolding snippets"
+        },
+        "vetur.completion.componentName": {
+          "type": "string",
+          "enum": [
+            "PascalCase",
+            "kebab-case"
+          ],
+          "default": "kebab-case",
+          "description": "Default case for a components in completions list"
         },
         "vetur.grammar.customBlocks": {
           "type": "object",

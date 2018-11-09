@@ -40,7 +40,7 @@ import { nullMode, NULL_SIGNATURE } from '../nullMode';
 const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
 export interface ScriptMode extends LanguageMode {
-  findComponents(document: TextDocument): ComponentInfo[];
+  findComponents(document: TextDocument, config?: any): ComponentInfo[];
 }
 
 export function getJavascriptMode(
@@ -392,10 +392,10 @@ export function getJavascriptMode(
         return result;
       }
     },
-    findComponents(doc: TextDocument) {
+    findComponents(doc: TextDocument, config?: any) {
       const { service } = updateCurrentTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      return findComponents(service, fileFsPath);
+      return findComponents(service, fileFsPath, config);
     },
     onDocumentRemoved(document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);

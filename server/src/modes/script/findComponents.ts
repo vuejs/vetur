@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import { camelCase, upperFirst } from 'lodash';
 import { Definition, Range } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 
@@ -13,7 +14,7 @@ export interface ComponentInfo {
   props?: PropInfo[];
 }
 
-export function findComponents(service: ts.LanguageService, fileFsPath: string): ComponentInfo[] {
+export function findComponents(service: ts.LanguageService, fileFsPath: string, config?: any): ComponentInfo[] {
   const program = service.getProgram();
   if (!program) {
     return [];
@@ -35,7 +36,9 @@ export function findComponents(service: ts.LanguageService, fileFsPath: string):
   if (!childComps) {
     return [];
   }
-  return checker.getPropertiesOfType(childComps).map(s => getCompInfo(s, checker));
+
+  const textCase = config ? config.vetur.completion.componentName : undefined;
+  return checker.getPropertiesOfType(childComps).map(s => getCompInfo(s, checker, textCase));
 }
 
 function getComponentFromExport(exportExpr: ts.Expression) {
@@ -69,10 +72,23 @@ function findDefinitionLiteralSymbol(symbol: ts.Symbol, checker: ts.TypeChecker)
   return symbol;
 }
 
-function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker) {
+interface CaseConverter {
+  (word: string): string;
+}
+
+const caseConverters: {
+  [textCase: string]: CaseConverter
+} = {
+  'kebab-case': hyphenate,
+  PascalCase: ((word: string) => upperFirst(camelCase(word)))
+};
+
+function getCompInfo(symbol: ts.Symbol, checker: ts.TypeChecker, textCase = 'kebab-case') {
+  const caseConverter = caseConverters[textCase];
   const info: ComponentInfo = {
-    name: hyphenate(symbol.name)
+    name: caseConverter(symbol.name)
   };
+  
   const literalSymbol = findDefinitionLiteralSymbol(symbol, checker);
   if (!literalSymbol) {
     return info;
