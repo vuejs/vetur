@@ -130,7 +130,7 @@
       }
     ],
     "configuration": {
-      "title": "vetur configuration",
+      "title": "Vetur",
       "properties": {
         "vetur.colorDecorators.enable": {
           "type": "boolean",
