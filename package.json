@@ -294,7 +294,17 @@
                 "singleQuote": {
                   "type": "boolean",
                   "default": false,
-                  "description": "Wheter to use single quotes by default"
+                  "description": "Whether to use single quotes by default"
+                },
+                "wrapAttributes": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to wrap attributes"
+                },
+                "sortAttributes": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to sort attributes"
                 }
               }
             }
@@ -303,7 +313,9 @@
             "js-beautify-html": {},
             "prettyhtml": {
               "printWidth": 100,
-              "singleQuote": false
+              "singleQuote": false,
+              "wrapAttributes": false,
+              "sortAttributes": false
             }
           },
           "description": "Options for all default formatters"
