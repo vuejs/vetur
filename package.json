@@ -132,11 +132,6 @@
     "configuration": {
       "title": "Vetur",
       "properties": {
-        "vetur.colorDecorators.enable": {
-          "type": "boolean",
-          "default": true,
-          "description": "Use color decorators in vue"
-        },
         "vetur.completion.autoImport": {
           "type": "boolean",
           "default": true,
