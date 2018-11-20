@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { location } from '../util';
+// import { location } from '../util';
 
 describe('Should do documentSymbol', () => {
   const docUri = getDocUri('client/documentSymbol/Basic.vue');
@@ -61,6 +61,7 @@ describe('Should do documentSymbol', () => {
   });
 });
 
+// @ts-ignore
 async function testSymbol(docUri: vscode.Uri, expectedSymbols: vscode.SymbolInformation[]) {
   await showFile(docUri);
   await sleep(2000);
