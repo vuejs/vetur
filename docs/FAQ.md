@@ -1,5 +1,13 @@
 # FAQ
 
+## Install an old version of Vetur
+
+Sometimes new releases have bugs that you want to avoid. Here's an easy way to downgrade Vetur to a working version:
+
+- Set `"extensions.autoUpdate": false`.
+- Find the version you want and download VSIX https://github.com/vuejs/vetur/blob/master/CHANGELOG.md.
+- Install VSIX following this guide: https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix.
+
 ## No Syntax Highlighting & No Language Features working
 
 This is probably caused by VS Code not installing Vetur properly. Try these methods:

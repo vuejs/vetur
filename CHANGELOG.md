@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.13.0 | 2018-10-04
+### 0.13.0 | 2018-10-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.13.0/vspackage)
 
 - Revert TS to 2.8.4, which is the same minor version as 0.12.6 release for perf issues. #913.
 - [prettyhtml](https://github.com/Prettyhtml/prettyhtml) support. Thanks to contribution from [@StarpTech](https://github.com/StarpTech). #561 and #491.
@@ -8,44 +8,44 @@
 - Fix a stylus formatting error when stylus code contains comments. Thanks to contribution from [@ThisIsManta](https://github.com/ThisIsManta). #918.
 - If local prettier exists in `node_modules`, prefer using it instead of bundled version of prettier. Thanks to contribution from [@maeldur](https://github.com/maeldur). #876.
 
-### 0.12.7 | 2018-09-24
+### 0.12.7 | 2018-09-24 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.12.7/vspackage)
 
 - Fix a oversized publish that's 200MB (normal publish should be around 30MB). #898.
 - Add completion for [Quasar Framework](https://github.com/vuejs/vetur/pull/865). Thanks to contribution from [@rstoenescu](https://github.com/rstoenescu). #865.
 - Many dependency upgrade, including `vscode-languageserver`, `vscode-languageclient` from V3 to V5, `js-beautify` to 1.8.6, `prettier` to 1.14.3, etc.
 - More test coverage. #863.
 
-### 0.12.6 | 2018-08-06
+### 0.12.6 | 2018-08-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.12.6/vspackage)
 
 - Revert embedded pug languageId to jade, so Cmd+/ uses `//-` for comment. #840.
 - Fix syntax highlight for `:snake_case` properties in HTML. Thanks to contribution from [@davidhewitt](https://github.com/davidhewitt). #830.
 - Auto completion for [Buefy](https://buefy.github.io) framework. Thanks to contribution from [@jtommy](https://github.com/jtommy). #824.
 - Fix description for `v-cloak`. Thanks to contribution by [@snkashis](https://github.com/snkashis). #816.
 
-### 0.12.5 | 2018-06-06
+### 0.12.5 | 2018-06-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.12.5/vspackage)
 
 - Use `source.js#expression` for Vue interpolation values. Fix #811 and #804
 - Fix a pug syntax highlighting issue. #812
 
-### 0.12.4 | 2018-06-05
+### 0.12.4 | 2018-06-05 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.12.4/vspackage)
 
 - Improved file watching that updates completion and diagnostics in Vue files when TS/JS file changes. #355
 
-### 0.12.3 | 2018-05-17
+### 0.12.3 | 2018-05-17 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.12.3/vspackage)
 
 - Removed chokidar watcher.
 
-### 0.12.2 | 2018-05-17
+### 0.12.2 | 2018-05-17 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.12.2/vspackage)
 
 - Temporarily disable file watcher for perf problem & will bring it back in next version. #789.
 
-### 0.12.1 | 2018-05-14
+### 0.12.1 | 2018-05-14 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.12.1/vspackage)
 
 - Haml syntax highlighting. #739.
 - Remove restricted file schemes for live share.
 - Fix an issue where Vetur failed to read emmet configs and cause emmet and other completions to fail.
 
-### 0.11.8 | 2018-05-14
+### 0.11.8 | 2018-05-14 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.8/vspackage)
 
 - Update TypeScript Version to allow usage of `!` for definite assignment assertions.
 - Add single quote as trigger character. Fix #743
@@ -56,7 +56,7 @@
 - Fix script definition lookup position error. Fix #741
 - Add a crude file watcher. Now Vetur will pick up text change in TS/JS. Note this feature is experimental. Partially fix #355
 
-### 0.11.7 | 2018-01-28
+### 0.11.7 | 2018-01-28 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.7/vspackage)
 
 - Better default scaffold template for TypeScript. #669.
 - Partial support for quoteless attribute value in HTML5. #648.
@@ -64,7 +64,7 @@
 - Mark the `/` as `tag.end.html` in self-closing component. #650.
 - Fix a Stylus formatting issue where it adds extra parentheses. #638.
 
-### 0.11.6 | 2018-01-16
+### 0.11.6 | 2018-01-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.6/vspackage)
 
 - Basic Vuetify completion. #647.
 - Add auto import. #606.
@@ -74,13 +74,13 @@
 - Fix "Language client is not ready yet" error. #576.
 - Fix dulplicate bracket in scaffold completion. #367.
 
-### 0.11.5 | 2017-12-15
+### 0.11.5 | 2017-12-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.5/vspackage)
 
 - Fix an error incorrectly reporting `<template>` should have end tag. #578.
 - Change Vetur's template linting to use [`essential`](https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention) instead of [`recommended`](https://github.com/vuejs/eslint-plugin-vue#priority-c-recommended-minimizing-arbitrary-choices-and-cognitive-overhead) rule set of `eslint-plugin-vue`. #579.
 - Nicer display of diagnostic error from `eslint-plugin-vue`.
 
-### 0.11.4 | 2017-12-14
+### 0.11.4 | 2017-12-14 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.4/vspackage)
 
 - Upgrade to latest prettier & prettier-eslint.
 - Upgrade to latest vscode-css-languageservice that has css grid support. #437.
@@ -113,7 +113,7 @@
   - Added setting `vetur.grammar.customBlocks`.
   - Added command "Vetur: Generate grammar from `vetur.grammar.customBlocks`".
 
-### 0.11.0 | 2017-11-06
+### 0.11.0 | 2017-11-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.0/vspackage)
 
 - Better completion order in js/ts. #489.
 - Fix some Stylus formatting issues. #471.
@@ -122,13 +122,13 @@
 - Fix a bug where Vetur misses completion item details. #418.
 - Prefer user jsconfig/tsconfig compilerOptions in Vue Language Server. #515 and #512.
 
-### 0.10.1 | 2017-10-19
+### 0.10.1 | 2017-10-19 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.10.1/vspackage)
 
 - Remove range formatter. #100.
 - Remove onTypeFormat. #477.
 - Upgrade TypeScript for better large workspace handling. #390.
 
-### 0.10.0 | 2017-10-19
+### 0.10.0 | 2017-10-19 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.10.0/vspackage)
 
 - :red_circle: Breaking change in `vetur.format.*` setting. See details below.
 - Prettier as default formatter for css/scss/less/js/ts. #221.
@@ -172,21 +172,21 @@ See updated docs at: https://vuejs.github.io/vetur/formatting.html
 
 - Vetur will close all html formatting issues. js-beautify issues should be reported to js-beautify. Our team will direct effort to build html / vue formatting in prettier.
 
-### 0.9.11 | 2017-10-09
+### 0.9.11 | 2017-10-09 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.11/vspackage)
 
 - Stylus formatter based on [Stylus Supremacy](https://thisismanta.github.io/stylus-supremacy/). Thanks to [@ThisIsManta](https://github.com/ThisIsManta)'s contribution. #457.
 - Fix a bug where one-line tags with `src` could corrupt linting. #461.
 - Region support for `<template>`, `<style>` and `<script>`. #459.
 
-### 0.9.10 | 2017-09-22
+### 0.9.10 | 2017-09-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.10/vspackage)
 
 - Fix Enter key not working correctly due to formatOnType. #448.
 
-### 0.9.9 | 2017-09-21
+### 0.9.9 | 2017-09-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.9/vspackage)
 
 - Fix a template highlight issue. #440.
 
-### 0.9.8 | 2017-09-21
+### 0.9.8 | 2017-09-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.8/vspackage)
 
 - Fix `this.$` completion.
 - Support Vue 2.5+ types. #435.
@@ -195,12 +195,12 @@ See updated docs at: https://vuejs.github.io/vetur/formatting.html
 - Make `editor.emmet.action.expandAbbreviation` available in `vue-html` region, so old-style emmet is usable.
 - Upgrade Element UI and Onsen UI auto-completion tags & attributes.
 
-### 0.9.7 | 2017-09-08
+### 0.9.7 | 2017-09-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.7/vspackage)
 
 - Upgrade to newest TypeScript version with support for JSDoc cast and more. #419 and #420.
 - Hotfix for the disappearing formatter. #421.
 
-### 0.9.6 | 2017-09-07
+### 0.9.6 | 2017-09-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.6/vspackage)
 
 - Handle unquoted attr values. #341.
 - Exclude files based on gitignore file by default. #418.
@@ -211,7 +211,7 @@ See updated docs at: https://vuejs.github.io/vetur/formatting.html
 - Fix emmet not showing suggestions correctly for items with `-`. #398.
 - Fix an ESLint error handling nested v-for. #400.
 
-### 0.9.5 | 2017-08-22
+### 0.9.5 | 2017-08-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.5/vspackage)
 
 - slm support. #366.
 - Color Decorator support with `vetur.colorDecorators.enable`. #28.
@@ -220,18 +220,18 @@ See updated docs at: https://vuejs.github.io/vetur/formatting.html
 - Initial support for goto definition and find references.
 - `vetur.format.js.InsertSpaceBeforeFunctionParenthesis` now control both space before named and anonymous functions. #226.
 
-### 0.9.4 | 2017-08-16
+### 0.9.4 | 2017-08-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.4/vspackage)
 
 - Integrate new Emmet support for html, css, scss, less and stylus. #232.
 - Revamp doc on website.
 - Fix formatter adding spaces to empty lines in `<template>`. #360.
 
-### 0.9.3 | 2017-07-26
+### 0.9.3 | 2017-07-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.3/vspackage)
 
 - Upgrade eslint-plugin-vue to 3.8.0. Fix false positives for `v-for`. #261.
 - Make `vetur.validation.style` apply to postcss. #350.
 
-### 0.9.2 | 2017-07-22
+### 0.9.2 | 2017-07-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.2/vspackage)
 
 - Support tsx. #337.
 - Initial support for postcss. #344.
@@ -243,11 +243,11 @@ Special shoutout to [@HerringtonDarkholme](https://github.com/HerringtonDarkholm
 
 Congrats to [@g-plane](https://github.com/g-plane) and [@armano2](https://github.com/armano2) who landed their first PR in Vetur!
 
-### 0.9.1 | 2017-07-12
+### 0.9.1 | 2017-07-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.1/vspackage)
 
 - Fix a crash for importing non-existing .vue.ts file. #321.
 
-### 0.9.0 | 2017-07-08
+### 0.9.0 | 2017-07-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.9.0/vspackage)
 
 - Onsen UI support. #308.
 - Suppress all Vetur error logs (still accessible in output tab). #296.
@@ -255,39 +255,39 @@ Congrats to [@g-plane](https://github.com/g-plane) and [@armano2](https://github
 - Fix path mapping error. #301 and #213.
 - Fix a bug where typing `import` at top of `<script>` causes VLS crash. #285.
 
-### 0.8.7 | 2017-06-28
+### 0.8.7 | 2017-06-28 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.7/vspackage)
 
 - Upgrade eslint-plugin-vue to address some template linting issues. #294.
 - Skip template checking for empty template. #272.
 
-### 0.8.6 | 2017-06-26
+### 0.8.6 | 2017-06-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.6/vspackage)
 
 - Remove `vue-template-compiler` as dependency. Fix #250, #277 and #286.
 - `@` IntelliSense in template and better IntelliSense ordering. #256.
 
-### 0.8.5 | 2017-06-23
+### 0.8.5 | 2017-06-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.5/vspackage)
 
 - Fix a Windows path handling issue that causes IntelliSense not to work. #265.
 
-### 0.8.4 | 2017-06-23
+### 0.8.4 | 2017-06-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.4/vspackage)
 
 - Fix an issue that removes space after taking IntelliSense suggestion. #244.
 - Fix an issue that causes ESLint to report error on wrong line. #263.
 
-### 0.8.3 | 2017-06-23
+### 0.8.3 | 2017-06-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.3/vspackage)
 
 - Add `vetur.validation.template` option to toggle vue-html validation using `eslint-plugin-vue@beta`. #235 and #257.
 - Fix a language server crash. #258.
 
-### 0.8.2 | 2017-06-22
+### 0.8.2 | 2017-06-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.2/vspackage)
 
 - Republishing with correct vue-language-server.
 
-### 0.8.1 | 2017-06-22
+### 0.8.1 | 2017-06-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.1/vspackage)
 
 - Published wrong veresion of vue-language-server in 0.8...oops.
 
-### 0.8.0 | 2017-06-22
+### 0.8.0 | 2017-06-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.8.0/vspackage)
 
 - eslint-plugin-vue support. #235.
 - Initial stylus support. #227.
@@ -296,7 +296,7 @@ Congrats to [@g-plane](https://github.com/g-plane) and [@armano2](https://github
 
 Shoutout to @HerringtonDarkholme who helped implementing many new features!
 
-### 0.7.0 | 2017-06-04
+### 0.7.0 | 2017-06-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.7.0/vspackage)
 
 - Correct syntax highlighting for longer directives such as `@click.capture.stop`. #79.
 - Doc at https://octref.github.io/vetur/
@@ -305,17 +305,17 @@ Shoutout to @HerringtonDarkholme who helped implementing many new features!
 - Fix a `textDocument/hover` error. #191.
 - Incorporate [vls](https://github.com/octref/vls) into vetur's `/server`.
 
-### 0.6.10 | 2017-06-01
+### 0.6.10 | 2017-06-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.10/vspackage)
 
 - Fix a language service restart issue.
 - Fix a `documentHighlight` error. #215.
 - Fix a Windows path handling issue causing IntelliSense unusable. #205.
 
-### 0.6.10 | 2017-05-16
+### 0.6.10 | 2017-05-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.10/vspackage)
 
 - Add back symbol, highlight and signature provider. #194.
 
-### 0.6.9 | 2017-05-14
+### 0.6.9 | 2017-05-14 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.9/vspackage)
 
 - Update grammar to allow tags like <template-component> in vue-html. #189.
 - Update grammar to allow html comments outside all regions. #195.
@@ -323,44 +323,44 @@ Shoutout to @HerringtonDarkholme who helped implementing many new features!
 - Enable breakpoints for vue files. Doc for debugging coming later in #201.
 - Add `vetur.format.styleInitialIndent` and `vetur.format.scriptInitialIndent` to allow initial indent in these sections for formatting. #121.
 
-### 0.6.8 | 2017-05-08
+### 0.6.8 | 2017-05-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.8/vspackage)
 
 - Hot fix for a Windows crash caused by incorrect path handling.
 
-### 0.6.7 | 2017-05-07
+### 0.6.7 | 2017-05-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.7/vspackage)
 
 - Fix a bug of path handling on Windows. #183.
 - Add top level scaffolding snippets, such as `scaffold`, `template with pug`, `style with less`.
 - Add `vetur.validation.style` and `vetur.validation.script` to allow toggling validation.
 
-### 0.6.6 | 2017-05-06
+### 0.6.6 | 2017-05-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.6/vspackage)
 
 - Add back hover provider. #181.
 
-### 0.6.5 | 2017-05-05
+### 0.6.5 | 2017-05-05 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.5/vspackage)
 
 - Fix a formatting bug for vue-html. #99.
 - Disable unused language features.
 - Check file is included in tsconfig/jsconfig before providing language features to prevent TS crash.
 
-### 0.6.4 | 2017-04-27
+### 0.6.4 | 2017-04-27 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.4/vspackage)
 
 - When running Vue Language Server, do not use debug port. #162 and #148.
 - Avoid module resolution in `node_modules`, so CPU and Memory usage won't spike. #131.
 
-### 0.6.3 | 2017-04-26
+### 0.6.3 | 2017-04-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.3/vspackage)
 
 - Include `vue-template-compiler` in vetur to avoid version mismatch. #135.
 
-### 0.6.2 | 2017-04-24
+### 0.6.2 | 2017-04-24 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.2/vspackage)
 
 - Fix various Vue Language Server crashes.
 
-### 0.6.1 | 2017-04-20
+### 0.6.1 | 2017-04-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.1/vspackage)
 
 - Fix a bug in module resolution that causes Vue Langauge Server to crash. #122 and #123.
 
-### 0.6.0 | 2017-04-19
+### 0.6.0 | 2017-04-19 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.0/vspackage)
 
 - Improve formatting support with [options](https://github.com/octref/vetur/blob/master/docs/formatting.md) to fine-tune formatting style in `js-beautify` and TypeScript's language service.
 - Improve `sass` syntax highlighting based on grammar from [robinbentley/vscode-sass-indented](https://github.com/robinbentley/vscode-sass-indented). #41.
@@ -370,111 +370,111 @@ Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/oct
 - Improved IntelliSense for `js/ts` in Vue SFC.
 - Correct Module Resolution (try `npm i lodash @types/lodash` and use lodash in your Vue SFC).
 
-### 0.5.6 | 2017-03-20
+### 0.5.6 | 2017-03-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.5.6/vspackage)
 
 - Update js-beautify to include `preserve_newlines` options for css/scss/less.
 
-### 0.5.5 | 2017-03-17
+### 0.5.5 | 2017-03-17 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.5.5/vspackage)
 
 - Fix wrongly marked regions. #92.
 
-### 0.5.4 | 2017-03-16
+### 0.5.4 | 2017-03-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.5.4/vspackage)
 
 - Change default formatting options to preserve new lines in html.
 - Change default formatting options for html to force-align attributes. #77.
 - Re-enable scss/less error checking
 
-### 0.5.3 | 2017-03-16
+### 0.5.3 | 2017-03-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.5.3/vspackage)
 
 - Hotfix to include correct dependencies in LanguageClient.
 
-### 0.5.2 | 2017-03-15
+### 0.5.2 | 2017-03-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.5.2/vspackage)
 
 - Re-enable formatter based on js-beautify. #82.
 
-### 0.5.1 | 2017-03-06
+### 0.5.1 | 2017-03-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.5.1/vspackage)
 
 - Temporarily disable formatter. Will enable once #82 is addressed.
 
-### 0.5.0 | 2017-03-06
+### 0.5.0 | 2017-03-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.5.0/vspackage)
 
 - vetur now depends on https://github.com/octref/vls to provide some IntelliSense.
 - Provide IntelliSense for all `v-` directives and `key`, `ref`, `slot`, #26.
 
-### 0.4.1 | 2017-03-02
+### 0.4.1 | 2017-03-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.4.1/vspackage)
 
 - Relax grammar to allow `<script type="text/babel">`. #70.
 - Move `files.associations` setup in README, as vue file is not associated with html by default in VS Code.
 
-### 0.4.0 | 2017-02-27
+### 0.4.0 | 2017-02-27 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.4.0/vspackage)
 
 - Port new changes from VS Code's html extension, which fixes
   - Embedded formatter for html/css/scss/less/js
   - IntelliSense for html
 
-### 0.3.8 | 2017-02-23
+### 0.3.8 | 2017-02-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.8/vspackage)
 
 - Allow `<template lang="html">`. #52.
 
-### 0.3.7 | 2017-02-23
+### 0.3.7 | 2017-02-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.7/vspackage)
 
 - Syntax highlighting for coffee and postcss. #50 and #56.
 - Various grammar fixes.
 
-### 0.3.6 | 2017-02-21
+### 0.3.6 | 2017-02-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.6/vspackage)
 
 - Support nested `<template>`. #48.
 - Use vue-html grammar for vue-html lang. #45.
 
-### 0.3.5 | 2017-02-20
+### 0.3.5 | 2017-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.5/vspackage)
 
 - Add vue-html as a language. #44.
 - Remove vue-js and use VS Code's javascript grammar.
 
-### 0.3.4 | 2017-02-19
+### 0.3.4 | 2017-02-19 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.4/vspackage)
 
 - Allow scope & module on css style tag. #43.
 
-### 0.3.3 | 2017-02-19
+### 0.3.3 | 2017-02-19 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.3/vspackage)
 
 - Split vue grammar into vue SFC and vue's html
 - Tweak language region boundry that enables correct snippet in each region. #35 and #36.
 
-### 0.3.2 | 2017-02-10
+### 0.3.2 | 2017-02-10 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.2/vspackage)
 
 - Allow single quote for lang attr. #31.
 
-### 0.3.1 | 2017-02-04
+### 0.3.1 | 2017-02-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.1/vspackage)
 
 - Mark sass and stylus region so linting is disabled on them. #25.
 
-### 0.3.0 | 2017-02-01
+### 0.3.0 | 2017-02-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.3.0/vspackage)
 
 - Error-checking / linting for css/scss/less/js. #16 and #24.
 
-### 0.2.2 | 2017-02-01
+### 0.2.2 | 2017-02-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.2.2/vspackage)
 
 - Fix comment-toggling for embedded language. #18.
 
-### 0.2.1 | 2017-01-16
+### 0.2.1 | 2017-01-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.2.1/vspackage)
 
 - Adopt YAML for editing tmLanguage.
 - Fix syntax highlighting for TS. #19.
 
-### 0.2.0 | 2017-01-03
+### 0.2.0 | 2017-01-03 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.2.0/vspackage)
 
 - Language server based on VS Code's html extension. #2.
 - Basic SCSS and LESS language features.
 
-### 0.1.2 | 2016-12-19
+### 0.1.2 | 2016-12-19 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.1.2/vspackage)
 
 - Allow `pug` as an alternative to `jade` in template. #9.
 
-### 0.1.1 | 2016-12-18
+### 0.1.1 | 2016-12-18 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.1.1/vspackage)
 
 - Fix ternary operator syntax highlighting. #3 and #11.
 
-### 0.1 | 2016-11-06
+### 0.1 | 2016-11-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.1/vspackage)
 
 Initial release, including:
 

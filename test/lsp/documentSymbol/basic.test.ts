@@ -103,7 +103,9 @@ function assertDeepEqual<T>(actual: T, expected: RecursivePartial<T>) {
 }
 
 async function testSymbol(docUri: vscode.Uri, expectedSymbols: RecursivePartial<vscode.DocumentSymbol>[]) {
+
   await showFile(docUri);
+  await sleep(2000);
 
   const result = (await vscode.commands.executeCommand(
     'vscode.executeDocumentSymbolProvider',
