@@ -87,6 +87,6 @@ const defaultHtmlOptions: HTMLBeautifyOptions = {
   preserve_newlines: true, // Whether existing line breaks before elements should be preserved
   unformatted: [], // Tags that shouldn't be formatted. Causes mis-alignment
   wrap_line_length: 0, // Lines should wrap at next opportunity after this number of characters (0 disables)
-  wrap_attributes: 'auto' as any
+  wrap_attributes: 'force-expand-multiline' as any
   // Wrap attributes to new lines [auto|force|force-aligned|force-expand-multiline] ["auto"]
 };

@@ -69,9 +69,9 @@ VS Code's js/ts formatter built on TypeScript language service.
 
 Other settings are read from `javascript.format.*` and `typescript.format.*`.
 
-#### js-beautify-html [deprecated]
+#### js-beautify-html
 
-Alternative html formatter. Deprecated and turned off by default. Use at your own risk.
+Alternative html formatter.
 
 `tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
 
