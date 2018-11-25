@@ -122,10 +122,10 @@
     "@starptech/webparser" "^0.8.3"
     property-information "^5.0.1"
 
-"@starptech/prettyhtml-formatter@^0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-formatter/-/prettyhtml-formatter-0.8.3.tgz#59f3a56d1e4a59be29a0040b8eec98b9622377c2"
-  integrity sha512-3hydXbW6WjDyCIDpUlrWyblfiPpcjZ7FNiTNNL5GpT3lHYP5ep93eckgoPg0fXAr0IAYtHU16RwbsKXaKWohbA==
+"@starptech/prettyhtml-formatter@^0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml-formatter/-/prettyhtml-formatter-0.8.4.tgz#d7c405f24cd7bffa33043179f1d5843ed08630ca"
+  integrity sha512-HlqTAzN+ifanN8616AhRfUMqtzHWvUNwLg8Uzoc0j3vWX+rQVc+td/ZWSXsIzzv0sRi4f2rJl8sVtdAJlMZWKg==
   dependencies:
     "@starptech/prettyhtml-hast-to-html" "^0.8.1"
     "@starptech/rehype-minify-whitespace" "^0.8.1"
@@ -180,12 +180,12 @@
     hast-util-has-property "^1.0.0"
     unist-util-visit "^1.0.0"
 
-"@starptech/prettyhtml@^0.8.1":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml/-/prettyhtml-0.8.3.tgz#1e898e804d2156be787e54a98d75dfd1e8ad6303"
-  integrity sha512-hMWV+2byWw3uLvk1JU5CxNIkjeK3Oq8DVMcbgV5bYCFK6MlolrEsiP7Pz/NQQurCBLv15NfWK4h/MtS3N2FsGQ==
+"@starptech/prettyhtml@^0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@starptech/prettyhtml/-/prettyhtml-0.8.4.tgz#f7ff6049572df79b02a780b34630c086c8524586"
+  integrity sha512-EZZdcORFEcszU3WLHfCT0KL0Ft/a73tPDT7fKT25fsjFo4asY0/aeYIYGFCLnAPamb1PQGq7lS/+3yLwWAJPkQ==
   dependencies:
-    "@starptech/prettyhtml-formatter" "^0.8.3"
+    "@starptech/prettyhtml-formatter" "^0.8.4"
     "@starptech/prettyhtml-sort-attributes" "^0.8.1"
     "@starptech/rehype-webparser" "^0.8.3"
     "@starptech/webparser" "^0.8.3"
