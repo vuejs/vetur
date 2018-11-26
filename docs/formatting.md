@@ -12,7 +12,7 @@ These formatters are available:
 
 - [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
-- [`stylus-supremacy'](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
+- [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 
 Choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
