@@ -47,7 +47,7 @@ function formatWithPrettyHtml(
   vlsFormatConfig: VLSFormatConfig
 ): string {
   const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
-  const prettierrcOptions = prettier.resolveConfig.sync(fileFsPath, { useCache: false });
+  const prettierrcOptions = prettier.resolveConfig.sync(fileFsPath, { useCache: false }) || null;
 
   const prettyhtml: IPrettyHtml = requireLocalPkg(fileFsPath, '@starptech/prettyhtml');
 

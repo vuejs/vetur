@@ -27,7 +27,7 @@ export interface PrettierConfig {
 export interface Prettier {
   format(text: string, options?: Partial<PrettierConfig>): string;
   resolveConfig: {
-    sync(filePath: string, options?: { useCache: boolean }): PrettierConfig;
+    sync(filePath: string, options?: { useCache: boolean }): Partial<PrettierConfig> | null;
   };
   clearConfigCache(): void;
   readonly version: string;
@@ -67,7 +67,7 @@ interface PrettierEslintOptions {
    * formatting with `prettier` if the given option is not inferrable from the
    * eslintConfig.
    */
-  fallbackPrettierOptions?: PrettierConfig;
+  fallbackPrettierOptions?: Partial<PrettierConfig>;
   /**
    * The level for the logs
    */

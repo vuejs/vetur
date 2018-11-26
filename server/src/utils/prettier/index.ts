@@ -61,7 +61,7 @@ function getPrettierOptions(
   parser: ParserOption,
   vlsFormatConfig: VLSFormatConfig
 ) {
-  const prettierrcOptions = prettierModule.resolveConfig.sync(fileFsPath, { useCache: false });
+  const prettierrcOptions = prettierModule.resolveConfig.sync(fileFsPath, { useCache: false }) || {};
   prettierrcOptions.tabWidth = prettierrcOptions.tabWidth || vlsFormatConfig.options.tabSize;
   prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
   prettierrcOptions.parser = prettierrcOptions.parser || parser;
