@@ -105,7 +105,7 @@
 - Docs for generating grammar for custom blocks: https://vuejs.github.io/vetur/highlighting.html.
 - Allow `php` as one of the custom block language. #536.
 - Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
-- Pretty print generated gramamr so it's readable. (You can find it at ~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json).
+- Pretty print generated gramamr so it's readable. (You can find it at `~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json`).
 
 ### 0.11.1 | 2017-11-10 
 
@@ -317,7 +317,7 @@ Shoutout to @HerringtonDarkholme who helped implementing many new features!
 
 ### 0.6.9 | 2017-05-14 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.6.9/vspackage)
 
-- Update grammar to allow tags like <template-component> in vue-html. #189.
+- Update grammar to allow tags like `<template-component>` in vue-html. #189.
 - Update grammar to allow html comments outside all regions. #195.
 - Handle new file creation so vetur's IntelliSense work on it. #192.
 - Enable breakpoints for vue files. Doc for debugging coming later in #201.

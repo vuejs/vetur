@@ -56,7 +56,7 @@ However, when a local config (such as `.prettierrc`) is found, Vetur will prefer
 
 #### [prettier](https://prettier.io/)
 
-Opinionated formatter. Settings are read from `.prettierrc` at project root. See format at [https://prettier.io/docs/en/configuration.html](https://prettier.io/docs/en/configuration.html).
+Opinionated formatter. Settings are read from `.prettierrc` at project root. See format at https://prettier.io/docs/en/configuration.html.
 
 #### [prettier-eslint](https://github.com/prettier/prettier-eslint)
 
