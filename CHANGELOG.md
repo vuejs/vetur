@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.14.0 | 2018-11-26
+### 0.14.0 | 2018-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.0/vspackage)
 
 - Using `vscode-css-langaugeservice`'s latest data for Stylus langauge features. Thanks to contribution from [@DeltaEvo](https://github.com/DeltaEvo). #953.
 - `.ts` and `.map` files has been removed from published extensions. Thanks to contributionf rom [@mjbvz](https://github.com/mjbvz). #955.
