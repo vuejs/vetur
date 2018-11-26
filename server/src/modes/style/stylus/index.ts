@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 import { CompletionList, TextEdit } from 'vscode-languageserver-types';
-import * as StylusSupremacy from 'stylus-supremacy';
+import { IStylusSupremacy } from './stylus-supremacy';
 
 import { Priority } from '../emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
@@ -11,6 +11,8 @@ import { VueDocumentRegions } from '../../embeddedSupport';
 import { provideCompletionItems } from './completion-item';
 import { provideDocumentSymbols } from './symbols-finder';
 import { stylusHover } from './stylus-hover';
+import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
+import { getFileFsPath } from '../../../utils/paths';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
@@ -66,6 +68,8 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
         return [];
       }
 
+      const stylusSupremacy: IStylusSupremacy = requireLocalPkg(getFileFsPath(document.uri), 'stylus-supremacy');
+
       const embedded = embeddedDocuments.get(document);
       const inputText = embedded.getText();
 
@@ -90,14 +94,14 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
 
       // Build the formatting options for Stylus Supremacy
       // See https://thisismanta.github.io/stylus-supremacy/#options
-      const stylusSupremacyFormattingOptions = StylusSupremacy.createFormattingOptions(config.stylusSupremacy || {});
+      const stylusSupremacyFormattingOptions = stylusSupremacy.createFormattingOptions(config.stylusSupremacy || {});
       const formattingOptions = {
         ...stylusSupremacyFormattingOptions,
         tabStopChar,
         newLineChar: '\n'
       };
 
-      const formattedText = StylusSupremacy.format(inputText, formattingOptions);
+      const formattedText = stylusSupremacy.format(inputText, formattingOptions);
 
       // Add the base indentation and correct the new line characters
       const outputText = ((range.start.line !== range.end.line ? '\n' : '') + formattedText)

@@ -8,7 +8,7 @@ import { requireLocalPkg } from './requirePkg';
 
 export function prettierify(
   code: string,
-  filePath: string,
+  fileFsPath: string,
   range: Range,
   initialIndent: boolean,
   formatParams: FormattingOptions,
@@ -16,8 +16,8 @@ export function prettierify(
   parser: ParserOption
 ): TextEdit[] {
   try {
-    const prettier = requireLocalPkg(filePath, 'prettier') as Prettier;
-    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
+    const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
+    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, fileFsPath);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
     return [toReplaceTextedit(prettierifiedCode, range, formatParams, initialIndent)];
@@ -30,7 +30,7 @@ export function prettierify(
 
 export function prettierEslintify(
   code: string,
-  filePath: string,
+  fileFsPath: string,
   range: Range,
   initialIndent: boolean,
   formatParams: FormattingOptions,
@@ -38,11 +38,9 @@ export function prettierEslintify(
   parser: ParserOption
 ): TextEdit[] {
   try {
-    const prettierEslint = requireLocalPkg(filePath, 'prettier-eslint') as PrettierEslintFormat;
-    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, filePath);
-
+    const prettierEslint = requireLocalPkg(fileFsPath, 'prettier-eslint') as PrettierEslintFormat;
+    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, fileFsPath);
     const prettierifiedCode = prettierEslint({
-      filePath: require('path').dirname(filePath),
       prettierOptions: { parser },
       text: code,
       fallbackPrettierOptions: prettierOptions
