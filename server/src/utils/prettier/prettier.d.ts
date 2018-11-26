@@ -1,5 +1,5 @@
 export type ParserOption = 'babylon' | 'flow' | 'css' | 'scss' | 'less' | 'typescript' | 'json' | 'graphql';
-type TrailingCommaOption = 'none' | 'es5' | 'all' | boolean; /* deprecated boolean*/
+type TrailingCommaOption = 'none' | 'es5' | 'all';
 
 /**
  * Prettier configuration
@@ -14,63 +14,21 @@ export interface PrettierConfig {
   parser: ParserOption;
   semi: boolean;
   useTabs: boolean;
+  proseWrap: 'preserve' | 'always' | 'never';
   arrowParens: 'avoid' | 'always';
-}
-/**
- * prettier-vscode specific configuration
- */
-interface ExtensionConfig {
-  /**
-   * Use 'prettier-eslint' instead of 'prettier'.
-   * Other settings will only be fallbacks in case they could not be inferred from eslint rules.
-   */
-  eslintIntegration: boolean;
-  /**
-   * Use 'prettier-stylelint' instead of 'prettier'.
-   * Other settings will only be fallbacks in case they could not be inferred from eslint rules.
-   */
-  stylelintIntegration: boolean;
-  /**
-   * Path to '.prettierignore' or similar.
-   */
-  ignorePath: string;
-  /**
-   * Language ids to run javascript prettier on.
-   */
-  javascriptEnable: ('javascript' | 'javascriptreact' | string)[];
-  /**
-   * Language ids to run typescript prettier on.
-   */
-  typescriptEnable: ('typescript' | 'typescriptreact' | string)[];
-  /**
-   * Language ids to run postcss prettier on.
-   */
-  cssEnable: ('css' | 'less' | 'scss' | string)[];
-  /**
-   * Language ids to run json prettier on
-   */
-  jsonEnable: ('json' | string)[];
-  /**
-   * Language ids to run graphql prettier on
-   */
-  graphqlEnable: ('graphql' | string)[];
+  rangeStart: number;
+  rangeEnd: number;
+  filepath: string;
+  jsxSingleQuote: boolean;
+  htmlWhitespaceSensitivity: 'css' | 'strict' | 'ignore';
+  endOfLine: 'auto' | 'lf' | 'crlf' | 'cr';
 }
 
-/**
- * Configuration for prettier-vscode
- */
-export type PrettierVSCodeConfig = ExtensionConfig & PrettierConfig;
 export interface Prettier {
   format(text: string, options?: Partial<PrettierConfig>): string;
-  resolveConfig(
-    filePath: string,
-    options?: {
-      /**
-       * Use cache, defaults to true.
-       */
-      useCache: boolean;
-    }
-  ): Promise<PrettierConfig>;
+  resolveConfig: {
+    sync(filePath: string, options?: { useCache: boolean }): PrettierConfig;
+  };
   clearConfigCache(): void;
   readonly version: string;
 }
@@ -127,13 +85,3 @@ interface PrettierEslintOptions {
  * @returns {string} the formatted code.
  */
 export type PrettierEslintFormat = (options: PrettierEslintOptions) => string;
-
-export interface PrettierStylelint {
-  format(options: PrettierEslintOptions): Promise<string>;
-  resolveConfig(
-    file: string,
-    options?: {
-      useCache: boolean;
-    }
-  ): Promise<[PrettierConfig, Object]>;
-}

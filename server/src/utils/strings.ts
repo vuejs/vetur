@@ -1,4 +1,4 @@
-import { FormattingOptions } from 'vscode-languageserver-types';
+import { VLSFormatConfig } from '../config';
 
 export function getWordAtText(text: string, offset: number, wordDefinition: RegExp): { start: number; length: number } {
   let lineStart = offset;
@@ -38,14 +38,14 @@ const nonEmptyLineRE = /^(?!$)/gm;
  *  wrap text in section tags like <template>, <style>
  *  add leading and trailing newline and optional indentation
  */
-export function indentSection(text: string, options: FormattingOptions): string {
+export function indentSection(text: string, options: VLSFormatConfig): string {
   const initialIndent = generateIndent(options);
   return text.replace(nonEmptyLineRE, initialIndent);
 }
 
-function generateIndent(options: FormattingOptions) {
-  if (options.insertSpaces) {
-    return ' '.repeat(options.tabSize);
+function generateIndent(options: VLSFormatConfig) {
+  if (!options.options.useTabs) {
+    return ' '.repeat(options.options.tabSize);
   } else {
     return '\t';
   }

@@ -13,6 +13,7 @@ import { provideDocumentSymbols } from './symbols-finder';
 import { stylusHover } from './stylus-hover';
 import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
+import { VLSFormatConfig } from '../../../config';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
@@ -73,7 +74,8 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       const embedded = embeddedDocuments.get(document);
       const inputText = embedded.getText();
 
-      const tabStopChar = formatParams.insertSpaces ? ' '.repeat(formatParams.tabSize) : '\t';
+      const vlsFormatConfig = config.vetur.format as VLSFormatConfig;
+      const tabStopChar = vlsFormatConfig.options.useTabs ? '\t' : ' '.repeat(vlsFormatConfig.options.tabSize);
 
       // Note that this would have been `document.eol` ideally
       const newLineChar = inputText.includes('\r\n') ? '\r\n' : '\n';
