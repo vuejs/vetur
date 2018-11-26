@@ -1,7 +1,9 @@
 import * as _ from 'lodash';
 import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
-import * as prettyhtml from '@starptech/prettyhtml';
+import { IPrettyHtml } from './prettyhtml';
+import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
+import { getFileFsPath } from '../../../utils/paths';
 
 const templateHead = '<template>';
 const templateTail = '</template>';
@@ -16,11 +18,18 @@ export function htmlFormat(
     return [];
   }
 
+  console.log(JSON.stringify(formattingOptions, null, 2));
+
   const { value, range } = getValueAndRange(document, currRange);
 
   let beautifiedHtml: string;
   if (config.vetur.format.defaultFormatter.html === 'prettyhtml') {
-    beautifiedHtml = formatWithPrettyHtml(templateHead + value + templateTail, formattingOptions, config);
+    beautifiedHtml = formatWithPrettyHtml(
+      getFileFsPath(document.uri),
+      templateHead + value + templateTail,
+      formattingOptions,
+      config
+    );
   } else {
     beautifiedHtml = formatWithJsBeautify(templateHead + value + templateTail, formattingOptions, config);
   }
@@ -34,7 +43,14 @@ export function htmlFormat(
   ];
 }
 
-function formatWithPrettyHtml(input: string, formattingOptions: FormattingOptions, config: any): string {
+function formatWithPrettyHtml(
+  fileFsPath: string,
+  input: string,
+  formattingOptions: FormattingOptions,
+  config: any
+): string {
+  const prettyhtml: IPrettyHtml = requireLocalPkg(fileFsPath, '@starptech/prettyhtml');
+
   const result = prettyhtml(input, {
     useTabs: !formattingOptions.insertSpaces,
     tabWidth: formattingOptions.tabSize,
