@@ -1,5 +1,28 @@
 # Changelog
 
+### 0.14.0 | 2018-11-26
+
+- Using `vscode-css-langaugeservice`'s latest data for Stylus langauge features. Thanks to contribution from [@DeltaEvo](https://github.com/DeltaEvo). #953.
+- `.ts` and `.map` files has been removed from published extensions. Thanks to contributionf rom [@mjbvz](https://github.com/mjbvz). #955.
+- [Quasar Framework](https://quasar-framework.org/) includes a `vetur` key in its [`package.json`](https://github.com/quasarframework/quasar/blob/057f0cd2a340c2b078dec814bd1947189b8707ee/package.json#L109-L112), and Vetur would read Quasar tag/attribute definitions for auto-completion and other language features. This feature is now available to any dependencies that contain a `vetur` key. [vuetypes](https://github.com/octref/vuetypes) is an attempt to standardize this format. Thanks to contribution from [@Zenser](https://github.com/Zenser). #941.
+
+#### Formatter Changes
+
+- Upgraded to latest versions of `prettier`, `prettier-eslint`, `prettyhtml` formatters.
+- Formatters no longer inherit from `editor.insertSpaces` and `editor.tabSize`. Instead, Vetur now offers two options that are inherited by all formatters. This is because VS Code sets `editor.detectIndentation: true` by default, and the detected indentation for Vue files not always match the `editor.insertSpaces` and `editor.tabSize` settings. #982.
+
+  ```json
+  {
+    "vetur.format.options.useTabs": false,
+    "vetur.format.options.tabSize": 2
+  }
+  ```
+- Vetur no longer reads settings from `prettier.*`. All settings must be specified in a local configuration file. #982.
+- `prettier-eslint` is added as an option for `vetur.format.defaultFormatter.js`. #982.
+- Various bug fixes for `prettier-eslint` not reading config correctly. Thanks to contribution form [@Coder-256](https://github.com/Coder-256). #934 and #942.
+- `prettyhtml` becomes the default formatter for `<template>` section.
+- `js-beautify-html` becomes more actively maintained and is no longer a deprecated option for HTML formatting.
+
 ### 0.13.0 | 2018-10-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.13.0/vspackage)
 
 - Revert TS to 2.8.4, which is the same minor version as 0.12.6 release for perf issues. #913.
