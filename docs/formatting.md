@@ -3,8 +3,8 @@
 Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.
 
 **Vetur only has a "whole document formatter" and cannot format arbitrary ranges.**  
-**As a result, only `Format Document` command will be available.**  
-**`Format Selection` command wouldn't work, and there is no**
+**As a result, only the `Format Document` command is available.**  
+**The `Format Selection` command does not work.**
 
 ## Formatters
 

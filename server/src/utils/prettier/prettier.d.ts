@@ -103,7 +103,7 @@ interface PrettierEslintOptions {
    * formatting with `prettier`. If not provided, prettier-eslint will attempt
    * to create the options based on the eslintConfig
    */
-  prettierOptions?: PrettierConfig;
+  prettierOptions?: Partial<PrettierConfig>;
   /**
    * The options to pass for
    * formatting with `prettier` if the given option is not inferrable from the
