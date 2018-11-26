@@ -8,6 +8,8 @@
 
 #### Formatter Changes
 
+Read updated doc at: https://vuejs.github.io/vetur/formatting.html#formatters.
+
 - Upgraded to latest versions of `prettier`, `prettier-eslint`, `prettyhtml` formatters.
 - Formatters no longer inherit from `editor.insertSpaces` and `editor.tabSize`. Instead, Vetur now offers two options that are inherited by all formatters. This is because VS Code sets `editor.detectIndentation: true` by default, and the detected indentation for Vue files not always match the `editor.insertSpaces` and `editor.tabSize` settings. #982.
 
