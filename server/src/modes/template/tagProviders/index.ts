@@ -88,7 +88,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
         continue;
       }
 
-      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg, dep);
+      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg);
       if (!tagProvider) {
         continue;
       }
