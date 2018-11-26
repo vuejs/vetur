@@ -22,7 +22,7 @@ Current default:
 
 ```json
 {
-  "vetur.format.defaultFormatter.html": "none",
+  "vetur.format.defaultFormatter.html": "prettyhtml",
   "vetur.format.defaultFormatter.css": "prettier",
   "vetur.format.defaultFormatter.postcss": "prettier",
   "vetur.format.defaultFormatter.scss": "prettier",
@@ -33,7 +33,7 @@ Current default:
 }
 ```
 
-#### prettier
+#### [prettier](https://prettier.io/)
 
 Settings precedence:
 
@@ -42,11 +42,9 @@ Settings precedence:
 
 ESLint integration: `"prettier.eslintIntegration": true`. Settings are read from `.eslintrc`.
 
-#### prettyhtml
+#### [prettyhtml](https://github.com/Prettyhtml/prettyhtml)
 
-**This will likely become the default html formatter soon.**
-
-https://github.com/Prettyhtml/prettyhtml
+The default formatter for Vue templates.
 
 `tabWidth` and `useTabs` are read from `editor.tabSize` and `editor.insertSpaces`.
 

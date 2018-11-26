@@ -167,7 +167,7 @@
         },
         "vetur.format.defaultFormatter.html": {
           "type": "string",
-          "default": "none",
+          "default": "prettyhtml",
           "enum": [
             "none",
             "prettyhtml",
