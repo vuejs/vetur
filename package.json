@@ -165,6 +165,16 @@
           "default": true,
           "description": "Validate js/ts in <script>"
         },
+        "vetur.format.options.tabSize": {
+          "type": "number",
+          "default": 2,
+          "description": "Number of spaces per indentation level. Inherited by all formatters."
+        },
+        "vetur.format.options.useTabs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use tabs for indentation. Inherited by all formatters."
+        },
         "vetur.format.defaultFormatter.html": {
           "type": "string",
           "default": "prettyhtml",
@@ -251,11 +261,13 @@
           "enum": [
             "none",
             "prettier",
+            "prettier-eslint",
             "vscode-typescript"
           ],
           "enumDescriptions": [
             "disable formatting",
             "js formatter from prettier",
+            "prettier-eslint",
             "js formatter from TypeScript"
           ],
           "description": "Default formatter for <script> region"

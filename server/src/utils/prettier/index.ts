@@ -1,26 +1,25 @@
-import * as _ from 'lodash';
-import { FormattingOptions, TextEdit, Range } from 'vscode-languageserver-types';
+import { TextEdit, Range } from 'vscode-languageserver-types';
 
-import { ParserOption, Prettier, PrettierConfig, PrettierVSCodeConfig, PrettierEslintFormat } from './prettier';
+import { ParserOption, Prettier, PrettierEslintFormat } from './prettier';
 import { indentSection } from '../strings';
 
 import { requireLocalPkg } from './requirePkg';
+import { VLSFormatConfig } from '../../config';
 
 export function prettierify(
   code: string,
   fileFsPath: string,
   range: Range,
-  initialIndent: boolean,
-  formatParams: FormattingOptions,
-  prettierVSCodeConfig: PrettierVSCodeConfig,
-  parser: ParserOption
+  vlsFormatConfig: VLSFormatConfig,
+  parser: ParserOption,
+  initialIndent: boolean
 ): TextEdit[] {
   try {
     const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
-    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, fileFsPath);
+    const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
-    return [toReplaceTextedit(prettierifiedCode, range, formatParams, initialIndent)];
+    return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier format failed');
     console.error(e.message);
@@ -32,20 +31,23 @@ export function prettierEslintify(
   code: string,
   fileFsPath: string,
   range: Range,
-  initialIndent: boolean,
-  formatParams: FormattingOptions,
-  prettierVSCodeConfig: PrettierVSCodeConfig,
-  parser: ParserOption
+  vlsFormatConfig: VLSFormatConfig,
+  parser: ParserOption,
+  initialIndent: boolean
 ): TextEdit[] {
   try {
+    const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
     const prettierEslint = requireLocalPkg(fileFsPath, 'prettier-eslint') as PrettierEslintFormat;
-    const prettierOptions = getPrettierOptions(prettierVSCodeConfig, parser, fileFsPath);
+
+    const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+
     const prettierifiedCode = prettierEslint({
       prettierOptions: { parser },
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
-    return [toReplaceTextedit(prettierifiedCode, range, formatParams, initialIndent)];
+
+    return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier-Eslint format failed');
     console.error(e.message);
@@ -54,57 +56,28 @@ export function prettierEslintify(
 }
 
 function getPrettierOptions(
-  prettierVSCodeConfig: PrettierVSCodeConfig,
+  prettierModule: Prettier,
+  fileFsPath: string,
   parser: ParserOption,
-  filePath: string
-): PrettierConfig {
-  let trailingComma = prettierVSCodeConfig.trailingComma;
-  if (trailingComma === true) {
-    trailingComma = 'es5';
-  } else if (trailingComma === false) {
-    trailingComma = 'none';
-  }
+  vlsFormatConfig: VLSFormatConfig
+) {
+  const prettierrcOptions = prettierModule.resolveConfig.sync(fileFsPath, { useCache: false });
+  prettierrcOptions.tabWidth = prettierrcOptions.tabWidth || vlsFormatConfig.options.tabSize;
+  prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
+  prettierrcOptions.parser = prettierrcOptions.parser || parser;
 
-  const prettierOptions = {
-    printWidth: prettierVSCodeConfig.printWidth,
-    tabWidth: prettierVSCodeConfig.tabWidth,
-    singleQuote: prettierVSCodeConfig.singleQuote,
-    trailingComma,
-    bracketSpacing: prettierVSCodeConfig.bracketSpacing,
-    jsxBracketSameLine: prettierVSCodeConfig.jsxBracketSameLine,
-    parser,
-    semi: prettierVSCodeConfig.semi,
-    useTabs: prettierVSCodeConfig.useTabs,
-    arrowParens: prettierVSCodeConfig.arrowParens
-  };
-
-  const prettier = require('prettier') as Prettier;
-  const prettierrcOptions = (prettier.resolveConfig as any).sync(filePath, { useCache: false });
-
-  if (!prettierrcOptions) {
-    return prettierOptions;
-  } else {
-    // The only alternative parser that can be specified is `flow` for <script>
-    if (parser === 'babylon') {
-      return _.assign(prettierOptions, prettierrcOptions);
-    }
-
-    // Otherwise, use the parser specified by Vetur
-    return _.assign(prettierOptions, prettierrcOptions, {
-      parser
-    });
-  }
+  return prettierrcOptions;
 }
 
 function toReplaceTextedit(
   prettierifiedCode: string,
   range: Range,
-  formatParams: FormattingOptions,
+  vlsFormatConfig: VLSFormatConfig,
   initialIndent: boolean
 ): TextEdit {
   if (initialIndent) {
     // Prettier adds newline at the end
-    const formattedCode = '\n' + indentSection(prettierifiedCode, formatParams);
+    const formattedCode = '\n' + indentSection(prettierifiedCode, vlsFormatConfig);
     return TextEdit.replace(range, formattedCode);
   } else {
     return TextEdit.replace(range, '\n' + prettierifiedCode);

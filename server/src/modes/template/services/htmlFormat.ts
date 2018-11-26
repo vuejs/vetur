@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
-import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
+import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
 import { IPrettyHtml } from './prettyhtml';
 import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
+import { VLSFormatConfig } from '../../../config';
+import { Prettier } from '../../../utils/prettier/prettier';
 
 const templateHead = '<template>';
 const templateTail = '</template>';
@@ -11,27 +13,23 @@ const templateTail = '</template>';
 export function htmlFormat(
   document: TextDocument,
   currRange: Range,
-  formattingOptions: FormattingOptions,
-  config: any
+  vlsFormatConfig: VLSFormatConfig
 ): TextEdit[] {
-  if (config.vetur.format.defaultFormatter.html === 'none') {
+  if (vlsFormatConfig.defaultFormatter.html === 'none') {
     return [];
   }
-
-  console.log(JSON.stringify(formattingOptions, null, 2));
 
   const { value, range } = getValueAndRange(document, currRange);
 
   let beautifiedHtml: string;
-  if (config.vetur.format.defaultFormatter.html === 'prettyhtml') {
+  if (vlsFormatConfig.defaultFormatter.html === 'prettyhtml') {
     beautifiedHtml = formatWithPrettyHtml(
       getFileFsPath(document.uri),
       templateHead + value + templateTail,
-      formattingOptions,
-      config
+      vlsFormatConfig
     );
   } else {
-    beautifiedHtml = formatWithJsBeautify(templateHead + value + templateTail, formattingOptions, config);
+    beautifiedHtml = formatWithJsBeautify(templateHead + value + templateTail, vlsFormatConfig);
   }
 
   const wrappedHtml = beautifiedHtml.substring(templateHead.length, beautifiedHtml.length - templateTail.length);
@@ -46,31 +44,33 @@ export function htmlFormat(
 function formatWithPrettyHtml(
   fileFsPath: string,
   input: string,
-  formattingOptions: FormattingOptions,
-  config: any
+  vlsFormatConfig: VLSFormatConfig
 ): string {
+  const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
+  const prettierrcOptions = prettier.resolveConfig.sync(fileFsPath, { useCache: false });
+
   const prettyhtml: IPrettyHtml = requireLocalPkg(fileFsPath, '@starptech/prettyhtml');
 
   const result = prettyhtml(input, {
-    useTabs: !formattingOptions.insertSpaces,
-    tabWidth: formattingOptions.tabSize,
+    useTabs: vlsFormatConfig.options.useTabs,
+    tabWidth: vlsFormatConfig.options.tabSize,
     usePrettier: true,
     prettier: {
-      ...config.prettier
+      ...prettierrcOptions
     },
-    ...config.vetur.format.defaultFormatterOptions['prettyhtml']
+    ...vlsFormatConfig.defaultFormatterOptions['prettyhtml']
   });
   return result.contents.trim();
 }
 
-function formatWithJsBeautify(input: string, formattingOptions: FormattingOptions, config: any): string {
+function formatWithJsBeautify(input: string, vlsFormatConfig: VLSFormatConfig): string {
   const htmlFormattingOptions = _.assign(
     defaultHtmlOptions,
     {
-      indent_with_tabs: !formattingOptions.insertSpaces,
-      indent_size: formattingOptions.tabSize
+      indent_with_tabs: vlsFormatConfig.options.useTabs,
+      indent_size: vlsFormatConfig.options.tabSize
     },
-    config.vetur.format.defaultFormatterOptions['js-beautify-html'],
+    vlsFormatConfig.defaultFormatterOptions['js-beautify-html'],
     { end_with_newline: false }
   );
 

@@ -11,11 +11,14 @@ Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/
 These formatters are available:
 
 - [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
+- [`prettier-eslint`](https://github.com/prettier/prettier-eslint): For js. Run `prettier` and `eslint --fix`.
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 
-Choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
+Vetur bundles all the above formatters. When Vetur observes a local install of the formattesr, it'll prefer to use the local version.
+
+You can choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
 **Setting a language's formatter to `none` disables formatter for that language.**
 
 Current default:
@@ -33,20 +36,35 @@ Current default:
 }
 ```
 
+## Settings
+
+These two settings are inherited by all formatters:
+
+```json
+{
+  "vetur.format.options.tabSize": 2,
+  "vetur.format.options.useTabs": false
+}
+```
+
+However, when a local config (such as `.prettierrc`) is found, Vetur will prefer it. For example:
+
+- `.prettierrc` is present but does not set `tabWidth` explicitly: Vetur uses `vetur.format.options.tabSize` as the `tabWidth` for prettier.
+- `.prettierrc` is present and sets `tabWidth` explicitly: Vetur ignores `vetur.format.options.tabSize`, always using the value in `.prettierrc`.
+
+`useTabs` works the same way.
+
 #### [prettier](https://prettier.io/)
 
-Settings precedence:
+Opinionated formatter. Settings are read from `.prettierrc` at project root. See format at [https://prettier.io/docs/en/configuration.html](https://prettier.io/docs/en/configuration.html).
 
-1. `.prettierrc` at project root. See format at [https://prettier.io/docs/en/configuration.html](https://prettier.io/docs/en/configuration.html)
-2. `prettier.*`. You can install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) to get IntelliSense for settings, but Vetur will work without it.
+#### [prettier-eslint](https://github.com/prettier/prettier-eslint)
 
-ESLint integration: `"prettier.eslintIntegration": true`. Settings are read from `.eslintrc`.
+Prettier + `eslint --fix`. Settings are read from `.prettierrc` and `.eslintrc` at project root.
 
 #### [prettyhtml](https://github.com/Prettyhtml/prettyhtml)
 
 The default formatter for Vue templates.
-
-`tabWidth` and `useTabs` are read from `editor.tabSize` and `editor.insertSpaces`.
 
 Other settings include:
 
@@ -59,19 +77,17 @@ Other settings include:
 }
 ```
 
-#### vscode-typescript
+`prettier` options are read from local `.prettierrc` config.
 
-VS Code's js/ts formatter built on TypeScript language service.
+#### [vscode-typescript](https://github.com/microsoft/typescript)
 
-`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
+VS Code's js/ts formatter built on [TypeScript](https://github.com/microsoft/typescript) language service.
 
-Other settings are read from `javascript.format.*` and `typescript.format.*`.
+Settings are read from `javascript.format.*` and `typescript.format.*`.
 
-#### js-beautify-html
+#### [js-beautify-html](https://github.com/beautify-web/js-beautify)
 
 Alternative html formatter.
-
-`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
 
 Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/src/modes/template/services/htmlFormat.ts). You can override them by setting `vetur.format.defaultFormatterOptions.js-beautify-html`.
 
@@ -83,9 +99,7 @@ Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/sr
 }
 ```
 
-#### stylus-supremacy
-
-`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
+#### [stylus-supremacy](https://thisismanta.github.io/stylus-supremacy/)
 
 Other settings are read from `stylusSupremacy.*`. You can install [Stylus Supremacy extension](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) to get IntelliSense for settings, but Vetur will work without it. A useful default:
 
