@@ -45,7 +45,7 @@ function requireLocalPkg(fspath: string, pkgName: string): any {
       return require(modulePath);
     } catch (e) {
       console.log(
-        `Failed to load ${pkgName} from ${modulePath}. Using bundled`
+        `Failed to load ${pkgName} from ${modulePath}. Using bundled version`
       );
     }
   }
