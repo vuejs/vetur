@@ -3,6 +3,7 @@ export interface VLSFormatConfig {
     [lang: string]: string;
   };
   defaultFormatterOptions: {
+    'prettier': any;
     [lang: string]: any;
   };
   scriptInitialIndent: boolean;

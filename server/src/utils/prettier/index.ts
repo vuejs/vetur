@@ -61,12 +61,22 @@ function getPrettierOptions(
   parser: ParserOption,
   vlsFormatConfig: VLSFormatConfig
 ) {
-  const prettierrcOptions = prettierModule.resolveConfig.sync(fileFsPath, { useCache: false }) || {};
-  prettierrcOptions.tabWidth = prettierrcOptions.tabWidth || vlsFormatConfig.options.tabSize;
-  prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
-  prettierrcOptions.parser = prettierrcOptions.parser || parser;
+  const prettierrcOptions = prettierModule.resolveConfig.sync(fileFsPath, { useCache: false });
 
-  return prettierrcOptions;
+  if (prettierrcOptions) {
+    prettierrcOptions.tabWidth = prettierrcOptions.tabWidth || vlsFormatConfig.options.tabSize;
+    prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
+    prettierrcOptions.parser = prettierrcOptions.parser || parser;
+
+    return prettierrcOptions;
+  } else {
+    const vscodePrettierOptions = vlsFormatConfig.defaultFormatterOptions.prettier || {};
+    vscodePrettierOptions.tabWidth = vscodePrettierOptions.tabWidth || vlsFormatConfig.options.tabSize;
+    vscodePrettierOptions.useTabs = vscodePrettierOptions.useTabs || vlsFormatConfig.options.useTabs;
+    vscodePrettierOptions.parser = vscodePrettierOptions.parser || parser;
+
+    return vscodePrettierOptions;
+  }
 }
 
 function toReplaceTextedit(

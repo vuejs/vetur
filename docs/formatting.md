@@ -58,9 +58,25 @@ However, when a local config (such as `.prettierrc`) is found, Vetur will prefer
 
 Opinionated formatter. Settings are read from `.prettierrc` at project root. See format at https://prettier.io/docs/en/configuration.html.
 
+If you want to set global prettier setting, either:
+
+- Make a `.prettierrc` config at your home directory 
+- Use the below config and do NOT include a `.prettierrc` in your home directory
+
+  ```json
+  "vetur.format.defaultFormatterOptions": {
+    "prettier": {
+      // Prettier option here
+      "semi": false
+    }
+  }
+  ```
+
 #### [prettier-eslint](https://github.com/prettier/prettier-eslint)
 
 Prettier + `eslint --fix`. Settings are read from `.prettierrc` and `.eslintrc` at project root.
+
+Global config: Same as `prettier` global config.
 
 #### [prettyhtml](https://github.com/Prettyhtml/prettyhtml)
 
