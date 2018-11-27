@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.14.2 | 2018-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.2/vspackage)
+
+- Allow `vetur.format.defaultFormatterOptions.prettier` as global prettier config. You do not need this if you have a global config such as `~/.prettierrc` at your home directory. #986
+
 ### 0.14.1 | 2018-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.1/vspackage)
 
 - Fix a null pointer error when no local prettier config can be found.
