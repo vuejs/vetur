@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.14.3 | 2018-11-29 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.3/vspackage)
+
+- Remove `flatmap-stream` from Vetur's `devDependencies`. `flatmap-stream` has never been shipped to user.
+- Fix a bug where Vetur cannot format `style` regions correctly when using `vetur.format.defaultFormatterOptions.prettier`. #997 and #998.
+
 ### 0.14.2 | 2018-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.2/vspackage)
 
 - Allow `vetur.format.defaultFormatterOptions.prettier` as global prettier config. You do not need this if you have a global config such as `~/.prettierrc` at your home directory. #986
