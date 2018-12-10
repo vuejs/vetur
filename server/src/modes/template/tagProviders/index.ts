@@ -7,13 +7,15 @@ import {
   onsenTagProvider,
   bootstrapTagProvider,
   buefyTagProvider,
-  vuetifyTagProvider
+  vuetifyTagProvider,
+  getRuntimeTagProvider
 } from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';
 import * as fs from 'fs';
+import { join } from 'path';
 
 export let allTagProviders: IHTMLTagProvider[] = [
   getHTML5TagProvider(),
@@ -39,7 +41,8 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     onsen: false,
     bootstrap: false,
     buefy: false,
-    vuetify: false
+    vuetify: false,
+    quasar: false
   };
   if (!workspacePath) {
     return settings;
@@ -67,6 +70,31 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
     if (packageJson.dependencies['vuetify']) {
       settings['vuetify'] = true;
+    }
+
+    for(const dep in packageJson.dependencies) {
+      const runtimePkgPath = ts.findConfigFile(
+        workspacePath,
+        ts.sys.fileExists,
+        join('node_modules', dep, 'package.json')
+      );    
+      
+      if (!runtimePkgPath) {
+        continue;
+      }
+
+      const runtimePkg = JSON.parse(fs.readFileSync(runtimePkgPath, 'utf-8'));
+      if (!runtimePkg) {
+        continue;
+      }
+
+      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg);
+      if (!tagProvider) {
+        continue;
+      }
+
+      allTagProviders.push(tagProvider);
+      settings[dep] = true;
     }
   } catch (e) {}
   return settings;

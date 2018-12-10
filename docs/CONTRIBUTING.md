@@ -36,7 +36,7 @@ yarn watch
 To debug:
 
 - The extension has 2 configurations for debugging i.e client and server. 
-- Run the client configurtion first. 
+- Run the client configuration first. 
 - As the client launches the language server lazily, open any .vue file so that the server is started. 
 - Run the server configuration which binds the server code to port 6005 to enable debugging.
 - At this point breakpoints in both server and client code should work. 
@@ -44,7 +44,7 @@ To debug:
 
 It should look like this:
 
-![VScode Debugging](https://vuejs.github.io/vetur/images/debug.png)
+![VS Code Debugging](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/debug.png)
 
 #### Grammar Dev Guide
 
@@ -55,7 +55,7 @@ It should look like this:
 
 > Tip: In VS Code, use F1 -> Inspect TM Scopes:
 
-![scope](https://github.com/vuejs/vetur/blob/master/asset/scope.png)
+![scope](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/scope.png)
 
 ## Doc
 

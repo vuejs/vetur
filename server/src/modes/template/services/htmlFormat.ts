@@ -1,6 +1,11 @@
 import * as _ from 'lodash';
-import { TextDocument, Range, TextEdit, Position, FormattingOptions } from 'vscode-languageserver-types';
+import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
+import { IPrettyHtml } from './prettyhtml';
+import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
+import { getFileFsPath } from '../../../utils/paths';
+import { VLSFormatConfig } from '../../../config';
+import { Prettier } from '../../../utils/prettier/prettier';
 
 const templateHead = '<template>';
 const templateTail = '</template>';
@@ -8,21 +13,25 @@ const templateTail = '</template>';
 export function htmlFormat(
   document: TextDocument,
   currRange: Range,
-  formattingOptions: FormattingOptions,
-  config: any
+  vlsFormatConfig: VLSFormatConfig
 ): TextEdit[] {
+  if (vlsFormatConfig.defaultFormatter.html === 'none') {
+    return [];
+  }
+
   const { value, range } = getValueAndRange(document, currRange);
 
-  defaultHtmlOptions.indent_with_tabs = !formattingOptions.insertSpaces;
-  defaultHtmlOptions.indent_size = formattingOptions.tabSize;
+  let beautifiedHtml: string;
+  if (vlsFormatConfig.defaultFormatter.html === 'prettyhtml') {
+    beautifiedHtml = formatWithPrettyHtml(
+      getFileFsPath(document.uri),
+      templateHead + value + templateTail,
+      vlsFormatConfig
+    );
+  } else {
+    beautifiedHtml = formatWithJsBeautify(templateHead + value + templateTail, vlsFormatConfig);
+  }
 
-  const htmlFormattingOptions = _.assign(
-    defaultHtmlOptions,
-    config.vetur.format.defaultFormatterOptions['js-beautify-html'],
-    { end_with_newline: false }
-  );
-
-  const beautifiedHtml = htmlBeautify(templateHead + value + templateTail, htmlFormattingOptions);
   const wrappedHtml = beautifiedHtml.substring(templateHead.length, beautifiedHtml.length - templateTail.length);
   return [
     {
@@ -30,6 +39,42 @@ export function htmlFormat(
       newText: wrappedHtml
     }
   ];
+}
+
+function formatWithPrettyHtml(
+  fileFsPath: string,
+  input: string,
+  vlsFormatConfig: VLSFormatConfig
+): string {
+  const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
+  const prettierrcOptions = prettier.resolveConfig.sync(fileFsPath, { useCache: false }) || null;
+
+  const prettyhtml: IPrettyHtml = requireLocalPkg(fileFsPath, '@starptech/prettyhtml');
+
+  const result = prettyhtml(input, {
+    useTabs: vlsFormatConfig.options.useTabs,
+    tabWidth: vlsFormatConfig.options.tabSize,
+    usePrettier: true,
+    prettier: {
+      ...prettierrcOptions
+    },
+    ...vlsFormatConfig.defaultFormatterOptions['prettyhtml']
+  });
+  return result.contents.trim();
+}
+
+function formatWithJsBeautify(input: string, vlsFormatConfig: VLSFormatConfig): string {
+  const htmlFormattingOptions = _.assign(
+    defaultHtmlOptions,
+    {
+      indent_with_tabs: vlsFormatConfig.options.useTabs,
+      indent_size: vlsFormatConfig.options.tabSize
+    },
+    vlsFormatConfig.defaultFormatterOptions['js-beautify-html'],
+    { end_with_newline: false }
+  );
+
+  return htmlBeautify(input, htmlFormattingOptions);
 }
 
 function getValueAndRange(document: TextDocument, currRange: Range): { value: string; range: Range } {
@@ -47,7 +92,6 @@ function getValueAndRange(document: TextDocument, currRange: Range): { value: st
 }
 
 const defaultHtmlOptions: HTMLBeautifyOptions = {
-  brace_style: 'collapse', // [collapse|expand|end-expand|none]
   end_with_newline: false, // End output with newline
   indent_char: ' ', // Indentation character
   indent_handlebars: false, // e.g. {{#foo}}, {{/foo}}
@@ -57,25 +101,8 @@ const defaultHtmlOptions: HTMLBeautifyOptions = {
   indent_with_tabs: false,
   max_preserve_newlines: 1, // Maximum number of line breaks to be preserved in one chunk (0 disables)
   preserve_newlines: true, // Whether existing line breaks before elements should be preserved
-  unformatted: [
-    'area',
-    'base',
-    'br',
-    'col',
-    'embed',
-    'hr',
-    'img',
-    'input',
-    'keygen',
-    'link',
-    'menuitem',
-    'meta',
-    'param',
-    'source',
-    'track',
-    'wbr'
-  ],
+  unformatted: [], // Tags that shouldn't be formatted. Causes mis-alignment
   wrap_line_length: 0, // Lines should wrap at next opportunity after this number of characters (0 disables)
-  wrap_attributes: 'auto' as any
+  wrap_attributes: 'force-expand-multiline' as any
   // Wrap attributes to new lines [auto|force|force-aligned|force-expand-multiline] ["auto"]
 };

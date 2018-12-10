@@ -4,7 +4,7 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.12.5",
+  "version": "0.14.3",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p . && tsc -p server",
@@ -15,9 +15,10 @@
     "prepush": "npm run test:server",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
-    "test": "npm run lint && npm run test:server",
+    "test:e2e": "sh ./test/e2e.sh",
+    "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "postinstall": "if [[ ${NODE_ENV} != \"production\" ]]; then node ./node_modules/vscode/bin/install; fi"
+    "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "lint-staged": {
     "*.ts": [
@@ -39,16 +40,17 @@
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.24.0"
+    "vscode": "^1.26.0"
   },
   "dependencies": {
-    "vscode-languageclient": "^3.4.2",
-    "vscode-languageserver-types": "^3.4.0"
+    "vscode": "^1.1.22",
+    "vscode-languageclient": "^5.0.1",
+    "vscode-languageserver-types": "^3.12.0"
   },
   "activationEvents": [
     "onLanguage:vue"
   ],
-  "main": "./out/vueMain",
+  "main": "./dist/client/vueMain",
   "contributes": {
     "commands": [
       {
@@ -129,13 +131,8 @@
       }
     ],
     "configuration": {
-      "title": "vetur configuration",
+      "title": "Vetur",
       "properties": {
-        "vetur.colorDecorators.enable": {
-          "type": "boolean",
-          "default": true,
-          "description": "Use color decorators in vue"
-        },
         "vetur.completion.autoImport": {
           "type": "boolean",
           "default": true,
@@ -169,15 +166,27 @@
           "default": true,
           "description": "Validate js/ts in <script>"
         },
+        "vetur.format.options.tabSize": {
+          "type": "number",
+          "default": 2,
+          "description": "Number of spaces per indentation level. Inherited by all formatters."
+        },
+        "vetur.format.options.useTabs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use tabs for indentation. Inherited by all formatters."
+        },
         "vetur.format.defaultFormatter.html": {
           "type": "string",
-          "default": "none",
+          "default": "prettyhtml",
           "enum": [
             "none",
+            "prettyhtml",
             "js-beautify-html"
           ],
           "enumDescriptions": [
             "disable formatting",
+            "prettyhtml",
             "html formatter of js-beautify"
           ],
           "description": "Default formatter for <template> region"
@@ -253,11 +262,13 @@
           "enum": [
             "none",
             "prettier",
+            "prettier-eslint",
             "vscode-typescript"
           ],
           "enumDescriptions": [
             "disable formatting",
             "js formatter from prettier",
+            "prettier-eslint",
             "js formatter from TypeScript"
           ],
           "description": "Default formatter for <script> region"
@@ -279,8 +290,53 @@
         },
         "vetur.format.defaultFormatterOptions": {
           "type": "object",
+          "properties": {
+            "prettier": {
+              "type": "object",
+              "description": "Global prettier config used by prettier formatter. Used by `prettier` and `prettier-eslint`.\n\nVetur will prefer a prettier config file at home directory if one exists.",
+              "properties": {}
+            },
+            "prettyhtml": {
+              "type": "object",
+              "description": "Options for prettyhtml",
+              "properties": {
+                "printWidth": {
+                  "type": "number",
+                  "default": 100,
+                  "description": "Maximum amount of characters allowed per line"
+                },
+                "singleQuote": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to use single quotes by default"
+                },
+                "wrapAttributes": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to wrap attributes"
+                },
+                "sortAttributes": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to sort attributes"
+                }
+              }
+            },
+            "js-beautify-html": {
+              "type": "object",
+              "description": "Options for js-beautify"
+            }
+          },
           "default": {
-            "js-beautify-html": {}
+            "js-beautify-html": {
+              "wrap_attributes": "force-expand-multiline"
+            },
+            "prettyhtml": {
+              "printWidth": 100,
+              "singleQuote": false,
+              "wrapAttributes": false,
+              "sortAttributes": false
+            }
           },
           "description": "Options for all default formatters"
         },
@@ -308,12 +364,14 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^8.0.51",
-    "husky": "^0.14.3",
-    "lint-staged": "^6.0.0",
-    "npm-run-all": "^4.1.3",
+    "@types/lodash": "^4.14.117",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.11.0",
+    "husky": "^1.0.0-rc.15",
+    "lint-staged": "^7.3.0",
+    "mocha": "^5.2.0",
+    "npm-run-all": "^4.1.5",
     "tslint": "^5.8.0",
-    "typescript": "^2.8.1",
-    "vscode": "^1.1.5"
+    "typescript": "^3.0.3"
   }
 }

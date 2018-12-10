@@ -13,11 +13,11 @@ import {
   CompletionList,
   Position,
   FormattingOptions,
-  SymbolInformation
+  SymbolInformation,
+  ColorInformation,
+  Color,
+  ColorPresentation
 } from 'vscode-languageserver-types';
-import {
-  Color, ColorInformation, ColorPresentation
-} from 'vscode-languageserver-protocol/lib/protocol.colorProvider.proposed';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';

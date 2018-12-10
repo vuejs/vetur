@@ -18,6 +18,7 @@ import { getTagProviderSettings } from './tagProviders';
 import { ScriptMode } from '../script/javascript';
 import { getComponentTags, getEnabledTagProviders } from './tagProviders';
 import { DocumentContext } from '../../types';
+import { VLSFormatConfig } from '../../config';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
@@ -70,10 +71,7 @@ export function getVueHTMLMode(
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-      if (config.vetur.format.defaultFormatter.html === 'none') {
-        return [];
-      }
-      return htmlFormat(document, range, formattingOptions, config);
+      return htmlFormat(document, range, config.vetur.format as VLSFormatConfig);
     },
     findDefinition(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

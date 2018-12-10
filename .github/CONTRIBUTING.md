@@ -46,7 +46,7 @@ To debug:
 
 It should look like this:
 
-![VScode Debugging](https://vuejs.github.io/vetur/images/debug.png)
+![VS Code Debugging](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/debug.png)
 
 #### Grammar Dev Guide
 
@@ -57,7 +57,7 @@ It should look like this:
 
 > Tip: In VS Code, use F1 -> Inspect TM Scopes:
 
-![scope](https://github.com/vuejs/vetur/blob/master/asset/scope.png)
+![scope](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/scope.png)
 
 ## Doc
 
