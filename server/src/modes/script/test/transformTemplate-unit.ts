@@ -154,5 +154,12 @@ suite('transformTemplate', () => {
         '({ foo: bar, baz }, [qux, ...tail]) => tail.concat(this.foo(bar + baz) + qux)'
       );
     });
+
+    test('Template Expression', () => {
+      check(
+        '`font-size: ${size}px`',
+        '`font-size: ${this.size}px`'
+      );
+    });
   });
 });

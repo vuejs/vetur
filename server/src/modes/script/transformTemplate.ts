@@ -358,6 +358,21 @@ export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
         scope.concat(flatMap(exp.parameters, collectScope))
       )
     );
+  } else if (ts.isTemplateExpression(exp)) {
+    const injectedSpans = exp.templateSpans.map(span => {
+      return ts.setTextRange(
+        ts.createTemplateSpan(
+          injectThis(span.expression, scope),
+          span.literal
+        ),
+        span
+      );
+    });
+
+    res = ts.createTemplateExpression(
+      exp.head,
+      injectedSpans
+    );
   } else {
     return exp;
   }
