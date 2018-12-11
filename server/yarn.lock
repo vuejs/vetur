@@ -104,10 +104,10 @@
     "@starptech/webparser" "^0.8.10"
     property-information "^5.0.1"
 
-"@starptech/prettyhtml-formatter@^0.8.10":
-  version "0.8.10"
-  resolved "http://r.tnpm.oa.com/@starptech/prettyhtml-formatter/download/@starptech/prettyhtml-formatter-0.8.10.tgz#dd1e41ef0228c24d485a33baa2555b9dd34635bc"
-  integrity sha1-3R5B7wIowk1IWjO6olVbndNGNbw=
+"@starptech/prettyhtml-formatter@^0.8.11":
+  version "0.8.11"
+  resolved "http://r.tnpm.oa.com/@starptech/prettyhtml-formatter/download/@starptech/prettyhtml-formatter-0.8.11.tgz#bff3231b18837f919a1515ffa9272dc88eb2bb21"
+  integrity sha1-v/MjGxiDf5GaFRX/qSctyI6yuyE=
   dependencies:
     "@starptech/prettyhtml-hast-to-html" "^0.8.10"
     "@starptech/rehype-minify-whitespace" "^0.8.10"
@@ -162,12 +162,12 @@
     hast-util-has-property "^1.0.0"
     unist-util-visit "^1.0.0"
 
-"@starptech/prettyhtml@^0.8.10":
-  version "0.8.10"
-  resolved "http://r.tnpm.oa.com/@starptech/prettyhtml/download/@starptech/prettyhtml-0.8.10.tgz#1e5041cc8136d2719cb93b09e619f2392d01806b"
-  integrity sha1-HlBBzIE20nGcuTsJ5hnyOS0BgGs=
+"@starptech/prettyhtml@^0.8.11":
+  version "0.8.11"
+  resolved "http://r.tnpm.oa.com/@starptech/prettyhtml/download/@starptech/prettyhtml-0.8.11.tgz#fe021a402c4d97f0ed8e4ac159f4e4214028d02d"
+  integrity sha1-/gIaQCxNl/DtjkrBWfTkIUAo0C0=
   dependencies:
-    "@starptech/prettyhtml-formatter" "^0.8.10"
+    "@starptech/prettyhtml-formatter" "^0.8.11"
     "@starptech/prettyhtml-sort-attributes" "^0.8.10"
     "@starptech/rehype-webparser" "^0.8.10"
     "@starptech/webparser" "^0.8.10"
