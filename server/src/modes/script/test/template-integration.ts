@@ -11,6 +11,14 @@ const workspace = path.resolve(__dirname, '../../../../test/fixtures/');
 const documentRegions = getLanguageModelCache(10, 60, document => getDocumentRegions(document));
 const scriptMode = getJavascriptMode(documentRegions, workspace);
 
+scriptMode.configure!({
+  vetur: {
+    experimental: {
+      templateTypeCheck: true
+    }
+  }
+});
+
 interface Expected {
   includes: string;
   range: Range;

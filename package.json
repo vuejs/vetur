@@ -359,6 +359,11 @@
           ],
           "default": "off",
           "description": "Traces the communication between VS Code and Vue Language Server."
+        },
+        "vetur.experimental.templateTypeCheck": {
+          "type": "boolean",
+          "default": false,
+          "description": "Type check expressions in <template> region"
         }
       }
     }

@@ -100,6 +100,11 @@ export function getJavascriptMode(
       });
     },
     doTemplateValidation(doc: TextDocument): Diagnostic[] {
+      const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
+      if (!enabledTemplateValidation) {
+        return [];
+      }
+
       // Add suffix to process this doc as vue template.
       const templateDoc = TextDocument.create(
         doc.uri + '.template',
