@@ -16,6 +16,7 @@ import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
 import { NULL_HOVER } from '../nullMode';
+import { VLSFormatConfig } from '../../config';
 
 export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const languageService = getCSSLanguageService();
@@ -67,12 +68,14 @@ function getStyleMode(
       const embedded = embeddedDocuments.get(document);
       const emmetSyntax = languageId === 'postcss' ? 'css' : languageId;
       const lsCompletions = languageService.doComplete(embedded, position, stylesheets.get(embedded));
-      const lsItems = lsCompletions ? _.map(lsCompletions.items, i => {
-        return {
-          ...i,
-          sortText: Priority.Platform + i.label
-        };
-      }) : [];
+      const lsItems = lsCompletions
+        ? _.map(lsCompletions.items, i => {
+            return {
+              ...i,
+              sortText: Priority.Platform + i.label
+            };
+          })
+        : [];
 
       const emmetCompletions = emmet.doComplete(document, position, emmetSyntax, config.emmet);
       if (!emmetCompletions) {
@@ -135,10 +138,9 @@ function getStyleMode(
         value,
         getFileFsPath(document.uri),
         range,
-        needIndent,
-        formattingOptions,
-        config.prettier,
-        parserMap[languageId]
+        config.vetur.format as VLSFormatConfig,
+        parserMap[languageId],
+        needIndent
       );
     },
     onDocumentRemoved(document) {

@@ -632,6 +632,8 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
     'mousemove',
     'mouseout',
     'mouseover',
+    'mouseenter',
+    'mouseleave',
     'mouseup',
     'mousewheel',
     'pause',
