@@ -26,6 +26,11 @@ describe('Should autocomplete for <template>', () => {
     it('completes imported components', async () => {
       await testCompletion(templateDocUri, position(2, 6), ['item']);
     });
+
+    it('completes imported components in PascalCase', async () => {
+      await testCompletion(templateDocUri, position(2,6), ['Item']);
+    });
+
   });
 
   describe('Should complete element-ui components', () => {
