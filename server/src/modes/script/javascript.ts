@@ -34,6 +34,7 @@ import * as ts from 'typescript';
 import * as _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
+import { VLSFormatConfig } from '../../config';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -356,21 +357,27 @@ export function getJavascriptMode(
         return [];
       }
 
-      const needIndent = config.vetur.format.scriptInitialIndent;
       const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
-      if (defaultFormatter === 'prettier') {
+      const needInitialIndent = config.vetur.format.scriptInitialIndent;
+      const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
+
+      if (defaultFormatter === 'prettier' || defaultFormatter === 'prettier-eslint') {
         const code = scriptDoc.getText();
         const filePath = getFileFsPath(scriptDoc.uri);
-        if (config.prettier.eslintIntegration) {
-          return prettierEslintify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
-        } else {
-          return prettierify(code, filePath, range, needIndent, formatParams, config.prettier, parser);
-        }
-      } else {
-        const initialIndentLevel = needIndent ? 1 : 0;
+
+        return defaultFormatter === 'prettier'
+          ? prettierify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent)
+          : prettierEslintify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
+      }
+      
+      else {
+        const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
           scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
-        const convertedFormatSettings = convertOptions(formatSettings, formatParams, initialIndentLevel);
+        const convertedFormatSettings = convertOptions(formatSettings, {
+          tabSize: vlsFormatConfig.options.tabSize,
+          insertSpaces: !vlsFormatConfig.options.useTabs
+        }, initialIndentLevel);
 
         const fileFsPath = getFileFsPath(doc.uri);
         const start = scriptDoc.offsetAt(range.start);

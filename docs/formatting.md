@@ -3,26 +3,29 @@
 Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.
 
 **Vetur only has a "whole document formatter" and cannot format arbitrary ranges.**  
-**As a result, only `Format Document` command will be available.**  
-**`Format Selection` command wouldn't work, and there is no**
+**As a result, only the `Format Document` command is available.**  
+**The `Format Selection` command does not work.**
 
 ## Formatters
 
 These formatters are available:
 
 - [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
+- [`prettier-eslint`](https://github.com/prettier/prettier-eslint): For js. Run `prettier` and `eslint --fix`.
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
-- [`stylus-supremacy'](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
+- [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 
-Choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
+Vetur bundles all the above formatters. When Vetur observes a local install of the formattesr, it'll prefer to use the local version.
+
+You can choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
 **Setting a language's formatter to `none` disables formatter for that language.**
 
 Current default:
 
 ```json
 {
-  "vetur.format.defaultFormatter.html": "none",
+  "vetur.format.defaultFormatter.html": "prettyhtml",
   "vetur.format.defaultFormatter.css": "prettier",
   "vetur.format.defaultFormatter.postcss": "prettier",
   "vetur.format.defaultFormatter.scss": "prettier",
@@ -33,22 +36,51 @@ Current default:
 }
 ```
 
-#### prettier
+## Settings
 
-Settings precedence:
+These two settings are inherited by all formatters:
 
-1. `.prettierrc` at project root. See format at https://prettier.io/docs/en/configuration.html
-2. `prettier.*`. You can install [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) to get IntelliSense for settings, but Vetur will work without it.
+```json
+{
+  "vetur.format.options.tabSize": 2,
+  "vetur.format.options.useTabs": false
+}
+```
 
-ESLint integration: `"prettier.eslintIntegration": true`. Settings are read from `.eslintrc`.
+However, when a local config (such as `.prettierrc`) is found, Vetur will prefer it. For example:
 
-#### prettyhtml
+- `.prettierrc` is present but does not set `tabWidth` explicitly: Vetur uses `vetur.format.options.tabSize` as the `tabWidth` for prettier.
+- `.prettierrc` is present and sets `tabWidth` explicitly: Vetur ignores `vetur.format.options.tabSize`, always using the value in `.prettierrc`.
 
-**This will likely become the default html formatter soon.**
+`useTabs` works the same way.
 
-https://github.com/Prettyhtml/prettyhtml
+#### [prettier](https://prettier.io/)
 
-`tabWidth` and `useTabs` are read from `editor.tabSize` and `editor.insertSpaces`.
+Opinionated formatter. Settings are read from `.prettierrc` at project root. See format at https://prettier.io/docs/en/configuration.html.
+
+If you want to set global prettier setting, either:
+
+- Make a `.prettierrc` config at your home directory 
+- Use the below config and do NOT include a `.prettierrc` in your home directory
+
+  ```json
+  "vetur.format.defaultFormatterOptions": {
+    "prettier": {
+      // Prettier option here
+      "semi": false
+    }
+  }
+  ```
+
+#### [prettier-eslint](https://github.com/prettier/prettier-eslint)
+
+Prettier + `eslint --fix`. Settings are read from `.prettierrc` and `.eslintrc` at project root.
+
+Global config: Same as `prettier` global config.
+
+#### [prettyhtml](https://github.com/Prettyhtml/prettyhtml)
+
+The default formatter for Vue templates.
 
 Other settings include:
 
@@ -61,19 +93,17 @@ Other settings include:
 }
 ```
 
-#### vscode-typescript
+`prettier` options are read from local `.prettierrc` config.
 
-VS Code's js/ts formatter built on TypeScript language service.
+#### [vscode-typescript](https://github.com/microsoft/typescript)
 
-`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
+VS Code's js/ts formatter built on [TypeScript](https://github.com/microsoft/typescript) language service.
 
-Other settings are read from `javascript.format.*` and `typescript.format.*`.
+Settings are read from `javascript.format.*` and `typescript.format.*`.
 
-#### js-beautify-html [deprecated]
+#### [js-beautify-html](https://github.com/beautify-web/js-beautify)
 
-Alternative html formatter. Deprecated and turned off by default. Use at your own risk.
-
-`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
+Alternative html formatter.
 
 Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/src/modes/template/services/htmlFormat.ts). You can override them by setting `vetur.format.defaultFormatterOptions.js-beautify-html`.
 
@@ -85,9 +115,7 @@ Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/sr
 }
 ```
 
-#### stylus-supremacy
-
-`tabSize` and `insertSpaces` are read from `editor.tabSize` and `editor.insertSpaces`.
+#### [stylus-supremacy](https://thisismanta.github.io/stylus-supremacy/)
 
 Other settings are read from `stylusSupremacy.*`. You can install [Stylus Supremacy extension](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) to get IntelliSense for settings, but Vetur will work without it. A useful default:
 

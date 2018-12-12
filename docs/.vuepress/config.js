@@ -2,6 +2,9 @@ module.exports = {
     title: 'Vetur',
     description: "Vue tooling for VS Code.",
     base: '/vetur/',
+    markdown: {
+      linkify: true
+    },
     themeConfig: {
       repo: 'vuejs/vetur',
       editLinks: true,
