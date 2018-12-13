@@ -93,3 +93,7 @@ index.vue
 import a from 'components/a.vue'
 import b from 'components/b.vue'
 ```
+
+### Using Nuxt?
+
+Don't forget to install Vue (and probably Vuex / Vue-router) manually, as Nuxt does not come with it by default, to make sure you can use all of Vetur's features, such as auto-complete / Intellisense.
