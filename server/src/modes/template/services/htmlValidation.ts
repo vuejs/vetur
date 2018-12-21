@@ -1,8 +1,8 @@
-import { CLIEngine, ESLintError } from 'eslint';
+import { CLIEngine, Linter } from 'eslint';
 import { configs } from 'eslint-plugin-vue';
 import { TextDocument, Diagnostic, Range, DiagnosticSeverity } from 'vscode-languageserver-types';
 
-function toDiagnostic(error: ESLintError): Diagnostic {
+function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const line = error.line - 1;
   const column = error.column - 1;
   const endLine = error.endLine ? error.endLine - 1 : line;
