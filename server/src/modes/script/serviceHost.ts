@@ -220,6 +220,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   const jsHost = createLanguageServiceHost(compilerOptions);
   const templateHost = createLanguageServiceHost({
     ...compilerOptions,
+    noImplicitAny: false,
     noUnusedLocals: false,
     noUnusedParameters: false,
     allowJs: true,
