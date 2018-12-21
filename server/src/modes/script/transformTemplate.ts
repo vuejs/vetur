@@ -346,6 +346,12 @@ export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
     res = ts.createObjectLiteral(
       exp.properties.map(p => injectThisForObjectLiteralElement(p, scope))
     );
+  } else if (ts.isArrayLiteralExpression(exp)) {
+    res = ts.createArrayLiteral(
+      exp.elements.map(e => injectThis(e, scope))
+    );
+  } else if (ts.isSpreadElement(exp)) {
+    res = ts.createSpread(injectThis(exp.expression, scope));
   } else if (ts.isArrowFunction(exp) && !ts.isBlock(exp.body)) {
     res = ts.createArrowFunction(
       exp.modifiers,

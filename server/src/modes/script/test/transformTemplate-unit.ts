@@ -134,6 +134,20 @@ suite('transformTemplate', () => {
       );
     });
 
+    test('ArrayLiteralExpression', () => {
+      check(
+        '[foo, bar]',
+        '[this.foo, this.bar]'
+      );
+    });
+
+    test('ArrayLiteralExpression: spread', () => {
+      check(
+        '[...foo]',
+        '[...this.foo]'
+      );
+    });
+
     test('ArrowFunction', () => {
       check(
         '(event) => foo(event)',
