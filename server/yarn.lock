@@ -207,6 +207,19 @@
   resolved "https://registry.yarnpkg.com/@starptech/webparser/-/webparser-0.8.3.tgz#0d2e88b52aaae4b74b49a0e9ca1f2d9861258998"
   integrity sha512-1Y2Ic+1RrUbLwnfHgtpguBgd/FVBHxRk71TRXd5j/HRSCn48UlCuVvj0zePjEMNFe6LV9HcowAOR7VK5T2tVaw==
 
+"@types/eslint@^4.16.5":
+  version "4.16.5"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-4.16.5.tgz#f0b56e011a3f7d01a380a568776f93ec56d7c911"
+  integrity sha512-103C3Adr8UaucsjYBDdKzL9AZk6c6F2gKIlyZOxv48KtmnvNcXoDsEddF4N/DZJNoVFg6NGSbzYodvxix3Md2g==
+  dependencies:
+    "@types/estree" "*"
+    "@types/json-schema" "*"
+
+"@types/estree@*":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
+  integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
+
 "@types/events@*":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
@@ -225,6 +238,11 @@
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.8.0.tgz#0369d3d0e1f35a6aec07cb4da2ee2bcda111367c"
   integrity sha512-/siF86XrwDKLuHe8l7h6NhrAWgLdgqbxmjZv9NvGWmgYRZoTipkjKiWb0SQHy/jcR+ee0GvbG6uGd+LEBMGNvA==
+
+"@types/json-schema@*":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.1.tgz#fcaa655260285b8061850789f8268c51a4ec8ee1"
+  integrity sha512-NVQEMviDWjuen3UW+mU1J6fZ0WhOfG1yRce/2OTcbaz+fgmTw2cahx6N2wh0Yl+a+hg2UZj/oElZmtULWyGIsA==
 
 "@types/lodash@^4.14.118":
   version "4.14.118"
