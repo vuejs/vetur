@@ -154,7 +154,7 @@ function getStyleMode(
   };
 }
 
-function getValueAndRange(document: TextDocument, currRange: Range): { value: string; range: Range } {
+export function getValueAndRange(document: TextDocument, currRange: Range): { value: string; range: Range } {
   let value = document.getText();
   let range = currRange;
 

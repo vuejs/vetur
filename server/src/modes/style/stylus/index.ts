@@ -14,6 +14,7 @@ import { stylusHover } from './stylus-hover';
 import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
+import { getValueAndRange } from '../index';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
@@ -71,9 +72,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
 
       const stylusSupremacy: IStylusSupremacy = requireLocalPkg(getFileFsPath(document.uri), 'stylus-supremacy');
 
-      const embedded = embeddedDocuments.get(document);
-      const inputText = embedded.getText();
-
+      const { value: inputText } = getValueAndRange(document, range);
       const vlsFormatConfig = config.vetur.format as VLSFormatConfig;
       const tabStopChar = vlsFormatConfig.options.useTabs ? '\t' : ' '.repeat(vlsFormatConfig.options.tabSize);
 
@@ -102,16 +101,18 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
         tabStopChar,
         newLineChar: '\n'
       };
-
-      const formattedText = stylusSupremacy.format(inputText, formattingOptions);
+      
+      const formattedText = stylusSupremacy.format(inputText, formattingOptions, null, range);
 
       // Add the base indentation and correct the new line characters
+      // remove the first '/n'
       const outputText = ((range.start.line !== range.end.line ? '\n' : '') + formattedText)
         .split(/\n/)
+        .slice(1)
         .map(line => (line.length > 0 ? baseIndent + line : ''))
         .join(newLineChar);
 
-      return [TextEdit.replace(range, outputText)];
+        return [TextEdit.replace(range, outputText)];
     }
   };
 }
