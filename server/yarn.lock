@@ -3109,6 +3109,11 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
+nuxt-helper-json@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/nuxt-helper-json/-/nuxt-helper-json-1.0.0.tgz#7a8a78c2d49749bf39d01cc26b8234ea0a91bf6b"
+  integrity sha512-MwFMhg8Xwjlo7dJeAuUImJxVMwyGGXfSjE7COiw0cAT7bFVJrA11ZJCwLrqPZQBfuBq3QxL8Q3/GzqA0BDr+Ug==
+
 nyc@^13.0.1:
   version "13.1.0"
   resolved "https://registry.yarnpkg.com/nyc/-/nyc-13.1.0.tgz#463665c7ff6b5798e322624a5eb449a678db90e3"
