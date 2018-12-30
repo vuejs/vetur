@@ -297,7 +297,7 @@ export class VLS {
     return [];
   }
 
-  onSignatureHelp({ textDocument, position }: TextDocumentPositionParams): SignatureHelp {
+  onSignatureHelp({ textDocument, position }: TextDocumentPositionParams): SignatureHelp | null {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, position);
     if (mode && mode.doSignatureHelp) {
