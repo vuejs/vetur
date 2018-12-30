@@ -92,4 +92,12 @@ suite('template integrated test', () => {
       }
     ]);
   });
+
+  test('validate: class.vue', () => {
+    check('class.vue', []);
+  });
+
+  test('validate: style.vue', () => {
+    check('style.vue', []);
+  });
 });

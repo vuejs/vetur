@@ -88,28 +88,53 @@ function transformElement(node: AST.VElement, code: string, scope: string[]): ts
   }
 }
 
+interface AttributeData {
+  props: ts.ObjectLiteralElementLike[];
+  on: ts.ObjectLiteralElementLike[];
+  directives: ts.Expression[];
+  special: ts.ObjectLiteralElementLike[];
+}
+
 function transformAttributes(
   attrs: (AST.VAttribute | AST.VDirective)[],
   code: string,
   scope: string[]
 ): ts.Expression {
-  // Normal attributes
-  // e.g. class="title"
-  const literalProps = attrs
-    .filter(isVAttribute)
-    .map(transformNativeAttribute);
+  const data: AttributeData = {
+    props: [],
+    on: [],
+    special: []
+  };
 
-  // v-bind directives
-  // e.g. :class="{ selected: foo }"
-  const boundProps = attrs
-    .filter(isVBind)
-    .map(vBind => transformVBind(vBind, code, scope));
+  attrs.forEach(attr => {
+    // Normal attributes
+    // e.g. class="title"
+    if (isVAttribute(attr)) {
+      if (!isSpecialAttribute(attr)) {
+        data.props.push(transformNativeAttribute(attr));
+      }
+      return;
+    }
 
-  // v-on directives
-  // e.g. @click="onClick"
-  const listeners = attrs
-    .filter(isVOn)
-    .map(vOn => transformVOn(vOn, code, scope));
+    // v-bind directives
+    // e.g. :class="{ selected: foo }"
+    if (isVBind(attr)) {
+      if (isSpecialAttribute(attr)) {
+        data.special.push(transformVBind(attr, code, scope));
+      } else {
+        data.props.push(transformVBind(attr, code, scope));
+      }
+      return;
+    }
+
+    // v-on directives
+    // e.g. @click="onClick"
+    if (isVOn(attr)) {
+      data.on.push(transformVOn(attr, code, scope));
+      return;
+    }
+
+  });
 
   // Fold all AST into VNodeData-like object
   // example output:
@@ -118,10 +143,9 @@ function transformAttributes(
   //   on: { click: ($event) => onClick($event) }
   // }
   return ts.createObjectLiteral([
-    ts.createPropertyAssignment('props', ts.createObjectLiteral(
-      [...literalProps, ...boundProps]
-    )),
-    ts.createPropertyAssignment('on', ts.createObjectLiteral(listeners))
+    ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props)),
+    ts.createPropertyAssignment('on', ts.createObjectLiteral(data.on)),
+    ts.createPropertyAssignment('special', ts.createObjectLiteral(data.special))
   ]);
 }
 
@@ -217,7 +241,7 @@ function transformChild(
     case 'VExpressionContainer':
       // Never appear v-for / v-on expression here
       const exp = child.expression as AST.ESLintExpression | null;
-      return exp ? parseExpression(exp, code, scope) : ts.createLiteral('""');
+      return exp ? parseExpression(exp, code, scope) : ts.createLiteral('');
     case 'VText':
       return ts.createLiteral(child.value);
   }
@@ -463,6 +487,24 @@ function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
 
 function isVFor(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
   return node.directive && node.key.name === 'for';
+}
+
+/**
+ * Return `true` if the node is a special attribute in Vue.js (class, style, ref, etc...)
+ */
+function isSpecialAttribute(node: AST.VAttribute | AST.VDirective): boolean {
+  const name = isVAttribute(node) ? node.key.name : node.key.argument;
+
+  return [
+    'class',
+    'style',
+    'key',
+    'ref',
+    'slot',
+    'slot-scope',
+    'scope',
+    'is'
+  ].includes(name || '');
 }
 
 function flatMap<T extends ts.Node, R>(list: ReadonlyArray<T>, fn: (value: T) => R[]): R[] {
