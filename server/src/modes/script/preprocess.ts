@@ -153,7 +153,10 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
   const vueFilePath = './' + path.basename(sourceFile.fileName.slice(0, -9));
   const componentImport = setZeroPos(ts.createImportDeclaration(undefined,
     undefined,
-    setZeroPos(ts.createImportClause(ts.createIdentifier('__Component'), undefined)),
+    setZeroPos(ts.createImportClause(
+      setZeroPos(ts.createIdentifier('__Component')),
+      undefined
+    )),
     setZeroPos(ts.createLiteral(vueFilePath))
   ));
 
@@ -211,6 +214,11 @@ function injectVueTemplate(sourceFile: ts.SourceFile, renderBlock: ts.Expression
     helperImport,
     renderElement
   ]));
+
+  // Update external module indicator to the transformed template node,
+  // otherwise symbols in this template (e.g. __Component) will be put
+  // into global namespace and it causes duplicated identifier error.
+  (sourceFile as any).externalModuleIndicator = componentImport;
 }
 
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */
