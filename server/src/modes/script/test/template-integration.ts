@@ -100,4 +100,16 @@ suite('template integrated test', () => {
   test('validate: style.vue', () => {
     check('style.vue', []);
   });
+
+  test('validate: directive.vue', () => {
+    check('directive.vue', [
+      {
+        includes: 'Property \'bar\' does not exist',
+        range: {
+          start: { line: 1, character: 22 },
+          end: { line:1, character: 25 }
+        }
+      }
+    ]);
+  });
 });
