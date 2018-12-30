@@ -103,6 +103,7 @@ function transformAttributes(
   const data: AttributeData = {
     props: [],
     on: [],
+    directives: [],
     special: []
   };
 
@@ -134,6 +135,16 @@ function transformAttributes(
       return;
     }
 
+    // Skip v-for directive
+    if (isVFor(attr)) {
+      return;
+    }
+
+    // Other directives
+    const exp = transformDirective(attr, code, scope);
+    if (exp) {
+      data.directives.push(exp);
+    }
   });
 
   // Fold all AST into VNodeData-like object
@@ -145,7 +156,8 @@ function transformAttributes(
   return ts.createObjectLiteral([
     ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props)),
     ts.createPropertyAssignment('on', ts.createObjectLiteral(data.on)),
-    ts.createPropertyAssignment('special', ts.createObjectLiteral(data.special))
+    ts.createPropertyAssignment('special', ts.createObjectLiteral(data.special)),
+    ts.createPropertyAssignment('directives', ts.createArrayLiteral(data.directives))
   ]);
 }
 
@@ -228,6 +240,13 @@ function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.Ob
     // e.g. v-on="{ click: onClick }"
     return setTextRange(ts.createSpreadAssignment(exp), vOn);
   }
+}
+
+function transformDirective(dir: AST.VDirective, code: string, scope: string[]): ts.Expression | undefined {
+  if (!dir.value || !dir.value.expression) {
+    return;
+  }
+  return parseExpression(dir.value.expression as AST.ESLintExpression, code, scope);
 }
 
 function transformChild(
