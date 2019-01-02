@@ -35,14 +35,15 @@ When configured correctly, ESLint should work for both `<template>` and `<script
 
 #### Linting for `<template>`
 
-Vetur automatically uses [`eslint-plugin-vue`](https://vuejs.github.io/eslint-plugin-vue/) for linting `<template>`. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://vuejs.github.io/eslint-plugin-vue/rules/#priority-a-essential-error-prevention).
+Vetur bundles a version of [`eslint-plugin-vue`](https://eslint.vuejs.org/) for linting `<template>` section. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://vuejs.github.io/eslint-plugin-vue/rules/#priority-a-essential-error-prevention).
 
-To turn it off, set `vetur.validation.template: false`.
+This linting is not configurable and based on a fixed version of `eslint-plugin-vue`. If you would like to configure the template linting rules:
 
 To configure linting rules:
 
 - Turn off Vetur's template validation with `vetur.validation.template: false`
-- `yarn add -D eslint eslint-plugin-vue`
+- Make sure you have the [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint). The errors will come from ESLint plugin, not Vetur.
+- `yarn add -D eslint eslint-plugin-vue` in your workspace root
 - Set ESLint rules in `.eslintrc`. An example:
 
   ```json
