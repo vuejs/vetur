@@ -47,6 +47,7 @@
     "vuetify-helper-json": "^1.0.0"
   },
   "devDependencies": {
+    "@types/eslint": "^4.16.5",
     "@types/glob": "^7.1.0",
     "@types/js-beautify": "^1.8.0",
     "@types/lodash": "^4.14.118",
