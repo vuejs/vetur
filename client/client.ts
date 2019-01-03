@@ -6,17 +6,28 @@ import {
   TransportKind,
   LanguageClientOptions
 } from 'vscode-languageclient';
+import { resolve } from 'path';
+import { existsSync } from 'fs';
 
-export function initializeLanguageClient(serverModule: string): LanguageClient {
+export function initializeLanguageClient(vlsModulePath: string): LanguageClient {
   const debugOptions = { execArgv: ['--nolazy', '--inspect=6005'] };
-
-  const serverOptions: ServerOptions = {
-    run: { module: serverModule, transport: TransportKind.ipc },
-    debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
-  };
 
   const documentSelector = ['vue'];
   const config = vscode.workspace.getConfiguration();
+
+  let serverPath;
+
+  const devVlsPackagePath = config.get('vetur.dev.vlsPath', '');
+  if (devVlsPackagePath && devVlsPackagePath !== '' && existsSync(devVlsPackagePath)) {
+    serverPath = resolve(devVlsPackagePath, 'dist/vueServerMain.js');
+  } else {
+    serverPath = vlsModulePath;
+  }
+
+  const serverOptions: ServerOptions = {
+    run: { module: serverPath, transport: TransportKind.ipc },
+    debug: { module: serverPath, transport: TransportKind.ipc, options: debugOptions }
+  };
 
   const clientOptions: LanguageClientOptions = {
     documentSelector,

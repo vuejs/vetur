@@ -1,6 +1,4 @@
-# Contribution
-
-**If you are reporting an issue, refer to [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md) instead.**
+# Contribution Guide
 
 Contribution is welcome! There are many ways you could help Vetur's development:
 
@@ -21,6 +19,7 @@ Comment on feature requests that you'd like to contribute before sending PR.
 #### Code Dev Guide
 
 Vetur consists of 2 parts
+
 - Language Client as a normal VS Code extension
 - Vue Language Server
 
@@ -38,7 +37,7 @@ yarn watch
 To debug:
 
 - The extension has 2 configurations for debugging i.e client and server. 
-- Run the client configurtion first. 
+- Run the client configuration first. 
 - As the client launches the language server lazily, open any .vue file so that the server is started. 
 - Run the server configuration which binds the server code to port 6005 to enable debugging.
 - At this point breakpoints in both server and client code should work. 
@@ -47,6 +46,19 @@ To debug:
 It should look like this:
 
 ![VS Code Debugging](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/debug.png)
+
+**`vetur.dev.vlsPath`**
+
+You can use this setting to make Vetur load a development version of `vue-language-server`. Some use cases:
+
+- You fixed a bug in Vetur, but the PR is pending and won't be published anytime soon.
+- You want to use TS 3.1, but Vetur bundles TS 2.8.
+- You are contributing to Vetur, and would run alpha/beta/RC versions in your daily development to provide feedback and find bugs.
+
+Two ways of using it:
+
+1. `yarn global add vue-language-server` and point the setting to `yarn global dir` + `node_modules/vue-language-server`
+2. Clone this repo, build it and point it to the ABSOLUTE path of `/server`
 
 #### Grammar Dev Guide
 

@@ -12,3 +12,5 @@ server/src/
 **/*.map
 **/tsconfig.json
 **/tslint.json
+
+.vsix

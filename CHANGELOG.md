@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.14.5 | 2019-01-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.5/vspackage)
+
+- Update to eslint-plugin-vue@5. #1034.
+
+### 0.14.4 | 2018-12-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.4/vspackage)
+
+- Nuxt support. See also [nuxt/nuxt.js#4524](https://github.com/nuxt/nuxt.js/pull/4524). #870.
+
 ### 0.14.3 | 2018-11-29 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.3/vspackage)
 
 - Remove `flatmap-stream` from Vetur's `devDependencies`. `flatmap-stream` has never been shipped to user.

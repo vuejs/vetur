@@ -4,7 +4,7 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.14.3",
+  "version": "0.14.5",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p . && tsc -p server",
@@ -359,6 +359,10 @@
           ],
           "default": "off",
           "description": "Traces the communication between VS Code and Vue Language Server."
+        },
+        "vetur.dev.vlsPath": {
+          "type": "string",
+          "description": "Path to VLS for Vetur developers. There are two ways of using it. \n\n1. Clone vuejs/vetur from GitHub, build it and point it to the ABSOLUTE path of `/server`.\n2. `yarn global add vue-language-server` and point Vetur to the installed location (`yarn global dir` + node_modules/vue-language-server)"
         },
         "vetur.experimental.templateTypeCheck": {
           "type": "boolean",
