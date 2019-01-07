@@ -112,7 +112,7 @@
                     "name": "entity.other.attribute-name.html"
                 }
             }, 
-            "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)", 
+            "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)?", 
             "end": "(?<='|\")", 
             "name": "meta.directive.vue", 
             "patterns": [

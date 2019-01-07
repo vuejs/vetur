@@ -104,7 +104,7 @@
                     "name": "punctuation.separator.key-value.html"
                 }
             }, 
-            "begin": "((?:\\b(v-)|(:|@))([a-zA-Z0-9\\-_]+)(?:\\:([a-zA-Z0-9\\-_]+))?(?:\\.([a-zA-Z0-9\\-_]+))*)\\s*(=)", 
+            "begin": "((?:\\b(v-)|(:|@))([a-zA-Z0-9\\-_]+)(?:\\:([a-zA-Z0-9\\-_]+))?(?:\\.([a-zA-Z0-9\\-_]+))*)\\s*(=)?", 
             "end": "(?<='|\")|(?=[\\s<>`])", 
             "name": "meta.directive.vue", 
             "patterns": [
