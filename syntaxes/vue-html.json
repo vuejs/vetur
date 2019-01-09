@@ -319,14 +319,8 @@
                 }
             }, 
             "begin": "<!--", 
-            "end": "--\\s*>", 
-            "name": "comment.block.html", 
-            "patterns": [
-                {
-                    "match": "--", 
-                    "name": "invalid.illegal.bad-comments-or-CDATA.html"
-                }
-            ]
+            "end": "-->", 
+            "name": "comment.block.html"
         }, 
         {
             "captures": {
