@@ -36,12 +36,9 @@ patterns:
 
 - name: comment.block.html
   begin: <!--
-  end: --\s*>
+  end: -->
   captures:
     '0': {name: punctuation.definition.comment.html}
-  patterns:
-  - name: invalid.illegal.bad-comments-or-CDATA.html
-    match: --
 
 - name: meta.tag.sgml.html
   begin: <!
