@@ -339,6 +339,12 @@ export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
       injectThis(exp.expression, scope),
       exp.name
     );
+  } else if (ts.isElementAccessExpression(exp)) {
+    res = ts.createElementAccess(
+      injectThis(exp.expression, scope),
+      // argumentExpression cannot be undefined in the latest TypeScript
+      injectThis(exp.argumentExpression!, scope)
+    );
   } else if (ts.isPrefixUnaryExpression(exp)) {
     res = ts.createPrefix(
       exp.operator,

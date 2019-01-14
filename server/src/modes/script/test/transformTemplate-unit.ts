@@ -71,6 +71,13 @@ suite('transformTemplate', () => {
       );
     });
 
+    test('ElementAccessExpression', () => {
+      check(
+        'test[foo][bar]',
+        'this.test[this.foo][this.bar]'
+      );
+    });
+
     test('PrefixUnaryExpression', () => {
       check(
         '!foo',
@@ -169,7 +176,7 @@ suite('transformTemplate', () => {
       );
     });
 
-    test('Template Expression', () => {
+    test('TemplateExpression', () => {
       check(
         '`font-size: ${size}px`',
         '`font-size: ${this.size}px`'
