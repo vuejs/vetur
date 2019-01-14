@@ -440,8 +440,12 @@ function injectThisForObjectLiteralElement(
 ): ts.ObjectLiteralElementLike {
   let res;
   if (ts.isPropertyAssignment(el)) {
+    const name = !ts.isComputedPropertyName(el.name)
+      ? el.name
+      : ts.createComputedPropertyName(injectThis(el.name.expression, scope));
+
     res = ts.createPropertyAssignment(
-      el.name,
+      ts.setTextRange(name, el.name),
       injectThis(el.initializer, scope)
     );
   } else if (ts.isShorthandPropertyAssignment(el)) {

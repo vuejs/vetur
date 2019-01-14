@@ -127,6 +127,13 @@ suite('transformTemplate', () => {
       );
     });
 
+    test('ObjectLiteralExpression: computed', () => {
+      check(
+        '({ [foo]: 123 })',
+        '({ [this.foo]: 123 })'
+      );
+    });
+
     test('ObjectLiteralExpression: shorthand', () => {
       check(
         '({ foo })',
