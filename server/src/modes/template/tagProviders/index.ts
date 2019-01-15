@@ -8,7 +8,8 @@ import {
   bootstrapTagProvider,
   buefyTagProvider,
   vuetifyTagProvider,
-  getRuntimeTagProvider
+  getRuntimeTagProvider,
+  getProjectTagProvider
 } from './externalTagProviders';
 export { getComponentTags } from './componentTags';
 export { IHTMLTagProvider } from './common';
@@ -55,6 +56,13 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       return settings;
     }
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+    if (packageJson['vetur']) {
+      const tagProvider = getProjectTagProvider(workspacePath, packageJson);
+      if (tagProvider) {
+        allTagProviders.push(tagProvider);
+        settings[packageJson.name] = true;
+      }
+    }
     if (packageJson.dependencies['vue-router']) {
       settings['router'] = true;
     }

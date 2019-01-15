@@ -53,6 +53,24 @@ export function getRuntimeTagProvider(workspacePath: string, pkg: any): IHTMLTag
   }
 }
 
+export function getProjectTagProvider(workspacePath: string, pkg: any): IHTMLTagProvider | null {
+  if (!pkg.vetur) {
+    return null;
+  }
+  const tagsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, path.join(pkg.vetur.tags));
+  const attrsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, path.join(pkg.vetur.attributes));
+
+  try {
+    if (tagsPath && attrsPath) {
+      const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
+      const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
+      return getExternalTagProvider(pkg.name, tagsJson, attrsJson);
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
 export function getExternalTagProvider(id: string, tags: any, attributes: any): IHTMLTagProvider {
   function findAttributeDetail(tag: string, attr: string) {
     return attributes[attr] || attributes[tag + '/' + attr];
