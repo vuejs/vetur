@@ -13,11 +13,11 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}"
+        "--extensionDevelopmentPath=${workspaceFolder}"
       ],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "smartStep": true,
       "skipFiles": [
         "<node_internals>/**"
@@ -29,7 +29,7 @@
       "request": "attach",
       "port": 6005,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/server/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
       "protocol": "inspector",
       "restart": true,
       "smartStep": true,
@@ -43,13 +43,13 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}",
-        "--extensionTestsPath=${workspaceRoot}/dist/test",
-        "${workspaceRoot}/test/fixture"
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test",
+        "${workspaceFolder}/test/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
       "smartStep": true,
       "skipFiles": [
         "<node_internals>/**"
