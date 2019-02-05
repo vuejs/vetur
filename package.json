@@ -83,6 +83,13 @@
         "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
+        "id": "vue-pug",
+        "aliases": [
+          "Vue-pug"
+        ],
+        "configuration": "./languages/vue-pug-language-configuration.json"
+      },
+      {
         "id": "postcss",
         "aliases": [
           "PostCSS",
@@ -100,6 +107,7 @@
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
           "text.pug": "jade",
+          "text.pug.vue-pug": "vue-pug",
           "text.haml": "haml",
           "source.css": "css",
           "source.css.scss": "scss",
@@ -125,6 +133,14 @@
         "language": "vue-html",
         "scopeName": "text.html.vue-html",
         "path": "./syntaxes/vue-html.json",
+        "embeddedLanguages": {
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "vue-pug",
+        "scopeName": "text.pug.vue-pug",
+        "path": "./syntaxes/vue-pug.json",
         "embeddedLanguages": {
           "source.js": "javascript"
         }
