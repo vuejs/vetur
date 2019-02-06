@@ -23,7 +23,8 @@ const SCOPES: { [lang: string]: string } = {
   md: 'text.html.markdown',
   yaml: 'source.yaml',
   json: 'source.json',
-  php: 'source.php'
+  php: 'source.php',
+  graphql: 'source.graphql'
 };
 
 export function generateGrammarCommandHandler(extensionPath: string) {

@@ -113,7 +113,8 @@
           "text.html.markdown": "md",
           "source.yaml": "yaml",
           "source.json": "json",
-          "source.php": "php"
+          "source.php": "php",
+          "source.graphql": "graphql"
         }
       },
       {
