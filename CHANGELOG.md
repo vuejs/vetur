@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.14.6
+
+- Graphql custom block syntax highlighting. #975.
+- Inline Graphql syntax highlighting. #701.
+
 ### 0.14.5 | 2019-01-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.5/vspackage)
 
 - Update to eslint-plugin-vue@5. #1034.
