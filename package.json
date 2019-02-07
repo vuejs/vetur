@@ -11,13 +11,14 @@
     "watch": "run-p watch-client watch-server",
     "watch-client": "tsc -w -p .",
     "watch-server": "tsc -w -p server",
-    "prepush": "npm run test:server",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
     "test:e2e": "sh ./test/e2e.sh",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "prepush": "npm run test:server",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "prepublishOnly": "sh ./build/release-cleanup.sh"
   },
   "husky": {
     "hooks": {
