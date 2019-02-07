@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.15.0 | 2019-01-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.15.0/vspackage)
+
+- Graphql custom block syntax highlighting. #975.
+- Inline Graphql syntax highlighting. #701.
+- `vetur.dev.vlsPath`. #1045.
+- Allow `<!-- -->` in Vue source. Thanks to contribution from [@dsanders11](https://github.com/dsanders11). #1023.
+- Pug interpolation syntax highlighting. Thanks to contribution from [@Patcher56](https://github.com/Patcher56). #552.
+
 ### 0.14.5 | 2019-01-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.5/vspackage)
 
 - Update to eslint-plugin-vue@5. #1034.
