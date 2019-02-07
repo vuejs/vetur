@@ -17,8 +17,7 @@
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepush": "npm run test:server",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "prepublishOnly": "sh ./build/release-cleanup.sh"
+    "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "husky": {
     "hooks": {
