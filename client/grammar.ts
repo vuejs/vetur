@@ -34,7 +34,7 @@ export function generateGrammarCommandHandler(extensionPath: string) {
   return () => {
     try {
       const generatedGrammar = getGeneratedGrammar(
-        path.resolve(extensionPath, 'syntaxes/vue.json'),
+        path.resolve(extensionPath, 'syntaxes/vue.tmLanguage.json'),
         customBlocks
       );
       fs.writeFileSync(path.resolve(extensionPath, 'syntaxes/vue-generated.json'), generatedGrammar, 'utf-8');
