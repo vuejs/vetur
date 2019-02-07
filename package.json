@@ -4,21 +4,25 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.14.5",
+  "version": "0.15.0",
   "publisher": "octref",
   "scripts": {
     "compile": "tsc -p . && tsc -p server",
     "watch": "run-p watch-client watch-server",
     "watch-client": "tsc -w -p .",
     "watch-server": "tsc -w -p server",
-    "precommit": "lint-staged",
-    "prepush": "npm run test:server",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
     "test:e2e": "sh ./test/e2e.sh",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
+    "prepush": "npm run test:server",
     "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.ts": [
@@ -43,7 +47,6 @@
     "vscode": "^1.26.0"
   },
   "dependencies": {
-    "vscode": "^1.1.22",
     "vscode-languageclient": "^5.0.1",
     "vscode-languageserver-types": "^3.12.0"
   },
@@ -121,7 +124,8 @@
           "text.html.markdown": "md",
           "source.yaml": "yaml",
           "source.json": "json",
-          "source.php": "php"
+          "source.php": "php",
+          "source.graphql": "graphql"
         }
       },
       {
@@ -392,6 +396,7 @@
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
     "tslint": "^5.8.0",
-    "typescript": "^3.0.3"
+    "typescript": "^3.0.3",
+    "vscode": "^1.1.29"
   }
 }

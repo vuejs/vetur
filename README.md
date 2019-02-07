@@ -13,7 +13,7 @@
     <img src="https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?style=flat-square">
   </a>
   <a href="https://travis-ci.org/vuejs/vetur">
-    <img src="https://img.shields.io/travis-ci/vuejs/vetur.svg?style=flat-square">
+    <img src="https://img.shields.io/travis/vuejs/vetur.svg?style=flat-square">
   </a>
 </p>
 

@@ -39,4 +39,4 @@ to get syntax highlighting for custom blocks.
 Valid language value for custom blocks:
 
 - All `lang` values in the support table.
-- `md | yaml | json | php`
+- `md | yaml | json | php | graphql`
