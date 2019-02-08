@@ -9,5 +9,5 @@ glob(__dirname + '/syntaxes/*.yaml', {nocase: true}, (err, files) => {
     const pathData = path.parse(file)
     fs.writeFileSync(pathData.dir + '/' + pathData.name + '.tmLanguage.json', JSON.stringify(jsYaml.safeLoad(fs.readFileSync(file))))
   }
-  console.log('files', files)
+  console.log('built files', files)
 })

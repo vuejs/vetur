@@ -124,14 +124,14 @@ patterns:
 repository:
   tag_text:
     name: text.pug.tagtextbla
-    begin: "(?=.)"
-    end: "$"
+    begin: '(?=.)'
+    end: '$'
     patterns:
-    - include: "#inline_pug"
-    - include: "#embedded_html"
-    - include: "#html_entity"
-    - include: "#interpolated_value"
-    - include: "#interpolated_error"
+    - include: '#inline_pug'
+    - include: '#embedded_html'
+    - include: '#html_entity'
+    - include: '#interpolated_value'
+    - include: '#interpolated_error'
     - include: 'source.vue#vue-interpolations'
   complete_tag:
     begin: '(?=[\w.#])|(:\s*)'
