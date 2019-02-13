@@ -6,120 +6,120 @@ fileTypes: []
 uuid: 91f7f4e6-f4b7-48f1-81bd-986d3bddd3db
 
 patterns:
-- begin: '^(\s*)//-'
-  end: '^(?!(\1\s)|\s*$)'
-  name: comment.unbuffered.block.pug
-  comment: Unbuffered (pug-only) comments.
-- begin: '^(\s*)//'
-  end: '^(?!(\1\s)|\s*$)'
-  name: string.comment.buffered.block.pug
-  comment: Buffered (html) comments.
-  patterns:
-  - captures:
-      '1':
-        name: invalid.illegal.comment.comment.block.pug
-    match: '^\s*(//)(?!-)'
+  - begin: '^(\s*)//-'
+    end: '^(?!(\1\s)|\s*$)'
+    name: comment.unbuffered.block.pug
+    comment: Unbuffered (pug-only) comments.
+  - begin: '^(\s*)//'
+    end: '^(?!(\1\s)|\s*$)'
     name: string.comment.buffered.block.pug
-    comment: Buffered comments inside buffered comments will generate invalid html.
-- begin: '<!--'
-  end: '--\s*>'
-  name: comment.unbuffered.block.pug
-  patterns:
-  - match: '--'
-    name: invalid.illegal.comment.comment.block.pug
-- begin: '^(\s*)-$'
-  end: '^(?!(\1\s)|\s*$)'
-  name: source.js
-  comment: Unbuffered code block.
-  patterns:
-  - include: source.js
-- begin: '^(\s*)((:(?=.))|(:$))'
-  beginCaptures:
-    '4':
-      name: invalid.illegal.empty.generic.filter.pug
-  end: '^(?!(\1\s)|\s*$)'
-  comment: Generic Pug filter.
-  patterns:
-  - begin: '\G(?<=:)(?=.)'
-    end: '$'
-    name: name.generic.filter.pug
+    comment: Buffered (html) comments.
     patterns:
-    - match: '\G\('
-      name: invalid.illegal.name.generic.filter.pug
-    - match: '[\w-]'
-      name: constant.language.name.generic.filter.pug
-    - include: '#tag_attributes'
-    - match: '\W'
-      name: invalid.illegal.name.generic.filter.pug
-- begin: ^(\s*)(?=[\w.#].*?\.$)(?=(?:(?:(?:(?:(?:#[\w-]+)|(?:\.[\w-]+))|(?:(?:[#!]\{[^}]*\})|(?:\w(?:(?:[\w:-]+[\w-])|(?:[\w-]*)))))(?:(?:#[\w-]+)|(?:\.[\w-]+)|(?:\((?:[^()\'\\"]*(?:(?:\'(?:[^\']|(?:(?<!\\)\\\'))*\')|(?:\\"(?:[^\\"]|(?:(?<!\\)\\\\"))*\\")))*[^()]*\))*)*)(?:(?:(?::\s+)|(?<=\)))(?:(?:(?:(?:#[\w-]+)|(?:\.[\w-]+))|(?:(?:[#!]\{[^}]*\})|(?:\w(?:(?:[\w:-]+[\w-])|(?:[\w-]*)))))(?:(?:#[\w-]+)|(?:\.[\w-]+)|(?:\((?:[^()\'\\"]*(?:(?:\'(?:[^\']|(?:(?<!\\)\\\'))*\')|(?:\\"(?:[^\\"]|(?:(?<!\\)\\\\"))*\\")))*[^()]*\))*)*))*)\.$)(?:(?:(#[\w-]+)|(\.[\w-]+))|((?:[#!]\{[^}]*\})|(?:\w(?:(?:[\w:-]+[\w-])|(?:[\w-]*)))))
-  beginCaptures:
-    '2':
-      name: entity.other.attribute-name.id.pug
-    '3':
-      name: entity.other.attribute-name.class.pug
-    '4':
-      name: meta.tag.other entity.name.tag.pug
-  end: '^(?!(\1\s)|\s*$)'
-  comment: Generated from dot_block_tag.py
-  patterns:
-  - include: '#tag_attributes'
-  - include: '#complete_tag'
-  - include: 'source.vue#vue-interpolations'
-  - include: 'source.vue#vue-directives'
-  - begin: '^(?=.)'
-    end: '$'
-    name: text.block.pug
+      - captures:
+          '1':
+            name: invalid.illegal.comment.comment.block.pug
+        match: '^\s*(//)(?!-)'
+        name: string.comment.buffered.block.pug
+        comment: Buffered comments inside buffered comments will generate invalid html.
+  - begin: '<!--'
+    end: '--\s*>'
+    name: comment.unbuffered.block.pug
     patterns:
-    - include: '#inline_pug'
-    - include: 'source.vue#vue-interpolations'
-    - include: 'text.pug#embedded_html'
-    - include: 'text.pug#html_entity'
-    - include: 'text.pug#interpolated_value'
-    - include: 'text.pug#interpolated_error'
-- begin: '^\s*'
-  end: '$'
-  comment: All constructs that generally span a single line starting with any number
-    of white-spaces.
-  patterns:
-  - include: 'source.vue#vue-interpolations'
-  - include: '#inline_pug'
-  - include: 'text.pug#blocks_and_includes'
-  - include: 'text.pug#unbuffered_code'
-  - include: 'text.pug#mixin_definition'
-  - include: 'text.pug#mixin_call'
-  - include: 'text.pug#flow_control'
-  - include: 'text.pug#case_conds'
-  - begin: '\|'
-    end: '$'
-    name: text.block.pipe.pug
-    comment: Tag pipe text line.
+      - match: '--'
+        name: invalid.illegal.comment.comment.block.pug
+  - begin: '^(\s*)-$'
+    end: '^(?!(\1\s)|\s*$)'
+    name: source.js
+    comment: Unbuffered code block.
     patterns:
-    - include: '#inline_pug'
-    - include: 'source.vue#vue-interpolations'
-    - include: 'text.pug#embedded_html'
-    - include: 'text.pug#html_entity'
-    - include: 'text.pug#interpolated_value'
-    - include: 'text.pug#interpolated_error'
-  - include: 'text.pug#printed_expression'
-  - begin: '\G(?=(#[^\{\w-])|[^\w.#])'
-    end: '$'
-    comment: Line starting with characters incompatible with tag name/id/class is
-      standalone text.
+      - include: source.js
+  - begin: '^(\s*)((:(?=.))|(:$))'
+    beginCaptures:
+      '4':
+        name: invalid.illegal.empty.generic.filter.pug
+    end: '^(?!(\1\s)|\s*$)'
+    comment: Generic Pug filter.
     patterns:
-    - begin: '</?(?=[!#])'
-      end: '>|$'
-      patterns:
-      - include: '#inline_pug'
+      - begin: '\G(?<=:)(?=.)'
+        end: '$'
+        name: name.generic.filter.pug
+        patterns:
+          - match: '\G\('
+            name: invalid.illegal.name.generic.filter.pug
+          - match: '[\w-]'
+            name: constant.language.name.generic.filter.pug
+          - include: '#tag_attributes'
+          - match: '\W'
+            name: invalid.illegal.name.generic.filter.pug
+  - begin: ^(\s*)(?=[\w.#].*?\.$)(?=(?:(?:(?:(?:(?:#[\w-]+)|(?:\.[\w-]+))|(?:(?:[#!]\{[^}]*\})|(?:\w(?:(?:[\w:-]+[\w-])|(?:[\w-]*)))))(?:(?:#[\w-]+)|(?:\.[\w-]+)|(?:\((?:[^()\'\\"]*(?:(?:\'(?:[^\']|(?:(?<!\\)\\\'))*\')|(?:\\"(?:[^\\"]|(?:(?<!\\)\\\\"))*\\")))*[^()]*\))*)*)(?:(?:(?::\s+)|(?<=\)))(?:(?:(?:(?:#[\w-]+)|(?:\.[\w-]+))|(?:(?:[#!]\{[^}]*\})|(?:\w(?:(?:[\w:-]+[\w-])|(?:[\w-]*)))))(?:(?:#[\w-]+)|(?:\.[\w-]+)|(?:\((?:[^()\'\\"]*(?:(?:\'(?:[^\']|(?:(?<!\\)\\\'))*\')|(?:\\"(?:[^\\"]|(?:(?<!\\)\\\\"))*\\")))*[^()]*\))*)*))*)\.$)(?:(?:(#[\w-]+)|(\.[\w-]+))|((?:[#!]\{[^}]*\})|(?:\w(?:(?:[\w:-]+[\w-])|(?:[\w-]*)))))
+    beginCaptures:
+      '2':
+        name: entity.other.attribute-name.id.pug
+      '3':
+        name: entity.other.attribute-name.class.pug
+      '4':
+        name: meta.tag.other entity.name.tag.pug
+    end: '^(?!(\1\s)|\s*$)'
+    comment: Generated from dot_block_tag.py
+    patterns:
+      - include: '#tag_attributes'
+      - include: '#complete_tag'
       - include: 'source.vue#vue-interpolations'
-      - include: 'text.pug#interpolated_value'
-      - include: 'text.pug#interpolated_error'
-    - include: '#inline_pug'
-    - include: 'source.vue#vue-interpolations'
-    - include: 'text.pug#embedded_html'
-    - include: 'text.pug#html_entity'
-    - include: 'text.pug#interpolated_value'
-    - include: 'text.pug#interpolated_error'
-  - include: '#complete_tag'
+      - include: 'source.vue#vue-directives'
+      - begin: '^(?=.)'
+        end: '$'
+        name: text.block.pug
+        patterns:
+          - include: '#inline_pug'
+          - include: 'source.vue#vue-interpolations'
+          - include: 'text.pug#embedded_html'
+          - include: 'text.pug#html_entity'
+          - include: 'text.pug#interpolated_value'
+          - include: 'text.pug#interpolated_error'
+  - begin: '^\s*'
+    end: '$'
+    comment: All constructs that generally span a single line starting with any number
+      of white-spaces.
+    patterns:
+      - include: 'source.vue#vue-interpolations'
+      - include: '#inline_pug'
+      - include: 'text.pug#blocks_and_includes'
+      - include: 'text.pug#unbuffered_code'
+      - include: 'text.pug#mixin_definition'
+      - include: 'text.pug#mixin_call'
+      - include: 'text.pug#flow_control'
+      - include: 'text.pug#case_conds'
+      - begin: '\|'
+        end: '$'
+        name: text.block.pipe.pug
+        comment: Tag pipe text line.
+        patterns:
+          - include: '#inline_pug'
+          - include: 'source.vue#vue-interpolations'
+          - include: 'text.pug#embedded_html'
+          - include: 'text.pug#html_entity'
+          - include: 'text.pug#interpolated_value'
+          - include: 'text.pug#interpolated_error'
+      - include: 'text.pug#printed_expression'
+      - begin: '\G(?=(#[^\{\w-])|[^\w.#])'
+        end: '$'
+        comment: Line starting with characters incompatible with tag name/id/class is
+          standalone text.
+        patterns:
+          - begin: '</?(?=[!#])'
+            end: '>|$'
+            patterns:
+              - include: '#inline_pug'
+              - include: 'source.vue#vue-interpolations'
+              - include: 'text.pug#interpolated_value'
+              - include: 'text.pug#interpolated_error'
+          - include: '#inline_pug'
+          - include: 'source.vue#vue-interpolations'
+          - include: 'text.pug#embedded_html'
+          - include: 'text.pug#html_entity'
+          - include: 'text.pug#interpolated_value'
+          - include: 'text.pug#interpolated_error'
+      - include: '#complete_tag'
 
 repository:
   tag_text:
@@ -127,44 +127,44 @@ repository:
     begin: '(?=.)'
     end: '$'
     patterns:
-    - include: '#inline_pug'
-    - include: '#embedded_html'
-    - include: '#html_entity'
-    - include: '#interpolated_value'
-    - include: '#interpolated_error'
-    - include: 'source.vue#vue-interpolations'
+      - include: '#inline_pug'
+      - include: '#embedded_html'
+      - include: '#html_entity'
+      - include: '#interpolated_value'
+      - include: '#interpolated_error'
+      - include: 'source.vue#vue-interpolations'
   complete_tag:
     begin: '(?=[\w.#])|(:\s*)'
     end: '(\.?$)|(?=:.)'
     patterns:
-    - include: 'text.pug#blocks_and_includes'
-    - include: 'text.pug#unbuffered_code'
-    - include: 'text.pug#mixin_call'
-    - include: 'text.pug#flow_control'
-    - match: '(?<=:)\w.*$'
-      name: invalid.illegal.name.tag.pug
-    - include: 'text.pug#tag_name'
-    - include: 'text.pug#tag_id'
-    - include: 'text.pug#tag_classes'
-    - include: '#tag_attributes'
-    - include: 'text.pug#tag_mixin_attributes'
-    - include: 'source.vue#vue-directives'
-    - match: '((\.)\s+$)|((:)\s*$)'
-      captures:
-        '2':
-          name: invalid.illegal.end.tag.pug
-        '4':
-          name: invalid.illegal.end.tag.pug
-    - include: 'text.pug#printed_expression'
-    - include: '#tag_text'
+      - include: 'text.pug#blocks_and_includes'
+      - include: 'text.pug#unbuffered_code'
+      - include: 'text.pug#mixin_call'
+      - include: 'text.pug#flow_control'
+      - match: '(?<=:)\w.*$'
+        name: invalid.illegal.name.tag.pug
+      - include: 'text.pug#tag_name'
+      - include: 'text.pug#tag_id'
+      - include: 'text.pug#tag_classes'
+      - include: '#tag_attributes'
+      - include: 'text.pug#tag_mixin_attributes'
+      - include: 'source.vue#vue-directives'
+      - match: '((\.)\s+$)|((:)\s*$)'
+        captures:
+          '2':
+            name: invalid.illegal.end.tag.pug
+          '4':
+            name: invalid.illegal.end.tag.pug
+      - include: 'text.pug#printed_expression'
+      - include: '#tag_text'
   tag_attribute_name_paren:
     begin: '\(\s*'
     end: '\)'
     name: entity.other.attribute-name.tag.pug
     patterns:
-    - include: 'source.vue#vue-directives'
-    - include: '#tag_attribute_name_paren'
-    - include: 'text.pug#tag_attribute_name'
+      - include: 'source.vue#vue-directives'
+      - include: '#tag_attribute_name_paren'
+      - include: 'text.pug#tag_attribute_name'
   tag_attributes:
     begin: '(\(\s*)'
     captures:
@@ -173,26 +173,26 @@ repository:
     end: '(\))'
     name: meta.tag.other
     patterns:
-    - include: 'source.vue#vue-directives'
-    - include: '#tag_attribute_name_paren'
-    - include: 'text.pug#tag_attribute_name'
-    - match: '!(?!=)'
-      name: invalid.illegal.tag.pug
-    - begin: '=\s*'
-      end: '$|(?=,|(?:\s+[^!%&*-+~|<>:?/])|\))'
-      name: attribute_value
-      patterns:
-      - include: 'text.pug#string'
-      - include: 'text.pug#js_parens'
-      - include: 'text.pug#js_brackets'
-      - include: 'text.pug#js_braces'
-      - include: source.js
-    - begin: '(?<=[%&*-+~|<>:?/])\s+'
-      end: '$|(?=,|(?:\s+[^!%&*-+~|<>:?/])|\))'
-      name: attribute_value2
-      patterns:
-      - include: 'text.pug#string'
-      - include: 'text.pug#js_parens'
-      - include: 'text.pug#js_brackets'
-      - include: 'text.pug#js_braces'
-      - include: source.js
+      - include: 'source.vue#vue-directives'
+      - include: '#tag_attribute_name_paren'
+      - include: 'text.pug#tag_attribute_name'
+      - match: '!(?!=)'
+        name: invalid.illegal.tag.pug
+      - begin: '=\s*'
+        end: '$|(?=,|(?:\s+[^!%&*-+~|<>:?/])|\))'
+        name: attribute_value
+        patterns:
+          - include: 'text.pug#string'
+          - include: 'text.pug#js_parens'
+          - include: 'text.pug#js_brackets'
+          - include: 'text.pug#js_braces'
+          - include: source.js
+      - begin: '(?<=[%&*-+~|<>:?/])\s+'
+        end: '$|(?=,|(?:\s+[^!%&*-+~|<>:?/])|\))'
+        name: attribute_value2
+        patterns:
+          - include: 'text.pug#string'
+          - include: 'text.pug#js_parens'
+          - include: 'text.pug#js_brackets'
+          - include: 'text.pug#js_braces'
+          - include: source.js
