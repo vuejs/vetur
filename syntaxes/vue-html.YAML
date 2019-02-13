@@ -6,7 +6,7 @@ fileTypes: []
 uuid: ca2e4260-5d62-45bf-8cf1-d8b5cc19c8f8
 
 patterns:
-- include: '#vue-interpolations'
+- include: 'source.vue#vue-interpolations'
 
 - name: meta.tag.any.html
   begin: (<)([a-zA-Z0-9:-]++)(?=[^>]*></\2>)
@@ -36,12 +36,9 @@ patterns:
 
 - name: comment.block.html
   begin: <!--
-  end: --\s*>
+  end: -->
   captures:
     '0': {name: punctuation.definition.comment.html}
-  patterns:
-  - name: invalid.illegal.bad-comments-or-CDATA.html
-    match: --
 
 - name: meta.tag.sgml.html
   begin: <!
@@ -157,18 +154,6 @@ patterns:
   match: <
 
 repository:
-  vue-interpolations:
-    patterns:
-    - name: expression.embedded.vue
-      begin: \{\{\{?
-      beginCaptures:
-        '0': {name: punctuation.definition.generic.begin.html}
-      end: \}\}\}?
-      endCaptures:
-        '0': {name: punctuation.definition.generic.end.html}
-      patterns:
-      - include: source.js#expression
-
   vue-directives:
     name: meta.directive.vue
     begin: ((?:\b(v-)|(:|@))([a-zA-Z0-9\-_]+)(?:\:([a-zA-Z0-9\-_]+))?(?:\.([a-zA-Z0-9\-_]+))*)\s*(=)
@@ -215,7 +200,7 @@ repository:
     endCaptures:
       '0': {name: punctuation.definition.string.end.html}
     patterns:
-    - include: '#vue-interpolations'
+    - include: 'source.vue#vue-interpolations'
     - include: '#entities'
 
   string-single-quoted:
@@ -227,7 +212,7 @@ repository:
     endCaptures:
       '0': {name: punctuation.definition.string.end.html}
     patterns:
-    - include: '#vue-interpolations'
+    - include: 'source.vue#vue-interpolations'
     - include: '#entities'
 
   tag-generic-attribute:
@@ -251,7 +236,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: '#vue-interpolations'
+      - include: 'source.vue#vue-interpolations'
       - include: '#entities'
     - name: string.quoted.single.html
       contentName: meta.toc-list.id.html
@@ -262,7 +247,7 @@ repository:
       endCaptures:
         '0': {name: punctuation.definition.string.end.html}
       patterns:
-      - include: '#vue-interpolations'
+      - include: 'source.vue#vue-interpolations'
       - include: '#entities'
     - name: string.unquoted.html
       match: (?<==)(?:[^\s<>/'"]|/(?!>))+

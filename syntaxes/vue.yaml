@@ -11,12 +11,9 @@ patterns:
 
 - name: comment.block.html
   begin: <!--
-  end: --\s*>
+  end: -->
   captures:
     '0': {name: punctuation.definition.comment.html}
-  patterns:
-  - name: invalid.illegal.bad-comments-or-CDATA.html
-    match: --
 
 # template - single line
 # <template src="index.html" />
@@ -64,13 +61,13 @@ patterns:
     '3': {name: punctuation.definition.tag.end.html}
   patterns:
   - include: '#tag-stuff'
-  - contentName: text.pug
+  - contentName: text.pug.vue-pug
     begin: (>)
     beginCaptures:
       '1': {name: punctuation.definition.tag.end.html}
     end: (?=</template>)
     patterns:
-      - include: text.pug
+      - include: text.pug.vue-pug
 
 # haml
 
