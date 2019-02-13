@@ -1,13 +1,10 @@
-# [PackageDev] target_format: json, ext: json
----
+# [PackageDev] target_format: plist, ext: tmLanguage
 name: Vue Component
 scopeName: source.vue
 fileTypes: [vue]
 uuid: 5512c10d-4cc5-434c-b8fc-53b912f55ab3
-
 patterns:
   # comment
-
   - name: comment.block.html
     begin: <!--
     end: -->
@@ -16,7 +13,6 @@ patterns:
 
   # template - single line
   # <template src="index.html" />
-
   - begin: (<)(template)\b(?=[^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -29,7 +25,6 @@ patterns:
 
   # template - single line
   # <template src="index.html"></template>
-
   - begin: (<)(template)(?=[^>]*>[^/>]*</template>)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -47,7 +42,6 @@ patterns:
         end: (?=</template>)
 
   # jade / pug
-
   - begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -68,7 +62,6 @@ patterns:
           - include: text.pug.vue-pug
 
   # haml
-
   - begin: (<)(template)\b(?=[^>]*lang=('haml'|"haml"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -89,7 +82,6 @@ patterns:
           - include: text.haml
 
   # slm
-
   - begin: (<)(template)\b(?=[^>]*lang=('slm'|"slm"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -110,7 +102,6 @@ patterns:
           - include: text.pug.slm
 
   # html
-
   - begin: (<)(template)(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -132,7 +123,6 @@ patterns:
 
   # style - single line
   # <style src="index.css" />
-
   - begin: (<)(style)\b(?=[^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -145,7 +135,6 @@ patterns:
 
   # style - single line
   # <style src="index.css"></style>
-
   - begin: (<)(style)(?=[^>]*>[^/>]*</style>)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -163,7 +152,6 @@ patterns:
         end: (?=</style>)
 
   # sass / scss
-
   - begin: (<)(style)\b(?=[^>]*lang=('sass'|"sass"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -182,7 +170,6 @@ patterns:
         end: (?=</style>)
         patterns:
           - include: source.sass
-
   - begin: (<)(style)\b(?=[^>]*lang=('scss'|"scss"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -203,7 +190,6 @@ patterns:
           - include: source.css.scss
 
   # less
-
   - begin: (<)(style)\b(?=[^>]*lang=('less'|"less"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -224,7 +210,6 @@ patterns:
           - include: source.css.less
 
   # stylus
-
   - begin: (<)(style)\b(?=[^>]*lang=('stylus'|"stylus"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -245,7 +230,6 @@ patterns:
           - include: source.stylus
 
   # postcss
-
   - begin: (<)(style)\b(?=[^>]*lang=('postcss'|"postcss"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -266,7 +250,6 @@ patterns:
           - include: source.css.postcss
 
   # css
-
   - begin: (<)(style)(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -288,7 +271,6 @@ patterns:
 
   # script - single line
   # <script src="index.js" />
-
   - begin: (<)(script)\b(?=[^>]*/>$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -301,7 +283,6 @@ patterns:
 
   # script - single line
   # <script src="index.js"></script>
-
   - begin: (<)(script)(?=[^>]*>[^/>]*</script>)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -319,7 +300,6 @@ patterns:
         end: (?=</script>)
 
   # ts
-
   - begin: (<)(script)\b(?=[^>]*lang=('ts'|"ts"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -340,7 +320,6 @@ patterns:
           - include: source.ts
 
   # coffee
-
   - begin: (<)(script)\b(?=[^>]*lang=('coffee'|"coffee"))(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -361,7 +340,6 @@ patterns:
           - include: source.coffee
 
   # js
-
   - begin: (<)(script)(?![^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
@@ -382,20 +360,78 @@ patterns:
           - include: source.js
 
 # Repository
-
 repository:
-  vue-interpolations:
+  entities:
     patterns:
-      - name: expression.embbeded.vue
-        begin: \{\{\{?
+      - name: constant.character.entity.html
+        match: (&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)
+        captures:
+          '1': { name: punctuation.definition.entity.html }
+          '3': { name: punctuation.definition.entity.html }
+      - name: invalid.illegal.bad-ampersand.html
+        match: '&'
+  string-double-quoted:
+    name: string.quoted.double.html
+    begin: '"'
+    beginCaptures:
+      '0': { name: punctuation.definition.string.begin.html }
+    end: '"'
+    endCaptures:
+      '0': { name: punctuation.definition.string.end.html }
+    patterns:
+      - include: '#vue-interpolations'
+      - include: '#entities'
+  string-single-quoted:
+    name: string.quoted.single.html
+    begin: "'"
+    beginCaptures:
+      '0': { name: punctuation.definition.string.begin.html }
+    end: "'"
+    endCaptures:
+      '0': { name: punctuation.definition.string.end.html }
+    patterns:
+      - include: '#vue-interpolations'
+      - include: '#entities'
+  tag-generic-attribute:
+    name: entity.other.attribute-name.html
+    match: \b([a-zA-Z\-:_]+)
+  tag-id-attribute:
+    name: meta.attribute-with-value.id.html
+    begin: \b(id)\b\s*(=)
+    end: (?<='|")
+    captures:
+      '1': { name: entity.other.attribute-name.id.html }
+      '2': { name: punctuation.separator.key-value.html }
+    patterns:
+      - name: string.quoted.double.html
+        contentName: meta.toc-list.id.html
+        begin: '"'
         beginCaptures:
-          '0': { name: punctuation.definition.generic.begin.html }
-        end: \}\}\}?
+          '0': { name: punctuation.definition.string.begin.html }
+        end: '"'
         endCaptures:
-          '0': { name: punctuation.definition.generic.end.html }
+          '0': { name: punctuation.definition.string.end.html }
         patterns:
-          - include: source.js
-
+          - include: '#vue-interpolations'
+          - include: '#entities'
+      - name: string.quoted.single.html
+        contentName: meta.toc-list.id.html
+        begin: "'"
+        beginCaptures:
+          '0': { name: punctuation.definition.string.begin.html }
+        end: "'"
+        endCaptures:
+          '0': { name: punctuation.definition.string.end.html }
+        patterns:
+          - include: '#vue-interpolations'
+          - include: '#entities'
+  tag-stuff:
+    patterns:
+      - include: '#vue-directives'
+      - include: '#tag-id-attribute'
+      - include: '#tag-generic-attribute'
+      - include: '#string-double-quoted'
+      - include: '#string-single-quoted'
   vue-directives:
     name: meta.directive.vue
     begin: (?:\b(v-)|(:|@))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
@@ -435,80 +471,14 @@ repository:
           '0': { name: punctuation.definition.string.end.html }
         patterns:
           - include: source.js
-
-  entities:
+  vue-interpolations:
     patterns:
-      - name: constant.character.entity.html
-        match: (&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)
-        captures:
-          '1': { name: punctuation.definition.entity.html }
-          '3': { name: punctuation.definition.entity.html }
-      - name: invalid.illegal.bad-ampersand.html
-        match: '&'
-
-  string-double-quoted:
-    name: string.quoted.double.html
-    begin: '"'
-    beginCaptures:
-      '0': { name: punctuation.definition.string.begin.html }
-    end: '"'
-    endCaptures:
-      '0': { name: punctuation.definition.string.end.html }
-    patterns:
-      - include: '#vue-interpolations'
-      - include: '#entities'
-
-  string-single-quoted:
-    name: string.quoted.single.html
-    begin: "'"
-    beginCaptures:
-      '0': { name: punctuation.definition.string.begin.html }
-    end: "'"
-    endCaptures:
-      '0': { name: punctuation.definition.string.end.html }
-    patterns:
-      - include: '#vue-interpolations'
-      - include: '#entities'
-
-  tag-generic-attribute:
-    name: entity.other.attribute-name.html
-    match: \b([a-zA-Z\-:_]+)
-
-  tag-id-attribute:
-    name: meta.attribute-with-value.id.html
-    begin: \b(id)\b\s*(=)
-    end: (?<='|")
-    captures:
-      '1': { name: entity.other.attribute-name.id.html }
-      '2': { name: punctuation.separator.key-value.html }
-    patterns:
-      - name: string.quoted.double.html
-        contentName: meta.toc-list.id.html
-        begin: '"'
+      - name: expression.embbeded.vue
+        begin: \{\{\{?
         beginCaptures:
-          '0': { name: punctuation.definition.string.begin.html }
-        end: '"'
+          '0': { name: punctuation.definition.generic.begin.html }
+        end: \}\}\}?
         endCaptures:
-          '0': { name: punctuation.definition.string.end.html }
+          '0': { name: punctuation.definition.generic.end.html }
         patterns:
-          - include: '#vue-interpolations'
-          - include: '#entities'
-      - name: string.quoted.single.html
-        contentName: meta.toc-list.id.html
-        begin: "'"
-        beginCaptures:
-          '0': { name: punctuation.definition.string.begin.html }
-        end: "'"
-        endCaptures:
-          '0': { name: punctuation.definition.string.end.html }
-        patterns:
-          - include: '#vue-interpolations'
-          - include: '#entities'
-
-  tag-stuff:
-    patterns:
-      - include: '#vue-directives'
-      - include: '#tag-id-attribute'
-      - include: '#tag-generic-attribute'
-      - include: '#string-double-quoted'
-      - include: '#string-single-quoted'
+          - include: source.js
