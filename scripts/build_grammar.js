@@ -3,7 +3,7 @@ const jsYaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 
-glob(__dirname + '/syntaxes/*.yaml', { nocase: true }, (_, files) => {
+glob('syntaxes/*.yaml', { nocase: true }, (_, files) => {
   for (const file of files) {
     const pathData = path.parse(file);
     fs.writeFileSync(

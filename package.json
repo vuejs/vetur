@@ -7,7 +7,7 @@
   "version": "0.15.0",
   "publisher": "octref",
   "scripts": {
-    "build:grammar": "node build_grammar",
+    "build:grammar": "node scripts/build_grammar",
     "compile": "tsc -p . && tsc -p server",
     "watch": "run-p watch-client watch-server",
     "watch-client": "tsc -w -p .",
