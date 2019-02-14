@@ -1,6 +1,10 @@
 # Changelog
 
-### 0.15.0 | 2019-01-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.15.0/vspackage)
+### 0.15.1 | 2019-02-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.15.1/vspackage)
+
+- Fix a grammar problem with pug interpolation. Thanks to contribution from [@Patcher56](https://github.com/Patcher56). #1082.
+
+### 0.15.0 | 2019-02-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.15.0/vspackage)
 
 - Graphql custom block syntax highlighting. #975.
 - Inline Graphql syntax highlighting. #701.
