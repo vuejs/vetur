@@ -28,11 +28,10 @@ const SCOPES: { [lang: string]: string } = {
 };
 
 export function generateGrammarCommandHandler(extensionPath: string) {
-  const customBlocks: { [k: string]: string } =
-    vscode.workspace.getConfiguration().get('vetur.grammar.customBlocks') || {};
-
   return () => {
     try {
+      const customBlocks: { [k: string]: string } =
+        vscode.workspace.getConfiguration().get('vetur.grammar.customBlocks') || {};
       const generatedGrammar = getGeneratedGrammar(
         path.resolve(extensionPath, 'syntaxes/vue.tmLanguage.json'),
         customBlocks
