@@ -5,12 +5,12 @@ import { generateGrammarCommandHandler } from './grammar';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   /**
    * Custom Block Grammar generation command
    */
   context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.generateGrammar', generateGrammarCommandHandler(context.extensionPath))
+    vscode.commands.registerCommand('vetur.generateGrammar', await generateGrammarCommandHandler(context.extensionPath))
   );
 
   registerLanguageConfigurations();

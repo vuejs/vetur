@@ -1,10 +1,8 @@
 /**
  * Dynamically generate grammar
  */
-
 import * as fs from 'fs';
 import * as path from 'path';
-import * as vscode from 'vscode';
 
 // Available grammar scopes
 const SCOPES: { [lang: string]: string } = {
@@ -27,7 +25,9 @@ const SCOPES: { [lang: string]: string } = {
   graphql: 'source.graphql'
 };
 
-export function generateGrammarCommandHandler(extensionPath: string) {
+export async function generateGrammarCommandHandler(extensionPath: string) {
+  const vscode = await import('vscode');
+
   return () => {
     try {
       const customBlocks: { [k: string]: string } =
@@ -46,7 +46,7 @@ export function generateGrammarCommandHandler(extensionPath: string) {
   };
 }
 
-function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: string]: string }): string {
+export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: string]: string }): string {
   const grammar = JSON.parse(fs.readFileSync(grammarPath, 'utf-8'));
   for (const tag in customBlocks) {
     const lang = customBlocks[tag];
