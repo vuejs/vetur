@@ -102,11 +102,11 @@ patterns:
           - include: text.pug.slm
 
   # html
-  - begin: (<)(template)(?![^/>]*/>\s*$)
+  - begin: (<)(template)(?=>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
       '2': { name: entity.name.tag.template.html }
-    end: (</)(template)(>)
+    end: (<\/)(template)(>)
     endCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
       '2': { name: entity.name.tag.template.html }
