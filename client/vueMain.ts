@@ -1,16 +1,16 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
-import { generateGrammarCommandHandler } from './grammar';
+import { generateGrammarCommandHandler } from './generate_grammar';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
+import { join } from 'path';
 
-export async function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext) {
   /**
    * Custom Block Grammar generation command
    */
   context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.generateGrammar', await generateGrammarCommandHandler(context.extensionPath))
+    vscode.commands.registerCommand('vetur.generateGrammar', generateGrammarCommandHandler(context.extensionPath))
   );
 
   registerLanguageConfigurations();
@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * Vue Language Server Initialization
    */
 
-  const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
+  const serverModule = context.asAbsolutePath(join('server', 'dist', 'vueServerMain.js'));
   const client = initializeLanguageClient(serverModule);
   context.subscriptions.push(client.start());
 

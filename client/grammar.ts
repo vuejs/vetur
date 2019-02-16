@@ -1,8 +1,7 @@
 /**
  * Dynamically generate grammar
  */
-import * as fs from 'fs';
-import * as path from 'path';
+import { readFileSync } from 'fs';
 
 // Available grammar scopes
 const SCOPES: { [lang: string]: string } = {
@@ -25,29 +24,8 @@ const SCOPES: { [lang: string]: string } = {
   graphql: 'source.graphql'
 };
 
-export async function generateGrammarCommandHandler(extensionPath: string) {
-  const vscode = await import('vscode');
-
-  return () => {
-    try {
-      const customBlocks: { [k: string]: string } =
-        vscode.workspace.getConfiguration().get('vetur.grammar.customBlocks') || {};
-      const generatedGrammar = getGeneratedGrammar(
-        path.resolve(extensionPath, 'syntaxes/vue.tmLanguage.json'),
-        customBlocks
-      );
-      fs.writeFileSync(path.resolve(extensionPath, 'syntaxes/vue-generated.json'), generatedGrammar, 'utf-8');
-      vscode.window.showInformationMessage('Successfully generated vue grammar. Reload VS Code to enable it.');
-    } catch (e) {
-      vscode.window.showErrorMessage(
-        'Failed to generate vue grammar. `vetur.grammar.customBlocks` contain invalid language values'
-      );
-    }
-  };
-}
-
 export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: string]: string }): string {
-  const grammar = JSON.parse(fs.readFileSync(grammarPath, 'utf-8'));
+  const grammar = JSON.parse(readFileSync(grammarPath, 'utf-8'));
   for (const tag in customBlocks) {
     const lang = customBlocks[tag];
     if (!SCOPES[lang]) {
