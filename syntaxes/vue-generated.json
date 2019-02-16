@@ -994,7 +994,7 @@
     },
     "vue-directives": {
       "name": "meta.directive.vue",
-      "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)('|\"|`)",
+      "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)('|\")",
       "beginCaptures": {
         "1": {
           "name": "entity.other.attribute-name.html"
@@ -1018,7 +1018,7 @@
           "name": "string.template.js"
         }
       },
-      "end": "('|\"|`)",
+      "end": "('|\")",
       "endCaptures": {
         "0": {
           "name": "string.template.js"

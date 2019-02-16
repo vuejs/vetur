@@ -434,7 +434,7 @@ repository:
       - include: '#string-single-quoted'
   vue-directives:
     name: meta.directive.vue
-    begin: (?:\b(v-)|(:|@))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)('|"|`)
+    begin: (?:\b(v-)|(:|@))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)('|")
     beginCaptures:
       '1': { name: entity.other.attribute-name.html }
       '2': { name: punctuation.separator.key-value.html }
@@ -443,7 +443,7 @@ repository:
       '5': { name: entity.other.attribute-name.html }
       '6': { name: punctuation.separator.key-value.html }
       '7': { name: string.template.js }
-    end: ('|"|`)
+    end: ('|")
     endCaptures:
       '0': { name: string.template.js }
     patterns:
