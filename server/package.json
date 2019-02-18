@@ -53,6 +53,7 @@
     "@types/lodash": "^4.14.118",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.10",
+    "@types/prettier": "^1.16.1",
     "@types/resolve": "0.0.8",
     "codecov": "^3.0.4",
     "glob": "^7.1.2",

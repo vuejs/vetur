@@ -151,14 +151,9 @@ function getData(defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[
   }
   const dataReturnTypeProperties = checker.getReturnTypeOfSignature(dataSignatures[0]);
   return dataReturnTypeProperties.getProperties().map(s => {
-    const documentation = s
-      .getDocumentationComment(checker)
-      .map(d => d.text)
-      .join('\n');
-
     return {
       name: s.name,
-      documentation
+      documentation: buildDocumentation(s, checker)
     };
   });
 }
@@ -234,9 +229,41 @@ export function getLastChild(d: ts.Declaration) {
 }
 
 export function buildDocumentation(s: ts.Symbol, checker: ts.TypeChecker) {
-  const documentation = s
+  let documentation = s
     .getDocumentationComment(checker)
     .map(d => d.text)
     .join('\n');
+
+  documentation += '\n';
+
+  /**
+   * ```js
+   * {
+     * foo: {
+     *  type: Boolean,
+     *  default: false
+     * }
+   * }
+   */
+  if (s.valueDeclaration) {
+    if (s.valueDeclaration.kind === ts.SyntaxKind.PropertyAssignment) {
+      documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
+    } else {
+      documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
+    }
+  }
   return documentation;
+}
+
+function formatJSLikeDocumentation(src: string): string {
+  const segments = src.split('\n');
+  if (segments.length === 1) {
+    return src;
+  }
+
+  const spacesToDeindent = segments[segments.length - 1].search(/\S/);
+
+  return segments[0] + '\n' +
+    segments.slice(1).map(s => s.slice(spacesToDeindent))
+    .join('\n');
 }

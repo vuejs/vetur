@@ -3,10 +3,14 @@ import * as assert from 'assert';
 import { showFile } from '../../helper';
 import { CompletionItem, MarkupContent } from 'vscode-languageclient';
 
+export interface ExpectedCompletionItem extends CompletionItem {
+  documentationStart?: string;
+}
+
 export async function testCompletion(
   docUri: vscode.Uri,
   position: vscode.Position,
-  expectedItems: (string | CompletionItem)[]
+  expectedItems: (string | ExpectedCompletionItem)[]
 ) {
   await showFile(docUri);
 
@@ -33,11 +37,24 @@ export async function testCompletion(
       assert.ok(match.label, ei.label);
       assert.ok(match.kind, ei.kind as any);
 
-      if (typeof match.documentation === 'string') {
-        assert.equal(match.documentation, ei.documentation);
-      } else {
-        if (ei.documentation && (ei.documentation as MarkupContent).value && match.documentation) {
-          assert.equal((match.documentation as vscode.MarkdownString).value, (ei.documentation as MarkupContent).value);
+      if (ei.documentation) {
+        if (typeof match.documentation === 'string') {
+          assert.equal(match.documentation, ei.documentation);
+        } else {
+          if (ei.documentation && (ei.documentation as MarkupContent).value && match.documentation) {
+            assert.equal(
+              (match.documentation as vscode.MarkdownString).value,
+              (ei.documentation as MarkupContent).value
+            );
+          }
+        }
+      }
+
+      if (ei.documentationStart) {
+        if (typeof match.documentation === 'string') {
+          assert.ok(match.documentation.startsWith(ei.documentationStart));
+        } else {
+          assert.ok((match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart)); 
         }
       }
     }

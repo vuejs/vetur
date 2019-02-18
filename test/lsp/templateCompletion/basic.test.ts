@@ -13,12 +13,21 @@ describe('Should autocomplete interpolation for <template>', () => {
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
+  function wrapWithJSCodeRegion(src: string) {
+    return '\n```js\n' + src + '\n```\n';
+  }
+
   const defaultList: CompletionItem[] = [
     {
       label: 'foo',
       documentation: {
         kind: 'markdown',
-        value: 'My foo'
+        value: 'My foo' + wrapWithJSCodeRegion(
+`foo: {
+  type: Boolean,
+  default: false
+}`
+)
       },
       kind: CompletionItemKind.Property
     },
@@ -26,7 +35,7 @@ describe('Should autocomplete interpolation for <template>', () => {
       label: 'msg',
       documentation: {
         kind: 'markdown',
-        value: 'My msg'
+        value: 'My msg' + wrapWithJSCodeRegion(`msg: 'Vetur means "Winter" in icelandic.'`)
       },
       kind: CompletionItemKind.Property
     },
@@ -34,7 +43,11 @@ describe('Should autocomplete interpolation for <template>', () => {
       label: 'count',
       documentation: {
         kind: 'markdown',
-        value: 'My count'
+        value: 'My count' + wrapWithJSCodeRegion(
+`count () {
+  return this.$store.state.count
+}`
+)
       },
       kind: CompletionItemKind.Property
     },
@@ -42,7 +55,11 @@ describe('Should autocomplete interpolation for <template>', () => {
       label: 'hello',
       documentation: {
         kind: 'markdown',
-        value: 'My greeting'
+        value: 'My greeting' + wrapWithJSCodeRegion(
+`hello () {
+  console.log(this.msg)
+}`
+)
       },
       kind: CompletionItemKind.Method
     }
@@ -57,7 +74,7 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(4, 5), [
         {
           label: 'basic',
-          documentation: 'My basic tag'
+          documentationStart: 'My basic tag\n```js\nexport default {'
         }
       ]);
     });
@@ -66,7 +83,12 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
-          documentation: 'My foo'
+          documentation: 'My foo' + wrapWithJSCodeRegion(
+`foo: {
+  type: Boolean,
+  default: false
+}`
+)
         }
       ]);
     });
