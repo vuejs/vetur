@@ -12,13 +12,17 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
+import { VueFileInfo } from '../../../services/vueInfoService';
+import { doVueInterpolationComplete } from './vueInterpolationCompletion';
+import { NULL_COMPLETION } from '../../nullMode';
 
 export function doComplete(
   document: TextDocument,
   position: Position,
   htmlDocument: HTMLDocument,
   tagProviders: IHTMLTagProvider[],
-  emmetConfig: emmet.EmmetConfiguration
+  emmetConfig: emmet.EmmetConfiguration,
+  vueFileInfo?: VueFileInfo
 ): CompletionList {
   const result: CompletionList = {
     isIncomplete: false,
@@ -27,9 +31,18 @@ export function doComplete(
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
-  if (!node || node.isInterpolation) {
+  if (!node) {
     return result;
   }
+
+  if (node.isInterpolation) {
+    if (vueFileInfo) {
+      return doVueInterpolationComplete(vueFileInfo);
+    } else {
+      return NULL_COMPLETION;
+    }
+  }
+
   const text = document.getText();
   const scanner = createScanner(text, node.start);
   let currentTag: string;
