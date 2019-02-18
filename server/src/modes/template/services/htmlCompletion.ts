@@ -46,7 +46,7 @@ export function doComplete(
   const text = document.getText();
   const scanner = createScanner(text, node.start);
   let currentTag: string;
-  let currentAttributeName: string;
+  let currentAttributeName = '';
 
   function getReplaceRange(replaceStart: number, replaceEnd: number = offset): Range {
     if (replaceStart > offset) {
@@ -98,7 +98,7 @@ export function doComplete(
     let curr = node;
     while (curr) {
       const tag = curr.tag;
-      if (tag && (!curr.closed || curr.endTagStart && (curr.endTagStart > offset))) {
+      if (tag && (!curr.closed || (curr.endTagStart && curr.endTagStart > offset))) {
         const item: CompletionItem = {
           label: '/' + tag,
           kind: CompletionItemKind.Property,
@@ -175,7 +175,15 @@ export function doComplete(
     return result;
   }
 
-  function collectAttributeValueSuggestions(valueStart: number, valueEnd?: number): CompletionList {
+  function collectAttributeValueSuggestions(attr: string, valueStart: number, valueEnd?: number): CompletionList {
+    if (attr.startsWith('v-') || attr.startsWith('@') || attr.startsWith(':')) {
+      if (vueFileInfo) {
+        return doVueInterpolationComplete(vueFileInfo);
+      } else {
+        return NULL_COMPLETION;
+      }
+    }
+
     let range: Range;
     let addQuotes: boolean;
     if (valueEnd && offset > valueStart && offset <= valueEnd && text[valueStart] === '"') {
@@ -242,12 +250,16 @@ export function doComplete(
         break;
       case TokenType.DelimiterAssign:
         if (scanner.getTokenEnd() === offset) {
-          return collectAttributeValueSuggestions(scanner.getTokenEnd());
+          return collectAttributeValueSuggestions(currentAttributeName, scanner.getTokenEnd());
         }
         break;
       case TokenType.AttributeValue:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-          return collectAttributeValueSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
+          return collectAttributeValueSuggestions(
+            currentAttributeName,
+            scanner.getTokenOffset(),
+            scanner.getTokenEnd()
+          );
         }
         break;
       case TokenType.Whitespace:
@@ -261,7 +273,7 @@ export function doComplete(
             case ScannerState.AfterAttributeName:
               return collectAttributeNameSuggestions(scanner.getTokenEnd());
             case ScannerState.BeforeAttributeValue:
-              return collectAttributeValueSuggestions(scanner.getTokenEnd());
+              return collectAttributeValueSuggestions(currentAttributeName, scanner.getTokenEnd());
             case ScannerState.AfterOpeningEndTag:
               return collectCloseTagSuggestions(scanner.getTokenOffset() - 1, false);
           }
