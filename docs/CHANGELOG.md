@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.16.1 | 2019-02-18
+
+- `vetur.completion.tagCasing` option to choose between forcing all tag completion to kebab-case like `<my-tag>`, or leave tag naming as initially declared in `components`. #1102.
+
 ### 0.16.0 | 2019-02-18
 
 - Template interpolation completion. See below for details. #1083.
