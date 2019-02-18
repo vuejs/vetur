@@ -5,6 +5,10 @@
 </template>
 
 <script>
+
+/**
+ * My basic tag
+ */
 export default {
   props: {
     /**

@@ -17,10 +17,10 @@ export function getComponentInfoTagProvider(childComponents: ChildComponent[]): 
     const props: Attribute[] = [];
     if (cc.info && cc.info.componentInfo.props) {
       cc.info.componentInfo.props.forEach(p => {
-        props.push(genAttribute(p.name, undefined, cc.documentation));
+        props.push(genAttribute(p.name, undefined, p.documentation));
       });
     }
-    tags[cc.name] = new HTMLTagSpecification(cc.name, props);
+    tags[cc.name] = new HTMLTagSpecification(cc.documentation || '', props);
   }
   return {
     getId: () => 'component',

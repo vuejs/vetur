@@ -19,7 +19,7 @@ import { getEnabledTagProviders } from './tagProviders';
 import { DocumentContext } from '../../types';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
-import { getComponentInfoTagProvider } from './tagProviders/componentTags';
+import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 

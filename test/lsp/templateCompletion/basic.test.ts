@@ -53,6 +53,15 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(templateDocUri, position(2, 7), defaultList);
     });
 
+    it(`completes child component tag`, async() => {
+      await testCompletion(parentTemplateDocUri, position(4, 5), [
+        {
+          label: 'basic',
+          documentation: 'My basic tag'
+        }
+      ]);
+    });
+
     it(`completes child component's props`, async () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
