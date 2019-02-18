@@ -6,17 +6,21 @@ import {
   collectAttributesDefault,
   collectValuesDefault,
   genAttribute,
-  Priority
+  Priority,
+  Attribute
 } from './common';
+import { ChildComponent } from '../../../services/vueInfoService';
 
-import { ComponentInfo } from '../../script/findComponents';
-
-export function getComponentTags(components: ComponentInfo[]): IHTMLTagProvider {
+export function getComponentInfoTagProvider(childComponents: ChildComponent[]): IHTMLTagProvider {
   const tags: ITagSet = {};
-  for (const comp of components) {
-    const compName = comp.name;
-    const props = comp.props ? comp.props.map(s => genAttribute(s.name, undefined, s.doc)) : [];
-    tags[compName] = new HTMLTagSpecification('', props);
+  for (const cc of childComponents) {
+    const props: Attribute[] = [];
+    if (cc.info && cc.info.componentInfo.props) {
+      cc.info.componentInfo.props.forEach(p => {
+        props.push(genAttribute(p.name, undefined, p.documentation));
+      });
+    }
+    tags[cc.name] = new HTMLTagSpecification(cc.documentation || '', props);
   }
   return {
     getId: () => 'component',

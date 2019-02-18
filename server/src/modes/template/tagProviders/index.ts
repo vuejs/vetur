@@ -10,7 +10,7 @@ import {
   vuetifyTagProvider,
   getRuntimeTagProvider
 } from './externalTagProviders';
-export { getComponentTags } from './componentTags';
+export { getComponentInfoTagProvider as getComponentTags } from './componentInfoTagProvider';
 export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';

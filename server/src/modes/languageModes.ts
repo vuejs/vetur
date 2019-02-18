@@ -27,10 +27,14 @@ import { getJavascriptMode } from './script/javascript';
 import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
 import { DocumentContext } from '../types';
+import { VueInfoService } from '../services/vueInfoService';
 
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
+  configureService?(infoService: VueInfoService): void;
+  updateFileInfo?(doc: TextDocument): void;
+
   doValidation?(document: TextDocument): Diagnostic[];
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
@@ -74,7 +78,7 @@ export function getLanguageModes(workspacePath: string | null | undefined): Lang
   const jsMode = getJavascriptMode(documentRegions, workspacePath);
   let modes: { [k: string]: LanguageMode } = {
     vue: getVueMode(),
-    'vue-html': getVueHTMLMode(documentRegions, workspacePath, jsMode),
+    'vue-html': getVueHTMLMode(documentRegions, workspacePath),
     css: getCSSMode(documentRegions),
     postcss: getPostCSSMode(documentRegions),
     scss: getSCSSMode(documentRegions),

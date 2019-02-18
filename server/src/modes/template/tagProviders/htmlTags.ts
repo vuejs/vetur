@@ -60,9 +60,9 @@ function genAttr(attrString: string) {
   return { label, type };
 }
 
-function genTag(label: string, attrs?: string[]): HTMLTagSpecification {
+function genTag(documentation: string, attrs?: string[]): HTMLTagSpecification {
   const attributes: Attribute[] | undefined = attrs && attrs.map(genAttr);
-  return new HTMLTagSpecification(label, attributes);
+  return new HTMLTagSpecification(documentation, attributes);
 }
 
 // HTML tag information sourced from http://www.w3.org/TR/2015/WD-html51-20151008/
