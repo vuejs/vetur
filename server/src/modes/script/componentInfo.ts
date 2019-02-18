@@ -236,15 +236,6 @@ export function buildDocumentation(s: ts.Symbol, checker: ts.TypeChecker) {
 
   documentation += '\n';
 
-  /**
-   * ```js
-   * {
-     * foo: {
-     *  type: Boolean,
-     *  default: false
-     * }
-   * }
-   */
   if (s.valueDeclaration) {
     if (s.valueDeclaration.kind === ts.SyntaxKind.PropertyAssignment) {
       documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
