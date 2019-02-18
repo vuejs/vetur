@@ -1633,6 +1633,11 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   version "4.1.15"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
 
+gridsome-helper-json@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/gridsome-helper-json/-/gridsome-helper-json-0.1.2.tgz#1e82e979be6c2d8f1871399cc303fbaeda38d206"
+  integrity sha512-JRNmz4tnwme27vSt1pQn6MM3CKBHEC9EcrlEqBgW4Q9p6nw3jRWb7hccDFuU/e6fqFa0I/DedOmkvPc73l8lBg==
+
 growl@1.10.5:
   version "1.10.5"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
