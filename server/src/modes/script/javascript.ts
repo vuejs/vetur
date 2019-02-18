@@ -320,7 +320,7 @@ export function getJavascriptMode(
       const definitionResults: Definition = [];
       const program = service.getProgram();
       if (!program) {
-        return null;
+        return [];
       }
       definitions.forEach(d => {
         const definitionTargetDoc = getSourceDoc(d.fileName, program);
