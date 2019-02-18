@@ -17,6 +17,7 @@ The JSDocs block right before each property, and the property assignment express
 For example, in this Vue file:
 
 ```vue
+<script>
 export default {
   props: {
     /**
@@ -36,6 +37,7 @@ export default {
     }
   }
 }
+</script>
 ```
 
 In the HTML interpolation regions, `start` and `msg` will be completed. Their documentation will be the Markdown below:
