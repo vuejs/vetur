@@ -14,7 +14,8 @@ interface InternalChildComponent {
 
 export function getChildComponents(
   defaultExportType: ts.Type,
-  checker: ts.TypeChecker
+  checker: ts.TypeChecker,
+  tagCasing = 'kebab'
 ): InternalChildComponent[] | undefined {
   const componentsSymbol = checker.getPropertyOfType(defaultExportType, 'components');
   if (!componentsSymbol || !componentsSymbol.valueDeclaration) {
@@ -35,7 +36,10 @@ export function getChildComponents(
         return;
       }
 
-      const hyphenatedName = hyphenate(s.name);
+      let componentName = s.name;
+      if (tagCasing === 'kebab') {
+        componentName = hyphenate(s.name);
+      }
 
       let objectLiteralSymbol: ts.Symbol | undefined;
       if (s.valueDeclaration.kind === ts.SyntaxKind.PropertyAssignment) {
@@ -58,7 +62,7 @@ export function getChildComponents(
           }
 
           result.push({
-            name: hyphenatedName,
+            name: componentName,
             documentation: buildDocumentation(definitionObjectLiteralSymbol, checker),
             definition: {
               path: definitionObjectLiteralSymbol.valueDeclaration.getSourceFile().fileName,

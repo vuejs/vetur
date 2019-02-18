@@ -164,6 +164,19 @@
           "default": true,
           "description": "Enable/disable Vetur's built-in scaffolding snippets"
         },
+        "vetur.completion.tagCasing": {
+          "type": "string",
+          "default": "kebab",
+          "enum": [
+            "initial",
+            "kebab"
+          ],
+          "enumDescriptions": [
+            "use the key in `components: {...}` as is for tag completion and do not force any casing",
+            "kebab-case completion for <my-tag>"
+          ],
+          "description": "Casing conversion for tag completion"
+        },
         "vetur.grammar.customBlocks": {
           "type": "object",
           "default": {
