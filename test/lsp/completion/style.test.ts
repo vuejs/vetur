@@ -1,6 +1,6 @@
-import { getDocUri, activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
 import { testCompletion } from './helper';
-import { position } from '../util';
+import { position, getDocUri } from '../util';
 
 describe('Should autocomplete for <style>', () => {
   const templateDocUri = getDocUri('client/completion/style/Basic.vue');

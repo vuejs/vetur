@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { position, sameLineRange, range } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { position, sameLineRange, range, getDocUri } from '../util';
 import { testDiagnostics } from './helper';
 
 describe('Should find common diagnostics for all regions', () => {
@@ -43,7 +43,8 @@ describe('Should find common diagnostics for all regions', () => {
         range: range(17, 2, 21, 3),
         severity: vscode.DiagnosticSeverity.Error,
         // tslint:disable-next-line
-        message: "Argument of type '{ components: { Ite: any; }; data(this: CombinedVueInstance<Vue, {}, {}, {}, Readonly<Record<neve...' is not assignable to parameter of type 'ComponentOptions<Vue, DefaultData<Vue>, DefaultMethods<Vue>, DefaultComputed, PropsDefinition<Rec...'.\n  Object literal may only specify known properties, and 'compute' does not exist in type 'ComponentOptions<Vue, DefaultData<Vue>, DefaultMethods<Vue>, DefaultComputed, PropsDefinition<Rec...'."
+        message:
+          "Argument of type '{ components: { Ite: any; }; data(this: CombinedVueInstance<Vue, {}, {}, {}, Readonly<Record<neve...' is not assignable to parameter of type 'ComponentOptions<Vue, DefaultData<Vue>, DefaultMethods<Vue>, DefaultComputed, PropsDefinition<Rec...'.\n  Object literal may only specify known properties, and 'compute' does not exist in type 'ComponentOptions<Vue, DefaultData<Vue>, DefaultMethods<Vue>, DefaultComputed, PropsDefinition<Rec...'."
       },
       {
         range: sameLineRange(24, 14, 16),

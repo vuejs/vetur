@@ -1,5 +1,5 @@
-import { getDocUri, activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { position } from '../util';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { position, getDocUri } from '../util';
 import { testCompletion } from './helper';
 
 describe('Should autocomplete for <template>', () => {

@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "outDir": "../dist/test"
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "**/fixture"
+  ]
+}

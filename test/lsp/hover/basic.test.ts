@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { position, sameLineRange } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { position, sameLineRange, getDocUri } from '../util';
 
 describe('Should do hover', () => {
   const docUri = getDocUri('client/hover/Basic.vue');
@@ -14,18 +14,14 @@ describe('Should do hover', () => {
 
   it('shows hover for <img> tag', async () => {
     await testHover(docUri, position(4, 7), {
-      contents: [
-        'An img element represents an image\\.'
-      ],
+      contents: ['An img element represents an image\\.'],
       range: sameLineRange(4, 7, 10)
     });
   });
 
   it('shows hover for this.msg', async () => {
     await testHover(docUri, position(33, 23), {
-      contents: [
-        '\n```ts\n(property) msg: string\n```\n'
-      ],
+      contents: ['\n```ts\n(property) msg: string\n```\n'],
       range: sameLineRange(33, 23, 26)
     });
   });
@@ -34,7 +30,7 @@ describe('Should do hover', () => {
     await testHover(docUri, position(47, 3), {
       contents: [
         // tslint:disable-next-line
-        `Specifies the width of the content area, padding area or border area \\(depending on 'box\\-sizing'\\) of certain boxes\\.`,
+        `Specifies the width of the content area, padding area or border area \\(depending on 'box\\-sizing'\\) of certain boxes\\.`
       ],
       range: sameLineRange(47, 2, 14)
     });

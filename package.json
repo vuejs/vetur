@@ -9,9 +9,10 @@
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "tsc -p . && tsc -p server",
-    "watch": "run-p watch-client watch-server",
+    "watch": "run-p watch-client watch-server watch-test",
     "watch-client": "tsc -w -p .",
     "watch-server": "tsc -w -p server",
+    "watch-test": "tsc -w -p test",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
     "test:e2e": "sh ./test/e2e.sh",
