@@ -6,18 +6,13 @@
 import { commands, Uri } from 'vscode';
 import { join, basename, dirname, resolve } from 'path';
 import { readFileSync, existsSync, mkdirSync, writeFileSync, readdirSync } from 'fs';
-import { deepEqual } from 'assert';
+import { deepEqual, AssertionError } from 'assert';
 
 async function assertUnchangedTokens(testFixurePath: string, done: (err?: Error) => void) {
   const fileName = basename(testFixurePath);
 
-  const basePath = resolve('.');
-
   try {
-    const data = await commands.executeCommand(
-      '_workbench.captureSyntaxTokens',
-      Uri.file(basePath + '/' + testFixurePath)
-    );
+    const data = await commands.executeCommand('_workbench.captureSyntaxTokens', Uri.file(testFixurePath));
     try {
       const resultsFolderPath = join(dirname(dirname(testFixurePath)), 'results');
       if (!existsSync(resultsFolderPath)) {
@@ -29,19 +24,20 @@ async function assertUnchangedTokens(testFixurePath: string, done: (err?: Error)
         try {
           deepEqual(data, previousData);
         } catch (e) {
-          writeFileSync(resultPath, JSON.stringify(data, null, '\t'), { flag: 'w' });
           if (Array.isArray(data) && Array.isArray(previousData) && data.length === previousData.length) {
             for (let i = 0; i < data.length; i++) {
               const d = data[i];
               const p = previousData[i];
               if (d.c !== p.c || hasThemeChange(d.r, p.r)) {
-                throw e;
+                throw new Error(`Syntax difference in file ${fileName}: ${d.c} does not equal ${p.c}
+                  at ${(e as AssertionError).message}`);
               }
             }
-            // different but no tokenization ot color change: no failure
+            // different but no tokenization or color change: no failure
           } else {
-            throw e;
+            throw new Error(`Syntax not equal at file '${fileName}': ${(e as AssertionError).message}`);
           }
+          writeFileSync(resultPath, JSON.stringify(data, null, '\t'), { flag: 'w' });
         }
       } else {
         writeFileSync(resultPath, JSON.stringify(data, null, '\t'));
@@ -66,7 +62,7 @@ function hasThemeChange(d: { [x: string]: any }, p: { [x: string]: any }) {
 }
 
 describe('colorization', () => {
-  const extensionColorizeFixturePath = 'test/grammar/fixtures';
+  const extensionColorizeFixturePath = resolve(__dirname, '../../test/grammar/fixtures');
   if (existsSync(extensionColorizeFixturePath)) {
     const fixturesFiles = readdirSync(extensionColorizeFixturePath);
     fixturesFiles.forEach(fixturesFile => {
