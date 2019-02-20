@@ -1,8 +1,12 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.options.json",
   "compilerOptions": {
+    "composite": true,
+    "rootDir": "../",
+    "outDir": "../dist",
+
     "noImplicitAny": false,
-    "outDir": "../dist/test"
+    "lib": ["es2015"]
   },
   "include": [
     "**/*.ts"
