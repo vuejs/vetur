@@ -4,5 +4,8 @@
     "composite": true,
     "outDir": "../dist",
     "rootDir": ".."
-  }
+  },
+  "references": [
+    { "path": "../client" }
+  ]
 }
