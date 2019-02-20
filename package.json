@@ -15,12 +15,12 @@
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "prepush": "npm run test:server",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:server"
     }
   },
   "lint-staged": {
