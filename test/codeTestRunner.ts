@@ -169,8 +169,11 @@ function getTag(clb) {
 
 fs.exists(executable, async exists => {
   if (exists) {
-    await runTests('test/grammar');
-    await runTests('test/lsp');
+    const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
+
+    for (const dir of testDirs) {
+      await runTests(`test/${dir}`);
+    }
   } else {
     downloadExecutableAndRunTests();
   }
