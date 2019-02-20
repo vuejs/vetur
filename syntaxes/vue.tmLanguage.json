@@ -205,7 +205,7 @@
       ]
     },
     {
-      "begin": "(<)(template)(?![^\\/>]*\\/>\\s*$)",
+      "begin": "(<)(template)(?![^/>]*/>\\s*$)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
