@@ -62,12 +62,11 @@ Two ways of using it:
 
 #### Grammar Dev Guide
 
-- Open the yaml files in `/syntax` with Sublime Text
-- Install [PackageDev](https://github.com/SublimeText/PackageDev) if you haven't
-- F7 to compile yaml grammar to tmLanguage files
-- Run the `client` debug target in vetur project root
+- Open the yaml files in `/syntax`
+- After editing use either `yarn build:grammar` or `npm run build:grammar` to build the json files
+- If you changed the `vue.yaml` file, be sure to run the `vetur.generateGrammar` command from the vscode command palette
 
-> Tip: In VS Code, use F1 -> Inspect TM Scopes:
+> Tip: In VS Code, use F1 -> Inspect TM Scopes to view language scopes to debug the grammar:
 
 ![scope](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/scope.png)
 
