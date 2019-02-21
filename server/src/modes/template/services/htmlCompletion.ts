@@ -162,7 +162,7 @@ export function doComplete(
     const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)
       ? ''
       : '="$1"';
-    const tag = currentTag.toLowerCase();
+    const tag = currentTag;
     tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectAttributes(tag, (attribute, type, documentation) => {
@@ -210,7 +210,7 @@ export function doComplete(
       range = getReplaceRange(valueStart, valueEnd);
       addQuotes = true;
     }
-    const tag = currentTag.toLowerCase();
+    const tag = currentTag;
     const attribute = currentAttributeName.toLowerCase();
     tagProviders.forEach(provider => {
       provider.collectValues(tag, attribute, value => {
