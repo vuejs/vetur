@@ -97,6 +97,14 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
   });
 }
 
+async function runAllTests() {
+  const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
+
+  for (const dir of testDirs) {
+    await runTests(`test/${dir}`);
+  }
+}
+
 function downloadExecutableAndRunTests() {
   getDownloadUrl(function(downloadUrl) {
     console.log('Downloading VS Code into "' + testRunFolderAbsolute + '" from: ' + downloadUrl);
@@ -128,7 +136,7 @@ function downloadExecutableAndRunTests() {
         .pipe(vfs.dest(testRunFolder));
     }
 
-    stream.on('end', runTests);
+    stream.on('end', runAllTests);
   });
 }
 
@@ -169,11 +177,7 @@ function getTag(clb) {
 
 fs.exists(executable, async exists => {
   if (exists) {
-    const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
-
-    for (const dir of testDirs) {
-      await runTests(`test/${dir}`);
-    }
+    runAllTests();
   } else {
     downloadExecutableAndRunTests();
   }
