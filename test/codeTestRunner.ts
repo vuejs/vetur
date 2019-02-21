@@ -51,16 +51,15 @@ if (isInsiders) {
 const executable =
   process.platform === 'darwin' ? darwinExecutable : process.platform === 'win32' ? windowsExecutable : linuxExecutable;
 
-console.log('### VS Code Extension Test Run ###');
+console.log('### Vetur Integration Test ###');
+console.log('');
 
 const EXT_ROOT = path.resolve(__dirname, '../../');
-console.log(`Testing extension at: ${EXT_ROOT}`);
 
-function runTests(testFolderRelativeToRoot: string): Promise<number> {
+function runTests(testWorkspaceRelativePath: string): Promise<number> {
   return new Promise((resolve, reject) => {
-    const testWorkspace = path.resolve(EXT_ROOT, testFolderRelativeToRoot, 'fixture');
-    const extTestPath = path.resolve(EXT_ROOT, 'dist', testFolderRelativeToRoot);
-    console.log(testWorkspace);
+    const testWorkspace = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'fixture');
+    const extTestPath = path.resolve(EXT_ROOT, 'dist', testWorkspaceRelativePath);
 
     const args = [
       testWorkspace,
@@ -73,25 +72,26 @@ function runTests(testFolderRelativeToRoot: string): Promise<number> {
       args.push('--disable-extensions');
     }
 
-    console.log('Running extension tests: ' + [executable, args.join(' ')].join(' '));
+    console.log(`Test folder: ${path.join('dist', testWorkspaceRelativePath)}`);
+    console.log(`Workspace:   ${testWorkspaceRelativePath}`);
 
     const cmd = cp.spawn(executable, args);
 
     cmd.stdout.on('data', function(data) {
-      console.log(data.toString());
-    });
-
-    cmd.stderr.on('data', function(data) {
-      console.error(data.toString());
+      const s = data.toString();
+      if (!s.includes('update#setState idle')) {
+        console.log(s);
+      }
     });
 
     cmd.on('error', function(data) {
-      console.log('Failed to execute tests: ' + data.toString());
+      console.log('Test error: ' + data.toString());
     });
 
     cmd.on('close', function(code) {
-      console.log('Tests exited with code: ' + code);
+      console.log(`Exit code:   ${code}`);
 
+      console.log('Done\n');
       resolve(code);
     });
   });
