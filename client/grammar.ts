@@ -32,7 +32,7 @@ export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: str
       throw `The language for custom block <${tag}> is invalid`;
     }
 
-    grammar.patterns.push(makePattern(tag, SCOPES[lang]));
+    grammar.patterns.unshift(makePattern(tag, SCOPES[lang]));
   }
   return JSON.stringify(grammar, null, 2);
 }
