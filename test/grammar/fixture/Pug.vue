@@ -6,8 +6,9 @@
       | Test 2
     .vue-directive(v-if="test")
     .vue-directive-2(:attr="test()")
-    .vue-interpolation {{test.case()}}
+    .vue-interpolation {{test.case() + 'concatenation'}}
     .single-quote(v-if='test')
+    .pug.javascript(:attr="i + will + 'concat' + this + string")
 </template>
 
 
