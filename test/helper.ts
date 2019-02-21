@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 import * as fs from 'fs';
 
 export const EXT_IDENTIFIER = 'octref.vetur';
@@ -24,13 +23,6 @@ export async function showFile(docUri: vscode.Uri) {
   const doc = await vscode.workspace.openTextDocument(docUri);
   return await vscode.window.showTextDocument(doc);
 }
-
-export const getDocPath = (p: string) => {
-  return path.resolve(__dirname, '../../test/fixture', p);
-};
-export const getDocUri = (p: string) => {
-  return vscode.Uri.file(getDocPath(p));
-};
 
 export async function setEditorContent(editor: vscode.TextEditor, content: string): Promise<boolean> {
   const doc = editor.document;

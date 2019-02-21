@@ -1,4 +1,4 @@
-import * as testRunner from 'vscode/lib/testrunner';
+import * as testRunner from '../testRunner';
 
 testRunner.configure({
   ui: 'bdd',

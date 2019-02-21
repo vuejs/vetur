@@ -62,7 +62,7 @@ function hasThemeChange(d: { [x: string]: any }, p: { [x: string]: any }) {
 }
 
 describe('colorization', () => {
-  const extensionColorizeFixturePath = resolve(__dirname, '../../test/grammar/fixtures');
+  const extensionColorizeFixturePath = resolve(__dirname, '../../../test/grammar/fixture');
   if (existsSync(extensionColorizeFixturePath)) {
     const fixturesFiles = readdirSync(extensionColorizeFixturePath);
     fixturesFiles.forEach(fixturesFile => {

@@ -8,21 +8,19 @@
   "publisher": "octref",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
-    "compile": "tsc -p . && tsc -p server",
-    "watch": "run-p watch-client watch-server",
-    "watch-client": "tsc -w -p .",
-    "watch-server": "tsc -w -p server",
+    "compile": "tsc -b .",
+    "watch": "tsc -b -w .",
     "lint": "tslint -p tslint.json",
     "test:server": "cd server && npm run compile && npm test",
-    "test:e2e": "sh ./test/e2e.sh",
+    "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "prepush": "npm run test:server",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:server"
     }
   },
   "lint-staged": {
