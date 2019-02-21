@@ -1,10 +1,16 @@
 # Changelog
 
-### 0.16.1 | 2019-02-18
+### 0.16.2 | 2019-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.2/vspackage)
+
+- Prettier as an option for `vetur.format.defaultFormatter.html`. #950.
+- Fix a syntax highlighting bug with custom block that begins with `<template>`. #1088.
+- Fix a bug where Vetur fails to provide props completion when using `"vetur.completion.tagCasing": "initial"`. #1102.
+
+### 0.16.1 | 2019-02-18 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.1/vspackage)
 
 - `vetur.completion.tagCasing` option to choose between forcing all tag completion to kebab-case like `<my-tag>`, or leave tag naming as initially declared in `components`. #1102.
 
-### 0.16.0 | 2019-02-18
+### 0.16.0 | 2019-02-18 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.0/vspackage)
 
 - Template interpolation completion. See below for details. #1083.
 - Improved child component completion. See below for details.
