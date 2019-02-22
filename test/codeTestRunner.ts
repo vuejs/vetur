@@ -91,6 +91,10 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
     cmd.on('close', function(code) {
       console.log(`Exit code:   ${code}`);
 
+      if (code !== 0) {
+        reject('Failed');
+      }
+
       console.log('Done\n');
       resolve(code);
     });
@@ -101,7 +105,11 @@ async function runAllTests() {
   const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
 
   for (const dir of testDirs) {
-    await runTests(`test/${dir}`);
+    try {
+      await runTests(`test/${dir}`);
+    } catch (err) {
+      exitWithError(err);
+    }
   }
 }
 
