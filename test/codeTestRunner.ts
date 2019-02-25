@@ -57,7 +57,7 @@ console.log('');
 const EXT_ROOT = path.resolve(__dirname, '../../');
 
 function runTests(testWorkspaceRelativePath: string): Promise<number> {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const testWorkspace = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'fixture');
     const extTestPath = path.resolve(EXT_ROOT, 'dist', testWorkspaceRelativePath);
 
