@@ -11,7 +11,7 @@
     "compile": "tsc -b .",
     "watch": "tsc -b -w .",
     "lint": "tslint -p tslint.json",
-    "test:server": "cd server && npm run compile && npm test",
+    "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
