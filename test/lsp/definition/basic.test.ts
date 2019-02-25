@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { location, position, sameLineLocation } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { location, position, sameLineLocation, getDocUri } from '../util';
 
 describe('Should find definition', () => {
   const docUri = getDocUri('client/definition/Basic.vue');

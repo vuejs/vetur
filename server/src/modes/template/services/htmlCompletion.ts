@@ -13,7 +13,7 @@ import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
 import { VueFileInfo } from '../../../services/vueInfoService';
-import { doVueInterpolationComplete } from './vueInterpolationCompletion';
+import { doVueInterpolationComplete, shouldDoInterpolationComplete } from './vueInterpolationCompletion';
 import { NULL_COMPLETION } from '../../nullMode';
 
 export function doComplete(
@@ -36,6 +36,17 @@ export function doComplete(
   }
 
   if (node.isInterpolation) {
+    const nodeRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
+    const nodeText = document.getText(nodeRange);
+
+    if (!shouldDoInterpolationComplete(nodeText, document.offsetAt(position) - node.start)) {
+      return NULL_COMPLETION;
+    }
+
+    if (document.getText()[document.offsetAt(position) - 1] === '.') {
+      return NULL_COMPLETION;
+    }
+
     if (vueFileInfo) {
       return doVueInterpolationComplete(vueFileInfo);
     } else {

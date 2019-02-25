@@ -83,7 +83,7 @@ export function getJavascriptMode(
 
       const { service } = updateCurrentTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(service, fileFsPath);
+      const info = getComponentInfo(service, fileFsPath, config);
       if (info) {
         vueInfoService.updateInfo(doc, info);
       }
@@ -320,7 +320,7 @@ export function getJavascriptMode(
       const definitionResults: Definition = [];
       const program = service.getProgram();
       if (!program) {
-        return null;
+        return [];
       }
       definitions.forEach(d => {
         const definitionTargetDoc = getSourceDoc(d.fileName, program);

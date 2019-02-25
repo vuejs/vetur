@@ -57,14 +57,12 @@ patterns:
     patterns:
       - include: '#tag_attributes'
       - include: '#complete_tag'
-      - include: source.vue#vue-interpolations
       - include: source.vue#vue-directives
       - name: text.block.pug
         begin: ^(?=.)
         end: $
         patterns:
           - include: '#inline_pug'
-          - include: source.vue#vue-interpolations
           - include: text.pug#embedded_html
           - include: text.pug#html_entity
           - include: text.pug#interpolated_value
@@ -74,7 +72,6 @@ patterns:
     begin: ^\s*
     end: $
     patterns:
-      - include: source.vue#vue-interpolations
       - include: '#inline_pug'
       - include: text.pug#blocks_and_includes
       - include: text.pug#unbuffered_code

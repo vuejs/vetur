@@ -1,4 +1,24 @@
-export type ParserOption = 'babylon' | 'flow' | 'css' | 'scss' | 'less' | 'typescript' | 'json' | 'graphql';
+export type ParserOption =
+  | 'babylon' // deprecated
+  | 'babel'
+  | 'babel-flow'
+  | 'flow'
+  | 'typescript'
+  | 'postcss' // deprecated
+  | 'css'
+  | 'less'
+  | 'scss'
+  | 'json'
+  | 'json5'
+  | 'json-stringify'
+  | 'graphql'
+  | 'markdown'
+  | 'vue'
+  | 'html'
+  | 'angular'
+  | 'mdx'
+  | 'yaml';
+
 type TrailingCommaOption = 'none' | 'es5' | 'all';
 
 /**

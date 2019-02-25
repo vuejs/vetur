@@ -1,5 +1,95 @@
 # Changelog
 
+### 0.16.2 | 2019-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.2/vspackage)
+
+- Prettier as an option for `vetur.format.defaultFormatter.html`. #950.
+- Fix a syntax highlighting bug with custom block that begins with `<template>`. #1088.
+- Fix a bug where Vetur fails to provide props completion when using `"vetur.completion.tagCasing": "initial"`. #1102.
+
+### 0.16.1 | 2019-02-18 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.1/vspackage)
+
+- `vetur.completion.tagCasing` option to choose between forcing all tag completion to kebab-case like `<my-tag>`, or leave tag naming as initially declared in `components`. #1102.
+
+### 0.16.0 | 2019-02-18 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.0/vspackage)
+
+- Template interpolation completion. See below for details. #1083.
+- Improved child component completion. See below for details.
+
+See https://github.com/vuejs/vetur/issues/1083#issuecomment-464877917 for the demo.
+
+#### Template Interpolation Completion
+
+Vetur now offers auto completion inside Vue interpolations, that is, `{{ }}` block, `v-if` / `@click` `:prop` and other attributes.
+
+The completion items are sourced from `props`, `data`, `computed` and `methods`.
+The JSDocs block right before each property, and the property assignment expression will be used as documentation.
+
+For example, in this Vue file:
+
+```vue
+<script>
+export default {
+  props: {
+    /**
+     * Initial counter value
+     */
+    start: {
+      type: Number,
+      default: 0
+    }
+  },
+  data () {
+    return {
+      /**
+       * My msg
+       */
+      msg: 'Vetur get much better completion',
+    }
+  }
+}
+</script>
+```
+
+In the HTML interpolation regions, `start` and `msg` will be completed. Their documentation will be the Markdown below:
+
+````
+Initial counter value
+
+```js
+start: {
+  type: Number,
+  default: 0
+}
+```
+
+---
+
+My msg
+
+```js
+msg: 'Vetur get much better completion',
+```
+````
+
+#### Child Component Completion
+
+If you have child components in a parent component:
+
+```vue
+<script>
+import Counter from './Counter.vue'
+
+export default {
+  components: {
+    Counter,
+  }
+}
+```
+
+Vetur will show tag completion for `<counter>`. The JSDoc right before the `export default {}` declaration in `Counter.vue` file will be used as the completion documentation.
+
+Vetur will also read all props of `<counter>` and provide them as HTML attribute completions.
+
 ### 0.15.1 | 2019-02-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.15.1/vspackage)
 
 - Fix a grammar problem with pug interpolation. Thanks to contribution from [@Patcher56](https://github.com/Patcher56). #1082.

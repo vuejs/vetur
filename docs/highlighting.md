@@ -19,6 +19,10 @@ Vetur supports syntax highlighting for the following languages:
 |`<script lang="ts">`|`ts`|
 |`<script lang="coffee">`|`coffee`|
 
+Vetur supports syntax highlighting for vue directives (e.g. `v-if` or `:attribute=`) and vue interpolations (e.g. `{{variable}}`).
+The supported attribute string literals are `'` and `"`.
+Vetur does not support the `` ` `` backtick literal, as it makes things more complex and there is no observed benefit of using it.
+
 ## Custom Block
 
 Vetur provides a setting `vetur.grammar.customBlocks` that defaults to:

@@ -4,30 +4,32 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.15.1",
+  "version": "0.16.2",
   "publisher": "octref",
   "scripts": {
-    "build:grammar": "node scripts/build_grammar",
-    "compile": "tsc -p . && tsc -p server",
-    "watch": "run-p watch-client watch-server",
-    "watch-client": "tsc -w -p .",
-    "watch-server": "tsc -w -p server",
+    "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
+    "compile": "tsc -b .",
+    "watch": "tsc -b -w .",
     "lint": "tslint -p tslint.json",
-    "test:server": "cd server && npm run compile && npm test",
-    "test:e2e": "sh ./test/e2e.sh",
+    "test:server": "npm run compile && cd server && npm test",
+    "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "prepush": "npm run test:server",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:server"
     }
   },
   "lint-staged": {
     "*.ts": [
       "tslint --fix",
+      "git add"
+    ],
+    "*.{js,ts,yaml}": [
+      "prettier --write",
       "git add"
     ]
   },
@@ -49,7 +51,7 @@
   },
   "dependencies": {
     "vscode-languageclient": "^5.0.1",
-    "vscode-languageserver-types": "^3.12.0"
+    "vscode-languageserver-types": "^3.14.0"
   },
   "activationEvents": [
     "onLanguage:vue"
@@ -164,6 +166,19 @@
           "default": true,
           "description": "Enable/disable Vetur's built-in scaffolding snippets"
         },
+        "vetur.completion.tagCasing": {
+          "type": "string",
+          "default": "kebab",
+          "enum": [
+            "initial",
+            "kebab"
+          ],
+          "enumDescriptions": [
+            "use the key in `components: {...}` as is for tag completion and do not force any casing",
+            "kebab-case completion for <my-tag>"
+          ],
+          "description": "Casing conversion for tag completion"
+        },
         "vetur.grammar.customBlocks": {
           "type": "object",
           "default": {
@@ -203,12 +218,14 @@
           "enum": [
             "none",
             "prettyhtml",
-            "js-beautify-html"
+            "js-beautify-html",
+            "prettier"
           ],
           "enumDescriptions": [
             "disable formatting",
             "prettyhtml",
-            "html formatter of js-beautify"
+            "html formatter of js-beautify",
+            "prettier"
           ],
           "description": "Default formatter for <template> region"
         },
@@ -389,6 +406,8 @@
     }
   },
   "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/js-yaml": "^3.12.0",
     "@types/lodash": "^4.14.117",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.11.0",
@@ -398,6 +417,7 @@
     "lint-staged": "^7.3.0",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^1.16.4",
     "tslint": "^5.8.0",
     "typescript": "^3.0.3",
     "vscode": "^1.1.29"

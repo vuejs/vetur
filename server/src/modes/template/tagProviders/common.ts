@@ -1,20 +1,22 @@
+import { MarkupContent } from 'vscode-languageserver-types';
+
 interface TagCollector {
-  (tag: string, label: string): void;
+  (tag: string, documentation: string | MarkupContent): void;
 }
 
 export interface Attribute {
   label: string;
   type?: string;
-  documentation?: string;
+  documentation?: string | MarkupContent;
 }
 
 export interface AttributeCollector {
-  (attribute: string, type?: string, documentation?: string): void;
+  (attribute: string, type?: string, documentation?: string | MarkupContent): void;
 }
 interface StandaloneAttribute {
   label: string;
   type?: string;
-  documentation?: string;
+  documentation?: string | MarkupContent;
 }
 
 // Note: cannot items more than 10 for lexical order
@@ -41,7 +43,7 @@ export interface ITagSet {
 }
 
 export class HTMLTagSpecification {
-  constructor(public label: string, public attributes: Attribute[] = []) {}
+  constructor(public label: string | MarkupContent, public attributes: Attribute[] = []) {}
 }
 
 export interface IValueSets {
@@ -109,15 +111,8 @@ export function collectValuesDefault(
     }
   }
   processAttributes(globalAttributes);
-  // TODO: add custom tag support
-  // if (customTags) {
-  //   var customTagAttributes = customTags[tag];
-  //   if (customTagAttributes) {
-  //     processAttributes(customTagAttributes);
-  //   }
-  // }
 }
 
-export function genAttribute(label: string, type?: string, documentation?: string): Attribute {
+export function genAttribute(label: string, type?: string, documentation?: string | MarkupContent): Attribute {
   return { label, type, documentation };
 }

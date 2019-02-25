@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { position, sameLineRange } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { position, sameLineRange, getDocUri } from '../util';
 
 describe('Should do documentHighlight', () => {
   const docUri = getDocUri('client/documentHighlight/Basic.vue');
@@ -32,7 +32,6 @@ describe('Should do documentHighlight', () => {
       { kind: vscode.DocumentHighlightKind.Write, range: sameLineRange(20, 16, 20) }
     ]);
   });
-
 });
 
 async function testHighlight(

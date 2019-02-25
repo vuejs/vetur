@@ -107,9 +107,6 @@
           "include": "#complete_tag"
         },
         {
-          "include": "source.vue#vue-interpolations"
-        },
-        {
           "include": "source.vue#vue-directives"
         },
         {
@@ -119,9 +116,6 @@
           "patterns": [
             {
               "include": "#inline_pug"
-            },
-            {
-              "include": "source.vue#vue-interpolations"
             },
             {
               "include": "text.pug#embedded_html"
@@ -144,9 +138,6 @@
       "begin": "^\\s*",
       "end": "$",
       "patterns": [
-        {
-          "include": "source.vue#vue-interpolations"
-        },
         {
           "include": "#inline_pug"
         },

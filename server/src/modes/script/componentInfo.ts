@@ -9,7 +9,11 @@ import {
 } from '../../services/vueInfoService';
 import { getChildComponents } from './childComponents';
 
-export function getComponentInfo(service: ts.LanguageService, fileFsPath: string): VueFileInfo | undefined {
+export function getComponentInfo(
+  service: ts.LanguageService,
+  fileFsPath: string,
+  config: any
+): VueFileInfo | undefined {
   const program = service.getProgram();
   if (!program) {
     return undefined;
@@ -30,7 +34,7 @@ export function getComponentInfo(service: ts.LanguageService, fileFsPath: string
   const vueFileInfo = analyzeDefaultExportExpr(defaultExportExpr, checker);
 
   const defaultExportType = checker.getTypeAtLocation(defaultExportExpr);
-  const internalChildComponents = getChildComponents(defaultExportType, checker);
+  const internalChildComponents = getChildComponents(defaultExportType, checker, config.vetur.completion.tagCasing);
 
   if (internalChildComponents) {
     const childComponents: ChildComponent[] = [];
@@ -214,7 +218,7 @@ export function getObjectLiteralExprFromExportExpr(exportExpr: ts.Node): ts.Expr
       // Vue.extend or synthetic __vueEditorBridge
       return (exportExpr as ts.CallExpression).arguments[0];
     case ts.SyntaxKind.ObjectLiteralExpression:
-      return (exportExpr as ts.ObjectLiteralExpression);
+      return exportExpr as ts.ObjectLiteralExpression;
   }
   return undefined;
 }
@@ -254,7 +258,12 @@ function formatJSLikeDocumentation(src: string): string {
 
   const spacesToDeindent = segments[segments.length - 1].search(/\S/);
 
-  return segments[0] + '\n' +
-    segments.slice(1).map(s => s.slice(spacesToDeindent))
-    .join('\n');
+  return (
+    segments[0] +
+    '\n' +
+    segments
+      .slice(1)
+      .map(s => s.slice(spacesToDeindent))
+      .join('\n')
+  );
 }

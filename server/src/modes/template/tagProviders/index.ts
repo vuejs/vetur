@@ -79,7 +79,9 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     if (
       packageJson.dependencies['nuxt'] ||
       packageJson.dependencies['nuxt-legacy'] ||
-      packageJson.dependencies['nuxt-edge']
+      packageJson.dependencies['nuxt-edge'] ||
+      packageJson.dependencies['nuxt-ts'] ||
+      packageJson.dependencies['nuxt-ts-edge']
     ) {
       const nuxtTagProvider = getNuxtTagProvider(workspacePath);
       if (nuxtTagProvider) {

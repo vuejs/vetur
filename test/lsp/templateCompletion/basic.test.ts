@@ -1,5 +1,5 @@
-import { getDocUri, activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { position } from '../util';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { position, getDocUri } from '../util';
 import { testCompletion } from '../completion/helper';
 import { CompletionItem, CompletionItemKind } from 'vscode-languageclient';
 
@@ -22,12 +22,14 @@ describe('Should autocomplete interpolation for <template>', () => {
       label: 'foo',
       documentation: {
         kind: 'markdown',
-        value: 'My foo' + wrapWithJSCodeRegion(
-`foo: {
+        value:
+          'My foo' +
+          wrapWithJSCodeRegion(
+            `foo: {
   type: Boolean,
   default: false
 }`
-)
+          )
       },
       kind: CompletionItemKind.Property
     },
@@ -43,11 +45,13 @@ describe('Should autocomplete interpolation for <template>', () => {
       label: 'count',
       documentation: {
         kind: 'markdown',
-        value: 'My count' + wrapWithJSCodeRegion(
-`count () {
+        value:
+          'My count' +
+          wrapWithJSCodeRegion(
+            `count () {
   return this.$store.state.count
 }`
-)
+          )
       },
       kind: CompletionItemKind.Property
     },
@@ -55,11 +59,13 @@ describe('Should autocomplete interpolation for <template>', () => {
       label: 'hello',
       documentation: {
         kind: 'markdown',
-        value: 'My greeting' + wrapWithJSCodeRegion(
-`hello () {
+        value:
+          'My greeting' +
+          wrapWithJSCodeRegion(
+            `hello () {
   console.log(this.msg)
 }`
-)
+          )
       },
       kind: CompletionItemKind.Method
     }
@@ -70,7 +76,7 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(templateDocUri, position(2, 7), defaultList);
     });
 
-    it(`completes child component tag`, async() => {
+    it(`completes child component tag`, async () => {
       await testCompletion(parentTemplateDocUri, position(4, 5), [
         {
           label: 'basic',
@@ -83,12 +89,14 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
-          documentation: 'My foo' + wrapWithJSCodeRegion(
-`foo: {
+          documentation:
+            'My foo' +
+            wrapWithJSCodeRegion(
+              `foo: {
   type: Boolean,
   default: false
 }`
-)
+            )
         }
       ]);
     });

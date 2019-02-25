@@ -1,9 +1,9 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
-import { generateGrammarCommandHandler } from './grammar';
+import { generateGrammarCommandHandler } from './generate_grammar';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
+import { join } from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
   /**
@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
    * Vue Language Server Initialization
    */
 
-  const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'vueServerMain.js'));
+  const serverModule = context.asAbsolutePath(join('server', 'dist', 'vueServerMain.js'));
   const client = initializeLanguageClient(serverModule);
   context.subscriptions.push(client.start());
 
