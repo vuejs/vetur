@@ -27,6 +27,7 @@
     "element-helper-json": "^2.0.2",
     "eslint": "^5.9.0",
     "eslint-plugin-vue": "^5.0.0",
+    "gridsome-helper-json": "^1.0.0",
     "js-beautify": "^1.7.5",
     "lodash": "^4.17.4",
     "nuxt-helper-json": "^1.0.0",
