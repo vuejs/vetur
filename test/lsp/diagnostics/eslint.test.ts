@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
 import { position, sameLineRange, getDocUri } from '../util';
 import { testDiagnostics } from './helper';
 

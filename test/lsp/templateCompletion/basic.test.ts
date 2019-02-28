@@ -1,4 +1,4 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../helper';
 import { position, getDocUri } from '../util';
 import { testCompletion } from '../completion/helper';
 import { CompletionItem, CompletionItemKind } from 'vscode-languageclient';

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { showFile } from '../../helper';
+import { showFile } from '../helper';
 import { CompletionItem, MarkupContent } from 'vscode-languageclient';
 
 export interface ExpectedCompletionItem extends CompletionItem {
@@ -54,7 +54,7 @@ export async function testCompletion(
         if (typeof match.documentation === 'string') {
           assert.ok(match.documentation.startsWith(ei.documentationStart));
         } else {
-          assert.ok((match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart)); 
+          assert.ok((match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart));
         }
       }
     }
