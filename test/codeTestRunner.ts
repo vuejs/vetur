@@ -13,6 +13,7 @@ import * as fs from 'fs';
 import * as request from 'request';
 import * as source from 'vinyl-source-stream';
 import * as URL from 'url-parse';
+import * as $ from 'shelljs';
 
 const version = process.env.CODE_VERSION || '*';
 const isInsiders = version === 'insiders';
@@ -106,10 +107,21 @@ async function runAllTests() {
 
   for (const dir of testDirs) {
     try {
+      installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${dir}/fixture`)));
       await runTests(`test/${dir}`);
     } catch (err) {
       exitWithError(err);
     }
+  }
+}
+
+function installMissingDependencies(fixturePath: string) {
+  const pkgPath = path.resolve(fixturePath, 'package.json');
+  const nodeModulesPath = path.resolve(fixturePath, 'node_modules');
+
+  if (fs.existsSync(pkgPath) && !fs.existsSync(nodeModulesPath)) {
+    $.exec('yarn install', { cwd: fixturePath });
+    console.log('Yarn: installed dependencies');
   }
 }
 
