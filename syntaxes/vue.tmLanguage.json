@@ -188,7 +188,7 @@
           "include": "#tag-stuff"
         },
         {
-          "contentName": "text.pug.slm",
+          "contentName": "text.jade.slm",
           "begin": "(>)",
           "beginCaptures": {
             "1": {
@@ -198,7 +198,7 @@
           "end": "(?=</template>)",
           "patterns": [
             {
-              "include": "text.pug.slm"
+              "include": "text.jade.slm"
             }
           ]
         }

@@ -114,6 +114,7 @@
           "text.html.vue-html": "vue-html",
           "text.pug": "jade",
           "text.pug.vue-pug": "vue-pug",
+          "text.jade.slm": "slm",
           "text.haml": "haml",
           "source.css": "css",
           "source.css.scss": "scss",
