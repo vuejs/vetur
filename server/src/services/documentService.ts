@@ -148,7 +148,7 @@ export class DocumentService {
       const td = event.textDocument;
       const document = TextDocument.create(td.uri, td.languageId, td.version, td.text);
       this._infos[td.uri] = new DocumentInfo(document);
-      const toFire = Object.freeze({ document: document });
+      const toFire = Object.freeze({ document });
       this._onDidOpen.fire(toFire);
       this._onDidChangeContent.fire(toFire);
     });
