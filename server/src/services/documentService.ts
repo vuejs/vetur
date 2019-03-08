@@ -307,15 +307,13 @@ function buildRegions(document: TextDocument, textEdits: TextEdit[]) {
     // TODO: This might need to progressively rebuild the region to track html changes
     const edits: TextChangeRange[] = [];
     for (const edit of textEdits) {
-      let editStart = document.offsetAt(edit.range.start);
-      let editEnd = document.offsetAt(edit.range.end);
-      if (editStart > region.end || editEnd < region.start) {
+      if (document.offsetAt(edit.range.start) > region.end || document.offsetAt(edit.range.end) < region.start) {
         continue;
       }
       edits.push(
         createTextChangeRange(
-          createTextSpanFromBounds(document.offsetAt(edit.range.start), document.offsetAt(edit.range.end)),
-          edit.newText.length
+          createTextSpanFromBounds(document.offsetAt(edit.range.start) - 1, document.offsetAt(edit.range.end) + 1),
+          edit.newText.length + 2
         )
       );
     }
