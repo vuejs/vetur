@@ -8,7 +8,7 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
-import { DocumentInfo } from '../../services/documentService';
+import { DocumentInfo, DocumentRegion } from '../../services/documentService';
 
 // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
 // NOTE: this is a global hack that all ts instances after is changed
@@ -56,15 +56,15 @@ const defaultCompilerOptions: ts.CompilerOptions = {
   allowSyntheticDefaultImports: true
 };
 
-export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<DocumentInfo>) {
-  let currentScriptDoc: DocumentInfo;
+export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<DocumentRegion>) {
+  let currentScriptDoc: DocumentRegion;
   const versions = new Map<string, number>();
-  const scriptDocs = new Map<string, DocumentInfo>();
+  const scriptDocs = new Map<string, DocumentRegion>();
 
   const parsedConfig = getParsedConfig(workspacePath);
   const files = parsedConfig.fileNames;
   const bridgeSnapshot = new DocumentSnapshot(
-    new DocumentInfo(
+    new DocumentRegion(
       TextDocument.create(
         bridge.fileName,
         'vue',
@@ -79,7 +79,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   };
   compilerOptions.allowNonTsExtensions = true;
 
-  function updateCurrentTextDocument(doc: TextDocument) {
+  function updateCurrentTextDocument(doc: DocumentInfo) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
@@ -89,7 +89,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       }
     }
     if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
-      currentScriptDoc = jsDocuments.get(doc);
+      currentScriptDoc = jsDocuments.get(doc.document);
       const lastDoc = scriptDocs.get(fileFsPath)!;
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
@@ -332,14 +332,14 @@ class DocumentSnapshot implements ts.IScriptSnapshot {
     return `${this.version}:${this.editRanges.length}`;
   }
 
-  constructor(public scriptInfo: DocumentInfo) {
-    this.textSnapshot = scriptInfo.document.getText();
-    this.version = scriptInfo.version;
-    this.editRanges = scriptInfo.editRanges.map(range =>
+  constructor(public documentRegion: DocumentRegion) {
+    this.textSnapshot = documentRegion.document.getText();
+    this.version = documentRegion.version;
+    this.editRanges = documentRegion.editRanges.map(range =>
       ts.createTextChangeRange(
         ts.createTextSpanFromBounds(
-          scriptInfo.document.offsetAt(range.range.start),
-          scriptInfo.document.offsetAt(range.range.end)
+          documentRegion.document.offsetAt(range.range.start),
+          documentRegion.document.offsetAt(range.range.end)
         ),
         range.newText.length
       )
@@ -363,11 +363,6 @@ class DocumentSnapshot implements ts.IScriptSnapshot {
     if (this.key === oldVersion.key) {
       // No edits!
       return ts.unchangedTextChangeRange;
-    }
-
-    if (this.version !== oldVersion.version) {
-      this.scriptInfo.updateContent(this.scriptInfo.document.getText(), this.scriptInfo.version);
-      return undefined;
     }
 
     return ts.collapseTextChangeRangesAcrossMultipleVersions(this.editRanges);

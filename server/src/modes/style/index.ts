@@ -43,7 +43,7 @@ function getStyleMode(
   documentService: DocumentService
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentService.getInfo(document)!.regions.getEmbeddedDocument(languageId)
+    documentService.getDocumentInfo(document)!.regions.getEmbeddedDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
   let config: any = {};
@@ -56,7 +56,7 @@ function getStyleMode(
       languageService.configure(c && c.css);
       config = c;
     },
-    doValidation(document) {
+    doValidation({ document }) {
       if (languageId === 'postcss') {
         return [];
       } else {
@@ -64,7 +64,7 @@ function getStyleMode(
         return languageService.doValidation(embedded, stylesheets.get(embedded));
       }
     },
-    doComplete(document, position) {
+    doComplete({ document }, position) {
       const embedded = embeddedDocuments.get(document);
       const emmetSyntax = languageId === 'postcss' ? 'css' : languageId;
       const lsCompletions = languageService.doComplete(embedded, position, stylesheets.get(embedded));
@@ -93,19 +93,19 @@ function getStyleMode(
         };
       }
     },
-    doHover(document, position) {
+    doHover({ document }, position) {
       const embedded = embeddedDocuments.get(document);
       return languageService.doHover(embedded, position, stylesheets.get(embedded)) || NULL_HOVER;
     },
-    findDocumentHighlight(document, position) {
+    findDocumentHighlight({ document }, position) {
       const embedded = embeddedDocuments.get(document);
       return languageService.findDocumentHighlights(embedded, position, stylesheets.get(embedded));
     },
-    findDocumentSymbols(document) {
+    findDocumentSymbols({ document }) {
       const embedded = embeddedDocuments.get(document);
       return languageService.findDocumentSymbols(embedded, stylesheets.get(embedded));
     },
-    findDefinition(document, position) {
+    findDefinition({ document }, position) {
       const embedded = embeddedDocuments.get(document);
       const definition = languageService.findDefinition(embedded, position, stylesheets.get(embedded));
       if (!definition) {
@@ -113,19 +113,19 @@ function getStyleMode(
       }
       return definition;
     },
-    findReferences(document, position) {
+    findReferences({ document }, position) {
       const embedded = embeddedDocuments.get(document);
       return languageService.findReferences(embedded, position, stylesheets.get(embedded));
     },
-    findDocumentColors(document) {
+    findDocumentColors({ document }) {
       const embedded = embeddedDocuments.get(document);
       return languageService.findDocumentColors(embedded, stylesheets.get(embedded));
     },
-    getColorPresentations(document, color, range) {
+    getColorPresentations({ document }, color, range) {
       const embedded = embeddedDocuments.get(document);
       return languageService.getColorPresentations(embedded, stylesheets.get(embedded), color, range);
     },
-    format(document, currRange, formattingOptions) {
+    format({ document }, currRange, formattingOptions) {
       if (config.vetur.format.defaultFormatter[languageId] === 'none') {
         return [];
       }

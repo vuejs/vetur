@@ -28,7 +28,7 @@ export function getVueHTMLMode(
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
-    documentService.getInfo(document)!.regions.getEmbeddedDocument('vue-html')
+    documentService.getDocumentInfo(document)!.regions.getEmbeddedDocument('vue-html')
   );
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
@@ -48,47 +48,47 @@ export function getVueHTMLMode(
     configureService(infoService: VueInfoService) {
       vueInfoService = infoService;
     },
-    doValidation(document) {
+    doValidation({ document }) {
       const embedded = embeddedDocuments.get(document);
       return doValidation(embedded, lintEngine);
     },
-    doComplete(document: TextDocument, position: Position) {
-      const embedded = embeddedDocuments.get(document);
+    doComplete(documentInfo, position) {
+      const embedded = embeddedDocuments.get(documentInfo.document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(document);
+      const info = vueInfoService.getInfo(documentInfo);
       if (info && info.componentInfo.childComponents) {
         tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
       }
 
       return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders, config.emmet, info);
     },
-    doHover(document: TextDocument, position: Position) {
-      const embedded = embeddedDocuments.get(document);
+    doHover(documentInfo, position) {
+      const embedded = embeddedDocuments.get(documentInfo.document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(document);
+      const info = vueInfoService.getInfo(documentInfo);
       if (info && info.componentInfo.childComponents) {
         tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
       }
       return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
-    findDocumentHighlight(document: TextDocument, position: Position) {
+    findDocumentHighlight({ document }, position: Position) {
       return findDocumentHighlights(document, position, vueDocuments.get(document));
     },
-    findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
+    findDocumentLinks({ document }, documentContext: DocumentContext) {
       return findDocumentLinks(document, documentContext);
     },
-    findDocumentSymbols(document: TextDocument) {
+    findDocumentSymbols({ document }) {
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
-    format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
+    format({ document }, range: Range, formattingOptions: FormattingOptions) {
       return htmlFormat(document, range, config.vetur.format as VLSFormatConfig);
     },
-    findDefinition(document: TextDocument, position: Position) {
-      const embedded = embeddedDocuments.get(document);
-      const info = vueInfoService.getInfo(document);
+    findDefinition(documentInfo, position: Position) {
+      const embedded = embeddedDocuments.get(documentInfo.document);
+      const info = vueInfoService.getInfo(documentInfo);
       return findDefinition(embedded, position, vueDocuments.get(embedded), info);
     },
-    onDocumentRemoved(document: TextDocument) {
+    onDocumentRemoved(document) {
       vueDocuments.onDocumentRemoved(document);
     },
     dispose() {

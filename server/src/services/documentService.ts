@@ -103,7 +103,7 @@ export class DocumentService {
     return Object.keys(this._infos).map(x => this._infos[x].document);
   }
 
-  public getAllInfos(uri: string) {
+  public getAllDocumentInfos(uri: string) {
     return Object.keys(this._infos).map(x => this._infos[x]);
   }
 
@@ -121,7 +121,7 @@ export class DocumentService {
     return this._infos[uriOrDocument] && this._infos[uriOrDocument].document;
   }
 
-  public getInfo(uriOrDocument: string | TextDocument): DocumentInfo | undefined {
+  public getDocumentInfo(uriOrDocument: string | TextDocument): DocumentInfo | undefined {
     if (typeof uriOrDocument === 'object') {
       uriOrDocument = uriOrDocument.uri;
     }
@@ -258,10 +258,16 @@ export class DocumentInfo {
   }
 }
 
+const defaultType: { [type: string]: string } = {
+  template: 'vue-html',
+  script: 'javascript',
+  style: 'css'
+};
+
 function buildRegions(info: DocumentInfo) {
   const { document } = info;
-  const documentInfos: { [languageId: string]: DocumentInfo } = {};
-  const documentInfosByType: { [type: string]: DocumentInfo } = {};
+  const documentInfos: { [languageId: string]: DocumentRegion } = {};
+  const documentInfosByType: { [type: string]: DocumentRegion } = {};
   const { regions, importedScripts } = getRegions(info.document);
   for (const region of regions) {
     let content = document
@@ -295,7 +301,7 @@ function buildRegions(info: DocumentInfo) {
       });
     }
 
-    documentInfosByType[region.type] = documentInfos[region.languageId] = new DocumentInfo(
+    documentInfosByType[region.type] = documentInfos[region.languageId] = new DocumentRegion(
       TextDocument.create(document.uri, region.languageId, document.version, content),
       edits
     );
@@ -304,15 +310,35 @@ function buildRegions(info: DocumentInfo) {
   const documentRegions = createDocumentRegions(document, regions, importedScripts);
   return {
     ...documentRegions,
-    getEmbeddedDocument: (languageId: string) => documentInfos[languageId].document,
-    getEmbeddedDocumentByType: (type: 'template' | 'script' | 'style' | 'custom') => documentInfosByType[type].document,
-    getEmbeddedDocumentInfo: (languageId: string) => documentInfos[languageId],
-    getEmbeddedDocumentInfoByType: (type: 'template' | 'script' | 'style' | 'custom') => documentInfosByType[type]
+    getEmbeddedDocument: (languageId: string) =>
+      (documentInfos[languageId] && documentInfos[languageId].document) ||
+      TextDocument.create(document.uri, languageId, document.version, ''),
+    getEmbeddedDocumentByType: (type: 'template' | 'script' | 'style' | 'custom') =>
+      (documentInfosByType[type] && documentInfosByType[type].document) ||
+      TextDocument.create(document.uri, defaultType[type], document.version, ''),
+    getEmbeddedDocumentInfo: (languageId: string) =>
+      documentInfos[languageId] ||
+      new DocumentRegion(TextDocument.create(document.uri, languageId, document.version, ''), []),
+    getEmbeddedDocumentInfoByType: (type: 'template' | 'script' | 'style' | 'custom') =>
+      documentInfosByType[type] ||
+      new DocumentRegion(TextDocument.create(document.uri, defaultType[type], document.version, ''), [])
   };
   // return { documentInfos, importedScripts };
 }
 
-export class DocumentRegions {}
+export class DocumentRegion {
+  constructor(public document: TextDocument, public editRanges: TextEdit[] = []) {}
+
+  public get version() {
+    return this.document.version;
+  }
+  public get uri() {
+    return this.document.uri;
+  }
+  public get languageId() {
+    return this.document.languageId;
+  }
+}
 
 function mergeSort(data: TextEdit[], compare: (a: TextEdit, b: TextEdit) => number) {
   if (data.length <= 1) {

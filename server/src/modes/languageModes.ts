@@ -4,7 +4,6 @@ import {
   SignatureHelp,
   Definition,
   TextEdit,
-  TextDocument,
   Diagnostic,
   DocumentLink,
   Range,
@@ -16,7 +15,8 @@ import {
   SymbolInformation,
   ColorInformation,
   Color,
-  ColorPresentation
+  ColorPresentation,
+  TextDocument
 } from 'vscode-languageserver-types';
 
 import { LanguageModelCache } from './languageModelCache';
@@ -27,27 +27,27 @@ import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
 import { DocumentContext } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
-import { DocumentService } from '../services/documentService';
+import { DocumentService, DocumentInfo } from '../services/documentService';
 
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
   configureService?(infoService: VueInfoService): void;
-  updateFileInfo?(doc: TextDocument): void;
+  updateFileInfo?(doc: DocumentInfo): void;
 
-  doValidation?(document: TextDocument): Diagnostic[];
-  doComplete?(document: TextDocument, position: Position): CompletionList;
-  doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
-  doHover?(document: TextDocument, position: Position): Hover;
-  doSignatureHelp?(document: TextDocument, position: Position): SignatureHelp | null;
-  findDocumentHighlight?(document: TextDocument, position: Position): DocumentHighlight[];
-  findDocumentSymbols?(document: TextDocument): SymbolInformation[];
-  findDocumentLinks?(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
-  findDefinition?(document: TextDocument, position: Position): Definition;
-  findReferences?(document: TextDocument, position: Position): Location[];
-  format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
-  findDocumentColors?(document: TextDocument): ColorInformation[];
-  getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
+  doValidation?(document: DocumentInfo): Diagnostic[];
+  doComplete?(document: DocumentInfo, position: Position): CompletionList;
+  doResolve?(document: DocumentInfo, item: CompletionItem): CompletionItem;
+  doHover?(document: DocumentInfo, position: Position): Hover;
+  doSignatureHelp?(document: DocumentInfo, position: Position): SignatureHelp | null;
+  findDocumentHighlight?(document: DocumentInfo, position: Position): DocumentHighlight[];
+  findDocumentSymbols?(document: DocumentInfo): SymbolInformation[];
+  findDocumentLinks?(document: DocumentInfo, documentContext: DocumentContext): DocumentLink[];
+  findDefinition?(document: DocumentInfo, position: Position): Definition;
+  findReferences?(document: DocumentInfo, position: Position): Location[];
+  format?(document: DocumentInfo, range: Range, options: FormattingOptions): TextEdit[];
+  findDocumentColors?(document: DocumentInfo): ColorInformation[];
+  getColorPresentations?(document: DocumentInfo, color: Color, range: Range): ColorPresentation[];
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;
@@ -55,10 +55,10 @@ export interface LanguageMode {
 }
 
 export interface LanguageModes {
-  getModeAtPosition(document: TextDocument, position: Position): LanguageMode | null;
-  getModesInRange(document: TextDocument, range: Range): LanguageModeRange[];
+  getModeAtPosition(document: DocumentInfo, position: Position): LanguageMode | null;
+  getModesInRange(document: DocumentInfo, range: Range): LanguageModeRange[];
   getAllModes(): LanguageMode[];
-  getAllModesInDocument(document: TextDocument): LanguageMode[];
+  getAllModesInDocument(document: DocumentInfo): LanguageMode[];
   getMode(languageId: string): LanguageMode;
   onDocumentRemoved(document: TextDocument): void;
   dispose(): void;
@@ -90,29 +90,26 @@ export function getLanguageModes(
   };
 
   return {
-    getModeAtPosition(document: TextDocument, position: Position): LanguageMode | null {
-      const languageId = documentService.getInfo(document)!.regions.getLanguageAtPosition(position);
+    getModeAtPosition(document: DocumentInfo, position: Position): LanguageMode | null {
+      const languageId = document.regions.getLanguageAtPosition(position);
       if (languageId) {
         return modes[languageId];
       }
       return null;
     },
-    getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
-      return documentService
-        .getInfo(document)!
-        .regions.getLanguageRanges(range)
-        .map(r => {
-          return {
-            start: r.start,
-            end: r.end,
-            mode: modes[r.languageId],
-            attributeValue: r.attributeValue
-          };
-        });
+    getModesInRange(document: DocumentInfo, range: Range): LanguageModeRange[] {
+      return document.regions.getLanguageRanges(range).map(r => {
+        return {
+          start: r.start,
+          end: r.end,
+          mode: modes[r.languageId],
+          attributeValue: r.attributeValue
+        };
+      });
     },
-    getAllModesInDocument(document: TextDocument): LanguageMode[] {
+    getAllModesInDocument(document: DocumentInfo): LanguageMode[] {
       const result = [];
-      for (const languageId of documentService.getInfo(document)!.regions.getLanguagesInDocument()) {
+      for (const languageId of document.regions.getLanguagesInDocument()) {
         const mode = modes[languageId];
         if (mode) {
           result.push(mode);
@@ -133,10 +130,10 @@ export function getLanguageModes(
     getMode(languageId: string): LanguageMode {
       return modes[languageId];
     },
-    onDocumentRemoved(document: TextDocument) {
-      modelCaches.forEach(mc => mc.onDocumentRemoved(document));
+    onDocumentRemoved(doc: TextDocument) {
+      modelCaches.forEach(mc => mc.onDocumentRemoved(doc));
       for (const mode in modes) {
-        modes[mode].onDocumentRemoved(document);
+        modes[mode].onDocumentRemoved(doc);
       }
     },
     dispose(): void {

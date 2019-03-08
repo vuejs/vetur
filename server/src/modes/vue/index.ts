@@ -11,7 +11,7 @@ export function getVueMode(): LanguageMode {
     configure(c) {
       config = c;
     },
-    doComplete(document, position) {
+    doComplete({ document }, position) {
       if (!config.vetur.completion.useScaffoldSnippets) {
         return { isIncomplete: false, items: [] };
       }

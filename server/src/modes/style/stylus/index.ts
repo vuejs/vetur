@@ -17,7 +17,7 @@ import { DocumentService } from '../../../services/documentService';
 
 export function getStylusMode(documentService: DocumentService): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentService.getInfo(document)!.regions.getEmbeddedDocument('stylus')
+    documentService.getDocumentInfo(document)!.regions.getEmbeddedDocument('stylus')
   );
   let baseIndentShifted = false;
   let config: any = {};
@@ -29,7 +29,7 @@ export function getStylusMode(documentService: DocumentService): LanguageMode {
     },
     onDocumentRemoved() {},
     dispose() {},
-    doComplete(document, position) {
+    doComplete({ document }, position) {
       const embedded = embeddedDocuments.get(document);
 
       const lsCompletions = provideCompletionItems(embedded, position);
@@ -56,15 +56,15 @@ export function getStylusMode(documentService: DocumentService): LanguageMode {
         };
       }
     },
-    findDocumentSymbols(document) {
+    findDocumentSymbols({ document }) {
       const embedded = embeddedDocuments.get(document);
       return provideDocumentSymbols(embedded);
     },
-    doHover(document, position) {
+    doHover({ document }, position) {
       const embedded = embeddedDocuments.get(document);
       return stylusHover(embedded, position);
     },
-    format(document, range, formatParams) {
+    format({ document }, range, formatParams) {
       if (config.vetur.format.defaultFormatter.stylus === 'none') {
         return [];
       }
