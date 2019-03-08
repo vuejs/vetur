@@ -41,8 +41,8 @@ export class VLS {
 
   private languageModes: LanguageModes;
 
-  private pendingValidationQueue = new Set<string>();
-  private drainingValidationQueue = false;
+  private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
+  private validationDelayMs = 200;
   private validation: { [k: string]: boolean } = {
     'vue-html': true,
     html: true,
@@ -103,7 +103,10 @@ export class VLS {
 
   private setupFileChangeListeners() {
     this.documentService.onDidChangeContent((change: TextDocumentChangeEvent) => {
-      this.triggerValidation(change.document);
+      this.triggerValidation(this.documentService.getDocumentInfo(change.document.uri)!);
+    });
+    this.documentService.onDidSave((change: TextDocumentChangeEvent) => {
+      this.triggerValidation(this.documentService.getDocumentInfo(change.document.uri)!);
     });
     this.documentService.onDidClose(e => {
       this.removeDocument(e.document);
@@ -160,7 +163,7 @@ export class VLS {
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
     const info = this.documentService.getDocumentInfo(textDocument.uri)!;
 
-    const fullDocRange = Range.create(Position.create(0, 0), info.document.positionAt(info.document.getText().length));
+    const fullDocRange = Range.create(Position.create(0, 0), info.positionAt(info.getText().length));
 
     const modeRanges = this.languageModes.getModesInRange(info, fullDocRange);
     const allEdits: TextEdit[] = [];
@@ -320,41 +323,35 @@ export class VLS {
    * Validations
    */
 
-  private triggerValidation(textDocument: TextDocument): void {
-    this.pendingValidationQueue.add(textDocument.uri);
-    if (!this.drainingValidationQueue) {
-      this.drainPendingValidations();
-    }
-  }
-
-  private async drainPendingValidations() {
-    this.drainingValidationQueue = true;
-    while (this.pendingValidationQueue.size > 0) {
-      await new Promise(r => setTimeout(r, 0));
-      const item = this.pendingValidationQueue.values().next();
-      if (item.done) {
-        break;
-      }
-      this.pendingValidationQueue.delete(item.value);
-      const documentInfo = this.documentService.getDocumentInfo(item.value)!;
+  private triggerValidation(documentInfo: DocumentInfo): void {
+    this.cleanPendingValidation(documentInfo);
+    this.pendingValidationRequests[documentInfo.uri] = setTimeout(() => {
+      delete this.pendingValidationRequests[documentInfo.uri];
       this.validateTextDocument(documentInfo);
+    }, this.validationDelayMs);
+  }
+
+  cleanPendingValidation(documentInfo: DocumentInfo): void {
+    const request = this.pendingValidationRequests[documentInfo.uri];
+    if (request) {
+      clearTimeout(request);
+      delete this.pendingValidationRequests[documentInfo.uri];
     }
-    this.drainingValidationQueue = false;
   }
 
-  validateTextDocument(textDocument: DocumentInfo) {
-    const diagnostics: Diagnostic[] = this.doValidate(textDocument);
-    this.lspConnection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+  validateTextDocument(documentInfo: DocumentInfo): void {
+    const diagnostics: Diagnostic[] = this.doValidate(documentInfo);
+    this.lspConnection.sendDiagnostics({ uri: documentInfo.uri, diagnostics });
   }
 
-  doValidate(info: DocumentInfo): Diagnostic[] {
+  doValidate(doc: DocumentInfo): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
-    if (info.languageId === 'vue') {
-      for (const mode of this.languageModes.getAllModesInDocument(info)) {
+    if (doc.languageId === 'vue') {
+      this.languageModes.getAllModesInDocument(doc).forEach(mode => {
         if (mode.doValidation && this.validation[mode.getId()]) {
-          pushAll(diagnostics, mode.doValidation(info));
+          pushAll(diagnostics, mode.doValidation(doc));
         }
-      }
+      });
     }
     return diagnostics;
   }

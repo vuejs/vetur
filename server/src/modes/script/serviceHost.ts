@@ -16,33 +16,36 @@ const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = cre
 (ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
 (ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
 
-const vueSys: ts.System = {
-  ...ts.sys,
-  fileExists(path: string) {
-    if (isVueProject(path)) {
-      return ts.sys.fileExists(path.slice(0, -3));
+function createVueSys(jsDocuments: LanguageModelCache<DocumentRegion>) {
+  const vueSys: ts.System = {
+    ...ts.sys,
+    fileExists(path: string) {
+      if (isVueProject(path)) {
+        return ts.sys.fileExists(path.slice(0, -3));
+      }
+      return ts.sys.fileExists(path);
+    },
+    readFile(path, encoding) {
+      if (isVueProject(path)) {
+        const fileText = ts.sys.readFile(path.slice(0, -3), encoding);
+        return fileText ? parseVue(fileText) : fileText;
+      } else {
+        const fileText = ts.sys.readFile(path, encoding);
+        return fileText;
+      }
     }
-    return ts.sys.fileExists(path);
-  },
-  readFile(path, encoding) {
-    if (isVueProject(path)) {
-      const fileText = ts.sys.readFile(path.slice(0, -3), encoding);
-      return fileText ? parseVue(fileText) : fileText;
-    } else {
-      const fileText = ts.sys.readFile(path, encoding);
-      return fileText;
-    }
-  }
-};
-
-if (ts.sys.realpath) {
-  const realpath = ts.sys.realpath;
-  vueSys.realpath = function(path) {
-    if (isVueProject(path)) {
-      return realpath(path.slice(0, -3)) + '.ts';
-    }
-    return realpath(path);
   };
+
+  if (ts.sys.realpath) {
+    const realpath = ts.sys.realpath;
+    vueSys.realpath = function(path) {
+      if (isVueProject(path)) {
+        return realpath(path.slice(0, -3)) + '.ts';
+      }
+      return realpath(path);
+    };
+  }
+  return vueSys;
 }
 
 const defaultCompilerOptions: ts.CompilerOptions = {
@@ -89,7 +92,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       }
     }
     if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
-      currentScriptDoc = jsDocuments.get(doc.document);
+      currentScriptDoc = jsDocuments.get(doc);
       const lastDoc = scriptDocs.get(fileFsPath)!;
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
@@ -114,6 +117,8 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
   function getScriptDocByFsPath(fsPath: string) {
     return scriptDocs.get(fsPath);
   }
+
+  const vueSys = createVueSys(jsDocuments);
 
   const host: ts.LanguageServiceHost = {
     getCompilationSettings: () => compilerOptions,
@@ -335,15 +340,7 @@ class DocumentSnapshot implements ts.IScriptSnapshot {
   constructor(public documentRegion: DocumentRegion) {
     this.textSnapshot = documentRegion.document.getText();
     this.version = documentRegion.version;
-    this.editRanges = documentRegion.editRanges.map(range =>
-      ts.createTextChangeRange(
-        ts.createTextSpanFromBounds(
-          documentRegion.document.offsetAt(range.range.start),
-          documentRegion.document.offsetAt(range.range.end)
-        ),
-        range.newText.length
-      )
-    );
+    this.editRanges = documentRegion.editRanges;
   }
 
   public getText(start: number, end: number): string {
@@ -365,7 +362,16 @@ class DocumentSnapshot implements ts.IScriptSnapshot {
       return ts.unchangedTextChangeRange;
     }
 
-    return ts.collapseTextChangeRangesAcrossMultipleVersions(this.editRanges);
+    // TODO: Try to create the correct change text range, that doesn't break things.
+    return undefined;
+    // if (oldVersion.editRanges.length > 0) {
+    //   return ts.collapseTextChangeRangesAcrossMultipleVersions(
+    //     this.editRanges.slice(oldVersion.editRanges.length - 1, this.editRanges.length - 1)
+    //   );
+    // } else if (oldVersion.editRanges.length > this.editRanges.length) {
+    //   return undefined;
+    // }
+    // return ts.collapseTextChangeRangesAcrossMultipleVersions(this.editRanges);
   }
 }
 export class ScriptInfo {

@@ -38,7 +38,8 @@ connection.onInitialize(
           openClose: true,
           save: {
             includeText: true
-          }
+          },
+          willSave: true
         },
         completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
         signatureHelpProvider: { triggerCharacters: ['('] },

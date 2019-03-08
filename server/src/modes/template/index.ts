@@ -48,44 +48,44 @@ export function getVueHTMLMode(
     configureService(infoService: VueInfoService) {
       vueInfoService = infoService;
     },
-    doValidation({ document }) {
+    doValidation(document) {
       const embedded = embeddedDocuments.get(document);
       return doValidation(embedded, lintEngine);
     },
-    doComplete(documentInfo, position) {
-      const embedded = embeddedDocuments.get(documentInfo.document);
+    doComplete(document, position) {
+      const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(documentInfo);
+      const info = vueInfoService.getInfo(document);
       if (info && info.componentInfo.childComponents) {
         tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
       }
 
       return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders, config.emmet, info);
     },
-    doHover(documentInfo, position) {
-      const embedded = embeddedDocuments.get(documentInfo.document);
+    doHover(document, position) {
+      const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(documentInfo);
+      const info = vueInfoService.getInfo(document);
       if (info && info.componentInfo.childComponents) {
         tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
       }
       return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
-    findDocumentHighlight({ document }, position: Position) {
+    findDocumentHighlight(document, position: Position) {
       return findDocumentHighlights(document, position, vueDocuments.get(document));
     },
-    findDocumentLinks({ document }, documentContext: DocumentContext) {
+    findDocumentLinks(document, documentContext: DocumentContext) {
       return findDocumentLinks(document, documentContext);
     },
-    findDocumentSymbols({ document }) {
+    findDocumentSymbols(document) {
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
-    format({ document }, range: Range, formattingOptions: FormattingOptions) {
+    format(document, range: Range, formattingOptions: FormattingOptions) {
       return htmlFormat(document, range, config.vetur.format as VLSFormatConfig);
     },
-    findDefinition(documentInfo, position: Position) {
-      const embedded = embeddedDocuments.get(documentInfo.document);
-      const info = vueInfoService.getInfo(documentInfo);
+    findDefinition(document, position: Position) {
+      const embedded = embeddedDocuments.get(document);
+      const info = vueInfoService.getInfo(document);
       return findDefinition(embedded, position, vueDocuments.get(embedded), info);
     },
     onDocumentRemoved(document) {

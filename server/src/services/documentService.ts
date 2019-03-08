@@ -13,9 +13,12 @@ import {
   DidCloseTextDocumentParams,
   WillSaveTextDocumentParams,
   CancellationToken,
-  DidSaveTextDocumentParams
+  DidSaveTextDocumentParams,
+  Position,
+  Range
 } from 'vscode-languageserver';
 import { getRegions, createDocumentRegions } from '../modes/embeddedSupport';
+import { TextChangeRange, createTextChangeRange, createTextSpanFromBounds } from 'typescript';
 
 /**
  * Service responsible for managing documents being syned through LSP
@@ -100,7 +103,7 @@ export class DocumentService {
    * @return all text documents.
    */
   public getAllDocuments() {
-    return Object.keys(this._infos).map(x => this._infos[x].document);
+    return Object.keys(this._infos).map(x => this._infos[x]);
   }
 
   public getAllDocumentInfos(uri: string) {
@@ -118,7 +121,7 @@ export class DocumentService {
     if (typeof uriOrDocument === 'object') {
       uriOrDocument = uriOrDocument.uri;
     }
-    return this._infos[uriOrDocument] && this._infos[uriOrDocument].document;
+    return this._infos[uriOrDocument];
   }
 
   public getDocumentInfo(uriOrDocument: string | TextDocument): DocumentInfo | undefined {
@@ -155,31 +158,31 @@ export class DocumentService {
     connection.onDidChangeTextDocument((event: DidChangeTextDocumentParams) => {
       const td = event.textDocument;
       const changes = event.contentChanges;
-      const info = this._infos[td.uri];
+      const document = this._infos[td.uri];
 
       if (changes.length === 1 && !changes[0].range) {
-        info.updateContent(changes[0].text, td.version!);
+        document.updateContent(changes[0].text, td.version!);
       } else {
-        info.editContent(changes.map(({ range, text }) => ({ range: range!, newText: text })), td.version!);
+        document.editContent(changes.map(({ range, text }) => ({ range: range!, newText: text })), td.version!);
       }
-      const toFire = Object.freeze({ document: info.document });
+      const toFire = Object.freeze({ document });
       this._onDidChangeContent.fire(toFire);
     });
     connection.onDidCloseTextDocument((event: DidCloseTextDocumentParams) => {
-      const { document } = this._infos[event.textDocument.uri];
+      const document = this._infos[event.textDocument.uri];
       if (document) {
         delete this._infos[event.textDocument.uri];
         this._onDidClose.fire(Object.freeze({ document }));
       }
     });
     connection.onWillSaveTextDocument((event: WillSaveTextDocumentParams) => {
-      const { document } = this._infos[event.textDocument.uri];
+      const document = this._infos[event.textDocument.uri];
       if (document) {
         this._onWillSave.fire(Object.freeze({ document, reason: event.reason }));
       }
     });
     connection.onWillSaveTextDocumentWaitUntil((event: WillSaveTextDocumentParams, token: CancellationToken) => {
-      const { document } = this._infos[event.textDocument.uri];
+      const document = this._infos[event.textDocument.uri];
       if (document && this._willSaveWaitUntil) {
         return this._willSaveWaitUntil(Object.freeze({ document, reason: event.reason }), token);
       } else {
@@ -188,7 +191,7 @@ export class DocumentService {
     });
     connection.onDidSaveTextDocument((event: DidSaveTextDocumentParams) => {
       const td = event.textDocument;
-      const { document } = this._infos[event.textDocument.uri];
+      const document = this._infos[event.textDocument.uri];
       if (document) {
         if (isUpdateableDocument(document)) {
           if (td.version === null || td.version === void 0) {
@@ -211,33 +214,59 @@ function isUpdateableDocument(value: TextDocument): value is UpdateableDocument 
   return typeof (value as UpdateableDocument).update === 'function';
 }
 
-export class DocumentInfo {
+export class DocumentInfo implements TextDocument {
   private _regions: ReturnType<typeof buildRegions> | null = null;
+  private _originalDocument: TextDocument;
+  private _updatedDocument: TextDocument;
+
+  constructor(originalDocument: TextDocument, public editRanges: TextEdit[] = []) {
+    this._originalDocument = originalDocument;
+    this._updatedDocument = TextDocument.create(
+      originalDocument.uri,
+      originalDocument.languageId,
+      originalDocument.version,
+      originalDocument.getText()
+    );
+  }
 
   public get version() {
-    return this.document.version;
+    return this._updatedDocument.version;
   }
   public get uri() {
-    return this.document.uri;
+    return this._updatedDocument.uri;
   }
   public get languageId() {
-    return this.document.languageId;
+    return this._updatedDocument.languageId;
   }
   public get regions() {
     // getRegions(this.document)
     if (!this._regions) {
-      this._regions = buildRegions(this);
+      this._regions = buildRegions(this._updatedDocument, this.editRanges);
     }
     return this._regions;
   }
 
-  constructor(public document: TextDocument, public editRanges: TextEdit[] = []) {}
+  public getText(range?: Range) {
+    return this._updatedDocument.getText(range);
+  }
+  public positionAt(offset: number) {
+    return this._updatedDocument.positionAt(offset);
+  }
+  public offsetAt(position: Position) {
+    return this._updatedDocument.offsetAt(position);
+  }
+  public get lineCount() {
+    return this._updatedDocument.lineCount;
+  }
 
   public updateContent(content: string, version: number): void {
     this.editRanges = [];
     this._regions = null;
-    if (isUpdateableDocument(this.document)) {
-      this.document.update({ text: content }, version);
+    if (isUpdateableDocument(this._originalDocument)) {
+      this._originalDocument.update({ text: content }, version);
+    }
+    if (isUpdateableDocument(this._updatedDocument)) {
+      this._updatedDocument.update({ text: content }, version);
     }
   }
 
@@ -250,10 +279,10 @@ export class DocumentInfo {
       }
       return diff;
     });
-    const updatedText = TextDocument.applyEdits(this.document, edits);
+    const updatedText = TextDocument.applyEdits(this._updatedDocument, edits);
     this.editRanges.push(...edits);
-    if (isUpdateableDocument(this.document)) {
-      this.document.update({ text: updatedText }, version);
+    if (isUpdateableDocument(this._updatedDocument)) {
+      this._updatedDocument.update({ text: updatedText }, version);
     }
   }
 }
@@ -264,11 +293,10 @@ const defaultType: { [type: string]: string } = {
   style: 'css'
 };
 
-function buildRegions(info: DocumentInfo) {
-  const { document } = info;
+function buildRegions(document: TextDocument, textEdits: TextEdit[]) {
   const documentInfos: { [languageId: string]: DocumentRegion } = {};
   const documentInfosByType: { [type: string]: DocumentRegion } = {};
-  const { regions, importedScripts } = getRegions(info.document);
+  const { regions, importedScripts } = getRegions(document);
   for (const region of regions) {
     let content = document
       .getText()
@@ -276,29 +304,20 @@ function buildRegions(info: DocumentInfo) {
       .replace(/./g, ' ');
     content += document.getText().substring(region.start, region.end);
 
-    const edits: TextEdit[] = [];
-    for (const edit of edits) {
+    // TODO: This might need to progressively rebuild the region to track html changes
+    const edits: TextChangeRange[] = [];
+    for (const edit of textEdits) {
       let editStart = document.offsetAt(edit.range.start);
       let editEnd = document.offsetAt(edit.range.end);
-      let newText = edit.newText;
-      if (editEnd < region.start || region.end > editStart) {
+      if (editStart > region.end || editEnd < region.start) {
         continue;
       }
-      if (editEnd > region.end) {
-        editEnd = region.end;
-        newText = newText.substring(0, newText.length - (region.end - editEnd));
-      }
-      if (region.start < editStart) {
-        editStart = region.start;
-        newText = newText.substring(editStart - region.start);
-      }
-      edits.push({
-        newText,
-        range: {
-          start: document.positionAt(editStart),
-          end: document.positionAt(editEnd)
-        }
-      });
+      edits.push(
+        createTextChangeRange(
+          createTextSpanFromBounds(document.offsetAt(edit.range.start), document.offsetAt(edit.range.end)),
+          edit.newText.length
+        )
+      );
     }
 
     documentInfosByType[region.type] = documentInfos[region.languageId] = new DocumentRegion(
@@ -327,7 +346,7 @@ function buildRegions(info: DocumentInfo) {
 }
 
 export class DocumentRegion {
-  constructor(public document: TextDocument, public editRanges: TextEdit[] = []) {}
+  constructor(public document: TextDocument, public editRanges: TextChangeRange[] = []) {}
 
   public get version() {
     return this.document.version;

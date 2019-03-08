@@ -120,15 +120,15 @@ export function getJavascriptMode(
         };
       });
     },
-    doComplete(info: DocumentInfo, position: Position): CompletionList {
-      const { scriptDoc, service } = updateCurrentTextDocument(info);
-      if (!languageServiceIncludesFile(service, info.uri)) {
+    doComplete(document: DocumentInfo, position: Position): CompletionList {
+      const { scriptDoc, service } = updateCurrentTextDocument(document);
+      if (!languageServiceIncludesFile(service, document.uri)) {
         return { isIncomplete: false, items: [] };
       }
 
-      const fileFsPath = getFileFsPath(info.uri);
+      const fileFsPath = getFileFsPath(document.uri);
       const offset = scriptDoc.document.offsetAt(position);
-      const triggerChar = info.document.getText()[offset - 1];
+      const triggerChar = document.getText()[offset - 1];
       if (NON_SCRIPT_TRIGGERS.includes(triggerChar)) {
         return { isIncomplete: false, items: [] };
       }
@@ -145,7 +145,7 @@ export function getJavascriptMode(
         items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc.document, entry.replacementSpan);
           return {
-            uri: info.uri,
+            uri: document.uri,
             position,
             label: entry.name,
             sortText: entry.sortText + index,
@@ -154,7 +154,7 @@ export function getJavascriptMode(
             data: {
               // data used for resolving item details (see 'doResolve')
               languageId: scriptDoc.languageId,
-              uri: info.uri,
+              uri: document.uri,
               offset,
               source: entry.source
             }
@@ -162,13 +162,13 @@ export function getJavascriptMode(
         })
       };
     },
-    doResolve(info: DocumentInfo, item: CompletionItem): CompletionItem {
-      const { service } = updateCurrentTextDocument(info);
-      if (!languageServiceIncludesFile(service, info.uri)) {
+    doResolve(document: DocumentInfo, item: CompletionItem): CompletionItem {
+      const { service } = updateCurrentTextDocument(document);
+      if (!languageServiceIncludesFile(service, document.uri)) {
         return item;
       }
 
-      const fileFsPath = getFileFsPath(info.uri);
+      const fileFsPath = getFileFsPath(document.uri);
       const details = service.getCompletionEntryDetails(
         fileFsPath,
         item.data.offset,
@@ -187,7 +187,7 @@ export function getJavascriptMode(
         item.detail = ts.displayPartsToString(details.displayParts);
         item.documentation = ts.displayPartsToString(details.documentation);
         if (details.codeActions && config.vetur.completion.autoImport) {
-          const textEdits = convertCodeAction(info.document, details.codeActions, regionStart);
+          const textEdits = convertCodeAction(document, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
         }
         delete item.data;
