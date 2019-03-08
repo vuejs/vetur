@@ -19,8 +19,7 @@ import {
   ColorPresentation
 } from 'vscode-languageserver-types';
 
-import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
-import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
+import { LanguageModelCache } from './languageModelCache';
 import { getVueMode } from './vue';
 import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from './style';
 import { getJavascriptMode } from './script/javascript';
@@ -28,6 +27,7 @@ import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
 import { DocumentContext } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
+import { DocumentService } from '../services/documentService';
 
 export interface LanguageMode {
   getId(): string;
@@ -69,21 +69,21 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(workspacePath: string | null | undefined): LanguageModes {
-  const documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document => getDocumentRegions(document));
-
+export function getLanguageModes(
+  workspacePath: string | null | undefined,
+  documentService: DocumentService
+): LanguageModes {
   let modelCaches: LanguageModelCache<any>[] = [];
-  modelCaches.push(documentRegions);
 
-  const jsMode = getJavascriptMode(documentRegions, workspacePath);
+  const jsMode = getJavascriptMode(documentService, workspacePath);
   let modes: { [k: string]: LanguageMode } = {
     vue: getVueMode(),
-    'vue-html': getVueHTMLMode(documentRegions, workspacePath),
-    css: getCSSMode(documentRegions),
-    postcss: getPostCSSMode(documentRegions),
-    scss: getSCSSMode(documentRegions),
-    less: getLESSMode(documentRegions),
-    stylus: getStylusMode(documentRegions),
+    'vue-html': getVueHTMLMode(documentService, workspacePath),
+    css: getCSSMode(documentService),
+    postcss: getPostCSSMode(documentService),
+    scss: getSCSSMode(documentService),
+    less: getLESSMode(documentService),
+    stylus: getStylusMode(documentService),
     javascript: jsMode,
     tsx: jsMode,
     typescript: jsMode
@@ -91,16 +91,16 @@ export function getLanguageModes(workspacePath: string | null | undefined): Lang
 
   return {
     getModeAtPosition(document: TextDocument, position: Position): LanguageMode | null {
-      const languageId = documentRegions.get(document).getLanguageAtPosition(position);
+      const languageId = documentService.getInfo(document)!.regions.getLanguageAtPosition(position);
       if (languageId) {
         return modes[languageId];
       }
       return null;
     },
     getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
-      return documentRegions
-        .get(document)
-        .getLanguageRanges(range)
+      return documentService
+        .getInfo(document)!
+        .regions.getLanguageRanges(range)
         .map(r => {
           return {
             start: r.start,
@@ -112,7 +112,7 @@ export function getLanguageModes(workspacePath: string | null | undefined): Lang
     },
     getAllModesInDocument(document: TextDocument): LanguageMode[] {
       const result = [];
-      for (const languageId of documentRegions.get(document).getLanguagesInDocument()) {
+      for (const languageId of documentService.getInfo(document)!.regions.getLanguagesInDocument()) {
         const mode = modes[languageId];
         if (mode) {
           result.push(mode);

@@ -1,9 +1,4 @@
-import {
-  createConnection,
-  InitializeParams,
-  InitializeResult,
-  TextDocumentSyncKind
-} from 'vscode-languageserver';
+import { createConnection, InitializeParams, InitializeResult, TextDocumentSyncKind } from 'vscode-languageserver';
 import { VLS } from './services/vls';
 
 // Create a connection for the server
@@ -17,41 +12,49 @@ console.error = connection.console.error.bind(connection.console);
 
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
-connection.onInitialize((params: InitializeParams): InitializeResult => {
-  const initializationOptions = params.initializationOptions;
+connection.onInitialize(
+  (params: InitializeParams): InitializeResult => {
+    const initializationOptions = params.initializationOptions;
 
-  const workspacePath = params.rootPath;
-  if (!workspacePath) {
-    console.error('No workspace path found. Vetur initialization failed');
+    const workspacePath = params.rootPath;
+    if (!workspacePath) {
+      console.error('No workspace path found. Vetur initialization failed');
+      return {
+        capabilities: {}
+      };
+    }
+
+    console.log('Vetur initialized');
+    const vls = new VLS(workspacePath, connection);
+
+    if (initializationOptions && initializationOptions.config) {
+      vls.configure(initializationOptions.config);
+    }
+
     return {
-      capabilities: {}
+      capabilities: {
+        textDocumentSync: {
+          change: TextDocumentSyncKind.Incremental,
+          openClose: true,
+          save: {
+            includeText: true
+          }
+        },
+        completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
+        signatureHelpProvider: { triggerCharacters: ['('] },
+        documentFormattingProvider: true,
+        hoverProvider: true,
+        documentHighlightProvider: true,
+        documentLinkProvider: {
+          resolveProvider: false
+        },
+        documentSymbolProvider: true,
+        definitionProvider: true,
+        referencesProvider: true,
+        colorProvider: true
+      }
     };
   }
-
-  console.log('Vetur initialized');
-  const vls = new VLS(workspacePath, connection);
-
-  if (initializationOptions && initializationOptions.config) {
-    vls.configure(initializationOptions.config);
-  }
-
-  return {
-    capabilities: {
-      textDocumentSync: TextDocumentSyncKind.Full,
-      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
-      signatureHelpProvider: { triggerCharacters: ['('] },
-      documentFormattingProvider: true,
-      hoverProvider: true,
-      documentHighlightProvider: true,
-      documentLinkProvider: {
-        resolveProvider: false
-      },
-      documentSymbolProvider: true,
-      definitionProvider: true,
-      referencesProvider: true,
-      colorProvider: true
-    }
-  };
-});
+);
 
 connection.listen();

@@ -33,7 +33,7 @@ const defaultType: { [type: string]: string } = {
   style: 'css'
 };
 
-export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
+export function getRegions(document: TextDocument) {
   const regions: EmbeddedRegion[] = [];
   const text = document.getText();
   const scanner = createScanner(text);
@@ -100,7 +100,28 @@ export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
     }
     token = scanner.scan();
   }
+  return { regions, importedScripts };
+}
 
+export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
+  const { regions, importedScripts } = getRegions(document);
+
+  return {
+    getLanguageRanges: (range: Range) => getLanguageRanges(document, regions, range),
+    getLanguageRangeByType: (type: EmbeddedType) => getLanguageRangeByType(document, regions, type),
+    getEmbeddedDocument: (languageId: string) => getEmbeddedDocument(document, regions, languageId),
+    getEmbeddedDocumentByType: (type: EmbeddedType) => getEmbeddedDocumentByType(document, regions, type),
+    getLanguageAtPosition: (position: Position) => getLanguageAtPosition(document, regions, position),
+    getLanguagesInDocument: () => getLanguagesInDocument(document, regions),
+    getImportedScripts: () => importedScripts
+  };
+}
+
+export function createDocumentRegions(
+  document: TextDocument,
+  regions: EmbeddedRegion[],
+  importedScripts: string[]
+): VueDocumentRegions {
   return {
     getLanguageRanges: (range: Range) => getLanguageRanges(document, regions, range),
     getLanguageRangeByType: (type: EmbeddedType) => getLanguageRangeByType(document, regions, type),

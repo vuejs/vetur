@@ -1,9 +1,8 @@
 import * as _ from 'lodash';
 
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { getLanguageModelCache } from '../languageModelCache';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions } from '../embeddedSupport';
 import { HTMLDocument } from './parser/htmlParser';
 import { doComplete } from './services/htmlCompletion';
 import { doHover } from './services/htmlHover';
@@ -20,17 +19,16 @@ import { DocumentContext } from '../../types';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
-
-type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
+import { DocumentService } from '../../services/documentService';
 
 export function getVueHTMLMode(
-  documentRegions: DocumentRegionCache,
+  documentService: DocumentService,
   workspacePath: string | null | undefined
 ): LanguageMode {
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
-    documentRegions.get(document).getEmbeddedDocument('vue-html')
+    documentService.getInfo(document)!.regions.getEmbeddedDocument('vue-html')
   );
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();

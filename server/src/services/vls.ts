@@ -27,7 +27,7 @@ import {
   TextDocument,
   TextDocumentChangeEvent,
   TextEdit,
-  ColorPresentation,
+  ColorPresentation
 } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
@@ -41,8 +41,8 @@ export class VLS {
 
   private languageModes: LanguageModes;
 
-  private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
-  private validationDelayMs = 200;
+  private pendingValidationQueue = new Set<string>();
+  private drainingValidationQueue = false;
   private validation: { [k: string]: boolean } = {
     'vue-html': true,
     html: true,
@@ -56,16 +56,16 @@ export class VLS {
   private vueInfoService: VueInfoService;
 
   constructor(private workspacePath: string, private lspConnection: IConnection) {
-    this.languageModes = getLanguageModes(workspacePath);
+    this.documentService = new DocumentService();
+    this.documentService.listen(lspConnection);
+
+    this.languageModes = getLanguageModes(workspacePath, this.documentService);
     this.vueInfoService = new VueInfoService(this.languageModes);
     this.languageModes.getAllModes().forEach(m => {
       if (m.configureService) {
         m.configureService(this.vueInfoService);
       }
     });
-
-    this.documentService = new DocumentService();
-    this.documentService.listen(lspConnection);
 
     this.setupConfigListeners();
     this.setupLanguageFeatures();
@@ -320,22 +320,28 @@ export class VLS {
    */
 
   private triggerValidation(textDocument: TextDocument): void {
-    this.cleanPendingValidation(textDocument);
-    this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
-      delete this.pendingValidationRequests[textDocument.uri];
-      this.validateTextDocument(textDocument);
-    }, this.validationDelayMs);
-  }
-
-  cleanPendingValidation(textDocument: TextDocument): void {
-    const request = this.pendingValidationRequests[textDocument.uri];
-    if (request) {
-      clearTimeout(request);
-      delete this.pendingValidationRequests[textDocument.uri];
+    this.pendingValidationQueue.add(textDocument.uri);
+    if (!this.drainingValidationQueue) {
+      this.drainPendingValidations();
     }
   }
 
-  validateTextDocument(textDocument: TextDocument): void {
+  private async drainPendingValidations() {
+    this.drainingValidationQueue = true;
+    while (this.pendingValidationQueue.size > 0) {
+      await new Promise(r => setTimeout(r, 0));
+      const item = this.pendingValidationQueue.values().next();
+      if (item.done) {
+        break;
+      }
+      this.pendingValidationQueue.delete(item.value);
+      const textDocument = this.documentService.getDocument(item.value)!;
+      this.validateTextDocument(textDocument);
+    }
+    this.drainingValidationQueue = false;
+  }
+
+  validateTextDocument(textDocument: TextDocument) {
     const diagnostics: Diagnostic[] = this.doValidate(textDocument);
     this.lspConnection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
   }
@@ -343,11 +349,11 @@ export class VLS {
   doValidate(doc: TextDocument): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
-      this.languageModes.getAllModesInDocument(doc).forEach(mode => {
+      for (const mode of this.languageModes.getAllModesInDocument(doc)) {
         if (mode.doValidation && this.validation[mode.getId()]) {
           pushAll(diagnostics, mode.doValidation(doc));
         }
-      });
+      }
     }
     return diagnostics;
   }

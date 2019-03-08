@@ -4,9 +4,8 @@ import { CompletionList, TextEdit } from 'vscode-languageserver-types';
 import { IStylusSupremacy } from './stylus-supremacy';
 
 import { Priority } from '../emmet';
-import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
+import { getLanguageModelCache } from '../../languageModelCache';
 import { LanguageMode } from '../../languageModes';
-import { VueDocumentRegions } from '../../embeddedSupport';
 
 import { provideCompletionItems } from './completion-item';
 import { provideDocumentSymbols } from './symbols-finder';
@@ -14,10 +13,11 @@ import { stylusHover } from './stylus-hover';
 import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
+import { DocumentService } from '../../../services/documentService';
 
-export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getStylusMode(documentService: DocumentService): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getEmbeddedDocument('stylus')
+    documentService.getInfo(document)!.regions.getEmbeddedDocument('stylus')
   );
   let baseIndentShifted = false;
   let config: any = {};

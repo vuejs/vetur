@@ -9,41 +9,41 @@ import * as _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 
 import { Priority } from './emmet';
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { getLanguageModelCache } from '../languageModelCache';
 import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions } from '../embeddedSupport';
 import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
 import { NULL_HOVER } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
+import { DocumentService } from '../../services/documentService';
 
-export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getCSSMode(documentService: DocumentService): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('css', languageService, documentRegions);
+  return getStyleMode('css', languageService, documentService);
 }
 
-export function getPostCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getPostCSSMode(documentService: DocumentService): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('postcss', languageService, documentRegions);
+  return getStyleMode('postcss', languageService, documentService);
 }
 
-export function getSCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getSCSSMode(documentService: DocumentService): LanguageMode {
   const languageService = getSCSSLanguageService();
-  return getStyleMode('scss', languageService, documentRegions);
+  return getStyleMode('scss', languageService, documentService);
 }
-export function getLESSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getLESSMode(documentService: DocumentService): LanguageMode {
   const languageService = getLESSLanguageService();
-  return getStyleMode('less', languageService, documentRegions);
+  return getStyleMode('less', languageService, documentService);
 }
 
 function getStyleMode(
   languageId: string,
   languageService: LanguageService,
-  documentRegions: LanguageModelCache<VueDocumentRegions>
+  documentService: DocumentService
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getEmbeddedDocument(languageId)
+    documentService.getInfo(document)!.regions.getEmbeddedDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
   let config: any = {};

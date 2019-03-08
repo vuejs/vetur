@@ -8,6 +8,7 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
+import { DocumentInfo } from '../../services/documentService';
 
 // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
 // NOTE: this is a global hack that all ts instances after is changed
@@ -55,14 +56,23 @@ const defaultCompilerOptions: ts.CompilerOptions = {
   allowSyntheticDefaultImports: true
 };
 
-export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
-  let currentScriptDoc: TextDocument;
+export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<DocumentInfo>) {
+  let currentScriptDoc: DocumentInfo;
   const versions = new Map<string, number>();
-  const scriptDocs = new Map<string, TextDocument>();
+  const scriptDocs = new Map<string, DocumentInfo>();
 
   const parsedConfig = getParsedConfig(workspacePath);
   const files = parsedConfig.fileNames;
-  const isOldVersion = inferIsOldVersion(workspacePath);
+  const bridgeSnapshot = new DocumentSnapshot(
+    new DocumentInfo(
+      TextDocument.create(
+        bridge.fileName,
+        'vue',
+        1,
+        inferIsOldVersion(workspacePath) ? bridge.oldContent : bridge.content
+      )
+    )
+  );
   const compilerOptions = {
     ...defaultCompilerOptions,
     ...parsedConfig.options
@@ -80,7 +90,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     }
     if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = jsDocuments.get(doc);
-      const lastDoc = scriptDocs.get(fileFsPath);
+      const lastDoc = scriptDocs.get(fileFsPath)!;
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         jsLanguageService.dispose();
@@ -110,7 +120,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     getScriptFileNames: () => files,
     getScriptVersion(fileName) {
       if (fileName === bridge.fileName) {
-        return '0';
+        return bridgeSnapshot.version.toString();
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
       const version = versions.get(normalizedFileFsPath);
@@ -168,32 +178,30 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         const extension =
           doc.languageId === 'typescript'
             ? ts.Extension.Ts
-            : doc.languageId === 'tsx' ? ts.Extension.Tsx : ts.Extension.Js;
+            : doc.languageId === 'tsx'
+            ? ts.Extension.Tsx
+            : ts.Extension.Js;
         return { resolvedFileName, extension };
       });
     },
     getScriptSnapshot: (fileName: string) => {
       if (fileName === bridge.fileName) {
-        const text = isOldVersion ? bridge.oldContent : bridge.content;
-        return {
-          getText: (start, end) => text.substring(start, end),
-          getLength: () => text.length,
-          getChangeRange: () => void 0
-        };
+        return bridgeSnapshot;
       }
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
       const doc = scriptDocs.get(normalizedFileFsPath);
-      let fileText = doc ? doc.getText() : ts.sys.readFile(normalizedFileFsPath) || '';
+      if (doc) {
+        return new DocumentSnapshot(doc);
+      }
+
+      let fileText = ts.sys.readFile(normalizedFileFsPath) || '';
+      const scriptInfo = new ScriptInfo(normalizedFileFsPath, fileText);
       if (!doc && isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
         fileText = parseVue(fileText);
       }
-      return {
-        getText: (start, end) => fileText.substring(start, end),
-        getLength: () => fileText.length,
-        getChangeRange: () => void 0
-      };
+      return new ScriptSnapshot(scriptInfo);
     },
     getCurrentDirectory: () => workspacePath,
     getDefaultLibFileName: ts.getDefaultLibFilePath,
@@ -265,4 +273,174 @@ function getParsedConfig(workspacePath: string) {
     /*resolutionStack*/ undefined,
     [{ extension: 'vue', isMixedContent: true }]
   );
+}
+
+// export class ScriptInfo {
+//   public version = 1;
+//   public editRanges: { length: number; textChangeRange: ts.TextChangeRange }[] = [];
+
+//   constructor(public fileName: string, public content: string) {
+//     this.setContent(content);
+//   }
+
+//   private setContent(content: string): void {
+//     this.content = content;
+//   }
+
+//   public updateContent(content: string): void {
+//     this.editRanges = [];
+//     this.setContent(content);
+//     this.version++;
+//   }
+
+//   public editContent(start: number, end: number, newText: string): void {
+//     // Apply edits
+//     const prefix = this.content.substring(0, start);
+//     const middle = newText;
+//     const suffix = this.content.substring(end);
+//     this.setContent(prefix + middle + suffix);
+
+//     // Store edit range + new length of script
+//     this.editRanges.push({
+//       length: this.content.length,
+//       textChangeRange: ts.createTextChangeRange(ts.createTextSpanFromBounds(start, end), newText.length)
+//     });
+
+//     // Update version #
+//     this.version++;
+//   }
+
+//   public getTextChangeRangeBetweenVersions(startVersion: number, endVersion: number): ts.TextChangeRange {
+//     if (startVersion === endVersion) {
+//       // No edits!
+//       return ts.unchangedTextChangeRange;
+//     }
+
+//     const initialEditRangeIndex = this.editRanges.length - (this.version - startVersion);
+//     const lastEditRangeIndex = this.editRanges.length - (this.version - endVersion);
+
+//     const entries = this.editRanges.slice(initialEditRangeIndex, lastEditRangeIndex);
+//     return ts.collapseTextChangeRangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
+//   }
+// }
+
+class DocumentSnapshot implements ts.IScriptSnapshot {
+  public textSnapshot: string;
+  public version: number;
+  public editRanges: ts.TextChangeRange[];
+  public get key() {
+    return `${this.version}:${this.editRanges.length}`;
+  }
+
+  constructor(public scriptInfo: DocumentInfo) {
+    this.textSnapshot = scriptInfo.document.getText();
+    this.version = scriptInfo.version;
+    this.editRanges = scriptInfo.editRanges.map(range =>
+      ts.createTextChangeRange(
+        ts.createTextSpanFromBounds(
+          scriptInfo.document.offsetAt(range.range.start),
+          scriptInfo.document.offsetAt(range.range.end)
+        ),
+        range.newText.length
+      )
+    );
+  }
+
+  public getText(start: number, end: number): string {
+    return this.textSnapshot.substring(start, end);
+  }
+
+  public getLength(): number {
+    return this.textSnapshot.length;
+  }
+
+  public getChangeRange(oldScript: ts.IScriptSnapshot): ts.TextChangeRange | undefined {
+    const oldShim = <DocumentSnapshot>oldScript;
+    return this.getTextChangeRange(oldShim);
+  }
+
+  public getTextChangeRange(oldVersion: DocumentSnapshot): ts.TextChangeRange | undefined {
+    if (this.key === oldVersion.key) {
+      // No edits!
+      return ts.unchangedTextChangeRange;
+    }
+
+    if (this.version !== oldVersion.version) {
+      this.scriptInfo.updateContent(this.scriptInfo.document.getText(), this.scriptInfo.version);
+      return undefined;
+    }
+
+    return ts.collapseTextChangeRangesAcrossMultipleVersions(this.editRanges);
+  }
+}
+export class ScriptInfo {
+  public version = 1;
+  public editRanges: { length: number; textChangeRange: ts.TextChangeRange }[] = [];
+
+  constructor(public fileName: string, public content: string) {
+    this.setContent(content);
+  }
+
+  private setContent(content: string): void {
+    this.content = content;
+  }
+
+  public updateContent(content: string): void {
+    this.editRanges = [];
+    this.setContent(content);
+    this.version++;
+  }
+
+  public editContent(start: number, end: number, newText: string): void {
+    // Apply edits
+    const prefix = this.content.substring(0, start);
+    const middle = newText;
+    const suffix = this.content.substring(end);
+    this.setContent(prefix + middle + suffix);
+
+    // Store edit range + new length of script
+    this.editRanges.push({
+      length: this.content.length,
+      textChangeRange: ts.createTextChangeRange(ts.createTextSpanFromBounds(start, end), newText.length)
+    });
+
+    // Update version #
+    this.version++;
+  }
+
+  public getTextChangeRangeBetweenVersions(startVersion: number, endVersion: number): ts.TextChangeRange {
+    if (startVersion === endVersion) {
+      // No edits!
+      return ts.unchangedTextChangeRange;
+    }
+
+    const initialEditRangeIndex = this.editRanges.length - (this.version - startVersion);
+    const lastEditRangeIndex = this.editRanges.length - (this.version - endVersion);
+
+    const entries = this.editRanges.slice(initialEditRangeIndex, lastEditRangeIndex);
+    return ts.collapseTextChangeRangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
+  }
+}
+
+class ScriptSnapshot implements ts.IScriptSnapshot {
+  public textSnapshot: string;
+  public version: number;
+
+  constructor(public scriptInfo: ScriptInfo) {
+    this.textSnapshot = scriptInfo.content;
+    this.version = scriptInfo.version;
+  }
+
+  public getText(start: number, end: number): string {
+    return this.textSnapshot.substring(start, end);
+  }
+
+  public getLength(): number {
+    return this.textSnapshot.length;
+  }
+
+  public getChangeRange(oldScript: ts.IScriptSnapshot): ts.TextChangeRange {
+    const oldShim = <ScriptSnapshot>oldScript;
+    return this.scriptInfo.getTextChangeRangeBetweenVersions(oldShim.version, this.version);
+  }
 }
