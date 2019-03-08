@@ -13,12 +13,12 @@ glob('syntaxes/*.yaml', { nocase: true }, (_, files) => {
     );
   }
 
-  console.log('built files', files);
+  console.log('Built files:\n', JSON.stringify(files));
 
   // get default custom blocks from package json
   const pJson = JSON.parse(readFileSync('package.json').toString());
   const defaultCustomBlocks = pJson.contributes.configuration.properties['vetur.grammar.customBlocks'].default;
   const generatedGrammar = getGeneratedGrammar('syntaxes/vue.tmLanguage.json', defaultCustomBlocks);
   writeFileSync('syntaxes/vue-generated.json', generatedGrammar);
-  console.log('generated vue-generated.json');
+  console.log('Generated vue-generated.json');
 });
