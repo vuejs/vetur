@@ -280,55 +280,6 @@ function getParsedConfig(workspacePath: string) {
   );
 }
 
-// export class ScriptInfo {
-//   public version = 1;
-//   public editRanges: { length: number; textChangeRange: ts.TextChangeRange }[] = [];
-
-//   constructor(public fileName: string, public content: string) {
-//     this.setContent(content);
-//   }
-
-//   private setContent(content: string): void {
-//     this.content = content;
-//   }
-
-//   public updateContent(content: string): void {
-//     this.editRanges = [];
-//     this.setContent(content);
-//     this.version++;
-//   }
-
-//   public editContent(start: number, end: number, newText: string): void {
-//     // Apply edits
-//     const prefix = this.content.substring(0, start);
-//     const middle = newText;
-//     const suffix = this.content.substring(end);
-//     this.setContent(prefix + middle + suffix);
-
-//     // Store edit range + new length of script
-//     this.editRanges.push({
-//       length: this.content.length,
-//       textChangeRange: ts.createTextChangeRange(ts.createTextSpanFromBounds(start, end), newText.length)
-//     });
-
-//     // Update version #
-//     this.version++;
-//   }
-
-//   public getTextChangeRangeBetweenVersions(startVersion: number, endVersion: number): ts.TextChangeRange {
-//     if (startVersion === endVersion) {
-//       // No edits!
-//       return ts.unchangedTextChangeRange;
-//     }
-
-//     const initialEditRangeIndex = this.editRanges.length - (this.version - startVersion);
-//     const lastEditRangeIndex = this.editRanges.length - (this.version - endVersion);
-
-//     const entries = this.editRanges.slice(initialEditRangeIndex, lastEditRangeIndex);
-//     return ts.collapseTextChangeRangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
-//   }
-// }
-
 class DocumentSnapshot implements ts.IScriptSnapshot {
   public textSnapshot: string;
   public version: number;
