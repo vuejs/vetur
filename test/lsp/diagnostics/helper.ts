@@ -8,9 +8,11 @@ export async function testDiagnostics(
   expectedDiagnostics: vscode.Diagnostic[]
 ) {
   // For diagnostics to show up
-  await sleep(2000);
-
-  const result = vscode.languages.getDiagnostics(docUri);
+  let result: vscode.Diagnostic[] = [];
+  while (result.length === 0) {
+    await sleep(1000);
+    result = vscode.languages.getDiagnostics(docUri) || [];
+  }
 
   expectedDiagnostics.forEach(ed => {
     assert.ok(
