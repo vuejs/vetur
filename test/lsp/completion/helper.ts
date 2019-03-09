@@ -43,8 +43,8 @@ export async function testCompletion(
         } else {
           if (ei.documentation && (ei.documentation as MarkupContent).value && match.documentation) {
             assert.equal(
-              (match.documentation as vscode.MarkdownString).value,
-              (ei.documentation as MarkupContent).value
+              (match.documentation as vscode.MarkdownString).value.replace(/\r/g, ''),
+              (ei.documentation as MarkupContent).value.replace(/\r/g, '\n')
             );
           }
         }
