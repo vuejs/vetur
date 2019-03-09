@@ -200,12 +200,12 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       }
 
       let fileText = ts.sys.readFile(normalizedFileFsPath) || '';
-      const scriptInfo = new ScriptInfo(normalizedFileFsPath, fileText);
       if (!doc && isVue(fileName)) {
         // Note: This is required in addition to the parsing in embeddedSupport because
         // this works for .vue files that aren't even loaded by VS Code yet.
         fileText = parseVue(fileText);
       }
+      const scriptInfo = new ScriptInfo(normalizedFileFsPath, fileText);
       return new ScriptSnapshot(scriptInfo);
     },
     getCurrentDirectory: () => workspacePath,

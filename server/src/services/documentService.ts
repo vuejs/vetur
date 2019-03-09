@@ -310,12 +310,11 @@ function buildRegions(document: TextDocument, textEdits: TextEdit[]) {
       if (document.offsetAt(edit.range.start) > region.end || document.offsetAt(edit.range.end) < region.start) {
         continue;
       }
-      edits.push(
-        createTextChangeRange(
-          createTextSpanFromBounds(document.offsetAt(edit.range.start) - 1, document.offsetAt(edit.range.end) + 1),
-          edit.newText.length + 2
-        )
-      );
+      let startOffset = document.offsetAt(edit.range.start) - 1;
+      startOffset = Math.max(startOffset, 0);
+      let endOffset = document.offsetAt(edit.range.end);
+      endOffset = Math.min(endOffset, region.end);
+      edits.push(createTextChangeRange(createTextSpanFromBounds(startOffset, endOffset), edit.newText.length + 2));
     }
 
     documentInfosByType[region.type] = documentInfos[region.languageId] = new DocumentRegion(
