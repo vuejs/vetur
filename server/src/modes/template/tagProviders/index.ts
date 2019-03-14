@@ -8,9 +8,10 @@ import {
   bootstrapTagProvider,
   buefyTagProvider,
   vuetifyTagProvider,
+  gridsomeTagProvider,
   getRuntimeTagProvider
 } from './externalTagProviders';
-export { getComponentTags } from './componentTags';
+export { getComponentInfoTagProvider as getComponentTags } from './componentInfoTagProvider';
 export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';
@@ -26,7 +27,8 @@ export let allTagProviders: IHTMLTagProvider[] = [
   onsenTagProvider,
   bootstrapTagProvider,
   buefyTagProvider,
-  vuetifyTagProvider
+  vuetifyTagProvider,
+  gridsomeTagProvider
 ];
 
 export interface CompletionConfiguration {
@@ -44,7 +46,8 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     buefy: false,
     vuetify: false,
     quasar: false,
-    nuxt: false
+    nuxt: false,
+    gridsome: false
   };
   if (!workspacePath) {
     return settings;
@@ -76,13 +79,18 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     if (
       packageJson.dependencies['nuxt'] ||
       packageJson.dependencies['nuxt-legacy'] ||
-      packageJson.dependencies['nuxt-edge']
+      packageJson.dependencies['nuxt-edge'] ||
+      packageJson.dependencies['nuxt-ts'] ||
+      packageJson.dependencies['nuxt-ts-edge']
     ) {
       const nuxtTagProvider = getNuxtTagProvider(workspacePath);
       if (nuxtTagProvider) {
         settings['nuxt'] = true;
         allTagProviders.push(nuxtTagProvider);
       }
+    }
+    if (packageJson.dependencies['gridsome']) {
+      settings['gridsome'] = true;
     }
 
     for (const dep in packageJson.dependencies) {

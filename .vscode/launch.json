@@ -38,13 +38,13 @@
       ]
     },
     {
-      "name": "E2E Test",
+      "name": "E2E Test (LSP)",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/dist/test",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
         "${workspaceFolder}/test/fixture"
       ],
       "stopOnEntry": false,

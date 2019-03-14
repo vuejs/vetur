@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import {
   DidChangeConfigurationParams,
   DocumentColorParams,
@@ -33,7 +34,9 @@ import Uri from 'vscode-uri';
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { DocumentContext } from '../types';
-import { DocumentService } from './document';
+import { DocumentService } from './documentService';
+import { VueInfoService } from './vueInfoService';
+import URI from 'vscode-uri';
 
 export class VLS {
   private documentService: DocumentService;
@@ -52,8 +55,16 @@ export class VLS {
     javascript: true
   };
 
+  private vueInfoService: VueInfoService;
+
   constructor(private workspacePath: string, private lspConnection: IConnection) {
     this.languageModes = getLanguageModes(workspacePath);
+    this.vueInfoService = new VueInfoService(this.languageModes);
+    this.languageModes.getAllModes().forEach(m => {
+      if (m.configureService) {
+        m.configureService(this.vueInfoService);
+      }
+    });
 
     this.documentService = new DocumentService();
     this.documentService.listen(lspConnection);
@@ -246,10 +257,11 @@ export class VLS {
         if (this.workspacePath && ref[0] === '/') {
           return Uri.file(path.resolve(this.workspacePath, ref)).toString();
         }
-        const docUri = Uri.parse(doc.uri);
+        const docUri = URI.parse(doc.uri);
         return docUri
           .with({
-            path: path.resolve(docUri.path, ref)
+            // Reference from components need to go dwon from their parent dir
+            path: path.resolve(docUri.fsPath, '..', ref)
           })
           .toString();
       }

@@ -17,14 +17,20 @@ export function doHover(
   if (!node || !node.tag) {
     return NULL_HOVER;
   }
+
   function getTagHover(tag: string, range: Range, open: boolean): Hover {
     tag = tag.toLowerCase();
     for (const provider of tagProviders) {
       let hover: Hover | null = null;
-      provider.collectTags((t, label) => {
+      provider.collectTags((t, documentation) => {
         if (t === tag) {
-          const tagLabel = open ? '<' + tag + '>' : '</' + tag + '>';
-          hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(label)], range };
+          if (typeof documentation === 'string') {
+            const contents = [documentation ? MarkedString.fromPlainText(documentation) : ''];
+            hover = { contents, range };
+          } else {
+            const contents = documentation ? documentation : MarkedString.fromPlainText('');
+            hover = { contents, range };
+          }
         }
       });
       if (hover) {
@@ -42,8 +48,13 @@ export function doHover(
         if (attribute !== attr) {
           return;
         }
-        const contents = [documentation ? MarkedString.fromPlainText(documentation) : `No doc for ${attr}`];
-        hover = { contents, range };
+        if (typeof documentation === 'string') {
+          const contents = [documentation ? MarkedString.fromPlainText(documentation) : ''];
+          hover = { contents, range };
+        } else {
+          const contents = documentation ? documentation : MarkedString.fromPlainText('');
+          hover = { contents, range };
+        }
       });
     }
     return hover;

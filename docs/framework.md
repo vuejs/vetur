@@ -12,21 +12,23 @@ Vetur currently provides framework support for the following vue libraries:
 - [Buefy](https://buefy.github.io/#/)
 - [Vuetify](https://vuetifyjs.com/en/)
 - [Quasar Framework](https://quasar-framework.org/)
+- [Gridsome](https://gridsome.org/)
 
 ## Usage
 
 Vetur reads the `package.json` **in your project root** to determine if it should offer tags & attributes completions. Here are the exact dependencies and sources of their definitions.
 
 | Dependency | Source |
-|---|---|---|
+|---|---|
 | `vue-router` | [Vetur](https://github.com/vuejs/vetur/blob/master/server/src/modes/template/tagProviders/routerTags.ts) |
 | `element-ui` | [element-helper-json](https://github.com/ElementUI/element-helper-json) |
 | `vue-onsenui` | [vue-onsenui-helper-json](https://www.npmjs.com/package/vue-onsenui-helper-json) |
 | `bootstrap-vue` | [bootstrap-vue-helper-json](https://github.com/bootstrap-vue/bootstrap-vue-helper-json) |
 | `buefy` | [buefy-helper-json](https://github.com/buefy/buefy-helper-json) |
 | `vuetify` | [vuetify-helper-json](https://github.com/vuetifyjs/vuetify-helper-json) |
-| `nuxt` / `nuxt-legacy` | Bundled in [@nuxt/vue-app](https://www.npmjs.com/package/@nuxt/vue-app) package, or fallback to [nuxt-helper-json](https://github.com/nuxt-community/nuxt-helper-json) |
-| `nuxt-edge` | Bundled in [@nuxt/vue-app-edge](https://www.npmjs.com/package/@nuxt/vue-app-edge) package, or fallback to [nuxt-helper-json](https://github.com/nuxt-community/nuxt-helper-json) |
+| `gridsome` | [gridsome-helper-json](https://github.com/tyankatsu0105/gridsome-helper-json) |
+| `nuxt` / `nuxt-legacy` / `nuxt-ts` | Bundled in [@nuxt/vue-app](https://www.npmjs.com/package/@nuxt/vue-app) package, or fallback to [nuxt-helper-json](https://github.com/nuxt-community/nuxt-helper-json) |
+| `nuxt-edge` / `nuxt-ts-edge` | Bundled in [@nuxt/vue-app-edge](https://www.npmjs.com/package/@nuxt/vue-app-edge) package, or fallback to [nuxt-helper-json](https://github.com/nuxt-community/nuxt-helper-json) |
 | `quasar-framework` | Bundled in [quasar](https://www.npmjs.com/package/quasar) package |
 
 Getting `element-ui`'s completions is as easy as running `yarn add element-ui` and reloading VS Code.
