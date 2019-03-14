@@ -107,7 +107,11 @@ function getStyleMode(
     },
     findDefinition(document, position) {
       const embedded = embeddedDocuments.get(document);
-      return languageService.findDefinition(embedded, position, stylesheets.get(embedded));
+      const definition = languageService.findDefinition(embedded, position, stylesheets.get(embedded));
+      if (!definition) {
+        return [];
+      }
+      return definition;
     },
     findReferences(document, position) {
       const embedded = embeddedDocuments.get(document);

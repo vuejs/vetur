@@ -1,11 +1,13 @@
 {
+  "extends": "../tsconfig.options.json",
   "compilerOptions": {
-    "target": "es2015",
-    "module": "commonjs",
-    "strict": true,
-    "noUnusedLocals": true,
-    "outDir": "dist",
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": "src",
+
     "lib": ["es2015", "es2016.array.include"],
-    "sourceMap": true
-  }
+  },
+  "include": [
+    "src"
+  ]
 }

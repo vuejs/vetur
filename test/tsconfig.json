@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.options.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "../",
+    "outDir": "../dist",
+
+    "noImplicitAny": false,
+    "lib": ["es2015"]
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "**/fixture"
+  ]
+}

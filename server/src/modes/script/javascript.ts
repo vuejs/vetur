@@ -25,7 +25,6 @@ import {
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
 import { getServiceHost } from './serviceHost';
-import { findComponents, ComponentInfo } from './findComponents';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
@@ -35,23 +34,20 @@ import * as _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
+import { VueInfoService } from '../../services/vueInfoService';
+import { getComponentInfo } from './componentInfo';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
-export interface ScriptMode extends LanguageMode {
-  findComponents(document: TextDocument): ComponentInfo[];
-}
-
 export function getJavascriptMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   workspacePath: string | null | undefined
-): ScriptMode {
+): LanguageMode {
   if (!workspacePath) {
     return {
-      ...nullMode,
-      findComponents: () => []
+      ...nullMode
     };
   }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
@@ -68,6 +64,8 @@ export function getJavascriptMode(
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
+  let vueInfoService: VueInfoService | null = null;
+
   return {
     getId() {
       return 'javascript';
@@ -75,6 +73,22 @@ export function getJavascriptMode(
     configure(c) {
       config = c;
     },
+    configureService(infoService: VueInfoService) {
+      vueInfoService = infoService;
+    },
+    updateFileInfo(doc: TextDocument): void {
+      if (!vueInfoService) {
+        return;
+      }
+
+      const { service } = updateCurrentTextDocument(doc);
+      const fileFsPath = getFileFsPath(doc.uri);
+      const info = getComponentInfo(service, fileFsPath, config);
+      if (info) {
+        vueInfoService.updateInfo(doc, info);
+      }
+    },
+
     doValidation(doc: TextDocument): Diagnostic[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
@@ -190,7 +204,7 @@ export function getJavascriptMode(
       }
       return { contents: [] };
     },
-    doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp {
+    doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp | null {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_SIGNATURE;
@@ -306,7 +320,7 @@ export function getJavascriptMode(
       const definitionResults: Definition = [];
       const program = service.getProgram();
       if (!program) {
-        return null;
+        return [];
       }
       definitions.forEach(d => {
         const definitionTargetDoc = getSourceDoc(d.fileName, program);
@@ -398,11 +412,6 @@ export function getJavascriptMode(
         }
         return result;
       }
-    },
-    findComponents(doc: TextDocument) {
-      const { service } = updateCurrentTextDocument(doc);
-      const fileFsPath = getFileFsPath(doc.uri);
-      return findComponents(service, fileFsPath);
     },
     onDocumentRemoved(document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);

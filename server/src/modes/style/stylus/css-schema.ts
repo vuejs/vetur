@@ -4,7 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-interface CSSRecord {
+export interface CSSRecord {
   name: string;
   desc?: string;
   browsers?: string;
@@ -12,7 +12,7 @@ interface CSSRecord {
   values?: CSSRecord[];
 }
 
-interface CSSData {
+export interface CSSData {
   css: {
     atdirectives: CSSRecord[];
     pseudoclasses: CSSRecord[];

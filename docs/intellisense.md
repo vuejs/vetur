@@ -6,7 +6,11 @@ Vetur offers IntelliSense all over your .vue file.
 
 Vetur offers IntelliSense for html tags & attributes.
 
-IntelliSense for Element UI and Onsen UI components are also available. See [Framework Support](framework.md).
+Vetur also completes Vue specific attributes such as `v-if` and `@click`.
+
+Inside template interpolation, such as `v-if="|"`, `@click="|"` or `:attr="|"`, Vetur offers completions for `props`, `data`, `computed` and `methods`.
+
+UI Libraries such as Element UI and Onsen UI often include a list of ready-to-use components, and Vetur offers completion for them. Read more at [Framework Support](framework.md).
 
 ## `<style>`
 

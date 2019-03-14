@@ -1,14 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import {
-  getDocUri,
-  activateLS,
-  showFile,
-  sleep,
-  readFileAsync,
-  setEditorContent,
-  FILE_LOAD_SLEEP_TIME
-} from '../../helper';
+import { activateLS, showFile, sleep, readFileAsync, setEditorContent, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { getDocUri } from '../util';
 
 describe('Should format', () => {
   const docUri = getDocUri('client/formatting/Basic.vue');

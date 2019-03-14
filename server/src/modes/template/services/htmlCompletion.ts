@@ -12,13 +12,17 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
+import { VueFileInfo } from '../../../services/vueInfoService';
+import { doVueInterpolationComplete, shouldDoInterpolationComplete } from './vueInterpolationCompletion';
+import { NULL_COMPLETION } from '../../nullMode';
 
 export function doComplete(
   document: TextDocument,
   position: Position,
   htmlDocument: HTMLDocument,
   tagProviders: IHTMLTagProvider[],
-  emmetConfig: emmet.EmmetConfiguration
+  emmetConfig: emmet.EmmetConfiguration,
+  vueFileInfo?: VueFileInfo
 ): CompletionList {
   const result: CompletionList = {
     isIncomplete: false,
@@ -27,13 +31,33 @@ export function doComplete(
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
-  if (!node || node.isInterpolation) {
+  if (!node) {
     return result;
   }
+
+  if (node.isInterpolation) {
+    const nodeRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
+    const nodeText = document.getText(nodeRange);
+
+    if (!shouldDoInterpolationComplete(nodeText, document.offsetAt(position) - node.start)) {
+      return NULL_COMPLETION;
+    }
+
+    if (document.getText()[document.offsetAt(position) - 1] === '.') {
+      return NULL_COMPLETION;
+    }
+
+    if (vueFileInfo) {
+      return doVueInterpolationComplete(vueFileInfo);
+    } else {
+      return NULL_COMPLETION;
+    }
+  }
+
   const text = document.getText();
   const scanner = createScanner(text, node.start);
   let currentTag: string;
-  let currentAttributeName: string;
+  let currentAttributeName = '';
 
   function getReplaceRange(replaceStart: number, replaceEnd: number = offset): Range {
     if (replaceStart > offset) {
@@ -85,7 +109,7 @@ export function doComplete(
     let curr = node;
     while (curr) {
       const tag = curr.tag;
-      if (tag && (!curr.closed || curr.endTagStart && (curr.endTagStart > offset))) {
+      if (tag && (!curr.closed || (curr.endTagStart && curr.endTagStart > offset))) {
         const item: CompletionItem = {
           label: '/' + tag,
           kind: CompletionItemKind.Property,
@@ -162,7 +186,15 @@ export function doComplete(
     return result;
   }
 
-  function collectAttributeValueSuggestions(valueStart: number, valueEnd?: number): CompletionList {
+  function collectAttributeValueSuggestions(attr: string, valueStart: number, valueEnd?: number): CompletionList {
+    if (attr.startsWith('v-') || attr.startsWith('@') || attr.startsWith(':')) {
+      if (vueFileInfo) {
+        return doVueInterpolationComplete(vueFileInfo);
+      } else {
+        return NULL_COMPLETION;
+      }
+    }
+
     let range: Range;
     let addQuotes: boolean;
     if (valueEnd && offset > valueStart && offset <= valueEnd && text[valueStart] === '"') {
@@ -229,12 +261,16 @@ export function doComplete(
         break;
       case TokenType.DelimiterAssign:
         if (scanner.getTokenEnd() === offset) {
-          return collectAttributeValueSuggestions(scanner.getTokenEnd());
+          return collectAttributeValueSuggestions(currentAttributeName, scanner.getTokenEnd());
         }
         break;
       case TokenType.AttributeValue:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-          return collectAttributeValueSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
+          return collectAttributeValueSuggestions(
+            currentAttributeName,
+            scanner.getTokenOffset(),
+            scanner.getTokenEnd()
+          );
         }
         break;
       case TokenType.Whitespace:
@@ -248,7 +284,7 @@ export function doComplete(
             case ScannerState.AfterAttributeName:
               return collectAttributeNameSuggestions(scanner.getTokenEnd());
             case ScannerState.BeforeAttributeValue:
-              return collectAttributeValueSuggestions(scanner.getTokenEnd());
+              return collectAttributeValueSuggestions(currentAttributeName, scanner.getTokenEnd());
             case ScannerState.AfterOpeningEndTag:
               return collectCloseTagSuggestions(scanner.getTokenOffset() - 1, false);
           }

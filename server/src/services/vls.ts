@@ -27,13 +27,14 @@ import {
   TextDocument,
   TextDocumentChangeEvent,
   TextEdit,
-  ColorPresentation
+  ColorPresentation,
 } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { DocumentContext } from '../types';
-import { DocumentService } from './document';
+import { DocumentService } from './documentService';
+import { VueInfoService } from './vueInfoService';
 
 export class VLS {
   private documentService: DocumentService;
@@ -52,8 +53,16 @@ export class VLS {
     javascript: true
   };
 
+  private vueInfoService: VueInfoService;
+
   constructor(private workspacePath: string, private lspConnection: IConnection) {
     this.languageModes = getLanguageModes(workspacePath);
+    this.vueInfoService = new VueInfoService(this.languageModes);
+    this.languageModes.getAllModes().forEach(m => {
+      if (m.configureService) {
+        m.configureService(this.vueInfoService);
+      }
+    });
 
     this.documentService = new DocumentService();
     this.documentService.listen(lspConnection);
@@ -297,7 +306,7 @@ export class VLS {
     return [];
   }
 
-  onSignatureHelp({ textDocument, position }: TextDocumentPositionParams): SignatureHelp {
+  onSignatureHelp({ textDocument, position }: TextDocumentPositionParams): SignatureHelp | null {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, position);
     if (mode && mode.doSignatureHelp) {

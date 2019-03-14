@@ -4,25 +4,32 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.14.5",
+  "version": "0.16.2",
   "publisher": "octref",
   "scripts": {
-    "compile": "tsc -p . && tsc -p server",
-    "watch": "run-p watch-client watch-server",
-    "watch-client": "tsc -w -p .",
-    "watch-server": "tsc -w -p server",
-    "precommit": "lint-staged",
-    "prepush": "npm run test:server",
+    "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
+    "compile": "tsc -b .",
+    "watch": "tsc -b -w .",
     "lint": "tslint -p tslint.json",
-    "test:server": "cd server && npm run compile && npm test",
-    "test:e2e": "sh ./test/e2e.sh",
+    "test:server": "npm run compile && cd server && npm test",
+    "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:server"
+    }
+  },
   "lint-staged": {
     "*.ts": [
       "tslint --fix",
+      "git add"
+    ],
+    "*.{js,ts,yaml}": [
+      "prettier --write",
       "git add"
     ]
   },
@@ -43,9 +50,8 @@
     "vscode": "^1.26.0"
   },
   "dependencies": {
-    "vscode": "^1.1.22",
     "vscode-languageclient": "^5.0.1",
-    "vscode-languageserver-types": "^3.12.0"
+    "vscode-languageserver-types": "^3.14.0"
   },
   "activationEvents": [
     "onLanguage:vue"
@@ -83,6 +89,13 @@
         "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
+        "id": "vue-pug",
+        "aliases": [
+          "Vue-pug"
+        ],
+        "configuration": "./languages/vue-pug-language-configuration.json"
+      },
+      {
         "id": "postcss",
         "aliases": [
           "PostCSS",
@@ -100,6 +113,8 @@
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
           "text.pug": "jade",
+          "text.pug.vue-pug": "vue-pug",
+          "text.jade.slm": "slm",
           "text.haml": "haml",
           "source.css": "css",
           "source.css.scss": "scss",
@@ -113,7 +128,8 @@
           "text.html.markdown": "md",
           "source.yaml": "yaml",
           "source.json": "json",
-          "source.php": "php"
+          "source.php": "php",
+          "source.graphql": "graphql"
         }
       },
       {
@@ -124,7 +140,15 @@
       {
         "language": "vue-html",
         "scopeName": "text.html.vue-html",
-        "path": "./syntaxes/vue-html.json",
+        "path": "./syntaxes/vue-html.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.js": "javascript"
+        }
+      },
+      {
+        "language": "vue-pug",
+        "scopeName": "text.pug.vue-pug",
+        "path": "./syntaxes/vue-pug.tmLanguage.json",
         "embeddedLanguages": {
           "source.js": "javascript"
         }
@@ -142,6 +166,19 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/disable Vetur's built-in scaffolding snippets"
+        },
+        "vetur.completion.tagCasing": {
+          "type": "string",
+          "default": "kebab",
+          "enum": [
+            "initial",
+            "kebab"
+          ],
+          "enumDescriptions": [
+            "use the key in `components: {...}` as is for tag completion and do not force any casing",
+            "kebab-case completion for <my-tag>"
+          ],
+          "description": "Casing conversion for tag completion"
         },
         "vetur.grammar.customBlocks": {
           "type": "object",
@@ -182,12 +219,14 @@
           "enum": [
             "none",
             "prettyhtml",
-            "js-beautify-html"
+            "js-beautify-html",
+            "prettier"
           ],
           "enumDescriptions": [
             "disable formatting",
             "prettyhtml",
-            "html formatter of js-beautify"
+            "html formatter of js-beautify",
+            "prettier"
           ],
           "description": "Default formatter for <template> region"
         },
@@ -368,14 +407,22 @@
     }
   },
   "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/js-yaml": "^3.12.0",
     "@types/lodash": "^4.14.117",
-    "@types/mocha": "^5.2.5",
+    "@types/mocha": "^5.2.6",
     "@types/node": "^10.11.0",
+    "@types/shelljs": "^0.8.3",
+    "glob": "^7.1.3",
     "husky": "^1.0.0-rc.15",
+    "js-yaml": "^3.12.1",
     "lint-staged": "^7.3.0",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^1.16.4",
+    "shelljs": "^0.8.3",
     "tslint": "^5.8.0",
-    "typescript": "^3.0.3"
+    "typescript": "^3.3.3333",
+    "vscode": "^1.1.29"
   }
 }

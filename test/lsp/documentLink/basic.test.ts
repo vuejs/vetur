@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { sameLineRange } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { sameLineRange, getDocUri } from '../util';
 
 describe('Should do documentLink', () => {
   const docUri = getDocUri('client/documentLink/Basic.vue');
@@ -20,16 +20,10 @@ describe('Should do documentLink', () => {
   });
 });
 
-async function testLink(
-  docUri: vscode.Uri,
-  expectedLinks: vscode.DocumentLink[]
-) {
+async function testLink(docUri: vscode.Uri, expectedLinks: vscode.DocumentLink[]) {
   await showFile(docUri);
 
-  const result = (await vscode.commands.executeCommand(
-    'vscode.executeLinkProvider',
-    docUri
-  )) as vscode.DocumentLink[];
+  const result = (await vscode.commands.executeCommand('vscode.executeLinkProvider', docUri)) as vscode.DocumentLink[];
 
   expectedLinks.forEach(el => {
     assert.ok(result.some(l => isEqualLink(l, el)));

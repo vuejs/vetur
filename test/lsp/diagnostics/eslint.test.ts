@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { getDocUri, activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
-import { position, sameLineRange } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { position, sameLineRange, getDocUri } from '../util';
 import { testDiagnostics } from './helper';
 
 describe('Should find diagnostics using eslint-plugin-vue', () => {
