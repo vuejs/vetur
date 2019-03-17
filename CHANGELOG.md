@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.17.0
+
+- Switched PostCSS grammar to base on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS). #1115.
+
 ### 0.16.2 | 2019-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.2/vspackage)
 
 - Prettier as an option for `vetur.format.defaultFormatter.html`. #950.
