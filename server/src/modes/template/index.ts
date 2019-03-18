@@ -36,7 +36,7 @@ export function getVueHTMLMode(
   const lintEngine = createLintEngine();
   let config: any = {};
 
-  let vueInfoService: VueInfoService;
+  let vueInfoService: VueInfoService | undefined;
 
   return {
     getId() {
@@ -47,8 +47,8 @@ export function getVueHTMLMode(
       enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
       config = c;
     },
-    configureService(infoService: VueInfoService) {
-      vueInfoService = infoService;
+    configureService(services) {
+      vueInfoService = services.infoService;
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
@@ -57,7 +57,8 @@ export function getVueHTMLMode(
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(document);
+
+      const info = vueInfoService ? vueInfoService.getInfo(document) : undefined;
       if (info && info.componentInfo.childComponents) {
         tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
       }
@@ -67,10 +68,7 @@ export function getVueHTMLMode(
     doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(document);
-      if (info && info.componentInfo.childComponents) {
-        tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
-      }
+
       return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
@@ -87,7 +85,7 @@ export function getVueHTMLMode(
     },
     findDefinition(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      const info = vueInfoService.getInfo(document);
+      const info = vueInfoService ? vueInfoService.getInfo(document) : undefined;
       return findDefinition(embedded, position, vueDocuments.get(embedded), info);
     },
     onDocumentRemoved(document: TextDocument) {

@@ -27,7 +27,7 @@ import {
   TextDocument,
   TextDocumentChangeEvent,
   TextEdit,
-  ColorPresentation,
+  ColorPresentation
 } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
@@ -35,9 +35,12 @@ import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { DocumentContext } from '../types';
 import { DocumentService } from './documentService';
 import { VueInfoService } from './vueInfoService';
+import { DependencyService } from './dependencyService';
 
 export class VLS {
   private documentService: DocumentService;
+  private vueInfoService: VueInfoService;
+  private dependencyService: DependencyService;
 
   private languageModes: LanguageModes;
 
@@ -53,19 +56,23 @@ export class VLS {
     javascript: true
   };
 
-  private vueInfoService: VueInfoService;
-
   constructor(private workspacePath: string, private lspConnection: IConnection) {
     this.languageModes = getLanguageModes(workspacePath);
-    this.vueInfoService = new VueInfoService(this.languageModes);
-    this.languageModes.getAllModes().forEach(m => {
-      if (m.configureService) {
-        m.configureService(this.vueInfoService);
-      }
-    });
 
     this.documentService = new DocumentService();
     this.documentService.listen(lspConnection);
+
+    this.vueInfoService = new VueInfoService(this.languageModes);
+    this.dependencyService = new DependencyService(workspacePath);
+
+    this.languageModes.getAllModes().forEach(m => {
+      if (m.configureService) {
+        m.configureService({
+          infoService: this.vueInfoService,
+          dependencyService: this.dependencyService
+        });
+      }
+    });
 
     this.setupConfigListeners();
     this.setupLanguageFeatures();

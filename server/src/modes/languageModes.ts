@@ -28,11 +28,17 @@ import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
 import { DocumentContext } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
+import { DependencyService } from '../services/dependencyService';
+
+export interface VLSServices {
+  infoService?: VueInfoService;
+  dependencyService?: DependencyService;
+}
 
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
-  configureService?(infoService: VueInfoService): void;
+  configureService?(services: VLSServices): void;
   updateFileInfo?(doc: TextDocument): void;
 
   doValidation?(document: TextDocument): Diagnostic[];

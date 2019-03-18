@@ -22,7 +22,7 @@ import {
   Position,
   FormattingOptions
 } from 'vscode-languageserver-types';
-import { LanguageMode } from '../languageModes';
+import { LanguageMode, VLSServices } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
 import { getServiceHost } from './serviceHost';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
@@ -36,6 +36,7 @@ import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
+import { DependencyService } from '../../services/dependencyService';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -64,7 +65,8 @@ export function getJavascriptMode(
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
-  let vueInfoService: VueInfoService | null = null;
+  let vueInfoService: VueInfoService | undefined;
+  let dependencyService: DependencyService | undefined;
 
   return {
     getId() {
@@ -73,8 +75,9 @@ export function getJavascriptMode(
     configure(c) {
       config = c;
     },
-    configureService(infoService: VueInfoService) {
-      vueInfoService = infoService;
+    configureService(services: VLSServices) {
+      vueInfoService = services.infoService;
+      dependencyService = services.dependencyService;
     },
     updateFileInfo(doc: TextDocument): void {
       if (!vueInfoService) {
@@ -123,14 +126,10 @@ export function getJavascriptMode(
       if (NON_SCRIPT_TRIGGERS.includes(triggerChar)) {
         return { isIncomplete: false, items: [] };
       }
-      const completions = service.getCompletionsAtPosition(
-        fileFsPath,
-        offset,
-        {
-          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
-          includeInsertTextCompletions: false
-        }
-      );
+      const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
+        includeInsertTextCompletions: false
+      });
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -257,9 +256,7 @@ export function getJavascriptMode(
         return occurrences.map(entry => {
           return {
             range: convertRange(scriptDoc, entry.textSpan),
-            kind: entry.isWriteAccess
-              ? DocumentHighlightKind.Write
-              : DocumentHighlightKind.Text
+            kind: entry.isWriteAccess ? DocumentHighlightKind.Write : DocumentHighlightKind.Text
           };
         });
       }
@@ -382,16 +379,18 @@ export function getJavascriptMode(
         return defaultFormatter === 'prettier'
           ? prettierify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent)
           : prettierEslintify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
-      }
-      
-      else {
+      } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
           scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
-        const convertedFormatSettings = convertOptions(formatSettings, {
-          tabSize: vlsFormatConfig.options.tabSize,
-          insertSpaces: !vlsFormatConfig.options.useTabs
-        }, initialIndentLevel);
+        const convertedFormatSettings = convertOptions(
+          formatSettings,
+          {
+            tabSize: vlsFormatConfig.options.tabSize,
+            insertSpaces: !vlsFormatConfig.options.useTabs
+          },
+          initialIndentLevel
+        );
 
         const fileFsPath = getFileFsPath(doc.uri);
         const start = scriptDoc.offsetAt(range.start);
@@ -519,29 +518,31 @@ function convertOptions(
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
-  regionStart: LanguageModelCache<LanguageRange | undefined>) {
+  regionStart: LanguageModelCache<LanguageRange | undefined>
+) {
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
-      textEdits.push(...change.textChanges.map(tc => {
-        // currently, only import codeAction is available
-        // change start of doc to start of script region
-        if (tc.span.start === 0 && tc.span.length === 0) {
-          const region = regionStart.get(doc);
-          if (region) {
-            const line = region.start.line;
-            return {
-              range: Range.create(line + 1, 0, line + 1, 0),
-              newText: tc.newText
-            };
+      textEdits.push(
+        ...change.textChanges.map(tc => {
+          // currently, only import codeAction is available
+          // change start of doc to start of script region
+          if (tc.span.start === 0 && tc.span.length === 0) {
+            const region = regionStart.get(doc);
+            if (region) {
+              const line = region.start.line;
+              return {
+                range: Range.create(line + 1, 0, line + 1, 0),
+                newText: tc.newText
+              };
+            }
           }
-        }
-        return {
-          range: convertRange(doc, tc.span),
-          newText: tc.newText
-        };
-      }
-      ));
+          return {
+            range: convertRange(doc, tc.span),
+            newText: tc.newText
+          };
+        })
+      );
     }
   }
   return textEdits;
