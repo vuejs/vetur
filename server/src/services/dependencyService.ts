@@ -52,10 +52,10 @@ export class DependencyService {
     typescript: { name: 'typescript', state: State.Unloaded }
   };
 
-  constructor(private workspacePath: string) {}
+  constructor() {}
 
-  async loadDependencies() {
-    const workspaceTSPath = path.resolve(this.workspacePath, 'node_modules/typescript');
+  async init(workspacePath: string) {
+    const workspaceTSPath = path.resolve(workspacePath, 'node_modules/typescript');
     const tsModule = await import(workspaceTSPath);
 
     this.dependencies.typescript = {

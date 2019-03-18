@@ -7,7 +7,10 @@ import {
   FileChangeType,
   IConnection,
   TextDocumentPositionParams,
-  ColorPresentationParams
+  ColorPresentationParams,
+  InitializeParams,
+  ServerCapabilities,
+  TextDocumentSyncKind
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -30,7 +33,7 @@ import {
   ColorPresentation
 } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
-import { getLanguageModes, LanguageModes } from '../modes/languageModes';
+import { LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { DocumentContext } from '../types';
 import { DocumentService } from './documentService';
@@ -38,6 +41,9 @@ import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
 
 export class VLS {
+  // @Todo: Remove this and DocumentContext
+  private workspacePath: string | undefined;
+
   private documentService: DocumentService;
   private vueInfoService: VueInfoService;
   private dependencyService: DependencyService;
@@ -56,14 +62,28 @@ export class VLS {
     javascript: true
   };
 
-  constructor(private workspacePath: string, private lspConnection: IConnection) {
-    this.languageModes = getLanguageModes(workspacePath);
+  constructor(private lspConnection: IConnection) {
+    this.documentService = new DocumentService(this.lspConnection);
+    this.vueInfoService = new VueInfoService();
+    this.dependencyService = new DependencyService();
 
-    this.documentService = new DocumentService();
-    this.documentService.listen(lspConnection);
+    this.languageModes = new LanguageModes();
+  }
 
-    this.vueInfoService = new VueInfoService(this.languageModes);
-    this.dependencyService = new DependencyService(workspacePath);
+  async init(params: InitializeParams) {
+    const workspacePath = params.rootPath;
+    if (!workspacePath) {
+      console.error('No workspace path found. Vetur initialization failed.');
+      return {
+        capabilities: {}
+      };
+    }
+
+    this.workspacePath = workspacePath;
+
+    this.languageModes.init(workspacePath);
+    this.vueInfoService.init(this.languageModes);
+    await this.dependencyService.init(workspacePath);
 
     this.languageModes.getAllModes().forEach(m => {
       if (m.configureService) {
@@ -75,12 +95,20 @@ export class VLS {
     });
 
     this.setupConfigListeners();
-    this.setupLanguageFeatures();
+    this.setupLSPHandlers();
     this.setupFileChangeListeners();
 
     this.lspConnection.onShutdown(() => {
       this.dispose();
     });
+
+    if (params.initializationOptions && params.initializationOptions.config) {
+      this.configure(params.initializationOptions.config);
+    }
+  }
+
+  listen() {
+    this.lspConnection.listen();
   }
 
   private setupConfigListeners() {
@@ -91,7 +119,7 @@ export class VLS {
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
   }
 
-  private setupLanguageFeatures() {
+  private setupLSPHandlers() {
     this.lspConnection.onCompletion(this.onCompletion.bind(this));
     this.lspConnection.onCompletionResolve(this.onCompletionResolve.bind(this));
 
@@ -365,6 +393,24 @@ export class VLS {
 
   dispose(): void {
     this.languageModes.dispose();
+  }
+
+  get capabilities(): ServerCapabilities {
+    return {
+      textDocumentSync: TextDocumentSyncKind.Full,
+      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
+      signatureHelpProvider: { triggerCharacters: ['('] },
+      documentFormattingProvider: true,
+      hoverProvider: true,
+      documentHighlightProvider: true,
+      documentLinkProvider: {
+        resolveProvider: false
+      },
+      documentSymbolProvider: true,
+      definitionProvider: true,
+      referencesProvider: true,
+      colorProvider: true
+    };
   }
 }
 

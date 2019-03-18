@@ -23,10 +23,7 @@ import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProv
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
-export function getVueHTMLMode(
-  documentRegions: DocumentRegionCache,
-  workspacePath: string | null | undefined
-): LanguageMode {
+export function getVueHTMLMode(documentRegions: DocumentRegionCache, workspacePath: string | undefined): LanguageMode {
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
