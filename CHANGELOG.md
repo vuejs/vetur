@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.17.0
+### 0.17.0 | 2019-03-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.17.0/vspackage)
 
 - Allow using workspace TS version. See below for details. #682.
 - Switch PostCSS grammar to base on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS). #1115.
