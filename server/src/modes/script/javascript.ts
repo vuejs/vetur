@@ -89,7 +89,7 @@ export async function getJavascriptMode(
 
       const { service } = updateCurrentTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(service, fileFsPath, config);
+      const info = getComponentInfo(tsModule, service, fileFsPath, config);
       if (info) {
         vueInfoService.updateInfo(doc, info);
       }

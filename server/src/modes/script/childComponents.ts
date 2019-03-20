@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import { getLastChild, buildDocumentation, getObjectLiteralExprFromExportExpr } from './componentInfo';
+import { T_TypeScript } from '../../services/dependencyService';
 
 interface InternalChildComponent {
   name: string;
@@ -7,12 +8,13 @@ interface InternalChildComponent {
   definition?: {
     path: string;
     start: number;
-    end: number
+    end: number;
   };
   defaultExportExpr?: ts.Node;
 }
 
 export function getChildComponents(
+  tsModule: T_TypeScript,
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
   tagCasing = 'kebab'
@@ -27,7 +29,7 @@ export function getChildComponents(
     return undefined;
   }
 
-  if (componentsDeclaration.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+  if (componentsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const componentsType = checker.getTypeOfSymbolAtLocation(componentsSymbol, componentsDeclaration);
 
     const result: InternalChildComponent[] = [];
@@ -42,10 +44,10 @@ export function getChildComponents(
       }
 
       let objectLiteralSymbol: ts.Symbol | undefined;
-      if (s.valueDeclaration.kind === ts.SyntaxKind.PropertyAssignment) {
+      if (s.valueDeclaration.kind === tsModule.SyntaxKind.PropertyAssignment) {
         objectLiteralSymbol =
           checker.getSymbolAtLocation((s.valueDeclaration as ts.PropertyAssignment).initializer) || s;
-      } else if (s.valueDeclaration.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
+      } else if (s.valueDeclaration.kind === tsModule.SyntaxKind.ShorthandPropertyAssignment) {
         objectLiteralSymbol = checker.getShorthandAssignmentValueSymbol(s.valueDeclaration) || s;
       }
 
@@ -53,7 +55,7 @@ export function getChildComponents(
         return;
       }
 
-      if (objectLiteralSymbol.flags & ts.SymbolFlags.Alias) {
+      if (objectLiteralSymbol.flags & tsModule.SymbolFlags.Alias) {
         const definitionObjectLiteralSymbol = checker.getAliasedSymbol(objectLiteralSymbol);
         if (definitionObjectLiteralSymbol.valueDeclaration) {
           const defaultExportExpr = getLastChild(definitionObjectLiteralSymbol.valueDeclaration);
@@ -63,13 +65,13 @@ export function getChildComponents(
 
           result.push({
             name: componentName,
-            documentation: buildDocumentation(definitionObjectLiteralSymbol, checker),
+            documentation: buildDocumentation(tsModule, definitionObjectLiteralSymbol, checker),
             definition: {
               path: definitionObjectLiteralSymbol.valueDeclaration.getSourceFile().fileName,
               start: defaultExportExpr.getStart(undefined, true),
               end: defaultExportExpr.getEnd()
             },
-            defaultExportExpr: getObjectLiteralExprFromExportExpr(defaultExportExpr)
+            defaultExportExpr: getObjectLiteralExprFromExportExpr(tsModule, defaultExportExpr)
           });
         }
       }

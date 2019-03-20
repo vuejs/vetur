@@ -78,9 +78,9 @@ export function getServiceHost(
   const versions = new Map<string, number>();
   const scriptDocs = new Map<string, TextDocument>();
 
-  const parsedConfig = getParsedConfig(workspacePath);
+  const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
-  const isOldVersion = inferIsOldVersion(workspacePath);
+  const isOldVersion = inferIsOldVersion(tsModule, workspacePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
@@ -141,7 +141,7 @@ export function getServiceHost(
         const doc =
           scriptDocs.get(fileName) ||
           jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || ''));
-        return getScriptKind(doc.languageId);
+        return getScriptKind(tsModule, doc.languageId);
       } else {
         if (fileName === bridge.fileName) {
           return tsModule.Extension.Ts;
@@ -239,9 +239,9 @@ function isVueProject(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
 }
 
-function defaultIgnorePatterns(workspacePath: string) {
+function defaultIgnorePatterns(tsModule: T_TypeScript, workspacePath: string) {
   const nodeModules = ['node_modules', '**/node_modules/*'];
-  const gitignore = ts.findConfigFile(workspacePath, ts.sys.fileExists, '.gitignore');
+  const gitignore = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, '.gitignore');
   if (!gitignore) {
     return nodeModules;
   }
@@ -250,14 +250,18 @@ function defaultIgnorePatterns(workspacePath: string) {
   return nodeModules.concat(filtered);
 }
 
-function getScriptKind(langId: string): ts.ScriptKind {
-  return langId === 'typescript' ? ts.ScriptKind.TS : langId === 'tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.JS;
+function getScriptKind(tsModule: T_TypeScript, langId: string): ts.ScriptKind {
+  return langId === 'typescript'
+    ? tsModule.ScriptKind.TS
+    : langId === 'tsx'
+    ? tsModule.ScriptKind.TSX
+    : tsModule.ScriptKind.JS;
 }
 
-function inferIsOldVersion(workspacePath: string): boolean {
-  const packageJSONPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
+function inferIsOldVersion(tsModule: T_TypeScript, workspacePath: string): boolean {
+  const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
   try {
-    const packageJSON = packageJSONPath && JSON.parse(ts.sys.readFile(packageJSONPath)!);
+    const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);
     const vueStr = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
     // use a sloppy method to infer version, to reduce dep on semver or so
     const vueDep = vueStr.match(/\d+\.\d+/)[0];
@@ -268,17 +272,17 @@ function inferIsOldVersion(workspacePath: string): boolean {
   }
 }
 
-function getParsedConfig(workspacePath: string) {
+function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
   const configFilename =
-    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
-    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
-  const configJson = (configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config) || {
-    exclude: defaultIgnorePatterns(workspacePath)
+    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
+    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'jsconfig.json');
+  const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
+    exclude: defaultIgnorePatterns(tsModule, workspacePath)
   };
   // existingOptions should be empty since it always takes priority
-  return ts.parseJsonConfigFileContent(
+  return tsModule.parseJsonConfigFileContent(
     configJson,
-    ts.sys,
+    tsModule.sys,
     workspacePath,
     /*existingOptions*/ {},
     configFilename,
