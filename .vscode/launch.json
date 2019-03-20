@@ -41,7 +41,7 @@
       "name": "E2E Test (LSP)",
       "type": "extensionHost",
       "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/.vscode-test/stable/Visual Studio Code.app/Contents/MacOS/Electron",
+      "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceRoot}",
         "--extensionTestsPath=${workspaceRoot}/dist/test/lsp",
