@@ -23,9 +23,14 @@ export function activate(context: vscode.ExtensionContext) {
   const client = initializeLanguageClient(serverModule);
   context.subscriptions.push(client.start());
 
-  client.onReady().then(() => {
-    registerCustomClientNotificationHandlers(client);
-  });
+  client
+    .onReady()
+    .then(() => {
+      registerCustomClientNotificationHandlers(client);
+    })
+    .catch(e => {
+      console.log('Client initialization failed');
+    });
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient) {

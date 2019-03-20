@@ -100,4 +100,8 @@ async function go() {
   await runAllTests();
 }
 
-go();
+go()
+  .then(() => {
+    console.log('All done');
+  })
+  .catch(err => {});
