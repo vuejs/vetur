@@ -69,7 +69,6 @@
     "test": "mocha",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "newVersion": "yarn version --new-version patch -m \"vls %s\"",
-    "preversion": "npm run compile && npm test",
-    "prepublishOnly": "npm run compile"
+    "preversion": "npm run compile && npm test"
   }
 }
