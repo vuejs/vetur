@@ -22,7 +22,7 @@ import {
   Position,
   FormattingOptions
 } from 'vscode-languageserver-types';
-import { LanguageMode, VLSServices } from '../languageModes';
+import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
 import { getServiceHost } from './serviceHost';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
@@ -44,7 +44,9 @@ const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
 export function getJavascriptMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
-  workspacePath: string | null | undefined
+  workspacePath: string | undefined,
+  vueInfoService?: VueInfoService,
+  dependencyService?: DependencyService
 ): LanguageMode {
   if (!workspacePath) {
     return {
@@ -65,19 +67,12 @@ export function getJavascriptMode(
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
-  let vueInfoService: VueInfoService | undefined;
-  let dependencyService: DependencyService | undefined;
-
   return {
     getId() {
       return 'javascript';
     },
     configure(c) {
       config = c;
-    },
-    configureService(services: VLSServices) {
-      vueInfoService = services.infoService;
-      dependencyService = services.dependencyService;
     },
     updateFileInfo(doc: TextDocument): void {
       if (!vueInfoService) {

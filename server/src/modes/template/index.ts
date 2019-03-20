@@ -23,7 +23,11 @@ import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProv
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
-export function getVueHTMLMode(documentRegions: DocumentRegionCache, workspacePath: string | undefined): LanguageMode {
+export function getVueHTMLMode(
+  documentRegions: DocumentRegionCache,
+  workspacePath: string | undefined,
+  vueInfoService?: VueInfoService
+): LanguageMode {
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
@@ -33,8 +37,6 @@ export function getVueHTMLMode(documentRegions: DocumentRegionCache, workspacePa
   const lintEngine = createLintEngine();
   let config: any = {};
 
-  let vueInfoService: VueInfoService | undefined;
-
   return {
     getId() {
       return 'vue-html';
@@ -43,9 +45,6 @@ export function getVueHTMLMode(documentRegions: DocumentRegionCache, workspacePa
       tagProviderSettings = _.assign(tagProviderSettings, c.html.suggest);
       enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
       config = c;
-    },
-    configureService(services) {
-      vueInfoService = services.infoService;
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);

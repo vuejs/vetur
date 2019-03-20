@@ -81,18 +81,12 @@ export class VLS {
 
     this.workspacePath = workspacePath;
 
-    this.languageModes.init(workspacePath);
-    this.vueInfoService.init(this.languageModes);
-    await this.dependencyService.init(workspacePath);
-
-    this.languageModes.getAllModes().forEach(m => {
-      if (m.configureService) {
-        m.configureService({
-          infoService: this.vueInfoService,
-          dependencyService: this.dependencyService
-        });
-      }
+    await this.languageModes.init(workspacePath, {
+      infoService: this.vueInfoService,
+      dependencyService: this.dependencyService
     });
+    await this.vueInfoService.init(this.languageModes);
+    await this.dependencyService.init(workspacePath);
 
     this.setupConfigListeners();
     this.setupLSPHandlers();

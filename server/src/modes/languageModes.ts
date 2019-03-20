@@ -38,7 +38,6 @@ export interface VLSServices {
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
-  configureService?(services: VLSServices): void;
   updateFileInfo?(doc: TextDocument): void;
 
   doValidation?(document: TextDocument): Diagnostic[];
@@ -77,11 +76,17 @@ export class LanguageModes {
     this.modelCaches.push(this.documentRegions);
   }
 
-  async init(workspacePath: string) {
-    const jsMode = getJavascriptMode(this.documentRegions, workspacePath);
+  async init(workspacePath: string, services: VLSServices) {
+    const vueHtmlMode = getVueHTMLMode(this.documentRegions, workspacePath);
+    const jsMode = getJavascriptMode(
+      this.documentRegions,
+      workspacePath,
+      services.infoService,
+      services.dependencyService
+    );
 
     this.modes['vue'] = getVueMode();
-    this.modes['vue-html'] = getVueHTMLMode(this.documentRegions, workspacePath);
+    this.modes['vue-html'] = vueHtmlMode;
     this.modes['css'] = getCSSMode(this.documentRegions);
     this.modes['postcss'] = getPostCSSMode(this.documentRegions);
     this.modes['scss'] = getSCSSMode(this.documentRegions);
