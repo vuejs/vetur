@@ -78,7 +78,7 @@ export class LanguageModes {
 
   async init(workspacePath: string, services: VLSServices) {
     const vueHtmlMode = getVueHTMLMode(this.documentRegions, workspacePath);
-    const jsMode = getJavascriptMode(
+    const jsMode = await getJavascriptMode(
       this.documentRegions,
       workspacePath,
       services.infoService,

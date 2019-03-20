@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-const enum State {
+export const enum State {
   Loaded,
   Unloaded
 }
@@ -20,14 +20,14 @@ interface LoadedDependency<T> {
 
 type RuntimeDependency<T> = LoadedDependency<T> | UnloadedDependency;
 
-type T_PrettyHtml = typeof import('@starptech/prettyhtml');
-type T_ESLint = typeof import('eslint');
-type T_ESLintPluginVue = typeof import('eslint-plugin-vue');
-type T_JSBeautify = typeof import('eslint-plugin-vue');
-type T_Prettier = typeof import('prettier');
-// type T_PrettierEslint = typeof import('prettier-eslint');
-type T_StylusSupremacy = typeof import('stylus-supremacy');
-type T_TypeScript = typeof import('typescript');
+export type T_PrettyHtml = typeof import('@starptech/prettyhtml');
+export type T_ESLint = typeof import('eslint');
+export type T_ESLintPluginVue = typeof import('eslint-plugin-vue');
+export type T_JSBeautify = typeof import('eslint-plugin-vue');
+export type T_Prettier = typeof import('prettier');
+// export type T_PrettierEslint = typeof import('prettier-eslint');
+export type T_StylusSupremacy = typeof import('stylus-supremacy');
+export type T_TypeScript = typeof import('typescript');
 
 interface VLSDependencies {
   prettyhtml: RuntimeDependency<T_PrettyHtml>;

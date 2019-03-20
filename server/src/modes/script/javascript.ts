@@ -36,18 +36,18 @@ import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
-import { DependencyService } from '../../services/dependencyService';
+import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
-export function getJavascriptMode(
+export async function getJavascriptMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   workspacePath: string | undefined,
   vueInfoService?: VueInfoService,
   dependencyService?: DependencyService
-): LanguageMode {
+): Promise<LanguageMode> {
   if (!workspacePath) {
     return {
       ...nullMode
@@ -63,7 +63,15 @@ export function getJavascriptMode(
     return vueDocument.getLanguageRangeByType('script');
   });
 
-  const serviceHost = getServiceHost(workspacePath, jsDocuments);
+  let tsModule: T_TypeScript = ts;
+  if (dependencyService) {
+    const tsDependency = dependencyService.getDependency('typescript');
+    if (tsDependency && tsDependency.state === State.Loaded) {
+      tsModule = tsDependency.module;
+    }
+  }
+
+  const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
@@ -71,7 +79,7 @@ export function getJavascriptMode(
     getId() {
       return 'javascript';
     },
-    configure(c) {
+    configure(c: any) {
       config = c;
     },
     updateFileInfo(doc: TextDocument): void {
@@ -105,7 +113,7 @@ export function getJavascriptMode(
         return {
           range: convertRange(scriptDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
-          message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
+          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n')
         };
       });
     },
@@ -166,8 +174,8 @@ export function getJavascriptMode(
         item.data.source
       );
       if (details) {
-        item.detail = ts.displayPartsToString(details.displayParts);
-        item.documentation = ts.displayPartsToString(details.documentation);
+        item.detail = tsModule.displayPartsToString(details.displayParts);
+        item.documentation = tsModule.displayPartsToString(details.documentation);
         if (details.codeActions && config.vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
@@ -185,8 +193,8 @@ export function getJavascriptMode(
       const fileFsPath = getFileFsPath(doc.uri);
       const info = service.getQuickInfoAtPosition(fileFsPath, scriptDoc.offsetAt(position));
       if (info) {
-        const display = ts.displayPartsToString(info.displayParts);
-        const doc = ts.displayPartsToString(info.documentation);
+        const display = tsModule.displayPartsToString(info.displayParts);
+        const doc = tsModule.displayPartsToString(info.documentation);
         const markedContents: MarkedString[] = [{ language: 'ts', value: display }];
         if (doc) {
           markedContents.unshift(doc, '\n');
@@ -221,20 +229,20 @@ export function getJavascriptMode(
           parameters: []
         };
 
-        signature.label += ts.displayPartsToString(item.prefixDisplayParts);
+        signature.label += tsModule.displayPartsToString(item.prefixDisplayParts);
         item.parameters.forEach((p, i, a) => {
-          const label = ts.displayPartsToString(p.displayParts);
+          const label = tsModule.displayPartsToString(p.displayParts);
           const parameter: ParameterInformation = {
             label,
-            documentation: ts.displayPartsToString(p.documentation)
+            documentation: tsModule.displayPartsToString(p.documentation)
           };
           signature.label += label;
           signature.parameters!.push(parameter);
           if (i < a.length - 1) {
-            signature.label += ts.displayPartsToString(item.separatorDisplayParts);
+            signature.label += tsModule.displayPartsToString(item.separatorDisplayParts);
           }
         });
-        signature.label += ts.displayPartsToString(item.suffixDisplayParts);
+        signature.label += tsModule.displayPartsToString(item.suffixDisplayParts);
         ret.signatures.push(signature);
       });
       return ret;
