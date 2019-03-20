@@ -14,4 +14,4 @@ Others:
 - Logo from [vuejs/vuejs.org](https://github.com/vuejs/vuejs.org)
 - Grammar based on [vuejs/vue-syntax-highlight](https://github.com/vuejs/vue-syntax-highlight)
 - Sass grammar based on [robinbentley/vscode-sass-indented](https://github.com/robinbentley/vscode-sass-indented)
-- PostCSS grammar based on [azat-io/atom-language-postcss](https://github.com/azat-io/atom-language-postcss)
+- PostCSS grammar based on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS)

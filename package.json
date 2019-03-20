@@ -96,12 +96,13 @@
         "configuration": "./languages/vue-pug-language-configuration.json"
       },
       {
-        "id": "postcss",
+        "id": "vue-postcss",
         "aliases": [
-          "PostCSS",
-          "POSTCSS"
+          "Vue-PostCSS",
+          "Vue-POSTCSS",
+          "vue-postcss"
         ],
-        "configuration": "./languages/postcss-language-configuration.json"
+        "configuration": "./languages/vue-postcss-language-configuration.json"
       }
     ],
     "grammars": [
@@ -119,7 +120,7 @@
           "source.css": "css",
           "source.css.scss": "scss",
           "source.css.less": "less",
-          "source.css.postcss": "postcss",
+          "source.css.postcss": "vue-postcss",
           "source.sass": "sass",
           "source.stylus": "stylus",
           "source.js": "javascript",
@@ -133,9 +134,9 @@
         }
       },
       {
-        "language": "postcss",
+        "language": "vue-postcss",
         "scopeName": "source.css.postcss",
-        "path": "./syntaxes/postcss.json"
+        "path": "./syntaxes/vue-postcss.json"
       },
       {
         "language": "vue-html",

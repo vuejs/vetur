@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import {
   DidChangeConfigurationParams,
   DocumentColorParams,
@@ -288,10 +289,11 @@ export class VLS {
         if (this.workspacePath && ref[0] === '/') {
           return Uri.file(path.resolve(this.workspacePath, ref)).toString();
         }
-        const docUri = Uri.parse(doc.uri);
+        const docUri = URI.parse(doc.uri);
         return docUri
           .with({
-            path: path.resolve(docUri.path, ref)
+            // Reference from components need to go dwon from their parent dir
+            path: path.resolve(docUri.fsPath, '..', ref)
           })
           .toString();
       }

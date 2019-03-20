@@ -3,6 +3,7 @@
 ### 0.17.0
 
 - Allow using workspace TS version. See below for details. #682.
+- Switched PostCSS grammar to base on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS). #1115.
 
 #### Using Workspace TypeScript version
 

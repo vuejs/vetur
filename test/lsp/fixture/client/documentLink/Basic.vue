@@ -4,3 +4,5 @@
     <a href="./foo">Link to /foo</a>
   </div>
 </template>
+
+<script src="./foo.js"></script>
