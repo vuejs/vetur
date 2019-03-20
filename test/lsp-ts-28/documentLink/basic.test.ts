@@ -15,7 +15,8 @@ describe('Should do documentLink', () => {
   it('shows all documentLinks for Basic.vue', async () => {
     await testLink(docUri, [
       { target: vscode.Uri.parse('https://vuejs.org/images/logo.png'), range: sameLineRange(2, 14, 47) },
-      { target: getDocUri('client/documentLink/Basic.vue/foo'), range: sameLineRange(3, 13, 18) }
+      { target: getDocUri('client/documentLink/foo'), range: sameLineRange(3, 13, 18) },
+      { target: getDocUri('client/documentLink/foo.js'), range: sameLineRange(7, 13, 21) }
     ]);
   });
 });

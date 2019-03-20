@@ -45,7 +45,7 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
-        "${workspaceFolder}/test/fixture"
+        "${workspaceFolder}/test/lsp/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
