@@ -4,6 +4,11 @@ npm-debug.log
 node_modules
 .vscode-test
 
+test/**/data-dir/**
+!test/**/data-dir/User
+test/**/data-dir/User/**
+!test/**/data-dir/User/settings.json
+
 dist
 server/dist
 docs/.vuepress/dist

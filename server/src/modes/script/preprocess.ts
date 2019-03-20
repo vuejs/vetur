@@ -3,6 +3,7 @@ import * as path from 'path';
 
 import { getDocumentRegions } from '../embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
+import { T_TypeScript } from '../../services/dependencyService';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -15,14 +16,14 @@ export function parseVue(text: string): string {
   return script.getText() || 'export default {};';
 }
 
-function isTSLike(scriptKind: ts.ScriptKind | undefined) {
-  return scriptKind === ts.ScriptKind.TS || scriptKind === ts.ScriptKind.TSX;
-}
+export function createUpdater(tsModule: T_TypeScript) {
+  const clssf = tsModule.createLanguageServiceSourceFile;
+  const ulssf = tsModule.updateLanguageServiceSourceFile;
+  const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
 
-export function createUpdater() {
-  const clssf = ts.createLanguageServiceSourceFile;
-  const ulssf = ts.updateLanguageServiceSourceFile;
-  const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind|undefined>();
+  function isTSLike(scriptKind: ts.ScriptKind | undefined) {
+    return scriptKind === ts.ScriptKind.TS || scriptKind === ts.ScriptKind.TSX;
+  }
 
   return {
     createLanguageServiceSourceFile(
@@ -36,7 +37,7 @@ export function createUpdater() {
       const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
       scriptKindTracker.set(sourceFile, scriptKind);
       if (isVue(fileName) && !isTSLike(scriptKind)) {
-        modifyVueSource(sourceFile);
+        modifyVueSource(tsModule, sourceFile);
       }
       return sourceFile;
     },
@@ -50,29 +51,29 @@ export function createUpdater() {
       const scriptKind = scriptKindTracker.get(sourceFile);
       sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
       if (isVue(sourceFile.fileName) && !isTSLike(scriptKind)) {
-        modifyVueSource(sourceFile);
+        modifyVueSource(tsModule, sourceFile);
       }
       return sourceFile;
     }
   };
 }
 
-function modifyVueSource(sourceFile: ts.SourceFile): void {
+function modifyVueSource(tsModule: T_TypeScript, sourceFile: ts.SourceFile): void {
   const exportDefaultObject = sourceFile.statements.find(
     st =>
-      st.kind === ts.SyntaxKind.ExportAssignment &&
-      (st as ts.ExportAssignment).expression.kind === ts.SyntaxKind.ObjectLiteralExpression
+      st.kind === tsModule.SyntaxKind.ExportAssignment &&
+      (st as ts.ExportAssignment).expression.kind === tsModule.SyntaxKind.ObjectLiteralExpression
   );
   if (exportDefaultObject) {
     // 1. add `import Vue from 'vue'
     //    (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
-    const setZeroPos = getWrapperRangeSetter({ pos: 0, end: 0 });
+    const setZeroPos = getWrapperRangeSetter(tsModule, { pos: 0, end: 0 });
     const vueImport = setZeroPos(
-      ts.createImportDeclaration(
+      tsModule.createImportDeclaration(
         undefined,
         undefined,
-        setZeroPos(ts.createImportClause(ts.createIdentifier('__vueEditorBridge'), undefined as any)),
-        setZeroPos(ts.createLiteral('vue-editor-bridge'))
+        setZeroPos(tsModule.createImportClause(tsModule.createIdentifier('__vueEditorBridge'), undefined as any)),
+        setZeroPos(tsModule.createLiteral('vue-editor-bridge'))
       )
     );
     const statements: Array<ts.Statement> = sourceFile.statements as any;
@@ -81,17 +82,22 @@ function modifyVueSource(sourceFile: ts.SourceFile): void {
     // 2. find the export default and wrap it in `__vueEditorBridge(...)` if it exists and is an object literal
     // (the span of the function construct call and *all* its members must be the same as the object literal it wraps)
     const objectLiteral = (exportDefaultObject as ts.ExportAssignment).expression as ts.ObjectLiteralExpression;
-    const setObjPos = getWrapperRangeSetter(objectLiteral);
-    const vue = ts.setTextRange(ts.createIdentifier('__vueEditorBridge'), {
+    const setObjPos = getWrapperRangeSetter(tsModule, objectLiteral);
+    const vue = tsModule.setTextRange(tsModule.createIdentifier('__vueEditorBridge'), {
       pos: objectLiteral.pos,
       end: objectLiteral.pos + 1
     });
-    (exportDefaultObject as ts.ExportAssignment).expression = setObjPos(ts.createCall(vue, undefined, [objectLiteral]));
+    (exportDefaultObject as ts.ExportAssignment).expression = setObjPos(
+      tsModule.createCall(vue, undefined, [objectLiteral])
+    );
     setObjPos(((exportDefaultObject as ts.ExportAssignment).expression as ts.CallExpression).arguments!);
   }
 }
 
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */
-function getWrapperRangeSetter(wrapped: ts.TextRange): <T extends ts.TextRange>(wrapperNode: T) => T {
-  return <T extends ts.TextRange>(wrapperNode: T) => ts.setTextRange(wrapperNode, wrapped);
+function getWrapperRangeSetter(
+  tsModule: T_TypeScript,
+  wrapped: ts.TextRange
+): <T extends ts.TextRange>(wrapperNode: T) => T {
+  return <T extends ts.TextRange>(wrapperNode: T) => tsModule.setTextRange(wrapperNode, wrapped);
 }

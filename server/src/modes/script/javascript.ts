@@ -36,15 +36,18 @@ import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
+import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
-export function getJavascriptMode(
+export async function getJavascriptMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
-  workspacePath: string | null | undefined
-): LanguageMode {
+  workspacePath: string | undefined,
+  vueInfoService?: VueInfoService,
+  dependencyService?: DependencyService
+): Promise<LanguageMode> {
   if (!workspacePath) {
     return {
       ...nullMode
@@ -60,21 +63,24 @@ export function getJavascriptMode(
     return vueDocument.getLanguageRangeByType('script');
   });
 
-  const serviceHost = getServiceHost(workspacePath, jsDocuments);
+  let tsModule: T_TypeScript = ts;
+  if (dependencyService) {
+    const tsDependency = dependencyService.getDependency('typescript');
+    if (tsDependency && tsDependency.state === State.Loaded) {
+      tsModule = tsDependency.module;
+    }
+  }
+
+  const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
-
-  let vueInfoService: VueInfoService | null = null;
 
   return {
     getId() {
       return 'javascript';
     },
-    configure(c) {
+    configure(c: any) {
       config = c;
-    },
-    configureService(infoService: VueInfoService) {
-      vueInfoService = infoService;
     },
     updateFileInfo(doc: TextDocument): void {
       if (!vueInfoService) {
@@ -83,7 +89,7 @@ export function getJavascriptMode(
 
       const { service } = updateCurrentTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(service, fileFsPath, config);
+      const info = getComponentInfo(tsModule, service, fileFsPath, config);
       if (info) {
         vueInfoService.updateInfo(doc, info);
       }
@@ -107,7 +113,7 @@ export function getJavascriptMode(
         return {
           range: convertRange(scriptDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
-          message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
+          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n')
         };
       });
     },
@@ -123,14 +129,10 @@ export function getJavascriptMode(
       if (NON_SCRIPT_TRIGGERS.includes(triggerChar)) {
         return { isIncomplete: false, items: [] };
       }
-      const completions = service.getCompletionsAtPosition(
-        fileFsPath,
-        offset,
-        {
-          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
-          includeInsertTextCompletions: false
-        }
-      );
+      const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
+        includeInsertTextCompletions: false
+      });
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -172,8 +174,8 @@ export function getJavascriptMode(
         item.data.source
       );
       if (details) {
-        item.detail = ts.displayPartsToString(details.displayParts);
-        item.documentation = ts.displayPartsToString(details.documentation);
+        item.detail = tsModule.displayPartsToString(details.displayParts);
+        item.documentation = tsModule.displayPartsToString(details.documentation);
         if (details.codeActions && config.vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
@@ -191,8 +193,8 @@ export function getJavascriptMode(
       const fileFsPath = getFileFsPath(doc.uri);
       const info = service.getQuickInfoAtPosition(fileFsPath, scriptDoc.offsetAt(position));
       if (info) {
-        const display = ts.displayPartsToString(info.displayParts);
-        const doc = ts.displayPartsToString(info.documentation);
+        const display = tsModule.displayPartsToString(info.displayParts);
+        const doc = tsModule.displayPartsToString(info.documentation);
         const markedContents: MarkedString[] = [{ language: 'ts', value: display }];
         if (doc) {
           markedContents.unshift(doc, '\n');
@@ -227,20 +229,20 @@ export function getJavascriptMode(
           parameters: []
         };
 
-        signature.label += ts.displayPartsToString(item.prefixDisplayParts);
+        signature.label += tsModule.displayPartsToString(item.prefixDisplayParts);
         item.parameters.forEach((p, i, a) => {
-          const label = ts.displayPartsToString(p.displayParts);
+          const label = tsModule.displayPartsToString(p.displayParts);
           const parameter: ParameterInformation = {
             label,
-            documentation: ts.displayPartsToString(p.documentation)
+            documentation: tsModule.displayPartsToString(p.documentation)
           };
           signature.label += label;
           signature.parameters!.push(parameter);
           if (i < a.length - 1) {
-            signature.label += ts.displayPartsToString(item.separatorDisplayParts);
+            signature.label += tsModule.displayPartsToString(item.separatorDisplayParts);
           }
         });
-        signature.label += ts.displayPartsToString(item.suffixDisplayParts);
+        signature.label += tsModule.displayPartsToString(item.suffixDisplayParts);
         ret.signatures.push(signature);
       });
       return ret;
@@ -257,9 +259,7 @@ export function getJavascriptMode(
         return occurrences.map(entry => {
           return {
             range: convertRange(scriptDoc, entry.textSpan),
-            kind: entry.isWriteAccess
-              ? DocumentHighlightKind.Write
-              : DocumentHighlightKind.Text
+            kind: entry.isWriteAccess ? DocumentHighlightKind.Write : DocumentHighlightKind.Text
           };
         });
       }
@@ -382,16 +382,18 @@ export function getJavascriptMode(
         return defaultFormatter === 'prettier'
           ? prettierify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent)
           : prettierEslintify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
-      }
-      
-      else {
+      } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
           scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
-        const convertedFormatSettings = convertOptions(formatSettings, {
-          tabSize: vlsFormatConfig.options.tabSize,
-          insertSpaces: !vlsFormatConfig.options.useTabs
-        }, initialIndentLevel);
+        const convertedFormatSettings = convertOptions(
+          formatSettings,
+          {
+            tabSize: vlsFormatConfig.options.tabSize,
+            insertSpaces: !vlsFormatConfig.options.useTabs
+          },
+          initialIndentLevel
+        );
 
         const fileFsPath = getFileFsPath(doc.uri);
         const start = scriptDoc.offsetAt(range.start);
@@ -519,29 +521,31 @@ function convertOptions(
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
-  regionStart: LanguageModelCache<LanguageRange | undefined>) {
+  regionStart: LanguageModelCache<LanguageRange | undefined>
+) {
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
-      textEdits.push(...change.textChanges.map(tc => {
-        // currently, only import codeAction is available
-        // change start of doc to start of script region
-        if (tc.span.start === 0 && tc.span.length === 0) {
-          const region = regionStart.get(doc);
-          if (region) {
-            const line = region.start.line;
-            return {
-              range: Range.create(line + 1, 0, line + 1, 0),
-              newText: tc.newText
-            };
+      textEdits.push(
+        ...change.textChanges.map(tc => {
+          // currently, only import codeAction is available
+          // change start of doc to start of script region
+          if (tc.span.start === 0 && tc.span.length === 0) {
+            const region = regionStart.get(doc);
+            if (region) {
+              const line = region.start.line;
+              return {
+                range: Range.create(line + 1, 0, line + 1, 0),
+                newText: tc.newText
+              };
+            }
           }
-        }
-        return {
-          range: convertRange(doc, tc.span),
-          newText: tc.newText
-        };
-      }
-      ));
+          return {
+            range: convertRange(doc, tc.span),
+            newText: tc.newText
+          };
+        })
+      );
     }
   }
   return textEdits;

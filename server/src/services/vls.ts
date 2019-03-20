@@ -8,7 +8,10 @@ import {
   FileChangeType,
   IConnection,
   TextDocumentPositionParams,
-  ColorPresentationParams
+  ColorPresentationParams,
+  InitializeParams,
+  ServerCapabilities,
+  TextDocumentSyncKind
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -31,15 +34,21 @@ import {
   ColorPresentation
 } from 'vscode-languageserver-types';
 import Uri from 'vscode-uri';
-import { getLanguageModes, LanguageModes } from '../modes/languageModes';
+import { LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { DocumentContext } from '../types';
 import { DocumentService } from './documentService';
 import { VueInfoService } from './vueInfoService';
-import URI from 'vscode-uri';
+import { DependencyService } from './dependencyService';
+import * as _ from 'lodash';
 
 export class VLS {
+  // @Todo: Remove this and DocumentContext
+  private workspacePath: string | undefined;
+
   private documentService: DocumentService;
+  private vueInfoService: VueInfoService;
+  private dependencyService: DependencyService;
 
   private languageModes: LanguageModes;
 
@@ -55,27 +64,50 @@ export class VLS {
     javascript: true
   };
 
-  private vueInfoService: VueInfoService;
+  constructor(private lspConnection: IConnection) {
+    this.documentService = new DocumentService(this.lspConnection);
+    this.vueInfoService = new VueInfoService();
+    this.dependencyService = new DependencyService();
 
-  constructor(private workspacePath: string, private lspConnection: IConnection) {
-    this.languageModes = getLanguageModes(workspacePath);
-    this.vueInfoService = new VueInfoService(this.languageModes);
-    this.languageModes.getAllModes().forEach(m => {
-      if (m.configureService) {
-        m.configureService(this.vueInfoService);
-      }
+    this.languageModes = new LanguageModes();
+  }
+
+  async init(params: InitializeParams) {
+    const workspacePath = params.rootPath;
+    if (!workspacePath) {
+      console.error('No workspace path found. Vetur initialization failed.');
+      return {
+        capabilities: {}
+      };
+    }
+
+    this.workspacePath = workspacePath;
+
+    await this.vueInfoService.init(this.languageModes);
+    await this.dependencyService.init(
+      workspacePath,
+      _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+    );
+    await this.languageModes.init(workspacePath, {
+      infoService: this.vueInfoService,
+      dependencyService: this.dependencyService
     });
 
-    this.documentService = new DocumentService();
-    this.documentService.listen(lspConnection);
-
     this.setupConfigListeners();
-    this.setupLanguageFeatures();
+    this.setupLSPHandlers();
     this.setupFileChangeListeners();
 
     this.lspConnection.onShutdown(() => {
       this.dispose();
     });
+
+    if (params.initializationOptions && params.initializationOptions.config) {
+      this.configure(params.initializationOptions.config);
+    }
+  }
+
+  listen() {
+    this.lspConnection.listen();
   }
 
   private setupConfigListeners() {
@@ -86,7 +118,7 @@ export class VLS {
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
   }
 
-  private setupLanguageFeatures() {
+  private setupLSPHandlers() {
     this.lspConnection.onCompletion(this.onCompletion.bind(this));
     this.lspConnection.onCompletionResolve(this.onCompletionResolve.bind(this));
 
@@ -257,7 +289,7 @@ export class VLS {
         if (this.workspacePath && ref[0] === '/') {
           return Uri.file(path.resolve(this.workspacePath, ref)).toString();
         }
-        const docUri = URI.parse(doc.uri);
+        const docUri = Uri.parse(doc.uri);
         return docUri
           .with({
             // Reference from components need to go dwon from their parent dir
@@ -361,6 +393,24 @@ export class VLS {
 
   dispose(): void {
     this.languageModes.dispose();
+  }
+
+  get capabilities(): ServerCapabilities {
+    return {
+      textDocumentSync: TextDocumentSyncKind.Full,
+      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
+      signatureHelpProvider: { triggerCharacters: ['('] },
+      documentFormattingProvider: true,
+      hoverProvider: true,
+      documentHighlightProvider: true,
+      documentLinkProvider: {
+        resolveProvider: false
+      },
+      documentSymbolProvider: true,
+      definitionProvider: true,
+      referencesProvider: true,
+      colorProvider: true
+    };
   }
 }
 

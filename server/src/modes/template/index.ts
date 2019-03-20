@@ -25,7 +25,8 @@ type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode(
   documentRegions: DocumentRegionCache,
-  workspacePath: string | null | undefined
+  workspacePath: string | undefined,
+  vueInfoService?: VueInfoService
 ): LanguageMode {
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
@@ -36,8 +37,6 @@ export function getVueHTMLMode(
   const lintEngine = createLintEngine();
   let config: any = {};
 
-  let vueInfoService: VueInfoService;
-
   return {
     getId() {
       return 'vue-html';
@@ -47,9 +46,6 @@ export function getVueHTMLMode(
       enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
       config = c;
     },
-    configureService(infoService: VueInfoService) {
-      vueInfoService = infoService;
-    },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
       return doValidation(embedded, lintEngine);
@@ -57,7 +53,8 @@ export function getVueHTMLMode(
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(document);
+
+      const info = vueInfoService ? vueInfoService.getInfo(document) : undefined;
       if (info && info.componentInfo.childComponents) {
         tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
       }
@@ -67,10 +64,7 @@ export function getVueHTMLMode(
     doHover(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-      const info = vueInfoService.getInfo(document);
-      if (info && info.componentInfo.childComponents) {
-        tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
-      }
+
       return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
@@ -87,7 +81,7 @@ export function getVueHTMLMode(
     },
     findDefinition(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);
-      const info = vueInfoService.getInfo(document);
+      const info = vueInfoService ? vueInfoService.getInfo(document) : undefined;
       return findDefinition(embedded, position, vueDocuments.get(embedded), info);
     },
     onDocumentRemoved(document: TextDocument) {

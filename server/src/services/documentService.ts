@@ -7,11 +7,8 @@ import { IConnection, TextDocuments } from 'vscode-languageserver';
 export class DocumentService {
   private documents: TextDocuments;
 
-  constructor() {
+  constructor(conn: IConnection) {
     this.documents = new TextDocuments();
-  }
-
-  listen(conn: IConnection) {
     this.documents.listen(conn);
   }
 

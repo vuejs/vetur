@@ -68,6 +68,7 @@ describe('colorization', () => {
     fixturesFiles.forEach(fixturesFile => {
       // define a test for each fixture
       it('should colorize ' + fixturesFile + ' right', function(done) {
+        // tslint:disable-next-line
         assertUnchangedTokens(join(extensionColorizeFixturePath, fixturesFile), done);
       });
     });

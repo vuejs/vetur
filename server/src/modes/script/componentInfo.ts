@@ -8,8 +8,10 @@ import {
   ChildComponent
 } from '../../services/vueInfoService';
 import { getChildComponents } from './childComponents';
+import { T_TypeScript } from '../../services/dependencyService';
 
 export function getComponentInfo(
+  tsModule: T_TypeScript,
   service: ts.LanguageService,
   fileFsPath: string,
   config: any
@@ -26,15 +28,20 @@ export function getComponentInfo(
 
   const checker = program.getTypeChecker();
 
-  const defaultExportExpr = getDefaultExportObjectLiteralExpr(sourceFile);
+  const defaultExportExpr = getDefaultExportObjectLiteralExpr(tsModule, sourceFile);
   if (!defaultExportExpr) {
     return undefined;
   }
 
-  const vueFileInfo = analyzeDefaultExportExpr(defaultExportExpr, checker);
+  const vueFileInfo = analyzeDefaultExportExpr(tsModule, defaultExportExpr, checker);
 
   const defaultExportType = checker.getTypeAtLocation(defaultExportExpr);
-  const internalChildComponents = getChildComponents(defaultExportType, checker, config.vetur.completion.tagCasing);
+  const internalChildComponents = getChildComponents(
+    tsModule,
+    defaultExportType,
+    checker,
+    config.vetur.completion.tagCasing
+  );
 
   if (internalChildComponents) {
     const childComponents: ChildComponent[] = [];
@@ -43,7 +50,7 @@ export function getComponentInfo(
         name: c.name,
         documentation: c.documentation,
         definition: c.definition,
-        info: c.defaultExportExpr ? analyzeDefaultExportExpr(c.defaultExportExpr, checker) : undefined
+        info: c.defaultExportExpr ? analyzeDefaultExportExpr(tsModule, c.defaultExportExpr, checker) : undefined
       });
     });
     vueFileInfo.componentInfo.childComponents = childComponents;
@@ -52,13 +59,17 @@ export function getComponentInfo(
   return vueFileInfo;
 }
 
-export function analyzeDefaultExportExpr(defaultExportExpr: ts.Node, checker: ts.TypeChecker): VueFileInfo {
+export function analyzeDefaultExportExpr(
+  tsModule: T_TypeScript,
+  defaultExportExpr: ts.Node,
+  checker: ts.TypeChecker
+): VueFileInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportExpr);
 
-  const props = getProps(defaultExportType, checker);
-  const data = getData(defaultExportType, checker);
-  const computed = getComputed(defaultExportType, checker);
-  const methods = getMethods(defaultExportType, checker);
+  const props = getProps(tsModule, defaultExportType, checker);
+  const data = getData(tsModule, defaultExportType, checker);
+  const computed = getComputed(tsModule, defaultExportType, checker);
+  const methods = getMethods(tsModule, defaultExportType, checker);
 
   return {
     componentInfo: {
@@ -70,17 +81,20 @@ export function analyzeDefaultExportExpr(defaultExportExpr: ts.Node, checker: ts
   };
 }
 
-function getDefaultExportObjectLiteralExpr(sourceFile: ts.SourceFile): ts.Expression | undefined {
-  const exportStmts = sourceFile.statements.filter(st => st.kind === ts.SyntaxKind.ExportAssignment);
+function getDefaultExportObjectLiteralExpr(
+  tsModule: T_TypeScript,
+  sourceFile: ts.SourceFile
+): ts.Expression | undefined {
+  const exportStmts = sourceFile.statements.filter(st => st.kind === tsModule.SyntaxKind.ExportAssignment);
   if (exportStmts.length === 0) {
     return undefined;
   }
   const exportExpr = (exportStmts[0] as ts.ExportAssignment).expression;
 
-  return getObjectLiteralExprFromExportExpr(exportExpr);
+  return getObjectLiteralExprFromExportExpr(tsModule, exportExpr);
 }
 
-function getProps(defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
+function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
   const propsSymbol = checker.getPropertyOfType(defaultExportType, 'props');
   if (!propsSymbol || !propsSymbol.valueDeclaration) {
     return undefined;
@@ -94,9 +108,9 @@ function getProps(defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo
   /**
    * Plain array props like `props: ['foo', 'bar']`
    */
-  if (propsDeclaration.kind === ts.SyntaxKind.ArrayLiteralExpression) {
+  if (propsDeclaration.kind === tsModule.SyntaxKind.ArrayLiteralExpression) {
     return (propsDeclaration as ts.ArrayLiteralExpression).elements
-      .filter(expr => expr.kind === ts.SyntaxKind.StringLiteral)
+      .filter(expr => expr.kind === tsModule.SyntaxKind.StringLiteral)
       .map(expr => {
         return {
           name: (expr as ts.StringLiteral).text
@@ -115,13 +129,13 @@ function getProps(defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo
    * }
    * ```
    */
-  if (propsDeclaration.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+  if (propsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const propsType = checker.getTypeOfSymbolAtLocation(propsSymbol, propsDeclaration);
 
     return checker.getPropertiesOfType(propsType).map(s => {
       return {
         name: s.name,
-        documentation: buildDocumentation(s, checker)
+        documentation: buildDocumentation(tsModule, s, checker)
       };
     });
   }
@@ -142,7 +156,7 @@ function getProps(defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo
  * }
  * ```
  */
-function getData(defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[] | undefined {
+function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[] | undefined {
   const dataSymbol = checker.getPropertyOfType(defaultExportType, 'data');
   if (!dataSymbol || !dataSymbol.valueDeclaration) {
     return undefined;
@@ -157,12 +171,16 @@ function getData(defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[
   return dataReturnTypeProperties.getProperties().map(s => {
     return {
       name: s.name,
-      documentation: buildDocumentation(s, checker)
+      documentation: buildDocumentation(tsModule, s, checker)
     };
   });
 }
 
-function getComputed(defaultExportType: ts.Type, checker: ts.TypeChecker): ComputedInfo[] | undefined {
+function getComputed(
+  tsModule: T_TypeScript,
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker
+): ComputedInfo[] | undefined {
   const computedSymbol = checker.getPropertyOfType(defaultExportType, 'computed');
   if (!computedSymbol || !computedSymbol.valueDeclaration) {
     return undefined;
@@ -173,13 +191,13 @@ function getComputed(defaultExportType: ts.Type, checker: ts.TypeChecker): Compu
     return undefined;
   }
 
-  if (computedDeclaration.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+  if (computedDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const computedType = checker.getTypeOfSymbolAtLocation(computedSymbol, computedDeclaration);
 
     return checker.getPropertiesOfType(computedType).map(s => {
       return {
         name: s.name,
-        documentation: buildDocumentation(s, checker)
+        documentation: buildDocumentation(tsModule, s, checker)
       };
     });
   }
@@ -187,7 +205,11 @@ function getComputed(defaultExportType: ts.Type, checker: ts.TypeChecker): Compu
   return undefined;
 }
 
-function getMethods(defaultExportType: ts.Type, checker: ts.TypeChecker): MethodInfo[] | undefined {
+function getMethods(
+  tsModule: T_TypeScript,
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker
+): MethodInfo[] | undefined {
   const methodsSymbol = checker.getPropertyOfType(defaultExportType, 'methods');
   if (!methodsSymbol || !methodsSymbol.valueDeclaration) {
     return undefined;
@@ -198,13 +220,13 @@ function getMethods(defaultExportType: ts.Type, checker: ts.TypeChecker): Method
     return undefined;
   }
 
-  if (methodsDeclaration.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+  if (methodsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const methodsType = checker.getTypeOfSymbolAtLocation(methodsSymbol, methodsDeclaration);
 
     return checker.getPropertiesOfType(methodsType).map(s => {
       return {
         name: s.name,
-        documentation: buildDocumentation(s, checker)
+        documentation: buildDocumentation(tsModule, s, checker)
       };
     });
   }
@@ -212,12 +234,15 @@ function getMethods(defaultExportType: ts.Type, checker: ts.TypeChecker): Method
   return undefined;
 }
 
-export function getObjectLiteralExprFromExportExpr(exportExpr: ts.Node): ts.Expression | undefined {
+export function getObjectLiteralExprFromExportExpr(
+  tsModule: T_TypeScript,
+  exportExpr: ts.Node
+): ts.Expression | undefined {
   switch (exportExpr.kind) {
-    case ts.SyntaxKind.CallExpression:
+    case tsModule.SyntaxKind.CallExpression:
       // Vue.extend or synthetic __vueEditorBridge
       return (exportExpr as ts.CallExpression).arguments[0];
-    case ts.SyntaxKind.ObjectLiteralExpression:
+    case tsModule.SyntaxKind.ObjectLiteralExpression:
       return exportExpr as ts.ObjectLiteralExpression;
   }
   return undefined;
@@ -232,7 +257,7 @@ export function getLastChild(d: ts.Declaration) {
   return children[children.length - 1];
 }
 
-export function buildDocumentation(s: ts.Symbol, checker: ts.TypeChecker) {
+export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker: ts.TypeChecker) {
   let documentation = s
     .getDocumentationComment(checker)
     .map(d => d.text)
@@ -241,7 +266,7 @@ export function buildDocumentation(s: ts.Symbol, checker: ts.TypeChecker) {
   documentation += '\n';
 
   if (s.valueDeclaration) {
-    if (s.valueDeclaration.kind === ts.SyntaxKind.PropertyAssignment) {
+    if (s.valueDeclaration.kind === tsModule.SyntaxKind.PropertyAssignment) {
       documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
     } else {
       documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
