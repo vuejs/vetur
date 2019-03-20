@@ -1,5 +1,20 @@
 # Changelog
 
+### 0.17.0
+
+- Allow using workspace TS version. See below for details. #682.
+
+#### Using Workspace TypeScript version
+
+Vetur depends on TypeScript's Language Server for its JavaScript/TypeScript capabilities. Previously Vetur bundles TS 2.8.4,
+but now Vetur can run on any TypeScript > 2.8 from workspace `node_modules/typescript`. Use `vetur.useWorkspaceDependencies`
+to enable this behavior.
+
+Note that `vetur.useWorkspaceDependencies` can only be configured in user settings (no workspace setting) and defaults to `false`
+because Vetur should not run 3rd party code without user's explicit approval.
+
+Currently this setting does not affect `prettier` and other formatters, where workspace dependencies is preferred, but this will change in the future.
+
 ### 0.16.2 | 2019-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.2/vspackage)
 
 - Prettier as an option for `vetur.format.defaultFormatter.html`. #950.
