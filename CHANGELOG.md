@@ -3,7 +3,11 @@
 ### 0.17.0
 
 - Allow using workspace TS version. See below for details. #682.
-- Switched PostCSS grammar to base on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS). #1115.
+- Switch PostCSS grammar to base on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS). #1115.
+- Fix a bug where Vetur does not update language features for newly created files. #1091.
+- Use `text.jade.slm` instead of `text.pug.slm` for proper SLM syntax highlighting. #1134.
+- Fix a bug where Vetur fails to resolve links in `<script src="">` correctly. #991 and #1150.
+- Add Gridsome support. Thanks to contribution from [@tyankatsu0105](https://github.com/tyankatsu0105). #1101.
 
 #### Using Workspace TypeScript version
 
