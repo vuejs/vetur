@@ -41,10 +41,11 @@
       "name": "E2E Test (LSP)",
       "type": "extensionHost",
       "request": "launch",
-      "runtimeExecutable": "${execPath}",
+      "runtimeExecutable": "${workspaceRoot}/.vscode-test/stable/Visual Studio Code.app/Contents/MacOS/Electron",
       "args": [
         "--extensionDevelopmentPath=${workspaceRoot}",
         "--extensionTestsPath=${workspaceRoot}/dist/test/lsp",
+        "--user-data-dir=${workspaceRoot}/test/lsp/data-dir",
         "${workspaceRoot}/test/lsp/fixture"
       ],
       "stopOnEntry": false,

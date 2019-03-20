@@ -39,6 +39,7 @@ import { DocumentContext } from '../types';
 import { DocumentService } from './documentService';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
+import * as _ from 'lodash';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -82,7 +83,10 @@ export class VLS {
     this.workspacePath = workspacePath;
 
     await this.vueInfoService.init(this.languageModes);
-    await this.dependencyService.init(workspacePath);
+    await this.dependencyService.init(
+      workspacePath,
+      _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+    );
     await this.languageModes.init(workspacePath, {
       infoService: this.vueInfoService,
       dependencyService: this.dependencyService

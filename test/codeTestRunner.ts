@@ -21,6 +21,7 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
   return new Promise((resolve, reject) => {
     const testWorkspace = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'fixture');
     const extTestPath = path.resolve(EXT_ROOT, 'dist', testWorkspaceRelativePath);
+    const userDataDir = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'data-dir');
 
     const args = [
       testWorkspace,
@@ -28,6 +29,9 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
       '--extensionTestsPath=' + extTestPath,
       '--locale=en'
     ];
+    if (fs.existsSync(userDataDir)) {
+      args.push(`--user-data-dir=${userDataDir}`);
+    }
 
     if (process.env.CODE_DISABLE_EXTENSIONS) {
       args.push('--disable-extensions');
@@ -35,6 +39,9 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
 
     console.log(`Test folder: ${path.join('dist', testWorkspaceRelativePath)}`);
     console.log(`Workspace:   ${testWorkspaceRelativePath}`);
+    if (fs.existsSync(userDataDir)) {
+      console.log(`Data dir:    ${userDataDir}`);
+    }
 
     const cmd = cp.spawn(executable, args);
 

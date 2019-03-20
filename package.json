@@ -157,6 +157,12 @@
     "configuration": {
       "title": "Vetur",
       "properties": {
+        "vetur.useWorkspaceDependencies": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use dependencies from workspace. Currently only for TypeScript.",
+          "scope": "application"
+        },
         "vetur.completion.autoImport": {
           "type": "boolean",
           "default": true,

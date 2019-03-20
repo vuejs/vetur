@@ -54,10 +54,15 @@ export class DependencyService {
 
   constructor() {}
 
-  async init(workspacePath: string) {
+  async init(workspacePath: string, useWorkspaceDependencies: boolean) {
+    if (!useWorkspaceDependencies) {
+      console.log('Using bundled TypeScript 2.8.4.');
+      return;
+    }
+
     const workspaceTSPath = path.resolve(workspacePath, 'node_modules/typescript');
     const tsModule = await import(workspaceTSPath);
-    console.log(`Using workspace version of TypeScript. Loading TypeScript ${tsModule.version}.`);
+    console.log(`Using workspace version of TypeScript ${tsModule.version}.`);
 
     this.dependencies.typescript = {
       name: 'typecript',
