@@ -16,13 +16,20 @@ export async function testDiagnostics(
     assert.ok(
       result.some(d => {
         return isEqualDiagnostic(d, ed);
-      })
+      }),
+      `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n`
     );
   });
 
   function isEqualDiagnostic(d1: vscode.Diagnostic, d2: vscode.Diagnostic) {
     const sourceIsEqual = d1.source ? d1.source === d2.source : true;
 
-    return d1.severity === d2.severity && d1.message === d2.message && d1.range.isEqual(d2.range) && sourceIsEqual;
+    return (
+      d1.severity === d2.severity &&
+      // Only check beginning equality as TS's long messages are ever-changing
+      d1.message.slice(0, 40) === d2.message.slice(0, 40) &&
+      d1.range.isEqual(d2.range) &&
+      sourceIsEqual
+    );
   }
 }
