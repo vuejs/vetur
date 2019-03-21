@@ -4,7 +4,7 @@ import { writeFileSync, readFileSync } from 'fs';
 import { parse } from 'path';
 import { getGeneratedGrammar } from '../client/grammar';
 
-glob('syntaxes/*.yaml', { nocase: true }, (_, files) => {
+glob('syntaxes/**/*.yaml', { nocase: true }, (_, files) => {
   for (const file of files) {
     const pathData = parse(file);
     writeFileSync(

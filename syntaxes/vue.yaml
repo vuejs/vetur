@@ -42,24 +42,22 @@ patterns:
         end: (?=</template>)
 
   # jade / pug
-  - begin: (<)(template)\b(?=[^>]*lang=('jade'|"jade"|'pug'|"pug"))(?![^/>]*/>\s*$)
-    beginCaptures:
-      '1': { name: punctuation.definition.tag.begin.html }
-      '2': { name: entity.name.tag.template.html }
-    end: (</)(template)(>)
-    endCaptures:
+  - begin: (?:^\s+)?(<)((?i:template))\b(?=[^>]*lang=[\"'](?:pug|jade)[\"'])
+    end: (</)((?i:template))(>)(?:\s*\n)?
+    captures:
       '1': { name: punctuation.definition.tag.begin.html }
       '2': { name: entity.name.tag.template.html }
       '3': { name: punctuation.definition.tag.end.html }
     patterns:
       - include: '#tag-stuff'
-      - contentName: text.pug.vue-pug
+      - contentName: source.vue.pug
         begin: (>)
         beginCaptures:
           '1': { name: punctuation.definition.tag.end.html }
-        end: (?=</template>)
+        end: (?=</(?i:template))
         patterns:
-          - include: text.pug.vue-pug
+          - include: '#vue-interpolations'
+          - include: text.pug
 
   # haml
   - begin: (<)(template)\b(?=[^>]*lang=('haml'|"haml"))(?![^/>]*/>\s*$)
