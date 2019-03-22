@@ -210,6 +210,11 @@
           "default": true,
           "description": "Validate js/ts in <script>"
         },
+        "vetur.format.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable the Vetur document formatter."
+        },
         "vetur.format.options.tabSize": {
           "type": "number",
           "default": 2,
