@@ -11,7 +11,9 @@ import {
   ColorPresentationParams,
   InitializeParams,
   ServerCapabilities,
-  TextDocumentSyncKind
+  TextDocumentSyncKind,
+  DocumentFormattingRequest,
+  Disposable
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -64,6 +66,8 @@ export class VLS {
     javascript: true
   };
 
+  private documentFormatterRegistration: Disposable | undefined;
+
   constructor(private lspConnection: IConnection) {
     this.documentService = new DocumentService(this.lspConnection);
     this.vueInfoService = new VueInfoService();
@@ -111,8 +115,11 @@ export class VLS {
   }
 
   private setupConfigListeners() {
-    this.lspConnection.onDidChangeConfiguration(({ settings }: DidChangeConfigurationParams) => {
+    this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
       this.configure(settings);
+
+      // onDidChangeConfiguration will fire for Language Server startup
+      await this.setupDynamicFormatters(settings);
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
@@ -133,6 +140,20 @@ export class VLS {
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
+  }
+
+  private async setupDynamicFormatters(settings: any) {
+    if (settings.vetur.format.enable === true) {
+      if (!this.documentFormatterRegistration) {
+        this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
+          documentSelector: ['vue']
+        });
+      }
+    } else {
+      if (this.documentFormatterRegistration) {
+        this.documentFormatterRegistration.dispose();
+      }
+    }
   }
 
   private setupFileChangeListeners() {
@@ -400,7 +421,7 @@ export class VLS {
       textDocumentSync: TextDocumentSyncKind.Full,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
       signatureHelpProvider: { triggerCharacters: ['('] },
-      documentFormattingProvider: true,
+      documentFormattingProvider: false,
       hoverProvider: true,
       documentHighlightProvider: true,
       documentLinkProvider: {
