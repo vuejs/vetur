@@ -9,6 +9,7 @@
     .vue-interpolation {{test.case() + 'concatenation'}}
     .single-quote(v-if='test')
     .pug.javascript(:attr="i + will + 'concat' + this + string")
+    .issue#1139 #[b.large foo] bar
 </template>
 
 
