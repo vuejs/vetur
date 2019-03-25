@@ -171,7 +171,8 @@ export async function getJavascriptMode(
         item.data.offset,
         item.label,
         /*formattingOption*/ {},
-        item.data.source
+        item.data.source,
+        undefined
       );
       if (details) {
         item.detail = tsModule.displayPartsToString(details.displayParts);
@@ -213,7 +214,7 @@ export async function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position));
+      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), undefined);
       if (!signHelp) {
         return NULL_SIGNATURE;
       }
