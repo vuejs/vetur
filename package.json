@@ -15,7 +15,8 @@
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "prepare-publish": "yarn compile -f && ./build/release-cleanup"
   },
   "husky": {
     "hooks": {
