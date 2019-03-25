@@ -76,8 +76,8 @@
       ]
     },
     {
-      "begin": "(?:^\\s+)?(<)((?i:template))\\b(?=[^>]*lang=[\\\"'](?:pug|jade)[\\\"'])",
-      "end": "(</)((?i:template))(>)(?:\\s*\\n)?",
+      "begin": "(<)(template)\\b(?=[^>]*lang=[\\\"'](?:pug|jade)[\\\"'])(?![^/>]*/>\\s*$)",
+      "end": "(</)(template)(>)",
       "captures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -101,11 +101,8 @@
               "name": "punctuation.definition.tag.end.html"
             }
           },
-          "end": "(?=</(?i:template))",
+          "end": "(?=</template>)",
           "patterns": [
-            {
-              "include": "#vue-interpolations"
-            },
             {
               "include": "text.pug"
             }
