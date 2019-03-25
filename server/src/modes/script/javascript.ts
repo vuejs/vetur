@@ -20,7 +20,8 @@ import {
   DocumentHighlightKind,
   CompletionList,
   Position,
-  FormattingOptions
+  FormattingOptions,
+  DiagnosticTag
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
@@ -108,12 +109,19 @@ export async function getJavascriptMode(
       ];
 
       return diagnostics.map(diag => {
+        const tags: DiagnosticTag[] = [];
+
+        if (diag.reportsUnnecessary) {
+          tags.push(DiagnosticTag.Unnecessary);
+        }
+
         // syntactic/semantic diagnostic always has start and length
         // so we can safely cast diag to TextSpan
         return {
           range: convertRange(scriptDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
-          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n')
+          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
+          tags
         };
       });
     },
