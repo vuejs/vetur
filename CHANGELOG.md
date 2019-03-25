@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.17.1
+### 0.17.1 | 2019-03-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.17.1/vspackage)
 
 - `vetur.format.enable` option and dynamic formatter registration so Vetur works better with other Vue document formatters. #1121.
 
