@@ -42,7 +42,7 @@ patterns:
         end: (?=</template>)
 
   # jade / pug
-  - begin: (<)(template)\b(?=[^>]*lang=[\"'](?:pug|jade)[\"'])(?![^/>]*/>\s*$)
+  - begin: (<)(template)\b(?=[^>]*lang=(?:'pug'|'jade'|"pug"|"jade"))(?![^/>]*/>\s*$)
     end: (</)(template)(>)
     captures:
       '1': { name: punctuation.definition.tag.begin.html }
