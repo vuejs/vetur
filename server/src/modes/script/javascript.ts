@@ -20,7 +20,8 @@ import {
   DocumentHighlightKind,
   CompletionList,
   Position,
-  FormattingOptions
+  FormattingOptions,
+  DiagnosticTag
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
@@ -108,12 +109,19 @@ export async function getJavascriptMode(
       ];
 
       return diagnostics.map(diag => {
+        const tags: DiagnosticTag[] = [];
+
+        if (diag.reportsUnnecessary) {
+          tags.push(DiagnosticTag.Unnecessary);
+        }
+
         // syntactic/semantic diagnostic always has start and length
         // so we can safely cast diag to TextSpan
         return {
           range: convertRange(scriptDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
-          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n')
+          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
+          tags
         };
       });
     },
@@ -171,7 +179,8 @@ export async function getJavascriptMode(
         item.data.offset,
         item.label,
         /*formattingOption*/ {},
-        item.data.source
+        item.data.source,
+        undefined
       );
       if (details) {
         item.detail = tsModule.displayPartsToString(details.displayParts);
@@ -213,7 +222,7 @@ export async function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position));
+      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), undefined);
       if (!signHelp) {
         return NULL_SIGNATURE;
       }
