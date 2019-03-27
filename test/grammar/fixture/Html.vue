@@ -10,5 +10,7 @@
     <div class="vue-interpolation">{{test.case()}}</div>
     <div class="single-quote" v-if='test'></div>
     <div class="string concat" :attr="i + will + 'concat' + this + string"></div>
+    <div class="v-slot" v-slot:foo="bar"></div>
+    <div class="v-slot shorthand" #foo="bar"></div>
   </div>
 </template>

@@ -10,6 +10,8 @@
     .single-quote(v-if='test')
     .pug.javascript(:attr="i + will + 'concat' + this + string")
     .issue#1139 #[b.large foo] bar
+    .v-slot(v-slot:foo="bar")
+    .v-slot.shorthand(#foo="bar")
 </template>
 
 
