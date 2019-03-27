@@ -22,7 +22,7 @@ import {
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
-import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
+import { getVueDocumentRegions, VueDocumentRegions } from './embeddedSupport';
 import { getVueMode } from '../modes/vue';
 import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from '../modes/style';
 import { getJavascriptMode } from '../modes/script/javascript';
@@ -78,7 +78,9 @@ export class LanguageModes {
   private modelCaches: LanguageModelCache<any>[];
 
   constructor() {
-    this.documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document => getDocumentRegions(document));
+    this.documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document =>
+      getVueDocumentRegions(document)
+    );
 
     this.modelCaches = [];
     this.modelCaches.push(this.documentRegions);

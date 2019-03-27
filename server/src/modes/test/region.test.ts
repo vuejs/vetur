@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { TextDocument, Range } from 'vscode-languageserver-types';
-import { getDocumentRegions } from '../../embeddedSupport/embeddedSupport';
+import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 
 const defaultTemplate = `
 <div class="example">{{ msg }}</div>
@@ -24,7 +24,7 @@ const defaultStyle = `
 function getAllRegions(doc: TextDocument) {
   const startPos = doc.positionAt(0);
   const endPos = doc.positionAt(doc.getText().length);
-  return getDocumentRegions(doc).getLanguageRanges(Range.create(startPos, endPos));
+  return getVueDocumentRegions(doc).getLanguageRanges(Range.create(startPos, endPos));
 }
 
 function genAttr(lang: string) {
@@ -107,7 +107,7 @@ function testcase(description: string) {
         }
         if (offset >= 0) {
           const pos = doc.positionAt(offset);
-          const language = getDocumentRegions(doc).getLanguageAtPosition(pos);
+          const language = getVueDocumentRegions(doc).getLanguageAtPosition(pos);
           for (const block of blocks) {
             const content = contents[block];
             if (content && content.indexOf('|') >= 0) {

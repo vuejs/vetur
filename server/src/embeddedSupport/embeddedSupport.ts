@@ -1,7 +1,5 @@
-import { removeQuotes } from '../utils/strings';
-import { createScanner } from '../modes/template/parser/htmlScanner';
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
-import { TokenType, Scanner } from '../modes/template/parser/htmlScanner';
+import { parseVueDocumentRegions } from './vueDocumentRegionParser';
 
 export interface LanguageRange extends Range {
   languageId: string;
@@ -33,73 +31,8 @@ const defaultType: { [type: string]: string } = {
   style: 'css'
 };
 
-export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
-  const regions: EmbeddedRegion[] = [];
-  const text = document.getText();
-  const scanner = createScanner(text);
-  let lastTagName = '';
-  let lastAttributeName = '';
-  let languageIdFromType = '';
-  const importedScripts: string[] = [];
-
-  let token = scanner.scan();
-  while (token !== TokenType.EOS) {
-    switch (token) {
-      case TokenType.Styles:
-        regions.push({
-          languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType)
-            ? languageIdFromType
-            : defaultType['style'],
-          start: scanner.getTokenOffset(),
-          end: scanner.getTokenEnd(),
-          type: 'style'
-        });
-        languageIdFromType = '';
-        break;
-      case TokenType.Script:
-        regions.push({
-          languageId: languageIdFromType ? languageIdFromType : defaultType['script'],
-          start: scanner.getTokenOffset(),
-          end: scanner.getTokenEnd(),
-          type: 'script'
-        });
-        languageIdFromType = '';
-        break;
-      case TokenType.StartTag:
-        const tagName = scanner.getTokenText();
-        if (tagName === 'template') {
-          const templateRegion = scanTemplateRegion(scanner, text);
-          if (templateRegion) {
-            regions.push(templateRegion);
-          }
-        }
-        lastTagName = tagName;
-        lastAttributeName = '';
-        break;
-      case TokenType.AttributeName:
-        lastAttributeName = scanner.getTokenText();
-        break;
-      case TokenType.AttributeValue:
-        if (lastAttributeName === 'lang') {
-          languageIdFromType = getLanguageIdFromLangAttr(scanner.getTokenText());
-        } else {
-          if (lastAttributeName === 'src' && lastTagName.toLowerCase() === 'script') {
-            let value = scanner.getTokenText();
-            if (value[0] === "'" || value[0] === '"') {
-              value = value.substr(1, value.length - 1);
-            }
-            importedScripts.push(value);
-          }
-        }
-        lastAttributeName = '';
-        break;
-      case TokenType.EndTagClose:
-        lastAttributeName = '';
-        languageIdFromType = '';
-        break;
-    }
-    token = scanner.scan();
-  }
+export function getVueDocumentRegions(document: TextDocument): VueDocumentRegions {
+  const { regions, importedScripts } = parseVueDocumentRegions(document);
 
   return {
     getLanguageRanges: (range: Range) => getLanguageRanges(document, regions, range),
@@ -107,101 +40,9 @@ export function getDocumentRegions(document: TextDocument): VueDocumentRegions {
     getEmbeddedDocument: (languageId: string) => getEmbeddedDocument(document, regions, languageId),
     getEmbeddedDocumentByType: (type: EmbeddedType) => getEmbeddedDocumentByType(document, regions, type),
     getLanguageAtPosition: (position: Position) => getLanguageAtPosition(document, regions, position),
-    getLanguagesInDocument: () => getLanguagesInDocument(document, regions),
+    getLanguagesInDocument: () => getLanguagesInDocument(regions),
     getImportedScripts: () => importedScripts
   };
-}
-
-function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | null {
-  let languageId = 'vue-html';
-
-  let token: number;
-  let start = 0;
-  let end: number;
-
-  // Scan until finding matching template EndTag
-  // Also record immediate next StartTagClose to find start
-  let unClosedTemplate = 1;
-  let lastAttributeName = null;
-  while (unClosedTemplate !== 0) {
-    // skip parsing on non html syntax, just search terminator
-    if (languageId !== 'vue-html' && start !== 0) {
-      token = scanner.scanForRegexp(/<\/template>/);
-      if (token === TokenType.EOS) {
-        return null;
-      }
-      // forward to endTagStart </
-      scanner.scan();
-      break;
-    }
-    token = scanner.scan();
-    if (token === TokenType.EOS) {
-      return null;
-    }
-
-    if (start === 0) {
-      if (token === TokenType.AttributeName) {
-        lastAttributeName = scanner.getTokenText();
-      } else if (token === TokenType.AttributeValue) {
-        if (lastAttributeName === 'lang') {
-          languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
-        }
-        lastAttributeName = null;
-      } else if (token === TokenType.StartTagClose) {
-        start = scanner.getTokenEnd();
-      }
-    } else {
-      if (token === TokenType.StartTag && scanner.getTokenText() === 'template') {
-        unClosedTemplate++;
-      } else if (token === TokenType.EndTag && scanner.getTokenText() === 'template') {
-        unClosedTemplate--;
-        // test leading </template>
-        const charPosBeforeEndTag = scanner.getTokenOffset() - 3;
-        if (text[charPosBeforeEndTag] === '\n') {
-          break;
-        }
-      } else if (token === TokenType.Unknown) {
-        if (scanner.getTokenText().charAt(0) === '<') {
-          const offset = scanner.getTokenOffset();
-          const unknownText = text.substr(offset, 11);
-          if (unknownText === '</template>') {
-            unClosedTemplate--;
-            // test leading </template>
-            if (text[offset - 1] === '\n') {
-              return {
-                languageId,
-                start,
-                end: offset,
-                type: 'template'
-              };
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // In EndTag, find end
-  // -2 for </
-  end = scanner.getTokenOffset() - 2;
-
-  return {
-    languageId,
-    start,
-    end,
-    type: 'template'
-  };
-}
-
-function getLanguageIdFromLangAttr(lang: string): string {
-  let languageIdFromType = removeQuotes(lang);
-  if (languageIdFromType === 'jade') {
-    languageIdFromType = 'pug';
-  }
-  if (languageIdFromType === 'ts') {
-    languageIdFromType = 'typescript';
-  }
-  return languageIdFromType;
 }
 
 function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], range: Range): LanguageRange[] {
@@ -244,7 +85,7 @@ function getLanguageRanges(document: TextDocument, regions: EmbeddedRegion[], ra
   return result;
 }
 
-function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[]): string[] {
+function getLanguagesInDocument(regions: EmbeddedRegion[]): string[] {
   const result = ['vue'];
   for (const region of regions) {
     if (region.languageId && result.indexOf(region.languageId) === -1) {
@@ -268,17 +109,25 @@ function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[]
   return 'vue';
 }
 
-function getEmbeddedDocument(document: TextDocument, contents: EmbeddedRegion[], languageId: string): TextDocument {
+/**
+ * Get a document where all regions of `languageId` is preserved
+ * Whereas other regions are replaced with whitespaces
+ */
+export function getEmbeddedDocument(
+  document: TextDocument,
+  regions: EmbeddedRegion[],
+  languageId: string
+): TextDocument {
   const oldContent = document.getText();
-  let result = '';
-  for (const c of contents) {
-    if (c.languageId === languageId) {
-      result = oldContent.substring(0, c.start).replace(/./g, ' ');
-      result += oldContent.substring(c.start, c.end);
-      break;
+  let newContent = oldContent.replace(/./g, ' ');
+
+  for (const r of regions) {
+    if (r.languageId === languageId) {
+      newContent = newContent.slice(0, r.start) + oldContent.slice(r.start, r.end) + newContent.slice(r.end);
     }
   }
-  return TextDocument.create(document.uri, languageId, document.version, result);
+
+  return TextDocument.create(document.uri, languageId, document.version, newContent);
 }
 
 function getEmbeddedDocumentByType(
