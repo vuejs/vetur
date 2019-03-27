@@ -17,7 +17,7 @@ import { VLSFormatConfig } from '../../../config';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getEmbeddedDocument('stylus')
+    documentRegions.get(document).getSingleLanguageDocument('stylus')
   );
   let baseIndentShifted = false;
   let config: any = {};

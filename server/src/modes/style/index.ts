@@ -11,7 +11,7 @@ import * as emmet from 'vscode-emmet-helper';
 import { Priority } from './emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
-import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
+import { VueDocumentRegions, LanguageId } from '../../embeddedSupport/embeddedSupport';
 import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
@@ -38,12 +38,12 @@ export function getLESSMode(documentRegions: LanguageModelCache<VueDocumentRegio
 }
 
 function getStyleMode(
-  languageId: string,
+  languageId: LanguageId,
   languageService: LanguageService,
   documentRegions: LanguageModelCache<VueDocumentRegions>
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getEmbeddedDocument(languageId)
+    documentRegions.get(document).getSingleLanguageDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
   let config: any = {};

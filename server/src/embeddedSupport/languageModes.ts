@@ -22,7 +22,7 @@ import {
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
-import { getVueDocumentRegions, VueDocumentRegions } from './embeddedSupport';
+import { getVueDocumentRegions, VueDocumentRegions, LanguageId, LanguageRange } from './embeddedSupport';
 import { getVueMode } from '../modes/vue';
 import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from '../modes/style';
 import { getJavascriptMode } from '../modes/script/javascript';
@@ -67,13 +67,13 @@ export interface LanguageMode {
   dispose(): void;
 }
 
-export interface LanguageModeRange extends Range {
+export interface LanguageModeRange extends LanguageRange {
   mode: LanguageMode;
-  attributeValue?: boolean;
 }
 
 export class LanguageModes {
-  private modes: { [k: string]: LanguageMode } = {};
+  private modes: { [k in LanguageId]: LanguageMode };
+
   private documentRegions: LanguageModelCache<VueDocumentRegions>;
   private modelCaches: LanguageModelCache<any>[];
 
@@ -103,47 +103,37 @@ export class LanguageModes {
     this.modes['less'] = getLESSMode(this.documentRegions);
     this.modes['stylus'] = getStylusMode(this.documentRegions);
     this.modes['javascript'] = jsMode;
-    this.modes['tsx'] = jsMode;
     this.modes['typescript'] = jsMode;
+    this.modes['tsx'] = jsMode;
   }
 
-  getModeAtPosition(document: TextDocument, position: Position): LanguageMode | null {
+  getModeAtPosition(document: TextDocument, position: Position): LanguageMode | undefined {
     const languageId = this.documentRegions.get(document).getLanguageAtPosition(position);
-    if (languageId) {
-      return this.modes[languageId];
-    }
-    return null;
+    return this.modes[languageId];
   }
 
-  getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
-    return this.documentRegions
-      .get(document)
-      .getLanguageRanges(range)
-      .map(r => {
-        return {
-          start: r.start,
-          end: r.end,
-          mode: this.modes[r.languageId],
-          attributeValue: r.attributeValue
-        };
-      });
-  }
+  getAllLanguageModeRangesInDocument(document: TextDocument): LanguageModeRange[] {
+    const result: LanguageModeRange[] = [];
 
-  getAllModesInDocument(document: TextDocument): LanguageMode[] {
-    const result = [];
-    for (const languageId of this.documentRegions.get(document).getLanguagesInDocument()) {
-      const mode = this.modes[languageId];
+    const documentRegions = this.documentRegions.get(document);
+
+    documentRegions.getAllLanguageRanges().forEach(lr => {
+      const mode = this.modes[lr.languageId];
       if (mode) {
-        result.push(mode);
+        result.push({
+          mode,
+          ...lr
+        });
       }
-    }
+    });
+
     return result;
   }
 
   getAllModes(): LanguageMode[] {
     const result = [];
     for (const languageId in this.modes) {
-      const mode = this.modes[languageId];
+      const mode = this.modes[<LanguageId>languageId];
       if (mode) {
         result.push(mode);
       }
@@ -151,14 +141,14 @@ export class LanguageModes {
     return result;
   }
 
-  getMode(languageId: string): LanguageMode {
+  getMode(languageId: LanguageId): LanguageMode | undefined {
     return this.modes[languageId];
   }
 
   onDocumentRemoved(document: TextDocument) {
     this.modelCaches.forEach(mc => mc.onDocumentRemoved(document));
     for (const mode in this.modes) {
-      this.modes[mode].onDocumentRemoved(document);
+      this.modes[<LanguageId>mode].onDocumentRemoved(document);
     }
   }
 
@@ -166,8 +156,8 @@ export class LanguageModes {
     this.modelCaches.forEach(mc => mc.dispose());
     this.modelCaches = [];
     for (const mode in this.modes) {
-      this.modes[mode].dispose();
+      this.modes[<LanguageId>mode].dispose();
     }
-    this.modes = {}; // drop all references
+    delete this.modes;
   }
 }

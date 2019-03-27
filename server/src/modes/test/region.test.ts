@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { TextDocument, Range } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-types';
 import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 
 const defaultTemplate = `
@@ -20,12 +20,6 @@ const defaultStyle = `
   color: red;
 }
 `;
-
-function getAllRegions(doc: TextDocument) {
-  const startPos = doc.positionAt(0);
-  const endPos = doc.positionAt(doc.getText().length);
-  return getVueDocumentRegions(doc).getLanguageRanges(Range.create(startPos, endPos));
-}
 
 function genAttr(lang: string) {
   return lang ? ` lang="${lang}"` : '';
@@ -96,7 +90,7 @@ function testcase(description: string) {
       }
       const doc = TextDocument.create('test://test/test.vue', 'vue', 0, content);
       test(description, () => {
-        const ranges = getAllRegions(doc);
+        const ranges = getVueDocumentRegions(doc).getAllLanguageRanges();
         const blocks = activeBlocks();
 
         assert.equal(ranges.length, blocks.length * 2 + 1, 'block number mismatch');
@@ -218,7 +212,7 @@ suite('Embedded Support', () => {
 <script>export default {}</script>
 `;
     const doc = TextDocument.create('test://test/test.vue', 'vue', 0, content);
-    const ranges = getAllRegions(doc);
+    const ranges = getVueDocumentRegions(doc).getAllLanguageRanges();
     assert.equal(ranges.length, 3);
     assert.equal(ranges[1].languageId, 'javascript');
   });

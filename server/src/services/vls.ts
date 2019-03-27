@@ -27,8 +27,6 @@ import {
   DocumentSymbolParams,
   Hover,
   Location,
-  Position,
-  Range,
   SignatureHelp,
   SymbolInformation,
   TextDocument,
@@ -170,6 +168,10 @@ export class VLS {
     });
     this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
       const jsMode = this.languageModes.getMode('javascript');
+      if (!jsMode) {
+        throw Error(`Can't find JS mode.`);
+      }
+
       changes.forEach(c => {
         if (c.type === FileChangeType.Changed) {
           const fsPath = Uri.parse(c.uri).fsPath;
@@ -219,9 +221,8 @@ export class VLS {
 
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
     const doc = this.documentService.getDocument(textDocument.uri)!;
-    const fullDocRange = Range.create(Position.create(0, 0), doc.positionAt(doc.getText().length));
 
-    const modeRanges = this.languageModes.getModesInRange(doc, fullDocRange);
+    const modeRanges = this.languageModes.getAllLanguageModeRangesInDocument(doc);
     const allEdits: TextEdit[] = [];
 
     const errMessages: string[] = [];
@@ -326,9 +327,9 @@ export class VLS {
     };
 
     const links: DocumentLink[] = [];
-    this.languageModes.getAllModesInDocument(doc).forEach(m => {
-      if (m.findDocumentLinks) {
-        pushAll(links, m.findDocumentLinks(doc, documentContext));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentLinks) {
+        pushAll(links, m.mode.findDocumentLinks(doc, documentContext));
       }
     });
     return links;
@@ -338,9 +339,9 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const symbols: SymbolInformation[] = [];
 
-    this.languageModes.getAllModesInDocument(doc).forEach(m => {
-      if (m.findDocumentSymbols) {
-        pushAll(symbols, m.findDocumentSymbols(doc));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentSymbols) {
+        pushAll(symbols, m.mode.findDocumentSymbols(doc));
       }
     });
     return symbols;
@@ -350,9 +351,9 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const colors: ColorInformation[] = [];
 
-    this.languageModes.getAllModesInDocument(doc).forEach(m => {
-      if (m.findDocumentColors) {
-        pushAll(colors, m.findDocumentColors(doc));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentColors) {
+        pushAll(colors, m.mode.findDocumentColors(doc));
       }
     });
     return colors;
@@ -424,9 +425,9 @@ export class VLS {
   doValidate(doc: TextDocument): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
-      this.languageModes.getAllModesInDocument(doc).forEach(mode => {
-        if (mode.doValidation && this.validation[mode.getId()]) {
-          pushAll(diagnostics, mode.doValidation(doc));
+      this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
+        if (lmr.mode.doValidation && this.validation[lmr.mode.getId()]) {
+          pushAll(diagnostics, lmr.mode.doValidation(doc));
         }
       });
     }

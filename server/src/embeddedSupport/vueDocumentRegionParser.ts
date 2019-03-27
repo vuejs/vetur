@@ -1,21 +1,19 @@
 import { TextDocument } from 'vscode-languageserver-types';
 import { createScanner, TokenType, Scanner } from '../modes/template/parser/htmlScanner';
 import { removeQuotes } from '../utils/strings';
+import { LanguageId } from './embeddedSupport';
 
 export type RegionType = 'template' | 'script' | 'style' | 'custom';
 
 export interface EmbeddedRegion {
-  languageId: string;
+  languageId: LanguageId;
   start: number;
   end: number;
   type: RegionType;
 }
 
-const defaultType: { [type: string]: string } = {
-  template: 'vue-html',
-  script: 'javascript',
-  style: 'css'
-};
+const defaultScriptLang = 'javascript';
+const defaultCSSLang = 'css';
 
 export function parseVueDocumentRegions(document: TextDocument) {
   const regions: EmbeddedRegion[] = [];
@@ -23,7 +21,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
   const scanner = createScanner(text);
   let lastTagName = '';
   let lastAttributeName = '';
-  let languageIdFromType = '';
+  let languageIdFromType: LanguageId | '' = '';
   const importedScripts: string[] = [];
 
   let token = scanner.scan();
@@ -32,8 +30,8 @@ export function parseVueDocumentRegions(document: TextDocument) {
       case TokenType.Styles:
         regions.push({
           languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType)
-            ? languageIdFromType
-            : defaultType['style'],
+            ? (languageIdFromType as LanguageId)
+            : defaultCSSLang,
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd(),
           type: 'style'
@@ -42,7 +40,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
         break;
       case TokenType.Script:
         regions.push({
-          languageId: languageIdFromType ? languageIdFromType : defaultType['script'],
+          languageId: languageIdFromType ? languageIdFromType : defaultScriptLang,
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd(),
           type: 'script'
@@ -92,7 +90,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
 }
 
 function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | null {
-  let languageId = 'vue-html';
+  let languageId: LanguageId = 'vue-html';
 
   let token: number;
   let start = 0;
@@ -172,7 +170,7 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
   };
 }
 
-function getLanguageIdFromLangAttr(lang: string): string {
+function getLanguageIdFromLangAttr(lang: string): LanguageId {
   let languageIdFromType = removeQuotes(lang);
   if (languageIdFromType === 'jade') {
     languageIdFromType = 'pug';
@@ -180,5 +178,5 @@ function getLanguageIdFromLangAttr(lang: string): string {
   if (languageIdFromType === 'ts') {
     languageIdFromType = 'typescript';
   }
-  return languageIdFromType;
+  return languageIdFromType as LanguageId;
 }

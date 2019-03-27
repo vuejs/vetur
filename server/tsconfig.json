@@ -6,6 +6,8 @@
     "rootDir": "src",
 
     "lib": ["es2015", "es2016.array.include"],
+    // Most classes in VLS are asynchronously initialized
+    "strictPropertyInitialization": false
   },
   "include": [
     "src"
