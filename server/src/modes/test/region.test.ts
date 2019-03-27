@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { TextDocument, Range } from 'vscode-languageserver-types';
-import { getDocumentRegions } from '../embeddedSupport';
+import { getDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 
 const defaultTemplate = `
 <div class="example">{{ msg }}</div>

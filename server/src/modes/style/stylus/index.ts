@@ -4,9 +4,9 @@ import { CompletionList, TextEdit } from 'vscode-languageserver-types';
 import { IStylusSupremacy } from './stylus-supremacy';
 
 import { Priority } from '../emmet';
-import { LanguageModelCache, getLanguageModelCache } from '../../languageModelCache';
-import { LanguageMode } from '../../languageModes';
-import { VueDocumentRegions } from '../../embeddedSupport';
+import { LanguageModelCache, getLanguageModelCache } from '../../../embeddedSupport/languageModelCache';
+import { LanguageMode } from '../../../embeddedSupport/languageModes';
+import { VueDocumentRegions } from '../../../embeddedSupport/embeddedSupport';
 
 import { provideCompletionItems } from './completion-item';
 import { provideDocumentSymbols } from './symbols-finder';

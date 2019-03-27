@@ -9,9 +9,9 @@ import * as _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 
 import { Priority } from './emmet';
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions } from '../embeddedSupport';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';

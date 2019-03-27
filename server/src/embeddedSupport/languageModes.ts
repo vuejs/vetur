@@ -23,11 +23,11 @@ import {
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getDocumentRegions, VueDocumentRegions } from './embeddedSupport';
-import { getVueMode } from './vue';
-import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from './style';
-import { getJavascriptMode } from './script/javascript';
-import { getVueHTMLMode } from './template';
-import { getStylusMode } from './style/stylus';
+import { getVueMode } from '../modes/vue';
+import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from '../modes/style';
+import { getJavascriptMode } from '../modes/script/javascript';
+import { getVueHTMLMode } from '../modes/template';
+import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';

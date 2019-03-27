@@ -1,7 +1,7 @@
 import { TextDocument } from 'vscode-languageserver';
 import { getFileFsPath } from '../utils/paths';
 import { Definition } from 'vscode-languageserver-types';
-import { LanguageModes } from '../modes/languageModes';
+import { LanguageModes } from '../embeddedSupport/languageModes';
 
 /**
  * State associated with a specific Vue file

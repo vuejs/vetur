@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as path from 'path';
 
-import { getDocumentRegions } from '../embeddedSupport';
+import { getDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
 import { T_TypeScript } from '../../services/dependencyService';
 

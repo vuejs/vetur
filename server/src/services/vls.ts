@@ -38,7 +38,7 @@ import {
 } from 'vscode-languageserver-types';
 
 import Uri from 'vscode-uri';
-import { LanguageModes } from '../modes/languageModes';
+import { LanguageModes } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';

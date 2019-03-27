@@ -1,4 +1,4 @@
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import {
   SymbolInformation,
   SymbolKind,
@@ -25,8 +25,8 @@ import {
   DiagnosticTag,
   MarkupContent
 } from 'vscode-languageserver-types';
-import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
 import { getServiceHost } from './serviceHost';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';

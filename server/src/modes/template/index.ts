@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
-import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions } from '../embeddedSupport';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { HTMLDocument } from './parser/htmlParser';
 import { doComplete } from './services/htmlCompletion';
 import { doHover } from './services/htmlHover';

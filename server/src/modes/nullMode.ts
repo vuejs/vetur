@@ -1,4 +1,4 @@
-import { LanguageMode } from './languageModes';
+import { LanguageMode } from '../embeddedSupport/languageModes';
 
 export const NULL_HOVER = {
   contents: []
