@@ -38,6 +38,13 @@ Current default:
 
 ## Settings
 
+A global switch `vetur.format.enable` toggles Vetur formatter on and off. This is useful if you want to let Prettier handle `*.vue` file formatting completely.
+
+- The benefits of using Prettier: CLI support, one single formatter.
+- The downsides: No Stylus support, can't use `js-beautify`, `prettyhtml` or TypeScript formatter, no options for indenting script/style blocks [yet](https://github.com/prettier/prettier/issues/3888).
+
+### Vetur Formatter Config
+
 These two settings are inherited by all formatters:
 
 ```json

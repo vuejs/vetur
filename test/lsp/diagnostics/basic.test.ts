@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
-import { position, sameLineRange, range, getDocUri } from '../util';
+import { sameLineRange, range, getDocUri } from '../util';
 import { testDiagnostics } from './helper';
+import { DiagnosticTag } from 'vscode-languageclient';
 
 describe('Should find common diagnostics for all regions', () => {
   const docUri = getDocUri('client/diagnostics/Basic.vue');
@@ -27,7 +28,8 @@ describe('Should find common diagnostics for all regions', () => {
       {
         range: sameLineRange(8, 0, 29),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "'Item' is declared but its value is never read."
+        message: "'Item' is declared but its value is never read.",
+        tags: [DiagnosticTag.Unnecessary]
       },
       {
         range: sameLineRange(8, 17, 29),
@@ -51,7 +53,7 @@ describe('Should find common diagnostics for all regions', () => {
       }
     ];
 
-    await testDiagnostics(docUri, position(2, 5), expectedDiagnostics);
+    await testDiagnostics(docUri, expectedDiagnostics);
   });
 
   it('shows diagnostic errors for <style> region', async () => {
@@ -65,6 +67,6 @@ describe('Should find common diagnostics for all regions', () => {
       }
     ];
 
-    await testDiagnostics(docUri, position(2, 5), expectedDiagnostics);
+    await testDiagnostics(docUri, expectedDiagnostics);
   });
 });

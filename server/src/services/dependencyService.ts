@@ -56,21 +56,37 @@ export class DependencyService {
 
   async init(workspacePath: string, useWorkspaceDependencies: boolean) {
     if (!useWorkspaceDependencies) {
-      console.log('Using bundled TypeScript 2.8.4.');
-      return;
+      const tsModule = await import('typescript');
+      console.log(`Loaded bundled typescript@${tsModule.version}.`);
+
+      this.dependencies.typescript = {
+        name: 'typecript',
+        state: State.Loaded,
+        version: tsModule.version,
+        bundled: true,
+        module: tsModule
+      };
+    } else {
+      const workspaceTSPath = path.resolve(workspacePath, 'node_modules/typescript');
+      let tsModule: T_TypeScript;
+      let bundled = false;
+      try {
+        tsModule = await import(workspaceTSPath);
+        console.log(`Loaded typescript@${tsModule.version} from workspace.`);
+      } catch (err) {
+        tsModule = await import('typescript');
+        bundled = true;
+        console.log(`Failed to load typescript from workspace. Using bundled typescript@${tsModule.version}.`);
+      }
+
+      this.dependencies.typescript = {
+        name: 'typecript',
+        state: State.Loaded,
+        version: tsModule.version,
+        bundled,
+        module: tsModule
+      };
     }
-
-    const workspaceTSPath = path.resolve(workspacePath, 'node_modules/typescript');
-    const tsModule = await import(workspaceTSPath);
-    console.log(`Using workspace version of TypeScript ${tsModule.version}.`);
-
-    this.dependencies.typescript = {
-      name: 'typecript',
-      state: State.Loaded,
-      version: tsModule.version,
-      bundled: false,
-      module: tsModule
-    };
   }
 
   getDependency(d: keyof VLSDependencies) {
