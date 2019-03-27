@@ -113,8 +113,6 @@
         "embeddedLanguages": {
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
-          "text.pug": "jade",
-          "text.pug.vue-pug": "vue-pug",
           "text.jade.slm": "slm",
           "text.haml": "haml",
           "source.css": "css",
@@ -147,12 +145,14 @@
         }
       },
       {
-        "language": "vue-pug",
-        "scopeName": "text.pug.vue-pug",
-        "path": "./syntaxes/vue-pug.tmLanguage.json",
-        "embeddedLanguages": {
-          "source.js": "javascript"
-        }
+        "path": "./syntaxes/pug/directives.tmLanguage.json",
+        "scopeName": "vue.pug.directives",
+        "injectTo": ["source.vue"]
+      },
+      {
+        "path": "./syntaxes/pug/interpolations.tmLanguage.json",
+        "scopeName": "vue.pug.interpolations",
+        "injectTo": ["source.vue"]
       }
     ],
     "configuration": {

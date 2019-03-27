@@ -102,7 +102,7 @@
           "include": "#tag-stuff"
         },
         {
-          "contentName": "text.pug.vue-pug",
+          "contentName": "source.vue.pug",
           "begin": "(>)",
           "beginCaptures": {
             "1": {
@@ -112,7 +112,7 @@
           "end": "(?=</template>)",
           "patterns": [
             {
-              "include": "text.pug.vue-pug"
+              "include": "text.pug"
             }
           ]
         }
@@ -908,7 +908,7 @@
     },
     "vue-directives": {
       "name": "meta.directive.vue",
-      "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)",
+      "begin": "(?:\\b(v-)|(:|@|#))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)",
       "end": "(?<='|\"|`)",
       "captures": {
         "1": {
