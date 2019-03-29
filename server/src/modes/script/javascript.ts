@@ -377,18 +377,23 @@ export async function getJavascriptMode(
       const start = scriptDoc.offsetAt(range.start);
       const end = scriptDoc.offsetAt(range.end);
       if (!supportedCodeFixCodes) {
-        supportedCodeFixCodes = new Set(ts.getSupportedCodeFixes().map(Number).filter(x => !isNaN(x)));
+        supportedCodeFixCodes = new Set(
+          ts
+            .getSupportedCodeFixes()
+            .map(Number)
+            .filter(x => !isNaN(x))
+        );
       }
       const fixableDiagnosticCodes = context.diagnostics.map(d => +d.code!).filter(c => supportedCodeFixCodes.has(c));
       if (!fixableDiagnosticCodes) {
         return [];
       }
 
-      //const needIndent = config.vetur.format.scriptInitialIndent;
-      const formatSettings = config.typescript.format;
-      //const initialIndentLevel = needIndent ? 1 : 0;
-      // TODO: handle indent & format settings
-      const convertedFormatSettings = formatSettings;
+      const formatSettings: ts.FormatCodeSettings = {
+        tabSize: config.vetur.format.options.tabSize,
+        indentSize: config.vetur.format.options.tabSize,
+        convertTabsToSpaces: !config.vetur.format.options.useTabs
+      };
 
       const result: Command[] = [];
       const fixes = service.getCodeFixesAtPosition(
@@ -396,24 +401,14 @@ export async function getJavascriptMode(
         start,
         end,
         fixableDiagnosticCodes,
-        convertedFormatSettings,
+        formatSettings,
         /*preferences*/ {}
       );
       collectQuickFixCommands(fixes, service, result);
 
       const textRange = { pos: start, end };
-      const refactorings = service.getApplicableRefactors(
-        fileName,
-        textRange,
-        /*preferences*/ {}
-      );
-      collectRefactoringCommands(
-        refactorings,
-        fileName,
-        formatSettings,
-        textRange,
-        result
-      );
+      const refactorings = service.getApplicableRefactors(fileName, textRange, /*preferences*/ {});
+      collectRefactoringCommands(refactorings, fileName, formatSettings, textRange, result);
 
       return result;
     },
@@ -425,7 +420,7 @@ export async function getJavascriptMode(
         args.textRange,
         args.refactorName,
         args.actionName,
-        args.preferences,
+        args.preferences
       );
       if (!response) {
         // TODO: What happens when there's no response?
@@ -504,11 +499,12 @@ export async function getJavascriptMode(
 }
 
 function collectRefactoringCommands(
-    refactorings: ts.ApplicableRefactorInfo[],
-    fileName: string,
-    formatSettings: any,
-    textRange: { pos: number; end: number; },
-    result: Command[]) {
+  refactorings: ts.ApplicableRefactorInfo[],
+  fileName: string,
+  formatSettings: any,
+  textRange: { pos: number; end: number },
+  result: Command[]
+) {
   const actions: RefactorAction[] = [];
   for (const refactoring of refactorings) {
     const refactorName = refactoring.name;
@@ -520,34 +516,36 @@ function collectRefactoringCommands(
         refactorName,
         actionName: refactorName,
         preferences: {},
-        description: refactoring.description,
+        description: refactoring.description
       });
-    }
-    else {
-      actions.push(...refactoring.actions.map(action => ({
-        fileName,
-        formatOptions: formatSettings,
-        textRange,
-        refactorName,
-        actionName: action.name,
-        preferences: {},
-        description: action.description,
-      })));
+    } else {
+      actions.push(
+        ...refactoring.actions.map(action => ({
+          fileName,
+          formatOptions: formatSettings,
+          textRange,
+          refactorName,
+          actionName: action.name,
+          preferences: {},
+          description: action.description
+        }))
+      );
     }
   }
   for (const action of actions) {
     result.push({
       command: 'vetur.chooseTypeScriptRefactoring',
       title: action.description,
-      arguments: [action],
+      arguments: [action]
     });
   }
 }
 
 function collectQuickFixCommands(
-    fixes: ReadonlyArray<ts.CodeFixAction>,
-    service: ts.LanguageService,
-    result: Command[]) {
+  fixes: ReadonlyArray<ts.CodeFixAction>,
+  service: ts.LanguageService,
+  result: Command[]
+) {
   for (const fix of fixes) {
     const uriTextEditMapping = createUriMappingForEdits(fix.changes, service);
     result.push(createApplyCodeActionCommand(fix.description, uriTextEditMapping));
@@ -558,9 +556,11 @@ function createApplyCodeActionCommand(title: string, uriTextEditMapping: Record<
   return {
     title,
     command: 'vetur.applyWorkspaceEdits',
-    arguments: [{
-      changes: uriTextEditMapping
-    }]
+    arguments: [
+      {
+        changes: uriTextEditMapping
+      }
+    ]
   };
 }
 
@@ -571,13 +571,12 @@ function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.Lan
     const targetDoc = getSourceDoc(fileName, program);
     const edits = textChanges.map(({ newText, span }) => ({
       newText,
-      range: convertRange(targetDoc, span),
+      range: convertRange(targetDoc, span)
     }));
     const uri = Uri.file(fileName).toString();
     if (result[uri]) {
       result[uri].push(...edits);
-    }
-    else {
+    } else {
       result[uri] = edits;
     }
   }
