@@ -120,11 +120,13 @@ export async function getJavascriptMode(
 
         // syntactic/semantic diagnostic always has start and length
         // so we can safely cast diag to TextSpan
-        return {
+        return <Diagnostic>{
           range: convertRange(scriptDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
           message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
-          tags
+          tags,
+          code: diag.code,
+          source: 'Vetur - TypeScript'
         };
       });
     },
