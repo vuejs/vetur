@@ -126,7 +126,7 @@ export async function getJavascriptMode(
           message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
           tags,
           code: diag.code,
-          source: 'Vetur - TypeScript'
+          source: 'Vetur'
         };
       });
     },
