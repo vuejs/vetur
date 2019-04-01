@@ -89,15 +89,15 @@ function testcase(description: string) {
         content = content.substr(0, offset) + content.substr(offset + 1);
       }
       const doc = TextDocument.create('test://test/test.vue', 'vue', 0, content);
+
       test(description, () => {
         const ranges = getVueDocumentRegions(doc).getAllLanguageRanges();
         const blocks = activeBlocks();
 
-        assert.equal(ranges.length, blocks.length * 2 + 1, 'block number mismatch');
-        for (let i = 0, l = blocks.length; i < l; i++) {
-          assert.equal(ranges[2 * i].languageId, 'vue', 'block separator mismatch');
+        assert.equal(ranges.length, blocks.length, 'block number mismatch');
+        for (let i = 0; i < blocks.length; i++) {
           const langId = getLangId(blocks[i], langMap[blocks[i]]);
-          assert.equal(ranges[2 * i + 1].languageId, langId, 'block lang mismatch');
+          assert.equal(ranges[i].languageId, langId, 'block lang mismatch');
         }
         if (offset >= 0) {
           const pos = doc.positionAt(offset);
@@ -205,15 +205,4 @@ suite('Embedded Support', () => {
   testcase('ill formed template11')
     .template(`div(v-bind:prop="x <= 1")`, 'pug')
     .run();
-
-  test('oneline style', () => {
-    const content = `
-<style lang="scss"></style>
-<script>export default {}</script>
-`;
-    const doc = TextDocument.create('test://test/test.vue', 'vue', 0, content);
-    const ranges = getVueDocumentRegions(doc).getAllLanguageRanges();
-    assert.equal(ranges.length, 3);
-    assert.equal(ranges[1].languageId, 'javascript');
-  });
 });

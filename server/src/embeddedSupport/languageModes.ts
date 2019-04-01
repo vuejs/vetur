@@ -18,7 +18,7 @@ import {
   ColorInformation,
   Color,
   ColorPresentation,
-  Command,
+  Command
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -31,6 +31,7 @@ import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';
+import { nullMode } from '../modes/nullMode';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -47,7 +48,8 @@ export interface LanguageMode {
     document: TextDocument,
     range: Range,
     formatParams: FormattingOptions,
-    context: CodeActionContext): Command[];
+    context: CodeActionContext
+  ): Command[];
   getRefactorEdits?(doc: TextDocument, args: RefactorAction): Command;
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
@@ -72,7 +74,19 @@ export interface LanguageModeRange extends LanguageRange {
 }
 
 export class LanguageModes {
-  private modes: { [k in LanguageId]: LanguageMode };
+  private modes: { [k in LanguageId]: LanguageMode } = {
+    vue: nullMode,
+    pug: nullMode,
+    'vue-html': nullMode,
+    css: nullMode,
+    postcss: nullMode,
+    scss: nullMode,
+    less: nullMode,
+    stylus: nullMode,
+    javascript: nullMode,
+    typescript: nullMode,
+    tsx: nullMode
+  };
 
   private documentRegions: LanguageModelCache<VueDocumentRegions>;
   private modelCaches: LanguageModelCache<any>[];
