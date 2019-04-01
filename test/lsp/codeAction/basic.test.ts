@@ -13,24 +13,14 @@ describe('Should do codeAction', () => {
   });
 
   it('finds codeAction for unused import', async () => {
-    const codeActions = [
-      { title: 'Remove variable statement', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Ignore this error message', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Disable checking for this file', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Extract to function in module scope', command: 'vetur.chooseTypeScriptRefactoring' },
-      { title: 'Extract to constant in enclosing scope', command: 'vetur.chooseTypeScriptRefactoring' }
-    ];
-    await testCodeAction(docUri, sameLineRange(5, 0, 27), codeActions);
+    const codeActions = [{ title: `Remove declaration for: '_'`, command: 'vetur.applyWorkspaceEdits' }];
+    await testCodeAction(docUri, sameLineRange(5, 6, 6), codeActions);
   });
 
   it('finds codeAction for unused variables', async () => {
-    const codeActions = [
-      { title: 'Remove variable statement', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Ignore this error message', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Disable checking for this file', command: 'vetur.applyWorkspaceEdits' }
-    ];
+    const codeActions = [{ title: `Remove declaration for: 'foo'`, command: 'vetur.applyWorkspaceEdits' }];
 
-    await testCodeAction(docUri, sameLineRange(7, 0, 12), codeActions);
+    await testCodeAction(docUri, sameLineRange(7, 6, 6), codeActions);
   });
 });
 
