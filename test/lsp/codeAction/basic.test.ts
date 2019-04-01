@@ -10,6 +10,9 @@ describe('Should do codeAction', () => {
     await activateLS();
     await showFile(docUri);
     await sleep(FILE_LOAD_SLEEP_TIME);
+
+    // More sleep for waiting diagnostics
+    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('finds codeAction for unused import', async () => {
