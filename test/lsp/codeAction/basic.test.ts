@@ -55,7 +55,7 @@ async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedA
       result.some(rAction => {
         return rAction.title === eAction.title && rAction.command === eAction.command;
       }),
-      `Cannot find matching codeAction with title '${eAction.title}'` +
+      `Cannot find matching codeAction with title '${eAction.title}'\n` +
         `Seen codeActions are:\n${JSON.stringify(result)}`
     );
   });

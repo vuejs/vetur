@@ -9,6 +9,11 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
 
   const result = vscode.languages.getDiagnostics(docUri);
 
+  result.forEach(d => {
+    console.log('Serverity');
+    console.log(d.severity);
+  });
+
   expectedDiagnostics.forEach(ed => {
     assert.ok(
       result.some(d => {
