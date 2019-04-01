@@ -4,7 +4,7 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.17.1",
+  "version": "0.18.0",
   "publisher": "octref",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
@@ -15,7 +15,7 @@
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "prepare-publish": "yarn compile -f && ./build/release-cleanup"
+    "prepare-publish": "yarn compile -f && ./build/release-cleanup.sh"
   },
   "husky": {
     "hooks": {
@@ -147,12 +147,16 @@
       {
         "path": "./syntaxes/pug/directives.tmLanguage.json",
         "scopeName": "vue.pug.directives",
-        "injectTo": ["source.vue"]
+        "injectTo": [
+          "source.vue"
+        ]
       },
       {
         "path": "./syntaxes/pug/interpolations.tmLanguage.json",
         "scopeName": "vue.pug.interpolations",
-        "injectTo": ["source.vue"]
+        "injectTo": [
+          "source.vue"
+        ]
       }
     ],
     "configuration": {
