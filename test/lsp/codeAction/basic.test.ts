@@ -51,8 +51,9 @@ async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedA
     range
   )) as CodeAction[];
 
-  result.forEach((r, i) => {
-    assert.equal(r.title, expectedActions[i].title);
-    assert.equal(r.command, expectedActions[i].command);
+  expectedActions.forEach(eAction => {
+    assert.ok(result.some(rAction => {
+      return rAction.title === eAction.title && rAction.command === eAction.command;
+    }), `Cannot find matching codeAction with title '${eAction.title}'`);
   });
 }
