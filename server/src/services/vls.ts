@@ -30,7 +30,6 @@ import {
   Range,
   SignatureHelp,
   SymbolInformation,
-  TextDocument,
   TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation
@@ -171,7 +170,7 @@ export class VLS {
       this.triggerValidation(this.documentService.getDocumentInfo(change.document.uri)!);
     });
     this.documentService.onDidClose(e => {
-      this.removeDocument(e.document);
+      this.removeDocument(this.documentService.getDocumentInfo(e.document.uri)!);
     });
     this.externalDocumentService.onDidChangeContent(e => {
       const jsMode = this.languageModes.getMode('javascript');
@@ -378,25 +377,25 @@ export class VLS {
   }
 
   onCodeAction({ textDocument, range, context }: CodeActionParams) {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, range.start);
-    if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
+    const info = this.documentService.getDocumentInfo(textDocument.uri)!;
+    const mode = this.languageModes.getModeAtPosition(info, range.start);
+    if (this.languageModes.getModeAtPosition(info, range.end) !== mode) {
       throw new Error("Vetur/VLS can't handle ranges across different sections of a .vue file.");
     }
     if (mode && mode.getCodeActions) {
       // TODO: funnel formatParams?
-      return mode.getCodeActions(doc, range, /*formatParams*/ {} as any, context);
+      return mode.getCodeActions(info, range, /*formatParams*/ {} as any, context);
     }
     return [];
   }
 
   getRefactorEdits(refactorAction: RefactorAction) {
     const uri = Uri.file(refactorAction.fileName).toString();
-    const doc = this.documentService.getDocument(uri)!;
-    const startPos = doc.positionAt(refactorAction.textRange.pos);
-    const mode = this.languageModes.getModeAtPosition(doc, startPos);
+    const info = this.documentService.getDocumentInfo(uri)!;
+    const startPos = info.positionAt(refactorAction.textRange.pos);
+    const mode = this.languageModes.getModeAtPosition(info, startPos);
     if (mode && mode.getRefactorEdits) {
-      return mode.getRefactorEdits(doc, refactorAction);
+      return mode.getRefactorEdits(info, refactorAction);
     }
     return undefined;
   }
@@ -434,7 +433,7 @@ export class VLS {
     return diagnostics;
   }
 
-  removeDocument(info: TextDocument): void {
+  removeDocument(info: VueDocumentInfo): void {
     this.languageModes.onDocumentRemoved(info);
   }
 

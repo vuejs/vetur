@@ -75,6 +75,7 @@ export function getServiceHost(
   documentService: DocumentService,
   externalDocumentService: ExternalDocumentService
 ) {
+  patchTS(tsModule);
   let currentScriptDoc: DocumentRegion;
   const versions = new Map<string, number>();
   const scriptDocs = new Map<string, DocumentRegion>();
@@ -91,7 +92,6 @@ export function getServiceHost(
       )
     )
   );
-  const isOldVersion = inferIsOldVersion(tsModule, workspacePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
