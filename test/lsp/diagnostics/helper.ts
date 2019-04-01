@@ -14,7 +14,8 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
       result.some(d => {
         return isEqualDiagnostic(d, ed);
       }),
-      `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n`
+      `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
+        `Seen diagnostics are:\n${JSON.stringify(result)}`
     );
   });
 

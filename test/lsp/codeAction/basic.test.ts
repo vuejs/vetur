@@ -34,7 +34,6 @@ describe('Should do codeAction', () => {
 
     await testCodeAction(docUri, sameLineRange(7, 0, 12), codeActions);
   });
-
 });
 
 interface CodeAction {
@@ -52,8 +51,12 @@ async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedA
   )) as CodeAction[];
 
   expectedActions.forEach(eAction => {
-    assert.ok(result.some(rAction => {
-      return rAction.title === eAction.title && rAction.command === eAction.command;
-    }), `Cannot find matching codeAction with title '${eAction.title}'`);
+    assert.ok(
+      result.some(rAction => {
+        return rAction.title === eAction.title && rAction.command === eAction.command;
+      }),
+      `Cannot find matching codeAction with title '${eAction.title}'` +
+        `Seen codeActions are:\n${JSON.stringify(result)}`
+    );
   });
 }
