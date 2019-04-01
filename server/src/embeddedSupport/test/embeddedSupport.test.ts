@@ -3,7 +3,8 @@ import * as assert from 'assert';
 import { parseVueDocumentRegions } from '../vueDocumentRegionParser';
 import { getSingleLanguageDocument, getSingleTypeDocument, getLanguageRangesOfType } from '../embeddedSupport';
 
-const src = `
+suite('New Embedded Support', () => {
+  const src = `
 <template>
  
 </template>
@@ -15,7 +16,6 @@ export default {
 </style>
 `;
 
-suite('New Embedded Support', () => {
   test('Basic', () => {
     const { regions } = parseVueDocumentRegions(TextDocument.create('test://test.vue', 'vue', 0, src));
 
@@ -54,5 +54,67 @@ suite('New Embedded Support', () => {
 
     assert.equal(ranges.length, 1);
     assert.equal(ranges[0].languageId, 'javascript');
+  });
+});
+
+suite('Double language blocks', () => {
+  test('Basic', () => {
+    const src = `
+<template>
+
+</template>
+
+<style>
+</style>
+
+<style>
+</style>
+`;
+
+    const { regions } = parseVueDocumentRegions(TextDocument.create('test://test.vue', 'vue', 0, src));
+
+    assert.equal(regions[0].languageId, 'vue-html');
+    assert.equal(regions[1].languageId, 'css');
+    assert.equal(regions[2].languageId, 'css');
+  });
+
+  test('Double scss', () => {
+    const src = `
+<template>
+
+</template>
+
+<style lang="scss">
+</style>
+
+<style lang="scss">
+</style>
+`;
+
+    const { regions } = parseVueDocumentRegions(TextDocument.create('test://test.vue', 'vue', 0, src));
+
+    assert.equal(regions[0].languageId, 'vue-html');
+    assert.equal(regions[1].languageId, 'scss');
+    assert.equal(regions[2].languageId, 'scss');
+  });
+
+  test('Two langs for two styles block', () => {
+    const src = `
+<template>
+
+</template>
+
+<style lang="scss">
+</style>
+
+<style lang="stylus">
+</style>
+`;
+
+    const { regions } = parseVueDocumentRegions(TextDocument.create('test://test.vue', 'vue', 0, src));
+
+    assert.equal(regions[0].languageId, 'vue-html');
+    assert.equal(regions[1].languageId, 'scss');
+    assert.equal(regions[2].languageId, 'stylus');
   });
 });
