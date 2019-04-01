@@ -9,15 +9,10 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
 
   const result = vscode.languages.getDiagnostics(docUri);
 
-  result.forEach(d => {
-    console.log('Serverity');
-    console.log(d.severity);
-  });
-
   expectedDiagnostics.forEach(ed => {
     assert.ok(
       result.some(d => {
-        return isEqualDiagnostic(d, ed);
+        return isEqualDiagnostic(ed, d);
       }),
       `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
         `Seen diagnostics are:\n${JSON.stringify(result)}`
