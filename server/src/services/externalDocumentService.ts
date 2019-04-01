@@ -1,9 +1,8 @@
-import { IConnection, TextDocument, Emitter, TextDocumentChangeEvent, Event } from 'vscode-languageserver';
+import { IConnection, TextDocument, Emitter, Event } from 'vscode-languageserver';
 import { sys, Extension } from 'typescript';
-import { isVue } from '../modes/script/preprocess';
+import { isVue, parseVue } from '../modes/script/preprocess';
 import Uri from 'vscode-uri';
 import { extname } from 'path';
-import { VueDocumentInfo, DocumentInfoBase } from './documentService';
 
 /**
  * Service responsible for managing documents being syned through LSP
@@ -13,23 +12,23 @@ import { VueDocumentInfo, DocumentInfoBase } from './documentService';
  * A manager for simple text documents
  */
 export class ExternalDocumentService {
-  private _infos: { [uri: string]: ExternalDocumentInfo | VueDocumentInfo };
+  private _infos: { [uri: string]: ExternalDocumentInfo };
 
-  private _onDidChangeContent: Emitter<TextDocumentChangeEvent>;
+  private _onDidChangeContent: Emitter<{ document: ExternalDocumentInfo }>;
 
   /**
    * Create a new text document manager.
    */
   public constructor() {
     this._infos = Object.create(null);
-    this._onDidChangeContent = new Emitter<TextDocumentChangeEvent>();
+    this._onDidChangeContent = new Emitter<{ document: ExternalDocumentInfo }>();
   }
 
   /**
    * An event that fires when a text document managed by this manager
    * has been opened or the content changes.
    */
-  public get onDidChangeContent(): Event<TextDocumentChangeEvent> {
+  public get onDidChangeContent(): Event<{ document: ExternalDocumentInfo }> {
     return this._onDidChangeContent.event;
   }
 
@@ -60,15 +59,8 @@ export class ExternalDocumentService {
     const uriStr = uri.toString();
     const existingInfo = this._infos[uriStr];
     const filePath = uri.fsPath;
-    const content = sys.readFile(filePath)!;
     if (!existingInfo) {
-      if (isVue(uriStr)) {
-        this._infos[uriStr] = new VueDocumentInfo(TextDocument.create(uriStr, 'vue', 0, content));
-      } else {
-        this._infos[uriStr] = new ExternalDocumentInfo(
-          TextDocument.create(uriStr, getLanguageId(filePath), 0, content)
-        );
-      }
+      this._infos[uriStr] = new ExternalDocumentInfo(uriStr, getLanguageId(filePath));
       return this._infos[uriStr];
     }
     return existingInfo;
@@ -94,15 +86,10 @@ export class ExternalDocumentService {
       for (const { uri } of event.changes) {
         const existingInfo = this._infos[uri];
         const filePath = getNormalizedFileFsPath(uri);
-        const content = sys.readFile(filePath)!;
         if (!existingInfo) {
-          if (isVue(uri)) {
-            this._infos[uri] = new VueDocumentInfo(TextDocument.create(uri, 'vue', 0, content));
-          } else {
-            this._infos[uri] = new ExternalDocumentInfo(TextDocument.create(uri, getLanguageId(filePath), 0, content));
-          }
+          this._infos[uri] = new ExternalDocumentInfo(uri, getLanguageId(filePath));
         } else {
-          this._infos[uri].updateContent(content);
+          this._infos[uri].changeContent();
         }
         const toFire = Object.freeze({ document: this._infos[uri] });
         this._onDidChangeContent.fire(toFire);
@@ -111,7 +98,32 @@ export class ExternalDocumentService {
   }
 }
 
-export class ExternalDocumentInfo extends DocumentInfoBase {}
+export class ExternalDocumentInfo {
+  private _version = 0;
+  public readonly uri: string;
+  public readonly languageId: string;
+  constructor(uri: string, languageId: string) {
+    this.uri = uri;
+    this.languageId = languageId;
+  }
+
+  public get version() {
+    return this._version;
+  }
+
+  public getText() {
+    const filePath = getNormalizedFileFsPath(this.uri);
+    const content = sys.readFile(filePath)!;
+    if (isVue(this.uri)) {
+      return parseVue(content);
+    }
+    return content;
+  }
+
+  public changeContent(version?: number): void {
+    this._version = version || this.version + 1;
+  }
+}
 
 function getNormalizedFileFsPath(fileName: string): string {
   return Uri.parse(fileName).fsPath;
