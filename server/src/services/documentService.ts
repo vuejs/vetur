@@ -8,17 +8,12 @@ import {
   TextEdit,
   Event,
   TextDocumentContentChangeEvent,
-  DidOpenTextDocumentParams,
-  DidChangeTextDocumentParams,
-  DidCloseTextDocumentParams,
-  WillSaveTextDocumentParams,
-  CancellationToken,
-  DidSaveTextDocumentParams,
   Position,
   Range
 } from 'vscode-languageserver';
 import { getRegions, createDocumentRegions } from '../modes/embeddedSupport';
 import { TextChangeRange, createTextChangeRange, createTextSpanFromBounds } from 'typescript';
+import { mergeSort } from '../utils/mergeSort';
 
 /**
  * Service responsible for managing documents being syned through LSP
@@ -28,7 +23,7 @@ import { TextChangeRange, createTextChangeRange, createTextSpanFromBounds } from
  * A manager for simple text documents
  */
 export class DocumentService {
-  private _infos: { [uri: string]: DocumentInfo };
+  private _infos: { [uri: string]: VueDocumentInfo };
 
   private _onDidChangeContent: Emitter<TextDocumentChangeEvent>;
   private _onDidOpen: Emitter<TextDocumentChangeEvent>;
@@ -106,7 +101,7 @@ export class DocumentService {
     return Object.keys(this._infos).map(x => this._infos[x]);
   }
 
-  public getAllDocumentInfos(uri: string) {
+  public getAllDocumentInfos() {
     return Object.keys(this._infos).map(x => this._infos[x]);
   }
 
@@ -124,7 +119,7 @@ export class DocumentService {
     return this._infos[uriOrDocument];
   }
 
-  public getDocumentInfo(uriOrDocument: string | TextDocument): DocumentInfo | undefined {
+  public getDocumentInfo(uriOrDocument: string | TextDocument): VueDocumentInfo | undefined {
     if (typeof uriOrDocument === 'object') {
       uriOrDocument = uriOrDocument.uri;
     }
@@ -147,15 +142,15 @@ export class DocumentService {
    * @param connection The connection to listen on.
    */
   public listen(connection: IConnection): void {
-    connection.onDidOpenTextDocument((event: DidOpenTextDocumentParams) => {
+    connection.onDidOpenTextDocument(event => {
       const td = event.textDocument;
       const document = TextDocument.create(td.uri, td.languageId, td.version, td.text);
-      this._infos[td.uri] = new DocumentInfo(document);
+      this._infos[td.uri] = new VueDocumentInfo(document);
       const toFire = Object.freeze({ document });
       this._onDidOpen.fire(toFire);
       this._onDidChangeContent.fire(toFire);
     });
-    connection.onDidChangeTextDocument((event: DidChangeTextDocumentParams) => {
+    connection.onDidChangeTextDocument(event => {
       const td = event.textDocument;
       const changes = event.contentChanges;
       const document = this._infos[td.uri];
@@ -168,20 +163,20 @@ export class DocumentService {
       const toFire = Object.freeze({ document });
       this._onDidChangeContent.fire(toFire);
     });
-    connection.onDidCloseTextDocument((event: DidCloseTextDocumentParams) => {
+    connection.onDidCloseTextDocument(event => {
       const document = this._infos[event.textDocument.uri];
       if (document) {
         delete this._infos[event.textDocument.uri];
         this._onDidClose.fire(Object.freeze({ document }));
       }
     });
-    connection.onWillSaveTextDocument((event: WillSaveTextDocumentParams) => {
+    connection.onWillSaveTextDocument(event => {
       const document = this._infos[event.textDocument.uri];
       if (document) {
         this._onWillSave.fire(Object.freeze({ document, reason: event.reason }));
       }
     });
-    connection.onWillSaveTextDocumentWaitUntil((event: WillSaveTextDocumentParams, token: CancellationToken) => {
+    connection.onWillSaveTextDocumentWaitUntil((event, token) => {
       const document = this._infos[event.textDocument.uri];
       if (document && this._willSaveWaitUntil) {
         return this._willSaveWaitUntil(Object.freeze({ document, reason: event.reason }), token);
@@ -189,7 +184,7 @@ export class DocumentService {
         return [];
       }
     });
-    connection.onDidSaveTextDocument((event: DidSaveTextDocumentParams) => {
+    connection.onDidSaveTextDocument(event => {
       const td = event.textDocument;
       const document = this._infos[event.textDocument.uri];
       if (document) {
@@ -214,10 +209,9 @@ function isUpdateableDocument(value: TextDocument): value is UpdateableDocument 
   return typeof (value as UpdateableDocument).update === 'function';
 }
 
-export class DocumentInfo implements TextDocument {
-  private _regions: ReturnType<typeof buildRegions> | null = null;
-  private _originalDocument: TextDocument;
-  private _updatedDocument: TextDocument;
+export abstract class DocumentInfoBase implements TextDocument {
+  protected readonly _originalDocument: TextDocument;
+  protected readonly _updatedDocument: TextDocument;
 
   constructor(originalDocument: TextDocument, public editRanges: TextEdit[] = []) {
     this._originalDocument = originalDocument;
@@ -238,13 +232,6 @@ export class DocumentInfo implements TextDocument {
   public get languageId() {
     return this._updatedDocument.languageId;
   }
-  public get regions() {
-    // getRegions(this.document)
-    if (!this._regions) {
-      this._regions = buildRegions(this._updatedDocument, this.editRanges);
-    }
-    return this._regions;
-  }
 
   public getText(range?: Range) {
     return this._updatedDocument.getText(range);
@@ -259,19 +246,17 @@ export class DocumentInfo implements TextDocument {
     return this._updatedDocument.lineCount;
   }
 
-  public updateContent(content: string, version: number): void {
+  public updateContent(content: string, version?: number): void {
     this.editRanges = [];
-    this._regions = null;
     if (isUpdateableDocument(this._originalDocument)) {
-      this._originalDocument.update({ text: content }, version);
+      this._originalDocument.update({ text: content }, version || this.version + 1);
     }
     if (isUpdateableDocument(this._updatedDocument)) {
-      this._updatedDocument.update({ text: content }, version);
+      this._updatedDocument.update({ text: content }, version || this.version + 1);
     }
   }
 
-  public editContent(edits: TextEdit[], version: number): void {
-    this._regions = null;
+  public editContent(edits: TextEdit[], version?: number): void {
     edits = mergeSort(edits, function(a, b) {
       const diff = a.range.start.line - b.range.start.line;
       if (diff === 0) {
@@ -282,8 +267,34 @@ export class DocumentInfo implements TextDocument {
     const updatedText = TextDocument.applyEdits(this._updatedDocument, edits);
     this.editRanges.push(...edits);
     if (isUpdateableDocument(this._updatedDocument)) {
-      this._updatedDocument.update({ text: updatedText }, version);
+      this._updatedDocument.update({ text: updatedText }, version || this.version + 1);
     }
+  }
+}
+
+export class VueDocumentInfo extends DocumentInfoBase {
+  private _regions: ReturnType<typeof buildRegions> | null = null;
+
+  constructor(originalDocument: TextDocument, public editRanges: TextEdit[] = []) {
+    super(originalDocument, editRanges);
+  }
+
+  public get regions() {
+    // getRegions(this.document)
+    if (!this._regions) {
+      this._regions = buildRegions(this._updatedDocument, this.editRanges);
+    }
+    return this._regions;
+  }
+
+  public updateContent(content: string, version?: number): void {
+    this._regions = null;
+    super.updateContent(content, version);
+  }
+
+  public editContent(edits: TextEdit[], version?: number): void {
+    this._regions = null;
+    super.editContent(edits, version);
   }
 }
 
@@ -354,36 +365,4 @@ export class DocumentRegion {
   public get languageId() {
     return this.document.languageId;
   }
-}
-
-function mergeSort(data: TextEdit[], compare: (a: TextEdit, b: TextEdit) => number) {
-  if (data.length <= 1) {
-    // sorted
-    return data;
-  }
-  const p = (data.length / 2) | 0;
-  const left = data.slice(0, p);
-  const right = data.slice(p);
-  mergeSort(left, compare);
-  mergeSort(right, compare);
-  let leftIdx = 0;
-  let rightIdx = 0;
-  let i = 0;
-  while (leftIdx < left.length && rightIdx < right.length) {
-    const ret = compare(left[leftIdx], right[rightIdx]);
-    if (ret <= 0) {
-      // smaller_equal -> take left to preserve order
-      data[i++] = left[leftIdx++];
-    } else {
-      // greater -> take right
-      data[i++] = right[rightIdx++];
-    }
-  }
-  while (leftIdx < left.length) {
-    data[i++] = left[leftIdx++];
-  }
-  while (rightIdx < right.length) {
-    data[i++] = right[rightIdx++];
-  }
-  return data;
 }

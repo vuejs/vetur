@@ -4,7 +4,6 @@ import {
   DocumentColorParams,
   DocumentFormattingParams,
   DocumentLinkParams,
-  FileChangeType,
   IConnection,
   TextDocumentPositionParams,
   ColorPresentationParams
@@ -33,11 +32,13 @@ import Uri from 'vscode-uri';
 import { getLanguageModes, LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { DocumentContext } from '../types';
-import { DocumentService, DocumentInfo } from './documentService';
+import { DocumentService, VueDocumentInfo } from './documentService';
 import { VueInfoService } from './vueInfoService';
+import { ExternalDocumentService } from './externalDocumentService';
 
 export class VLS {
-  private documentService: DocumentService;
+  private readonly documentService: DocumentService;
+  private readonly externalDocumentService: ExternalDocumentService;
 
   private languageModes: LanguageModes;
 
@@ -57,9 +58,11 @@ export class VLS {
 
   constructor(private workspacePath: string, private lspConnection: IConnection) {
     this.documentService = new DocumentService();
+    this.externalDocumentService = new ExternalDocumentService();
     this.documentService.listen(lspConnection);
+    this.externalDocumentService.listen(lspConnection);
 
-    this.languageModes = getLanguageModes(workspacePath, this.documentService);
+    this.languageModes = getLanguageModes(workspacePath, this.documentService, this.externalDocumentService);
     this.vueInfoService = new VueInfoService(this.languageModes);
     this.languageModes.getAllModes().forEach(m => {
       if (m.configureService) {
@@ -111,15 +114,10 @@ export class VLS {
     this.documentService.onDidClose(e => {
       this.removeDocument(e.document);
     });
-    this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
+    this.externalDocumentService.onDidChangeContent(e => {
       const jsMode = this.languageModes.getMode('javascript');
-      changes.forEach(c => {
-        if (c.type === FileChangeType.Changed) {
-          const fsPath = Uri.parse(c.uri).fsPath;
-          jsMode.onDocumentChanged!(fsPath);
-        }
-      });
-
+      const fsPath = Uri.parse(e.document.uri).fsPath;
+      jsMode.onDocumentChanged!(fsPath);
       this.documentService.getAllDocuments().forEach(d => {
         this.triggerValidation(d);
       });
@@ -323,7 +321,7 @@ export class VLS {
    * Validations
    */
 
-  private triggerValidation(documentInfo: DocumentInfo): void {
+  private triggerValidation(documentInfo: VueDocumentInfo): void {
     this.cleanPendingValidation(documentInfo);
     this.pendingValidationRequests[documentInfo.uri] = setTimeout(() => {
       delete this.pendingValidationRequests[documentInfo.uri];
@@ -331,7 +329,7 @@ export class VLS {
     }, this.validationDelayMs);
   }
 
-  cleanPendingValidation(documentInfo: DocumentInfo): void {
+  cleanPendingValidation(documentInfo: VueDocumentInfo): void {
     const request = this.pendingValidationRequests[documentInfo.uri];
     if (request) {
       clearTimeout(request);
@@ -339,12 +337,12 @@ export class VLS {
     }
   }
 
-  validateTextDocument(documentInfo: DocumentInfo): void {
+  validateTextDocument(documentInfo: VueDocumentInfo): void {
     const diagnostics: Diagnostic[] = this.doValidate(documentInfo);
     this.lspConnection.sendDiagnostics({ uri: documentInfo.uri, diagnostics });
   }
 
-  doValidate(doc: DocumentInfo): Diagnostic[] {
+  doValidate(doc: VueDocumentInfo): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
       this.languageModes.getAllModesInDocument(doc).forEach(mode => {

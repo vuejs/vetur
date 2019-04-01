@@ -27,27 +27,28 @@ import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
 import { DocumentContext } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
-import { DocumentService, DocumentInfo } from '../services/documentService';
+import { DocumentService, VueDocumentInfo } from '../services/documentService';
+import { ExternalDocumentService } from '../services/externalDocumentService';
 
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
   configureService?(infoService: VueInfoService): void;
-  updateFileInfo?(doc: DocumentInfo): void;
+  updateFileInfo?(doc: VueDocumentInfo): void;
 
-  doValidation?(document: DocumentInfo): Diagnostic[];
-  doComplete?(document: DocumentInfo, position: Position): CompletionList;
-  doResolve?(document: DocumentInfo, item: CompletionItem): CompletionItem;
-  doHover?(document: DocumentInfo, position: Position): Hover;
-  doSignatureHelp?(document: DocumentInfo, position: Position): SignatureHelp | null;
-  findDocumentHighlight?(document: DocumentInfo, position: Position): DocumentHighlight[];
-  findDocumentSymbols?(document: DocumentInfo): SymbolInformation[];
-  findDocumentLinks?(document: DocumentInfo, documentContext: DocumentContext): DocumentLink[];
-  findDefinition?(document: DocumentInfo, position: Position): Definition;
-  findReferences?(document: DocumentInfo, position: Position): Location[];
-  format?(document: DocumentInfo, range: Range, options: FormattingOptions): TextEdit[];
-  findDocumentColors?(document: DocumentInfo): ColorInformation[];
-  getColorPresentations?(document: DocumentInfo, color: Color, range: Range): ColorPresentation[];
+  doValidation?(document: VueDocumentInfo): Diagnostic[];
+  doComplete?(document: VueDocumentInfo, position: Position): CompletionList;
+  doResolve?(document: VueDocumentInfo, item: CompletionItem): CompletionItem;
+  doHover?(document: VueDocumentInfo, position: Position): Hover;
+  doSignatureHelp?(document: VueDocumentInfo, position: Position): SignatureHelp | null;
+  findDocumentHighlight?(document: VueDocumentInfo, position: Position): DocumentHighlight[];
+  findDocumentSymbols?(document: VueDocumentInfo): SymbolInformation[];
+  findDocumentLinks?(document: VueDocumentInfo, documentContext: DocumentContext): DocumentLink[];
+  findDefinition?(document: VueDocumentInfo, position: Position): Definition;
+  findReferences?(document: VueDocumentInfo, position: Position): Location[];
+  format?(document: VueDocumentInfo, range: Range, options: FormattingOptions): TextEdit[];
+  findDocumentColors?(document: VueDocumentInfo): ColorInformation[];
+  getColorPresentations?(document: VueDocumentInfo, color: Color, range: Range): ColorPresentation[];
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;
@@ -55,10 +56,10 @@ export interface LanguageMode {
 }
 
 export interface LanguageModes {
-  getModeAtPosition(document: DocumentInfo, position: Position): LanguageMode | null;
-  getModesInRange(document: DocumentInfo, range: Range): LanguageModeRange[];
+  getModeAtPosition(document: VueDocumentInfo, position: Position): LanguageMode | null;
+  getModesInRange(document: VueDocumentInfo, range: Range): LanguageModeRange[];
   getAllModes(): LanguageMode[];
-  getAllModesInDocument(document: DocumentInfo): LanguageMode[];
+  getAllModesInDocument(document: VueDocumentInfo): LanguageMode[];
   getMode(languageId: string): LanguageMode;
   onDocumentRemoved(document: TextDocument): void;
   dispose(): void;
@@ -71,11 +72,12 @@ export interface LanguageModeRange extends Range {
 
 export function getLanguageModes(
   workspacePath: string | null | undefined,
-  documentService: DocumentService
+  documentService: DocumentService,
+  externalDocumentService: ExternalDocumentService
 ): LanguageModes {
   let modelCaches: LanguageModelCache<any>[] = [];
 
-  const jsMode = getJavascriptMode(documentService, workspacePath);
+  const jsMode = getJavascriptMode(documentService, externalDocumentService, workspacePath);
   let modes: { [k: string]: LanguageMode } = {
     vue: getVueMode(),
     'vue-html': getVueHTMLMode(documentService, workspacePath),
@@ -90,14 +92,14 @@ export function getLanguageModes(
   };
 
   return {
-    getModeAtPosition(document: DocumentInfo, position: Position): LanguageMode | null {
+    getModeAtPosition(document: VueDocumentInfo, position: Position): LanguageMode | null {
       const languageId = document.regions.getLanguageAtPosition(position);
       if (languageId) {
         return modes[languageId];
       }
       return null;
     },
-    getModesInRange(document: DocumentInfo, range: Range): LanguageModeRange[] {
+    getModesInRange(document: VueDocumentInfo, range: Range): LanguageModeRange[] {
       return document.regions.getLanguageRanges(range).map(r => {
         return {
           start: r.start,
@@ -107,7 +109,7 @@ export function getLanguageModes(
         };
       });
     },
-    getAllModesInDocument(document: DocumentInfo): LanguageMode[] {
+    getAllModesInDocument(document: VueDocumentInfo): LanguageMode[] {
       const result = [];
       for (const languageId of document.regions.getLanguagesInDocument()) {
         const mode = modes[languageId];

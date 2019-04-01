@@ -10,7 +10,7 @@ import { resolve } from 'path';
 import { existsSync } from 'fs';
 
 export function initializeLanguageClient(vlsModulePath: string): LanguageClient {
-  const debugOptions = { execArgv: ['--nolazy', '--inspect=6005'] };
+  const debugOptions = { execArgv: ['--nolazy', '--inspect=6005', '--prof'] };
 
   const documentSelector = ['vue'];
   const config = vscode.workspace.getConfiguration();
@@ -25,15 +25,78 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
   }
 
   const serverOptions: ServerOptions = {
-    run: { module: serverPath, transport: TransportKind.ipc },
-    debug: { module: serverPath, transport: TransportKind.ipc, options: debugOptions }
+    run: { runtime: 'node', module: serverPath, transport: TransportKind.ipc },
+    debug: { runtime: 'node', module: serverPath, transport: TransportKind.ipc, options: debugOptions }
   };
+
+  const watcher = (() => {
+    const innerWatcher = vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', true, false, true);
+    return {
+      get ignoreCreateEvents() {
+        return innerWatcher.ignoreCreateEvents;
+      },
+      set ignoreCreateEvents(v) {
+        innerWatcher.ignoreCreateEvents = v;
+      },
+      get ignoreChangeEvents() {
+        return innerWatcher.ignoreChangeEvents;
+      },
+      set ignoreChangeEvents(v) {
+        innerWatcher.ignoreChangeEvents = v;
+      },
+      get ignoreDeleteEvents() {
+        return innerWatcher.ignoreDeleteEvents;
+      },
+      set ignoreDeleteEvents(v) {
+        innerWatcher.ignoreDeleteEvents = v;
+      },
+      onDidCreate(listener: (e: vscode.Uri) => any, thisArgs?: any, disposables?: vscode.Disposable[]) {
+        innerWatcher.onDidChange(
+          function(v: vscode.Uri) {
+            if (v.fsPath.includes('/node_modules/')) {
+              return;
+            }
+            listener(v);
+          },
+          thisArgs,
+          disposables
+        );
+      },
+      onDidChange(listener: (e: vscode.Uri) => any, thisArgs?: any, disposables?: vscode.Disposable[]) {
+        innerWatcher.onDidChange(
+          function(v: vscode.Uri) {
+            if (v.fsPath.includes('/node_modules/')) {
+              return;
+            }
+            listener(v);
+          },
+          thisArgs,
+          disposables
+        );
+      },
+      onDidDelete(listener: (e: vscode.Uri) => any, thisArgs?: any, disposables?: vscode.Disposable[]) {
+        innerWatcher.onDidChange(
+          function(v: vscode.Uri) {
+            if (v.fsPath.includes('/node_modules/')) {
+              return;
+            }
+            listener(v);
+          },
+          thisArgs,
+          disposables
+        );
+      },
+      dispose() {
+        innerWatcher.dispose();
+      }
+    } as vscode.FileSystemWatcher;
+  })();
 
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
       configurationSection: ['vetur', 'emmet', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy'],
-      fileEvents: vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', true, false, true)
+      fileEvents: watcher
     },
     initializationOptions: {
       config

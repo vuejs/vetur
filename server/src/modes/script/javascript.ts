@@ -36,7 +36,8 @@ import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
-import { DocumentService, DocumentInfo } from '../../services/documentService';
+import { DocumentService, VueDocumentInfo } from '../../services/documentService';
+import { ExternalDocumentService } from '../../services/externalDocumentService';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -44,6 +45,7 @@ const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
 export function getJavascriptMode(
   documentService: DocumentService,
+  externalDocumentService: ExternalDocumentService,
   workspacePath: string | null | undefined
 ): LanguageMode {
   if (!workspacePath) {
@@ -52,24 +54,24 @@ export function getJavascriptMode(
     };
   }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
-    let documentInfo = documentService.getDocumentInfo(document);
+    let documentInfo = documentService.getDocumentInfo(document) as VueDocumentInfo;
     if (!documentInfo) {
-      documentInfo = new DocumentInfo(document);
+      documentInfo = new VueDocumentInfo(document);
     }
     const vueDocument = documentInfo.regions;
     return vueDocument.getEmbeddedDocumentInfoByType('script');
   });
 
   const regionStart = getLanguageModelCache(10, 60, document => {
-    let documentInfo = documentService.getDocumentInfo(document);
+    let documentInfo = documentService.getDocumentInfo(document) as VueDocumentInfo;
     if (!documentInfo) {
-      documentInfo = new DocumentInfo(document);
+      documentInfo = new VueDocumentInfo(document);
     }
     const vueDocument = documentInfo.regions;
     return vueDocument.getLanguageRangeByType('script');
   });
 
-  const serviceHost = getServiceHost(workspacePath, jsDocuments);
+  const serviceHost = getServiceHost(workspacePath, jsDocuments, documentService, externalDocumentService);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
 
@@ -85,7 +87,7 @@ export function getJavascriptMode(
     configureService(infoService: VueInfoService) {
       vueInfoService = infoService;
     },
-    updateFileInfo(doc: DocumentInfo): void {
+    updateFileInfo(doc: VueDocumentInfo): void {
       if (!vueInfoService) {
         return;
       }
@@ -98,7 +100,7 @@ export function getJavascriptMode(
       }
     },
 
-    doValidation(doc: DocumentInfo): Diagnostic[] {
+    doValidation(doc: VueDocumentInfo): Diagnostic[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -120,7 +122,7 @@ export function getJavascriptMode(
         };
       });
     },
-    doComplete(document: DocumentInfo, position: Position): CompletionList {
+    doComplete(document: VueDocumentInfo, position: Position): CompletionList {
       const { scriptDoc, service } = updateCurrentTextDocument(document);
       if (!languageServiceIncludesFile(service, document.uri)) {
         return { isIncomplete: false, items: [] };
@@ -162,7 +164,7 @@ export function getJavascriptMode(
         })
       };
     },
-    doResolve(document: DocumentInfo, item: CompletionItem): CompletionItem {
+    doResolve(document: VueDocumentInfo, item: CompletionItem): CompletionItem {
       const { service } = updateCurrentTextDocument(document);
       if (!languageServiceIncludesFile(service, document.uri)) {
         return item;
@@ -194,7 +196,7 @@ export function getJavascriptMode(
       }
       return item;
     },
-    doHover(doc: DocumentInfo, position: Position): Hover {
+    doHover(doc: VueDocumentInfo, position: Position): Hover {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return { contents: [] };
@@ -216,7 +218,7 @@ export function getJavascriptMode(
       }
       return { contents: [] };
     },
-    doSignatureHelp(doc: DocumentInfo, position: Position): SignatureHelp | null {
+    doSignatureHelp(doc: VueDocumentInfo, position: Position): SignatureHelp | null {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_SIGNATURE;
@@ -257,7 +259,7 @@ export function getJavascriptMode(
       });
       return ret;
     },
-    findDocumentHighlight(doc: DocumentInfo, position: Position): DocumentHighlight[] {
+    findDocumentHighlight(doc: VueDocumentInfo, position: Position): DocumentHighlight[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -275,7 +277,7 @@ export function getJavascriptMode(
       }
       return [];
     },
-    findDocumentSymbols(doc: DocumentInfo): SymbolInformation[] {
+    findDocumentSymbols(doc: VueDocumentInfo): SymbolInformation[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -315,7 +317,7 @@ export function getJavascriptMode(
       items.forEach(item => collectSymbols(item));
       return result;
     },
-    findDefinition(doc: DocumentInfo, position: Position): Definition {
+    findDefinition(doc: VueDocumentInfo, position: Position): Definition {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -341,7 +343,7 @@ export function getJavascriptMode(
       });
       return definitionResults;
     },
-    findReferences(doc: DocumentInfo, position: Position): Location[] {
+    findReferences(doc: VueDocumentInfo, position: Position): Location[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
@@ -369,7 +371,7 @@ export function getJavascriptMode(
       });
       return referenceResults;
     },
-    format(doc: DocumentInfo, range: Range, formatParams: FormattingOptions): TextEdit[] {
+    format(doc: VueDocumentInfo, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
 
       const defaultFormatter =
