@@ -10,8 +10,6 @@ describe('Should do codeAction', () => {
     await activateLS();
     await showFile(docUri);
     await sleep(FILE_LOAD_SLEEP_TIME);
-    // Wait for diagnostics
-    await sleep(3000);
   });
 
   it('finds codeAction for unused import', async () => {
@@ -42,7 +40,8 @@ interface CodeAction {
 }
 
 async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedActions: CodeAction[]) {
-  await showFile(docUri);
+  // For diagnostics to show up
+  await sleep(2000);
 
   const result = (await vscode.commands.executeCommand(
     'vscode.executeCodeActionProvider',
