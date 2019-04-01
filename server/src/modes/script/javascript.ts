@@ -22,7 +22,8 @@ import {
   CompletionList,
   Position,
   FormattingOptions,
-  DiagnosticTag
+  DiagnosticTag,
+  MarkupContent
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
@@ -143,8 +144,8 @@ export async function getJavascriptMode(
         return { isIncomplete: false, items: [] };
       }
       const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
-        includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
-        includeInsertTextCompletions: false
+        includeCompletionsWithInsertText: true,
+        includeCompletionsForModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
       });
       if (!completions) {
         return { isIncomplete: false, items: [] };
@@ -183,17 +184,31 @@ export async function getJavascriptMode(
         fileFsPath,
         item.data.offset,
         item.label,
-        /*formattingOption*/ {},
+        getFormatCodeSettings(config),
         item.data.source,
-        undefined
+        {
+          importModuleSpecifierEnding: 'minimal',
+          importModuleSpecifierPreference: 'relative',
+          includeCompletionsWithInsertText: true
+        }
       );
       if (details) {
         item.detail = tsModule.displayPartsToString(details.displayParts);
-        item.documentation = tsModule.displayPartsToString(details.documentation);
+        const documentation: MarkupContent = {
+          kind: 'markdown',
+          value: tsModule.displayPartsToString(details.documentation)
+        };
         if (details.codeActions && config.vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
+
+          details.codeActions.forEach(action => {
+            if (action.description) {
+              documentation.value += '\n' + action.description;
+            }
+          });
         }
+        item.documentation = documentation;
         delete item.data;
       }
       return item;
@@ -391,11 +406,7 @@ export async function getJavascriptMode(
         return [];
       }
 
-      const formatSettings: ts.FormatCodeSettings = {
-        tabSize: config.vetur.format.options.tabSize,
-        indentSize: config.vetur.format.options.tabSize,
-        convertTabsToSpaces: !config.vetur.format.options.useTabs
-      };
+      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(config);
 
       const result: Command[] = [];
       const fixes = service.getCodeFixesAtPosition(
@@ -675,11 +686,20 @@ function convertOptions(
   });
 }
 
+function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
+  return {
+    tabSize: config.vetur.format.options.tabSize,
+    indentSize: config.vetur.format.options.tabSize,
+    convertTabsToSpaces: !config.vetur.format.options.useTabs
+  };
+}
+
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
   regionStart: LanguageModelCache<LanguageRange | undefined>
-) {
+): TextEdit[] {
+  const scriptStartOffset = doc.offsetAt(regionStart.get(doc)!.start);
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
@@ -687,7 +707,7 @@ function convertCodeAction(
         ...change.textChanges.map(tc => {
           // currently, only import codeAction is available
           // change start of doc to start of script region
-          if (tc.span.start === 0 && tc.span.length === 0) {
+          if (tc.span.start <= scriptStartOffset && tc.span.length === 0) {
             const region = regionStart.get(doc);
             if (region) {
               const line = region.start.line;
