@@ -14,9 +14,11 @@ import {
   Position,
   FormattingOptions,
   SymbolInformation,
+  CodeActionContext,
   ColorInformation,
   Color,
-  ColorPresentation
+  ColorPresentation,
+  Command,
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -26,7 +28,7 @@ import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from './style';
 import { getJavascriptMode } from './script/javascript';
 import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
-import { DocumentContext } from '../types';
+import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';
 
@@ -41,6 +43,12 @@ export interface LanguageMode {
   updateFileInfo?(doc: TextDocument): void;
 
   doValidation?(document: TextDocument): Diagnostic[];
+  getCodeActions?(
+    document: TextDocument,
+    range: Range,
+    formatParams: FormattingOptions,
+    context: CodeActionContext): Command[];
+  getRefactorEdits?(doc: TextDocument, args: RefactorAction): Command;
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
   doHover?(document: TextDocument, position: Position): Hover;

@@ -217,7 +217,8 @@ export function getServiceHost(
     },
     getCurrentDirectory: () => workspacePath,
     getDefaultLibFileName: tsModule.getDefaultLibFilePath,
-    getNewLine: () => '\n'
+    getNewLine: () => '\n',
+    useCaseSensitiveFileNames: () => true
   };
 
   let jsLanguageService = tsModule.createLanguageService(host);

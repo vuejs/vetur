@@ -13,7 +13,8 @@ import {
   ServerCapabilities,
   TextDocumentSyncKind,
   DocumentFormattingRequest,
-  Disposable
+  Disposable,
+  CodeActionParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -35,14 +36,15 @@ import {
   TextEdit,
   ColorPresentation
 } from 'vscode-languageserver-types';
+
 import Uri from 'vscode-uri';
 import { LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
-import { DocumentContext } from '../types';
-import { DocumentService } from './documentService';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
 import * as _ from 'lodash';
+import { DocumentContext, RefactorAction } from '../types';
+import { DocumentService } from './documentService';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -137,9 +139,12 @@ export class VLS {
     this.lspConnection.onHover(this.onHover.bind(this));
     this.lspConnection.onReferences(this.onReferences.bind(this));
     this.lspConnection.onSignatureHelp(this.onSignatureHelp.bind(this));
+    this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
+
+    this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
   }
 
   private async setupDynamicFormatters(settings: any) {
@@ -371,9 +376,29 @@ export class VLS {
     return NULL_SIGNATURE;
   }
 
-  /**
-   * Validations
-   */
+  onCodeAction({ textDocument, range, context }: CodeActionParams) {
+    const doc = this.documentService.getDocument(textDocument.uri)!;
+    const mode = this.languageModes.getModeAtPosition(doc, range.start);
+    if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
+      throw new Error("Vetur/VLS can't handle ranges across different sections of a .vue file.");
+    }
+    if (mode && mode.getCodeActions) {
+      // TODO: funnel formatParams?
+      return mode.getCodeActions(doc, range, /*formatParams*/ {} as any, context);
+    }
+    return [];
+  }
+
+  getRefactorEdits(refactorAction: RefactorAction) {
+    const uri = Uri.file(refactorAction.fileName).toString();
+    const doc = this.documentService.getDocument(uri)!;
+    const startPos = doc.positionAt(refactorAction.textRange.pos);
+    const mode = this.languageModes.getModeAtPosition(doc, startPos);
+    if (mode && mode.getRefactorEdits) {
+      return mode.getRefactorEdits(doc, refactorAction);
+    }
+    return undefined;
+  }
 
   private triggerValidation(textDocument: TextDocument): void {
     this.cleanPendingValidation(textDocument);
@@ -430,6 +455,7 @@ export class VLS {
       documentSymbolProvider: true,
       definitionProvider: true,
       referencesProvider: true,
+      codeActionProvider: true,
       colorProvider: true
     };
   }

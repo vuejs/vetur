@@ -7,6 +7,7 @@ import {
   SignatureHelp,
   SignatureInformation,
   ParameterInformation,
+  Command,
   Definition,
   TextEdit,
   TextDocument,
@@ -21,7 +22,8 @@ import {
   CompletionList,
   Position,
   FormattingOptions,
-  DiagnosticTag
+  DiagnosticTag,
+  MarkupContent
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
@@ -38,6 +40,7 @@ import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
+import { RefactorAction } from '../../types';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -75,6 +78,7 @@ export async function getJavascriptMode(
   const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
+  let supportedCodeFixCodes: Set<number>;
 
   return {
     getId() {
@@ -117,11 +121,13 @@ export async function getJavascriptMode(
 
         // syntactic/semantic diagnostic always has start and length
         // so we can safely cast diag to TextSpan
-        return {
+        return <Diagnostic>{
           range: convertRange(scriptDoc, diag as ts.TextSpan),
           severity: DiagnosticSeverity.Error,
           message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
-          tags
+          tags,
+          code: diag.code,
+          source: 'Vetur'
         };
       });
     },
@@ -138,8 +144,8 @@ export async function getJavascriptMode(
         return { isIncomplete: false, items: [] };
       }
       const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
-        includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
-        includeInsertTextCompletions: false
+        includeCompletionsWithInsertText: true,
+        includeCompletionsForModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
       });
       if (!completions) {
         return { isIncomplete: false, items: [] };
@@ -178,17 +184,31 @@ export async function getJavascriptMode(
         fileFsPath,
         item.data.offset,
         item.label,
-        /*formattingOption*/ {},
+        getFormatCodeSettings(config),
         item.data.source,
-        undefined
+        {
+          importModuleSpecifierEnding: 'minimal',
+          importModuleSpecifierPreference: 'relative',
+          includeCompletionsWithInsertText: true
+        }
       );
       if (details) {
         item.detail = tsModule.displayPartsToString(details.displayParts);
-        item.documentation = tsModule.displayPartsToString(details.documentation);
+        const documentation: MarkupContent = {
+          kind: 'markdown',
+          value: tsModule.displayPartsToString(details.documentation)
+        };
         if (details.codeActions && config.vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
           item.additionalTextEdits = textEdits;
+
+          details.codeActions.forEach(action => {
+            if (action.description) {
+              documentation.value += '\n' + action.description;
+            }
+          });
         }
+        item.documentation = documentation;
         delete item.data;
       }
       return item;
@@ -368,6 +388,60 @@ export async function getJavascriptMode(
       });
       return referenceResults;
     },
+    getCodeActions(doc, range, _formatParams, context) {
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const fileName = getFileFsPath(scriptDoc.uri);
+      const start = scriptDoc.offsetAt(range.start);
+      const end = scriptDoc.offsetAt(range.end);
+      if (!supportedCodeFixCodes) {
+        supportedCodeFixCodes = new Set(
+          ts
+            .getSupportedCodeFixes()
+            .map(Number)
+            .filter(x => !isNaN(x))
+        );
+      }
+      const fixableDiagnosticCodes = context.diagnostics.map(d => +d.code!).filter(c => supportedCodeFixCodes.has(c));
+      if (!fixableDiagnosticCodes) {
+        return [];
+      }
+
+      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(config);
+
+      const result: Command[] = [];
+      const fixes = service.getCodeFixesAtPosition(
+        fileName,
+        start,
+        end,
+        fixableDiagnosticCodes,
+        formatSettings,
+        /*preferences*/ {}
+      );
+      collectQuickFixCommands(fixes, service, result);
+
+      const textRange = { pos: start, end };
+      const refactorings = service.getApplicableRefactors(fileName, textRange, /*preferences*/ {});
+      collectRefactoringCommands(refactorings, fileName, formatSettings, textRange, result);
+
+      return result;
+    },
+    getRefactorEdits(doc: TextDocument, args: RefactorAction) {
+      const { service } = updateCurrentTextDocument(doc);
+      const response = service.getEditsForRefactor(
+        args.fileName,
+        args.formatOptions,
+        args.textRange,
+        args.refactorName,
+        args.actionName,
+        args.preferences
+      );
+      if (!response) {
+        // TODO: What happens when there's no response?
+        return createApplyCodeActionCommand('', {});
+      }
+      const uriMapping = createUriMappingForEdits(response.edits, service);
+      return createApplyCodeActionCommand('', uriMapping);
+    },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
 
@@ -435,6 +509,91 @@ export async function getJavascriptMode(
       jsDocuments.dispose();
     }
   };
+}
+
+function collectRefactoringCommands(
+  refactorings: ts.ApplicableRefactorInfo[],
+  fileName: string,
+  formatSettings: any,
+  textRange: { pos: number; end: number },
+  result: Command[]
+) {
+  const actions: RefactorAction[] = [];
+  for (const refactoring of refactorings) {
+    const refactorName = refactoring.name;
+    if (refactoring.inlineable) {
+      actions.push({
+        fileName,
+        formatOptions: formatSettings,
+        textRange,
+        refactorName,
+        actionName: refactorName,
+        preferences: {},
+        description: refactoring.description
+      });
+    } else {
+      actions.push(
+        ...refactoring.actions.map(action => ({
+          fileName,
+          formatOptions: formatSettings,
+          textRange,
+          refactorName,
+          actionName: action.name,
+          preferences: {},
+          description: action.description
+        }))
+      );
+    }
+  }
+  for (const action of actions) {
+    result.push({
+      command: 'vetur.chooseTypeScriptRefactoring',
+      title: action.description,
+      arguments: [action]
+    });
+  }
+}
+
+function collectQuickFixCommands(
+  fixes: ReadonlyArray<ts.CodeFixAction>,
+  service: ts.LanguageService,
+  result: Command[]
+) {
+  for (const fix of fixes) {
+    const uriTextEditMapping = createUriMappingForEdits(fix.changes, service);
+    result.push(createApplyCodeActionCommand(fix.description, uriTextEditMapping));
+  }
+}
+
+function createApplyCodeActionCommand(title: string, uriTextEditMapping: Record<string, TextEdit[]>): Command {
+  return {
+    title,
+    command: 'vetur.applyWorkspaceEdits',
+    arguments: [
+      {
+        changes: uriTextEditMapping
+      }
+    ]
+  };
+}
+
+function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.LanguageService) {
+  const program = service.getProgram()!;
+  const result: Record<string, TextEdit[]> = {};
+  for (const { fileName, textChanges } of changes) {
+    const targetDoc = getSourceDoc(fileName, program);
+    const edits = textChanges.map(({ newText, span }) => ({
+      newText,
+      range: convertRange(targetDoc, span)
+    }));
+    const uri = Uri.file(fileName).toString();
+    if (result[uri]) {
+      result[uri].push(...edits);
+    } else {
+      result[uri] = edits;
+    }
+  }
+  return result;
 }
 
 function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
@@ -527,11 +686,20 @@ function convertOptions(
   });
 }
 
+function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
+  return {
+    tabSize: config.vetur.format.options.tabSize,
+    indentSize: config.vetur.format.options.tabSize,
+    convertTabsToSpaces: !config.vetur.format.options.useTabs
+  };
+}
+
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
   regionStart: LanguageModelCache<LanguageRange | undefined>
-) {
+): TextEdit[] {
+  const scriptStartOffset = doc.offsetAt(regionStart.get(doc)!.start);
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
@@ -539,7 +707,7 @@ function convertCodeAction(
         ...change.textChanges.map(tc => {
           // currently, only import codeAction is available
           // change start of doc to start of script region
-          if (tc.span.start === 0 && tc.span.length === 0) {
+          if (tc.span.start <= scriptStartOffset && tc.span.length === 0) {
             const region = regionStart.get(doc);
             if (region) {
               const line = region.start.line;
