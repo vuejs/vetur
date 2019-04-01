@@ -17,7 +17,7 @@ describe('Should do documentSymbol', () => {
       {
         name: '"Basic.vue"',
         kind: 1,
-        range: range(0, 0, 13, 0),
+        range: range(0, 0, 21, 0),
         children: [
           {
             name: 'template',
