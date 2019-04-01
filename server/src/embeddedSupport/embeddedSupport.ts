@@ -37,10 +37,16 @@ export interface VueDocumentRegions {
    */
   getLanguageRangesOfType(type: RegionType): LanguageRange[];
 
+  /**
+   * Get all language ranges inside document
+   */
   getAllLanguageRanges(): LanguageRange[];
 
+  /**
+   * Get language for determining
+   */
   getLanguageAtPosition(position: Position): LanguageId;
-  getLanguagesInDocument(): LanguageId[];
+
   getImportedScripts(): string[];
 }
 
@@ -63,7 +69,6 @@ export function getVueDocumentRegions(document: TextDocument): VueDocumentRegion
 
     getAllLanguageRanges: () => getAllLanguageRanges(document, regions),
     getLanguageAtPosition: (position: Position) => getLanguageAtPosition(document, regions, position),
-    getLanguagesInDocument: () => getLanguagesInDocument(document, regions),
     getImportedScripts: () => importedScripts
   };
 }
@@ -76,16 +81,6 @@ function getAllLanguageRanges(document: TextDocument, regions: EmbeddedRegion[])
       end: document.positionAt(r.end)
     };
   });
-}
-
-function getLanguagesInDocument(document: TextDocument, regions: EmbeddedRegion[]): LanguageId[] {
-  const result: LanguageId[] = ['vue'];
-  for (const region of regions) {
-    if (region.languageId && result.indexOf(region.languageId) === -1) {
-      result.push(region.languageId);
-    }
-  }
-  return result;
 }
 
 function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[], position: Position): LanguageId {
