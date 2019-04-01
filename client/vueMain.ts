@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { LanguageClient } from 'vscode-languageclient';
+import { LanguageClient, WorkspaceEdit } from 'vscode-languageclient';
 import { generateGrammarCommandHandler } from './generate_grammar';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
@@ -13,6 +13,21 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('vetur.generateGrammar', generateGrammarCommandHandler(context.extensionPath))
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vetur.applyWorkspaceEdits', (args: WorkspaceEdit) => {
+      const edit = client.protocol2CodeConverter.asWorkspaceEdit(args)!;
+      vscode.workspace.applyEdit(edit);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
+      client
+        .sendRequest<vscode.Command | undefined>('requestCodeActionEdits', args)
+        .then(command => command && vscode.commands.executeCommand(command.command, ...command.arguments!));
+    })
+  );
+
   registerLanguageConfigurations();
 
   /**
@@ -23,9 +38,14 @@ export function activate(context: vscode.ExtensionContext) {
   const client = initializeLanguageClient(serverModule);
   context.subscriptions.push(client.start());
 
-  client.onReady().then(() => {
-    registerCustomClientNotificationHandlers(client);
-  });
+  client
+    .onReady()
+    .then(() => {
+      registerCustomClientNotificationHandlers(client);
+    })
+    .catch(e => {
+      console.log('Client initialization failed');
+    });
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient) {

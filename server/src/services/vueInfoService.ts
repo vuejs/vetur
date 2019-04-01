@@ -1,6 +1,7 @@
-import { LanguageModes } from '../modes/languageModes';
+import { TextDocument } from 'vscode-languageserver';
 import { getFileFsPath } from '../utils/paths';
 import { Definition } from 'vscode-languageserver-types';
+import { LanguageModes } from '../modes/languageModes';
 import { VueDocumentInfo } from './documentService';
 
 /**
@@ -61,16 +62,21 @@ export interface MethodInfo {
 }
 
 export class VueInfoService {
+  private languageModes: LanguageModes | undefined;
   private vueFileInfo: Map<string, VueFileInfo> = new Map();
 
-  constructor(private languageModes: LanguageModes) {}
+  constructor() {}
+
+  init(languageModes: LanguageModes) {
+    this.languageModes = languageModes;
+  }
 
   updateInfo(doc: VueDocumentInfo, info: VueFileInfo) {
     this.vueFileInfo.set(getFileFsPath(doc.uri), info);
   }
 
   getInfo(doc: VueDocumentInfo) {
-    this.languageModes.getAllModesInDocument(doc).forEach(m => {
+    this.languageModes!.getAllModesInDocument(doc).forEach(m => {
       if (m.updateFileInfo) {
         m.updateFileInfo(doc);
       }

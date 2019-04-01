@@ -13,11 +13,11 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}"
+        "--extensionDevelopmentPath=${workspaceFolder}"
       ],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "smartStep": true,
       "skipFiles": [
         "<node_internals>/**"
@@ -30,7 +30,7 @@
       "port": 6005,
       "timeout": 60000,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/server/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
       "protocol": "inspector",
       "restart": true,
       "smartStep": true,
@@ -44,13 +44,13 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}",
-        "--extensionTestsPath=${workspaceRoot}/dist/test/lsp",
-        "${workspaceRoot}/test/lsp/fixture"
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
+        "${workspaceFolder}/test/lsp/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
       "smartStep": true,
       "skipFiles": [
         "<node_internals>/**"

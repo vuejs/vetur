@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import {
   DidChangeConfigurationParams,
   DocumentColorParams,
@@ -6,7 +7,13 @@ import {
   DocumentLinkParams,
   IConnection,
   TextDocumentPositionParams,
-  ColorPresentationParams
+  ColorPresentationParams,
+  InitializeParams,
+  ServerCapabilities,
+  TextDocumentSyncKind,
+  DocumentFormattingRequest,
+  Disposable,
+  CodeActionParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -28,17 +35,25 @@ import {
   TextEdit,
   ColorPresentation
 } from 'vscode-languageserver-types';
+
 import Uri from 'vscode-uri';
-import { getLanguageModes, LanguageModes } from '../modes/languageModes';
+import { LanguageModes } from '../modes/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
-import { DocumentContext } from '../types';
-import { DocumentService, VueDocumentInfo } from './documentService';
 import { VueInfoService } from './vueInfoService';
+import { DependencyService } from './dependencyService';
+import * as _ from 'lodash';
+import { DocumentContext, RefactorAction } from '../types';
+import { DocumentService, VueDocumentInfo } from './documentService';
 import { ExternalDocumentService } from './externalDocumentService';
 
 export class VLS {
-  private readonly documentService: DocumentService;
-  private readonly externalDocumentService: ExternalDocumentService;
+  // @Todo: Remove this and DocumentContext
+  private workspacePath: string | undefined;
+
+  private documentService: DocumentService;
+  private externalDocumentService: ExternalDocumentService;
+  private vueInfoService: VueInfoService;
+  private dependencyService: DependencyService;
 
   private languageModes: LanguageModes;
 
@@ -54,40 +69,67 @@ export class VLS {
     javascript: true
   };
 
-  private vueInfoService: VueInfoService;
+  private documentFormatterRegistration: Disposable | undefined;
 
-  constructor(private workspacePath: string, private lspConnection: IConnection) {
-    this.documentService = new DocumentService();
-    this.externalDocumentService = new ExternalDocumentService();
-    this.documentService.listen(lspConnection);
-    this.externalDocumentService.listen(lspConnection);
+  constructor(private lspConnection: IConnection) {
+    this.documentService = new DocumentService(this.lspConnection);
+    this.externalDocumentService = new ExternalDocumentService(this.lspConnection);
+    this.vueInfoService = new VueInfoService();
+    this.dependencyService = new DependencyService();
 
-    this.languageModes = getLanguageModes(workspacePath, this.documentService, this.externalDocumentService);
-    this.vueInfoService = new VueInfoService(this.languageModes);
-    this.languageModes.getAllModes().forEach(m => {
-      if (m.configureService) {
-        m.configureService(this.vueInfoService);
-      }
+    this.languageModes = new LanguageModes(this.documentService, this.externalDocumentService);
+  }
+
+  async init(params: InitializeParams) {
+    const workspacePath = params.rootPath;
+    if (!workspacePath) {
+      console.error('No workspace path found. Vetur initialization failed.');
+      return {
+        capabilities: {}
+      };
+    }
+
+    this.workspacePath = workspacePath;
+
+    await this.vueInfoService.init(this.languageModes);
+    await this.dependencyService.init(
+      workspacePath,
+      _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+    );
+    await this.languageModes.init(workspacePath, {
+      infoService: this.vueInfoService,
+      dependencyService: this.dependencyService
     });
 
     this.setupConfigListeners();
-    this.setupLanguageFeatures();
+    this.setupLSPHandlers();
     this.setupFileChangeListeners();
 
     this.lspConnection.onShutdown(() => {
       this.dispose();
     });
+
+    if (params.initializationOptions && params.initializationOptions.config) {
+      this.configure(params.initializationOptions.config);
+    }
+  }
+
+  listen() {
+    this.lspConnection.listen();
   }
 
   private setupConfigListeners() {
-    this.lspConnection.onDidChangeConfiguration(({ settings }: DidChangeConfigurationParams) => {
+    this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
       this.configure(settings);
+
+      // onDidChangeConfiguration will fire for Language Server startup
+      await this.setupDynamicFormatters(settings);
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
   }
 
-  private setupLanguageFeatures() {
+  private setupLSPHandlers() {
     this.lspConnection.onCompletion(this.onCompletion.bind(this));
     this.lspConnection.onCompletionResolve(this.onCompletionResolve.bind(this));
 
@@ -99,9 +141,26 @@ export class VLS {
     this.lspConnection.onHover(this.onHover.bind(this));
     this.lspConnection.onReferences(this.onReferences.bind(this));
     this.lspConnection.onSignatureHelp(this.onSignatureHelp.bind(this));
+    this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
+
+    this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
+  }
+
+  private async setupDynamicFormatters(settings: any) {
+    if (settings.vetur.format.enable === true) {
+      if (!this.documentFormatterRegistration) {
+        this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
+          documentSelector: ['vue']
+        });
+      }
+    } else {
+      if (this.documentFormatterRegistration) {
+        this.documentFormatterRegistration.dispose();
+      }
+    }
   }
 
   private setupFileChangeListeners() {
@@ -260,7 +319,8 @@ export class VLS {
         const docUri = Uri.parse(info.uri);
         return docUri
           .with({
-            path: path.resolve(docUri.path, ref)
+            // Reference from components need to go dwon from their parent dir
+            path: path.resolve(docUri.fsPath, '..', ref)
           })
           .toString();
       }
@@ -317,9 +377,29 @@ export class VLS {
     return NULL_SIGNATURE;
   }
 
-  /**
-   * Validations
-   */
+  onCodeAction({ textDocument, range, context }: CodeActionParams) {
+    const doc = this.documentService.getDocument(textDocument.uri)!;
+    const mode = this.languageModes.getModeAtPosition(doc, range.start);
+    if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
+      throw new Error("Vetur/VLS can't handle ranges across different sections of a .vue file.");
+    }
+    if (mode && mode.getCodeActions) {
+      // TODO: funnel formatParams?
+      return mode.getCodeActions(doc, range, /*formatParams*/ {} as any, context);
+    }
+    return [];
+  }
+
+  getRefactorEdits(refactorAction: RefactorAction) {
+    const uri = Uri.file(refactorAction.fileName).toString();
+    const doc = this.documentService.getDocument(uri)!;
+    const startPos = doc.positionAt(refactorAction.textRange.pos);
+    const mode = this.languageModes.getModeAtPosition(doc, startPos);
+    if (mode && mode.getRefactorEdits) {
+      return mode.getRefactorEdits(doc, refactorAction);
+    }
+    return undefined;
+  }
 
   private triggerValidation(documentInfo: VueDocumentInfo): void {
     this.cleanPendingValidation(documentInfo);
@@ -360,6 +440,32 @@ export class VLS {
 
   dispose(): void {
     this.languageModes.dispose();
+  }
+
+  get capabilities(): ServerCapabilities {
+    return {
+      textDocumentSync: {
+        change: TextDocumentSyncKind.Incremental,
+        openClose: true,
+        save: {
+          includeText: true
+        },
+        willSave: true
+      },
+      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
+      signatureHelpProvider: { triggerCharacters: ['('] },
+      documentFormattingProvider: false,
+      hoverProvider: true,
+      documentHighlightProvider: true,
+      documentLinkProvider: {
+        resolveProvider: false
+      },
+      documentSymbolProvider: true,
+      definitionProvider: true,
+      referencesProvider: true,
+      codeActionProvider: true,
+      colorProvider: true
+    };
   }
 }
 

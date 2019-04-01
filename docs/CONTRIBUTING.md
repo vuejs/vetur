@@ -30,8 +30,8 @@ To compile:
 ```bash
 yarn
 cd server && yarn && cd ..
-yarn compile or
-yarn watch
+yarn compile
+# or yarn watch
 ```
 
 To debug:

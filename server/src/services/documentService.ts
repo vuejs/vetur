@@ -35,13 +35,15 @@ export class DocumentService {
   /**
    * Create a new text document manager.
    */
-  public constructor() {
+  public constructor(conn: IConnection) {
     this._infos = Object.create(null);
     this._onDidChangeContent = new Emitter<TextDocumentChangeEvent>();
     this._onDidOpen = new Emitter<TextDocumentChangeEvent>();
     this._onDidClose = new Emitter<TextDocumentChangeEvent>();
     this._onDidSave = new Emitter<TextDocumentChangeEvent>();
     this._onWillSave = new Emitter<TextDocumentWillSaveEvent>();
+
+    this.listen(conn);
   }
 
   /**
@@ -141,7 +143,7 @@ export class DocumentService {
    *
    * @param connection The connection to listen on.
    */
-  public listen(connection: IConnection): void {
+  private listen(connection: IConnection): void {
     connection.onDidOpenTextDocument(event => {
       const td = event.textDocument;
       const document = TextDocument.create(td.uri, td.languageId, td.version, td.text);

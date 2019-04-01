@@ -4,7 +4,7 @@
  */
 import * as path from 'path';
 import * as resolve from 'resolve';
-const readPkgUp = require('read-pkg-up');
+import * as readPkgUp from 'read-pkg-up';
 
 /**
  * Recursively search for a package.json upwards containing given package
@@ -14,16 +14,15 @@ const readPkgUp = require('read-pkg-up');
  * @returns {string} resolved path to prettier
  */
 function findPkg(fspath: string, pkgName: string): string | undefined {
-  const res = readPkgUp.sync({ cwd: fspath, normalize: false });
+  const { pkg, path: pkgPath } = readPkgUp.sync({ cwd: fspath, normalize: false });
   const { root } = path.parse(fspath);
   if (
-    res.pkg &&
-    ((res.pkg.dependencies && res.pkg.dependencies[pkgName]) ||
-      (res.pkg.devDependencies && res.pkg.devDependencies[pkgName]))
+    pkg &&
+    ((pkg.dependencies && pkg.dependencies[pkgName]) || (pkg.devDependencies && pkg.devDependencies[pkgName]))
   ) {
-    return resolve.sync(pkgName, { basedir: res.path });
-  } else if (res.path) {
-    const parent = path.resolve(path.dirname(res.path), '..');
+    return resolve.sync(pkgName, { basedir: pkgPath });
+  } else if (pkgPath) {
+    const parent = path.resolve(path.dirname(pkgPath), '..');
     if (parent !== root) {
       return findPkg(parent, pkgName);
     }
@@ -44,9 +43,7 @@ function requireLocalPkg(fspath: string, pkgName: string): any {
     try {
       return require(modulePath);
     } catch (e) {
-      console.log(
-        `Failed to load ${pkgName} from ${modulePath}. Using bundled version`
-      );
+      console.log(`Failed to load ${pkgName} from ${modulePath}. Using bundled version.`);
     }
   }
 

@@ -53,13 +53,13 @@ patterns:
       '3': { name: punctuation.definition.tag.end.html }
     patterns:
       - include: '#tag-stuff'
-      - contentName: text.pug.vue-pug
+      - contentName: source.vue.pug
         begin: (>)
         beginCaptures:
           '1': { name: punctuation.definition.tag.end.html }
         end: (?=</template>)
         patterns:
-          - include: text.pug.vue-pug
+          - include: text.pug
 
   # haml
   - begin: (<)(template)\b(?=[^>]*lang=('haml'|"haml"))(?![^/>]*/>\s*$)
@@ -434,7 +434,7 @@ repository:
       - include: '#string-single-quoted'
   vue-directives:
     name: meta.directive.vue
-    begin: (?:\b(v-)|(:|@))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
+    begin: (?:\b(v-)|(:|@|#))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
     end: (?<='|"|`)
     captures:
       '1': { name: entity.other.attribute-name.html }

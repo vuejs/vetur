@@ -1,7 +1,7 @@
 {
   "name": "vue-language-server",
   "description": "vue-language-server",
-  "version": "0.0.45",
+  "version": "0.0.47",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "main": "dist/vueServerMain.js",
@@ -38,11 +38,11 @@
     "resolve": "^1.8.1",
     "stylus": "^0.54.5",
     "stylus-supremacy": "^2.12.6",
-    "typescript": "^3.3.3333",
+    "typescript": "^3.3.4000",
     "vscode-css-languageservice": "^3.0.12",
     "vscode-emmet-helper": "^1.1.19",
-    "vscode-languageserver": "^5.0.3",
-    "vscode-languageserver-types": "^3.14.0",
+    "vscode-languageserver": "^5.3.0-next.4",
+    "vscode-languageserver-types": "^3.15.0-next.1",
     "vscode-uri": "^1.0.1",
     "vue-onsenui-helper-json": "^1.0.2",
     "vuetify-helper-json": "^1.0.0"
@@ -55,6 +55,7 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.10",
     "@types/prettier": "^1.16.1",
+    "@types/read-pkg-up": "^3.0.1",
     "@types/resolve": "0.0.8",
     "codecov": "^3.0.4",
     "glob": "^7.1.2",
@@ -68,7 +69,6 @@
     "test": "mocha",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "newVersion": "yarn version --new-version patch -m \"vls %s\"",
-    "preversion": "npm run compile && npm test",
-    "prepublishOnly": "npm run compile"
+    "preversion": "npm run compile && npm test"
   }
 }

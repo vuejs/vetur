@@ -13,10 +13,12 @@ import {
   Position,
   FormattingOptions,
   SymbolInformation,
+  CodeActionContext,
   ColorInformation,
   Color,
   ColorPresentation,
-  TextDocument
+  TextDocument,
+  Command
 } from 'vscode-languageserver-types';
 
 import { LanguageModelCache } from './languageModelCache';
@@ -25,18 +27,30 @@ import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from './style';
 import { getJavascriptMode } from './script/javascript';
 import { getVueHTMLMode } from './template';
 import { getStylusMode } from './style/stylus';
-import { DocumentContext } from '../types';
+import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DocumentService, VueDocumentInfo } from '../services/documentService';
 import { ExternalDocumentService } from '../services/externalDocumentService';
+import { DependencyService } from '../services/dependencyService';
+
+export interface VLSServices {
+  infoService?: VueInfoService;
+  dependencyService?: DependencyService;
+}
 
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
-  configureService?(infoService: VueInfoService): void;
   updateFileInfo?(doc: VueDocumentInfo): void;
 
   doValidation?(document: VueDocumentInfo): Diagnostic[];
+  getCodeActions?(
+    document: VueDocumentInfo,
+    range: Range,
+    formatParams: FormattingOptions,
+    context: CodeActionContext
+  ): Command[];
+  getRefactorEdits?(doc: VueDocumentInfo, args: RefactorAction): Command;
   doComplete?(document: VueDocumentInfo, position: Position): CompletionList;
   doResolve?(document: VueDocumentInfo, item: CompletionItem): CompletionItem;
   doHover?(document: VueDocumentInfo, position: Position): Hover;
@@ -51,17 +65,7 @@ export interface LanguageMode {
   getColorPresentations?(document: VueDocumentInfo, color: Color, range: Range): ColorPresentation[];
 
   onDocumentChanged?(filePath: string): void;
-  onDocumentRemoved(document: TextDocument): void;
-  dispose(): void;
-}
-
-export interface LanguageModes {
-  getModeAtPosition(document: VueDocumentInfo, position: Position): LanguageMode | null;
-  getModesInRange(document: VueDocumentInfo, range: Range): LanguageModeRange[];
-  getAllModes(): LanguageMode[];
-  getAllModesInDocument(document: VueDocumentInfo): LanguageMode[];
-  getMode(languageId: string): LanguageMode;
-  onDocumentRemoved(document: TextDocument): void;
+  onDocumentRemoved(document: VueDocumentInfo): void;
   dispose(): void;
 }
 
@@ -70,81 +74,100 @@ export interface LanguageModeRange extends Range {
   attributeValue?: boolean;
 }
 
-export function getLanguageModes(
-  workspacePath: string | null | undefined,
-  documentService: DocumentService,
-  externalDocumentService: ExternalDocumentService
-): LanguageModes {
-  let modelCaches: LanguageModelCache<any>[] = [];
+export class LanguageModes {
+  private modes: { [k: string]: LanguageMode } = {};
+  private modelCaches: LanguageModelCache<any>[];
 
-  const jsMode = getJavascriptMode(documentService, externalDocumentService, workspacePath);
-  let modes: { [k: string]: LanguageMode } = {
-    vue: getVueMode(),
-    'vue-html': getVueHTMLMode(documentService, workspacePath),
-    css: getCSSMode(documentService),
-    postcss: getPostCSSMode(documentService),
-    scss: getSCSSMode(documentService),
-    less: getLESSMode(documentService),
-    stylus: getStylusMode(documentService),
-    javascript: jsMode,
-    tsx: jsMode,
-    typescript: jsMode
-  };
+  constructor(
+    private readonly documentService: DocumentService,
+    private readonly externalDocumentService: ExternalDocumentService
+  ) {
+    this.modelCaches = [];
+  }
 
-  return {
-    getModeAtPosition(document: VueDocumentInfo, position: Position): LanguageMode | null {
-      const languageId = document.regions.getLanguageAtPosition(position);
-      if (languageId) {
-        return modes[languageId];
-      }
-      return null;
-    },
-    getModesInRange(document: VueDocumentInfo, range: Range): LanguageModeRange[] {
-      return document.regions.getLanguageRanges(range).map(r => {
+  async init(workspacePath: string, services: VLSServices) {
+    const vueHtmlMode = getVueHTMLMode(this.documentService, workspacePath, services.infoService);
+    const jsMode = await getJavascriptMode(
+      this.documentService,
+      this.externalDocumentService,
+      workspacePath,
+      services.infoService,
+      services.dependencyService
+    );
+
+    this.modes['vue'] = getVueMode();
+    this.modes['vue-html'] = vueHtmlMode;
+    this.modes['css'] = getCSSMode(this.documentService);
+    this.modes['postcss'] = getPostCSSMode(this.documentService);
+    this.modes['scss'] = getSCSSMode(this.documentService);
+    this.modes['less'] = getLESSMode(this.documentService);
+    this.modes['stylus'] = getStylusMode(this.documentService);
+    this.modes['javascript'] = jsMode;
+    this.modes['tsx'] = jsMode;
+    this.modes['typescript'] = jsMode;
+  }
+
+  getModeAtPosition(document: TextDocument, position: Position): LanguageMode | null {
+    const languageId = this.documentService.getDocumentInfo(document)!.regions.getLanguageAtPosition(position);
+    if (languageId) {
+      return this.modes[languageId];
+    }
+    return null;
+  }
+
+  getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
+    return this.documentService
+      .getDocumentInfo(document)!
+      .regions.getLanguageRanges(range)
+      .map(r => {
         return {
           start: r.start,
           end: r.end,
-          mode: modes[r.languageId],
+          mode: this.modes[r.languageId],
           attributeValue: r.attributeValue
         };
       });
-    },
-    getAllModesInDocument(document: VueDocumentInfo): LanguageMode[] {
-      const result = [];
-      for (const languageId of document.regions.getLanguagesInDocument()) {
-        const mode = modes[languageId];
-        if (mode) {
-          result.push(mode);
-        }
+  }
+
+  getAllModesInDocument(document: TextDocument): LanguageMode[] {
+    const result = [];
+    for (const languageId of this.documentService.getDocumentInfo(document)!.regions.getLanguagesInDocument()) {
+      const mode = this.modes[languageId];
+      if (mode) {
+        result.push(mode);
       }
-      return result;
-    },
-    getAllModes(): LanguageMode[] {
-      const result = [];
-      for (const languageId in modes) {
-        const mode = modes[languageId];
-        if (mode) {
-          result.push(mode);
-        }
-      }
-      return result;
-    },
-    getMode(languageId: string): LanguageMode {
-      return modes[languageId];
-    },
-    onDocumentRemoved(doc: TextDocument) {
-      modelCaches.forEach(mc => mc.onDocumentRemoved(doc));
-      for (const mode in modes) {
-        modes[mode].onDocumentRemoved(doc);
-      }
-    },
-    dispose(): void {
-      modelCaches.forEach(mc => mc.dispose());
-      modelCaches = [];
-      for (const mode in modes) {
-        modes[mode].dispose();
-      }
-      modes = {}; // drop all references
     }
-  };
+    return result;
+  }
+
+  getAllModes(): LanguageMode[] {
+    const result = [];
+    for (const languageId in this.modes) {
+      const mode = this.modes[languageId];
+      if (mode) {
+        result.push(mode);
+      }
+    }
+    return result;
+  }
+
+  getMode(languageId: string): LanguageMode {
+    return this.modes[languageId];
+  }
+
+  onDocumentRemoved(document: VueDocumentInfo) {
+    this.modelCaches.forEach(mc => mc.onDocumentRemoved(document));
+    for (const mode in this.modes) {
+      this.modes[mode].onDocumentRemoved(document);
+    }
+  }
+
+  dispose(): void {
+    this.modelCaches.forEach(mc => mc.dispose());
+    this.modelCaches = [];
+    for (const mode in this.modes) {
+      this.modes[mode].dispose();
+    }
+    this.modes = {}; // drop all references
+  }
 }

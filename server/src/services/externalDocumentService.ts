@@ -19,9 +19,11 @@ export class ExternalDocumentService {
   /**
    * Create a new text document manager.
    */
-  public constructor() {
+  public constructor(conn: IConnection) {
     this._infos = Object.create(null);
     this._onDidChangeContent = new Emitter<{ document: ExternalDocumentInfo }>();
+
+    this.listen(conn);
   }
 
   /**
@@ -81,7 +83,7 @@ export class ExternalDocumentService {
    *
    * @param connection The connection to listen on.
    */
-  public listen(connection: IConnection): void {
+  private listen(connection: IConnection): void {
     connection.onDidChangeWatchedFiles(event => {
       for (const { uri } of event.changes) {
         const existingInfo = this._infos[uri];

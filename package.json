@@ -4,7 +4,7 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.16.2",
+  "version": "0.17.1",
   "publisher": "octref",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
@@ -15,7 +15,7 @@
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "prepare-publish": "yarn compile -f && ./build/release-cleanup"
   },
   "husky": {
     "hooks": {
@@ -47,11 +47,11 @@
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.30.0"
+    "vscode": "^1.32.0"
   },
   "dependencies": {
-    "vscode-languageclient": "^5.0.1",
-    "vscode-languageserver-types": "^3.14.0"
+    "vscode-languageclient": "^5.3.0-next.3",
+    "vscode-languageserver-types": "^3.15.0-next.1"
   },
   "activationEvents": [
     "onLanguage:vue"
@@ -96,12 +96,13 @@
         "configuration": "./languages/vue-pug-language-configuration.json"
       },
       {
-        "id": "postcss",
+        "id": "vue-postcss",
         "aliases": [
-          "PostCSS",
-          "POSTCSS"
+          "Vue-PostCSS",
+          "Vue-POSTCSS",
+          "vue-postcss"
         ],
-        "configuration": "./languages/postcss-language-configuration.json"
+        "configuration": "./languages/vue-postcss-language-configuration.json"
       }
     ],
     "grammars": [
@@ -112,14 +113,12 @@
         "embeddedLanguages": {
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
-          "text.pug": "jade",
-          "text.pug.vue-pug": "vue-pug",
           "text.jade.slm": "slm",
           "text.haml": "haml",
           "source.css": "css",
           "source.css.scss": "scss",
           "source.css.less": "less",
-          "source.css.postcss": "postcss",
+          "source.css.postcss": "vue-postcss",
           "source.sass": "sass",
           "source.stylus": "stylus",
           "source.js": "javascript",
@@ -133,9 +132,9 @@
         }
       },
       {
-        "language": "postcss",
+        "language": "vue-postcss",
         "scopeName": "source.css.postcss",
-        "path": "./syntaxes/postcss.json"
+        "path": "./syntaxes/vue-postcss.json"
       },
       {
         "language": "vue-html",
@@ -146,17 +145,25 @@
         }
       },
       {
-        "language": "vue-pug",
-        "scopeName": "text.pug.vue-pug",
-        "path": "./syntaxes/vue-pug.tmLanguage.json",
-        "embeddedLanguages": {
-          "source.js": "javascript"
-        }
+        "path": "./syntaxes/pug/directives.tmLanguage.json",
+        "scopeName": "vue.pug.directives",
+        "injectTo": ["source.vue"]
+      },
+      {
+        "path": "./syntaxes/pug/interpolations.tmLanguage.json",
+        "scopeName": "vue.pug.interpolations",
+        "injectTo": ["source.vue"]
       }
     ],
     "configuration": {
       "title": "Vetur",
       "properties": {
+        "vetur.useWorkspaceDependencies": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use dependencies from workspace. Currently only for TypeScript.",
+          "scope": "application"
+        },
         "vetur.completion.autoImport": {
           "type": "boolean",
           "default": true,
@@ -202,6 +209,11 @@
           "type": "boolean",
           "default": true,
           "description": "Validate js/ts in <script>"
+        },
+        "vetur.format.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable the Vetur document formatter."
         },
         "vetur.format.options.tabSize": {
           "type": "number",
@@ -413,6 +425,7 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.11.0",
     "@types/shelljs": "^0.8.3",
+    "@types/vscode": "^1.32.0",
     "glob": "^7.1.3",
     "husky": "^1.0.0-rc.15",
     "js-yaml": "^3.12.1",
@@ -423,6 +436,6 @@
     "shelljs": "^0.8.3",
     "tslint": "^5.8.0",
     "typescript": "^3.3.3333",
-    "vscode": "^1.1.29"
+    "vscode": "1.1.29"
   }
 }
