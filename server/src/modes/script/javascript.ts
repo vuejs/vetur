@@ -460,7 +460,7 @@ export async function getJavascriptMode(
       const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
 
       if (defaultFormatter === 'prettier' || defaultFormatter === 'prettier-eslint') {
-        const code = scriptDoc.getText();
+        const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
 
         return defaultFormatter === 'prettier'
