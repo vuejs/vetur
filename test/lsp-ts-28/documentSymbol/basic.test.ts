@@ -21,39 +21,42 @@ describe('Should do documentSymbol', () => {
         children: [
           {
             name: 'template',
-            range: range(0, 0, 3, 11),
             kind: 7,
+            range: range(0, 0, 3, 11),
             children: [
               {
                 name: 'div.counter-wrapper',
+                kind: 7,
                 range: range(1, 2, 2, 8),
-                kind: 7
+                children: []
               }
             ]
-          }
-        ]
-      },
-      {
-        name: 'script',
-        range: range(5, 0, 13, 9),
-        kind: 7,
-        children: [
+          },
           {
-            name: 'data',
-            kind: 5,
-            range: range(7, 2, 11, 3)
-          }
-        ]
-      },
-      {
-        name: 'style',
-        range: range(15, 0, 19, 8),
-        kind: 7,
-        children: [
+            name: 'script',
+            kind: 7,
+            range: range(5, 0, 13, 9),
+            children: [
+              {
+                name: 'data',
+                kind: 5,
+                range: range(7, 2, 11, 3),
+                children: []
+              }
+            ]
+          },
           {
-            name: '.counter-wrapper > *',
-            kind: 4,
-            range: range(16, 0, 18, 1)
+            name: 'style',
+            kind: 7,
+            range: range(15, 0, 19, 8),
+            children: [
+              {
+                name: '.counter-wrapper > *',
+                kind: 4,
+                range: range(16, 0, 18, 1),
+                children: []
+              }
+            ]
           }
         ]
       }
@@ -61,48 +64,7 @@ describe('Should do documentSymbol', () => {
   });
 });
 
-type RecursivePartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[]
-    ? RecursivePartial<U>[]
-    : T[P] extends object
-    ? RecursivePartial<T[P]>
-    : T[P]
-};
-
-function assertDeepEqual<T>(actual: T, expected: RecursivePartial<T>) {
-  if (expected instanceof Array) {
-    if (actual instanceof Array) {
-      for (let i = 0; i < expected.length; i++) {
-        assertDeepEqual(actual[i], expected[i]);
-      }
-    } else {
-      typeMismatch();
-    }
-  } else if (expected instanceof Object) {
-    if (actual instanceof Object) {
-      for (const key of Object.keys(expected)) {
-        assertDeepEqual((actual as any)[key], (expected as any)[key]);
-      }
-    } else {
-      typeMismatch();
-    }
-  } else {
-    assert.strictEqual(actual, expected);
-  }
-
-  function typeMismatch() {
-    assert.fail(
-      new Error(
-        'Type of input A expected to match type of input B.\n+ expected - actual\n- ' +
-          JSON.stringify(actual, null, 2) +
-          '\n+ ' +
-          JSON.stringify(expected, null, 2)
-      )
-    );
-  }
-}
-
-async function testSymbol(docUri: vscode.Uri, expectedSymbols: RecursivePartial<vscode.DocumentSymbol>[]) {
+async function testSymbol(docUri: vscode.Uri, expectedSymbols: PartialDocumentSymbol[]) {
   await showFile(docUri);
   await sleep(2000);
 
@@ -111,5 +73,37 @@ async function testSymbol(docUri: vscode.Uri, expectedSymbols: RecursivePartial<
     docUri
   )) as vscode.DocumentSymbol[];
 
-  assertDeepEqual(result, expectedSymbols);
+  const partialSymbols = result.map(convertToPartialDocumentSymbols);
+  assertEqualSymbols(expectedSymbols, partialSymbols);
+}
+
+function assertEqualSymbols(expectedSymbols: PartialDocumentSymbol[], actualSymbols: PartialDocumentSymbol[]) {
+  expectedSymbols.forEach((es, i) => {
+    const as = actualSymbols[i];
+    assert.equal(es.name, as.name);
+    assert.equal(es.kind, as.kind);
+    assert.deepStrictEqual(es.range, as.range);
+    if (es.children && as.children) {
+      assertEqualSymbols(es.children, as.children);
+    }
+  });
+}
+
+interface PartialDocumentSymbol {
+  name: string;
+  range: vscode.Range;
+  kind: vscode.SymbolKind;
+  children?: PartialDocumentSymbol[];
+}
+
+function convertToPartialDocumentSymbols(symbol: vscode.DocumentSymbol): PartialDocumentSymbol {
+  const ps: PartialDocumentSymbol = {
+    name: symbol.name,
+    kind: symbol.kind,
+    range: symbol.range
+  };
+  if (symbol.children) {
+    ps.children = symbol.children.map(convertToPartialDocumentSymbols);
+  }
+  return ps;
 }
