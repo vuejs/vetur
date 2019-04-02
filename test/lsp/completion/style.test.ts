@@ -37,7 +37,7 @@ describe('Should autocomplete for <style>', () => {
 
   describe('Should complete second <style> section', () => {
     it('completes CSS properties for second <style lang="scss">', async () => {
-      await testCompletion(docUri, position(8, 3), ['width', 'word-wrap']);
+      await testCompletion(doubleDocUri, position(8, 3), ['width', 'word-wrap']);
     });
   });
 });
