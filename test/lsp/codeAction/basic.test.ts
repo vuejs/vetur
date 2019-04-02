@@ -10,29 +10,20 @@ describe('Should do codeAction', () => {
     await activateLS();
     await showFile(docUri);
     await sleep(FILE_LOAD_SLEEP_TIME);
-    // Wait for diagnostics
-    await sleep(3000);
+
+    // More sleep for waiting diagnostics
+    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('finds codeAction for unused import', async () => {
-    const codeActions = [
-      { title: 'Remove variable statement', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Ignore this error message', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Disable checking for this file', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Extract to function in module scope', command: 'vetur.chooseTypeScriptRefactoring' },
-      { title: 'Extract to constant in enclosing scope', command: 'vetur.chooseTypeScriptRefactoring' }
-    ];
-    await testCodeAction(docUri, sameLineRange(5, 0, 27), codeActions);
+    const codeActions = [{ title: `Remove declaration for: '_'`, command: 'vetur.applyWorkspaceEdits' }];
+    await testCodeAction(docUri, sameLineRange(5, 6, 6), codeActions);
   });
 
   it('finds codeAction for unused variables', async () => {
-    const codeActions = [
-      { title: 'Remove variable statement', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Ignore this error message', command: 'vetur.applyWorkspaceEdits' },
-      { title: 'Disable checking for this file', command: 'vetur.applyWorkspaceEdits' }
-    ];
+    const codeActions = [{ title: `Remove declaration for: 'foo'`, command: 'vetur.applyWorkspaceEdits' }];
 
-    await testCodeAction(docUri, sameLineRange(7, 0, 12), codeActions);
+    await testCodeAction(docUri, sameLineRange(7, 6, 6), codeActions);
   });
 });
 
@@ -42,7 +33,8 @@ interface CodeAction {
 }
 
 async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedActions: CodeAction[]) {
-  await showFile(docUri);
+  // For diagnostics to show up
+  await sleep(2000);
 
   const result = (await vscode.commands.executeCommand(
     'vscode.executeCodeActionProvider',
@@ -55,7 +47,8 @@ async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedA
       result.some(rAction => {
         return rAction.title === eAction.title && rAction.command === eAction.command;
       }),
-      `Cannot find matching codeAction with title '${eAction.title}'`
+      `Cannot find matching codeAction with title '${eAction.title}'\n` +
+        `Seen codeActions are:\n${JSON.stringify(result)}`
     );
   });
 }

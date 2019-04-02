@@ -1,5 +1,14 @@
 # Changelog
 
+### 0.18.0 | 2019-04-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.0/vspackage)
+
+- Vetur now bundles TypeScript 3.3.4000. This fixes many TS/JS related issues. See more in #1163.
+- Vetur falls back to using bundled TS if workspace TS is not found. #1164.
+- 🙌 Syntax highlighting for `#` shorthand for `v-slot`. Thanks to contribution from [Patrick](https://github.com/Patcher56). #1108.
+- Greyed-out unused varibles in `*.vue` files. (For plain `<script>`, you need to set `checkJs: true` in `jsconfig.json`) #1063.
+- 🙌 Code actions (autofixes, refactors) are now available in `*.vue` files. Thanks to contribution from [Daniel Rosenwasser](https://github.com/DanielRosenwasser). #907.
+- Auto import now works for variables / methods exported from `JS/TS` files. #1170.
+
 ### 0.17.1 | 2019-03-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.17.1/vspackage)
 
 - `vetur.format.enable` option and dynamic formatter registration so Vetur works better with other Vue document formatters. #1121.
