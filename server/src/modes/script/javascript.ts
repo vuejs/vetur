@@ -17,7 +17,8 @@ import {
   MarkedString,
   DocumentHighlightKind,
   FormattingOptions,
-  MarkupContent
+  MarkupContent,
+  DiagnosticTag
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../languageModes';
 import { LanguageRange } from '../embeddedSupport';
@@ -37,7 +38,6 @@ import { DocumentService, VueDocumentInfo } from '../../services/documentService
 import { ExternalDocumentService } from '../../services/externalDocumentService';
 import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
 import { RefactorAction } from '../../types';
-import { DiagnosticTag } from 'vscode';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook

@@ -10,7 +10,7 @@ import { resolve } from 'path';
 import { existsSync } from 'fs';
 
 export function initializeLanguageClient(vlsModulePath: string): LanguageClient {
-  const debugOptions = { execArgv: ['--nolazy', '--inspect=6005', '--prof'] };
+  const debugOptions = { execArgv: ['--nolazy', '--inspect=6005'] };
 
   const documentSelector = ['vue'];
   const config = vscode.workspace.getConfiguration();
@@ -25,8 +25,8 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
   }
 
   const serverOptions: ServerOptions = {
-    run: { runtime: 'node', module: serverPath, transport: TransportKind.ipc },
-    debug: { runtime: 'node', module: serverPath, transport: TransportKind.ipc, options: debugOptions }
+    run: { module: serverPath, transport: TransportKind.ipc },
+    debug: { module: serverPath, transport: TransportKind.ipc, options: debugOptions }
   };
 
   const watcher = (() => {
