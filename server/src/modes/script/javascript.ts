@@ -1,4 +1,4 @@
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import {
   SymbolInformation,
   SymbolKind,
@@ -25,8 +25,8 @@ import {
   DiagnosticTag,
   MarkupContent
 } from 'vscode-languageserver-types';
-import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
 import { getServiceHost } from './serviceHost';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
@@ -59,12 +59,13 @@ export async function getJavascriptMode(
   }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
-    return vueDocument.getEmbeddedDocumentByType('script');
+    return vueDocument.getSingleTypeDocument('script');
   });
 
-  const regionStart = getLanguageModelCache(10, 60, document => {
+  const firstScriptRegion = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
-    return vueDocument.getLanguageRangeByType('script');
+    const scriptRegions = vueDocument.getLanguageRangesOfType('script');
+    return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
 
   let tsModule: T_TypeScript = ts;
@@ -199,7 +200,7 @@ export async function getJavascriptMode(
           value: tsModule.displayPartsToString(details.documentation)
         };
         if (details.codeActions && config.vetur.completion.autoImport) {
-          const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
+          const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
           item.additionalTextEdits = textEdits;
 
           details.codeActions.forEach(action => {
@@ -459,7 +460,7 @@ export async function getJavascriptMode(
       const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
 
       if (defaultFormatter === 'prettier' || defaultFormatter === 'prettier-eslint') {
-        const code = scriptDoc.getText();
+        const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
 
         return defaultFormatter === 'prettier'

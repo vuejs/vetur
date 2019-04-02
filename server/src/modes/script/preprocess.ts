@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as path from 'path';
 
-import { getDocumentRegions } from '../embeddedSupport';
+import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
 import { T_TypeScript } from '../../services/dependencyService';
 
@@ -11,8 +11,8 @@ export function isVue(filename: string): boolean {
 
 export function parseVue(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
-  const regions = getDocumentRegions(doc);
-  const script = regions.getEmbeddedDocumentByType('script');
+  const regions = getVueDocumentRegions(doc);
+  const script = regions.getSingleTypeDocument('script');
   return script.getText() || 'export default {};';
 }
 

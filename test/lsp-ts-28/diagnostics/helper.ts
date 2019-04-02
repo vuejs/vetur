@@ -15,9 +15,10 @@ export async function testDiagnostics(
   expectedDiagnostics.forEach(ed => {
     assert.ok(
       result.some(d => {
-        return isEqualDiagnostic(d, ed);
+        return isEqualDiagnostic(ed, d);
       }),
-      `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n`
+      `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
+        `Seen diagnostics are:\n${JSON.stringify(result)}`
     );
   });
 
@@ -28,8 +29,18 @@ export async function testDiagnostics(
       d1.severity === d2.severity &&
       // Only check beginning equality as TS's long messages are ever-changing
       d1.message.slice(0, 40) === d2.message.slice(0, 40) &&
-      d1.range.isEqual(d2.range) &&
+      // d1.range.isEqual(d2.range) &&
+      isRangeEqual(d1.range, d2.range) &&
       sourceIsEqual
     );
   }
+}
+
+function isRangeEqual(r1: vscode.Range, r2: vscode.Range) {
+  return (
+    r1.start.line === r2.start.line &&
+    r1.start.character === r2.start.character &&
+    r1.end.line === r2.end.line &&
+    r1.end.character === r2.end.character
+  );
 }
