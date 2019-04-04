@@ -382,7 +382,7 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, range.start);
     if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
-      throw new Error("Vetur/VLS can't handle ranges across different sections of a .vue file.");
+      return [];
     }
     if (mode && mode.getCodeActions) {
       // TODO: funnel formatParams?
