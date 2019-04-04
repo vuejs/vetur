@@ -165,6 +165,7 @@ export class VLS {
     });
     this.documentService.onDidClose(e => {
       this.removeDocument(e.document);
+      this.lspConnection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
     });
     this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
       const jsMode = this.languageModes.getMode('javascript');
