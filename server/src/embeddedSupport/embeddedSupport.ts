@@ -52,7 +52,7 @@ export interface VueDocumentRegions {
 
 type RegionType = 'template' | 'script' | 'style' | 'custom';
 
-const defaultType: { [type: string]: string } = {
+const defaultLanguageIdForBlockTypes: { [type: string]: string } = {
   template: 'vue-html',
   script: 'javascript',
   style: 'css'
@@ -122,13 +122,16 @@ export function getSingleTypeDocument(
   const oldContent = document.getText();
   let newContent = oldContent.replace(/./g, ' ');
 
+  let langId: string = defaultLanguageIdForBlockTypes[type];
+
   for (const r of regions) {
     if (r.type === type) {
       newContent = newContent.slice(0, r.start) + oldContent.slice(r.start, r.end) + newContent.slice(r.end);
+      langId = r.languageId;
     }
   }
 
-  return TextDocument.create(document.uri, defaultType[type], document.version, newContent);
+  return TextDocument.create(document.uri, langId, document.version, newContent);
 }
 
 export function getLanguageRangesOfType(
