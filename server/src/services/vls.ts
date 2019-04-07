@@ -90,7 +90,9 @@ export class VLS {
     await this.vueInfoService.init(this.languageModes);
     await this.dependencyService.init(
       workspacePath,
-      _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+      params.initializationOptions
+        ? _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+        : false
     );
     await this.languageModes.init(workspacePath, {
       infoService: this.vueInfoService,
