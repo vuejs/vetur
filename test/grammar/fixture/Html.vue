@@ -12,5 +12,6 @@
     <div class="string concat" :attr="i + will + 'concat' + this + string"></div>
     <div class="v-slot" v-slot:foo="bar"></div>
     <div class="v-slot shorthand" #foo="bar"></div>
+    <router-link :to="{path: `/my/path#hash=${hash}`}">click me</router-link>
   </div>
 </template>
