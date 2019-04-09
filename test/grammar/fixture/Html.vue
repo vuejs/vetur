@@ -13,5 +13,6 @@
     <div class="v-slot" v-slot:foo="bar"></div>
     <div class="v-slot shorthand" #foo="bar"></div>
     <router-link :to="{path: `/my/path#hash=${hash}`}">click me</router-link>
+    <h4><icon v-if=foo bar :hover=bar /></h4>
   </div>
 </template>
