@@ -1033,7 +1033,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         },
@@ -1053,7 +1053,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         },
@@ -1073,7 +1073,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         }
@@ -1082,7 +1082,7 @@
     "vue-interpolations": {
       "patterns": [
         {
-          "name": "expression.embbeded.vue",
+          "name": "expression.embedded.vue",
           "begin": "\\{\\{\\{?",
           "beginCaptures": {
             "0": {
@@ -1097,7 +1097,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         }

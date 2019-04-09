@@ -595,7 +595,7 @@
 	},
 	{
 		"c": "{{",
-		"t": "source.vue source.vue.pug expression.embbeded.vue punctuation.definition.generic.begin.html",
+		"t": "source.vue source.vue.pug expression.embedded.vue punctuation.definition.generic.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -606,7 +606,7 @@
 	},
 	{
 		"c": "test",
-		"t": "source.vue source.vue.pug expression.embbeded.vue meta.function-call.js variable.other.object.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue meta.function-call.js variable.other.object.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -617,7 +617,7 @@
 	},
 	{
 		"c": ".",
-		"t": "source.vue source.vue.pug expression.embbeded.vue meta.function-call.js punctuation.accessor.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue meta.function-call.js punctuation.accessor.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -628,7 +628,7 @@
 	},
 	{
 		"c": "case",
-		"t": "source.vue source.vue.pug expression.embbeded.vue meta.function-call.js entity.name.function.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue meta.function-call.js entity.name.function.js",
 		"r": {
 			"dark_plus": "entity.name.function: #DCDCAA",
 			"light_plus": "entity.name.function: #795E26",
@@ -639,7 +639,7 @@
 	},
 	{
 		"c": "()",
-		"t": "source.vue source.vue.pug expression.embbeded.vue meta.brace.round.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue meta.brace.round.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -650,7 +650,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug expression.embbeded.vue",
+		"t": "source.vue source.vue.pug expression.embedded.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -661,7 +661,7 @@
 	},
 	{
 		"c": "+",
-		"t": "source.vue source.vue.pug expression.embbeded.vue keyword.operator.arithmetic.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue keyword.operator.arithmetic.js",
 		"r": {
 			"dark_plus": "keyword.operator: #D4D4D4",
 			"light_plus": "keyword.operator: #000000",
@@ -672,7 +672,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug expression.embbeded.vue",
+		"t": "source.vue source.vue.pug expression.embedded.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -683,7 +683,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug expression.embbeded.vue string.quoted.single.js punctuation.definition.string.begin.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue string.quoted.single.js punctuation.definition.string.begin.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -694,7 +694,7 @@
 	},
 	{
 		"c": "concatenation",
-		"t": "source.vue source.vue.pug expression.embbeded.vue string.quoted.single.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue string.quoted.single.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -705,7 +705,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug expression.embbeded.vue string.quoted.single.js punctuation.definition.string.end.js",
+		"t": "source.vue source.vue.pug expression.embedded.vue string.quoted.single.js punctuation.definition.string.end.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -716,7 +716,7 @@
 	},
 	{
 		"c": "}}",
-		"t": "source.vue source.vue.pug expression.embbeded.vue punctuation.definition.generic.end.html",
+		"t": "source.vue source.vue.pug expression.embedded.vue punctuation.definition.generic.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",

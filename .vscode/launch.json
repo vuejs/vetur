@@ -55,6 +55,22 @@
       "args": ["${workspaceFolder}/server/test"],
       "cwd": "${workspaceFolder}/server",
       "internalConsoleOptions": "openOnSessionStart"
-    }
+    },
+    {
+      "name": "E2E Test (Grammar)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/grammar",
+        "${workspaceFolder}/test/grammar/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
   ]
 }
