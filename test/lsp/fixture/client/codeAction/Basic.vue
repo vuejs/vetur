@@ -3,7 +3,7 @@
 </template>
 
 <script>
-const _ = require('lodash')
+const lodash = require('lodash')
 
 const foo = 5
 
