@@ -5,7 +5,12 @@ import { parse } from 'vue-eslint-parser';
 import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
 import { T_TypeScript } from '../../services/dependencyService';
-import { transformTemplate, componentHelperName, iterationHelperName, renderHelperName } from './transformTemplate';
+import {
+  getTemplateTransformFunctions,
+  componentHelperName,
+  iterationHelperName,
+  renderHelperName
+} from './transformTemplate';
 import { isVirtualVueTemplateFile } from './serviceHost';
 
 export function isVue(filename: string): boolean {
@@ -67,7 +72,7 @@ export function createUpdater(tsModule: T_TypeScript) {
       // with the template mode
       const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
       const program = parse(code, { sourceType: 'module' });
-      const tsCode = transformTemplate(program, code);
+      const tsCode = getTemplateTransformFunctions(tsModule).transformTemplate(program, code);
       injectVueTemplate(tsModule, sourceFile, tsCode);
       modificationTracker.add(sourceFile);
     }

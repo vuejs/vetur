@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as ts from 'typescript';
-import { injectThis } from '../transformTemplate';
+import { getTemplateTransformFunctions } from '../transformTemplate';
 
 suite('transformTemplate', () => {
   suite('`this` injection', () => {
@@ -10,7 +10,7 @@ suite('transformTemplate', () => {
       assert.equal(st.kind, ts.SyntaxKind.ExpressionStatement, 'Input ts code must be an expression');
 
       const exp = st.expression;
-      const output = injectThis(exp, scope);
+      const output = getTemplateTransformFunctions(require('typescript')).injectThis(exp, scope);
 
       const printer = ts.createPrinter();
       const outputStr = printer.printNode(ts.EmitHint.Expression, output, source);
