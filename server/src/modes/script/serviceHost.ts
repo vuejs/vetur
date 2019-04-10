@@ -193,7 +193,7 @@ export function getServiceHost(
           if (!resolved.resolvedFileName.endsWith('.vue.ts')) {
             return resolved;
           }
-          const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
+          const resolvedFileName = resolved.resolvedFileName.slice(0, -'.ts'.length);
           const uri = Uri.file(resolvedFileName);
           const doc =
             scriptDocs.get(resolvedFileName) ||
