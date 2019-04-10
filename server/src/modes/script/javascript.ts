@@ -102,35 +102,73 @@ export async function getJavascriptMode(
     },
 
     doValidation(doc: TextDocument): Diagnostic[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
-        return [];
-      }
+      const templateDiags = getTemplateDiagnostics();
+      const scriptDiags = getScriptDiagnostics();
+      return [...templateDiags, ...scriptDiags];
 
-      const fileFsPath = getFileFsPath(doc.uri);
-      const diagnostics = [
-        ...service.getSyntacticDiagnostics(fileFsPath),
-        ...service.getSemanticDiagnostics(fileFsPath)
-      ];
-
-      return diagnostics.map(diag => {
-        const tags: DiagnosticTag[] = [];
-
-        if (diag.reportsUnnecessary) {
-          tags.push(DiagnosticTag.Unnecessary);
+      function getScriptDiagnostics(): Diagnostic[] {
+        const { scriptDoc, service } = updateCurrentTextDocument(doc);
+        if (!languageServiceIncludesFile(service, doc.uri)) {
+          return [];
         }
 
-        // syntactic/semantic diagnostic always has start and length
-        // so we can safely cast diag to TextSpan
-        return <Diagnostic>{
-          range: convertRange(scriptDoc, diag as ts.TextSpan),
-          severity: DiagnosticSeverity.Error,
-          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
-          tags,
-          code: diag.code,
-          source: 'Vetur'
-        };
-      });
+        const fileFsPath = getFileFsPath(doc.uri);
+        const rawScriptDiagnostics = [
+          ...service.getSyntacticDiagnostics(fileFsPath),
+          ...service.getSemanticDiagnostics(fileFsPath)
+        ];
+
+        return rawScriptDiagnostics.map(diag => {
+          const tags: DiagnosticTag[] = [];
+
+          if (diag.reportsUnnecessary) {
+            tags.push(DiagnosticTag.Unnecessary);
+          }
+
+          // syntactic/semantic diagnostic always has start and length
+          // so we can safely cast diag to TextSpan
+          return <Diagnostic>{
+            range: convertRange(scriptDoc, diag as ts.TextSpan),
+            severity: DiagnosticSeverity.Error,
+            message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
+            tags,
+            code: diag.code,
+            source: 'Vetur'
+          };
+        });
+      }
+
+      function getTemplateDiagnostics(): Diagnostic[] {
+        const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
+        if (!enabledTemplateValidation) {
+          return [];
+        }
+
+        // Add suffix to process this doc as vue template.
+        const templateDoc = TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText());
+
+        const { templateService } = updateCurrentTextDocument(templateDoc);
+        if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+          return [];
+        }
+
+        const templateFileFsPath = getFileFsPath(templateDoc.uri);
+        // We don't need syntactic diagnostics because
+        // compiled template is always valid JavaScript syntax.
+        const rawTemplateDiagnostics = templateService.getSemanticDiagnostics(templateFileFsPath);
+
+        return rawTemplateDiagnostics.map(diag => {
+          // syntactic/semantic diagnostic always has start and length
+          // so we can safely cast diag to TextSpan
+          return {
+            range: convertRange(templateDoc, diag as ts.TextSpan),
+            severity: DiagnosticSeverity.Error,
+            message: ts.flattenDiagnosticMessageText(diag.messageText, '\n'),
+            code: diag.code,
+            source: 'Vetur'
+          };
+        });
+      }
     },
     doComplete(doc: TextDocument, position: Position): CompletionList {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);

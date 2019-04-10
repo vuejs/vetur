@@ -19,20 +19,19 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
     );
   });
 
-  function isEqualDiagnostic(d1: vscode.Diagnostic, d2: vscode.Diagnostic) {
-    const sourcesAreEqual = d1.source ? d1.source === d2.source : true;
+  function isEqualDiagnostic(ed: vscode.Diagnostic, ad: vscode.Diagnostic) {
+    const sourcesAreEqual = ed.source ? ed.source === ad.source : true;
 
     // Disable until https://github.com/Microsoft/vscode/issues/71556 is resolved
     // const tagsAreEqual = d1.tags ? _.isEqual(d1.tags, d2.tags) : true;
     const tagsAreEqual = true;
 
+    // Only check beginning equality as TS's long messages are ever-changing
+    const messaagesAreEqual =
+      ed.message.length === ad.message.length ? ed.message === ad.message : ad.message.startsWith(ed.message);
+
     return (
-      d1.severity === d2.severity &&
-      // Only check beginning equality as TS's long messages are ever-changing
-      d1.message.slice(0, 40) === d2.message.slice(0, 40) &&
-      d1.range.isEqual(d2.range) &&
-      tagsAreEqual &&
-      sourcesAreEqual
+      ed.severity === ad.severity && messaagesAreEqual && ed.range.isEqual(ad.range) && tagsAreEqual && sourcesAreEqual
     );
   }
 }
