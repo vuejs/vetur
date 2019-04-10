@@ -1,14 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import {
-  getDocUri,
-  activateLS,
-  showFile,
-  sleep,
-  readFileAsync,
-  setEditorContent,
-  FILE_LOAD_SLEEP_TIME
-} from '../../helper';
+import { activateLS, showFile, sleep, readFileAsync, setEditorContent, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { getDocUri } from '../util';
 
 describe('Should format', () => {
   const docUri = getDocUri('client/formatting/Basic.vue');
@@ -17,16 +10,22 @@ describe('Should format', () => {
   const docUri2 = getDocUri('client/formatting/VueHNUserView.vue');
   const expectedDocUri2 = getDocUri('client/formatting/VueHNUserView.Expected.vue');
 
+  // https://github.com/vuejs/vetur/issues/499
+  const docUri3 = getDocUri('client/formatting/TwoStylus.vue');
+  const expectedDocUri3 = getDocUri('client/formatting/TwoStylus.Expected.vue');
+
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
     await showFile(docUri2);
+    await showFile(docUri3);
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('formats', async () => {
     await testFormat(docUri, expectedDocUri);
     await testFormat(docUri2, expectedDocUri2);
+    await testFormat(docUri3, expectedDocUri3);
   });
 });
 

@@ -1,5 +1,146 @@
 # Changelog
 
+### 0.18.1 | 2019-04-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.1/vspackage)
+
+- Improve embedded language support to fix second style block having no auto completion bug. #430 and #852.
+- Fix a Stylus formatting bug where it wrongly formats multiple Stylus blocks. #499.
+- 🙌 Fix a bug where Vetur doesn't clear document for diagnostics. Thanks to contribution from [James Lave](https://github.com/jlave-dev). #1181 and #1147.
+
+### 0.18.0 | 2019-04-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.0/vspackage)
+
+- Vetur now bundles TypeScript 3.3.4000. This fixes many TS/JS related issues. See more in #1163.
+- Vetur falls back to using bundled TS if workspace TS is not found. #1164.
+- 🙌 Syntax highlighting for `#` shorthand for `v-slot`. Thanks to contribution from [Patrick](https://github.com/Patcher56). #1108.
+- Greyed-out unused varibles in `*.vue` files. (For plain `<script>`, you need to set `checkJs: true` in `jsconfig.json`) #1063.
+- 🙌 Code actions (autofixes, refactors) are now available in `*.vue` files. Thanks to contribution from [Daniel Rosenwasser](https://github.com/DanielRosenwasser). #907.
+- Auto import now works for variables / methods exported from `JS/TS` files. #1170.
+
+### 0.17.1 | 2019-03-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.17.1/vspackage)
+
+- `vetur.format.enable` option and dynamic formatter registration so Vetur works better with other Vue document formatters. #1121.
+
+### 0.17.0 | 2019-03-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.17.0/vspackage)
+
+- Allow using workspace TS version. See below for details. #682.
+- Switch PostCSS grammar to base on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS). #1115.
+- Fix a bug where Vetur does not update language features for newly created files. #1091.
+- Use `text.jade.slm` instead of `text.pug.slm` for proper SLM syntax highlighting. #1134.
+- Fix a bug where Vetur fails to resolve links in `<script src="">` correctly. #991 and #1150.
+- Add Gridsome support. Thanks to contribution from [@tyankatsu0105](https://github.com/tyankatsu0105). #1101.
+
+#### Using Workspace TypeScript version
+
+Vetur depends on TypeScript's Language Server for its JavaScript/TypeScript capabilities. Previously Vetur bundles TS 2.8.4,
+but now Vetur can run on any TypeScript > 2.8 from workspace `node_modules/typescript`. Use `vetur.useWorkspaceDependencies`
+to enable this behavior.
+
+Note that `vetur.useWorkspaceDependencies` can only be configured in user settings (no workspace setting) and defaults to `false`
+because Vetur should not run 3rd party code without user's explicit approval.
+
+Currently this setting does not affect `prettier` and other formatters, where workspace dependencies is preferred, but this will change in the future.
+
+### 0.16.2 | 2019-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.2/vspackage)
+
+- Prettier as an option for `vetur.format.defaultFormatter.html`. #950.
+- Fix a syntax highlighting bug with custom block that begins with `<template>`. #1088.
+- Fix a bug where Vetur fails to provide props completion when using `"vetur.completion.tagCasing": "initial"`. #1102.
+
+### 0.16.1 | 2019-02-18 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.1/vspackage)
+
+- `vetur.completion.tagCasing` option to choose between forcing all tag completion to kebab-case like `<my-tag>`, or leave tag naming as initially declared in `components`. #1102.
+
+### 0.16.0 | 2019-02-18 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.0/vspackage)
+
+- Template interpolation completion. See below for details. #1083.
+- Improved child component completion. See below for details.
+
+See https://github.com/vuejs/vetur/issues/1083#issuecomment-464877917 for the demo.
+
+#### Template Interpolation Completion
+
+Vetur now offers auto completion inside Vue interpolations, that is, `{{ }}` block, `v-if` / `@click` `:prop` and other attributes.
+
+The completion items are sourced from `props`, `data`, `computed` and `methods`.
+The JSDocs block right before each property, and the property assignment expression will be used as documentation.
+
+For example, in this Vue file:
+
+```vue
+<script>
+export default {
+  props: {
+    /**
+     * Initial counter value
+     */
+    start: {
+      type: Number,
+      default: 0
+    }
+  },
+  data () {
+    return {
+      /**
+       * My msg
+       */
+      msg: 'Vetur get much better completion',
+    }
+  }
+}
+</script>
+```
+
+In the HTML interpolation regions, `start` and `msg` will be completed. Their documentation will be the Markdown below:
+
+````
+Initial counter value
+
+```js
+start: {
+  type: Number,
+  default: 0
+}
+```
+
+---
+
+My msg
+
+```js
+msg: 'Vetur get much better completion',
+```
+````
+
+#### Child Component Completion
+
+If you have child components in a parent component:
+
+```vue
+<script>
+import Counter from './Counter.vue'
+
+export default {
+  components: {
+    Counter,
+  }
+}
+```
+
+Vetur will show tag completion for `<counter>`. The JSDoc right before the `export default {}` declaration in `Counter.vue` file will be used as the completion documentation.
+
+Vetur will also read all props of `<counter>` and provide them as HTML attribute completions.
+
+### 0.15.1 | 2019-02-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.15.1/vspackage)
+
+- Fix a grammar problem with pug interpolation. Thanks to contribution from [@Patcher56](https://github.com/Patcher56). #1082.
+
+### 0.15.0 | 2019-02-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.15.0/vspackage)
+
+- Graphql custom block syntax highlighting. #975.
+- Inline Graphql syntax highlighting. #701.
+- `vetur.dev.vlsPath`. #1045.
+- Allow `<!-- -->` in Vue source. Thanks to contribution from [@dsanders11](https://github.com/dsanders11). #1023.
+- Pug interpolation syntax highlighting. Thanks to contribution from [@Patcher56](https://github.com/Patcher56). #552.
+
 ### 0.14.5 | 2019-01-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.14.5/vspackage)
 
 - Update to eslint-plugin-vue@5. #1034.

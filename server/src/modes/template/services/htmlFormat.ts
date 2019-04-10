@@ -6,33 +6,41 @@ import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
 import { Prettier } from '../../../utils/prettier/prettier';
+import { prettierify } from '../../../utils/prettier';
 
-const templateHead = '<template>';
-const templateTail = '</template>';
+const TEMPLATE_HEAD = '<template>';
+const TEMPLATE_TAIL = '</template>';
 
-export function htmlFormat(
-  document: TextDocument,
-  currRange: Range,
-  vlsFormatConfig: VLSFormatConfig
-): TextEdit[] {
+export function htmlFormat(document: TextDocument, currRange: Range, vlsFormatConfig: VLSFormatConfig): TextEdit[] {
   if (vlsFormatConfig.defaultFormatter.html === 'none') {
     return [];
   }
 
   const { value, range } = getValueAndRange(document, currRange);
 
+  const originalSource = TEMPLATE_HEAD + value + TEMPLATE_TAIL;
   let beautifiedHtml: string;
+
   if (vlsFormatConfig.defaultFormatter.html === 'prettyhtml') {
-    beautifiedHtml = formatWithPrettyHtml(
+    beautifiedHtml = formatWithPrettyHtml(getFileFsPath(document.uri), originalSource, vlsFormatConfig);
+  } else if (vlsFormatConfig.defaultFormatter.html === 'prettier') {
+    const prettierResult = formatWithPrettier(
+      originalSource,
       getFileFsPath(document.uri),
-      templateHead + value + templateTail,
-      vlsFormatConfig
+      currRange,
+      vlsFormatConfig,
+      false
     );
+    if (prettierResult[0] && prettierResult[0].newText) {
+      beautifiedHtml = prettierResult[0].newText.trim();
+    } else {
+      beautifiedHtml = originalSource;
+    }
   } else {
-    beautifiedHtml = formatWithJsBeautify(templateHead + value + templateTail, vlsFormatConfig);
+    beautifiedHtml = formatWithJsBeautify(originalSource, vlsFormatConfig);
   }
 
-  const wrappedHtml = beautifiedHtml.substring(templateHead.length, beautifiedHtml.length - templateTail.length);
+  const wrappedHtml = beautifiedHtml.substring(TEMPLATE_HEAD.length, beautifiedHtml.length - TEMPLATE_TAIL.length);
   return [
     {
       range,
@@ -41,11 +49,7 @@ export function htmlFormat(
   ];
 }
 
-function formatWithPrettyHtml(
-  fileFsPath: string,
-  input: string,
-  vlsFormatConfig: VLSFormatConfig
-): string {
+function formatWithPrettyHtml(fileFsPath: string, input: string, vlsFormatConfig: VLSFormatConfig): string {
   const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
   const prettierrcOptions = prettier.resolveConfig.sync(fileFsPath, { useCache: false }) || null;
 
@@ -75,6 +79,16 @@ function formatWithJsBeautify(input: string, vlsFormatConfig: VLSFormatConfig): 
   );
 
   return htmlBeautify(input, htmlFormattingOptions);
+}
+
+function formatWithPrettier(
+  code: string,
+  fileFsPath: string,
+  range: Range,
+  vlsFormatConfig: VLSFormatConfig,
+  initialIndent: boolean
+) {
+  return prettierify(code, fileFsPath, range, vlsFormatConfig, 'vue', initialIndent);
 }
 
 function getValueAndRange(document: TextDocument, currRange: Range): { value: string; range: Range } {

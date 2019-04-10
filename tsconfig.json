@@ -1,14 +1,9 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "strict": true,
-    "noUnusedLocals": true,
-    "sourceMap": true
-  },
-  "exclude": [
-    "node_modules",
-    "server"
+  "files": [],
+  "references": [
+    { "path": "scripts" },
+    { "path": "client" },
+    { "path": "server" },
+    { "path": "test" }
   ]
 }

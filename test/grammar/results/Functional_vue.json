@@ -1,0 +1,1740 @@
+[
+	{
+		"c": "<",
+		"t": "source.vue punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "template",
+		"t": "source.vue entity.name.tag.template.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "functional",
+		"t": "source.vue entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "  ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "    ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "normal-pug",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "attribute",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "test",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "Text",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "</",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "    ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "normal-pug-multi",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "attribute",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "test",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "      ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "test",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "Text",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "</",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "      Test 2",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "    ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "</",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "    ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.name.tag.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "vue-directive",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "v-if",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue punctuation.separator.key-value.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "test",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"r": {
+			"dark_plus": "variable: #9CDCFE",
+			"light_plus": "variable: #001080",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "variable: #9CDCFE"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html meta.scope.between-tag-pair.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "/",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.name.tag.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "    ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.name.tag.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "vue-directive-2",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": ":",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue punctuation.separator.key-value.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "attr",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue punctuation.separator.key-value.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "test",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue meta.function-call.js entity.name.function.js",
+		"r": {
+			"dark_plus": "entity.name.function: #DCDCAA",
+			"light_plus": "entity.name.function: #795E26",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "entity.name.function: #DCDCAA"
+		}
+	},
+	{
+		"c": "()",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue meta.brace.round.js",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html meta.scope.between-tag-pair.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "/",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.name.tag.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "    ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "vue-interpolation",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "{{",
+		"t": "source.vue text.html.vue-html expression.embedded.vue punctuation.definition.generic.begin.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "test",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.function-call.js variable.other.object.js",
+		"r": {
+			"dark_plus": "variable: #9CDCFE",
+			"light_plus": "variable: #001080",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "variable: #9CDCFE"
+		}
+	},
+	{
+		"c": ".",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.function-call.js punctuation.accessor.js",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "case",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.function-call.js entity.name.function.js",
+		"r": {
+			"dark_plus": "entity.name.function: #DCDCAA",
+			"light_plus": "entity.name.function: #795E26",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "entity.name.function: #DCDCAA"
+		}
+	},
+	{
+		"c": "()",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.brace.round.js",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "}}",
+		"t": "source.vue text.html.vue-html expression.embedded.vue punctuation.definition.generic.end.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "</",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "    ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.name.tag.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "class",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "single-quote",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": "\"",
+		"t": "source.vue text.html.vue-html meta.tag.any.html string.quoted.double.html punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "string: #CE9178",
+			"light_plus": "string.quoted.double.html: #0000FF",
+			"dark_vs": "string: #CE9178",
+			"light_vs": "string.quoted.double.html: #0000FF",
+			"hc_black": "string: #CE9178"
+		}
+	},
+	{
+		"c": " ",
+		"t": "source.vue text.html.vue-html meta.tag.any.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "v-if",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue entity.other.attribute-name.html",
+		"r": {
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
+		}
+	},
+	{
+		"c": "=",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue punctuation.separator.key-value.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "'",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "test",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"r": {
+			"dark_plus": "variable: #9CDCFE",
+			"light_plus": "variable: #001080",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "variable: #9CDCFE"
+		}
+	},
+	{
+		"c": "'",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "<",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html meta.scope.between-tag-pair.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "/",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.any.html entity.name.tag.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "  ",
+		"t": "source.vue text.html.vue-html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "</",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "div",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "</",
+		"t": "source.vue punctuation.definition.tag.begin.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	},
+	{
+		"c": "template",
+		"t": "source.vue entity.name.tag.template.html",
+		"r": {
+			"dark_plus": "entity.name.tag: #569CD6",
+			"light_plus": "entity.name.tag: #800000",
+			"dark_vs": "entity.name.tag: #569CD6",
+			"light_vs": "entity.name.tag: #800000",
+			"hc_black": "entity.name.tag: #569CD6"
+		}
+	},
+	{
+		"c": ">",
+		"t": "source.vue punctuation.definition.tag.end.html",
+		"r": {
+			"dark_plus": "punctuation.definition.tag: #808080",
+			"light_plus": "punctuation.definition.tag: #800000",
+			"dark_vs": "punctuation.definition.tag: #808080",
+			"light_vs": "punctuation.definition.tag: #800000",
+			"hc_black": "punctuation.definition.tag: #808080"
+		}
+	}
+]

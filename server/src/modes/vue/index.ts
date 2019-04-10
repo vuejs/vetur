@@ -1,4 +1,4 @@
-import { LanguageMode } from '../languageModes';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { doScaffoldComplete } from './scaffoldCompletion';
 
 export function getVueMode(): LanguageMode {

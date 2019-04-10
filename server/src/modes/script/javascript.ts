@@ -1,4 +1,4 @@
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import {
   SymbolInformation,
   SymbolKind,
@@ -7,6 +7,7 @@ import {
   SignatureHelp,
   SignatureInformation,
   ParameterInformation,
+  Command,
   Definition,
   TextEdit,
   TextDocument,
@@ -20,12 +21,13 @@ import {
   DocumentHighlightKind,
   CompletionList,
   Position,
-  FormattingOptions
+  FormattingOptions,
+  DiagnosticTag,
+  MarkupContent
 } from 'vscode-languageserver-types';
-import { LanguageMode } from '../languageModes';
-import { VueDocumentRegions, LanguageRange } from '../embeddedSupport';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
 import { getServiceHost } from './serviceHost';
-import { findComponents, ComponentInfo } from './findComponents';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
@@ -35,103 +37,138 @@ import * as _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
+import { VueInfoService } from '../../services/vueInfoService';
+import { getComponentInfo } from './componentInfo';
+import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
+import { RefactorAction } from '../../types';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
-export interface ScriptMode extends LanguageMode {
-  findComponents(document: TextDocument): ComponentInfo[];
-  doTemplateValidation(document: TextDocument): Diagnostic[];
-}
-
-export function getJavascriptMode(
+export async function getJavascriptMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
-  workspacePath: string | null | undefined
-): ScriptMode {
+  workspacePath: string | undefined,
+  vueInfoService?: VueInfoService,
+  dependencyService?: DependencyService
+): Promise<LanguageMode> {
   if (!workspacePath) {
     return {
-      ...nullMode,
-      findComponents: () => [],
-      doTemplateValidation: () => []
+      ...nullMode
     };
   }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
-    return vueDocument.getEmbeddedDocumentByType('script');
+    return vueDocument.getSingleTypeDocument('script');
   });
 
-  const regionStart = getLanguageModelCache(10, 60, document => {
+  const firstScriptRegion = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.get(document);
-    return vueDocument.getLanguageRangeByType('script');
+    const scriptRegions = vueDocument.getLanguageRangesOfType('script');
+    return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
 
-  const serviceHost = getServiceHost(workspacePath, jsDocuments);
+  let tsModule: T_TypeScript = ts;
+  if (dependencyService) {
+    const tsDependency = dependencyService.getDependency('typescript');
+    if (tsDependency && tsDependency.state === State.Loaded) {
+      tsModule = tsDependency.module;
+    }
+  }
+
+  const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
+  let supportedCodeFixCodes: Set<number>;
 
   return {
     getId() {
       return 'javascript';
     },
-    configure(c) {
+    configure(c: any) {
       config = c;
     },
-    doValidation(doc: TextDocument): Diagnostic[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
-        return [];
+    updateFileInfo(doc: TextDocument): void {
+      if (!vueInfoService) {
+        return;
       }
 
+      const { service } = updateCurrentTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const diagnostics = [
-        ...service.getSyntacticDiagnostics(fileFsPath),
-        ...service.getSemanticDiagnostics(fileFsPath)
-      ];
-
-      return diagnostics.map(diag => {
-        // syntactic/semantic diagnostic always has start and length
-        // so we can safely cast diag to TextSpan
-        return {
-          range: convertRange(scriptDoc, diag as ts.TextSpan),
-          severity: DiagnosticSeverity.Error,
-          message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
-        };
-      });
+      const info = getComponentInfo(tsModule, service, fileFsPath, config);
+      if (info) {
+        vueInfoService.updateInfo(doc, info);
+      }
     },
-    doTemplateValidation(doc: TextDocument): Diagnostic[] {
-      const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
-      if (!enabledTemplateValidation) {
-        return [];
+
+    doValidation(doc: TextDocument): Diagnostic[] {
+      const templateDiags = getTemplateDiagnostics();
+      const scriptDiags = getScriptDiagnostics();
+      return [...templateDiags, ...scriptDiags];
+
+      function getScriptDiagnostics(): Diagnostic[] {
+        const { scriptDoc, service } = updateCurrentTextDocument(doc);
+        if (!languageServiceIncludesFile(service, doc.uri)) {
+          return [];
+        }
+
+        const fileFsPath = getFileFsPath(doc.uri);
+        const rawScriptDiagnostics = [
+          ...service.getSyntacticDiagnostics(fileFsPath),
+          ...service.getSemanticDiagnostics(fileFsPath)
+        ];
+
+        return rawScriptDiagnostics.map(diag => {
+          const tags: DiagnosticTag[] = [];
+
+          if (diag.reportsUnnecessary) {
+            tags.push(DiagnosticTag.Unnecessary);
+          }
+
+          // syntactic/semantic diagnostic always has start and length
+          // so we can safely cast diag to TextSpan
+          return <Diagnostic>{
+            range: convertRange(scriptDoc, diag as ts.TextSpan),
+            severity: DiagnosticSeverity.Error,
+            message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
+            tags,
+            code: diag.code,
+            source: 'Vetur'
+          };
+        });
       }
 
-      // Add suffix to process this doc as vue template.
-      const templateDoc = TextDocument.create(
-        doc.uri + '.template',
-        doc.languageId,
-        doc.version,
-        doc.getText()
-      );
+      function getTemplateDiagnostics(): Diagnostic[] {
+        const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
+        if (!enabledTemplateValidation) {
+          return [];
+        }
 
-      const { templateService } = updateCurrentTextDocument(templateDoc);
-      if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
-        return [];
+        // Add suffix to process this doc as vue template.
+        const templateDoc = TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText());
+
+        const { templateService } = updateCurrentTextDocument(templateDoc);
+        if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+          return [];
+        }
+
+        const templateFileFsPath = getFileFsPath(templateDoc.uri);
+        // We don't need syntactic diagnostics because
+        // compiled template is always valid JavaScript syntax.
+        const rawTemplateDiagnostics = templateService.getSemanticDiagnostics(templateFileFsPath);
+
+        return rawTemplateDiagnostics.map(diag => {
+          // syntactic/semantic diagnostic always has start and length
+          // so we can safely cast diag to TextSpan
+          return {
+            range: convertRange(templateDoc, diag as ts.TextSpan),
+            severity: DiagnosticSeverity.Error,
+            message: ts.flattenDiagnosticMessageText(diag.messageText, '\n'),
+            code: diag.code,
+            source: 'Vetur'
+          };
+        });
       }
-
-      const fileFsPath = getFileFsPath(templateDoc.uri);
-      // We don't need syntactic diagnostics because
-      // compiled template is always valid JavaScript syntax.
-      const diagnostics = templateService.getSemanticDiagnostics(fileFsPath);
-
-      return diagnostics.map(diag => {
-        // syntactic/semantic diagnostic always has start and length
-        // so we can safely cast diag to TextSpan
-        return {
-          range: convertRange(templateDoc, diag as ts.TextSpan),
-          severity: DiagnosticSeverity.Error,
-          message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
-        };
-      });
     },
     doComplete(doc: TextDocument, position: Position): CompletionList {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -145,14 +182,10 @@ export function getJavascriptMode(
       if (NON_SCRIPT_TRIGGERS.includes(triggerChar)) {
         return { isIncomplete: false, items: [] };
       }
-      const completions = service.getCompletionsAtPosition(
-        fileFsPath,
-        offset,
-        {
-          includeExternalModuleExports: _.get(config, ['vetur', 'completion', 'autoImport']),
-          includeInsertTextCompletions: false
-        }
-      );
+      const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        includeCompletionsWithInsertText: true,
+        includeCompletionsForModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
+      });
       if (!completions) {
         return { isIncomplete: false, items: [] };
       }
@@ -190,16 +223,31 @@ export function getJavascriptMode(
         fileFsPath,
         item.data.offset,
         item.label,
-        /*formattingOption*/ {},
-        item.data.source
+        getFormatCodeSettings(config),
+        item.data.source,
+        {
+          importModuleSpecifierEnding: 'minimal',
+          importModuleSpecifierPreference: 'relative',
+          includeCompletionsWithInsertText: true
+        }
       );
       if (details) {
-        item.detail = ts.displayPartsToString(details.displayParts);
-        item.documentation = ts.displayPartsToString(details.documentation);
+        item.detail = tsModule.displayPartsToString(details.displayParts);
+        const documentation: MarkupContent = {
+          kind: 'markdown',
+          value: tsModule.displayPartsToString(details.documentation)
+        };
         if (details.codeActions && config.vetur.completion.autoImport) {
-          const textEdits = convertCodeAction(doc, details.codeActions, regionStart);
+          const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
           item.additionalTextEdits = textEdits;
+
+          details.codeActions.forEach(action => {
+            if (action.description) {
+              documentation.value += '\n' + action.description;
+            }
+          });
         }
+        item.documentation = documentation;
         delete item.data;
       }
       return item;
@@ -213,8 +261,8 @@ export function getJavascriptMode(
       const fileFsPath = getFileFsPath(doc.uri);
       const info = service.getQuickInfoAtPosition(fileFsPath, scriptDoc.offsetAt(position));
       if (info) {
-        const display = ts.displayPartsToString(info.displayParts);
-        const doc = ts.displayPartsToString(info.documentation);
+        const display = tsModule.displayPartsToString(info.displayParts);
+        const doc = tsModule.displayPartsToString(info.documentation);
         const markedContents: MarkedString[] = [{ language: 'ts', value: display }];
         if (doc) {
           markedContents.unshift(doc, '\n');
@@ -226,14 +274,14 @@ export function getJavascriptMode(
       }
       return { contents: [] };
     },
-    doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp {
+    doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp | null {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_SIGNATURE;
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position));
+      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), undefined);
       if (!signHelp) {
         return NULL_SIGNATURE;
       }
@@ -249,20 +297,20 @@ export function getJavascriptMode(
           parameters: []
         };
 
-        signature.label += ts.displayPartsToString(item.prefixDisplayParts);
+        signature.label += tsModule.displayPartsToString(item.prefixDisplayParts);
         item.parameters.forEach((p, i, a) => {
-          const label = ts.displayPartsToString(p.displayParts);
+          const label = tsModule.displayPartsToString(p.displayParts);
           const parameter: ParameterInformation = {
             label,
-            documentation: ts.displayPartsToString(p.documentation)
+            documentation: tsModule.displayPartsToString(p.documentation)
           };
           signature.label += label;
           signature.parameters!.push(parameter);
           if (i < a.length - 1) {
-            signature.label += ts.displayPartsToString(item.separatorDisplayParts);
+            signature.label += tsModule.displayPartsToString(item.separatorDisplayParts);
           }
         });
-        signature.label += ts.displayPartsToString(item.suffixDisplayParts);
+        signature.label += tsModule.displayPartsToString(item.suffixDisplayParts);
         ret.signatures.push(signature);
       });
       return ret;
@@ -279,9 +327,7 @@ export function getJavascriptMode(
         return occurrences.map(entry => {
           return {
             range: convertRange(scriptDoc, entry.textSpan),
-            kind: entry.isWriteAccess
-              ? DocumentHighlightKind.Write
-              : DocumentHighlightKind.Text
+            kind: entry.isWriteAccess ? DocumentHighlightKind.Write : DocumentHighlightKind.Text
           };
         });
       }
@@ -342,7 +388,7 @@ export function getJavascriptMode(
       const definitionResults: Definition = [];
       const program = service.getProgram();
       if (!program) {
-        return null;
+        return [];
       }
       definitions.forEach(d => {
         const definitionTargetDoc = getSourceDoc(d.fileName, program);
@@ -381,6 +427,60 @@ export function getJavascriptMode(
       });
       return referenceResults;
     },
+    getCodeActions(doc, range, _formatParams, context) {
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const fileName = getFileFsPath(scriptDoc.uri);
+      const start = scriptDoc.offsetAt(range.start);
+      const end = scriptDoc.offsetAt(range.end);
+      if (!supportedCodeFixCodes) {
+        supportedCodeFixCodes = new Set(
+          ts
+            .getSupportedCodeFixes()
+            .map(Number)
+            .filter(x => !isNaN(x))
+        );
+      }
+      const fixableDiagnosticCodes = context.diagnostics.map(d => +d.code!).filter(c => supportedCodeFixCodes.has(c));
+      if (!fixableDiagnosticCodes) {
+        return [];
+      }
+
+      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(config);
+
+      const result: Command[] = [];
+      const fixes = service.getCodeFixesAtPosition(
+        fileName,
+        start,
+        end,
+        fixableDiagnosticCodes,
+        formatSettings,
+        /*preferences*/ {}
+      );
+      collectQuickFixCommands(fixes, service, result);
+
+      const textRange = { pos: start, end };
+      const refactorings = service.getApplicableRefactors(fileName, textRange, /*preferences*/ {});
+      collectRefactoringCommands(refactorings, fileName, formatSettings, textRange, result);
+
+      return result;
+    },
+    getRefactorEdits(doc: TextDocument, args: RefactorAction) {
+      const { service } = updateCurrentTextDocument(doc);
+      const response = service.getEditsForRefactor(
+        args.fileName,
+        args.formatOptions,
+        args.textRange,
+        args.refactorName,
+        args.actionName,
+        args.preferences
+      );
+      if (!response) {
+        // TODO: What happens when there's no response?
+        return createApplyCodeActionCommand('', {});
+      }
+      const uriMapping = createUriMappingForEdits(response.edits, service);
+      return createApplyCodeActionCommand('', uriMapping);
+    },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
 
@@ -398,22 +498,24 @@ export function getJavascriptMode(
       const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
 
       if (defaultFormatter === 'prettier' || defaultFormatter === 'prettier-eslint') {
-        const code = scriptDoc.getText();
+        const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
 
         return defaultFormatter === 'prettier'
           ? prettierify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent)
           : prettierEslintify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
-      }
-      
-      else {
+      } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
           scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
-        const convertedFormatSettings = convertOptions(formatSettings, {
-          tabSize: vlsFormatConfig.options.tabSize,
-          insertSpaces: !vlsFormatConfig.options.useTabs
-        }, initialIndentLevel);
+        const convertedFormatSettings = convertOptions(
+          formatSettings,
+          {
+            tabSize: vlsFormatConfig.options.tabSize,
+            insertSpaces: !vlsFormatConfig.options.useTabs
+          },
+          initialIndentLevel
+        );
 
         const fileFsPath = getFileFsPath(doc.uri);
         const start = scriptDoc.offsetAt(range.start);
@@ -435,11 +537,6 @@ export function getJavascriptMode(
         return result;
       }
     },
-    findComponents(doc: TextDocument) {
-      const { service } = updateCurrentTextDocument(doc);
-      const fileFsPath = getFileFsPath(doc.uri);
-      return findComponents(service, fileFsPath);
-    },
     onDocumentRemoved(document: TextDocument) {
       jsDocuments.onDocumentRemoved(document);
     },
@@ -451,6 +548,91 @@ export function getJavascriptMode(
       jsDocuments.dispose();
     }
   };
+}
+
+function collectRefactoringCommands(
+  refactorings: ts.ApplicableRefactorInfo[],
+  fileName: string,
+  formatSettings: any,
+  textRange: { pos: number; end: number },
+  result: Command[]
+) {
+  const actions: RefactorAction[] = [];
+  for (const refactoring of refactorings) {
+    const refactorName = refactoring.name;
+    if (refactoring.inlineable) {
+      actions.push({
+        fileName,
+        formatOptions: formatSettings,
+        textRange,
+        refactorName,
+        actionName: refactorName,
+        preferences: {},
+        description: refactoring.description
+      });
+    } else {
+      actions.push(
+        ...refactoring.actions.map(action => ({
+          fileName,
+          formatOptions: formatSettings,
+          textRange,
+          refactorName,
+          actionName: action.name,
+          preferences: {},
+          description: action.description
+        }))
+      );
+    }
+  }
+  for (const action of actions) {
+    result.push({
+      command: 'vetur.chooseTypeScriptRefactoring',
+      title: action.description,
+      arguments: [action]
+    });
+  }
+}
+
+function collectQuickFixCommands(
+  fixes: ReadonlyArray<ts.CodeFixAction>,
+  service: ts.LanguageService,
+  result: Command[]
+) {
+  for (const fix of fixes) {
+    const uriTextEditMapping = createUriMappingForEdits(fix.changes, service);
+    result.push(createApplyCodeActionCommand(fix.description, uriTextEditMapping));
+  }
+}
+
+function createApplyCodeActionCommand(title: string, uriTextEditMapping: Record<string, TextEdit[]>): Command {
+  return {
+    title,
+    command: 'vetur.applyWorkspaceEdits',
+    arguments: [
+      {
+        changes: uriTextEditMapping
+      }
+    ]
+  };
+}
+
+function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.LanguageService) {
+  const program = service.getProgram()!;
+  const result: Record<string, TextEdit[]> = {};
+  for (const { fileName, textChanges } of changes) {
+    const targetDoc = getSourceDoc(fileName, program);
+    const edits = textChanges.map(({ newText, span }) => ({
+      newText,
+      range: convertRange(targetDoc, span)
+    }));
+    const uri = Uri.file(fileName).toString();
+    if (result[uri]) {
+      result[uri].push(...edits);
+    } else {
+      result[uri] = edits;
+    }
+  }
+  return result;
 }
 
 function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
@@ -543,32 +725,43 @@ function convertOptions(
   });
 }
 
+function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
+  return {
+    tabSize: config.vetur.format.options.tabSize,
+    indentSize: config.vetur.format.options.tabSize,
+    convertTabsToSpaces: !config.vetur.format.options.useTabs
+  };
+}
+
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
-  regionStart: LanguageModelCache<LanguageRange | undefined>) {
+  regionStart: LanguageModelCache<LanguageRange | undefined>
+): TextEdit[] {
+  const scriptStartOffset = doc.offsetAt(regionStart.get(doc)!.start);
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
-      textEdits.push(...change.textChanges.map(tc => {
-        // currently, only import codeAction is available
-        // change start of doc to start of script region
-        if (tc.span.start === 0 && tc.span.length === 0) {
-          const region = regionStart.get(doc);
-          if (region) {
-            const line = region.start.line;
-            return {
-              range: Range.create(line + 1, 0, line + 1, 0),
-              newText: tc.newText
-            };
+      textEdits.push(
+        ...change.textChanges.map(tc => {
+          // currently, only import codeAction is available
+          // change start of doc to start of script region
+          if (tc.span.start <= scriptStartOffset && tc.span.length === 0) {
+            const region = regionStart.get(doc);
+            if (region) {
+              const line = region.start.line;
+              return {
+                range: Range.create(line + 1, 0, line + 1, 0),
+                newText: tc.newText
+              };
+            }
           }
-        }
-        return {
-          range: convertRange(doc, tc.span),
-          newText: tc.newText
-        };
-      }
-      ));
+          return {
+            range: convertRange(doc, tc.span),
+            newText: tc.newText
+          };
+        })
+      );
     }
   }
   return textEdits;

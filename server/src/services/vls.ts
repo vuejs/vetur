@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import {
   DidChangeConfigurationParams,
   DocumentColorParams,
@@ -7,7 +8,13 @@ import {
   FileChangeType,
   IConnection,
   TextDocumentPositionParams,
-  ColorPresentationParams
+  ColorPresentationParams,
+  InitializeParams,
+  ServerCapabilities,
+  TextDocumentSyncKind,
+  DocumentFormattingRequest,
+  Disposable,
+  CodeActionParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -20,8 +27,6 @@ import {
   DocumentSymbolParams,
   Hover,
   Location,
-  Position,
-  Range,
   SignatureHelp,
   SymbolInformation,
   TextDocument,
@@ -29,14 +34,23 @@ import {
   TextEdit,
   ColorPresentation
 } from 'vscode-languageserver-types';
+
 import Uri from 'vscode-uri';
-import { getLanguageModes, LanguageModes } from '../modes/languageModes';
+import { LanguageModes } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
-import { DocumentContext } from '../types';
-import { DocumentService } from './document';
+import { VueInfoService } from './vueInfoService';
+import { DependencyService } from './dependencyService';
+import * as _ from 'lodash';
+import { DocumentContext, RefactorAction } from '../types';
+import { DocumentService } from './documentService';
 
 export class VLS {
+  // @Todo: Remove this and DocumentContext
+  private workspacePath: string | undefined;
+
   private documentService: DocumentService;
+  private vueInfoService: VueInfoService;
+  private dependencyService: DependencyService;
 
   private languageModes: LanguageModes;
 
@@ -52,30 +66,68 @@ export class VLS {
     javascript: true
   };
 
-  constructor(private workspacePath: string, private lspConnection: IConnection) {
-    this.languageModes = getLanguageModes(workspacePath);
+  private documentFormatterRegistration: Disposable | undefined;
 
-    this.documentService = new DocumentService();
-    this.documentService.listen(lspConnection);
+  constructor(private lspConnection: IConnection) {
+    this.documentService = new DocumentService(this.lspConnection);
+    this.vueInfoService = new VueInfoService();
+    this.dependencyService = new DependencyService();
+
+    this.languageModes = new LanguageModes();
+  }
+
+  async init(params: InitializeParams) {
+    const workspacePath = params.rootPath;
+    if (!workspacePath) {
+      console.error('No workspace path found. Vetur initialization failed.');
+      return {
+        capabilities: {}
+      };
+    }
+
+    this.workspacePath = workspacePath;
+
+    await this.vueInfoService.init(this.languageModes);
+    await this.dependencyService.init(
+      workspacePath,
+      params.initializationOptions
+        ? _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+        : false
+    );
+    await this.languageModes.init(workspacePath, {
+      infoService: this.vueInfoService,
+      dependencyService: this.dependencyService
+    });
 
     this.setupConfigListeners();
-    this.setupLanguageFeatures();
+    this.setupLSPHandlers();
     this.setupFileChangeListeners();
 
     this.lspConnection.onShutdown(() => {
       this.dispose();
     });
+
+    if (params.initializationOptions && params.initializationOptions.config) {
+      this.configure(params.initializationOptions.config);
+    }
+  }
+
+  listen() {
+    this.lspConnection.listen();
   }
 
   private setupConfigListeners() {
-    this.lspConnection.onDidChangeConfiguration(({ settings }: DidChangeConfigurationParams) => {
+    this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
       this.configure(settings);
+
+      // onDidChangeConfiguration will fire for Language Server startup
+      await this.setupDynamicFormatters(settings);
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
   }
 
-  private setupLanguageFeatures() {
+  private setupLSPHandlers() {
     this.lspConnection.onCompletion(this.onCompletion.bind(this));
     this.lspConnection.onCompletionResolve(this.onCompletionResolve.bind(this));
 
@@ -87,9 +139,26 @@ export class VLS {
     this.lspConnection.onHover(this.onHover.bind(this));
     this.lspConnection.onReferences(this.onReferences.bind(this));
     this.lspConnection.onSignatureHelp(this.onSignatureHelp.bind(this));
+    this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
+
+    this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
+  }
+
+  private async setupDynamicFormatters(settings: any) {
+    if (settings.vetur.format.enable === true) {
+      if (!this.documentFormatterRegistration) {
+        this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
+          documentSelector: ['vue']
+        });
+      }
+    } else {
+      if (this.documentFormatterRegistration) {
+        this.documentFormatterRegistration.dispose();
+      }
+    }
   }
 
   private setupFileChangeListeners() {
@@ -98,9 +167,14 @@ export class VLS {
     });
     this.documentService.onDidClose(e => {
       this.removeDocument(e.document);
+      this.lspConnection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
     });
     this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
       const jsMode = this.languageModes.getMode('javascript');
+      if (!jsMode) {
+        throw Error(`Can't find JS mode.`);
+      }
+
       changes.forEach(c => {
         if (c.type === FileChangeType.Changed) {
           const fsPath = Uri.parse(c.uri).fsPath;
@@ -150,9 +224,8 @@ export class VLS {
 
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
     const doc = this.documentService.getDocument(textDocument.uri)!;
-    const fullDocRange = Range.create(Position.create(0, 0), doc.positionAt(doc.getText().length));
 
-    const modeRanges = this.languageModes.getModesInRange(doc, fullDocRange);
+    const modeRanges = this.languageModes.getAllLanguageModeRangesInDocument(doc);
     const allEdits: TextEdit[] = [];
 
     const errMessages: string[] = [];
@@ -249,16 +322,17 @@ export class VLS {
         const docUri = Uri.parse(doc.uri);
         return docUri
           .with({
-            path: path.resolve(docUri.path, ref)
+            // Reference from components need to go dwon from their parent dir
+            path: path.resolve(docUri.fsPath, '..', ref)
           })
           .toString();
       }
     };
 
     const links: DocumentLink[] = [];
-    this.languageModes.getAllModesInDocument(doc).forEach(m => {
-      if (m.findDocumentLinks) {
-        pushAll(links, m.findDocumentLinks(doc, documentContext));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentLinks) {
+        pushAll(links, m.mode.findDocumentLinks(doc, documentContext));
       }
     });
     return links;
@@ -268,9 +342,9 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const symbols: SymbolInformation[] = [];
 
-    this.languageModes.getAllModesInDocument(doc).forEach(m => {
-      if (m.findDocumentSymbols) {
-        pushAll(symbols, m.findDocumentSymbols(doc));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentSymbols) {
+        pushAll(symbols, m.mode.findDocumentSymbols(doc));
       }
     });
     return symbols;
@@ -280,9 +354,9 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const colors: ColorInformation[] = [];
 
-    this.languageModes.getAllModesInDocument(doc).forEach(m => {
-      if (m.findDocumentColors) {
-        pushAll(colors, m.findDocumentColors(doc));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentColors) {
+        pushAll(colors, m.mode.findDocumentColors(doc));
       }
     });
     return colors;
@@ -297,7 +371,7 @@ export class VLS {
     return [];
   }
 
-  onSignatureHelp({ textDocument, position }: TextDocumentPositionParams): SignatureHelp {
+  onSignatureHelp({ textDocument, position }: TextDocumentPositionParams): SignatureHelp | null {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, position);
     if (mode && mode.doSignatureHelp) {
@@ -306,9 +380,29 @@ export class VLS {
     return NULL_SIGNATURE;
   }
 
-  /**
-   * Validations
-   */
+  onCodeAction({ textDocument, range, context }: CodeActionParams) {
+    const doc = this.documentService.getDocument(textDocument.uri)!;
+    const mode = this.languageModes.getModeAtPosition(doc, range.start);
+    if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
+      return [];
+    }
+    if (mode && mode.getCodeActions) {
+      // TODO: funnel formatParams?
+      return mode.getCodeActions(doc, range, /*formatParams*/ {} as any, context);
+    }
+    return [];
+  }
+
+  getRefactorEdits(refactorAction: RefactorAction) {
+    const uri = Uri.file(refactorAction.fileName).toString();
+    const doc = this.documentService.getDocument(uri)!;
+    const startPos = doc.positionAt(refactorAction.textRange.pos);
+    const mode = this.languageModes.getModeAtPosition(doc, startPos);
+    if (mode && mode.getRefactorEdits) {
+      return mode.getRefactorEdits(doc, refactorAction);
+    }
+    return undefined;
+  }
 
   private triggerValidation(textDocument: TextDocument): void {
     this.cleanPendingValidation(textDocument);
@@ -334,9 +428,9 @@ export class VLS {
   doValidate(doc: TextDocument): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
-      this.languageModes.getAllModesInDocument(doc).forEach(mode => {
-        if (mode.doValidation && this.validation[mode.getId()]) {
-          pushAll(diagnostics, mode.doValidation(doc));
+      this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
+        if (lmr.mode.doValidation && this.validation[lmr.mode.getId()]) {
+          pushAll(diagnostics, lmr.mode.doValidation(doc));
         }
       });
     }
@@ -349,6 +443,25 @@ export class VLS {
 
   dispose(): void {
     this.languageModes.dispose();
+  }
+
+  get capabilities(): ServerCapabilities {
+    return {
+      textDocumentSync: TextDocumentSyncKind.Full,
+      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
+      signatureHelpProvider: { triggerCharacters: ['('] },
+      documentFormattingProvider: false,
+      hoverProvider: true,
+      documentHighlightProvider: true,
+      documentLinkProvider: {
+        resolveProvider: false
+      },
+      documentSymbolProvider: true,
+      definitionProvider: true,
+      referencesProvider: true,
+      codeActionProvider: true,
+      colorProvider: true
+    };
   }
 }
 

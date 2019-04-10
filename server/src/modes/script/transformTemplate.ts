@@ -45,10 +45,8 @@ export function transformTemplate(program: AST.ESLintProgram, code: string): ts.
  */
 function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
   const newScope = scope.concat(node.variables.map(v => v.id.name));
-  const element = setTextRange(ts.createCall(
-    ts.setTextRange(ts.createIdentifier(componentHelperName), { pos: 0, end: 0 }),
-    undefined,
-    [
+  const element = setTextRange(
+    ts.createCall(ts.setTextRange(ts.createIdentifier(componentHelperName), { pos: 0, end: 0 }), undefined, [
       // Element / Component name
       ts.createLiteral(node.name),
 
@@ -57,8 +55,9 @@ function transformElement(node: AST.VElement, code: string, scope: string[]): ts
 
       // Children
       ts.createArrayLiteral(node.children.map(c => transformChild(c, code, newScope)))
-    ]
-  ), node);
+    ]),
+    node
+  );
 
   const vFor = node.startTag.attributes.find(isVFor);
   if (!vFor || !vFor.value || !vFor.value.expression) {
@@ -67,24 +66,26 @@ function transformElement(node: AST.VElement, code: string, scope: string[]): ts
     // Convert v-for directive to the iteration helper
     const exp = vFor.value.expression as AST.VForExpression;
 
-    return setTextRange(ts.createCall(
-      setTextRange(ts.createIdentifier(iterationHelperName), exp.right),
-      undefined,
-      [
+    return setTextRange(
+      ts.createCall(setTextRange(ts.createIdentifier(iterationHelperName), exp.right), undefined, [
         // Iteration target
         parseExpression(exp.right, code, scope),
 
         // Callback
-        setTextRange(ts.createArrowFunction(
-          undefined,
-          undefined,
-          parseParams(exp.left, code, scope),
-          undefined,
-          setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), exp),
-          element
-        ), exp)
-      ]
-    ), exp);
+        setTextRange(
+          ts.createArrowFunction(
+            undefined,
+            undefined,
+            parseParams(exp.left, code, scope),
+            undefined,
+            setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), exp),
+            element
+          ),
+          exp
+        )
+      ]),
+      exp
+    );
   }
 }
 
@@ -95,11 +96,7 @@ interface AttributeData {
   special: ts.ObjectLiteralElementLike[];
 }
 
-function transformAttributes(
-  attrs: (AST.VAttribute | AST.VDirective)[],
-  code: string,
-  scope: string[]
-): ts.Expression {
+function transformAttributes(attrs: (AST.VAttribute | AST.VDirective)[], code: string, scope: string[]): ts.Expression {
   const data: AttributeData = {
     props: [],
     on: [],
@@ -162,27 +159,36 @@ function transformAttributes(
 }
 
 function transformNativeAttribute(attr: AST.VAttribute): ts.ObjectLiteralElementLike {
-  return setTextRange(ts.createPropertyAssignment(
-    setTextRange(ts.createIdentifier(attr.key.name), attr.key),
-    attr.value
-      ? setTextRange(ts.createLiteral(attr.value.value), attr.value)
-      : ts.createLiteral('true')
-  ), attr);
+  return setTextRange(
+    ts.createPropertyAssignment(
+      setTextRange(ts.createIdentifier(attr.key.name), attr.key),
+      attr.value ? setTextRange(ts.createLiteral(attr.value.value), attr.value) : ts.createLiteral('true')
+    ),
+    attr
+  );
 }
 
 function transformVBind(vBind: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
   const name = vBind.key.argument;
-  const exp = (vBind.value && vBind.value.expression)
-    ? parseExpression(vBind.value.expression as AST.ESLintExpression, code, scope)
-    : ts.createLiteral('true');
+  const exp =
+    vBind.value && vBind.value.expression
+      ? parseExpression(vBind.value.expression as AST.ESLintExpression, code, scope)
+      : ts.createLiteral('true');
 
   if (name) {
-    // Attribute name is specified
-    // e.g. :value="foo"
-    return setTextRange(ts.createPropertyAssignment(
-      setTextRange(ts.createIdentifier(name), vBind.key),
-      exp
-    ), vBind);
+    if (name.type === 'VIdentifier') {
+      // Attribute name is specified
+      // e.g. :value="foo"
+      return setTextRange(
+        ts.createPropertyAssignment(setTextRange(ts.createIdentifier(name.name), vBind.key), exp),
+        vBind
+      );
+    }
+    // Todo: What about VExpressionContainer?
+    else {
+      // Just put here to return correct type
+      return setTextRange(ts.createSpreadAssignment(exp), vBind);
+    }
   } else {
     // Attribute name is omitted
     // e.g. v-bind="{ value: foo }"
@@ -210,18 +216,29 @@ function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.Ob
       // e.g.
       //   @click="onClick($event, 'test')"
       //   @click="value = "foo""
-      exp = setTextRange(ts.createArrowFunction(undefined, undefined,
-        [
-          setTextRange(ts.createParameter(undefined, undefined, undefined,
-            '$event',
-            undefined,
-            setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
-          ), vOn)
-        ],
-        undefined,
-        setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), vOn),
-        setTextRange(ts.createBlock(statements), vOn)
-      ), vOn);
+      exp = setTextRange(
+        ts.createArrowFunction(
+          undefined,
+          undefined,
+          [
+            setTextRange(
+              ts.createParameter(
+                undefined,
+                undefined,
+                undefined,
+                '$event',
+                undefined,
+                setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
+              ),
+              vOn
+            )
+          ],
+          undefined,
+          setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), vOn),
+          setTextRange(ts.createBlock(statements), vOn)
+        ),
+        vOn
+      );
     }
   } else {
     // There are no statement in v-on value
@@ -229,12 +246,16 @@ function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.Ob
   }
 
   if (name) {
-    // Event name is specified
-    // e.g. @click="onClick"
-    return setTextRange(ts.createPropertyAssignment(
-      setTextRange(ts.createIdentifier(name), vOn.key),
-      exp
-    ), vOn);
+    if (name.type === 'VIdentifier') {
+      // Event name is specified
+      // e.g. @click="onClick"
+      return setTextRange(ts.createPropertyAssignment(setTextRange(ts.createIdentifier(name.name), vOn.key), exp), vOn);
+    }
+    // Todo: What about VExpressionContainer?
+    else {
+      // Just put here to return correct type
+      return setTextRange(ts.createSpreadAssignment(exp), vOn);
+    }
   } else {
     // Event name is omitted
     // e.g. v-on="{ click: onClick }"
@@ -272,9 +293,7 @@ function transformStatement(statement: AST.ESLintStatement, code: string, scope:
     return ts.createStatement(ts.createLiteral('""'));
   }
 
-  return setTextRange(ts.createStatement(
-    parseExpression(statement.expression, code, scope)
-  ), statement);
+  return setTextRange(ts.createStatement(parseExpression(statement.expression, code, scope)), statement);
 }
 
 function parseExpression(expression: AST.ESLintExpression, code: string, scope: string[]): ts.Expression {
@@ -327,18 +346,12 @@ export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
   let res;
   if (ts.isIdentifier(exp)) {
     if (scope.indexOf(exp.text) < 0) {
-      res = ts.createPropertyAccess(
-        ts.setTextRange(ts.createThis(), exp),
-        exp
-      );
+      res = ts.createPropertyAccess(ts.setTextRange(ts.createThis(), exp), exp);
     } else {
       return exp;
     }
   } else if (ts.isPropertyAccessExpression(exp)) {
-    res = ts.createPropertyAccess(
-      injectThis(exp.expression, scope),
-      exp.name
-    );
+    res = ts.createPropertyAccess(injectThis(exp.expression, scope), exp.name);
   } else if (ts.isElementAccessExpression(exp)) {
     res = ts.createElementAccess(
       injectThis(exp.expression, scope),
@@ -346,35 +359,19 @@ export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
       injectThis(exp.argumentExpression!, scope)
     );
   } else if (ts.isPrefixUnaryExpression(exp)) {
-    res = ts.createPrefix(
-      exp.operator,
-      injectThis(exp.operand, scope)
-    );
+    res = ts.createPrefix(exp.operator, injectThis(exp.operand, scope));
   } else if (ts.isPostfixUnaryExpression(exp)) {
-    res = ts.createPostfix(
-      injectThis(exp.operand, scope),
-      exp.operator
-    );
+    res = ts.createPostfix(injectThis(exp.operand, scope), exp.operator);
   } else if (exp.kind === ts.SyntaxKind.TypeOfExpression) {
     // Manually check `kind` for typeof expression
     // since ts.isTypeOfExpression is not working.
-    res = ts.createTypeOf(
-      injectThis((exp as ts.TypeOfExpression).expression, scope)
-    );
+    res = ts.createTypeOf(injectThis((exp as ts.TypeOfExpression).expression, scope));
   } else if (ts.isDeleteExpression(exp)) {
-    res = ts.createDelete(
-      injectThis(exp.expression, scope)
-    );
+    res = ts.createDelete(injectThis(exp.expression, scope));
   } else if (ts.isVoidExpression(exp)) {
-    res = ts.createVoid(
-      injectThis(exp.expression, scope)
-    );
+    res = ts.createVoid(injectThis(exp.expression, scope));
   } else if (ts.isBinaryExpression(exp)) {
-    res = ts.createBinary(
-      injectThis(exp.left, scope),
-      exp.operatorToken,
-      injectThis(exp.right, scope)
-    );
+    res = ts.createBinary(injectThis(exp.left, scope), exp.operatorToken, injectThis(exp.right, scope));
   } else if (ts.isConditionalExpression(exp)) {
     res = ts.createConditional(
       injectThis(exp.condition, scope),
@@ -388,17 +385,11 @@ export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
       exp.arguments.map(arg => injectThis(arg, scope))
     );
   } else if (ts.isParenthesizedExpression(exp)) {
-    res = ts.createParen(
-      injectThis(exp.expression, scope)
-    );
+    res = ts.createParen(injectThis(exp.expression, scope));
   } else if (ts.isObjectLiteralExpression(exp)) {
-    res = ts.createObjectLiteral(
-      exp.properties.map(p => injectThisForObjectLiteralElement(p, scope))
-    );
+    res = ts.createObjectLiteral(exp.properties.map(p => injectThisForObjectLiteralElement(p, scope)));
   } else if (ts.isArrayLiteralExpression(exp)) {
-    res = ts.createArrayLiteral(
-      exp.elements.map(e => injectThis(e, scope))
-    );
+    res = ts.createArrayLiteral(exp.elements.map(e => injectThis(e, scope)));
   } else if (ts.isSpreadElement(exp)) {
     res = ts.createSpread(injectThis(exp.expression, scope));
   } else if (ts.isArrowFunction(exp) && !ts.isBlock(exp.body)) {
@@ -408,26 +399,14 @@ export function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
       exp.parameters,
       exp.type,
       exp.equalsGreaterThanToken,
-      injectThis(
-        exp.body,
-        scope.concat(flatMap(exp.parameters, collectScope))
-      )
+      injectThis(exp.body, scope.concat(flatMap(exp.parameters, collectScope)))
     );
   } else if (ts.isTemplateExpression(exp)) {
     const injectedSpans = exp.templateSpans.map(span => {
-      return ts.setTextRange(
-        ts.createTemplateSpan(
-          injectThis(span.expression, scope),
-          span.literal
-        ),
-        span
-      );
+      return ts.setTextRange(ts.createTemplateSpan(injectThis(span.expression, scope), span.literal), span);
     });
 
-    res = ts.createTemplateExpression(
-      exp.head,
-      injectedSpans
-    );
+    res = ts.createTemplateExpression(exp.head, injectedSpans);
   } else {
     return exp;
   }
@@ -444,19 +423,11 @@ function injectThisForObjectLiteralElement(
       ? el.name
       : ts.createComputedPropertyName(injectThis(el.name.expression, scope));
 
-    res = ts.createPropertyAssignment(
-      ts.setTextRange(name, el.name),
-      injectThis(el.initializer, scope)
-    );
+    res = ts.createPropertyAssignment(ts.setTextRange(name, el.name), injectThis(el.initializer, scope));
   } else if (ts.isShorthandPropertyAssignment(el)) {
-    res = ts.createPropertyAssignment(
-      el.name,
-      injectThis(el.name, scope)
-    );
+    res = ts.createPropertyAssignment(el.name, injectThis(el.name, scope));
   } else if (ts.isSpreadAssignment(el)) {
-    res = ts.createSpreadAssignment(
-      injectThis(el.expression, scope)
-    );
+    res = ts.createSpreadAssignment(injectThis(el.expression, scope));
   } else {
     return el;
   }
@@ -507,33 +478,31 @@ function isVAttribute(node: AST.VAttribute | AST.VDirective): node is AST.VAttri
 }
 
 function isVBind(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
-  return node.directive && node.key.name === 'bind';
+  return node.directive && node.key.name.name === 'bind';
 }
 
 function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
-  return node.directive && node.key.name === 'on';
+  return node.directive && node.key.name.name === 'on';
 }
 
 function isVFor(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
-  return node.directive && node.key.name === 'for';
+  return node.directive && node.key.name.name === 'for';
 }
 
 /**
  * Return `true` if the node is a special attribute in Vue.js (class, style, ref, etc...)
  */
 function isSpecialAttribute(node: AST.VAttribute | AST.VDirective): boolean {
-  const name = isVAttribute(node) ? node.key.name : node.key.argument;
+  // Todo: Why check node.key.arguments here?
+  // const name = isVAttribute(node) ? node.key.name : node.key.argument;
 
-  return [
-    'class',
-    'style',
-    'key',
-    'ref',
-    'slot',
-    'slot-scope',
-    'scope',
-    'is'
-  ].includes(name || '');
+  const specialAttributes = ['class', 'style', 'key', 'ref', 'slot', 'slot-scope', 'scope', 'is'];
+
+  if (isVAttribute(node)) {
+    return specialAttributes.includes(node.key.name);
+  } else {
+    return false;
+  }
 }
 
 function flatMap<T extends ts.Node, R>(list: ReadonlyArray<T>, fn: (value: T) => R[]): R[] {

@@ -1,6 +1,6 @@
 import { renderHelperName, componentHelperName, iterationHelperName } from './transformTemplate';
 
-// this bridge file will be injected into TypeScript service
+// This bridge file will be injected into TypeScript language service
 // it enable type checking and completion, yet still preserve precise option type
 
 export const moduleName = 'vue-editor-bridge';
@@ -22,7 +22,8 @@ export declare const ${iterationHelperName}: {
 };
 `;
 
-export const oldContent = `
+export const oldContent =
+  `
 import Vue from 'vue';
 export interface GeneralOption extends Vue.ComponentOptions<Vue> {
   [key: string]: any;
@@ -32,7 +33,8 @@ export default function bridge<T>(t: T & GeneralOption): T {
 }
 ` + renderHelpers;
 
-export const content = `
+export const content =
+  `
 import Vue from 'vue';
 const func = Vue.extend;
 export default func;

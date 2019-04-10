@@ -4,76 +4,93 @@ import Uri from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
-import { LanguageModelCache } from '../languageModelCache';
-import { createUpdater, parseVueScript, isVue, isVueTemplate } from './preprocess';
+import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
+import { createUpdater, parseVueScript, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
+import { T_TypeScript } from '../../services/dependencyService';
 
-// Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
-// NOTE: this is a global hack that all ts instances after is changed
-const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater();
-(ts as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
-(ts as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
-
-const vueSys: ts.System = {
-  ...ts.sys,
-  fileExists(path: string) {
-    if (isVueProject(path)) {
-      return ts.sys.fileExists(path.slice(0, -3));
-    }
-    if (isVueTemplate(path)) {
-      return ts.sys.fileExists(path.slice(0, -9));
-    }
-    return ts.sys.fileExists(path);
-  },
-  readFile(path, encoding) {
-    if (isVueProject(path)) {
-      const fileText = ts.sys.readFile(path.slice(0, -3), encoding);
-      return fileText ? parseVueScript(fileText) : fileText;
-    }
-    if (isVueTemplate(path)) {
-      // The template is parsed in the preprocess phase
-      return ts.sys.readFile(path.slice(0, -9), encoding);
-    }
-    const fileText = ts.sys.readFile(path, encoding);
-    return fileText;
-  }
-};
-
-if (ts.sys.realpath) {
-  const realpath = ts.sys.realpath;
-  vueSys.realpath = function(path) {
-    if (isVueProject(path)) {
-      return realpath(path.slice(0, -3)) + '.ts';
-    }
-    if (isVueTemplate(path)) {
-      return realpath(path.slice(0, -9)) + '.ts';
-    }
-    return realpath(path);
-  };
+function patchTS(tsModule: T_TypeScript) {
+  // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
+  // NOTE: this is a global hack that all ts instances after is changed
+  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(tsModule);
+  (tsModule as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
+  (tsModule as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
 }
 
-const defaultCompilerOptions: ts.CompilerOptions = {
-  allowNonTsExtensions: true,
-  allowJs: true,
-  lib: ['lib.dom.d.ts', 'lib.es2017.d.ts'],
-  target: ts.ScriptTarget.Latest,
-  moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  module: ts.ModuleKind.CommonJS,
-  jsx: ts.JsxEmit.Preserve,
-  allowSyntheticDefaultImports: true
-};
+function getVueSys(tsModule: T_TypeScript) {
+  const vueSys: ts.System = {
+    ...tsModule.sys,
+    fileExists(path: string) {
+      if (isVirtualVueFile(path)) {
+        return tsModule.sys.fileExists(path.slice(0, -'.ts'.length));
+      }
+      if (isVirtualVueTemplateFile(path)) {
+        return tsModule.sys.fileExists(path.slice(0, -'.template'.length));
+      }
+      return tsModule.sys.fileExists(path);
+    },
+    readFile(path, encoding) {
+      if (isVirtualVueFile(path)) {
+        const fileText = tsModule.sys.readFile(path.slice(0, -'.ts'.length), encoding);
+        return fileText ? parseVueScript(fileText) : fileText;
+      }
+      if (isVirtualVueTemplateFile(path)) {
+        return tsModule.sys.readFile(path.slice(0, -'.template'.length), encoding);
+      }
+      const fileText = tsModule.sys.readFile(path, encoding);
+      return fileText;
+    }
+  };
 
-export function getServiceHost(workspacePath: string, jsDocuments: LanguageModelCache<TextDocument>) {
+  if (tsModule.sys.realpath) {
+    const realpath = tsModule.sys.realpath;
+    vueSys.realpath = function(path) {
+      if (isVirtualVueFile(path)) {
+        return realpath(path.slice(0, -'.ts'.length)) + '.ts';
+      }
+      if (isVirtualVueTemplateFile(path)) {
+        return realpath(path.slice(0, -'.template'.length)) + '.ts';
+      }
+      return realpath(path);
+    };
+  }
+
+  return vueSys;
+}
+
+function getDefaultCompilerOptions(tsModule: T_TypeScript) {
+  const defaultCompilerOptions: ts.CompilerOptions = {
+    allowNonTsExtensions: true,
+    allowJs: true,
+    lib: ['lib.dom.d.ts', 'lib.es2017.d.ts'],
+    target: tsModule.ScriptTarget.Latest,
+    moduleResolution: tsModule.ModuleResolutionKind.NodeJs,
+    module: tsModule.ModuleKind.CommonJS,
+    jsx: tsModule.JsxEmit.Preserve,
+    allowSyntheticDefaultImports: true
+  };
+
+  return defaultCompilerOptions;
+}
+
+export function getServiceHost(
+  tsModule: T_TypeScript,
+  workspacePath: string,
+  jsDocuments: LanguageModelCache<TextDocument>
+) {
+  patchTS(tsModule);
+  const vueSys = getVueSys(tsModule);
+
   let currentScriptDoc: TextDocument;
   const versions = new Map<string, number>();
   const scriptDocs = new Map<string, TextDocument>();
 
-  const parsedConfig = getParsedConfig(workspacePath);
+  const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
-  const isOldVersion = inferIsOldVersion(workspacePath);
+  const isOldVersion = inferIsOldVersion(tsModule, workspacePath);
   const compilerOptions = {
-    ...defaultCompilerOptions,
+    ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
   };
   compilerOptions.allowNonTsExtensions = true;
@@ -87,7 +104,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         files.push(filePath);
       }
     }
-    if (isVueTemplate(fileFsPath)) {
+    if (isVirtualVueTemplateFile(fileFsPath)) {
       scriptDocs.set(fileFsPath, doc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
@@ -96,14 +113,14 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         jsLanguageService.dispose();
-        jsLanguageService = ts.createLanguageService(jsHost);
+        jsLanguageService = tsModule.createLanguageService(jsHost);
       }
       scriptDocs.set(fileFsPath, currentScriptDoc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
       service: jsLanguageService,
-      templateService: templateLanguageSerivice,
+      templateService: templateLanguageService,
       scriptDoc: currentScriptDoc
     };
   }
@@ -136,16 +153,16 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
           fileName = uri.fsPath;
           const doc =
             scriptDocs.get(fileName) ||
-            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(fileName) || ''));
-          return getScriptKind(doc.languageId);
-        } else if (isVueTemplate(fileName)) {
-          return ts.Extension.Js;
+            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || ''));
+          return getScriptKind(tsModule, doc.languageId);
+        } else if (isVirtualVueTemplateFile(fileName)) {
+          return tsModule.Extension.Js;
         } else {
           if (fileName === bridge.fileName) {
-            return ts.Extension.Ts;
+            return tsModule.Extension.Ts;
           }
           // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
-          return (ts as any).getScriptKindFromFileName(fileName);
+          return (tsModule as any).getScriptKindFromFileName(fileName);
         }
       },
 
@@ -163,13 +180,13 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
           if (name === bridge.moduleName) {
             return {
               resolvedFileName: bridge.fileName,
-              extension: ts.Extension.Ts
+              extension: tsModule.Extension.Ts
             };
           }
           if (path.isAbsolute(name) || !isVue(name)) {
-            return ts.resolveModuleName(name, containingFile, options, ts.sys).resolvedModule;
+            return tsModule.resolveModuleName(name, containingFile, options, tsModule.sys).resolvedModule;
           }
-          const resolved = ts.resolveModuleName(name, containingFile, options, vueSys).resolvedModule;
+          const resolved = tsModule.resolveModuleName(name, containingFile, options, vueSys).resolvedModule;
           if (!resolved) {
             return undefined as any;
           }
@@ -180,11 +197,15 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
           const uri = Uri.file(resolvedFileName);
           const doc =
             scriptDocs.get(resolvedFileName) ||
-            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, ts.sys.readFile(resolvedFileName) || ''));
+            jsDocuments.get(
+              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
+            );
           const extension =
             doc.languageId === 'typescript'
-              ? ts.Extension.Ts
-              : doc.languageId === 'tsx' ? ts.Extension.Tsx : ts.Extension.Js;
+              ? tsModule.Extension.Ts
+              : doc.languageId === 'tsx'
+              ? tsModule.Extension.Tsx
+              : tsModule.Extension.Js;
           return { resolvedFileName, extension };
         });
       },
@@ -199,7 +220,7 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         }
         const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
         const doc = scriptDocs.get(normalizedFileFsPath);
-        let fileText = doc ? doc.getText() : ts.sys.readFile(normalizedFileFsPath) || '';
+        let fileText = doc ? doc.getText() : tsModule.sys.readFile(normalizedFileFsPath) || '';
         if (!doc && isVue(fileName)) {
           // Note: This is required in addition to the parsing in embeddedSupport because
           // this works for .vue files that aren't even loaded by VS Code yet.
@@ -212,8 +233,9 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
         };
       },
       getCurrentDirectory: () => workspacePath,
-      getDefaultLibFileName: ts.getDefaultLibFilePath,
-      getNewLine: () => '\n'
+      getDefaultLibFileName: tsModule.getDefaultLibFilePath,
+      getNewLine: () => '\n',
+      useCaseSensitiveFileNames: () => true
     };
   }
 
@@ -227,9 +249,10 @@ export function getServiceHost(workspacePath: string, jsDocuments: LanguageModel
     checkJs: true
   });
 
-  const registry = ts.createDocumentRegistry();
-  let jsLanguageService = ts.createLanguageService(jsHost, registry);
-  const templateLanguageSerivice = ts.createLanguageService(templateHost, registry);
+  const registry = tsModule.createDocumentRegistry(true);
+  let jsLanguageService = tsModule.createLanguageService(jsHost, registry);
+  const templateLanguageService = tsModule.createLanguageService(templateHost, registry);
+
   return {
     updateCurrentTextDocument,
     updateExternalDocument,
@@ -244,13 +267,24 @@ function getNormalizedFileFsPath(fileName: string): string {
   return Uri.file(fileName).fsPath;
 }
 
-function isVueProject(path: string) {
+/**
+ * If the path ends with `.vue.ts`, it's a `.vue` file pre-processed by Vetur
+ * to be used in TS Language Service
+ */
+function isVirtualVueFile(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
 }
+/**
+ * If the path ends with `.vue.template`, it's a `.vue` file's template part
+ * pre-processed by Vetur to calculate template diagnostics in TS Language Service
+ */
+export function isVirtualVueTemplateFile(path: string) {
+  return path.endsWith('.vue.template');
+}
 
-function defaultIgnorePatterns(workspacePath: string) {
+function defaultIgnorePatterns(tsModule: T_TypeScript, workspacePath: string) {
   const nodeModules = ['node_modules', '**/node_modules/*'];
-  const gitignore = ts.findConfigFile(workspacePath, ts.sys.fileExists, '.gitignore');
+  const gitignore = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, '.gitignore');
   if (!gitignore) {
     return nodeModules;
   }
@@ -259,14 +293,18 @@ function defaultIgnorePatterns(workspacePath: string) {
   return nodeModules.concat(filtered);
 }
 
-function getScriptKind(langId: string): ts.ScriptKind {
-  return langId === 'typescript' ? ts.ScriptKind.TS : langId === 'tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.JS;
+function getScriptKind(tsModule: T_TypeScript, langId: string): ts.ScriptKind {
+  return langId === 'typescript'
+    ? tsModule.ScriptKind.TS
+    : langId === 'tsx'
+    ? tsModule.ScriptKind.TSX
+    : tsModule.ScriptKind.JS;
 }
 
-function inferIsOldVersion(workspacePath: string): boolean {
-  const packageJSONPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
+function inferIsOldVersion(tsModule: T_TypeScript, workspacePath: string): boolean {
+  const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
   try {
-    const packageJSON = packageJSONPath && JSON.parse(ts.sys.readFile(packageJSONPath)!);
+    const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);
     const vueStr = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
     // use a sloppy method to infer version, to reduce dep on semver or so
     const vueDep = vueStr.match(/\d+\.\d+/)[0];
@@ -277,17 +315,17 @@ function inferIsOldVersion(workspacePath: string): boolean {
   }
 }
 
-function getParsedConfig(workspacePath: string) {
+function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
   const configFilename =
-    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'tsconfig.json') ||
-    ts.findConfigFile(workspacePath, ts.sys.fileExists, 'jsconfig.json');
-  const configJson = (configFilename && ts.readConfigFile(configFilename, ts.sys.readFile).config) || {
-    exclude: defaultIgnorePatterns(workspacePath)
+    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
+    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'jsconfig.json');
+  const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
+    exclude: defaultIgnorePatterns(tsModule, workspacePath)
   };
   // existingOptions should be empty since it always takes priority
-  return ts.parseJsonConfigFileContent(
+  return tsModule.parseJsonConfigFileContent(
     configJson,
-    ts.sys,
+    tsModule.sys,
     workspacePath,
     /*existingOptions*/ {},
     configFilename,

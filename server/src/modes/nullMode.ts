@@ -1,14 +1,10 @@
-import { LanguageMode } from './languageModes';
+import { LanguageMode } from '../embeddedSupport/languageModes';
 
 export const NULL_HOVER = {
   contents: []
 };
 
-export const NULL_SIGNATURE = {
-  signatures: [],
-  activeSignature: 0,
-  activeParameter: 0
-};
+export const NULL_SIGNATURE = null;
 
 export const NULL_COMPLETION = {
   isIncomplete: false,
