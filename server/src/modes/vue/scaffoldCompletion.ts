@@ -68,6 +68,20 @@ export default Vue.extend({
 `
     },
     {
+      label: 'scaffold with TypeScript decorators',
+      documentation: 'Scaffold <template>, <script lang=ts> and <style>. Requires vue-class-component to be installed',
+      kind: CompletionItemKind.Snippet,
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText: `<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+export default class $(0) extends Vue{
+\t\
+)
+</script>
+`
+    },
+    {
       label: 'style with CSS',
       documentation: 'Scaffold <style> with CSS',
       kind: CompletionItemKind.Snippet,
