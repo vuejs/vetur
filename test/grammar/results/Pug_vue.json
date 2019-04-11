@@ -100,7 +100,7 @@
 	},
 	{
 		"c": "  ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -111,7 +111,7 @@
 	},
 	{
 		"c": ".pug",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -122,7 +122,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -133,7 +133,7 @@
 	},
 	{
 		"c": ".normal-pug",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -144,7 +144,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -155,7 +155,7 @@
 	},
 	{
 		"c": "attribute",
-		"t": "source.vue source.vue.pug meta.tag.other entity.other.attribute-name.tag.pug",
+		"t": "source.vue text.pug meta.tag.other entity.other.attribute-name.tag.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -166,7 +166,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other attribute_value",
+		"t": "source.vue text.pug meta.tag.other attribute_value",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -177,7 +177,7 @@
 	},
 	{
 		"c": "\"test\"",
-		"t": "source.vue source.vue.pug meta.tag.other attribute_value string.quoted.pug",
+		"t": "source.vue text.pug meta.tag.other attribute_value string.quoted.pug",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string.quoted.pug: #0000FF",
@@ -188,7 +188,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -199,7 +199,7 @@
 	},
 	{
 		"c": " Text",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -210,7 +210,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -221,7 +221,7 @@
 	},
 	{
 		"c": ".normal-pug-multi",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -232,7 +232,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -243,7 +243,7 @@
 	},
 	{
 		"c": "attribute",
-		"t": "source.vue source.vue.pug meta.tag.other entity.other.attribute-name.tag.pug",
+		"t": "source.vue text.pug meta.tag.other entity.other.attribute-name.tag.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -254,7 +254,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other attribute_value",
+		"t": "source.vue text.pug meta.tag.other attribute_value",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -265,7 +265,7 @@
 	},
 	{
 		"c": "\"test\"",
-		"t": "source.vue source.vue.pug meta.tag.other attribute_value string.quoted.pug",
+		"t": "source.vue text.pug meta.tag.other attribute_value string.quoted.pug",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string.quoted.pug: #0000FF",
@@ -276,7 +276,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -287,7 +287,7 @@
 	},
 	{
 		"c": "      ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -298,7 +298,7 @@
 	},
 	{
 		"c": ".test",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -309,7 +309,7 @@
 	},
 	{
 		"c": " Text",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -320,7 +320,7 @@
 	},
 	{
 		"c": "      ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -331,7 +331,7 @@
 	},
 	{
 		"c": "| Test 2",
-		"t": "source.vue source.vue.pug text.block.pipe.pug",
+		"t": "source.vue text.pug text.block.pipe.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -342,7 +342,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -353,7 +353,7 @@
 	},
 	{
 		"c": ".vue-directive",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -364,7 +364,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -375,7 +375,7 @@
 	},
 	{
 		"c": "v-if",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -386,7 +386,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -397,7 +397,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -408,7 +408,7 @@
 	},
 	{
 		"c": "test",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -419,7 +419,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -430,7 +430,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -441,7 +441,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -452,7 +452,7 @@
 	},
 	{
 		"c": ".vue-directive-2",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -463,7 +463,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -474,7 +474,7 @@
 	},
 	{
 		"c": ":",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -485,7 +485,7 @@
 	},
 	{
 		"c": "attr",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -496,7 +496,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -507,7 +507,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -518,7 +518,7 @@
 	},
 	{
 		"c": "test",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue meta.function-call.js entity.name.function.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue meta.function-call.js entity.name.function.js",
 		"r": {
 			"dark_plus": "entity.name.function: #DCDCAA",
 			"light_plus": "entity.name.function: #795E26",
@@ -529,7 +529,7 @@
 	},
 	{
 		"c": "()",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue meta.brace.round.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue meta.brace.round.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -540,7 +540,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -551,7 +551,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -562,7 +562,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -573,7 +573,7 @@
 	},
 	{
 		"c": ".vue-interpolation",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -584,7 +584,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -595,7 +595,7 @@
 	},
 	{
 		"c": "{{",
-		"t": "source.vue source.vue.pug expression.embedded.vue punctuation.definition.generic.begin.html",
+		"t": "source.vue text.pug expression.embedded.vue punctuation.definition.generic.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -606,7 +606,7 @@
 	},
 	{
 		"c": "test",
-		"t": "source.vue source.vue.pug expression.embedded.vue meta.function-call.js variable.other.object.js",
+		"t": "source.vue text.pug expression.embedded.vue meta.function-call.js variable.other.object.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -617,7 +617,7 @@
 	},
 	{
 		"c": ".",
-		"t": "source.vue source.vue.pug expression.embedded.vue meta.function-call.js punctuation.accessor.js",
+		"t": "source.vue text.pug expression.embedded.vue meta.function-call.js punctuation.accessor.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -628,7 +628,7 @@
 	},
 	{
 		"c": "case",
-		"t": "source.vue source.vue.pug expression.embedded.vue meta.function-call.js entity.name.function.js",
+		"t": "source.vue text.pug expression.embedded.vue meta.function-call.js entity.name.function.js",
 		"r": {
 			"dark_plus": "entity.name.function: #DCDCAA",
 			"light_plus": "entity.name.function: #795E26",
@@ -639,7 +639,7 @@
 	},
 	{
 		"c": "()",
-		"t": "source.vue source.vue.pug expression.embedded.vue meta.brace.round.js",
+		"t": "source.vue text.pug expression.embedded.vue meta.brace.round.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -650,7 +650,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug expression.embedded.vue",
+		"t": "source.vue text.pug expression.embedded.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -661,7 +661,7 @@
 	},
 	{
 		"c": "+",
-		"t": "source.vue source.vue.pug expression.embedded.vue keyword.operator.arithmetic.js",
+		"t": "source.vue text.pug expression.embedded.vue keyword.operator.arithmetic.js",
 		"r": {
 			"dark_plus": "keyword.operator: #D4D4D4",
 			"light_plus": "keyword.operator: #000000",
@@ -672,7 +672,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug expression.embedded.vue",
+		"t": "source.vue text.pug expression.embedded.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -683,7 +683,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug expression.embedded.vue string.quoted.single.js punctuation.definition.string.begin.js",
+		"t": "source.vue text.pug expression.embedded.vue string.quoted.single.js punctuation.definition.string.begin.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -694,7 +694,7 @@
 	},
 	{
 		"c": "concatenation",
-		"t": "source.vue source.vue.pug expression.embedded.vue string.quoted.single.js",
+		"t": "source.vue text.pug expression.embedded.vue string.quoted.single.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -705,7 +705,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug expression.embedded.vue string.quoted.single.js punctuation.definition.string.end.js",
+		"t": "source.vue text.pug expression.embedded.vue string.quoted.single.js punctuation.definition.string.end.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -716,7 +716,7 @@
 	},
 	{
 		"c": "}}",
-		"t": "source.vue source.vue.pug expression.embedded.vue punctuation.definition.generic.end.html",
+		"t": "source.vue text.pug expression.embedded.vue punctuation.definition.generic.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -727,7 +727,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -738,7 +738,7 @@
 	},
 	{
 		"c": ".single-quote",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -749,7 +749,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -760,7 +760,7 @@
 	},
 	{
 		"c": "v-if",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -771,7 +771,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -782,7 +782,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -793,7 +793,7 @@
 	},
 	{
 		"c": "test",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -804,7 +804,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -815,7 +815,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -826,7 +826,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -837,7 +837,7 @@
 	},
 	{
 		"c": ".pug.javascript",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -848,7 +848,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -859,7 +859,7 @@
 	},
 	{
 		"c": ":",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -870,7 +870,7 @@
 	},
 	{
 		"c": "attr",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -881,7 +881,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -892,7 +892,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -903,7 +903,7 @@
 	},
 	{
 		"c": "i",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -914,7 +914,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -925,7 +925,7 @@
 	},
 	{
 		"c": "+",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
 		"r": {
 			"dark_plus": "keyword.operator: #D4D4D4",
 			"light_plus": "keyword.operator: #000000",
@@ -936,7 +936,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -947,7 +947,7 @@
 	},
 	{
 		"c": "will",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -958,7 +958,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -969,7 +969,7 @@
 	},
 	{
 		"c": "+",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
 		"r": {
 			"dark_plus": "keyword.operator: #D4D4D4",
 			"light_plus": "keyword.operator: #000000",
@@ -980,7 +980,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -991,7 +991,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue string.quoted.single.js punctuation.definition.string.begin.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue string.quoted.single.js punctuation.definition.string.begin.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -1002,7 +1002,7 @@
 	},
 	{
 		"c": "concat",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue string.quoted.single.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue string.quoted.single.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -1013,7 +1013,7 @@
 	},
 	{
 		"c": "'",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue string.quoted.single.js punctuation.definition.string.end.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue string.quoted.single.js punctuation.definition.string.end.js",
 		"r": {
 			"dark_plus": "string: #CE9178",
 			"light_plus": "string: #A31515",
@@ -1024,7 +1024,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1035,7 +1035,7 @@
 	},
 	{
 		"c": "+",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
 		"r": {
 			"dark_plus": "keyword.operator: #D4D4D4",
 			"light_plus": "keyword.operator: #000000",
@@ -1046,7 +1046,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1057,7 +1057,7 @@
 	},
 	{
 		"c": "this",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.language.this.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.language.this.js",
 		"r": {
 			"dark_plus": "variable.language: #569CD6",
 			"light_plus": "variable.language: #0000FF",
@@ -1068,7 +1068,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1079,7 +1079,7 @@
 	},
 	{
 		"c": "+",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue keyword.operator.arithmetic.js",
 		"r": {
 			"dark_plus": "keyword.operator: #D4D4D4",
 			"light_plus": "keyword.operator: #000000",
@@ -1090,7 +1090,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1101,7 +1101,7 @@
 	},
 	{
 		"c": "string",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -1112,7 +1112,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1123,7 +1123,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1134,7 +1134,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1145,7 +1145,7 @@
 	},
 	{
 		"c": ".issue",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1156,7 +1156,7 @@
 	},
 	{
 		"c": "#1139",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.id.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.id.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1167,7 +1167,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1178,7 +1178,7 @@
 	},
 	{
 		"c": "#[",
-		"t": "source.vue source.vue.pug inline.pug entity.name.function.pug",
+		"t": "source.vue text.pug inline.pug entity.name.function.pug",
 		"r": {
 			"dark_plus": "entity.name.function: #DCDCAA",
 			"light_plus": "entity.name.function: #795E26",
@@ -1189,7 +1189,7 @@
 	},
 	{
 		"c": "b",
-		"t": "source.vue source.vue.pug inline.pug tag.inline.pug meta.tag.other entity.name.tag.pug",
+		"t": "source.vue text.pug inline.pug tag.inline.pug meta.tag.other entity.name.tag.pug",
 		"r": {
 			"dark_plus": "entity.name.tag: #569CD6",
 			"light_plus": "entity.name.tag: #800000",
@@ -1200,7 +1200,7 @@
 	},
 	{
 		"c": ".large",
-		"t": "source.vue source.vue.pug inline.pug tag.inline.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug inline.pug tag.inline.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1211,7 +1211,7 @@
 	},
 	{
 		"c": " ",
-		"t": "source.vue source.vue.pug inline.pug",
+		"t": "source.vue text.pug inline.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1222,7 +1222,7 @@
 	},
 	{
 		"c": "foo",
-		"t": "source.vue source.vue.pug inline.pug tag.inline.pug meta.tag.other entity.name.tag.pug",
+		"t": "source.vue text.pug inline.pug tag.inline.pug meta.tag.other entity.name.tag.pug",
 		"r": {
 			"dark_plus": "entity.name.tag: #569CD6",
 			"light_plus": "entity.name.tag: #800000",
@@ -1233,7 +1233,7 @@
 	},
 	{
 		"c": "]",
-		"t": "source.vue source.vue.pug inline.pug entity.name.function.pug",
+		"t": "source.vue text.pug inline.pug entity.name.function.pug",
 		"r": {
 			"dark_plus": "entity.name.function: #DCDCAA",
 			"light_plus": "entity.name.function: #795E26",
@@ -1244,7 +1244,7 @@
 	},
 	{
 		"c": " bar",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1255,7 +1255,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1266,7 +1266,7 @@
 	},
 	{
 		"c": ".v-slot",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1277,7 +1277,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1288,7 +1288,7 @@
 	},
 	{
 		"c": "v-slot",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1299,7 +1299,7 @@
 	},
 	{
 		"c": ":",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1310,7 +1310,7 @@
 	},
 	{
 		"c": "foo",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1321,7 +1321,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1332,7 +1332,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1343,7 +1343,7 @@
 	},
 	{
 		"c": "bar",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -1354,7 +1354,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1365,7 +1365,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1376,7 +1376,7 @@
 	},
 	{
 		"c": "    ",
-		"t": "source.vue source.vue.pug",
+		"t": "source.vue text.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1387,7 +1387,7 @@
 	},
 	{
 		"c": ".v-slot.shorthand",
-		"t": "source.vue source.vue.pug entity.other.attribute-name.class.pug",
+		"t": "source.vue text.pug entity.other.attribute-name.class.pug",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1398,7 +1398,7 @@
 	},
 	{
 		"c": "(",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1409,7 +1409,7 @@
 	},
 	{
 		"c": "#",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1420,7 +1420,7 @@
 	},
 	{
 		"c": "foo",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -1431,7 +1431,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1442,7 +1442,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1453,7 +1453,7 @@
 	},
 	{
 		"c": "bar",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue variable.other.readwrite.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -1464,7 +1464,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue source.vue.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.pug meta.tag.other meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1475,7 +1475,7 @@
 	},
 	{
 		"c": ")",
-		"t": "source.vue source.vue.pug meta.tag.other constant.name.attribute.tag.pug",
+		"t": "source.vue text.pug meta.tag.other constant.name.attribute.tag.pug",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
