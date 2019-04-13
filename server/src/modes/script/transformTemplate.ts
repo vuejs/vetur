@@ -180,36 +180,15 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   }
 
   function transformVBind(vBind: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
-    const name = vBind.key.argument;
     const exp =
       vBind.value && vBind.value.expression
         ? parseExpression(vBind.value.expression as AST.ESLintExpression, code, scope)
         : ts.createLiteral('true');
 
-    if (name) {
-      if (name.type === 'VIdentifier') {
-        // Attribute name is specified
-        // e.g. :value="foo"
-        return setTextRange(
-          ts.createPropertyAssignment(setTextRange(ts.createIdentifier(name.name), vBind.key), exp),
-          vBind
-        );
-      }
-      // Todo: What about VExpressionContainer?
-      else {
-        // Just put here to return correct type
-        return setTextRange(ts.createSpreadAssignment(exp), vBind);
-      }
-    } else {
-      // Attribute name is omitted
-      // e.g. v-bind="{ value: foo }"
-      return setTextRange(ts.createSpreadAssignment(exp), vBind);
-    }
+    return directiveToObjectElement(vBind, exp, code, scope);
   }
 
   function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
-    const name = vOn.key.argument;
-
     let exp: ts.Expression;
     if (vOn.value && vOn.value.expression) {
       const vOnExp = vOn.value.expression as AST.VOnExpression;
@@ -256,24 +235,47 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       exp = ts.createLiteral(true);
     }
 
+    return directiveToObjectElement(vOn, exp, code, scope);
+  }
+
+  /**
+   * To transform v-bind and v-on directive
+   */
+  function directiveToObjectElement(
+    dir: AST.VDirective,
+    dirExp: ts.Expression,
+    code: string,
+    scope: string[]
+  ): ts.ObjectLiteralElementLike {
+    const name = dir.key.argument;
+
     if (name) {
       if (name.type === 'VIdentifier') {
-        // Event name is specified
-        // e.g. @click="onClick"
+        // Attribute name is specified
+        // e.g. v-bind:value="foo"
         return setTextRange(
-          ts.createPropertyAssignment(setTextRange(ts.createIdentifier(name.name), vOn.key), exp),
-          vOn
+          ts.createPropertyAssignment(setTextRange(ts.createIdentifier(name.name), dir.key), dirExp),
+          dir
         );
-      }
-      // Todo: What about VExpressionContainer?
-      else {
-        // Just put here to return correct type
-        return setTextRange(ts.createSpreadAssignment(exp), vOn);
+      } else {
+        // Attribute name is dynamic
+        // e.g. v-bind:[value]="foo"
+
+        // Empty expression is invalid. Return empty object spread.
+        if (name.expression === null) {
+          return setTextRange(ts.createSpreadAssignment(setTextRange(ts.createObjectLiteral(), dir)), dir);
+        }
+
+        const propertyName = setTextRange(
+          ts.createComputedPropertyName(parseExpression(name.expression as AST.ESLintExpression, code, scope)),
+          dir.key
+        );
+        return setTextRange(ts.createPropertyAssignment(propertyName, dirExp), dir);
       }
     } else {
-      // Event name is omitted
-      // e.g. v-on="{ click: onClick }"
-      return setTextRange(ts.createSpreadAssignment(exp), vOn);
+      // Attribute name is omitted
+      // e.g. v-bind="{ value: foo }"
+      return setTextRange(ts.createSpreadAssignment(dirExp), dir);
     }
   }
 
