@@ -143,8 +143,13 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         return;
       }
 
-      // Skip v-for directive
+      // Skip v-for directive (handled in `transformElement`)
       if (isVFor(attr)) {
+        return;
+      }
+
+      // Skip v-slot and scope-slot for now
+      if (isVSlot(attr)) {
         return;
       }
 
@@ -521,6 +526,10 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
   function isVFor(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
     return node.directive && node.key.name.name === 'for';
+  }
+
+  function isVSlot(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && (node.key.name.name === 'slot' || node.key.name.name === 'slot-scope');
   }
 
   function flatMap<T extends ts.Node, R>(list: ReadonlyArray<T>, fn: (value: T) => R[]): R[] {
