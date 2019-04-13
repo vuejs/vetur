@@ -1,6 +1,6 @@
 {
   "scopeName": "vue.pug.interpolations",
-  "injectionSelector": "L:source.vue.pug",
+  "injectionSelector": "L:text.pug",
   "patterns": [
     {
       "include": "source.vue#vue-interpolations"
