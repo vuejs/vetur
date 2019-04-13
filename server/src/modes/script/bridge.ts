@@ -1,4 +1,4 @@
-import { renderHelperName, componentHelperName, iterationHelperName } from './transformTemplate';
+import { renderHelperName, componentHelperName, iterationHelperName, listenerHelperName } from './transformTemplate';
 
 // This bridge file will be injected into TypeScript language service
 // it enable type checking and completion, yet still preserve precise option type
@@ -19,6 +19,9 @@ export declare const ${iterationHelperName}: {
   <T>(obj: { [key: string]: T }, fn: (value: T, key: string, index: number) => any): any;
   (num: number, fn: (value: number) => any): any;
   <T>(obj: object, fn: (value: any, key: string, index: number) => any): any;
+};
+export declare const ${listenerHelperName}: {
+  <T>(vm: T, listener: (this: T, ...args: any[]) => any): any;
 };
 `;
 

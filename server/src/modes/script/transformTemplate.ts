@@ -5,6 +5,7 @@ import { T_TypeScript } from '../../services/dependencyService';
 export const renderHelperName = '__vlsRenderHelper';
 export const componentHelperName = '__vlsComponentHelper';
 export const iterationHelperName = '__vlsIterationHelper';
+export const listenerHelperName = '__vlsListenerHelper';
 
 /**
  * Allowed global variables in templates.
@@ -209,26 +210,33 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         //   @click="onClick($event, 'test')"
         //   @click="value = "foo""
         exp = setTextRange(
-          ts.createArrowFunction(
-            undefined,
-            undefined,
-            [
-              setTextRange(
-                ts.createParameter(
-                  undefined,
-                  undefined,
-                  undefined,
-                  '$event',
-                  undefined,
-                  setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
-                ),
-                vOn
-              )
-            ],
-            undefined,
-            setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), vOn),
-            setTextRange(ts.createBlock(statements), vOn)
-          ),
+          ts.createCall(setTextRange(ts.createIdentifier(listenerHelperName), vOn), undefined, [
+            setTextRange(ts.createThis(), vOn),
+            setTextRange(
+              ts.createFunctionExpression(
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                [
+                  setTextRange(
+                    ts.createParameter(
+                      undefined,
+                      undefined,
+                      undefined,
+                      '$event',
+                      undefined,
+                      setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
+                    ),
+                    vOn
+                  )
+                ],
+                undefined,
+                setTextRange(ts.createBlock(statements), vOn)
+              ),
+              vOn
+            )
+          ]),
           vOn
         );
       }

@@ -9,7 +9,8 @@ import {
   getTemplateTransformFunctions,
   componentHelperName,
   iterationHelperName,
-  renderHelperName
+  renderHelperName,
+  listenerHelperName
 } from './transformTemplate';
 import { isVirtualVueTemplateFile } from './serviceHost';
 
@@ -183,6 +184,9 @@ function injectVueTemplate(tsModule: T_TypeScript, sourceFile: ts.SourceFile, re
               ),
               setZeroPos(
                 tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(iterationHelperName)))
+              ),
+              setZeroPos(
+                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(listenerHelperName)))
               )
             ])
           )
