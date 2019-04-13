@@ -148,7 +148,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         return;
       }
 
-      // Skip v-slot and scope-slot for now
+      // Skip v-slot and slot-scope for now
       if (isVSlot(attr)) {
         return;
       }
