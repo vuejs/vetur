@@ -101,7 +101,6 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     props: ts.ObjectLiteralElementLike[];
     on: ts.ObjectLiteralElementLike[];
     directives: ts.Expression[];
-    special: ts.ObjectLiteralElementLike[];
   }
 
   function transformAttributes(
@@ -112,15 +111,19 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const data: AttributeData = {
       props: [],
       on: [],
-      directives: [],
-      special: []
+      directives: []
     };
 
     attrs.forEach(attr => {
       // Normal attributes
       // e.g. class="title"
       if (isVAttribute(attr)) {
-        if (!isSpecialAttribute(attr)) {
+        const name = attr.key.name;
+
+        // Skip style and class because there may be v-bind for the same attribute which
+        // occurs duplicate property name error.
+        // Since native attribute value is not JS expression, we don't have to check it.
+        if (name !== 'class' && name !== 'style') {
           data.props.push(transformNativeAttribute(attr));
         }
         return;
@@ -129,11 +132,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       // v-bind directives
       // e.g. :class="{ selected: foo }"
       if (isVBind(attr)) {
-        if (isSpecialAttribute(attr)) {
-          data.special.push(transformVBind(attr, code, scope));
-        } else {
-          data.props.push(transformVBind(attr, code, scope));
-        }
+        data.props.push(transformVBind(attr, code, scope));
         return;
       }
 
@@ -165,7 +164,6 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     return ts.createObjectLiteral([
       ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props)),
       ts.createPropertyAssignment('on', ts.createObjectLiteral(data.on)),
-      ts.createPropertyAssignment('special', ts.createObjectLiteral(data.special)),
       ts.createPropertyAssignment('directives', ts.createArrayLiteral(data.directives))
     ]);
   }
@@ -523,22 +521,6 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
   function isVFor(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
     return node.directive && node.key.name.name === 'for';
-  }
-
-  /**
-   * Return `true` if the node is a special attribute in Vue.js (class, style, ref, etc...)
-   */
-  function isSpecialAttribute(node: AST.VAttribute | AST.VDirective): boolean {
-    // Todo: Why check node.key.arguments here?
-    // const name = isVAttribute(node) ? node.key.name : node.key.argument;
-
-    const specialAttributes = ['class', 'style', 'key', 'ref', 'slot', 'slot-scope', 'scope', 'is'];
-
-    if (isVAttribute(node)) {
-      return specialAttributes.includes(node.key.name);
-    } else {
-      return false;
-    }
   }
 
   function flatMap<T extends ts.Node, R>(list: ReadonlyArray<T>, fn: (value: T) => R[]): R[] {
