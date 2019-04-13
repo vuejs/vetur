@@ -77,6 +77,26 @@ describe('template-diag Should find diagnostics in <template> region', () => {
           message: "Property 'bar' does not exist on type"
         }
       ]
+    },
+    {
+      file: 'directive-dynamic-argument.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(3, 6, 14),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'notExist' does not exist on type"
+        },
+        {
+          range: sameLineRange(4, 6, 14),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'notExist' does not exist on type"
+        },
+        {
+          range: sameLineRange(5, 12, 20),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'notExist' does not exist on type"
+        }
+      ]
     }
   ];
 

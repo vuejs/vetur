@@ -151,7 +151,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       // Other directives
       const exp = transformDirective(attr, code, scope);
       if (exp) {
-        data.directives.push(exp);
+        data.directives.push(...exp);
       }
     });
 
@@ -193,7 +193,9 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     if (vOn.value && vOn.value.expression) {
       const vOnExp = vOn.value.expression as AST.VOnExpression;
       const newScope = scope.concat(vOnScope);
-      const statements = vOnExp.body.map(st => transformStatement(st, code, newScope));
+
+      // body may be undefined
+      const statements = vOnExp.body ? vOnExp.body.map(st => transformStatement(st, code, newScope)) : [];
 
       const first = statements[0];
       if (statements.length === 1 && isPathToIdentifier(first)) {
@@ -279,11 +281,21 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     }
   }
 
-  function transformDirective(dir: AST.VDirective, code: string, scope: string[]): ts.Expression | undefined {
-    if (!dir.value || !dir.value.expression) {
-      return;
+  /**
+   * Return directive expression. May include dynamic argument expression.
+   */
+  function transformDirective(dir: AST.VDirective, code: string, scope: string[]): ts.Expression[] {
+    const res: ts.Expression[] = [];
+
+    if (dir.key.argument && dir.key.argument.type === 'VExpressionContainer' && dir.key.argument.expression) {
+      res.push(parseExpression(dir.key.argument.expression as AST.ESLintExpression, code, scope));
     }
-    return parseExpression(dir.value.expression as AST.ESLintExpression, code, scope);
+
+    if (dir.value && dir.value.expression) {
+      res.push(parseExpression(dir.value.expression as AST.ESLintExpression, code, scope));
+    }
+
+    return res;
   }
 
   function transformChild(
