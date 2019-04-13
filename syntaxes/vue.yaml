@@ -53,7 +53,7 @@ patterns:
       '3': { name: punctuation.definition.tag.end.html }
     patterns:
       - include: '#tag-stuff'
-      - contentName: source.vue.pug
+      - contentName: text.pug
         begin: (>)
         beginCaptures:
           '1': { name: punctuation.definition.tag.end.html }

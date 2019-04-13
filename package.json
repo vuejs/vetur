@@ -89,13 +89,6 @@
         "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
-        "id": "vue-pug",
-        "aliases": [
-          "Vue-pug"
-        ],
-        "configuration": "./languages/vue-pug-language-configuration.json"
-      },
-      {
         "id": "vue-postcss",
         "aliases": [
           "Vue-PostCSS",
@@ -114,6 +107,7 @@
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
           "text.jade.slm": "slm",
+          "text.pug": "jade",
           "text.haml": "haml",
           "source.css": "css",
           "source.css.scss": "scss",
