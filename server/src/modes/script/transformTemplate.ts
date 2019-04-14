@@ -177,7 +177,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     return setTextRange(
       ts.createPropertyAssignment(
         setTextRange(ts.createIdentifier(attr.key.name), attr.key),
-        attr.value ? setTextRange(ts.createLiteral(attr.value.value), attr.value) : ts.createLiteral('true')
+        attr.value ? setTextRange(ts.createLiteral(attr.value.value), attr.value) : ts.createLiteral(true)
       ),
       attr
     );
@@ -187,7 +187,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const exp =
       vBind.value && vBind.value.expression
         ? parseExpression(vBind.value.expression as AST.ESLintExpression, code, scope)
-        : ts.createLiteral('true');
+        : ts.createLiteral(true);
 
     return directiveToObjectElement(vBind, exp, code, scope);
   }
@@ -329,7 +329,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   function transformStatement(statement: AST.ESLintStatement, code: string, scope: string[]): ts.Statement {
     if (statement.type !== 'ExpressionStatement') {
       console.error('Unexpected statement type:', statement.type);
-      return ts.createStatement(ts.createLiteral('""'));
+      return ts.createStatement(ts.createLiteral(''));
     }
 
     return setTextRange(ts.createStatement(parseExpression(statement.expression, code, scope)), statement);
@@ -365,7 +365,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
     if (!statement || !ts.isExpressionStatement(statement)) {
       console.error('Unexpected statement kind:', statement.kind);
-      return ts.createLiteral('""');
+      return ts.createLiteral('');
     }
 
     ts.forEachChild(statement, function next(node) {
