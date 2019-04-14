@@ -116,7 +116,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
     attrs.forEach(attr => {
       // Normal attributes
-      // e.g. class="title"
+      // e.g. title="title"
       if (isVAttribute(attr)) {
         const name = attr.key.name;
 
@@ -164,7 +164,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     // example output:
     // {
     //   props: { class: 'title' },
-    //   on: { click: ($event) => onClick($event) }
+    //   on: { click: __vlsListenerHelper(this, function($event) { this.onClick($event) } }
     // }
     return ts.createObjectLiteral([
       ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props)),
