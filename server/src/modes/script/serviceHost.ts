@@ -19,14 +19,14 @@ function patchTS(tsModule: T_TypeScript) {
 }
 
 function getVueSys(tsModule: T_TypeScript) {
+  /**
+   * This part is only accessed by TS module resolution
+   */
   const vueSys: ts.System = {
     ...tsModule.sys,
     fileExists(path: string) {
       if (isVirtualVueFile(path)) {
         return tsModule.sys.fileExists(path.slice(0, -'.ts'.length));
-      }
-      if (isVirtualVueTemplateFile(path)) {
-        return tsModule.sys.fileExists(path.slice(0, -'.template'.length));
       }
       return tsModule.sys.fileExists(path);
     },
@@ -34,9 +34,6 @@ function getVueSys(tsModule: T_TypeScript) {
       if (isVirtualVueFile(path)) {
         const fileText = tsModule.sys.readFile(path.slice(0, -'.ts'.length), encoding);
         return fileText ? parseVueScript(fileText) : fileText;
-      }
-      if (isVirtualVueTemplateFile(path)) {
-        return tsModule.sys.readFile(path.slice(0, -'.template'.length), encoding);
       }
       const fileText = tsModule.sys.readFile(path, encoding);
       return fileText;
@@ -48,9 +45,6 @@ function getVueSys(tsModule: T_TypeScript) {
     vueSys.realpath = function(path) {
       if (isVirtualVueFile(path)) {
         return realpath(path.slice(0, -'.ts'.length)) + '.ts';
-      }
-      if (isVirtualVueTemplateFile(path)) {
-        return realpath(path.slice(0, -'.template'.length)) + '.ts';
       }
       return realpath(path);
     };
