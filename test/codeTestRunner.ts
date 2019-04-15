@@ -52,6 +52,10 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
       }
     });
 
+    cmd.stderr.on('data', function(data) {
+      console.log(`Spawn Error: ${data.toString()}`);
+    });
+
     cmd.on('error', function(data) {
       console.log('Test error: ' + data.toString());
     });
