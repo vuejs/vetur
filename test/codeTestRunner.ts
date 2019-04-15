@@ -27,14 +27,11 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
       testWorkspace,
       '--extensionDevelopmentPath=' + EXT_ROOT,
       '--extensionTestsPath=' + extTestPath,
-      '--locale=en'
+      '--locale=en',
+      '--disable-extensions'
     ];
     if (fs.existsSync(userDataDir)) {
       args.push(`--user-data-dir=${userDataDir}`);
-    }
-
-    if (process.env.CODE_DISABLE_EXTENSIONS) {
-      args.push('--disable-extensions');
     }
 
     console.log(`Test folder: ${path.join('dist', testWorkspaceRelativePath)}`);
@@ -53,7 +50,10 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
     });
 
     cmd.stderr.on('data', function(data) {
-      console.log(`Spawn Error: ${data.toString()}`);
+      const s = data.toString();
+      if (!s.includes('stty: stdin')) {
+        console.log(`Spawn Error: ${data.toString()}`);
+      }
     });
 
     cmd.on('error', function(data) {
