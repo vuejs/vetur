@@ -6,8 +6,8 @@ export interface RefactorAction {
   fileName: string;
   formatOptions: any;
   textRange: {
-      pos: number;
-      end: number;
+    pos: number;
+    end: number;
   };
   refactorName: string;
   actionName: string;

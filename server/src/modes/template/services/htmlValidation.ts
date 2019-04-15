@@ -15,7 +15,7 @@ function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   };
 }
 
-export function doValidation(document: TextDocument, engine: CLIEngine): Diagnostic[] {
+export function doESLintValidation(document: TextDocument, engine: CLIEngine): Diagnostic[] {
   const rawText = document.getText();
   // skip checking on empty template
   if (rawText.replace(/\s/g, '') === '') {

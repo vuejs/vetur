@@ -12,7 +12,7 @@ import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
 import { parseHTMLDocument } from './parser/htmlParser';
-import { doValidation, createLintEngine } from './services/htmlValidation';
+import { doESLintValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings, IHTMLTagProvider } from './tagProviders';
 import { getEnabledTagProviders } from './tagProviders';
@@ -48,7 +48,7 @@ export function getVueHTMLMode(
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
-      return doValidation(embedded, lintEngine);
+      return doESLintValidation(embedded, lintEngine);
     },
     doComplete(document: TextDocument, position: Position) {
       const embedded = embeddedDocuments.get(document);

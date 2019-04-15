@@ -41,7 +41,7 @@
     "element-ui": "^2.4.5",
     "lodash": "^4.17.4",
     "quasar-framework": "^0.17.12",
-    "vue": "^2.5.3",
+    "vue": "^2.6.10",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

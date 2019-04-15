@@ -5,7 +5,7 @@ import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
-import { createUpdater, parseVue, isVue } from './preprocess';
+import { createUpdater, parseVueScript, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
@@ -22,27 +22,35 @@ function getVueSys(tsModule: T_TypeScript) {
   const vueSys: ts.System = {
     ...tsModule.sys,
     fileExists(path: string) {
-      if (isVueProject(path)) {
-        return tsModule.sys.fileExists(path.slice(0, -3));
+      if (isVirtualVueFile(path)) {
+        return tsModule.sys.fileExists(path.slice(0, -'.ts'.length));
+      }
+      if (isVirtualVueTemplateFile(path)) {
+        return tsModule.sys.fileExists(path.slice(0, -'.template'.length));
       }
       return tsModule.sys.fileExists(path);
     },
     readFile(path, encoding) {
-      if (isVueProject(path)) {
-        const fileText = tsModule.sys.readFile(path.slice(0, -3), encoding);
-        return fileText ? parseVue(fileText) : fileText;
-      } else {
-        const fileText = tsModule.sys.readFile(path, encoding);
-        return fileText;
+      if (isVirtualVueFile(path)) {
+        const fileText = tsModule.sys.readFile(path.slice(0, -'.ts'.length), encoding);
+        return fileText ? parseVueScript(fileText) : fileText;
       }
+      if (isVirtualVueTemplateFile(path)) {
+        return tsModule.sys.readFile(path.slice(0, -'.template'.length), encoding);
+      }
+      const fileText = tsModule.sys.readFile(path, encoding);
+      return fileText;
     }
   };
 
   if (tsModule.sys.realpath) {
     const realpath = tsModule.sys.realpath;
     vueSys.realpath = function(path) {
-      if (isVueProject(path)) {
-        return realpath(path.slice(0, -3)) + '.ts';
+      if (isVirtualVueFile(path)) {
+        return realpath(path.slice(0, -'.ts'.length)) + '.ts';
+      }
+      if (isVirtualVueTemplateFile(path)) {
+        return realpath(path.slice(0, -'.template'.length)) + '.ts';
       }
       return realpath(path);
     };
@@ -92,23 +100,27 @@ export function getServiceHost(
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
     if (!scriptDocs.has(fileFsPath)) {
-      if (fileFsPath.endsWith('.vue')) {
+      if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
         files.push(filePath);
       }
     }
-    if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
+    if (isVirtualVueTemplateFile(fileFsPath)) {
+      scriptDocs.set(fileFsPath, doc);
+      versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+    } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = jsDocuments.get(doc);
       const lastDoc = scriptDocs.get(fileFsPath);
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         jsLanguageService.dispose();
-        jsLanguageService = tsModule.createLanguageService(host);
+        jsLanguageService = tsModule.createLanguageService(jsHost);
       }
       scriptDocs.set(fileFsPath, currentScriptDoc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
       service: jsLanguageService,
+      templateService: templateLanguageService,
       scriptDoc: currentScriptDoc
     };
   }
@@ -123,105 +135,124 @@ export function getServiceHost(
     return scriptDocs.get(fsPath);
   }
 
-  const host: ts.LanguageServiceHost = {
-    getCompilationSettings: () => compilerOptions,
-    getScriptFileNames: () => files,
-    getScriptVersion(fileName) {
-      if (fileName === bridge.fileName) {
-        return '0';
-      }
-      const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
-      const version = versions.get(normalizedFileFsPath);
-      return version ? version.toString() : '0';
-    },
-    getScriptKind(fileName) {
-      if (isVue(fileName)) {
-        const uri = Uri.file(fileName);
-        fileName = uri.fsPath;
-        const doc =
-          scriptDocs.get(fileName) ||
-          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || ''));
-        return getScriptKind(tsModule, doc.languageId);
-      } else {
+  function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
+    return {
+      getCompilationSettings: () => options,
+      getScriptFileNames: () => files,
+      getScriptVersion(fileName) {
         if (fileName === bridge.fileName) {
-          return tsModule.Extension.Ts;
+          return '0';
         }
-        // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
-        return (tsModule as any).getScriptKindFromFileName(fileName);
-      }
-    },
+        const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
+        const version = versions.get(normalizedFileFsPath);
+        return version ? version.toString() : '0';
+      },
+      getScriptKind(fileName) {
+        if (isVue(fileName)) {
+          const uri = Uri.file(fileName);
+          fileName = uri.fsPath;
+          const doc =
+            scriptDocs.get(fileName) ||
+            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || ''));
+          return getScriptKind(tsModule, doc.languageId);
+        } else if (isVirtualVueTemplateFile(fileName)) {
+          return tsModule.Extension.Js;
+        } else {
+          if (fileName === bridge.fileName) {
+            return tsModule.Extension.Ts;
+          }
+          // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
+          return (tsModule as any).getScriptKindFromFileName(fileName);
+        }
+      },
 
-    // resolve @types, see https://github.com/Microsoft/TypeScript/issues/16772
-    getDirectories: vueSys.getDirectories,
-    directoryExists: vueSys.directoryExists,
-    fileExists: vueSys.fileExists,
-    readFile: vueSys.readFile,
-    readDirectory: vueSys.readDirectory,
+      // resolve @types, see https://github.com/Microsoft/TypeScript/issues/16772
+      getDirectories: vueSys.getDirectories,
+      directoryExists: vueSys.directoryExists,
+      fileExists: vueSys.fileExists,
+      readFile: vueSys.readFile,
+      readDirectory: vueSys.readDirectory,
 
-    resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
-      // in the normal case, delegate to ts.resolveModuleName
-      // in the relative-imported.vue case, manually build a resolved filename
-      return moduleNames.map(name => {
-        if (name === bridge.moduleName) {
+      resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
+        // in the normal case, delegate to ts.resolveModuleName
+        // in the relative-imported.vue case, manually build a resolved filename
+        return moduleNames.map(name => {
+          if (name === bridge.moduleName) {
+            return {
+              resolvedFileName: bridge.fileName,
+              extension: tsModule.Extension.Ts
+            };
+          }
+          if (path.isAbsolute(name) || !isVue(name)) {
+            return tsModule.resolveModuleName(name, containingFile, options, tsModule.sys).resolvedModule;
+          }
+          const resolved = tsModule.resolveModuleName(name, containingFile, options, vueSys).resolvedModule;
+          if (!resolved) {
+            return undefined as any;
+          }
+          if (!resolved.resolvedFileName.endsWith('.vue.ts')) {
+            return resolved;
+          }
+          const resolvedFileName = resolved.resolvedFileName.slice(0, -'.ts'.length);
+          const uri = Uri.file(resolvedFileName);
+          const doc =
+            scriptDocs.get(resolvedFileName) ||
+            jsDocuments.get(
+              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
+            );
+          const extension =
+            doc.languageId === 'typescript'
+              ? tsModule.Extension.Ts
+              : doc.languageId === 'tsx'
+              ? tsModule.Extension.Tsx
+              : tsModule.Extension.Js;
+          return { resolvedFileName, extension };
+        });
+      },
+      getScriptSnapshot: (fileName: string) => {
+        if (fileName === bridge.fileName) {
+          const text = isOldVersion ? bridge.oldContent : bridge.content;
           return {
-            resolvedFileName: bridge.fileName,
-            extension: tsModule.Extension.Ts
+            getText: (start, end) => text.substring(start, end),
+            getLength: () => text.length,
+            getChangeRange: () => void 0
           };
         }
-        if (path.isAbsolute(name) || !isVue(name)) {
-          return tsModule.resolveModuleName(name, containingFile, compilerOptions, tsModule.sys).resolvedModule;
+        const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
+        const doc = scriptDocs.get(normalizedFileFsPath);
+        let fileText = doc ? doc.getText() : tsModule.sys.readFile(normalizedFileFsPath) || '';
+        if (!doc && isVue(fileName)) {
+          // Note: This is required in addition to the parsing in embeddedSupport because
+          // this works for .vue files that aren't even loaded by VS Code yet.
+          fileText = parseVueScript(fileText);
         }
-        const resolved = tsModule.resolveModuleName(name, containingFile, compilerOptions, vueSys).resolvedModule;
-        if (!resolved) {
-          return undefined as any;
-        }
-        if (!resolved.resolvedFileName.endsWith('.vue.ts')) {
-          return resolved;
-        }
-        const resolvedFileName = resolved.resolvedFileName.slice(0, -3);
-        const uri = Uri.file(resolvedFileName);
-        const doc =
-          scriptDocs.get(resolvedFileName) ||
-          jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || ''));
-        const extension =
-          doc.languageId === 'typescript'
-            ? tsModule.Extension.Ts
-            : doc.languageId === 'tsx'
-            ? tsModule.Extension.Tsx
-            : tsModule.Extension.Js;
-        return { resolvedFileName, extension };
-      });
-    },
-    getScriptSnapshot: (fileName: string) => {
-      if (fileName === bridge.fileName) {
-        const text = isOldVersion ? bridge.oldContent : bridge.content;
         return {
-          getText: (start, end) => text.substring(start, end),
-          getLength: () => text.length,
+          getText: (start, end) => fileText.substring(start, end),
+          getLength: () => fileText.length,
           getChangeRange: () => void 0
         };
-      }
-      const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
-      const doc = scriptDocs.get(normalizedFileFsPath);
-      let fileText = doc ? doc.getText() : tsModule.sys.readFile(normalizedFileFsPath) || '';
-      if (!doc && isVue(fileName)) {
-        // Note: This is required in addition to the parsing in embeddedSupport because
-        // this works for .vue files that aren't even loaded by VS Code yet.
-        fileText = parseVue(fileText);
-      }
-      return {
-        getText: (start, end) => fileText.substring(start, end),
-        getLength: () => fileText.length,
-        getChangeRange: () => void 0
-      };
-    },
-    getCurrentDirectory: () => workspacePath,
-    getDefaultLibFileName: tsModule.getDefaultLibFilePath,
-    getNewLine: () => '\n',
-    useCaseSensitiveFileNames: () => true
-  };
+      },
+      getCurrentDirectory: () => workspacePath,
+      getDefaultLibFileName: tsModule.getDefaultLibFilePath,
+      getNewLine: () => '\n',
+      useCaseSensitiveFileNames: () => true
+    };
+  }
 
-  let jsLanguageService = tsModule.createLanguageService(host);
+  const jsHost = createLanguageServiceHost(compilerOptions);
+  const templateHost = createLanguageServiceHost({
+    ...compilerOptions,
+    noImplicitAny: false,
+    noUnusedLocals: false,
+    noUnusedParameters: false,
+    allowJs: true,
+    checkJs: true
+  });
+
+  const registry = tsModule.createDocumentRegistry(true);
+  let jsLanguageService = tsModule.createLanguageService(jsHost, registry);
+  const templateLanguageService = tsModule.createLanguageService(templateHost, registry);
+
   return {
     updateCurrentTextDocument,
     updateExternalDocument,
@@ -236,8 +267,19 @@ function getNormalizedFileFsPath(fileName: string): string {
   return Uri.file(fileName).fsPath;
 }
 
-function isVueProject(path: string) {
+/**
+ * If the path ends with `.vue.ts`, it's a `.vue` file pre-processed by Vetur
+ * to be used in TS Language Service
+ */
+function isVirtualVueFile(path: string) {
   return path.endsWith('.vue.ts') && !path.includes('node_modules');
+}
+/**
+ * If the path ends with `.vue.template`, it's a `.vue` file's template part
+ * pre-processed by Vetur to calculate template diagnostics in TS Language Service
+ */
+export function isVirtualVueTemplateFile(path: string) {
+  return path.endsWith('.vue.template');
 }
 
 function defaultIgnorePatterns(tsModule: T_TypeScript, workspacePath: string) {

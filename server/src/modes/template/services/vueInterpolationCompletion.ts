@@ -24,7 +24,6 @@ export function shouldDoInterpolationComplete(text: string, relativeOffset: numb
 }
 
 export function doVueInterpolationComplete(vueFileInfo: VueFileInfo): CompletionList {
-
   const result: CompletionList = {
     isIncomplete: false,
     items: []

@@ -6,4 +6,4 @@
 ./dist/modes/template/test
 ./dist/modes/style/stylus/test
 ./dist/modes/test/
-./dist/modes/script/
+./dist/modes/script/test

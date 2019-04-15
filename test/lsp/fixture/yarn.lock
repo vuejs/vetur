@@ -1613,10 +1613,10 @@ vue-template-compiler@^2.5.3:
     de-indent "^1.0.2"
     he "^1.1.0"
 
-vue@^2.5.3:
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.9.tgz#b2380cd040915dca69881dafd121d760952e65f7"
-  integrity sha512-9B9XBpCtj8y5eJFrspIcKxIWt+lG9FMdF8qgyOlUeOIvcS4xSAvcARygbzHA6Pi0KWFj4BvxjtWbuPVWRx/wuA==
+vue@^2.6.10:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
+  integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
 
 vuex@^3.0.1:
   version "3.0.1"

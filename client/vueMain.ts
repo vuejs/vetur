@@ -22,10 +22,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
-      client.sendRequest<vscode.Command | undefined>('requestCodeActionEdits', args)
-        .then(command =>
-          command && vscode.commands.executeCommand(command.command, ...command.arguments!)
-        );
+      client
+        .sendRequest<vscode.Command | undefined>('requestCodeActionEdits', args)
+        .then(command => command && vscode.commands.executeCommand(command.command, ...command.arguments!));
     })
   );
 

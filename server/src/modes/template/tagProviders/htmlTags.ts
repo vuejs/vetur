@@ -874,7 +874,8 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
 
   return {
     getId: () => 'html5',
-    collectTags: (collector: (tag: string, label: string | MarkupContent) => void) => collectTagsDefault(collector, HTML_TAGS),
+    collectTags: (collector: (tag: string, label: string | MarkupContent) => void) =>
+      collectTagsDefault(collector, HTML_TAGS),
     collectAttributes: (tag: string, collector: AttributeCollector) => {
       collectAttributesDefault(tag, collector, HTML_TAGS, globalAttributes);
       eventHandlers.forEach(handler => {

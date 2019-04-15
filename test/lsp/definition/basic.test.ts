@@ -23,7 +23,7 @@ describe('Should find definition', () => {
 
   it('finds definition for Vue#data', async () => {
     const vueOptionsDtsUri = getDocUri('node_modules/vue/types/options.d.ts');
-    await testDefinition(docUri, position(20, 2), sameLineLocation(vueOptionsDtsUri, 58, 2, 6));
+    await testDefinition(docUri, position(20, 2), sameLineLocation(vueOptionsDtsUri, 73, 2, 6));
   });
 
   it('finds definition for imported Vue files', async () => {
