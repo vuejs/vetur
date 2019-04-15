@@ -1,5 +1,4 @@
 {
-  "tslint.enable": true,
   "files.exclude": {
     "docs/_book": true
   }
