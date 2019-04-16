@@ -96,6 +96,16 @@ describe('template-diag Should find diagnostics in <template> region', () => {
           message: "Property 'notExist' does not exist on type"
         }
       ]
+    },
+    {
+      file: 'template-position.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(13, 18, 21),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'foo' does not exist on type"
+        }
+      ]
     }
   ];
 

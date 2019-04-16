@@ -38,7 +38,7 @@ function parseVueTemplate(text: string): string {
   if (rawText.replace(/\s/g, '') === '') {
     return '';
   }
-  return rawText.replace(/^\s*\n/, '<template>\n').replace(/\s*\n$/, '\n</template>');
+  return rawText.replace(/ {10}/, '<template>') + '</template>';
 }
 
 export function createUpdater(tsModule: T_TypeScript) {
