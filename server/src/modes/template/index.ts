@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 
-import { getLanguageModelCache } from '../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
-import { LanguageMode } from '../languageModes';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { HTMLDocument } from './parser/htmlParser';
 import { doComplete } from './services/htmlCompletion';
 import { doHover } from './services/htmlHover';
@@ -11,7 +12,7 @@ import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
 import { parseHTMLDocument } from './parser/htmlParser';
-import { doValidation, createLintEngine } from './services/htmlValidation';
+import { doESLintValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings, IHTMLTagProvider } from './tagProviders';
 import { getEnabledTagProviders } from './tagProviders';
@@ -29,7 +30,7 @@ export function getVueHTMLMode(
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
-    documentService.getDocumentInfo(document)!.regions.getEmbeddedDocument('vue-html')
+    documentService.getDocumentInfo(document)!.regions.getSingleLanguageDocument('vue-html')
   );
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
@@ -46,7 +47,7 @@ export function getVueHTMLMode(
     },
     doValidation(document) {
       const embedded = embeddedDocuments.get(document);
-      return doValidation(embedded, lintEngine);
+      return doESLintValidation(embedded, lintEngine);
     },
     doComplete(document, position) {
       const embedded = embeddedDocuments.get(document);

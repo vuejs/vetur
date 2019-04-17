@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.18.1 | 2019-04-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.1/vspackage)
+
+- Improve embedded language support to fix second style block having no auto completion bug. #430 and #852.
+- Fix a Stylus formatting bug where it wrongly formats multiple Stylus blocks. #499.
+- 🙌 Fix a bug where Vetur doesn't clear document for diagnostics. Thanks to contribution from [James Lave](https://github.com/jlave-dev). #1181 and #1147.
+
 ### 0.18.0 | 2019-04-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.0/vspackage)
 
 - Vetur now bundles TypeScript 3.3.4000. This fixes many TS/JS related issues. See more in #1163.

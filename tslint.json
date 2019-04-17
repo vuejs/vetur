@@ -21,9 +21,6 @@
     "whitespace": true,
     "semicolon": [true, "always"],
     "triple-equals": true,
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
-    "no-floating-promises": true
-  },
-  "linterOptions": {
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
   }
 }

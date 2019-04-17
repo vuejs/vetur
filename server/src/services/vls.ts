@@ -26,8 +26,6 @@ import {
   DocumentSymbolParams,
   Hover,
   Location,
-  Position,
-  Range,
   SignatureHelp,
   SymbolInformation,
   TextDocumentChangeEvent,
@@ -36,7 +34,7 @@ import {
 } from 'vscode-languageserver-types';
 
 import Uri from 'vscode-uri';
-import { LanguageModes } from '../modes/languageModes';
+import { LanguageModes } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
@@ -93,7 +91,9 @@ export class VLS {
     await this.vueInfoService.init(this.languageModes);
     await this.dependencyService.init(
       workspacePath,
-      _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+      params.initializationOptions
+        ? _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
+        : false
     );
     await this.languageModes.init(workspacePath, {
       infoService: this.vueInfoService,
@@ -171,9 +171,13 @@ export class VLS {
     });
     this.documentService.onDidClose(e => {
       this.removeDocument(this.documentService.getDocumentInfo(e.document.uri)!);
+      this.lspConnection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
     });
     this.externalDocumentService.onDidChangeContent(e => {
       const jsMode = this.languageModes.getMode('javascript');
+      if (!jsMode) {
+        throw Error(`Can't find JS mode.`);
+      }
       const fsPath = Uri.parse(e.document.uri).fsPath;
       jsMode.onDocumentChanged!(fsPath);
       this.documentService.getAllDocuments().forEach(d => {
@@ -217,11 +221,9 @@ export class VLS {
    */
 
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
-    const info = this.documentService.getDocumentInfo(textDocument.uri)!;
+    const doc = this.documentService.getDocumentInfo(textDocument.uri)!;
 
-    const fullDocRange = Range.create(Position.create(0, 0), info.positionAt(info.getText().length));
-
-    const modeRanges = this.languageModes.getModesInRange(info, fullDocRange);
+    const modeRanges = this.languageModes.getAllLanguageModeRangesInDocument(doc);
     const allEdits: TextEdit[] = [];
 
     const errMessages: string[] = [];
@@ -326,9 +328,9 @@ export class VLS {
     };
 
     const links: DocumentLink[] = [];
-    this.languageModes.getAllModesInDocument(info).forEach(m => {
-      if (m.findDocumentLinks) {
-        pushAll(links, m.findDocumentLinks(info, documentContext));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentLinks) {
+        pushAll(links, m.mode.findDocumentLinks(doc, documentContext));
       }
     });
     return links;
@@ -338,9 +340,9 @@ export class VLS {
     const info = this.documentService.getDocumentInfo(textDocument.uri)!;
     const symbols: SymbolInformation[] = [];
 
-    this.languageModes.getAllModesInDocument(info).forEach(m => {
-      if (m.findDocumentSymbols) {
-        pushAll(symbols, m.findDocumentSymbols(info));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentSymbols) {
+        pushAll(symbols, m.mode.findDocumentSymbols(doc));
       }
     });
     return symbols;
@@ -350,9 +352,9 @@ export class VLS {
     const info = this.documentService.getDocumentInfo(textDocument.uri)!;
     const colors: ColorInformation[] = [];
 
-    this.languageModes.getAllModesInDocument(info).forEach(m => {
-      if (m.findDocumentColors) {
-        pushAll(colors, m.findDocumentColors(info));
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+      if (m.mode.findDocumentColors) {
+        pushAll(colors, m.mode.findDocumentColors(doc));
       }
     });
     return colors;
@@ -377,10 +379,10 @@ export class VLS {
   }
 
   onCodeAction({ textDocument, range, context }: CodeActionParams) {
-    const info = this.documentService.getDocumentInfo(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(info, range.start);
-    if (this.languageModes.getModeAtPosition(info, range.end) !== mode) {
-      throw new Error("Vetur/VLS can't handle ranges across different sections of a .vue file.");
+    const doc = this.documentService.getDocument(textDocument.uri)!;
+    const mode = this.languageModes.getModeAtPosition(doc, range.start);
+    if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
+      return [];
     }
     if (mode && mode.getCodeActions) {
       // TODO: funnel formatParams?
@@ -424,9 +426,9 @@ export class VLS {
   doValidate(doc: VueDocumentInfo): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
-      this.languageModes.getAllModesInDocument(doc).forEach(mode => {
-        if (mode.doValidation && this.validation[mode.getId()]) {
-          pushAll(diagnostics, mode.doValidation(doc));
+      this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
+        if (lmr.mode.doValidation && this.validation[lmr.mode.getId()]) {
+          pushAll(diagnostics, lmr.mode.doValidation(doc));
         }
       });
     }

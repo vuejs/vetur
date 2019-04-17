@@ -102,7 +102,7 @@
           "include": "#tag-stuff"
         },
         {
-          "contentName": "source.vue.pug",
+          "contentName": "text.pug",
           "begin": "(>)",
           "beginCaptures": {
             "1": {
@@ -909,7 +909,7 @@
     "vue-directives": {
       "name": "meta.directive.vue",
       "begin": "(?:\\b(v-)|(:|@|#))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)",
-      "end": "(?<='|\"|`)",
+      "end": "(?<='|\")|(?=[\\s<>`])",
       "captures": {
         "1": {
           "name": "entity.other.attribute-name.html"
@@ -947,7 +947,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         },
@@ -967,7 +967,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         },
@@ -987,7 +987,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         }
@@ -996,7 +996,7 @@
     "vue-interpolations": {
       "patterns": [
         {
-          "name": "expression.embbeded.vue",
+          "name": "expression.embedded.vue",
           "begin": "\\{\\{\\{?",
           "beginCaptures": {
             "0": {
@@ -1011,7 +1011,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         }

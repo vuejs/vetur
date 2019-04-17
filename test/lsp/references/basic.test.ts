@@ -10,6 +10,8 @@ describe('Should find references', () => {
     await activateLS();
     await showFile(docUri);
     await sleep(FILE_LOAD_SLEEP_TIME);
+    // Wait a bit more for references to load
+    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('finds references for this.msg', async () => {
@@ -31,7 +33,7 @@ describe('Should find references', () => {
   it('finds references for Vue#data', async () => {
     const vueOptionsDtsUri = getDocUri('node_modules/vue/types/options.d.ts');
     await testReferences(docUri, position(21, 2), [
-      sameLineLocation(vueOptionsDtsUri, 58, 2, 6),
+      sameLineLocation(vueOptionsDtsUri, 73, 2, 6),
       sameLineLocation(docUri, 21, 2, 6)
     ]);
   });

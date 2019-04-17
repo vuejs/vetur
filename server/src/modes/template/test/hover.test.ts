@@ -19,15 +19,15 @@ const html = hoverDSL({
 });
 
 suite('HTML Hover', () => {
-  test('Attribute', function () {
-    html`<div a|ria-atomic="true"></div>`.hasNothing();
-    html`<component inli|ne-template></component>`.hasHoverAt(
-      'treat inner content as its template rather than distributed content',
-      11
-    );
-    html`<div :v|-if="true"></div>`.hasHoverAt(
-      'Conditionally renders the element based on the truthy\\-ness of the expression value\\.',
-      5
-    );
+  test('Attribute', function() {
+    // prettier-ignore
+    html`<div a|ria-atomic="true"></div>`
+      .hasNothing();
+    // prettier-ignore
+    html`<component inli|ne-template></component>`
+      .hasHoverAt('treat inner content as its template rather than distributed content', 11);
+    // prettier-ignore
+    html`<div :v|-if="true"></div>`
+      .hasHoverAt('Conditionally renders the element based on the truthy\\-ness of the expression value\\.', 5);
   });
 });

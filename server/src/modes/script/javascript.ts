@@ -1,4 +1,4 @@
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import {
   SymbolInformation,
   SymbolKind,
@@ -20,8 +20,8 @@ import {
   MarkupContent,
   DiagnosticTag
 } from 'vscode-languageserver-types';
-import { LanguageMode } from '../languageModes';
-import { LanguageRange } from '../embeddedSupport';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
 import { getServiceHost } from './serviceHost';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
@@ -61,16 +61,19 @@ export async function getJavascriptMode(
       documentInfo = new VueDocumentInfo(document);
     }
     const vueDocument = documentInfo.regions;
-    return vueDocument.getEmbeddedDocumentInfoByType('script');
+    // return vueDocument.getEmbeddedDocumentInfoByType('script');
+    // const vueDocument = documentRegions.get(document);
+    return vueDocument.getSingleTypeDocument('script');
   });
 
-  const regionStart = getLanguageModelCache(10, 60, document => {
+  const firstScriptRegion = getLanguageModelCache(10, 60, document => {
     let documentInfo = documentService.getDocumentInfo(document) as VueDocumentInfo;
     if (!documentInfo) {
       documentInfo = new VueDocumentInfo(document);
     }
     const vueDocument = documentInfo.regions;
-    return vueDocument.getLanguageRangeByType('script');
+    const scriptRegions = vueDocument.getLanguageRangesOfType('script');
+    return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
 
   let tsModule: T_TypeScript = ts;
@@ -106,36 +109,74 @@ export async function getJavascriptMode(
       }
     },
 
-    doValidation(doc) {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
-        return [];
-      }
+    doValidation(doc): Diagnostic[] {
+      const templateDiags = getTemplateDiagnostics();
+      const scriptDiags = getScriptDiagnostics();
+      return [...templateDiags, ...scriptDiags];
 
-      const fileFsPath = getFileFsPath(doc.uri);
-      const diagnostics = [
-        ...service.getSyntacticDiagnostics(fileFsPath),
-        ...service.getSemanticDiagnostics(fileFsPath)
-      ];
-
-      return diagnostics.map(diag => {
-        const tags: DiagnosticTag[] = [];
-
-        if (diag.reportsUnnecessary) {
-          tags.push(DiagnosticTag.Unnecessary);
+      function getTemplateDiagnostics(): Diagnostic[] {
+        const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
+        if (!enabledTemplateValidation) {
+          return [];
         }
 
-        // syntactic/semantic diagnostic always has start and length
-        // so we can safely cast diag to TextSpan
-        return <Diagnostic>{
-          range: convertRange(scriptDoc.document, diag as ts.TextSpan),
-          severity: DiagnosticSeverity.Error,
-          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
-          tags,
-          code: diag.code,
-          source: 'Vetur'
-        };
-      });
+        // Add suffix to process this doc as vue template.
+        const templateDoc = TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText());
+
+        const { templateService } = updateCurrentTextDocument(templateDoc);
+        if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+          return [];
+        }
+
+        const templateFileFsPath = getFileFsPath(templateDoc.uri);
+        // We don't need syntactic diagnostics because
+        // compiled template is always valid JavaScript syntax.
+        const rawTemplateDiagnostics = templateService.getSemanticDiagnostics(templateFileFsPath);
+
+        return rawTemplateDiagnostics.map(diag => {
+          // syntactic/semantic diagnostic always has start and length
+          // so we can safely cast diag to TextSpan
+          return {
+            range: convertRange(templateDoc, diag as ts.TextSpan),
+            severity: DiagnosticSeverity.Error,
+            message: ts.flattenDiagnosticMessageText(diag.messageText, '\n'),
+            code: diag.code,
+            source: 'Vetur'
+          };
+        });
+      }
+
+      function getScriptDiagnostics(): Diagnostic[] {
+        const { scriptDoc, service } = updateCurrentTextDocument(doc);
+        if (!languageServiceIncludesFile(service, doc.uri)) {
+          return [];
+        }
+
+        const fileFsPath = getFileFsPath(doc.uri);
+        const rawScriptDiagnostics = [
+          ...service.getSyntacticDiagnostics(fileFsPath),
+          ...service.getSemanticDiagnostics(fileFsPath)
+        ];
+
+        return rawScriptDiagnostics.map(diag => {
+          const tags: DiagnosticTag[] = [];
+
+          if (diag.reportsUnnecessary) {
+            tags.push(DiagnosticTag.Unnecessary);
+          }
+
+          // syntactic/semantic diagnostic always has start and length
+          // so we can safely cast diag to TextSpan
+          return <Diagnostic>{
+            range: convertRange(scriptDoc, diag as ts.TextSpan),
+            severity: DiagnosticSeverity.Error,
+            message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
+            tags,
+            code: diag.code,
+            source: 'Vetur'
+          };
+        });
+      }
     },
     doComplete(document, position) {
       const { scriptDoc, service } = updateCurrentTextDocument(document);
@@ -205,7 +246,7 @@ export async function getJavascriptMode(
           value: tsModule.displayPartsToString(details.documentation)
         };
         if (details.codeActions && config.vetur.completion.autoImport) {
-          const textEdits = convertCodeAction(document, details.codeActions, regionStart);
+          const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
           item.additionalTextEdits = textEdits;
 
           details.codeActions.forEach(action => {
@@ -465,7 +506,7 @@ export async function getJavascriptMode(
       const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
 
       if (defaultFormatter === 'prettier' || defaultFormatter === 'prettier-eslint') {
-        const code = scriptDoc.document.getText();
+        const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
 
         return defaultFormatter === 'prettier'

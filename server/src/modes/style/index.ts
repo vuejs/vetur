@@ -9,8 +9,9 @@ import * as _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 
 import { Priority } from './emmet';
-import { getLanguageModelCache } from '../languageModelCache';
-import { LanguageMode } from '../languageModes';
+import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { VueDocumentRegions, LanguageId } from '../../embeddedSupport/embeddedSupport';
 import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
@@ -38,12 +39,12 @@ export function getLESSMode(documentService: DocumentService): LanguageMode {
 }
 
 function getStyleMode(
-  languageId: string,
+  languageId: LanguageId,
   languageService: LanguageService,
   documentService: DocumentService
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentService.getDocumentInfo(document)!.regions.getEmbeddedDocument(languageId)
+    documentService.getDocumentInfo(document)!.regions.getSingleLanguageDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
   let config: any = {};

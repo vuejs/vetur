@@ -1100,7 +1100,18 @@
 		}
 	},
 	{
-		"c": ":attr",
+		"c": ":",
+		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue punctuation.separator.key-value.html",
+		"r": {
+			"dark_plus": "default: #D4D4D4",
+			"light_plus": "default: #000000",
+			"dark_vs": "default: #D4D4D4",
+			"light_vs": "default: #000000",
+			"hc_black": "default: #FFFFFF"
+		}
+	},
+	{
+		"c": "attr",
 		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
@@ -1332,7 +1343,7 @@
 	},
 	{
 		"c": "{{",
-		"t": "source.vue text.html.vue-html expression.embbeded.vue punctuation.definition.generic.begin.html",
+		"t": "source.vue text.html.vue-html expression.embedded.vue punctuation.definition.generic.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1343,7 +1354,7 @@
 	},
 	{
 		"c": "test",
-		"t": "source.vue text.html.vue-html expression.embbeded.vue meta.function-call.js variable.other.object.js",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.function-call.js variable.other.object.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -1354,7 +1365,7 @@
 	},
 	{
 		"c": ".",
-		"t": "source.vue text.html.vue-html expression.embbeded.vue meta.function-call.js punctuation.accessor.js",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.function-call.js punctuation.accessor.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1365,7 +1376,7 @@
 	},
 	{
 		"c": "case",
-		"t": "source.vue text.html.vue-html expression.embbeded.vue meta.function-call.js entity.name.function.js",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.function-call.js entity.name.function.js",
 		"r": {
 			"dark_plus": "entity.name.function: #DCDCAA",
 			"light_plus": "entity.name.function: #795E26",
@@ -1376,7 +1387,7 @@
 	},
 	{
 		"c": "()",
-		"t": "source.vue text.html.vue-html expression.embbeded.vue meta.brace.round.js",
+		"t": "source.vue text.html.vue-html expression.embedded.vue meta.brace.round.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -1387,7 +1398,7 @@
 	},
 	{
 		"c": "}}",
-		"t": "source.vue text.html.vue-html expression.embbeded.vue punctuation.definition.generic.end.html",
+		"t": "source.vue text.html.vue-html expression.embedded.vue punctuation.definition.generic.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",

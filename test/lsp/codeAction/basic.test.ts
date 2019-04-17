@@ -16,7 +16,7 @@ describe('Should do codeAction', () => {
   });
 
   it('finds codeAction for unused import', async () => {
-    const codeActions = [{ title: `Remove declaration for: '_'`, command: 'vetur.applyWorkspaceEdits' }];
+    const codeActions = [{ title: `Remove declaration for: 'lodash'`, command: 'vetur.applyWorkspaceEdits' }];
     await testCodeAction(docUri, sameLineRange(5, 6, 6), codeActions);
   });
 
@@ -48,7 +48,7 @@ async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedA
         return rAction.title === eAction.title && rAction.command === eAction.command;
       }),
       `Cannot find matching codeAction with title '${eAction.title}'\n` +
-        `Seen codeActions are:\n${JSON.stringify(result)}`
+        `Seen codeActions are:\n${JSON.stringify(result, null, 2)}`
     );
   });
 }

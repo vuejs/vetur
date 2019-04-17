@@ -4,8 +4,9 @@ import { CompletionList, TextEdit } from 'vscode-languageserver-types';
 import { IStylusSupremacy } from './stylus-supremacy';
 
 import { Priority } from '../emmet';
-import { getLanguageModelCache } from '../../languageModelCache';
-import { LanguageMode } from '../../languageModes';
+import { LanguageModelCache, getLanguageModelCache } from '../../../embeddedSupport/languageModelCache';
+import { LanguageMode } from '../../../embeddedSupport/languageModes';
+import { VueDocumentRegions } from '../../../embeddedSupport/embeddedSupport';
 
 import { provideCompletionItems } from './completion-item';
 import { provideDocumentSymbols } from './symbols-finder';
@@ -17,7 +18,7 @@ import { DocumentService } from '../../../services/documentService';
 
 export function getStylusMode(documentService: DocumentService): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentService.getDocumentInfo(document)!.regions.getEmbeddedDocument('stylus')
+    documentService.getDocumentInfo(document)!.regions.getSingleLanguageDocument('stylus')
   );
   let baseIndentShifted = false;
   let config: any = {};
@@ -71,8 +72,7 @@ export function getStylusMode(documentService: DocumentService): LanguageMode {
 
       const stylusSupremacy: IStylusSupremacy = requireLocalPkg(getFileFsPath(document.uri), 'stylus-supremacy');
 
-      const embedded = embeddedDocuments.get(document);
-      const inputText = embedded.getText();
+      const inputText = document.getText(range);
 
       const vlsFormatConfig = config.vetur.format as VLSFormatConfig;
       const tabStopChar = vlsFormatConfig.options.useTabs ? '\t' : ' '.repeat(vlsFormatConfig.options.tabSize);
@@ -106,7 +106,7 @@ export function getStylusMode(documentService: DocumentService): LanguageMode {
       const formattedText = stylusSupremacy.format(inputText, formattingOptions);
 
       // Add the base indentation and correct the new line characters
-      const outputText = ((range.start.line !== range.end.line ? '\n' : '') + formattedText)
+      const outputText = formattedText
         .split(/\n/)
         .map(line => (line.length > 0 ? baseIndent + line : ''))
         .join(newLineChar);

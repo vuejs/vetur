@@ -4,13 +4,13 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "publisher": "octref",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "tsc -b .",
     "watch": "tsc -b -w .",
-    "lint": "tslint -p tslint.json",
+    "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
     "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test": "run-s lint compile test:server test:e2e",
@@ -89,13 +89,6 @@
         "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
-        "id": "vue-pug",
-        "aliases": [
-          "Vue-pug"
-        ],
-        "configuration": "./languages/vue-pug-language-configuration.json"
-      },
-      {
         "id": "vue-postcss",
         "aliases": [
           "Vue-PostCSS",
@@ -114,6 +107,7 @@
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
           "text.jade.slm": "slm",
+          "text.pug": "jade",
           "text.haml": "haml",
           "source.css": "css",
           "source.css.scss": "scss",
@@ -418,6 +412,11 @@
         "vetur.dev.vlsPath": {
           "type": "string",
           "description": "Path to VLS for Vetur developers. There are two ways of using it. \n\n1. Clone vuejs/vetur from GitHub, build it and point it to the ABSOLUTE path of `/server`.\n2. `yarn global add vue-language-server` and point Vetur to the installed location (`yarn global dir` + node_modules/vue-language-server)"
+        },
+        "vetur.experimental.templateTypeCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Type-check interpolation expressions in <template> region"
         }
       }
     }
