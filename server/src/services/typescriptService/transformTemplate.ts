@@ -20,6 +20,8 @@ const globalScope = (
 
 const vOnScope = ['$event', 'arguments'];
 
+type ESLintVChild = AST.VElement | AST.VExpressionContainer | AST.VText;
+
 export function getTemplateTransformFunctions(ts: T_TypeScript) {
   return {
     transformTemplate,
@@ -42,7 +44,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       return [];
     }
 
-    return template.children.map(c => transformChild(c, code, globalScope));
+    return transformChildren(template.children, code, globalScope);
   }
 
   /**
@@ -52,46 +54,16 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    * __vlsComponentHelper('div', { props: { title: this.foo } }, [ ...children... ]);
    */
   function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
-    const newScope = scope.concat(node.variables.map(v => v.id.name));
-    const element = ts.createCall(ts.createIdentifier(componentHelperName), undefined, [
+    return ts.createCall(ts.createIdentifier(componentHelperName), undefined, [
       // Element / Component name
       ts.createLiteral(node.name),
 
       // Attributes / Directives
-      transformAttributes(node.startTag.attributes, code, newScope),
+      transformAttributes(node.startTag.attributes, code, scope),
 
       // Children
-      ts.createArrayLiteral(node.children.map(c => transformChild(c, code, newScope)))
+      ts.createArrayLiteral(transformChildren(node.children, code, scope))
     ]);
-
-    const vFor = node.startTag.attributes.find(isVFor);
-    if (!vFor || !vFor.value || !vFor.value.expression) {
-      return element;
-    } else {
-      // Convert v-for directive to the iteration helper
-      const exp = vFor.value.expression as AST.VForExpression;
-
-      return ts.createCall(ts.createIdentifier(iterationHelperName), undefined, [
-        // Iteration target
-        parseExpression(exp.right, code, scope),
-
-        // Callback
-        ts.createArrowFunction(
-          undefined,
-          undefined,
-          parseParams(exp.left, code, scope),
-          undefined,
-          ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
-          element
-        )
-      ]);
-    }
-  }
-
-  interface AttributeData {
-    props: ts.ObjectLiteralElementLike[];
-    on: ts.ObjectLiteralElementLike[];
-    directives: ts.Expression[];
   }
 
   function transformAttributes(
@@ -99,6 +71,12 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     code: string,
     scope: string[]
   ): ts.Expression {
+    interface AttributeData {
+      props: ts.ObjectLiteralElementLike[];
+      on: ts.ObjectLiteralElementLike[];
+      directives: ts.Expression[];
+    }
+
     const data: AttributeData = {
       props: [],
       on: [],
@@ -290,29 +268,200 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     return res;
   }
 
-  function transformChild(
-    child: AST.VElement | AST.VExpressionContainer | AST.VText,
-    code: string,
-    scope: string[]
-  ): ts.Expression {
-    switch (child.type) {
-      case 'VElement':
-        return transformElement(child, code, scope);
-      case 'VExpressionContainer': {
-        const exp = child.expression as AST.ESLintExpression | AST.VFilterSequenceExpression | null;
-        if (!exp) {
-          return ts.createLiteral('');
-        }
+  function transformChildren(children: ESLintVChild[], code: string, originalScope: string[]): ts.Expression[] {
+    type ChildData = VIfFamilyData | VForData | NodeData;
 
-        if (exp.type === 'VFilterSequenceExpression') {
-          return transformFilter(exp, code, scope);
-        }
-
-        return parseExpression(exp, code, scope);
-      }
-      case 'VText':
-        return ts.createLiteral(child.value);
+    /**
+     * For v-if, v-else-if and v-else
+     */
+    interface VIfFamilyData {
+      type: 'v-if-family';
+      data: ChildData;
+      directive: AST.VDirective;
+      next?: VIfFamilyData;
     }
+
+    interface VForData {
+      type: 'v-for';
+      data: ChildData;
+      vFor: AST.VDirective;
+      scope: string[];
+    }
+
+    interface NodeData {
+      type: 'node';
+      data: ESLintVChild;
+    }
+
+    // Pre-transform child nodes to make further transformation easier
+    function preTransform(children: ESLintVChild[]): ChildData[] {
+      const queue = children.slice();
+
+      function element(el: AST.VElement, attrs: (AST.VAttribute | AST.VDirective)[]): ChildData {
+        // v-for has higher priority than v-if
+        // https://vuejs.org/v2/guide/list.html#v-for-with-v-if
+        const vFor = attrs.find(isVFor);
+        if (vFor) {
+          const index = attrs.indexOf(vFor);
+          const scope = el.variables.map(v => v.id.name);
+
+          return {
+            type: 'v-for',
+            vFor,
+            data: element(el, [...attrs.slice(0, index), ...attrs.slice(index + 1)]),
+            scope
+          };
+        }
+
+        const vIf = attrs.find(isVIf);
+        if (vIf) {
+          const index = attrs.indexOf(vIf);
+          return {
+            type: 'v-if-family',
+            directive: vIf,
+            data: element(el, [...attrs.slice(0, index), ...attrs.slice(index + 1)]),
+            next: followVIf()
+          };
+        }
+
+        return {
+          type: 'node',
+          data: el
+        };
+      }
+
+      function followVIf(): VIfFamilyData | undefined {
+        const el = queue[0];
+        if (!el || el.type !== 'VElement') {
+          return undefined;
+        }
+
+        const attrs = el.startTag.attributes;
+        const directive = attrs.find(isVElseIf) || attrs.find(isVElse);
+
+        if (!directive) {
+          return undefined;
+        }
+
+        queue.shift();
+        return {
+          type: 'v-if-family',
+          directive,
+          data: element(el, attrs),
+          next: followVIf()
+        };
+      }
+
+      function loop(acc: ChildData[]): ChildData[] {
+        const target = queue.shift();
+        if (!target) {
+          return acc;
+        }
+
+        if (target.type !== 'VElement') {
+          return loop(
+            acc.concat({
+              type: 'node',
+              data: target
+            })
+          );
+        }
+
+        return loop(acc.concat(element(target, target.startTag.attributes)));
+      }
+
+      return loop([]);
+    }
+
+    function mainTransform(children: ChildData[]): ts.Expression[] {
+      function genericTransform(child: ChildData, scope: string[]): ts.Expression {
+        switch (child.type) {
+          case 'v-for':
+            return vForTransform(child, scope);
+          case 'v-if-family':
+            return vIfFamilyTransform(child, scope);
+          case 'node':
+            return nodeTransform(child, scope);
+        }
+      }
+
+      function vIfFamilyTransform(vIfFamily: VIfFamilyData, scope: string[]): ts.Expression {
+        const dir = vIfFamily.directive;
+        const exp = dir.value && (dir.value.expression as AST.ESLintExpression | null);
+
+        const condition = exp ? parseExpression(exp, code, scope) : ts.createLiteral(true);
+        const next = vIfFamily.next ? vIfFamilyTransform(vIfFamily.next, scope) : ts.createLiteral(true);
+
+        return ts.createConditional(
+          // v-if or v-else-if condition
+          condition,
+
+          // element that the v-if family directive belongs to
+          genericTransform(vIfFamily.data, scope),
+
+          // next sibling element of v-if or v-else if any
+          next
+        );
+      }
+
+      function vForTransform(vForData: VForData, scope: string[]): ts.Expression {
+        const vFor = vForData.vFor;
+        if (!vFor.value || !vFor.value.expression) {
+          return genericTransform(vForData.data, scope);
+        }
+
+        // Convert v-for directive to the iteration helper
+        const exp = vFor.value.expression as AST.VForExpression;
+        const newScope = scope.concat(vForData.scope);
+
+        return ts.createCall(ts.createIdentifier(iterationHelperName), undefined, [
+          // Iteration target
+          parseExpression(exp.right, code, scope),
+
+          // Callback
+
+          ts.createArrowFunction(
+            undefined,
+            undefined,
+            parseParams(exp.left, code, scope),
+            undefined,
+            ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+            genericTransform(vForData.data, newScope)
+          )
+        ]);
+      }
+
+      function nodeTransform(nodeData: NodeData, scope: string[]): ts.Expression {
+        const child = nodeData.data;
+        switch (child.type) {
+          case 'VElement':
+            return transformElement(child, code, scope);
+          case 'VExpressionContainer': {
+            const exp = child.expression as AST.ESLintExpression | AST.VFilterSequenceExpression | null;
+            if (!exp) {
+              return ts.createLiteral('');
+            }
+
+            if (exp.type === 'VFilterSequenceExpression') {
+              return transformFilter(exp, code, scope);
+            }
+
+            return parseExpression(exp, code, scope);
+          }
+          case 'VText':
+            return ts.createLiteral(child.value);
+        }
+      }
+
+      return children.map(child => genericTransform(child, originalScope));
+    }
+
+    // Remove whitespace nodes
+    const filtered = children.filter(child => {
+      return child.type !== 'VText' || child.value.trim() !== '';
+    });
+
+    return mainTransform(preTransform(filtered));
   }
 
   function transformStatement(statement: AST.ESLintStatement, code: string, scope: string[]): ts.Statement {
@@ -549,6 +698,18 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
   function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
     return node.directive && node.key.name.name === 'on';
+  }
+
+  function isVIf(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && node.key.name.name === 'if';
+  }
+
+  function isVElseIf(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && node.key.name.name === 'else-if';
+  }
+
+  function isVElse(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && node.key.name.name === 'else';
   }
 
   function isVFor(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
