@@ -10,7 +10,7 @@ const stylus = hoverDSL({
   }
 });
 
-suite.skip('Stylus Hover', () => {
+suite('Stylus Hover', () => {
   test('property hover', () => {
     stylus`.test
   cu|rsor pointer`.hasHoverAt('Allows control over cursor appearance in an element', 9);

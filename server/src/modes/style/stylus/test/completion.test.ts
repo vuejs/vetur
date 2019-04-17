@@ -12,7 +12,7 @@ const setup: CompletionTestSetup = {
 
 const stylus = testDSL(setup);
 
-suite.skip('Stylus Completion', () => {
+suite('Stylus Completion', () => {
   test('basic property', () => {
     stylus`back|`.has('background');
 
