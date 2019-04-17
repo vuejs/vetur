@@ -1,5 +1,5 @@
 import { IConnection, TextDocument, Emitter, Event } from 'vscode-languageserver';
-import { sys, Extension } from 'typescript';
+import { sys, Extension, IScriptSnapshot, TextChangeRange, unchangedTextChangeRange } from 'typescript';
 import { isVue, parseVue } from '../modes/script/preprocess';
 import Uri from 'vscode-uri';
 import { extname } from 'path';
@@ -102,6 +102,7 @@ export class ExternalDocumentService {
 
 export class ExternalDocumentInfo {
   private _version = 0;
+  private _snapshot: IScriptSnapshot | null = null;
   public readonly uri: string;
   public readonly languageId: string;
   constructor(uri: string, languageId: string) {
@@ -124,6 +125,14 @@ export class ExternalDocumentInfo {
 
   public changeContent(version?: number): void {
     this._version = version || this.version + 1;
+    this._snapshot = null;
+  }
+
+  public get snapshot() {
+    if (this._snapshot === null) {
+      this._snapshot = new DocumentSnapshot(this);
+    }
+    return this._snapshot;
   }
 }
 
@@ -148,4 +157,48 @@ function getLanguageId(fileName: string): string {
       return 'jsx';
   }
   return 'unknown';
+}
+
+class DocumentSnapshot implements IScriptSnapshot {
+  public textSnapshot: string;
+  public version: number;
+
+  constructor(documentInfo: ExternalDocumentInfo) {
+    this.textSnapshot = documentInfo.getText() || '';
+    this.version = documentInfo.version;
+  }
+
+  public getText(start: number, end: number): string {
+    return this.textSnapshot.substring(start, end);
+  }
+
+  public getLength(): number {
+    return this.textSnapshot.length;
+  }
+
+  public getChangeRange(oldScript: IScriptSnapshot): TextChangeRange | undefined {
+    const oldShim = <DocumentSnapshot>oldScript;
+    return this.getTextChangeRange(oldShim);
+  }
+
+  public getTextChangeRange(oldVersion: DocumentSnapshot): TextChangeRange {
+    if (this.version === oldVersion.version) {
+      // No edits!
+      return unchangedTextChangeRange;
+    }
+
+    // TODO: Try to create the correct change text range, that doesn't break things.
+    return undefined as any;
+    // if (oldVersion.documentInfo.editRanges.length > 0) {
+    //   return ts.collapseTextChangeRangesAcrossMultipleVersions(
+    //     this.documentInfo.editRanges.slice(
+    //       oldVersion.documentInfo.editRanges.length - 1,
+    //       this.documentInfo.editRanges.length - 1
+    //     )
+    //   );
+    // } else if (oldVersion.documentInfo.editRanges.length > this.documentInfo.editRanges.length) {
+    //   return undefined;
+    // }
+    // return ts.collapseTextChangeRangesAcrossMultipleVersions(this.documentInfo.editRanges);
+  }
 }

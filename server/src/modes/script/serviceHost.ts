@@ -8,8 +8,8 @@ import { LanguageModelCache } from '../languageModelCache';
 import { createUpdater, parseVue, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
-import { VueDocumentInfo, DocumentRegion, DocumentService } from '../../services/documentService';
-import { ExternalDocumentService, ExternalDocumentInfo } from '../../services/externalDocumentService';
+import { VueDocumentInfo, DocumentRegion, DocumentRegionSnapshot } from '../../services/documentService';
+import { ExternalDocumentService } from '../../services/externalDocumentService';
 import { T_TypeScript } from '../../services/dependencyService';
 
 function patchTS(tsModule: T_TypeScript) {
@@ -72,7 +72,6 @@ export function getServiceHost(
   tsModule: T_TypeScript,
   workspacePath: string,
   jsDocuments: LanguageModelCache<DocumentRegion>,
-  documentService: DocumentService,
   externalDocumentService: ExternalDocumentService
 ) {
   patchTS(tsModule);
@@ -212,11 +211,11 @@ export function getServiceHost(
       const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
       const doc = scriptDocs.get(normalizedFileFsPath);
       if (doc) {
-        return new DocumentRegionSnapshot(doc);
+        return doc.snapshot;
       }
 
       const info = externalDocumentService.getOrLoadDocument(Uri.file(fileName));
-      return new DocumentSnapshot(info);
+      return info.snapshot;
     },
     getCurrentDirectory: () => workspacePath,
     getDefaultLibFileName: tsModule.getDefaultLibFilePath,
@@ -293,89 +292,4 @@ function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
     /*resolutionStack*/ undefined,
     [{ extension: 'vue', isMixedContent: true }]
   );
-}
-
-class DocumentRegionSnapshot implements ts.IScriptSnapshot {
-  public textSnapshot: string;
-  public version: string;
-
-  constructor(documentRegion: DocumentRegion) {
-    this.textSnapshot = documentRegion.document.getText() || '';
-    this.version = `${documentRegion.document.version}:${documentRegion.editRanges.length}`;
-  }
-
-  public getText(start: number, end: number): string {
-    return this.textSnapshot.substring(start, end);
-  }
-
-  public getLength(): number {
-    return this.textSnapshot.length;
-  }
-
-  public getChangeRange(oldScript: ts.IScriptSnapshot): ts.TextChangeRange | undefined {
-    const oldShim = <DocumentRegionSnapshot>oldScript;
-    return this.getTextChangeRange(oldShim);
-  }
-
-  public getTextChangeRange(oldVersion: DocumentRegionSnapshot): ts.TextChangeRange | undefined {
-    if (this.version === oldVersion.version) {
-      // No edits!
-      return ts.unchangedTextChangeRange;
-    }
-
-    // TODO: Try to create the correct change text range, that doesn't break things.
-    return undefined;
-    // if (oldVersion.editRanges.length > 0) {
-    //   return ts.collapseTextChangeRangesAcrossMultipleVersions(
-    //     this.editRanges.slice(oldVersion.editRanges.length - 1, this.editRanges.length - 1)
-    //   );
-    // } else if (oldVersion.editRanges.length > this.editRanges.length) {
-    //   return undefined;
-    // }
-    // return ts.collapseTextChangeRangesAcrossMultipleVersions(this.editRanges);
-  }
-}
-
-class DocumentSnapshot implements ts.IScriptSnapshot {
-  public textSnapshot: string;
-  public version: number;
-
-  constructor(documentInfo: ExternalDocumentInfo) {
-    this.textSnapshot = documentInfo.getText() || '';
-    this.version = documentInfo.version;
-  }
-
-  public getText(start: number, end: number): string {
-    return this.textSnapshot.substring(start, end);
-  }
-
-  public getLength(): number {
-    return this.textSnapshot.length;
-  }
-
-  public getChangeRange(oldScript: ts.IScriptSnapshot): ts.TextChangeRange | undefined {
-    const oldShim = <DocumentSnapshot>oldScript;
-    return this.getTextChangeRange(oldShim);
-  }
-
-  public getTextChangeRange(oldVersion: DocumentSnapshot): ts.TextChangeRange {
-    if (this.version === oldVersion.version) {
-      // No edits!
-      return ts.unchangedTextChangeRange;
-    }
-
-    // TODO: Try to create the correct change text range, that doesn't break things.
-    return undefined as any;
-    // if (oldVersion.documentInfo.editRanges.length > 0) {
-    //   return ts.collapseTextChangeRangesAcrossMultipleVersions(
-    //     this.documentInfo.editRanges.slice(
-    //       oldVersion.documentInfo.editRanges.length - 1,
-    //       this.documentInfo.editRanges.length - 1
-    //     )
-    //   );
-    // } else if (oldVersion.documentInfo.editRanges.length > this.documentInfo.editRanges.length) {
-    //   return undefined;
-    // }
-    // return ts.collapseTextChangeRangesAcrossMultipleVersions(this.documentInfo.editRanges);
-  }
 }

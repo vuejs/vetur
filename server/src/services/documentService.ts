@@ -12,7 +12,13 @@ import {
   Range
 } from 'vscode-languageserver';
 import { getRegions, createDocumentRegions } from '../modes/embeddedSupport';
-import { TextChangeRange, createTextChangeRange, createTextSpanFromBounds } from 'typescript';
+import {
+  TextChangeRange,
+  createTextChangeRange,
+  createTextSpanFromBounds,
+  IScriptSnapshot,
+  unchangedTextChangeRange
+} from 'typescript';
 import { mergeSort } from '../utils/mergeSort';
 
 /**
@@ -356,6 +362,7 @@ function buildRegions(document: TextDocument, textEdits: TextEdit[]) {
 }
 
 export class DocumentRegion {
+  private _snapshot: DocumentRegionSnapshot | null = null;
   constructor(public document: TextDocument, public editRanges: TextChangeRange[] = []) {}
 
   public get version() {
@@ -366,5 +373,53 @@ export class DocumentRegion {
   }
   public get languageId() {
     return this.document.languageId;
+  }
+
+  public get snapshot() {
+    if (this._snapshot === null) {
+      this._snapshot = new DocumentRegionSnapshot(this);
+    }
+    return this._snapshot;
+  }
+}
+
+export class DocumentRegionSnapshot implements IScriptSnapshot {
+  public textSnapshot: string;
+  public version: string;
+
+  constructor(documentRegion: DocumentRegion) {
+    this.textSnapshot = documentRegion.document.getText() || '';
+    this.version = `${documentRegion.document.version}:${documentRegion.editRanges.length}`;
+  }
+
+  public getText(start: number, end: number): string {
+    return this.textSnapshot.substring(start, end);
+  }
+
+  public getLength(): number {
+    return this.textSnapshot.length;
+  }
+
+  public getChangeRange(oldScript: IScriptSnapshot): TextChangeRange | undefined {
+    const oldShim = <DocumentRegionSnapshot>oldScript;
+    return this.getTextChangeRange(oldShim);
+  }
+
+  public getTextChangeRange(oldVersion: DocumentRegionSnapshot): TextChangeRange | undefined {
+    if (this.version === oldVersion.version) {
+      // No edits!
+      return unchangedTextChangeRange;
+    }
+
+    // TODO: Try to create the correct change text range, that doesn't break things.
+    return undefined;
+    // if (oldVersion.editRanges.length > 0) {
+    //   return ts.collapseTextChangeRangesAcrossMultipleVersions(
+    //     this.editRanges.slice(oldVersion.editRanges.length - 1, this.editRanges.length - 1)
+    //   );
+    // } else if (oldVersion.editRanges.length > this.editRanges.length) {
+    //   return undefined;
+    // }
+    // return ts.collapseTextChangeRangesAcrossMultipleVersions(this.editRanges);
   }
 }

@@ -81,7 +81,7 @@ export async function getJavascriptMode(
     }
   }
 
-  const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments, documentService, externalDocumentService);
+  const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments, externalDocumentService);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
   let supportedCodeFixCodes: Set<number>;
