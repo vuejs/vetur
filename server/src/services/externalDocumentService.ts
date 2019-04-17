@@ -1,6 +1,6 @@
 import { IConnection, TextDocument, Emitter, Event } from 'vscode-languageserver';
 import { sys, Extension, IScriptSnapshot, TextChangeRange, unchangedTextChangeRange } from 'typescript';
-import { isVue, parseVue } from '../modes/script/preprocess';
+import { isVue, parseVueScript } from '../modes/script/preprocess';
 import Uri from 'vscode-uri';
 import { extname } from 'path';
 
@@ -118,7 +118,7 @@ export class ExternalDocumentInfo {
     const filePath = getNormalizedFileFsPath(this.uri);
     const content = sys.readFile(filePath)!;
     if (isVue(this.uri)) {
-      return parseVue(content);
+      return parseVueScript(content);
     }
     return content;
   }

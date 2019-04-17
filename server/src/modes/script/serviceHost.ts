@@ -116,7 +116,7 @@ export function getServiceHost(
       }
     }
     if (isVirtualVueTemplateFile(fileFsPath)) {
-      scriptDocs.set(fileFsPath, doc.regions);
+      scriptDocs.set(fileFsPath, new DocumentRegion(doc));
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = jsDocuments.get(doc);

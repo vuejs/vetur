@@ -11,7 +11,6 @@ import {
   Position,
   Range
 } from 'vscode-languageserver';
-import { getRegions, createDocumentRegions } from '../modes/embeddedSupport';
 import {
   TextChangeRange,
   createTextChangeRange,
@@ -20,6 +19,8 @@ import {
   unchangedTextChangeRange
 } from 'typescript';
 import { mergeSort } from '../utils/mergeSort';
+import { getVueDocumentRegions, LanguageId } from '../embeddedSupport/embeddedSupport';
+import { parseVueDocumentRegions, RegionType } from '../embeddedSupport/vueDocumentRegionParser';
 
 /**
  * Service responsible for managing documents being syned through LSP
@@ -315,7 +316,8 @@ const defaultType: { [type: string]: string } = {
 function buildRegions(document: TextDocument, textEdits: TextEdit[]) {
   const documentInfos: { [languageId: string]: DocumentRegion } = {};
   const documentInfosByType: { [type: string]: DocumentRegion } = {};
-  const { regions, importedScripts } = getRegions(document);
+  const parsedRegions = parseVueDocumentRegions(document);
+  const { regions } = parsedRegions;
   for (const region of regions) {
     let content = document
       .getText()
@@ -342,19 +344,19 @@ function buildRegions(document: TextDocument, textEdits: TextEdit[]) {
     );
   }
 
-  const documentRegions = createDocumentRegions(document, regions, importedScripts);
+  const documentRegions = getVueDocumentRegions(document, parsedRegions);
   return {
     ...documentRegions,
-    getEmbeddedDocument: (languageId: string) =>
+    getSingleLanguageDocument: (languageId: LanguageId) =>
       (documentInfos[languageId] && documentInfos[languageId].document) ||
       TextDocument.create(document.uri, languageId, document.version, ''),
-    getEmbeddedDocumentByType: (type: 'template' | 'script' | 'style' | 'custom') =>
+    getSingleTypeDocument: (type: RegionType) =>
       (documentInfosByType[type] && documentInfosByType[type].document) ||
       TextDocument.create(document.uri, defaultType[type], document.version, ''),
-    getEmbeddedDocumentInfo: (languageId: string) =>
+    getSingleLanguageDocumentInfo: (languageId: LanguageId) =>
       documentInfos[languageId] ||
       new DocumentRegion(TextDocument.create(document.uri, languageId, document.version, ''), []),
-    getEmbeddedDocumentInfoByType: (type: 'template' | 'script' | 'style' | 'custom') =>
+    getSingleTypeDocumentInfo: (type: RegionType) =>
       documentInfosByType[type] ||
       new DocumentRegion(TextDocument.create(document.uri, defaultType[type], document.version, ''), [])
   };

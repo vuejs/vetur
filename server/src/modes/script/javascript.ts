@@ -61,9 +61,7 @@ export async function getJavascriptMode(
       documentInfo = new VueDocumentInfo(document);
     }
     const vueDocument = documentInfo.regions;
-    // return vueDocument.getEmbeddedDocumentInfoByType('script');
-    // const vueDocument = documentRegions.get(document);
-    return vueDocument.getSingleTypeDocument('script');
+    return vueDocument.getSingleTypeDocumentInfo('script');
   });
 
   const firstScriptRegion = getLanguageModelCache(10, 60, document => {
@@ -121,7 +119,9 @@ export async function getJavascriptMode(
         }
 
         // Add suffix to process this doc as vue template.
-        const templateDoc = TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText());
+        const templateDoc = new VueDocumentInfo(
+          TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText())
+        );
 
         const { templateService } = updateCurrentTextDocument(templateDoc);
         if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
@@ -168,7 +168,7 @@ export async function getJavascriptMode(
           // syntactic/semantic diagnostic always has start and length
           // so we can safely cast diag to TextSpan
           return <Diagnostic>{
-            range: convertRange(scriptDoc, diag as ts.TextSpan),
+            range: convertRange(scriptDoc.document, diag as ts.TextSpan),
             severity: DiagnosticSeverity.Error,
             message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
             tags,
@@ -246,7 +246,7 @@ export async function getJavascriptMode(
           value: tsModule.displayPartsToString(details.documentation)
         };
         if (details.codeActions && config.vetur.completion.autoImport) {
-          const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
+          const textEdits = convertCodeAction(document, details.codeActions, firstScriptRegion);
           item.additionalTextEdits = textEdits;
 
           details.codeActions.forEach(action => {

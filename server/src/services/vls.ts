@@ -74,7 +74,7 @@ export class VLS {
     this.vueInfoService = new VueInfoService();
     this.dependencyService = new DependencyService();
 
-    this.languageModes = new LanguageModes(this.documentService, this.externalDocumentService);
+    this.languageModes = new LanguageModes();
   }
 
   async init(params: InitializeParams) {
@@ -97,7 +97,9 @@ export class VLS {
     );
     await this.languageModes.init(workspacePath, {
       infoService: this.vueInfoService,
-      dependencyService: this.dependencyService
+      dependencyService: this.dependencyService,
+      documentService: this.documentService,
+      externalDocumentService: this.externalDocumentService
     });
 
     this.setupConfigListeners();
@@ -221,9 +223,9 @@ export class VLS {
    */
 
   onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
-    const doc = this.documentService.getDocumentInfo(textDocument.uri)!;
+    const info = this.documentService.getDocumentInfo(textDocument.uri)!;
 
-    const modeRanges = this.languageModes.getAllLanguageModeRangesInDocument(doc);
+    const modeRanges = this.languageModes.getAllLanguageModeRangesInDocument(info);
     const allEdits: TextEdit[] = [];
 
     const errMessages: string[] = [];
@@ -328,9 +330,9 @@ export class VLS {
     };
 
     const links: DocumentLink[] = [];
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+    this.languageModes.getAllLanguageModeRangesInDocument(info).forEach(m => {
       if (m.mode.findDocumentLinks) {
-        pushAll(links, m.mode.findDocumentLinks(doc, documentContext));
+        pushAll(links, m.mode.findDocumentLinks(info, documentContext));
       }
     });
     return links;
@@ -340,9 +342,9 @@ export class VLS {
     const info = this.documentService.getDocumentInfo(textDocument.uri)!;
     const symbols: SymbolInformation[] = [];
 
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+    this.languageModes.getAllLanguageModeRangesInDocument(info).forEach(m => {
       if (m.mode.findDocumentSymbols) {
-        pushAll(symbols, m.mode.findDocumentSymbols(doc));
+        pushAll(symbols, m.mode.findDocumentSymbols(info));
       }
     });
     return symbols;
@@ -352,9 +354,9 @@ export class VLS {
     const info = this.documentService.getDocumentInfo(textDocument.uri)!;
     const colors: ColorInformation[] = [];
 
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
+    this.languageModes.getAllLanguageModeRangesInDocument(info).forEach(m => {
       if (m.mode.findDocumentColors) {
-        pushAll(colors, m.mode.findDocumentColors(doc));
+        pushAll(colors, m.mode.findDocumentColors(info));
       }
     });
     return colors;
@@ -379,9 +381,9 @@ export class VLS {
   }
 
   onCodeAction({ textDocument, range, context }: CodeActionParams) {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, range.start);
-    if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
+    const info = this.documentService.getDocumentInfo(textDocument.uri)!;
+    const mode = this.languageModes.getModeAtPosition(info, range.start);
+    if (this.languageModes.getModeAtPosition(info, range.end) !== mode) {
       return [];
     }
     if (mode && mode.getCodeActions) {

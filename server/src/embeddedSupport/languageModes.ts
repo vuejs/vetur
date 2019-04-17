@@ -37,6 +37,8 @@ import { nullMode } from '../modes/nullMode';
 export interface VLSServices {
   infoService?: VueInfoService;
   dependencyService?: DependencyService;
+  documentService: DocumentService;
+  externalDocumentService: ExternalDocumentService;
 }
 
 export interface LanguageMode {
@@ -101,10 +103,10 @@ export class LanguageModes {
   }
 
   async init(workspacePath: string, services: VLSServices) {
-    const vueHtmlMode = getVueHTMLMode(this.documentService, workspacePath, services.infoService);
+    const vueHtmlMode = getVueHTMLMode(services.documentService, workspacePath, services.infoService);
     const jsMode = await getJavascriptMode(
-      this.documentService,
-      this.externalDocumentService,
+      services.documentService,
+      services.externalDocumentService,
       workspacePath,
       services.infoService,
       services.dependencyService
@@ -112,11 +114,11 @@ export class LanguageModes {
 
     this.modes['vue'] = getVueMode();
     this.modes['vue-html'] = vueHtmlMode;
-    this.modes['css'] = getCSSMode(this.documentService);
-    this.modes['postcss'] = getPostCSSMode(this.documentService);
-    this.modes['scss'] = getSCSSMode(this.documentService);
-    this.modes['less'] = getLESSMode(this.documentService);
-    this.modes['stylus'] = getStylusMode(this.documentService);
+    this.modes['css'] = getCSSMode(services.documentService);
+    this.modes['postcss'] = getPostCSSMode(services.documentService);
+    this.modes['scss'] = getSCSSMode(services.documentService);
+    this.modes['less'] = getLESSMode(services.documentService);
+    this.modes['stylus'] = getStylusMode(services.documentService);
     this.modes['javascript'] = jsMode;
     this.modes['typescript'] = jsMode;
     this.modes['tsx'] = jsMode;

@@ -50,7 +50,7 @@ export interface VueDocumentRegions {
   getImportedScripts(): string[];
 }
 
-type RegionType = 'template' | 'script' | 'style' | 'custom';
+export type RegionType = 'template' | 'script' | 'style' | 'custom';
 
 const defaultLanguageIdForBlockTypes: { [type: string]: string } = {
   template: 'vue-html',
@@ -58,8 +58,11 @@ const defaultLanguageIdForBlockTypes: { [type: string]: string } = {
   style: 'css'
 };
 
-export function getVueDocumentRegions(document: TextDocument): VueDocumentRegions {
-  const { regions, importedScripts } = parseVueDocumentRegions(document);
+export function getVueDocumentRegions(
+  document: TextDocument,
+  preparsedRegions?: ReturnType<typeof parseVueDocumentRegions>
+): VueDocumentRegions {
+  const { regions, importedScripts } = preparsedRegions || parseVueDocumentRegions(document);
 
   return {
     getSingleLanguageDocument: (languageId: LanguageId) => getSingleLanguageDocument(document, regions, languageId),
