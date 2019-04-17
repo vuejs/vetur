@@ -172,10 +172,17 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   }
 
   function transformVBind(vBind: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
-    const exp =
-      vBind.value && vBind.value.expression
-        ? parseExpression(vBind.value.expression as AST.ESLintExpression, code, scope)
-        : ts.createLiteral(true);
+    let exp: ts.Expression;
+    if (!vBind.value || !vBind.value.expression) {
+      exp = ts.createLiteral(true);
+    } else {
+      const value = vBind.value.expression as AST.ESLintExpression | AST.VFilterSequenceExpression;
+      if (value.type === 'VFilterSequenceExpression') {
+        exp = transformFilter(value, code, scope);
+      } else {
+        exp = parseExpression(value, code, scope);
+      }
+    }
 
     return directiveToObjectElement(vBind, exp, code, scope);
   }
@@ -291,10 +298,18 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     switch (child.type) {
       case 'VElement':
         return transformElement(child, code, scope);
-      case 'VExpressionContainer':
-        // Never appear v-for / v-on expression here
-        const exp = child.expression as AST.ESLintExpression | null;
-        return exp ? parseExpression(exp, code, scope) : ts.createLiteral('');
+      case 'VExpressionContainer': {
+        const exp = child.expression as AST.ESLintExpression | AST.VFilterSequenceExpression | null;
+        if (!exp) {
+          return ts.createLiteral('');
+        }
+
+        if (exp.type === 'VFilterSequenceExpression') {
+          return transformFilter(exp, code, scope);
+        }
+
+        return parseExpression(exp, code, scope);
+      }
       case 'VText':
         return ts.createLiteral(child.value);
     }
@@ -307,6 +322,33 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     }
 
     return ts.createStatement(parseExpression(statement.expression, code, scope));
+  }
+
+  function transformFilter(filter: AST.VFilterSequenceExpression, code: string, scope: string[]): ts.Expression {
+    const exp = parseExpression(filter.expression, code, scope);
+
+    // Simply convert all filter arguments into array literal because
+    // we just want to check their types.
+    // Do not care about existance of filters and matching between parameter
+    // and argument types because filters will not appear on component type.
+    const filterExps = setTextRange(
+      ts.createArrayLiteral(
+        filter.filters.map(f => {
+          return setTextRange(
+            ts.createArrayLiteral(
+              f.arguments.map(arg => {
+                const exp = arg.type === 'SpreadElement' ? arg.argument : arg;
+                return parseExpression(exp, code, scope);
+              })
+            ),
+            filter
+          );
+        })
+      ),
+      filter
+    );
+
+    return setTextRange(ts.createBinary(filterExps, ts.SyntaxKind.BarBarToken, exp), filter);
   }
 
   function parseExpression(expression: AST.ESLintExpression, code: string, scope: string[]): ts.Expression {
