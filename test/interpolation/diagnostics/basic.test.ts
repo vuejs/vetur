@@ -82,6 +82,17 @@ describe('Should find template-diagnostics in <template> region', () => {
           severity: vscode.DiagnosticSeverity.Error,
           message: "Argument of type 'string' is not assignable"
         }
+      ],
+      loose: true
+    },
+    {
+      file: 'v-slot.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(2, 15, 16),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'c' does not exist on type"
+        }
       ]
     },
     {
@@ -192,7 +203,7 @@ describe('Should find template-diagnostics in <template> region', () => {
       const docUri = getDocUri(`diagnostics/${t.file}`);
       await showFile(docUri);
       await sleep(FILE_LOAD_SLEEP_TIME);
-      await testDiagnostics(docUri, t.diagnostics);
+      await testDiagnostics(docUri, t.diagnostics, !t.loose);
     });
   });
 
@@ -211,4 +222,5 @@ describe('Should find template-diagnostics in <template> region', () => {
 interface TemplateDiagnosticTest {
   file: string;
   diagnostics: vscode.Diagnostic[];
+  loose?: boolean;
 }
