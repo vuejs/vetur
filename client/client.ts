@@ -32,7 +32,7 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
   };
 
   const watcher = (() => {
-    const innerWatcher = vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', true, false, true);
+    const innerWatcher = vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', true, true, true);
     return {
       get ignoreCreateEvents() {
         return innerWatcher.ignoreCreateEvents;

@@ -42,5 +42,5 @@ async function testDefinition(docUri: vscode.Uri, position: vscode.Position, exp
   )) as vscode.Location[];
 
   assert.ok(result[0].range.isEqual(expectedLocation.range));
-  assert.equal(result[0].uri.path.toLowerCase(), expectedLocation.uri.path.toLowerCase());
+  assert.equal(result[0].uri.path, expectedLocation.uri.path);
 }
