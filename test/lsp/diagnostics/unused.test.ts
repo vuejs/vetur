@@ -18,7 +18,7 @@ describe('Should find diagnostics for unused variables', () => {
       {
         severity: vscode.DiagnosticSeverity.Error,
         message: "'lodash' is declared but its value is never read.",
-        range: sameLineRange(5, 0, 33),
+        range: sameLineRange(5, 12, 18),
         tags: [DiagnosticTag.Unnecessary]
       },
       {

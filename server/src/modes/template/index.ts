@@ -20,18 +20,17 @@ import { DocumentContext } from '../../types';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
-
-type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
+import { DocumentService } from '../../services/documentService';
 
 export function getVueHTMLMode(
-  documentRegions: DocumentRegionCache,
-  workspacePath: string | undefined,
+  documentService: DocumentService,
+  workspacePath: string | null | undefined,
   vueInfoService?: VueInfoService
 ): LanguageMode {
   let tagProviderSettings = getTagProviderSettings(workspacePath);
   let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
   const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
-    documentRegions.get(document).getSingleLanguageDocument('vue-html')
+    documentService.getDocumentInfo(document)!.regions.getSingleLanguageDocument('vue-html')
   );
   const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   const lintEngine = createLintEngine();
@@ -50,7 +49,7 @@ export function getVueHTMLMode(
       const embedded = embeddedDocuments.get(document);
       return doESLintValidation(embedded, lintEngine);
     },
-    doComplete(document: TextDocument, position: Position) {
+    doComplete(document, position) {
       const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
 
@@ -61,30 +60,30 @@ export function getVueHTMLMode(
 
       return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders, config.emmet, info);
     },
-    doHover(document: TextDocument, position: Position) {
+    doHover(document, position) {
       const embedded = embeddedDocuments.get(document);
       const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
 
       return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
     },
-    findDocumentHighlight(document: TextDocument, position: Position) {
+    findDocumentHighlight(document, position: Position) {
       return findDocumentHighlights(document, position, vueDocuments.get(document));
     },
-    findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
+    findDocumentLinks(document, documentContext: DocumentContext) {
       return findDocumentLinks(document, documentContext);
     },
-    findDocumentSymbols(document: TextDocument) {
+    findDocumentSymbols(document) {
       return findDocumentSymbols(document, vueDocuments.get(document));
     },
-    format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
+    format(document, range: Range, formattingOptions: FormattingOptions) {
       return htmlFormat(document, range, config.vetur.format as VLSFormatConfig);
     },
-    findDefinition(document: TextDocument, position: Position) {
+    findDefinition(document, position: Position) {
       const embedded = embeddedDocuments.get(document);
       const info = vueInfoService ? vueInfoService.getInfo(document) : undefined;
       return findDefinition(embedded, position, vueDocuments.get(embedded), info);
     },
-    onDocumentRemoved(document: TextDocument) {
+    onDocumentRemoved(document) {
       vueDocuments.onDocumentRemoved(document);
     },
     dispose() {

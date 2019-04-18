@@ -14,10 +14,11 @@ import { stylusHover } from './stylus-hover';
 import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
+import { DocumentService } from '../../../services/documentService';
 
-export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getStylusMode(documentService: DocumentService): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getSingleLanguageDocument('stylus')
+    documentService.getDocumentInfo(document)!.regions.getSingleLanguageDocument('stylus')
   );
   let baseIndentShifted = false;
   let config: any = {};

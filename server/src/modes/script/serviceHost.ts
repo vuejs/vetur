@@ -8,6 +8,8 @@ import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { createUpdater, parseVueScript, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
+import { VueDocumentInfo, DocumentRegion, DocumentRegionSnapshot } from '../../services/documentService';
+import { ExternalDocumentService } from '../../services/externalDocumentService';
 import { T_TypeScript } from '../../services/dependencyService';
 
 function patchTS(tsModule: T_TypeScript) {
@@ -77,25 +79,34 @@ function getDefaultCompilerOptions(tsModule: T_TypeScript) {
 export function getServiceHost(
   tsModule: T_TypeScript,
   workspacePath: string,
-  jsDocuments: LanguageModelCache<TextDocument>
+  jsDocuments: LanguageModelCache<DocumentRegion>,
+  externalDocumentService: ExternalDocumentService
 ) {
   patchTS(tsModule);
   const vueSys = getVueSys(tsModule);
-
-  let currentScriptDoc: TextDocument;
+  let currentScriptDoc: DocumentRegion;
   const versions = new Map<string, number>();
-  const scriptDocs = new Map<string, TextDocument>();
+  const scriptDocs = new Map<string, DocumentRegion>();
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
-  const isOldVersion = inferIsOldVersion(tsModule, workspacePath);
+  const bridgeSnapshot = new DocumentRegionSnapshot(
+    new DocumentRegion(
+      TextDocument.create(
+        bridge.fileName,
+        'vue',
+        1,
+        inferIsOldVersion(tsModule, workspacePath) ? bridge.oldContent : bridge.content
+      )
+    )
+  );
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
   };
   compilerOptions.allowNonTsExtensions = true;
 
-  function updateCurrentTextDocument(doc: TextDocument) {
+  function updateCurrentTextDocument(doc: VueDocumentInfo) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
@@ -105,11 +116,11 @@ export function getServiceHost(
       }
     }
     if (isVirtualVueTemplateFile(fileFsPath)) {
-      scriptDocs.set(fileFsPath, doc);
+      scriptDocs.set(fileFsPath, new DocumentRegion(doc));
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = jsDocuments.get(doc);
-      const lastDoc = scriptDocs.get(fileFsPath);
+      const lastDoc = scriptDocs.get(fileFsPath)!;
       if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         jsLanguageService.dispose();
@@ -211,26 +222,16 @@ export function getServiceHost(
       },
       getScriptSnapshot: (fileName: string) => {
         if (fileName === bridge.fileName) {
-          const text = isOldVersion ? bridge.oldContent : bridge.content;
-          return {
-            getText: (start, end) => text.substring(start, end),
-            getLength: () => text.length,
-            getChangeRange: () => void 0
-          };
+          return bridgeSnapshot;
         }
         const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
         const doc = scriptDocs.get(normalizedFileFsPath);
-        let fileText = doc ? doc.getText() : tsModule.sys.readFile(normalizedFileFsPath) || '';
-        if (!doc && isVue(fileName)) {
-          // Note: This is required in addition to the parsing in embeddedSupport because
-          // this works for .vue files that aren't even loaded by VS Code yet.
-          fileText = parseVueScript(fileText);
+        if (doc) {
+          return doc.snapshot;
         }
-        return {
-          getText: (start, end) => fileText.substring(start, end),
-          getLength: () => fileText.length,
-          getChangeRange: () => void 0
-        };
+
+        const info = externalDocumentService.getOrLoadDocument(Uri.file(fileName));
+        return info.snapshot;
       },
       getCurrentDirectory: () => workspacePath,
       getDefaultLibFileName: tsModule.getDefaultLibFilePath,

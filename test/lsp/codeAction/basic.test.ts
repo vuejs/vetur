@@ -21,7 +21,7 @@ describe('Should do codeAction', () => {
   });
 
   it('finds codeAction for unused variables', async () => {
-    const codeActions = [{ title: `Remove declaration for: 'foo'`, command: 'vetur.applyWorkspaceEdits' }];
+    const codeActions = [{ title: `Remove declaration for: 'foo'.`, command: 'vetur.applyWorkspaceEdits' }];
 
     await testCodeAction(docUri, sameLineRange(7, 6, 6), codeActions);
   });

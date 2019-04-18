@@ -17,33 +17,34 @@ import { prettierify } from '../../utils/prettier';
 import { ParserOption } from '../../utils/prettier/prettier.d';
 import { NULL_HOVER } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
+import { DocumentService } from '../../services/documentService';
 
-export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getCSSMode(documentService: DocumentService): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('css', languageService, documentRegions);
+  return getStyleMode('css', languageService, documentService);
 }
 
-export function getPostCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getPostCSSMode(documentService: DocumentService): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('postcss', languageService, documentRegions);
+  return getStyleMode('postcss', languageService, documentService);
 }
 
-export function getSCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getSCSSMode(documentService: DocumentService): LanguageMode {
   const languageService = getSCSSLanguageService();
-  return getStyleMode('scss', languageService, documentRegions);
+  return getStyleMode('scss', languageService, documentService);
 }
-export function getLESSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getLESSMode(documentService: DocumentService): LanguageMode {
   const languageService = getLESSLanguageService();
-  return getStyleMode('less', languageService, documentRegions);
+  return getStyleMode('less', languageService, documentService);
 }
 
 function getStyleMode(
   languageId: LanguageId,
   languageService: LanguageService,
-  documentRegions: LanguageModelCache<VueDocumentRegions>
+  documentService: DocumentService
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getSingleLanguageDocument(languageId)
+    documentService.getDocumentInfo(document)!.regions.getSingleLanguageDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
   let config: any = {};

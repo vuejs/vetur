@@ -4,7 +4,6 @@ import {
   SignatureHelp,
   Definition,
   TextEdit,
-  TextDocument,
   Diagnostic,
   DocumentLink,
   Range,
@@ -30,42 +29,46 @@ import { getVueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
+import { DocumentService, VueDocumentInfo } from '../services/documentService';
+import { ExternalDocumentService } from '../services/externalDocumentService';
 import { DependencyService } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 
 export interface VLSServices {
   infoService?: VueInfoService;
   dependencyService?: DependencyService;
+  documentService: DocumentService;
+  externalDocumentService: ExternalDocumentService;
 }
 
 export interface LanguageMode {
   getId(): string;
   configure?(options: any): void;
-  updateFileInfo?(doc: TextDocument): void;
+  updateFileInfo?(doc: VueDocumentInfo): void;
 
-  doValidation?(document: TextDocument): Diagnostic[];
+  doValidation?(document: VueDocumentInfo): Diagnostic[];
   getCodeActions?(
-    document: TextDocument,
+    document: VueDocumentInfo,
     range: Range,
     formatParams: FormattingOptions,
     context: CodeActionContext
   ): Command[];
-  getRefactorEdits?(doc: TextDocument, args: RefactorAction): Command;
-  doComplete?(document: TextDocument, position: Position): CompletionList;
-  doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
-  doHover?(document: TextDocument, position: Position): Hover;
-  doSignatureHelp?(document: TextDocument, position: Position): SignatureHelp | null;
-  findDocumentHighlight?(document: TextDocument, position: Position): DocumentHighlight[];
-  findDocumentSymbols?(document: TextDocument): SymbolInformation[];
-  findDocumentLinks?(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
-  findDefinition?(document: TextDocument, position: Position): Definition;
-  findReferences?(document: TextDocument, position: Position): Location[];
-  format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
-  findDocumentColors?(document: TextDocument): ColorInformation[];
-  getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
+  getRefactorEdits?(doc: VueDocumentInfo, args: RefactorAction): Command;
+  doComplete?(document: VueDocumentInfo, position: Position): CompletionList;
+  doResolve?(document: VueDocumentInfo, item: CompletionItem): CompletionItem;
+  doHover?(document: VueDocumentInfo, position: Position): Hover;
+  doSignatureHelp?(document: VueDocumentInfo, position: Position): SignatureHelp | null;
+  findDocumentHighlight?(document: VueDocumentInfo, position: Position): DocumentHighlight[];
+  findDocumentSymbols?(document: VueDocumentInfo): SymbolInformation[];
+  findDocumentLinks?(document: VueDocumentInfo, documentContext: DocumentContext): DocumentLink[];
+  findDefinition?(document: VueDocumentInfo, position: Position): Definition;
+  findReferences?(document: VueDocumentInfo, position: Position): Location[];
+  format?(document: VueDocumentInfo, range: Range, options: FormattingOptions): TextEdit[];
+  findDocumentColors?(document: VueDocumentInfo): ColorInformation[];
+  getColorPresentations?(document: VueDocumentInfo, color: Color, range: Range): ColorPresentation[];
 
   onDocumentChanged?(filePath: string): void;
-  onDocumentRemoved(document: TextDocument): void;
+  onDocumentRemoved(document: VueDocumentInfo): void;
   dispose(): void;
 }
 
@@ -97,13 +100,13 @@ export class LanguageModes {
     );
 
     this.modelCaches = [];
-    this.modelCaches.push(this.documentRegions);
   }
 
   async init(workspacePath: string, services: VLSServices) {
-    const vueHtmlMode = getVueHTMLMode(this.documentRegions, workspacePath, services.infoService);
+    const vueHtmlMode = getVueHTMLMode(services.documentService, workspacePath, services.infoService);
     const jsMode = await getJavascriptMode(
-      this.documentRegions,
+      services.documentService,
+      services.externalDocumentService,
       workspacePath,
       services.infoService,
       services.dependencyService
@@ -111,22 +114,22 @@ export class LanguageModes {
 
     this.modes['vue'] = getVueMode();
     this.modes['vue-html'] = vueHtmlMode;
-    this.modes['css'] = getCSSMode(this.documentRegions);
-    this.modes['postcss'] = getPostCSSMode(this.documentRegions);
-    this.modes['scss'] = getSCSSMode(this.documentRegions);
-    this.modes['less'] = getLESSMode(this.documentRegions);
-    this.modes['stylus'] = getStylusMode(this.documentRegions);
+    this.modes['css'] = getCSSMode(services.documentService);
+    this.modes['postcss'] = getPostCSSMode(services.documentService);
+    this.modes['scss'] = getSCSSMode(services.documentService);
+    this.modes['less'] = getLESSMode(services.documentService);
+    this.modes['stylus'] = getStylusMode(services.documentService);
     this.modes['javascript'] = jsMode;
     this.modes['typescript'] = jsMode;
     this.modes['tsx'] = jsMode;
   }
 
-  getModeAtPosition(document: TextDocument, position: Position): LanguageMode | undefined {
+  getModeAtPosition(document: VueDocumentInfo, position: Position): LanguageMode | undefined {
     const languageId = this.documentRegions.get(document).getLanguageAtPosition(position);
     return this.modes[languageId];
   }
 
-  getAllLanguageModeRangesInDocument(document: TextDocument): LanguageModeRange[] {
+  getAllLanguageModeRangesInDocument(document: VueDocumentInfo): LanguageModeRange[] {
     const result: LanguageModeRange[] = [];
 
     const documentRegions = this.documentRegions.get(document);
@@ -159,7 +162,7 @@ export class LanguageModes {
     return this.modes[languageId];
   }
 
-  onDocumentRemoved(document: TextDocument) {
+  onDocumentRemoved(document: VueDocumentInfo) {
     this.modelCaches.forEach(mc => mc.onDocumentRemoved(document));
     for (const mode in this.modes) {
       this.modes[<LanguageId>mode].onDocumentRemoved(document);

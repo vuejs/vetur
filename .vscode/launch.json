@@ -24,6 +24,7 @@
       "type": "node",
       "request": "attach",
       "port": 6005,
+      "timeout": 60000,
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
       "protocol": "inspector",

@@ -26,7 +26,7 @@ describe('Should find common diagnostics for all regions', () => {
         message: "Argument of type '\"5\"' is not assignable to parameter of type 'number'."
       },
       {
-        range: sameLineRange(8, 0, 29),
+        range: sameLineRange(8, 7, 11),
         severity: vscode.DiagnosticSeverity.Error,
         message: "'Item' is declared but its value is never read.",
         tags: [DiagnosticTag.Unnecessary]
