@@ -150,10 +150,10 @@ export function getServiceHost(
             jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || ''));
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
-          return tsModule.Extension.Js;
+          return tsModule.ScriptKind.JS;
         } else {
           if (fileName === bridge.fileName) {
-            return tsModule.Extension.Ts;
+            return tsModule.ScriptKind.TS;
           }
           // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
           return (tsModule as any).getScriptKindFromFileName(fileName);
