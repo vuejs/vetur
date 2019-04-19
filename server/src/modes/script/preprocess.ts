@@ -184,77 +184,52 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
 function injectVueTemplate(tsModule: T_TypeScript, sourceFile: ts.SourceFile, renderBlock: ts.Expression[]): void {
   // add import statement for corresponding Vue file
   // so that we acquire the component type from it.
-  const setZeroPos = getWrapperRangeSetter(tsModule, { pos: 0, end: 0 });
   const vueFilePath = './' + path.basename(sourceFile.fileName.slice(0, -9));
-  const componentImport = setZeroPos(
-    tsModule.createImportDeclaration(
-      undefined,
-      undefined,
-      setZeroPos(tsModule.createImportClause(setZeroPos(tsModule.createIdentifier('__Component')), undefined)),
-      setZeroPos(tsModule.createLiteral(vueFilePath))
-    )
+  const componentImport = tsModule.createImportDeclaration(
+    undefined,
+    undefined,
+    tsModule.createImportClause(tsModule.createIdentifier('__Component'), undefined),
+    tsModule.createLiteral(vueFilePath)
   );
 
   // import helper type to handle Vue's private methods
-  const helperImport = setZeroPos(
-    tsModule.createImportDeclaration(
+  const helperImport = tsModule.createImportDeclaration(
+    undefined,
+    undefined,
+    tsModule.createImportClause(
       undefined,
-      undefined,
-      setZeroPos(
-        tsModule.createImportClause(
-          undefined,
-          setZeroPos(
-            tsModule.createNamedImports([
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(renderHelperName)))
-              ),
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(componentHelperName)))
-              ),
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(iterationHelperName)))
-              ),
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(listenerHelperName)))
-              )
-            ])
-          )
-        )
-      ),
-      setZeroPos(tsModule.createLiteral('vue-editor-bridge'))
-    )
+      tsModule.createNamedImports([
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(renderHelperName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentHelperName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(listenerHelperName))
+      ])
+    ),
+    tsModule.createLiteral('vue-editor-bridge')
   );
 
   // wrap render code with a function decralation
   // with `this` type of component.
-  const setRenderPos = getWrapperRangeSetter(tsModule, sourceFile);
   const statements = renderBlock.map(exp => tsModule.createStatement(exp));
-  const renderElement = setRenderPos(
-    tsModule.createStatement(
-      setRenderPos(
-        tsModule.createCall(setRenderPos(tsModule.createIdentifier(renderHelperName)), undefined, [
-          // Reference to the component
-          setRenderPos(tsModule.createIdentifier('__Component')),
-
-          // A function simulating the render function
-          setRenderPos(
-            tsModule.createFunctionExpression(
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              [],
-              undefined,
-              setRenderPos(tsModule.createBlock(statements))
-            )
-          )
-        ])
+  const renderElement = tsModule.createStatement(
+    tsModule.createCall(tsModule.createIdentifier(renderHelperName), undefined, [
+      // Reference to the component
+      tsModule.createIdentifier('__Component'),
+      // A function simulating the render function
+      tsModule.createFunctionExpression(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        [],
+        undefined,
+        tsModule.createBlock(statements)
       )
-    )
+    ])
   );
 
   // replace the original statements with wrapped code.
-  sourceFile.statements = setRenderPos(tsModule.createNodeArray([componentImport, helperImport, renderElement]));
+  sourceFile.statements = tsModule.createNodeArray([componentImport, helperImport, renderElement]);
 
   // Update external module indicator to the transformed template node,
   // otherwise symbols in this template (e.g. __Component) will be put
