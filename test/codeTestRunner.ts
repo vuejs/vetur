@@ -76,13 +76,24 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
 async function runAllTests() {
   const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
 
-  for (const dir of testDirs) {
+  const targetDir = process.argv[2];
+  if (targetDir && testDirs.indexOf(targetDir) !== -1) {
     try {
-      installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${dir}/fixture`)));
-      await runTests(`test/${dir}`);
+      installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${targetDir}/fixture`)));
+      await runTests(`test/${targetDir}`);
     } catch (err) {
       console.error(err);
       process.exit(1);
+    }
+  } else {
+    for (const dir of testDirs) {
+      try {
+        installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${dir}/fixture`)));
+        await runTests(`test/${dir}`);
+      } catch (err) {
+        console.error(err);
+        process.exit(1);
+      }
     }
   }
 }

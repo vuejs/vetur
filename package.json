@@ -13,6 +13,7 @@
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
     "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
+    "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepare-publish": "yarn compile -f && ./build/release-cleanup.sh"
