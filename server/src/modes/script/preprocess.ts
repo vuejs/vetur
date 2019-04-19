@@ -46,6 +46,7 @@ export function createUpdater(tsModule: T_TypeScript) {
   const ulssf = tsModule.updateLanguageServiceSourceFile;
   const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
   const modificationTracker = new WeakSet<ts.SourceFile>();
+  const printer = tsModule.createPrinter();
 
   function isTSLike(scriptKind: ts.ScriptKind | undefined) {
     return scriptKind === tsModule.ScriptKind.TS || scriptKind === tsModule.ScriptKind.TSX;
@@ -67,16 +68,34 @@ export function createUpdater(tsModule: T_TypeScript) {
       modificationTracker.add(sourceFile);
       return;
     }
+  }
 
-    if (isVirtualVueTemplateFile(fileName)) {
-      // TODO: share the logic of transforming the code into AST
-      // with the template mode
-      const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
-      const program = parse(code, { sourceType: 'module' });
-      const tsCode = getTemplateTransformFunctions(tsModule).transformTemplate(program, code);
-      injectVueTemplate(tsModule, sourceFile, tsCode);
-      modificationTracker.add(sourceFile);
-    }
+  /**
+   * The transformed TS AST has synthetic nodes so language features would fail on them
+   * Use printer to print the AST as re-parse the source to get a valid SourceFile
+   */
+  function recreateVueTempalteSourceFile(
+    fileName: string,
+    sourceFile: ts.SourceFile,
+    scriptSnapshot: ts.IScriptSnapshot
+  ) {
+    // TODO: share the logic of transforming the code into AST
+    // with the template mode
+    const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
+    const program = parse(code, { sourceType: 'module' });
+    const tsCode = getTemplateTransformFunctions(tsModule).transformTemplate(program, code);
+    injectVueTemplate(tsModule, sourceFile, tsCode);
+
+    const text = printer.printFile(sourceFile);
+    const newSourceFile = tsModule.createSourceFile(
+      fileName,
+      text,
+      sourceFile.languageVersion,
+      true /* setParentNodes: Need this to walk the AST */,
+      tsModule.ScriptKind.JS
+    );
+
+    return newSourceFile;
   }
 
   function createLanguageServiceSourceFile(
@@ -87,9 +106,14 @@ export function createUpdater(tsModule: T_TypeScript) {
     setNodeParents: boolean,
     scriptKind?: ts.ScriptKind
   ): ts.SourceFile {
-    const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
+    let sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
     scriptKindTracker.set(sourceFile, scriptKind);
-    modifySourceFile(fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    if (isVirtualVueTemplateFile(fileName)) {
+      sourceFile = recreateVueTempalteSourceFile(fileName, sourceFile, scriptSnapshot);
+      modificationTracker.add(sourceFile);
+    } else {
+      modifySourceFile(fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    }
     return sourceFile;
   }
 
@@ -102,7 +126,12 @@ export function createUpdater(tsModule: T_TypeScript) {
   ): ts.SourceFile {
     const scriptKind = scriptKindTracker.get(sourceFile);
     sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
-    modifySourceFile(sourceFile.fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    if (isVirtualVueTemplateFile(sourceFile.fileName)) {
+      sourceFile = recreateVueTempalteSourceFile(sourceFile.fileName, sourceFile, scriptSnapshot);
+      modificationTracker.add(sourceFile);
+    } else {
+      modifySourceFile(sourceFile.fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    }
     return sourceFile;
   }
 
@@ -239,4 +268,17 @@ function getWrapperRangeSetter(
   wrapped: ts.TextRange
 ): <T extends ts.TextRange>(wrapperNode: T) => T {
   return <T extends ts.TextRange>(wrapperNode: T) => tsModule.setTextRange(wrapperNode, wrapped);
+}
+
+function walkTSNode(n: ts.Node, f: (x: ts.Node) => any) {
+  f(n);
+
+  let children: ts.Node[] = [];
+  try {
+    children = n.getChildren();
+  } catch (err) {}
+
+  children.forEach(c => {
+    walkTSNode(c, f);
+  });
 }
