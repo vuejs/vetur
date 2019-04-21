@@ -7,7 +7,6 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument): Diagnostic[] {
-    console.log(document);
     return [];
   }
 

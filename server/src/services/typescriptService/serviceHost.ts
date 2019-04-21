@@ -9,6 +9,7 @@ import { createUpdater, parseVueScript, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
+import { getVueSys } from './vueSys';
 
 function patchTS(tsModule: T_TypeScript) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
@@ -16,41 +17,6 @@ function patchTS(tsModule: T_TypeScript) {
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(tsModule);
   (tsModule as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (tsModule as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
-}
-
-function getVueSys(tsModule: T_TypeScript) {
-  /**
-   * This part is only accessed by TS module resolution
-   */
-  const vueSys: ts.System = {
-    ...tsModule.sys,
-    fileExists(path: string) {
-      if (isVirtualVueFile(path)) {
-        return tsModule.sys.fileExists(path.slice(0, -'.ts'.length));
-      }
-      return tsModule.sys.fileExists(path);
-    },
-    readFile(path, encoding) {
-      if (isVirtualVueFile(path)) {
-        const fileText = tsModule.sys.readFile(path.slice(0, -'.ts'.length), encoding);
-        return fileText ? parseVueScript(fileText) : fileText;
-      }
-      const fileText = tsModule.sys.readFile(path, encoding);
-      return fileText;
-    }
-  };
-
-  if (tsModule.sys.realpath) {
-    const realpath = tsModule.sys.realpath;
-    vueSys.realpath = function(path) {
-      if (isVirtualVueFile(path)) {
-        return realpath(path.slice(0, -'.ts'.length)) + '.ts';
-      }
-      return realpath(path);
-    };
-  }
-
-  return vueSys;
 }
 
 function getDefaultCompilerOptions(tsModule: T_TypeScript) {

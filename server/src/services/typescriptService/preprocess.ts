@@ -118,25 +118,27 @@ export function createUpdater(tsModule: T_TypeScript) {
       }
     });
 
-    const sourceMapNodes: TemplateSourceMapNode[] = [];
-    templateSourceMap[fileName.slice(0, -'.template'.length)] = templateSourceMap[fileName] = sourceMapNodes;
+    if (interpolationRanges.length === transformedInterpolationRanges.length) {
+      const sourceMapNodes: TemplateSourceMapNode[] = [];
+      templateSourceMap[fileName.slice(0, -'.template'.length)] = templateSourceMap[fileName] = sourceMapNodes;
 
-    interpolationRanges.forEach((from, i) => {
-      const sourceMapNode = {
-        from: {
-          start: from[0],
-          end: from[1],
-          fileName: fileName.slice(0, -'.template'.length)
-        },
-        to: {
-          start: transformedInterpolationRanges[i][0],
-          end: transformedInterpolationRanges[i][1],
-          fileName
-        }
-      };
+      interpolationRanges.forEach((from, i) => {
+        const sourceMapNode = {
+          from: {
+            start: from[0],
+            end: from[1],
+            fileName: fileName.slice(0, -'.template'.length)
+          },
+          to: {
+            start: transformedInterpolationRanges[i][0],
+            end: transformedInterpolationRanges[i][1],
+            fileName
+          }
+        };
 
-      sourceMapNodes.push(sourceMapNode);
-    });
+        sourceMapNodes.push(sourceMapNode);
+      });
+    }
 
     return newSourceFile;
   }

@@ -3,7 +3,7 @@ import { parseVueScript } from './preprocess';
 import * as ts from 'typescript';
 import { isVirtualVueFile } from './util';
 
-function getVueSys(tsModule: T_TypeScript) {
+export function getVueSys(tsModule: T_TypeScript) {
   /**
    * This part is only accessed by TS module resolution
    */

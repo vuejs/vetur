@@ -115,7 +115,7 @@ export async function getJavascriptMode(
         // Add suffix to process this doc as vue template.
         const templateDoc = TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText());
 
-        const { templateService } = updateCurrentTextDocument(templateDoc);
+        const { templateService, templateSourceMap } = updateCurrentTextDocument(templateDoc);
         if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
           return [];
         }
@@ -129,7 +129,7 @@ export async function getJavascriptMode(
           // syntactic/semantic diagnostic always has start and length
           // so we can safely cast diag to TextSpan
           return {
-            range: convertRange(templateDoc, diag as ts.TextSpan),
+            range: mapBackRange(templateDoc, diag as ts.TextSpan, templateSourceMap),
             severity: DiagnosticSeverity.Error,
             message: ts.flattenDiagnosticMessageText(diag.messageText, '\n'),
             code: diag.code,
@@ -689,11 +689,17 @@ function mapToRange(document: TextDocument, from: ts.TextSpan, sourceMap: Templa
 }
 
 /**
- * Map a range from virtual `.vue.template` file back to original file
+ * Map a range from virtual `.vue.template` file back to original `.vue` file
  */
-function mapBackRange(document: TextDocument, to: ts.TextSpan, sourceMap: TemplateSourceMap): Range {
+function mapBackRange(document: TextDocument, to: ts.TextSpan, sourceMaps: TemplateSourceMap): Range {
   const filePath = getFileFsPath(document.uri);
-  for (const sourceNode of sourceMap[filePath]) {
+  const sourceMap = sourceMaps[filePath];
+  if (!sourceMap) {
+    // Todo: Remove this when all source map can be generated from templates
+    return Range.create(0, 0, 0, 0);
+  }
+
+  for (const sourceNode of sourceMap) {
     if (to.start >= sourceNode.to.start && to.start + to.length <= sourceNode.to.end) {
       const start = sourceNode.from.start + (to.start - sourceNode.to.start);
       const end = sourceNode.from.end + (to.start + to.length - sourceNode.to.end);
