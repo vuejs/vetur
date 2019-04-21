@@ -1,9 +1,4 @@
-import {
-  renderHelperName,
-  componentHelperName,
-  iterationHelperName,
-  listenerHelperName
-} from '../../services/typescriptService/transformTemplate';
+import { renderHelperName, componentHelperName, iterationHelperName, listenerHelperName } from './transformTemplate';
 
 // This bridge file will be injected into TypeScript language service
 // it enable type checking and completion, yet still preserve precise option type

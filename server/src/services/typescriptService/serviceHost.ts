@@ -7,7 +7,7 @@ import * as parseGitIgnore from 'parse-gitignore';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { createUpdater, parseVueScript, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
-import * as bridge from '../script/bridge';
+import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
 
 function patchTS(tsModule: T_TypeScript) {

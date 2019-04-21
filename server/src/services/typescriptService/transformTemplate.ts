@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
-import { T_TypeScript } from '../../services/dependencyService';
+import { T_TypeScript } from '../dependencyService';
 
 export const renderHelperName = '__vlsRenderHelper';
 export const componentHelperName = '__vlsComponentHelper';
