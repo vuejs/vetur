@@ -420,7 +420,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       );
     } else if (ts.isTemplateExpression(exp)) {
       const injectedSpans = exp.templateSpans.map(span => {
-        return ts.createTemplateSpan(injectThis(span.expression, scope), span.literal), span;
+        return ts.createTemplateSpan(injectThis(span.expression, scope), span.literal);
       });
 
       res = ts.createTemplateExpression(exp.head, injectedSpans);
