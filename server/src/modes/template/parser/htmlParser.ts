@@ -9,7 +9,7 @@ export class Node {
   public isInterpolation: boolean;
   public attributes?: { [name: string]: string };
   public get attributeNames(): string[] {
-    if(this.attributes) {
+    if (this.attributes) {
       return Object.keys(this.attributes);
     }
 
