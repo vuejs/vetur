@@ -20,11 +20,6 @@ export async function testCompletion(
     position
   )) as vscode.CompletionList;
 
-  // 0 expected items => shouldn't complete
-  if (expectedItems.length === 0) {
-    assert.equal(result.items.length, 0, `Shouldn't complete but see\n${JSON.stringify(result.items, null, 2)}`);
-  }
-
   expectedItems.forEach(ei => {
     if (typeof ei === 'string') {
       assert.ok(
@@ -62,6 +57,41 @@ export async function testCompletion(
           assert.ok((match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart));
         }
       }
+    }
+  });
+}
+
+export async function testNoSuchCompletion(
+  docUri: vscode.Uri,
+  position: vscode.Position,
+  notExpectedItems: (string | ExpectedCompletionItem)[]
+) {
+  await showFile(docUri);
+
+  const result = (await vscode.commands.executeCommand(
+    'vscode.executeCompletionItemProvider',
+    docUri,
+    position
+  )) as vscode.CompletionList;
+
+  notExpectedItems.forEach(ei => {
+    if (typeof ei === 'string') {
+      assert.ok(
+        !result.items.some(i => {
+          return i.label === ei;
+        })
+      );
+    } else {
+      const match = result.items.find(i => {
+        for (const x in ei) {
+          if (ei[x] !== i[x]) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      assert.ok(!match, `Shouldn't find perfect match for ${JSON.stringify(ei, null, 2)}`);
     }
   });
 }
