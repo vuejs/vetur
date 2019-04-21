@@ -27,7 +27,7 @@ import {
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
-import { getServiceHost, TemplateSourceMap } from './serviceHost';
+import { getServiceHost, TemplateSourceMap } from '../shared/serviceHost';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 

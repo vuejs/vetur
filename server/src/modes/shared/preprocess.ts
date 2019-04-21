@@ -11,7 +11,7 @@ import {
   iterationHelperName,
   renderHelperName,
   listenerHelperName
-} from './transformTemplate';
+} from '../script/transformTemplate';
 import { isVirtualVueTemplateFile, templateSourceMap, TemplateSourceMapNode } from './serviceHost';
 
 export function isVue(filename: string): boolean {
