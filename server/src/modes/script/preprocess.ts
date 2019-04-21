@@ -12,7 +12,7 @@ import {
   renderHelperName,
   listenerHelperName
 } from './transformTemplate';
-import { isVirtualVueTemplateFile } from './serviceHost';
+import { isVirtualVueTemplateFile, templateSourceMap, TemplateSourceMapNode } from './serviceHost';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -83,8 +83,11 @@ export function createUpdater(tsModule: T_TypeScript) {
     // with the template mode
     const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
     const program = parse(code, { sourceType: 'module' });
-    const tsCode = getTemplateTransformFunctions(tsModule).transformTemplate(program, code);
-    injectVueTemplate(tsModule, sourceFile, tsCode);
+    const { expressions, interpolationRanges } = getTemplateTransformFunctions(tsModule).transformTemplate(
+      program,
+      code
+    );
+    injectVueTemplate(tsModule, sourceFile, expressions);
 
     const text = printer.printFile(sourceFile);
     const newSourceFile = tsModule.createSourceFile(
@@ -94,6 +97,46 @@ export function createUpdater(tsModule: T_TypeScript) {
       true /* setParentNodes: Need this to walk the AST */,
       tsModule.ScriptKind.JS
     );
+
+    const transformedInterpolationRanges: [number, number][] = [];
+    walkTSNode(newSourceFile, n => {
+      if (n.kind === tsModule.SyntaxKind.ThisKeyword) {
+        /**
+         * Walk up for expressions like `this.foo.bar`
+         */
+        let tsInterpolationNode = n;
+        while (tsInterpolationNode.parent.kind === tsModule.SyntaxKind.PropertyAccessExpression) {
+          tsInterpolationNode = tsInterpolationNode.parent;
+        }
+
+        /**
+         * Calculate the `foo.bar` range without `this.` as the source map target range
+         */
+        const start = tsInterpolationNode.getStart() + `this.`.length;
+        const end = tsInterpolationNode.getFullStart() + tsInterpolationNode.getFullWidth();
+        transformedInterpolationRanges.push([start, end]);
+      }
+    });
+
+    const sourceMapNodes: TemplateSourceMapNode[] = [];
+    templateSourceMap[fileName.slice(0, -'.template'.length)] = templateSourceMap[fileName] = sourceMapNodes;
+
+    interpolationRanges.forEach((from, i) => {
+      const sourceMapNode = {
+        from: {
+          start: from[0],
+          end: from[1],
+          fileName: fileName.slice(0, -'.template'.length)
+        },
+        to: {
+          start: transformedInterpolationRanges[i][0],
+          end: transformedInterpolationRanges[i][1],
+          fileName
+        }
+      };
+
+      sourceMapNodes.push(sourceMapNode);
+    });
 
     return newSourceFile;
   }

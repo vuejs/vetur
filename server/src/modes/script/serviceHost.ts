@@ -68,6 +68,28 @@ function getDefaultCompilerOptions(tsModule: T_TypeScript) {
   return defaultCompilerOptions;
 }
 
+/**
+ * SourceMap from template to virtual TS nodes
+ */
+export interface TemplateSourceMapNode {
+  from: {
+    start: number;
+    end: number;
+    fileName: string;
+  };
+  to: {
+    start: number;
+    end: number;
+    fileName: string;
+  };
+}
+
+export interface TemplateSourceMap {
+  [fileName: string]: TemplateSourceMapNode[];
+}
+
+export const templateSourceMap: TemplateSourceMap = {};
+
 export function getServiceHost(
   tsModule: T_TypeScript,
   workspacePath: string,
@@ -115,7 +137,8 @@ export function getServiceHost(
     return {
       service: jsLanguageService,
       templateService: templateLanguageService,
-      scriptDoc: currentScriptDoc
+      scriptDoc: currentScriptDoc,
+      templateSourceMap
     };
   }
 

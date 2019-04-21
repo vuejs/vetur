@@ -21,6 +21,8 @@ const globalScope = (
 const vOnScope = ['$event', 'arguments'];
 
 export function getTemplateTransformFunctions(ts: T_TypeScript) {
+  let interpolationRanges: [number, number][] = [];
+
   return {
     transformTemplate,
     injectThis
@@ -35,14 +37,22 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    * the compiler may clash or do incorrect type inference
    * when it has an invalid range.
    */
-  function transformTemplate(program: AST.ESLintProgram, code: string): ts.Expression[] {
+  function transformTemplate(program: AST.ESLintProgram, code: string) {
+    interpolationRanges = [];
+
     const template = program.templateBody;
 
     if (!template) {
-      return [];
+      return {
+        expressions: [],
+        interpolationRanges
+      };
     }
 
-    return template.children.map(c => transformChild(c, code, globalScope));
+    return {
+      expressions: template.children.map(c => transformChild(c, code, globalScope)),
+      interpolationRanges
+    };
   }
 
   /**
@@ -314,6 +324,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const [start, end] = expression.range;
     const expStr = code.slice(start, end);
 
+    interpolationRanges.push([start, end]);
     return parseExpressionImpl(expStr, start, scope);
   }
 
