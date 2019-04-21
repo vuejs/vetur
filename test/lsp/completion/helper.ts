@@ -20,6 +20,11 @@ export async function testCompletion(
     position
   )) as vscode.CompletionList;
 
+  // 0 expected items => shouldn't complete
+  if (expectedItems.length === 0) {
+    assert.equal(result.items.length, 0, `Shouldn't complete but see\n${JSON.stringify(result.items, null, 2)}`);
+  }
+
   expectedItems.forEach(ei => {
     if (typeof ei === 'string') {
       assert.ok(

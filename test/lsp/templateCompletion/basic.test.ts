@@ -104,11 +104,31 @@ describe('Should autocomplete interpolation for <template>', () => {
     it('completes inside v-if=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 17), defaultList);
     });
+    it(`doesn't completes on the edge " of v-if=""`, async () => {
+      await testCompletion(parentTemplateDocUri, position(3, 16), []);
+    });
+    it(`doesn't completes on the edge " of v-if=""`, async () => {
+      await testCompletion(parentTemplateDocUri, position(3, 18), []);
+    });
+
     it('completes inside @click=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 27), defaultList);
     });
+    it(`doesn't completes on the edge " of @click=""`, async () => {
+      await testCompletion(parentTemplateDocUri, position(3, 26), []);
+    });
+    it(`doesn't completes on the edge " of @click=""`, async () => {
+      await testCompletion(parentTemplateDocUri, position(3, 28), []);
+    });
+
     it('completes inside :foo=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 35), defaultList);
+    });
+    it(`doesn't completes on the edge " of :foo=""`, async () => {
+      await testCompletion(parentTemplateDocUri, position(3, 34), []);
+    });
+    it(`doesn't completes on the edge " of :foo=""`, async () => {
+      await testCompletion(parentTemplateDocUri, position(3, 36), []);
     });
   });
 });
