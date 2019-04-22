@@ -13,6 +13,7 @@ describe('Should do codeAction', () => {
 
     // More sleep for waiting diagnostics
     await sleep(FILE_LOAD_SLEEP_TIME);
+    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('finds codeAction for unused import', async () => {
