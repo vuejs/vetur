@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as ts from 'typescript';
-import { getTemplateTransformFunctions } from '../../../services/typescriptService/transformTemplate';
+import { getTemplateTransformFunctions } from '../transformTemplate';
 
 suite('transformTemplate', () => {
   suite('`this` injection', () => {

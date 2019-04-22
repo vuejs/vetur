@@ -2,8 +2,4 @@
 --useColors true
 --require source-map-support/register
 --exit
-./dist/embeddedSupport/test
-./dist/modes/template/test
-./dist/modes/style/stylus/test
-./dist/modes/test/
-./dist/modes/script/test
+./dist/**/*.test.js
