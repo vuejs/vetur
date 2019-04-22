@@ -21,8 +21,6 @@ import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
 
-type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
-
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
   private enabledTagProviders: IHTMLTagProvider[];
@@ -34,7 +32,7 @@ export class HTMLMode implements LanguageMode {
   private lintEngine = createLintEngine();
 
   constructor(
-    documentRegions: DocumentRegionCache,
+    documentRegions: LanguageModelCache<VueDocumentRegions>,
     workspacePath: string | undefined,
     private vueInfoService?: VueInfoService
   ) {
