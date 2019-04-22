@@ -1,7 +1,23 @@
-import { TextDocument, Range } from 'vscode-languageserver-types';
+import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import { TemplateSourceMap } from './serviceHost';
 import { getFileFsPath } from '../../utils/paths';
 import * as ts from 'typescript';
+
+/**
+ * Map a range from actual .vue file to .vue.template file
+ */
+export function mapToPosition(document: TextDocument, position: Position, sourceMap: TemplateSourceMap): number {
+  const filePath = getFileFsPath(document.uri);
+  const offset = document.offsetAt(position);
+  for (const sourceNode of sourceMap[filePath]) {
+    if (offset >= sourceNode.from.start && offset <= sourceNode.from.end) {
+      return sourceNode.to.start + (offset - sourceNode.from.start);
+    }
+  }
+
+  // Handle the case when no original range can be mapped
+  return 0;
+}
 
 /**
  * Map a range from actual .vue file to .vue.template file

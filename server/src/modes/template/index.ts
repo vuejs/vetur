@@ -1,4 +1,4 @@
-import { FormattingOptions, Position, Range, TextDocument } from 'vscode-languageserver-types';
+import { FormattingOptions, Position, Range, TextDocument, MarkedString, Hover } from 'vscode-languageserver-types';
 import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -7,17 +7,19 @@ import { DocumentContext } from '../../types';
 import { HTMLMode } from './htmlMode';
 import { VueInterpolationMode } from './interpolationMode';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
+import { T_TypeScript } from '../../services/dependencyService';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode(
+  tsModule: T_TypeScript,
   serviceHost: IServiceHost,
   documentRegions: DocumentRegionCache,
   workspacePath: string | undefined,
   vueInfoService?: VueInfoService
 ): LanguageMode {
   const htmlMode = new HTMLMode(documentRegions, workspacePath, vueInfoService);
-  const vueInterpolationMode = new VueInterpolationMode(serviceHost);
+  const vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost);
 
   return {
     getId() {
@@ -32,8 +34,9 @@ export function getVueHTMLMode(
     doComplete(document: TextDocument, position: Position) {
       return htmlMode.doComplete(document, position);
     },
-    doHover(document: TextDocument, position: Position) {
-      return htmlMode.doHover(document, position);
+    doHover(document: TextDocument, position: Position): Hover {
+      const interpolationHover = vueInterpolationMode.doHover(document, position);
+      return interpolationHover.contents.length !== 0 ? interpolationHover : htmlMode.doHover(document, position);
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
       return htmlMode.findDocumentHighlight(document, position);

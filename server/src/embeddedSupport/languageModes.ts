@@ -116,7 +116,13 @@ export class LanguageModes {
     });
     const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
 
-    const vueHtmlMode = getVueHTMLMode(serviceHost, this.documentRegions, workspacePath, services.infoService);
+    const vueHtmlMode = getVueHTMLMode(
+      tsModule,
+      serviceHost,
+      this.documentRegions,
+      workspacePath,
+      services.infoService
+    );
     const jsMode = await getJavascriptMode(
       serviceHost,
       this.documentRegions,
