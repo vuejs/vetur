@@ -6,16 +6,18 @@ import { VueInfoService } from '../../services/vueInfoService';
 import { DocumentContext } from '../../types';
 import { HTMLMode } from './htmlMode';
 import { VueInterpolationMode } from './interpolationMode';
+import { IServiceHost } from '../../services/typescriptService/serviceHost';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode(
+  serviceHost: IServiceHost,
   documentRegions: DocumentRegionCache,
   workspacePath: string | undefined,
   vueInfoService?: VueInfoService
 ): LanguageMode {
   const htmlMode = new HTMLMode(documentRegions, workspacePath, vueInfoService);
-  const vueInterpolationMode = new VueInterpolationMode();
+  const vueInterpolationMode = new VueInterpolationMode(serviceHost);
 
   return {
     getId() {

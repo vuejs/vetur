@@ -102,73 +102,35 @@ export async function getJavascriptMode(
     },
 
     doValidation(doc: TextDocument): Diagnostic[] {
-      const templateDiags = getTemplateDiagnostics();
-      const scriptDiags = getScriptDiagnostics();
-      return [...templateDiags, ...scriptDiags];
-
-      function getTemplateDiagnostics(): Diagnostic[] {
-        const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
-        if (!enabledTemplateValidation) {
-          return [];
-        }
-
-        // Add suffix to process this doc as vue template.
-        const templateDoc = TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText());
-
-        const { templateService, templateSourceMap } = updateCurrentTextDocument(templateDoc);
-        if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
-          return [];
-        }
-
-        const templateFileFsPath = getFileFsPath(templateDoc.uri);
-        // We don't need syntactic diagnostics because
-        // compiled template is always valid JavaScript syntax.
-        const rawTemplateDiagnostics = templateService.getSemanticDiagnostics(templateFileFsPath);
-
-        return rawTemplateDiagnostics.map(diag => {
-          // syntactic/semantic diagnostic always has start and length
-          // so we can safely cast diag to TextSpan
-          return {
-            range: mapBackRange(templateDoc, diag as ts.TextSpan, templateSourceMap),
-            severity: DiagnosticSeverity.Error,
-            message: ts.flattenDiagnosticMessageText(diag.messageText, '\n'),
-            code: diag.code,
-            source: 'Vetur'
-          };
-        });
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      if (!languageServiceIncludesFile(service, doc.uri)) {
+        return [];
       }
 
-      function getScriptDiagnostics(): Diagnostic[] {
-        const { scriptDoc, service } = updateCurrentTextDocument(doc);
-        if (!languageServiceIncludesFile(service, doc.uri)) {
-          return [];
+      const fileFsPath = getFileFsPath(doc.uri);
+      const rawScriptDiagnostics = [
+        ...service.getSyntacticDiagnostics(fileFsPath),
+        ...service.getSemanticDiagnostics(fileFsPath)
+      ];
+
+      return rawScriptDiagnostics.map(diag => {
+        const tags: DiagnosticTag[] = [];
+
+        if (diag.reportsUnnecessary) {
+          tags.push(DiagnosticTag.Unnecessary);
         }
 
-        const fileFsPath = getFileFsPath(doc.uri);
-        const rawScriptDiagnostics = [
-          ...service.getSyntacticDiagnostics(fileFsPath),
-          ...service.getSemanticDiagnostics(fileFsPath)
-        ];
-
-        return rawScriptDiagnostics.map(diag => {
-          const tags: DiagnosticTag[] = [];
-
-          if (diag.reportsUnnecessary) {
-            tags.push(DiagnosticTag.Unnecessary);
-          }
-
-          // syntactic/semantic diagnostic always has start and length
-          // so we can safely cast diag to TextSpan
-          return <Diagnostic>{
-            range: convertRange(scriptDoc, diag as ts.TextSpan),
-            severity: DiagnosticSeverity.Error,
-            message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
-            tags,
-            code: diag.code,
-            source: 'Vetur'
-          };
-        });
-      }
+        // syntactic/semantic diagnostic always has start and length
+        // so we can safely cast diag to TextSpan
+        return <Diagnostic>{
+          range: convertRange(scriptDoc, diag as ts.TextSpan),
+          severity: DiagnosticSeverity.Error,
+          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
+          tags,
+          code: diag.code,
+          source: 'Vetur'
+        };
+      });
     },
     doComplete(doc: TextDocument, position: Position): CompletionList {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -640,7 +602,7 @@ function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
   return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
 }
 
-function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
+export function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
   const filePaths = ls.getProgram()!.getRootFileNames();
   const filePath = getFilePath(documentUri);
   return filePaths.includes(filePath);
@@ -666,52 +628,6 @@ function mapToOffset(document: TextDocument, offset: number, sourceMap: Template
 
   // Handle the case when no original range can be mapped
   return -1;
-}
-
-/**
- * Map a range from actual .vue file to .vue.template file
- */
-function mapToRange(document: TextDocument, from: ts.TextSpan, sourceMap: TemplateSourceMap): Range {
-  const filePath = getFileFsPath(document.uri);
-  for (const sourceNode of sourceMap[filePath]) {
-    if (from.start >= sourceNode.from.start && from.start + from.length <= sourceNode.from.end) {
-      const start = sourceNode.to.start + (from.start - sourceNode.from.start);
-      const end = sourceNode.to.end + (from.start + from.length - sourceNode.from.end);
-      return {
-        start: document.positionAt(start),
-        end: document.positionAt(end)
-      };
-    }
-  }
-
-  // Handle the case when no original range can be mapped
-  return Range.create(0, 0, 0, 0);
-}
-
-/**
- * Map a range from virtual `.vue.template` file back to original `.vue` file
- */
-function mapBackRange(document: TextDocument, to: ts.TextSpan, sourceMaps: TemplateSourceMap): Range {
-  const filePath = getFileFsPath(document.uri);
-  const sourceMap = sourceMaps[filePath];
-  if (!sourceMap) {
-    // Todo: Remove this when all source map can be generated from templates
-    return Range.create(0, 0, 0, 0);
-  }
-
-  for (const sourceNode of sourceMap) {
-    if (to.start >= sourceNode.to.start && to.start + to.length <= sourceNode.to.end) {
-      const start = sourceNode.from.start + (to.start - sourceNode.to.start);
-      const end = sourceNode.from.end + (to.start + to.length - sourceNode.to.end);
-      return {
-        start: document.positionAt(start),
-        end: document.positionAt(end)
-      };
-    }
-  }
-
-  // Handle the case when no original range can be mapped
-  return Range.create(0, 0, 0, 0);
 }
 
 function convertKind(kind: ts.ScriptElementKind): CompletionItemKind {
