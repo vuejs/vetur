@@ -56,6 +56,19 @@ export interface TemplateSourceMap {
 
 export const templateSourceMap: TemplateSourceMap = {};
 
+export interface IServiceHost {
+  updateCurrentTextDocument(
+    doc: TextDocument
+  ): {
+    service: ts.LanguageService;
+    templateService: ts.LanguageService;
+    scriptDoc: TextDocument;
+    templateSourceMap: TemplateSourceMap;
+  };
+  updateExternalDocument(filePath: string): void;
+  dispose(): void;
+}
+
 export function getServiceHost(
   tsModule: T_TypeScript,
   workspacePath: string,
@@ -112,10 +125,6 @@ export function getServiceHost(
   function updateExternalDocument(filePath: string) {
     const ver = versions.get(filePath) || 0;
     versions.set(filePath, ver + 1);
-  }
-
-  function getScriptDocByFsPath(fsPath: string) {
-    return scriptDocs.get(fsPath);
   }
 
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
@@ -239,7 +248,6 @@ export function getServiceHost(
   return {
     updateCurrentTextDocument,
     updateExternalDocument,
-    getScriptDocByFsPath,
     dispose: () => {
       jsLanguageService.dispose();
     }

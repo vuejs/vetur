@@ -40,13 +40,14 @@ import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
 import { RefactorAction } from '../../types';
-import { getServiceHost, TemplateSourceMap } from '../../services/typescriptService/serviceHost';
+import { TemplateSourceMap, IServiceHost } from '../../services/typescriptService/serviceHost';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
 export async function getJavascriptMode(
+  serviceHost: IServiceHost,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   workspacePath: string | undefined,
   vueInfoService?: VueInfoService,
@@ -76,7 +77,6 @@ export async function getJavascriptMode(
     }
   }
 
-  const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
   let supportedCodeFixCodes: Set<number>;

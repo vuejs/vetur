@@ -30,8 +30,9 @@ import { getVueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
-import { DependencyService } from '../services/dependencyService';
+import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
+import { getServiceHost } from '../services/typescriptService/serviceHost';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -101,8 +102,23 @@ export class LanguageModes {
   }
 
   async init(workspacePath: string, services: VLSServices) {
+    let tsModule = await import('typescript');
+    if (services.dependencyService) {
+      const ts = services.dependencyService.getDependency('typescript');
+      if (ts && ts.state === State.Loaded) {
+        tsModule = ts.module;
+      }
+    }
+
+    const jsDocuments = getLanguageModelCache(10, 60, document => {
+      const vueDocument = this.documentRegions.get(document);
+      return vueDocument.getSingleTypeDocument('script');
+    });
+    const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
+
     const vueHtmlMode = getVueHTMLMode(this.documentRegions, workspacePath, services.infoService);
     const jsMode = await getJavascriptMode(
+      serviceHost,
       this.documentRegions,
       workspacePath,
       services.infoService,
