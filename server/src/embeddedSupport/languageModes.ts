@@ -32,7 +32,7 @@ import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
-import { getServiceHost } from '../services/typescriptService/serviceHost';
+import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -91,6 +91,7 @@ export class LanguageModes {
 
   private documentRegions: LanguageModelCache<VueDocumentRegions>;
   private modelCaches: LanguageModelCache<any>[];
+  private serviceHost: IServiceHost;
 
   constructor() {
     this.documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document =>
@@ -114,17 +115,17 @@ export class LanguageModes {
       const vueDocument = this.documentRegions.get(document);
       return vueDocument.getSingleTypeDocument('script');
     });
-    const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
+    this.serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
 
     const vueHtmlMode = getVueHTMLMode(
       tsModule,
-      serviceHost,
+      this.serviceHost,
       this.documentRegions,
       workspacePath,
       services.infoService
     );
     const jsMode = await getJavascriptMode(
-      serviceHost,
+      this.serviceHost,
       this.documentRegions,
       workspacePath,
       services.infoService,
@@ -195,5 +196,6 @@ export class LanguageModes {
       this.modes[<LanguageId>mode].dispose();
     }
     delete this.modes;
+    this.serviceHost.dispose();
   }
 }

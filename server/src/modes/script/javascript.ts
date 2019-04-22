@@ -40,7 +40,7 @@ import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
 import { RefactorAction } from '../../types';
-import { TemplateSourceMap, IServiceHost } from '../../services/typescriptService/serviceHost';
+import { IServiceHost } from '../../services/typescriptService/serviceHost';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -506,7 +506,6 @@ export async function getJavascriptMode(
       serviceHost.updateExternalDocument(filePath);
     },
     dispose() {
-      serviceHost.dispose();
       jsDocuments.dispose();
     }
   };
@@ -612,22 +611,6 @@ function convertRange(document: TextDocument, span: ts.TextSpan): Range {
   const startPosition = document.positionAt(span.start);
   const endPosition = document.positionAt(span.start + span.length);
   return Range.create(startPosition, endPosition);
-}
-
-/**
- * Map an offset from actual .vue file to .vue.template file
- */
-function mapToOffset(document: TextDocument, offset: number, sourceMap: TemplateSourceMap): number {
-  const filePath = getFileFsPath(document.uri);
-
-  for (const sourceNode of sourceMap[filePath]) {
-    if (offset >= sourceNode.from.start && offset <= sourceNode.from.end) {
-      return sourceNode.to.start + (offset - sourceNode.from.start);
-    }
-  }
-
-  // Handle the case when no original range can be mapped
-  return -1;
 }
 
 function convertKind(kind: ts.ScriptElementKind): CompletionItemKind {
