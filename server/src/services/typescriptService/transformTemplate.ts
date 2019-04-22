@@ -338,7 +338,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   function parseExpressionImpl(exp: string, scope: string[], start: number): ts.Expression {
     // Add parenthesis to deal with object literal expression
     const wrappedExp = '(' + exp + ')';
-    const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest);
+    const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest, true);
     const statement = source.statements[0];
 
     if (!statement || !ts.isExpressionStatement(statement)) {
