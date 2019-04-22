@@ -21,8 +21,6 @@ const globalScope = (
 const vOnScope = ['$event', 'arguments'];
 
 export function getTemplateTransformFunctions(ts: T_TypeScript) {
-  let interpolationRanges: [number, number][] = [];
-
   return {
     transformTemplate,
     injectThis
@@ -38,21 +36,13 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    * when it has an invalid range.
    */
   function transformTemplate(program: AST.ESLintProgram, code: string) {
-    interpolationRanges = [];
-
     const template = program.templateBody;
 
     if (!template) {
-      return {
-        expressions: [],
-        interpolationRanges
-      };
+      return [];
     }
 
-    return {
-      expressions: template.children.map(c => transformChild(c, code, globalScope)),
-      interpolationRanges: interpolationRanges.sort((x, y) => x[0] - y[0])
-    };
+    return template.children.map(c => transformChild(c, code, globalScope));
   }
 
   /**
@@ -325,11 +315,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const expStr = code.slice(start, end);
 
     const tsExp = parseExpressionImpl(expStr, scope, start);
-    // if (ts.isPropertyAccessExpression(tsExp)) {
-    //   if (tsExp.expression.kind === ts.SyntaxKind.ThisKeyword) {
-    //     interpolationRanges.push([start, end]);
-    //   }
-    // }
+    ts.setSourceMapRange(tsExp, { pos: start, end });
     return tsExp;
   }
 
@@ -352,19 +338,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   function parseExpressionImpl(exp: string, scope: string[], start: number): ts.Expression {
     // Add parenthesis to deal with object literal expression
     const wrappedExp = '(' + exp + ')';
-    const source = ts.createSourceFile(
-      '/tmp/parsed.ts',
-      wrappedExp,
-      ts.ScriptTarget.Latest,
-      /**
-       * setParentNodes
-       * Need to enable this for access to node.getStart / node.getEnd to reliably get range
-       * In edge cases such as expression ` foo`:
-       * - node.pos = node.getFullStart() = 0
-       * - node.getStart() = 1
-       */
-      true
-    );
+    const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest);
     const statement = source.statements[0];
 
     if (!statement || !ts.isExpressionStatement(statement)) {
@@ -386,19 +360,6 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     if (ts.isIdentifier(exp)) {
       if (scope.indexOf(exp.text) < 0) {
         res = ts.createPropertyAccess(ts.createThis(), exp);
-        try {
-          if (hasValidPos(exp) && exp.getStart() !== -1 && exp.getEnd() !== -1 && start) {
-            if (exp.parent && ts.isCallExpression(exp.parent)) {
-              interpolationRanges.push([start + exp.getStart(), start + exp.parent.getEnd()]);
-            } else {
-              interpolationRanges.push([start + exp.getStart(), start + exp.getEnd()]);
-            }
-          }
-        } catch (err) {
-          /**
-           * TS could throw `TypeError: Cannot read property 'text' of undefined` for node.getStart()
-           */
-        }
       } else {
         return exp;
       }

@@ -10,6 +10,7 @@ import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
 import { getVueSys } from './vueSys';
+import { TemplateSourceMap } from './sourceMap';
 
 function patchTS(tsModule: T_TypeScript) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
@@ -32,26 +33,6 @@ function getDefaultCompilerOptions(tsModule: T_TypeScript) {
   };
 
   return defaultCompilerOptions;
-}
-
-/**
- * SourceMap from template to virtual TS nodes
- */
-export interface TemplateSourceMapNode {
-  from: {
-    start: number;
-    end: number;
-    fileName: string;
-  };
-  to: {
-    start: number;
-    end: number;
-    fileName: string;
-  };
-}
-
-export interface TemplateSourceMap {
-  [fileName: string]: TemplateSourceMapNode[];
 }
 
 export const templateSourceMap: TemplateSourceMap = {};
