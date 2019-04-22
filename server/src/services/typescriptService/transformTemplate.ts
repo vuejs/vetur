@@ -51,7 +51,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
     return {
       expressions: template.children.map(c => transformChild(c, code, globalScope)),
-      interpolationRanges
+      interpolationRanges: interpolationRanges.sort((x, y) => x[0] - y[0])
     };
   }
 
@@ -324,8 +324,13 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const [start, end] = expression.range;
     const expStr = code.slice(start, end);
 
-    interpolationRanges.push([start, end]);
-    return parseExpressionImpl(expStr, start, scope);
+    const tsExp = parseExpressionImpl(expStr, scope, start);
+    // if (ts.isPropertyAccessExpression(tsExp)) {
+    //   if (tsExp.expression.kind === ts.SyntaxKind.ThisKeyword) {
+    //     interpolationRanges.push([start, end]);
+    //   }
+    // }
+    return tsExp;
   }
 
   function parseParams(
@@ -340,14 +345,26 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const arrowFnStr = '(' + paramsStr + ') => {}';
 
     // Decrement the offset since the expression now has the open parenthesis.
-    const exp = parseExpressionImpl(arrowFnStr, start - 1, scope) as ts.ArrowFunction;
+    const exp = parseExpressionImpl(arrowFnStr, scope, start - 1) as ts.ArrowFunction;
     return exp.parameters;
   }
 
-  function parseExpressionImpl(exp: string, offset: number, scope: string[]): ts.Expression {
+  function parseExpressionImpl(exp: string, scope: string[], start: number): ts.Expression {
     // Add parenthesis to deal with object literal expression
     const wrappedExp = '(' + exp + ')';
-    const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest);
+    const source = ts.createSourceFile(
+      '/tmp/parsed.ts',
+      wrappedExp,
+      ts.ScriptTarget.Latest,
+      /**
+       * setParentNodes
+       * Need to enable this for access to node.getStart / node.getEnd to reliably get range
+       * In edge cases such as expression ` foo`:
+       * - node.pos = node.getFullStart() = 0
+       * - node.getStart() = 1
+       */
+      true
+    );
     const statement = source.statements[0];
 
     if (!statement || !ts.isExpressionStatement(statement)) {
@@ -356,59 +373,77 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     }
 
     const parenthesis = statement.expression as ts.ParenthesizedExpression;
-    return injectThis(parenthesis.expression, scope);
+    return injectThis(
+      parenthesis.expression,
+      scope,
+      // Compensate for the added `(` that adds 1 to each Node's offset
+      start - '('.length
+    );
   }
 
-  function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
+  function injectThis(exp: ts.Expression, scope: string[], start: number): ts.Expression {
     let res;
     if (ts.isIdentifier(exp)) {
       if (scope.indexOf(exp.text) < 0) {
         res = ts.createPropertyAccess(ts.createThis(), exp);
+        try {
+          if (hasValidPos(exp) && exp.getStart() !== -1 && exp.getEnd() !== -1 && start) {
+            if (exp.parent && ts.isCallExpression(exp.parent)) {
+              interpolationRanges.push([start + exp.getStart(), start + exp.parent.getEnd()]);
+            } else {
+              interpolationRanges.push([start + exp.getStart(), start + exp.getEnd()]);
+            }
+          }
+        } catch (err) {
+          /**
+           * TS could throw `TypeError: Cannot read property 'text' of undefined` for node.getStart()
+           */
+        }
       } else {
         return exp;
       }
     } else if (ts.isPropertyAccessExpression(exp)) {
-      res = ts.createPropertyAccess(injectThis(exp.expression, scope), exp.name);
+      res = ts.createPropertyAccess(injectThis(exp.expression, scope, start), exp.name);
     } else if (ts.isElementAccessExpression(exp)) {
       res = ts.createElementAccess(
-        injectThis(exp.expression, scope),
+        injectThis(exp.expression, scope, start),
         // argumentExpression cannot be undefined in the latest TypeScript
-        injectThis(exp.argumentExpression!, scope)
+        injectThis(exp.argumentExpression!, scope, start)
       );
     } else if (ts.isPrefixUnaryExpression(exp)) {
-      res = ts.createPrefix(exp.operator, injectThis(exp.operand, scope));
+      res = ts.createPrefix(exp.operator, injectThis(exp.operand, scope, start));
     } else if (ts.isPostfixUnaryExpression(exp)) {
-      res = ts.createPostfix(injectThis(exp.operand, scope), exp.operator);
+      res = ts.createPostfix(injectThis(exp.operand, scope, start), exp.operator);
     } else if (exp.kind === ts.SyntaxKind.TypeOfExpression) {
       // Manually check `kind` for typeof expression
       // since ts.isTypeOfExpression is not working.
-      res = ts.createTypeOf(injectThis((exp as ts.TypeOfExpression).expression, scope));
+      res = ts.createTypeOf(injectThis((exp as ts.TypeOfExpression).expression, scope, start));
     } else if (ts.isDeleteExpression(exp)) {
-      res = ts.createDelete(injectThis(exp.expression, scope));
+      res = ts.createDelete(injectThis(exp.expression, scope, start));
     } else if (ts.isVoidExpression(exp)) {
-      res = ts.createVoid(injectThis(exp.expression, scope));
+      res = ts.createVoid(injectThis(exp.expression, scope, start));
     } else if (ts.isBinaryExpression(exp)) {
-      res = ts.createBinary(injectThis(exp.left, scope), exp.operatorToken, injectThis(exp.right, scope));
+      res = ts.createBinary(injectThis(exp.left, scope, start), exp.operatorToken, injectThis(exp.right, scope, start));
     } else if (ts.isConditionalExpression(exp)) {
       res = ts.createConditional(
-        injectThis(exp.condition, scope),
-        injectThis(exp.whenTrue, scope),
-        injectThis(exp.whenFalse, scope)
+        injectThis(exp.condition, scope, start),
+        injectThis(exp.whenTrue, scope, start),
+        injectThis(exp.whenFalse, scope, start)
       );
     } else if (ts.isCallExpression(exp)) {
       res = ts.createCall(
-        injectThis(exp.expression, scope),
+        injectThis(exp.expression, scope, start),
         exp.typeArguments,
-        exp.arguments.map(arg => injectThis(arg, scope))
+        exp.arguments.map(arg => injectThis(arg, scope, start))
       );
     } else if (ts.isParenthesizedExpression(exp)) {
-      res = ts.createParen(injectThis(exp.expression, scope));
+      res = ts.createParen(injectThis(exp.expression, scope, start));
     } else if (ts.isObjectLiteralExpression(exp)) {
-      res = ts.createObjectLiteral(exp.properties.map(p => injectThisForObjectLiteralElement(p, scope)));
+      res = ts.createObjectLiteral(exp.properties.map(p => injectThisForObjectLiteralElement(p, scope, start)));
     } else if (ts.isArrayLiteralExpression(exp)) {
-      res = ts.createArrayLiteral(exp.elements.map(e => injectThis(e, scope)));
+      res = ts.createArrayLiteral(exp.elements.map(e => injectThis(e, scope, start)));
     } else if (ts.isSpreadElement(exp)) {
-      res = ts.createSpread(injectThis(exp.expression, scope));
+      res = ts.createSpread(injectThis(exp.expression, scope, start));
     } else if (ts.isArrowFunction(exp) && !ts.isBlock(exp.body)) {
       res = ts.createArrowFunction(
         exp.modifiers,
@@ -416,15 +451,22 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         exp.parameters,
         exp.type,
         exp.equalsGreaterThanToken,
-        injectThis(exp.body, scope.concat(flatMap(exp.parameters, collectScope)))
+        injectThis(exp.body, scope.concat(flatMap(exp.parameters, collectScope)), start)
       );
     } else if (ts.isTemplateExpression(exp)) {
       const injectedSpans = exp.templateSpans.map(span => {
-        return ts.createTemplateSpan(injectThis(span.expression, scope), span.literal);
+        return ts.createTemplateSpan(injectThis(span.expression, scope, start), span.literal);
       });
 
       res = ts.createTemplateExpression(exp.head, injectedSpans);
     } else {
+      /**
+       * Because Nodes can have non-virtual positions
+       * Set them to synthetic positions so printers could print correctly
+       */
+      if (hasValidPos(exp)) {
+        ts.setTextRange(exp, { pos: -1, end: -1 });
+      }
       return exp;
     }
     return res;
@@ -432,19 +474,20 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
   function injectThisForObjectLiteralElement(
     el: ts.ObjectLiteralElementLike,
-    scope: string[]
+    scope: string[],
+    start: number
   ): ts.ObjectLiteralElementLike {
     let res;
     if (ts.isPropertyAssignment(el)) {
       const name = !ts.isComputedPropertyName(el.name)
         ? el.name
-        : ts.createComputedPropertyName(injectThis(el.name.expression, scope));
+        : ts.createComputedPropertyName(injectThis(el.name.expression, scope, start));
 
-      res = ts.createPropertyAssignment(name, injectThis(el.initializer, scope));
+      res = ts.createPropertyAssignment(name, injectThis(el.initializer, scope, start));
     } else if (ts.isShorthandPropertyAssignment(el)) {
-      res = ts.createPropertyAssignment(el.name, injectThis(el.name, scope));
+      res = ts.createPropertyAssignment(el.name, injectThis(el.name, scope, start));
     } else if (ts.isSpreadAssignment(el)) {
-      res = ts.createSpreadAssignment(injectThis(el.expression, scope));
+      res = ts.createSpreadAssignment(injectThis(el.expression, scope, start));
     } else {
       return el;
     }
@@ -514,5 +557,9 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     return list.reduce<R[]>((acc, item) => {
       return acc.concat(fn(item));
     }, []);
+  }
+
+  function hasValidPos(node: ts.Node) {
+    return node.pos !== -1 && node.end !== -1;
   }
 }

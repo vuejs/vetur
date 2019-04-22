@@ -110,11 +110,20 @@ export function createUpdater(tsModule: T_TypeScript) {
         }
 
         /**
-         * Calculate the `foo.bar` range without `this.` as the source map target range
+         * Guard the case when not going up in AST, and the interpolation is not property access
+         * Such as the pure `this` case
          */
-        const start = tsInterpolationNode.getStart() + `this.`.length;
-        const end = tsInterpolationNode.getFullStart() + tsInterpolationNode.getFullWidth();
-        transformedInterpolationRanges.push([start, end]);
+        if (tsInterpolationNode.kind === tsModule.SyntaxKind.PropertyAccessExpression) {
+          /**
+           * Calculate the `foo.bar` range without `this.` as the source map target range
+           */
+          const start = tsInterpolationNode.getStart() + `this.`.length;
+          const end = ts.isCallExpression(tsInterpolationNode.parent)
+            ? tsInterpolationNode.parent.getEnd()
+            : tsInterpolationNode.getEnd();
+
+          transformedInterpolationRanges.push([start, end]);
+        }
       }
     });
 
