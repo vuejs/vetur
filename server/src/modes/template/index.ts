@@ -1,4 +1,4 @@
-import { FormattingOptions, Position, Range, TextDocument, MarkedString, Hover } from 'vscode-languageserver-types';
+import { FormattingOptions, Position, Range, TextDocument, Hover, Location } from 'vscode-languageserver-types';
 import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -50,8 +50,12 @@ export function getVueHTMLMode(
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
       return htmlMode.format(document, range, formattingOptions);
     },
+    findReferences(document: TextDocument, position: Position): Location[] {
+      return vueInterpolationMode.findReferences(document, position);
+    },
     findDefinition(document: TextDocument, position: Position) {
-      return htmlMode.findDefinition(document, position);
+      const interpolationDefinition = vueInterpolationMode.findDefinition(document, position);
+      return interpolationDefinition.length > 0 ? interpolationDefinition : htmlMode.findDefinition(document, position);
     },
     onDocumentRemoved(document: TextDocument) {
       htmlMode.onDocumentRemoved(document);

@@ -4,14 +4,15 @@ import {
   TextDocument,
   DiagnosticSeverity,
   Position,
-  Hover,
   MarkedString,
-  Range
+  Range,
+  Location,
+  Definition
 } from 'vscode-languageserver-types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { languageServiceIncludesFile } from '../script/javascript';
 import { getFileFsPath } from '../../utils/paths';
-import { mapBackRange, mapToRange, mapToPosition } from '../../services/typescriptService/sourceMap';
+import { mapBackRange, mapFromPositionToOffset } from '../../services/typescriptService/sourceMap';
 import * as ts from 'typescript';
 import { T_TypeScript } from '../../services/dependencyService';
 
@@ -77,7 +78,7 @@ export class VueInterpolationMode implements LanguageMode {
     }
 
     const templateFileFsPath = getFileFsPath(templateDoc.uri);
-    const mappedPosition = mapToPosition(templateDoc, position, templateSourceMap);
+    const mappedPosition = mapFromPositionToOffset(templateDoc, position, templateSourceMap);
 
     const info = templateService.getQuickInfoAtPosition(templateFileFsPath, mappedPosition);
     if (info) {
@@ -95,7 +96,106 @@ export class VueInterpolationMode implements LanguageMode {
     return { contents: [] };
   }
 
+  findDefinition(document: TextDocument, position: Position): Location[] {
+    // Add suffix to process this doc as vue template.
+    const templateDoc = TextDocument.create(
+      document.uri + '.template',
+      document.languageId,
+      document.version,
+      document.getText()
+    );
+
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentTextDocument(templateDoc);
+    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return [];
+    }
+
+    const templateFileFsPath = getFileFsPath(templateDoc.uri);
+    const mappedPosition = mapFromPositionToOffset(templateDoc, position, templateSourceMap);
+    const definitions = templateService.getDefinitionAtPosition(templateFileFsPath, mappedPosition);
+    if (!definitions) {
+      return [];
+    }
+
+    const definitionResults: Definition = [];
+    const program = templateService.getProgram();
+    if (!program) {
+      return [];
+    }
+
+    definitions.forEach(r => {
+      const definitionTargetDoc = r.fileName === templateFileFsPath ? document : getSourceDoc(r.fileName, program);
+      if (definitionTargetDoc) {
+        const range =
+          r.fileName === templateFileFsPath
+            ? mapBackRange(templateDoc, r.textSpan, templateSourceMap)
+            : convertRange(definitionTargetDoc, r.textSpan);
+
+        definitionResults.push({
+          uri: definitionTargetDoc.uri.toString(),
+          range
+        });
+      }
+    });
+    return definitionResults;
+  }
+
+  findReferences(document: TextDocument, position: Position): Location[] {
+    // Add suffix to process this doc as vue template.
+    const templateDoc = TextDocument.create(
+      document.uri + '.template',
+      document.languageId,
+      document.version,
+      document.getText()
+    );
+
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentTextDocument(templateDoc);
+    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return [];
+    }
+
+    const templateFileFsPath = getFileFsPath(templateDoc.uri);
+    const mappedPosition = mapFromPositionToOffset(templateDoc, position, templateSourceMap);
+    const references = templateService.getReferencesAtPosition(templateFileFsPath, mappedPosition);
+    if (!references) {
+      return [];
+    }
+
+    const referenceResults: Location[] = [];
+    const program = templateService.getProgram();
+    if (!program) {
+      return [];
+    }
+
+    references.forEach(r => {
+      const referenceTargetDoc = r.fileName === templateFileFsPath ? document : getSourceDoc(r.fileName, program);
+      if (referenceTargetDoc) {
+        const range =
+          r.fileName === templateFileFsPath
+            ? mapBackRange(templateDoc, r.textSpan, templateSourceMap)
+            : convertRange(referenceTargetDoc, r.textSpan);
+
+        referenceResults.push({
+          uri: referenceTargetDoc.uri.toString(),
+          range
+        });
+      }
+    });
+    return referenceResults;
+  }
+
   onDocumentRemoved() {}
 
   dispose() {}
+}
+
+function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
+  const sourceFile = program.getSourceFile(fileName)!;
+  return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
+}
+
+function convertRange(document: TextDocument, span: ts.TextSpan): Range {
+  const startPosition = document.positionAt(span.start);
+  const endPosition = document.positionAt(span.start + span.length);
+  return Range.create(startPosition, endPosition);
 }
