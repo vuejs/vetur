@@ -13,6 +13,8 @@
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
     "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
+    "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
+    "test:int": "node ./dist/test/codeTestRunner.js interpolation",
     "test": "run-s lint compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepare-publish": "yarn compile -f && ./build/release-cleanup.sh"
@@ -413,10 +415,10 @@
           "type": "string",
           "description": "Path to VLS for Vetur developers. There are two ways of using it. \n\n1. Clone vuejs/vetur from GitHub, build it and point it to the ABSOLUTE path of `/server`.\n2. `yarn global add vue-language-server` and point Vetur to the installed location (`yarn global dir` + node_modules/vue-language-server)"
         },
-        "vetur.experimental.templateTypeCheck": {
+        "vetur.experimental.templateInterpolationService": {
           "type": "boolean",
           "default": true,
-          "description": "Type-check interpolation expressions in <template> region"
+          "description": "Enable template interpolation service that offers diagnostics / hover / definition / references."
         }
       }
     }

@@ -1,7 +1,8 @@
 <template>
   <p :class="{
     foo: foo,
-    bar: bar
+    bar: bar,
+    baz
   }">Hello</p>
 </template>
 

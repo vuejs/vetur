@@ -27,7 +27,6 @@ import {
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
-import { getServiceHost } from './serviceHost';
 import { prettierify, prettierEslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
@@ -41,12 +40,14 @@ import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
 import { RefactorAction } from '../../types';
+import { IServiceHost } from '../../services/typescriptService/serviceHost';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
 
 export async function getJavascriptMode(
+  serviceHost: IServiceHost,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   workspacePath: string | undefined,
   vueInfoService?: VueInfoService,
@@ -76,7 +77,6 @@ export async function getJavascriptMode(
     }
   }
 
-  const serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
   const { updateCurrentTextDocument } = serviceHost;
   let config: any = {};
   let supportedCodeFixCodes: Set<number>;
@@ -102,73 +102,35 @@ export async function getJavascriptMode(
     },
 
     doValidation(doc: TextDocument): Diagnostic[] {
-      const templateDiags = getTemplateDiagnostics();
-      const scriptDiags = getScriptDiagnostics();
-      return [...templateDiags, ...scriptDiags];
-
-      function getTemplateDiagnostics(): Diagnostic[] {
-        const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
-        if (!enabledTemplateValidation) {
-          return [];
-        }
-
-        // Add suffix to process this doc as vue template.
-        const templateDoc = TextDocument.create(doc.uri + '.template', doc.languageId, doc.version, doc.getText());
-
-        const { templateService } = updateCurrentTextDocument(templateDoc);
-        if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
-          return [];
-        }
-
-        const templateFileFsPath = getFileFsPath(templateDoc.uri);
-        // We don't need syntactic diagnostics because
-        // compiled template is always valid JavaScript syntax.
-        const rawTemplateDiagnostics = templateService.getSemanticDiagnostics(templateFileFsPath);
-
-        return rawTemplateDiagnostics.map(diag => {
-          // syntactic/semantic diagnostic always has start and length
-          // so we can safely cast diag to TextSpan
-          return {
-            range: convertRange(templateDoc, diag as ts.TextSpan),
-            severity: DiagnosticSeverity.Error,
-            message: ts.flattenDiagnosticMessageText(diag.messageText, '\n'),
-            code: diag.code,
-            source: 'Vetur'
-          };
-        });
+      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      if (!languageServiceIncludesFile(service, doc.uri)) {
+        return [];
       }
 
-      function getScriptDiagnostics(): Diagnostic[] {
-        const { scriptDoc, service } = updateCurrentTextDocument(doc);
-        if (!languageServiceIncludesFile(service, doc.uri)) {
-          return [];
+      const fileFsPath = getFileFsPath(doc.uri);
+      const rawScriptDiagnostics = [
+        ...service.getSyntacticDiagnostics(fileFsPath),
+        ...service.getSemanticDiagnostics(fileFsPath)
+      ];
+
+      return rawScriptDiagnostics.map(diag => {
+        const tags: DiagnosticTag[] = [];
+
+        if (diag.reportsUnnecessary) {
+          tags.push(DiagnosticTag.Unnecessary);
         }
 
-        const fileFsPath = getFileFsPath(doc.uri);
-        const rawScriptDiagnostics = [
-          ...service.getSyntacticDiagnostics(fileFsPath),
-          ...service.getSemanticDiagnostics(fileFsPath)
-        ];
-
-        return rawScriptDiagnostics.map(diag => {
-          const tags: DiagnosticTag[] = [];
-
-          if (diag.reportsUnnecessary) {
-            tags.push(DiagnosticTag.Unnecessary);
-          }
-
-          // syntactic/semantic diagnostic always has start and length
-          // so we can safely cast diag to TextSpan
-          return <Diagnostic>{
-            range: convertRange(scriptDoc, diag as ts.TextSpan),
-            severity: DiagnosticSeverity.Error,
-            message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
-            tags,
-            code: diag.code,
-            source: 'Vetur'
-          };
-        });
-      }
+        // syntactic/semantic diagnostic always has start and length
+        // so we can safely cast diag to TextSpan
+        return <Diagnostic>{
+          range: convertRange(scriptDoc, diag as ts.TextSpan),
+          severity: DiagnosticSeverity.Error,
+          message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
+          tags,
+          code: diag.code,
+          source: 'Vetur'
+        };
+      });
     },
     doComplete(doc: TextDocument, position: Position): CompletionList {
       const { scriptDoc, service } = updateCurrentTextDocument(doc);
@@ -544,7 +506,6 @@ export async function getJavascriptMode(
       serviceHost.updateExternalDocument(filePath);
     },
     dispose() {
-      serviceHost.dispose();
       jsDocuments.dispose();
     }
   };
@@ -640,7 +601,7 @@ function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
   return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
 }
 
-function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
+export function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
   const filePaths = ls.getProgram()!.getRootFileNames();
   const filePath = getFilePath(documentUri);
   return filePaths.includes(filePath);

@@ -1,94 +1,68 @@
-import * as _ from 'lodash';
-
-import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
-import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
-import { LanguageMode } from '../../embeddedSupport/languageModes';
+import { FormattingOptions, Position, Range, TextDocument, Hover, Location } from 'vscode-languageserver-types';
 import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
-import { HTMLDocument } from './parser/htmlParser';
-import { doComplete } from './services/htmlCompletion';
-import { doHover } from './services/htmlHover';
-import { findDocumentHighlights } from './services/htmlHighlighting';
-import { findDocumentLinks } from './services/htmlLinks';
-import { findDocumentSymbols } from './services/htmlSymbolsProvider';
-import { htmlFormat } from './services/htmlFormat';
-import { parseHTMLDocument } from './parser/htmlParser';
-import { doESLintValidation, createLintEngine } from './services/htmlValidation';
-import { findDefinition } from './services/htmlDefinition';
-import { getTagProviderSettings, IHTMLTagProvider } from './tagProviders';
-import { getEnabledTagProviders } from './tagProviders';
-import { DocumentContext } from '../../types';
-import { VLSFormatConfig } from '../../config';
+import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
+import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueInfoService } from '../../services/vueInfoService';
-import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
+import { DocumentContext } from '../../types';
+import { HTMLMode } from './htmlMode';
+import { VueInterpolationMode } from './interpolationMode';
+import { IServiceHost } from '../../services/typescriptService/serviceHost';
+import { T_TypeScript } from '../../services/dependencyService';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export function getVueHTMLMode(
+  tsModule: T_TypeScript,
+  serviceHost: IServiceHost,
   documentRegions: DocumentRegionCache,
   workspacePath: string | undefined,
   vueInfoService?: VueInfoService
 ): LanguageMode {
-  let tagProviderSettings = getTagProviderSettings(workspacePath);
-  let enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
-  const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
-    documentRegions.get(document).getSingleLanguageDocument('vue-html')
-  );
-  const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
-  const lintEngine = createLintEngine();
-  let config: any = {};
+  const htmlMode = new HTMLMode(documentRegions, workspacePath, vueInfoService);
+  const vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost);
 
   return {
     getId() {
       return 'vue-html';
     },
     configure(c) {
-      tagProviderSettings = _.assign(tagProviderSettings, c.html.suggest);
-      enabledTagProviders = getEnabledTagProviders(tagProviderSettings);
-      config = c;
+      htmlMode.configure(c);
+      vueInterpolationMode.configure(c);
     },
     doValidation(document) {
-      const embedded = embeddedDocuments.get(document);
-      return doESLintValidation(embedded, lintEngine);
+      return htmlMode.doValidation(document).concat(vueInterpolationMode.doValidation(document));
     },
     doComplete(document: TextDocument, position: Position) {
-      const embedded = embeddedDocuments.get(document);
-      const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-
-      const info = vueInfoService ? vueInfoService.getInfo(document) : undefined;
-      if (info && info.componentInfo.childComponents) {
-        tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
-      }
-
-      return doComplete(embedded, position, vueDocuments.get(embedded), tagProviders, config.emmet, info);
+      return htmlMode.doComplete(document, position);
     },
-    doHover(document: TextDocument, position: Position) {
-      const embedded = embeddedDocuments.get(document);
-      const tagProviders: IHTMLTagProvider[] = [...enabledTagProviders];
-
-      return doHover(embedded, position, vueDocuments.get(embedded), tagProviders);
+    doHover(document: TextDocument, position: Position): Hover {
+      const interpolationHover = vueInterpolationMode.doHover(document, position);
+      return interpolationHover.contents.length !== 0 ? interpolationHover : htmlMode.doHover(document, position);
     },
     findDocumentHighlight(document: TextDocument, position: Position) {
-      return findDocumentHighlights(document, position, vueDocuments.get(document));
+      return htmlMode.findDocumentHighlight(document, position);
     },
     findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
-      return findDocumentLinks(document, documentContext);
+      return htmlMode.findDocumentLinks(document, documentContext);
     },
     findDocumentSymbols(document: TextDocument) {
-      return findDocumentSymbols(document, vueDocuments.get(document));
+      return htmlMode.findDocumentSymbols(document);
     },
     format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-      return htmlFormat(document, range, config.vetur.format as VLSFormatConfig);
+      return htmlMode.format(document, range, formattingOptions);
+    },
+    findReferences(document: TextDocument, position: Position): Location[] {
+      return vueInterpolationMode.findReferences(document, position);
     },
     findDefinition(document: TextDocument, position: Position) {
-      const embedded = embeddedDocuments.get(document);
-      const info = vueInfoService ? vueInfoService.getInfo(document) : undefined;
-      return findDefinition(embedded, position, vueDocuments.get(embedded), info);
+      const interpolationDefinition = vueInterpolationMode.findDefinition(document, position);
+      return interpolationDefinition.length > 0 ? interpolationDefinition : htmlMode.findDefinition(document, position);
     },
     onDocumentRemoved(document: TextDocument) {
-      vueDocuments.onDocumentRemoved(document);
+      htmlMode.onDocumentRemoved(document);
     },
     dispose() {
-      vueDocuments.dispose();
+      htmlMode.dispose();
     }
   };
 }

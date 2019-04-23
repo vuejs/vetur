@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { showFile } from '../helper';
-import { CompletionItem, MarkupContent } from 'vscode-languageclient';
+import { CompletionItem, MarkupContent } from 'vscode-languageserver-types';
 
 export interface ExpectedCompletionItem extends CompletionItem {
   documentationStart?: string;

@@ -30,8 +30,9 @@ import { getVueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
-import { DependencyService } from '../services/dependencyService';
+import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
+import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -90,6 +91,7 @@ export class LanguageModes {
 
   private documentRegions: LanguageModelCache<VueDocumentRegions>;
   private modelCaches: LanguageModelCache<any>[];
+  private serviceHost: IServiceHost;
 
   constructor() {
     this.documentRegions = getLanguageModelCache<VueDocumentRegions>(10, 60, document =>
@@ -101,8 +103,29 @@ export class LanguageModes {
   }
 
   async init(workspacePath: string, services: VLSServices) {
-    const vueHtmlMode = getVueHTMLMode(this.documentRegions, workspacePath, services.infoService);
+    let tsModule = await import('typescript');
+    if (services.dependencyService) {
+      const ts = services.dependencyService.getDependency('typescript');
+      if (ts && ts.state === State.Loaded) {
+        tsModule = ts.module;
+      }
+    }
+
+    const jsDocuments = getLanguageModelCache(10, 60, document => {
+      const vueDocument = this.documentRegions.get(document);
+      return vueDocument.getSingleTypeDocument('script');
+    });
+    this.serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
+
+    const vueHtmlMode = getVueHTMLMode(
+      tsModule,
+      this.serviceHost,
+      this.documentRegions,
+      workspacePath,
+      services.infoService
+    );
     const jsMode = await getJavascriptMode(
+      this.serviceHost,
       this.documentRegions,
       workspacePath,
       services.infoService,
@@ -173,5 +196,6 @@ export class LanguageModes {
       this.modes[<LanguageId>mode].dispose();
     }
     delete this.modes;
+    this.serviceHost.dispose();
   }
 }

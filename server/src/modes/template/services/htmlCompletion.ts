@@ -13,8 +13,9 @@ import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
 import { VueFileInfo } from '../../../services/vueInfoService';
-import { doVueInterpolationComplete, shouldDoInterpolationComplete } from './vueInterpolationCompletion';
+import { doVueInterpolationComplete } from './vueInterpolationCompletion';
 import { NULL_COMPLETION } from '../../nullMode';
+import { isInsideInterpolation } from './isInsideInterpolation';
 
 export function doComplete(
   document: TextDocument,
@@ -35,11 +36,12 @@ export function doComplete(
     return result;
   }
 
-  if (node.isInterpolation) {
-    const nodeRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
-    const nodeText = document.getText(nodeRange);
+  const nodeRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
+  const nodeText = document.getText(nodeRange);
+  const insideInterpolation = isInsideInterpolation(node, nodeText, document.offsetAt(position) - node.start);
 
-    if (!shouldDoInterpolationComplete(nodeText, document.offsetAt(position) - node.start)) {
+  if (node.isInterpolation) {
+    if (!insideInterpolation) {
       return NULL_COMPLETION;
     }
 
@@ -188,7 +190,7 @@ export function doComplete(
 
   function collectAttributeValueSuggestions(attr: string, valueStart: number, valueEnd?: number): CompletionList {
     if (attr.startsWith('v-') || attr.startsWith('@') || attr.startsWith(':')) {
-      if (vueFileInfo) {
+      if (vueFileInfo && insideInterpolation) {
         return doVueInterpolationComplete(vueFileInfo);
       } else {
         return NULL_COMPLETION;

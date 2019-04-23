@@ -1,15 +1,16 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
 import { position, getDocUri } from '../util';
-import { testCompletion } from '../completion/helper';
-import { CompletionItem, CompletionItemKind } from 'vscode-languageclient';
+import { testCompletion, testNoSuchCompletion } from './helper';
+import { CompletionItem, CompletionItemKind } from 'vscode-languageserver-types';
 
 describe('Should autocomplete interpolation for <template>', () => {
-  const templateDocUri = getDocUri('client/templateCompletion/Basic.vue');
-  const parentTemplateDocUri = getDocUri('client/templateCompletion/Parent.vue');
+  const templateDocUri = getDocUri('completion/Basic.vue');
+  const parentTemplateDocUri = getDocUri('completion/Parent.vue');
 
   before('activate', async () => {
     await activateLS();
     await showFile(templateDocUri);
+    await sleep(FILE_LOAD_SLEEP_TIME);
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
@@ -104,11 +105,31 @@ describe('Should autocomplete interpolation for <template>', () => {
     it('completes inside v-if=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 17), defaultList);
     });
+    it(`doesn't completes on the edge " of v-if=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 16), defaultList);
+    });
+    it(`doesn't completes on the edge " of v-if=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 18), defaultList);
+    });
+
     it('completes inside @click=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 27), defaultList);
     });
+    it(`doesn't completes on the edge " of @click=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 26), defaultList);
+    });
+    it(`doesn't completes on the edge " of @click=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 28), defaultList);
+    });
+
     it('completes inside :foo=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 35), defaultList);
+    });
+    it(`doesn't completes on the edge " of :foo=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 34), defaultList);
+    });
+    it(`doesn't completes on the edge " of :foo=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 36), defaultList);
     });
   });
 });

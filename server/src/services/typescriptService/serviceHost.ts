@@ -9,6 +9,9 @@ import { createUpdater, parseVueScript, isVue } from './preprocess';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
+import { getVueSys } from './vueSys';
+import { TemplateSourceMap } from './sourceMap';
+import { isVirtualVueTemplateFile } from './util';
 
 function patchTS(tsModule: T_TypeScript) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
@@ -16,47 +19,6 @@ function patchTS(tsModule: T_TypeScript) {
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(tsModule);
   (tsModule as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (tsModule as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
-}
-
-function getVueSys(tsModule: T_TypeScript) {
-  const vueSys: ts.System = {
-    ...tsModule.sys,
-    fileExists(path: string) {
-      if (isVirtualVueFile(path)) {
-        return tsModule.sys.fileExists(path.slice(0, -'.ts'.length));
-      }
-      if (isVirtualVueTemplateFile(path)) {
-        return tsModule.sys.fileExists(path.slice(0, -'.template'.length));
-      }
-      return tsModule.sys.fileExists(path);
-    },
-    readFile(path, encoding) {
-      if (isVirtualVueFile(path)) {
-        const fileText = tsModule.sys.readFile(path.slice(0, -'.ts'.length), encoding);
-        return fileText ? parseVueScript(fileText) : fileText;
-      }
-      if (isVirtualVueTemplateFile(path)) {
-        return tsModule.sys.readFile(path.slice(0, -'.template'.length), encoding);
-      }
-      const fileText = tsModule.sys.readFile(path, encoding);
-      return fileText;
-    }
-  };
-
-  if (tsModule.sys.realpath) {
-    const realpath = tsModule.sys.realpath;
-    vueSys.realpath = function(path) {
-      if (isVirtualVueFile(path)) {
-        return realpath(path.slice(0, -'.ts'.length)) + '.ts';
-      }
-      if (isVirtualVueTemplateFile(path)) {
-        return realpath(path.slice(0, -'.template'.length)) + '.ts';
-      }
-      return realpath(path);
-    };
-  }
-
-  return vueSys;
 }
 
 function getDefaultCompilerOptions(tsModule: T_TypeScript) {
@@ -72,6 +34,21 @@ function getDefaultCompilerOptions(tsModule: T_TypeScript) {
   };
 
   return defaultCompilerOptions;
+}
+
+export const templateSourceMap: TemplateSourceMap = {};
+
+export interface IServiceHost {
+  updateCurrentTextDocument(
+    doc: TextDocument
+  ): {
+    service: ts.LanguageService;
+    templateService: ts.LanguageService;
+    scriptDoc: TextDocument;
+    templateSourceMap: TemplateSourceMap;
+  };
+  updateExternalDocument(filePath: string): void;
+  dispose(): void;
 }
 
 export function getServiceHost(
@@ -121,7 +98,8 @@ export function getServiceHost(
     return {
       service: jsLanguageService,
       templateService: templateLanguageService,
-      scriptDoc: currentScriptDoc
+      scriptDoc: currentScriptDoc,
+      templateSourceMap
     };
   }
 
@@ -129,10 +107,6 @@ export function getServiceHost(
   function updateExternalDocument(filePath: string) {
     const ver = versions.get(filePath) || 0;
     versions.set(filePath, ver + 1);
-  }
-
-  function getScriptDocByFsPath(fsPath: string) {
-    return scriptDocs.get(fsPath);
   }
 
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
@@ -156,10 +130,10 @@ export function getServiceHost(
             jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || ''));
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
-          return tsModule.Extension.Js;
+          return tsModule.ScriptKind.JS;
         } else {
           if (fileName === bridge.fileName) {
-            return tsModule.Extension.Ts;
+            return tsModule.ScriptKind.TS;
           }
           // NOTE: Typescript 2.3 should export getScriptKindFromFileName. Then this cast should be removed.
           return (tsModule as any).getScriptKindFromFileName(fileName);
@@ -256,7 +230,6 @@ export function getServiceHost(
   return {
     updateCurrentTextDocument,
     updateExternalDocument,
-    getScriptDocByFsPath,
     dispose: () => {
       jsLanguageService.dispose();
     }
@@ -265,21 +238,6 @@ export function getServiceHost(
 
 function getNormalizedFileFsPath(fileName: string): string {
   return Uri.file(fileName).fsPath;
-}
-
-/**
- * If the path ends with `.vue.ts`, it's a `.vue` file pre-processed by Vetur
- * to be used in TS Language Service
- */
-function isVirtualVueFile(path: string) {
-  return path.endsWith('.vue.ts') && !path.includes('node_modules');
-}
-/**
- * If the path ends with `.vue.template`, it's a `.vue` file's template part
- * pre-processed by Vetur to calculate template diagnostics in TS Language Service
- */
-export function isVirtualVueTemplateFile(path: string) {
-  return path.endsWith('.vue.template');
 }
 
 function defaultIgnorePatterns(tsModule: T_TypeScript, workspacePath: string) {

@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
-import { T_TypeScript } from '../../services/dependencyService';
+import { T_TypeScript } from '../dependencyService';
 
 export const renderHelperName = '__vlsRenderHelper';
 export const componentHelperName = '__vlsComponentHelper';
@@ -35,7 +35,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    * the compiler may clash or do incorrect type inference
    * when it has an invalid range.
    */
-  function transformTemplate(program: AST.ESLintProgram, code: string): ts.Expression[] {
+  function transformTemplate(program: AST.ESLintProgram, code: string) {
     const template = program.templateBody;
 
     if (!template) {
@@ -53,19 +53,16 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    */
   function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
     const newScope = scope.concat(node.variables.map(v => v.id.name));
-    const element = setTextRange(
-      ts.createCall(ts.setTextRange(ts.createIdentifier(componentHelperName), { pos: 0, end: 0 }), undefined, [
-        // Element / Component name
-        ts.createLiteral(node.name),
+    const element = ts.createCall(ts.createIdentifier(componentHelperName), undefined, [
+      // Element / Component name
+      ts.createLiteral(node.name),
 
-        // Attributes / Directives
-        transformAttributes(node.startTag.attributes, code, newScope),
+      // Attributes / Directives
+      transformAttributes(node.startTag.attributes, code, newScope),
 
-        // Children
-        ts.createArrayLiteral(node.children.map(c => transformChild(c, code, newScope)))
-      ]),
-      node
-    );
+      // Children
+      ts.createArrayLiteral(node.children.map(c => transformChild(c, code, newScope)))
+    ]);
 
     const vFor = node.startTag.attributes.find(isVFor);
     if (!vFor || !vFor.value || !vFor.value.expression) {
@@ -74,26 +71,20 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       // Convert v-for directive to the iteration helper
       const exp = vFor.value.expression as AST.VForExpression;
 
-      return setTextRange(
-        ts.createCall(setTextRange(ts.createIdentifier(iterationHelperName), exp.right), undefined, [
-          // Iteration target
-          parseExpression(exp.right, code, scope),
+      return ts.createCall(ts.createIdentifier(iterationHelperName), undefined, [
+        // Iteration target
+        parseExpression(exp.right, code, scope),
 
-          // Callback
-          setTextRange(
-            ts.createArrowFunction(
-              undefined,
-              undefined,
-              parseParams(exp.left, code, scope),
-              undefined,
-              setTextRange(ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken), exp),
-              element
-            ),
-            exp
-          )
-        ]),
-        exp
-      );
+        // Callback
+        ts.createArrowFunction(
+          undefined,
+          undefined,
+          parseParams(exp.left, code, scope),
+          undefined,
+          ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+          element
+        )
+      ]);
     }
   }
 
@@ -174,12 +165,9 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   }
 
   function transformNativeAttribute(attr: AST.VAttribute): ts.ObjectLiteralElementLike {
-    return setTextRange(
-      ts.createPropertyAssignment(
-        setTextRange(ts.createIdentifier(attr.key.name), attr.key),
-        attr.value ? setTextRange(ts.createLiteral(attr.value.value), attr.value) : ts.createLiteral(true)
-      ),
-      attr
+    return ts.createPropertyAssignment(
+      ts.createIdentifier(attr.key.name),
+      attr.value ? ts.createLiteral(attr.value.value) : ts.createLiteral(true)
     );
   }
 
@@ -212,36 +200,27 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         // e.g.
         //   @click="onClick($event, 'test')"
         //   @click="value = "foo""
-        exp = setTextRange(
-          ts.createCall(setTextRange(ts.createIdentifier(listenerHelperName), vOn), undefined, [
-            setTextRange(ts.createThis(), vOn),
-            setTextRange(
-              ts.createFunctionExpression(
+        exp = ts.createCall(ts.createIdentifier(listenerHelperName), undefined, [
+          ts.createThis(),
+          ts.createFunctionExpression(
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            [
+              ts.createParameter(
                 undefined,
                 undefined,
                 undefined,
+                '$event',
                 undefined,
-                [
-                  setTextRange(
-                    ts.createParameter(
-                      undefined,
-                      undefined,
-                      undefined,
-                      '$event',
-                      undefined,
-                      setTextRange(ts.createTypeReferenceNode('Event', undefined), vOn)
-                    ),
-                    vOn
-                  )
-                ],
-                undefined,
-                setTextRange(ts.createBlock(statements), vOn)
-              ),
-              vOn
-            )
-          ]),
-          vOn
-        );
+                ts.createTypeReferenceNode('Event', undefined)
+              )
+            ],
+            undefined,
+            ts.createBlock(statements)
+          )
+        ]);
       }
     } else {
       // There are no statement in v-on value
@@ -266,29 +245,25 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       if (name.type === 'VIdentifier') {
         // Attribute name is specified
         // e.g. v-bind:value="foo"
-        return setTextRange(
-          ts.createPropertyAssignment(setTextRange(ts.createIdentifier(name.name), dir.key), dirExp),
-          dir
-        );
+        return ts.createPropertyAssignment(ts.createIdentifier(name.name), dirExp);
       } else {
         // Attribute name is dynamic
         // e.g. v-bind:[value]="foo"
 
         // Empty expression is invalid. Return empty object spread.
         if (name.expression === null) {
-          return setTextRange(ts.createSpreadAssignment(setTextRange(ts.createObjectLiteral(), dir)), dir);
+          return ts.createSpreadAssignment(ts.createObjectLiteral());
         }
 
-        const propertyName = setTextRange(
-          ts.createComputedPropertyName(parseExpression(name.expression as AST.ESLintExpression, code, scope)),
-          dir.key
+        const propertyName = ts.createComputedPropertyName(
+          parseExpression(name.expression as AST.ESLintExpression, code, scope)
         );
-        return setTextRange(ts.createPropertyAssignment(propertyName, dirExp), dir);
+        return ts.createPropertyAssignment(propertyName, dirExp);
       }
     } else {
       // Attribute name is omitted
       // e.g. v-bind="{ value: foo }"
-      return setTextRange(ts.createSpreadAssignment(dirExp), dir);
+      return ts.createSpreadAssignment(dirExp);
     }
   }
 
@@ -332,13 +307,38 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       return ts.createStatement(ts.createLiteral(''));
     }
 
-    return setTextRange(ts.createStatement(parseExpression(statement.expression, code, scope)), statement);
+    return ts.createStatement(parseExpression(statement.expression, code, scope));
   }
 
   function parseExpression(expression: AST.ESLintExpression, code: string, scope: string[]): ts.Expression {
     const [start, end] = expression.range;
     const expStr = code.slice(start, end);
-    return parseExpressionImpl(expStr, start, scope);
+
+    const tsExp = parseExpressionImpl(expStr, scope, start);
+    if (!ts.isObjectLiteralExpression(tsExp)) {
+      ts.setSourceMapRange(tsExp, { pos: start, end });
+    }
+    return tsExp;
+  }
+
+  function parseExpressionImpl(exp: string, scope: string[], start: number): ts.Expression {
+    // Add parenthesis to deal with object literal expression
+    const wrappedExp = '(' + exp + ')';
+    const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest, true);
+    const statement = source.statements[0];
+
+    if (!statement || !ts.isExpressionStatement(statement)) {
+      console.error('Unexpected statement kind:', statement.kind);
+      return ts.createLiteral('');
+    }
+
+    const parenthesis = statement.expression as ts.ParenthesizedExpression;
+    return injectThis(
+      parenthesis.expression,
+      scope,
+      // Compensate for the added `(` that adds 1 to each Node's offset
+      start - '('.length
+    );
   }
 
   function parseParams(
@@ -353,84 +353,60 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const arrowFnStr = '(' + paramsStr + ') => {}';
 
     // Decrement the offset since the expression now has the open parenthesis.
-    const exp = parseExpressionImpl(arrowFnStr, start - 1, scope) as ts.ArrowFunction;
+    const exp = parseExpressionImpl(arrowFnStr, scope, start - 1) as ts.ArrowFunction;
     return exp.parameters;
   }
 
-  function parseExpressionImpl(exp: string, offset: number, scope: string[]): ts.Expression {
-    // Add parenthesis to deal with object literal expression
-    const wrappedExp = '(' + exp + ')';
-    const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest);
-    const statement = source.statements[0];
-
-    if (!statement || !ts.isExpressionStatement(statement)) {
-      console.error('Unexpected statement kind:', statement.kind);
-      return ts.createLiteral('');
-    }
-
-    ts.forEachChild(statement, function next(node) {
-      // Decrement offset for added parenthesis
-      ts.setTextRange(node, {
-        pos: offset - 1 + node.pos,
-        end: offset - 1 + node.end
-      });
-      ts.forEachChild(node, next);
-    });
-
-    const parenthesis = statement.expression as ts.ParenthesizedExpression;
-    return injectThis(parenthesis.expression, scope);
-  }
-
-  function injectThis(exp: ts.Expression, scope: string[]): ts.Expression {
+  function injectThis(exp: ts.Expression, scope: string[], start: number): ts.Expression {
     let res;
     if (ts.isIdentifier(exp)) {
       if (scope.indexOf(exp.text) < 0) {
-        res = ts.createPropertyAccess(ts.setTextRange(ts.createThis(), exp), exp);
+        res = ts.createPropertyAccess(ts.createThis(), exp);
       } else {
         return exp;
       }
     } else if (ts.isPropertyAccessExpression(exp)) {
-      res = ts.createPropertyAccess(injectThis(exp.expression, scope), exp.name);
+      res = ts.createPropertyAccess(injectThis(exp.expression, scope, start), exp.name);
     } else if (ts.isElementAccessExpression(exp)) {
       res = ts.createElementAccess(
-        injectThis(exp.expression, scope),
+        injectThis(exp.expression, scope, start),
         // argumentExpression cannot be undefined in the latest TypeScript
-        injectThis(exp.argumentExpression!, scope)
+        injectThis(exp.argumentExpression!, scope, start)
       );
     } else if (ts.isPrefixUnaryExpression(exp)) {
-      res = ts.createPrefix(exp.operator, injectThis(exp.operand, scope));
+      res = ts.createPrefix(exp.operator, injectThis(exp.operand, scope, start));
     } else if (ts.isPostfixUnaryExpression(exp)) {
-      res = ts.createPostfix(injectThis(exp.operand, scope), exp.operator);
+      res = ts.createPostfix(injectThis(exp.operand, scope, start), exp.operator);
     } else if (exp.kind === ts.SyntaxKind.TypeOfExpression) {
       // Manually check `kind` for typeof expression
       // since ts.isTypeOfExpression is not working.
-      res = ts.createTypeOf(injectThis((exp as ts.TypeOfExpression).expression, scope));
+      res = ts.createTypeOf(injectThis((exp as ts.TypeOfExpression).expression, scope, start));
     } else if (ts.isDeleteExpression(exp)) {
-      res = ts.createDelete(injectThis(exp.expression, scope));
+      res = ts.createDelete(injectThis(exp.expression, scope, start));
     } else if (ts.isVoidExpression(exp)) {
-      res = ts.createVoid(injectThis(exp.expression, scope));
+      res = ts.createVoid(injectThis(exp.expression, scope, start));
     } else if (ts.isBinaryExpression(exp)) {
-      res = ts.createBinary(injectThis(exp.left, scope), exp.operatorToken, injectThis(exp.right, scope));
+      res = ts.createBinary(injectThis(exp.left, scope, start), exp.operatorToken, injectThis(exp.right, scope, start));
     } else if (ts.isConditionalExpression(exp)) {
       res = ts.createConditional(
-        injectThis(exp.condition, scope),
-        injectThis(exp.whenTrue, scope),
-        injectThis(exp.whenFalse, scope)
+        injectThis(exp.condition, scope, start),
+        injectThis(exp.whenTrue, scope, start),
+        injectThis(exp.whenFalse, scope, start)
       );
     } else if (ts.isCallExpression(exp)) {
       res = ts.createCall(
-        injectThis(exp.expression, scope),
+        injectThis(exp.expression, scope, start),
         exp.typeArguments,
-        exp.arguments.map(arg => injectThis(arg, scope))
+        exp.arguments.map(arg => injectThis(arg, scope, start))
       );
     } else if (ts.isParenthesizedExpression(exp)) {
-      res = ts.createParen(injectThis(exp.expression, scope));
+      res = ts.createParen(injectThis(exp.expression, scope, start));
     } else if (ts.isObjectLiteralExpression(exp)) {
-      res = ts.createObjectLiteral(exp.properties.map(p => injectThisForObjectLiteralElement(p, scope)));
+      res = ts.createObjectLiteral(exp.properties.map(p => injectThisForObjectLiteralElement(p, scope, start)));
     } else if (ts.isArrayLiteralExpression(exp)) {
-      res = ts.createArrayLiteral(exp.elements.map(e => injectThis(e, scope)));
+      res = ts.createArrayLiteral(exp.elements.map(e => injectThis(e, scope, start)));
     } else if (ts.isSpreadElement(exp)) {
-      res = ts.createSpread(injectThis(exp.expression, scope));
+      res = ts.createSpread(injectThis(exp.expression, scope, start));
     } else if (ts.isArrowFunction(exp) && !ts.isBlock(exp.body)) {
       res = ts.createArrowFunction(
         exp.modifiers,
@@ -438,39 +414,61 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         exp.parameters,
         exp.type,
         exp.equalsGreaterThanToken,
-        injectThis(exp.body, scope.concat(flatMap(exp.parameters, collectScope)))
+        injectThis(exp.body, scope.concat(flatMap(exp.parameters, collectScope)), start)
       );
     } else if (ts.isTemplateExpression(exp)) {
       const injectedSpans = exp.templateSpans.map(span => {
-        return ts.setTextRange(ts.createTemplateSpan(injectThis(span.expression, scope), span.literal), span);
+        return ts.createTemplateSpan(injectThis(span.expression, scope, start), span.literal);
       });
 
       res = ts.createTemplateExpression(exp.head, injectedSpans);
     } else {
+      /**
+       * Because Nodes can have non-virtual positions
+       * Set them to synthetic positions so printers could print correctly
+       */
+      if (hasValidPos(exp)) {
+        ts.setTextRange(exp, { pos: -1, end: -1 });
+      }
       return exp;
     }
-    return ts.setTextRange(res, exp);
+    return res;
   }
 
   function injectThisForObjectLiteralElement(
     el: ts.ObjectLiteralElementLike,
-    scope: string[]
+    scope: string[],
+    start: number
   ): ts.ObjectLiteralElementLike {
     let res;
     if (ts.isPropertyAssignment(el)) {
       const name = !ts.isComputedPropertyName(el.name)
         ? el.name
-        : ts.createComputedPropertyName(injectThis(el.name.expression, scope));
+        : ts.createComputedPropertyName(injectThis(el.name.expression, scope, start));
 
-      res = ts.createPropertyAssignment(ts.setTextRange(name, el.name), injectThis(el.initializer, scope));
+      if (!ts.isComputedPropertyName(el.name)) {
+        ts.setSourceMapRange(name, { pos: start + el.name.getStart(), end: start + el.name.getEnd() });
+      }
+
+      const initializer = injectThis(el.initializer, scope, start);
+      ts.setSourceMapRange(initializer, {
+        pos: start + el.initializer.getStart(),
+        end: start + el.initializer.getEnd()
+      });
+      res = ts.createPropertyAssignment(name, initializer);
     } else if (ts.isShorthandPropertyAssignment(el)) {
-      res = ts.createPropertyAssignment(el.name, injectThis(el.name, scope));
+      const initializer = injectThis(el.name, scope, start);
+      ts.setSourceMapRange(initializer, {
+        pos: start + el.name.getStart(),
+        end: start + el.name.getEnd()
+      });
+      res = ts.createPropertyAssignment(el.name, initializer);
     } else if (ts.isSpreadAssignment(el)) {
-      res = ts.createSpreadAssignment(injectThis(el.expression, scope));
+      res = ts.createSpreadAssignment(injectThis(el.expression, scope, start));
     } else {
       return el;
     }
-    return ts.setTextRange(res, el);
+    return res;
   }
 
   /**
@@ -538,10 +536,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     }, []);
   }
 
-  function setTextRange<T extends ts.TextRange>(range: T, location: AST.HasLocation): T {
-    return ts.setTextRange(range, {
-      pos: location.range[0],
-      end: location.range[1]
-    });
+  function hasValidPos(node: ts.Node) {
+    return node.pos !== -1 && node.end !== -1;
   }
 }

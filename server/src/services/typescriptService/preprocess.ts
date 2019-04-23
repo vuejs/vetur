@@ -12,7 +12,9 @@ import {
   renderHelperName,
   listenerHelperName
 } from './transformTemplate';
-import { isVirtualVueTemplateFile } from './serviceHost';
+import { templateSourceMap } from './serviceHost';
+import { generateSourceMap } from './sourceMap';
+import { isVirtualVueTemplateFile } from './util';
 
 export function isVue(filename: string): boolean {
   return path.extname(filename) === '.vue';
@@ -46,6 +48,7 @@ export function createUpdater(tsModule: T_TypeScript) {
   const ulssf = tsModule.updateLanguageServiceSourceFile;
   const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
   const modificationTracker = new WeakSet<ts.SourceFile>();
+  const printer = tsModule.createPrinter();
 
   function isTSLike(scriptKind: ts.ScriptKind | undefined) {
     return scriptKind === tsModule.ScriptKind.TS || scriptKind === tsModule.ScriptKind.TSX;
@@ -67,16 +70,40 @@ export function createUpdater(tsModule: T_TypeScript) {
       modificationTracker.add(sourceFile);
       return;
     }
+  }
 
-    if (isVirtualVueTemplateFile(fileName)) {
-      // TODO: share the logic of transforming the code into AST
-      // with the template mode
-      const code = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
-      const program = parse(code, { sourceType: 'module' });
-      const tsCode = getTemplateTransformFunctions(tsModule).transformTemplate(program, code);
-      injectVueTemplate(tsModule, sourceFile, tsCode);
-      modificationTracker.add(sourceFile);
-    }
+  /**
+   * The transformed TS AST has synthetic nodes so language features would fail on them
+   * Use printer to print the AST as re-parse the source to get a valid SourceFile
+   */
+  function recreateVueTempalteSourceFile(
+    fileName: string,
+    sourceFile: ts.SourceFile,
+    scriptSnapshot: ts.IScriptSnapshot
+  ) {
+    // TODO: share the logic of transforming the code into AST
+    // with the template mode
+    const templateCode = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
+    const program = parse(templateCode, { sourceType: 'module' });
+    const expressions = getTemplateTransformFunctions(tsModule).transformTemplate(program, templateCode);
+    injectVueTemplate(tsModule, sourceFile, expressions);
+
+    const newText = printer.printFile(sourceFile);
+
+    const newSourceFile = tsModule.createSourceFile(
+      fileName,
+      newText,
+      sourceFile.languageVersion,
+      true /* setParentNodes: Need this to walk the AST */,
+      tsModule.ScriptKind.JS
+    );
+
+    const sourceMap = generateSourceMap(tsModule, sourceFile, newSourceFile, templateCode);
+    Object.keys(sourceMap).forEach(fileName => {
+      templateSourceMap[fileName] = sourceMap[fileName];
+    });
+
+    return newSourceFile;
   }
 
   function createLanguageServiceSourceFile(
@@ -87,9 +114,14 @@ export function createUpdater(tsModule: T_TypeScript) {
     setNodeParents: boolean,
     scriptKind?: ts.ScriptKind
   ): ts.SourceFile {
-    const sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
+    let sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
     scriptKindTracker.set(sourceFile, scriptKind);
-    modifySourceFile(fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    if (isVirtualVueTemplateFile(fileName)) {
+      sourceFile = recreateVueTempalteSourceFile(fileName, sourceFile, scriptSnapshot);
+      modificationTracker.add(sourceFile);
+    } else {
+      modifySourceFile(fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    }
     return sourceFile;
   }
 
@@ -102,7 +134,12 @@ export function createUpdater(tsModule: T_TypeScript) {
   ): ts.SourceFile {
     const scriptKind = scriptKindTracker.get(sourceFile);
     sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
-    modifySourceFile(sourceFile.fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    if (isVirtualVueTemplateFile(sourceFile.fileName)) {
+      sourceFile = recreateVueTempalteSourceFile(sourceFile.fileName, sourceFile, scriptSnapshot);
+      modificationTracker.add(sourceFile);
+    } else {
+      modifySourceFile(sourceFile.fileName, sourceFile, scriptSnapshot, version, scriptKind);
+    }
     return sourceFile;
   }
 
@@ -155,77 +192,52 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
 function injectVueTemplate(tsModule: T_TypeScript, sourceFile: ts.SourceFile, renderBlock: ts.Expression[]): void {
   // add import statement for corresponding Vue file
   // so that we acquire the component type from it.
-  const setZeroPos = getWrapperRangeSetter(tsModule, { pos: 0, end: 0 });
   const vueFilePath = './' + path.basename(sourceFile.fileName.slice(0, -9));
-  const componentImport = setZeroPos(
-    tsModule.createImportDeclaration(
-      undefined,
-      undefined,
-      setZeroPos(tsModule.createImportClause(setZeroPos(tsModule.createIdentifier('__Component')), undefined)),
-      setZeroPos(tsModule.createLiteral(vueFilePath))
-    )
+  const componentImport = tsModule.createImportDeclaration(
+    undefined,
+    undefined,
+    tsModule.createImportClause(tsModule.createIdentifier('__Component'), undefined),
+    tsModule.createLiteral(vueFilePath)
   );
 
   // import helper type to handle Vue's private methods
-  const helperImport = setZeroPos(
-    tsModule.createImportDeclaration(
+  const helperImport = tsModule.createImportDeclaration(
+    undefined,
+    undefined,
+    tsModule.createImportClause(
       undefined,
-      undefined,
-      setZeroPos(
-        tsModule.createImportClause(
-          undefined,
-          setZeroPos(
-            tsModule.createNamedImports([
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(renderHelperName)))
-              ),
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(componentHelperName)))
-              ),
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(iterationHelperName)))
-              ),
-              setZeroPos(
-                tsModule.createImportSpecifier(undefined, setZeroPos(tsModule.createIdentifier(listenerHelperName)))
-              )
-            ])
-          )
-        )
-      ),
-      setZeroPos(tsModule.createLiteral('vue-editor-bridge'))
-    )
+      tsModule.createNamedImports([
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(renderHelperName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentHelperName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(listenerHelperName))
+      ])
+    ),
+    tsModule.createLiteral('vue-editor-bridge')
   );
 
   // wrap render code with a function decralation
   // with `this` type of component.
-  const setRenderPos = getWrapperRangeSetter(tsModule, sourceFile);
   const statements = renderBlock.map(exp => tsModule.createStatement(exp));
-  const renderElement = setRenderPos(
-    tsModule.createStatement(
-      setRenderPos(
-        tsModule.createCall(setRenderPos(tsModule.createIdentifier(renderHelperName)), undefined, [
-          // Reference to the component
-          setRenderPos(tsModule.createIdentifier('__Component')),
-
-          // A function simulating the render function
-          setRenderPos(
-            tsModule.createFunctionExpression(
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              [],
-              undefined,
-              setRenderPos(tsModule.createBlock(statements))
-            )
-          )
-        ])
+  const renderElement = tsModule.createStatement(
+    tsModule.createCall(tsModule.createIdentifier(renderHelperName), undefined, [
+      // Reference to the component
+      tsModule.createIdentifier('__Component'),
+      // A function simulating the render function
+      tsModule.createFunctionExpression(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        [],
+        undefined,
+        tsModule.createBlock(statements)
       )
-    )
+    ])
   );
 
   // replace the original statements with wrapped code.
-  sourceFile.statements = setRenderPos(tsModule.createNodeArray([componentImport, helperImport, renderElement]));
+  sourceFile.statements = tsModule.createNodeArray([componentImport, helperImport, renderElement]);
 
   // Update external module indicator to the transformed template node,
   // otherwise symbols in this template (e.g. __Component) will be put
