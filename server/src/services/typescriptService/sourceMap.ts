@@ -71,7 +71,8 @@ export function generateSourceMap(
 
   const sourceMap: TemplateSourceMap = {};
   sourceMap[syntheticSourceFile.fileName] = [];
-  sourceMap[validSourceFile.fileName] = [];
+  const originalVueFileName = syntheticSourceFile.fileName.slice(0, -'.template'.length);
+  sourceMap[originalVueFileName] = sourceMap[syntheticSourceFile.fileName];
 
   walkBothNode(syntheticSourceFile, validSourceFile);
   return sourceMap;
@@ -150,7 +151,6 @@ export function generateSourceMap(
         updateOffsetMapping(sourceMapNode, thisDotRanges);
 
         sourceMap[syntheticSourceFile.fileName].push(sourceMapNode);
-        sourceMap[validSourceFile.fileName].push(sourceMapNode);
       }
 
       walkBothNode(sc, vc);
@@ -259,4 +259,17 @@ function updateOffsetMapping(node: TemplateSourceMapNode, thisDotRanges: Templat
     node.offsetMapping[from] = to;
     node.offsetBackMapping[to] = from;
   });
+}
+
+export function printSourceMap(sourceMap: TemplateSourceMap, vueFileSrc: string, tsFileSrc: string) {
+  for (const fileName in sourceMap) {
+    console.log(`Sourcemap for ${fileName}`);
+
+    sourceMap[fileName].forEach(node => {
+      const sf = vueFileSrc.slice(node.from.start, node.from.end);
+      const st = vueFileSrc.slice(node.to.start, node.to.end);
+      console.log(`[${node.from.start}, ${node.from.end}, ${sf}] => [${node.to.start}, ${node.to.end}, ${st}]`);
+    });
+    // console.log(JSON.stringify(sourceMap[fileName].offsetMapping));
+  }
 }
