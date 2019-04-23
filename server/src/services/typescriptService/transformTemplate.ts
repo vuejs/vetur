@@ -315,24 +315,10 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const expStr = code.slice(start, end);
 
     const tsExp = parseExpressionImpl(expStr, scope, start);
-    ts.setSourceMapRange(tsExp, { pos: start, end });
+    if (!ts.isObjectLiteralExpression(tsExp)) {
+      ts.setSourceMapRange(tsExp, { pos: start, end });
+    }
     return tsExp;
-  }
-
-  function parseParams(
-    params: AST.ESLintPattern[],
-    code: string,
-    scope: string[]
-  ): ts.NodeArray<ts.ParameterDeclaration> {
-    const start = params[0].range[0];
-    const end = params[params.length - 1].range[1];
-    const paramsStr = code.slice(start, end);
-    // Wrap parameters with an arrow function to extract them as ts parameter declarations.
-    const arrowFnStr = '(' + paramsStr + ') => {}';
-
-    // Decrement the offset since the expression now has the open parenthesis.
-    const exp = parseExpressionImpl(arrowFnStr, scope, start - 1) as ts.ArrowFunction;
-    return exp.parameters;
   }
 
   function parseExpressionImpl(exp: string, scope: string[], start: number): ts.Expression {
@@ -353,6 +339,22 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       // Compensate for the added `(` that adds 1 to each Node's offset
       start - '('.length
     );
+  }
+
+  function parseParams(
+    params: AST.ESLintPattern[],
+    code: string,
+    scope: string[]
+  ): ts.NodeArray<ts.ParameterDeclaration> {
+    const start = params[0].range[0];
+    const end = params[params.length - 1].range[1];
+    const paramsStr = code.slice(start, end);
+    // Wrap parameters with an arrow function to extract them as ts parameter declarations.
+    const arrowFnStr = '(' + paramsStr + ') => {}';
+
+    // Decrement the offset since the expression now has the open parenthesis.
+    const exp = parseExpressionImpl(arrowFnStr, scope, start - 1) as ts.ArrowFunction;
+    return exp.parameters;
   }
 
   function injectThis(exp: ts.Expression, scope: string[], start: number): ts.Expression {
@@ -444,9 +446,23 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         ? el.name
         : ts.createComputedPropertyName(injectThis(el.name.expression, scope, start));
 
-      res = ts.createPropertyAssignment(name, injectThis(el.initializer, scope, start));
+      if (!ts.isComputedPropertyName(el.name)) {
+        ts.setSourceMapRange(name, { pos: start + el.name.getStart(), end: start + el.name.getEnd() });
+      }
+
+      const initializer = injectThis(el.initializer, scope, start);
+      ts.setSourceMapRange(initializer, {
+        pos: start + el.initializer.getStart(),
+        end: start + el.initializer.getEnd()
+      });
+      res = ts.createPropertyAssignment(name, initializer);
     } else if (ts.isShorthandPropertyAssignment(el)) {
-      res = ts.createPropertyAssignment(el.name, injectThis(el.name, scope, start));
+      const initializer = injectThis(el.name, scope, start);
+      ts.setSourceMapRange(initializer, {
+        pos: start + el.name.getStart(),
+        end: start + el.name.getEnd()
+      });
+      res = ts.createPropertyAssignment(el.name, initializer);
     } else if (ts.isSpreadAssignment(el)) {
       res = ts.createSpreadAssignment(injectThis(el.expression, scope, start));
     } else {

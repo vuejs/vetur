@@ -29,16 +29,21 @@ describe('Should find template-diagnostics in <template> region', () => {
         }
       ]
     },
-    // {
-    //   file: 'object-literal.vue',
-    //   diagnostics: [
-    //     {
-    //       range: sameLineRange(3, 9, 12),
-    //       severity: vscode.DiagnosticSeverity.Error,
-    //       message: "Property 'bar' does not exist on type"
-    //     }
-    //   ]
-    // },
+    {
+      file: 'object-literal.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(3, 9, 12),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'bar' does not exist on type"
+        },
+        {
+          range: sameLineRange(4, 4, 7),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'baz' does not exist on type"
+        }
+      ]
+    },
     {
       file: 'v-on.vue',
       diagnostics: [
