@@ -27,6 +27,7 @@ export function getVueHTMLMode(
     },
     configure(c) {
       htmlMode.configure(c);
+      vueInterpolationMode.configure(c);
     },
     doValidation(document) {
       return htmlMode.doValidation(document).concat(vueInterpolationMode.doValidation(document));

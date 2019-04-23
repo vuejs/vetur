@@ -15,15 +15,26 @@ import { getFileFsPath } from '../../utils/paths';
 import { mapBackRange, mapFromPositionToOffset } from '../../services/typescriptService/sourceMap';
 import * as ts from 'typescript';
 import { T_TypeScript } from '../../services/dependencyService';
+import * as _ from 'lodash';
 
 export class VueInterpolationMode implements LanguageMode {
+  private config: any = {};
+
   constructor(private tsModule: T_TypeScript, private serviceHost: IServiceHost) {}
 
   getId() {
     return 'vue-html-interpolation';
   }
 
+  configure(c: any) {
+    this.config = c;
+  }
+
   doValidation(document: TextDocument): Diagnostic[] {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return [];
+    }
+
     // Add suffix to process this doc as vue template.
     const templateDoc = TextDocument.create(
       document.uri + '.template',
@@ -62,6 +73,10 @@ export class VueInterpolationMode implements LanguageMode {
     contents: MarkedString[];
     range?: Range;
   } {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return { contents: [] };
+    }
+
     // Add suffix to process this doc as vue template.
     const templateDoc = TextDocument.create(
       document.uri + '.template',
@@ -97,6 +112,10 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findDefinition(document: TextDocument, position: Position): Location[] {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return [];
+    }
+
     // Add suffix to process this doc as vue template.
     const templateDoc = TextDocument.create(
       document.uri + '.template',
@@ -141,6 +160,10 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findReferences(document: TextDocument, position: Position): Location[] {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return [];
+    }
+
     // Add suffix to process this doc as vue template.
     const templateDoc = TextDocument.create(
       document.uri + '.template',
