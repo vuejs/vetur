@@ -1,6 +1,7 @@
 import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import { getFileFsPath } from '../../utils/paths';
 import * as ts from 'typescript';
+import { T_TypeScript } from '../dependencyService';
 
 interface TemplateSourceMapRange {
   start: number;
@@ -30,6 +31,133 @@ export interface TemplateSourceMapNode {
 
 export interface TemplateSourceMap {
   [fileName: string]: TemplateSourceMapNode[];
+}
+
+/**
+ * Walk through the validSourceFile, for each Node, find its corresponding Node in syntheticSourceFile.
+ *
+ * Generate a SourceMap with Nodes looking like this:
+ *
+ * SourceMapNode {
+ *   from: {
+ *     start: 0,
+ *     end: 8
+ *     filename: 'foo.vue'
+ *   },
+ *   to: {
+ *     start: 0,
+ *     end: 18
+ *     filename: 'foo.vue.template'
+ *   },
+ *   offsetMappings: {
+ *     0: 5,
+ *     1: 6,
+ *     2, 7
+ *   },
+ * }
+ */
+export function generateSourceMap(
+  tsModule: T_TypeScript,
+  syntheticSourceFile: ts.SourceFile,
+  validSourceFile: ts.SourceFile,
+  templateCode: string
+): TemplateSourceMap {
+  const walkASTTree = getAstWalker(tsModule);
+
+  const sourceMap: TemplateSourceMap = {};
+  sourceMap[syntheticSourceFile.fileName] = [];
+  sourceMap[validSourceFile.fileName] = [];
+
+  walkBothNode(syntheticSourceFile, validSourceFile);
+  return sourceMap;
+
+  function walkBothNode(syntheticNode: ts.Node, validNode: ts.Node) {
+    const validNodeChildren: ts.Node[] = [];
+    tsModule.forEachChild(validNode, c => {
+      validNodeChildren.push(c);
+      return false;
+    });
+    const syntheticNodeChildren: ts.Node[] = [];
+    tsModule.forEachChild(syntheticNode, c => {
+      syntheticNodeChildren.push(c);
+      return false;
+    });
+
+    if (validNodeChildren.length !== syntheticNodeChildren.length) {
+      return;
+    }
+
+    validNodeChildren.forEach((vc, i) => {
+      const sc = syntheticNodeChildren[i];
+
+      const scSourceRange = tsModule.getSourceMapRange(sc);
+
+      /**
+       * Multiline object literal lose their original position during transformation, so
+       * {
+       *   foo: bar
+       * }
+       * becomes
+       * { foo: this.bar }
+       *
+       * This replaces the transformed expression with original expression so sourcemap would work
+       */
+      // Todo: Need to handle Object Literal change of positions
+      // if (tsModule.isObjectLiteralExpression(sc) && scSourceRange.pos !== -1 && scSourceRange.end !== -1) {
+      //   const unmodifiedObjectLiteralExpression = templateCode.slice(scSourceRange.pos, scSourceRange.end);
+      //   validSourceFile.update(unmodifiedObjectLiteralExpression, {
+      //   // tsModule.updateSourceFile(validSourceFile, unmodifiedObjectLiteralExpression, {
+      //     span: { start: vc.getStart(), length: vc.getFullWidth() },
+      //     newLength: unmodifiedObjectLiteralExpression.length
+      //   });
+      // }
+
+      /**
+       * `getSourceMapRange` falls back to return actual Node if sourceMap doesn't exist
+       * This check ensure we are checking the actual `sourceMapRange` being set
+       */
+      if (!(scSourceRange as ts.Node).kind && scSourceRange.pos !== -1 && scSourceRange.end !== -1) {
+        const sourceMapNode: TemplateSourceMapNode = {
+          from: {
+            start: scSourceRange.pos,
+            end: scSourceRange.end,
+            fileName: syntheticSourceFile.fileName
+          },
+          to: {
+            start: vc.getStart(),
+            end: vc.getEnd(),
+            fileName: validSourceFile.fileName,
+            thisDotRanges: []
+          }
+        };
+
+        walkASTTree(vc, n => {
+          if (tsModule.isPropertyAccessExpression(n.parent) && n.kind === tsModule.SyntaxKind.ThisKeyword) {
+            sourceMapNode.to.thisDotRanges.push({
+              start: n.getStart(),
+              end: n.getEnd() + `.`.length
+            });
+          }
+        });
+
+        sourceMap[syntheticSourceFile.fileName].push(sourceMapNode);
+        sourceMap[validSourceFile.fileName].push(sourceMapNode);
+      }
+
+      walkBothNode(sc, vc);
+    });
+  }
+}
+
+export function getAstWalker(tsModule: T_TypeScript) {
+  return function walkASTTree(node: ts.Node, f: (n: ts.Node) => any) {
+    f(node);
+
+    tsModule.forEachChild(node, c => {
+      walkASTTree(c, f);
+      return false;
+    });
+  };
 }
 
 /**

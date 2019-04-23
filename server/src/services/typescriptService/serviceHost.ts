@@ -11,6 +11,7 @@ import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
 import { getVueSys } from './vueSys';
 import { TemplateSourceMap } from './sourceMap';
+import { isVirtualVueTemplateFile } from './util';
 
 function patchTS(tsModule: T_TypeScript) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
@@ -237,21 +238,6 @@ export function getServiceHost(
 
 function getNormalizedFileFsPath(fileName: string): string {
   return Uri.file(fileName).fsPath;
-}
-
-/**
- * If the path ends with `.vue.ts`, it's a `.vue` file pre-processed by Vetur
- * to be used in TS Language Service
- */
-function isVirtualVueFile(path: string) {
-  return path.endsWith('.vue.ts') && !path.includes('node_modules');
-}
-/**
- * If the path ends with `.vue.template`, it's a `.vue` file's template part
- * pre-processed by Vetur to calculate template diagnostics in TS Language Service
- */
-export function isVirtualVueTemplateFile(path: string) {
-  return path.endsWith('.vue.template');
 }
 
 function defaultIgnorePatterns(tsModule: T_TypeScript, workspacePath: string) {
