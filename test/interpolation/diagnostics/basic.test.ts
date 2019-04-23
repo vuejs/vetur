@@ -103,7 +103,7 @@ describe('Should find template-diagnostics in <template> region', () => {
       file: 'jsdocs-type-check.vue',
       diagnostics: [
         {
-          range: sameLineRange(2, 21, 25),
+          range: sameLineRange(2, 23, 26),
           severity: vscode.DiagnosticSeverity.Error,
           message: "Argument of type 'string' is not assignable to parameter of type 'number'"
         }
