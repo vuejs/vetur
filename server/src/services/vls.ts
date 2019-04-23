@@ -387,7 +387,6 @@ export class VLS {
       return [];
     }
     if (mode && mode.getCodeActions) {
-      // TODO: funnel formatParams?
       return mode.getCodeActions(doc, range, /*formatParams*/ {} as any, context);
     }
     return [];

@@ -24,8 +24,6 @@ interface Mapping {
  *
  * - `from.end - from.start` should equal to `to.end - to.start - 5 * (to.thisDotRanges.length)`
  * - Each item in `to.thisDotRanges` should have length 5 for `this.`
- *
- * - Todo: Handle travia, for example foo + this.bar
  */
 export interface TemplateSourceMapNode {
   from: TemplateSourceMapNodeFrom;
@@ -97,26 +95,6 @@ export function generateSourceMap(
       const sc = syntheticNodeChildren[i];
 
       const scSourceRange = tsModule.getSourceMapRange(sc);
-
-      /**
-       * Multiline object literal lose their original position during transformation, so
-       * {
-       *   foo: bar
-       * }
-       * becomes
-       * { foo: this.bar }
-       *
-       * This replaces the transformed expression with original expression so sourcemap would work
-       */
-      // Todo: Need to handle Object Literal change of positions
-      // if (tsModule.isObjectLiteralExpression(sc) && scSourceRange.pos !== -1 && scSourceRange.end !== -1) {
-      //   const unmodifiedObjectLiteralExpression = templateCode.slice(scSourceRange.pos, scSourceRange.end);
-      //   validSourceFile.update(unmodifiedObjectLiteralExpression, {
-      //     // tsModule.updateSourceFile(validSourceFile, unmodifiedObjectLiteralExpression, {
-      //     span: { start: vc.getStart(), length: vc.getFullWidth() },
-      //     newLength: unmodifiedObjectLiteralExpression.length
-      //   });
-      // }
 
       /**
        * `getSourceMapRange` falls back to return actual Node if sourceMap doesn't exist
