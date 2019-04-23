@@ -35,3 +35,15 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
     );
   }
 }
+
+export async function testNoDiagnostics(docUri: vscode.Uri) {
+  // For diagnostics to show up
+  await sleep(2000);
+
+  const result = vscode.languages.getDiagnostics(docUri);
+
+  assert.ok(
+    result.length === 0,
+    `Should find no diagnostics for ${docUri.fsPath} but found:\n` + `${JSON.stringify(result)}`
+  );
+}

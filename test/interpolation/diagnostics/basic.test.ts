@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { activateLS, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
 import { getDocUri, sleep, sameLineRange } from '../util';
-import { testDiagnostics } from './helper';
+import { testDiagnostics, testNoDiagnostics } from './helper';
 
 describe('Should find template-diagnostics in <template> region', () => {
   before('activate', async () => {
@@ -60,14 +60,6 @@ describe('Should find template-diagnostics in <template> region', () => {
       ]
     },
     {
-      file: 'class.vue',
-      diagnostics: []
-    },
-    {
-      file: 'style.vue',
-      diagnostics: []
-    },
-    {
       file: 'directive.vue',
       diagnostics: [
         {
@@ -115,6 +107,17 @@ describe('Should find template-diagnostics in <template> region', () => {
       await showFile(docUri);
       await sleep(FILE_LOAD_SLEEP_TIME);
       await testDiagnostics(docUri, t.diagnostics);
+    });
+  });
+
+  const noErrorTests: string[] = ['class.vue', 'style.vue'];
+
+  noErrorTests.forEach(t => {
+    it(`Shows no template diagnostics error for ${t}`, async () => {
+      const docUri = getDocUri(`diagnostics/${t}`);
+      await showFile(docUri);
+      await sleep(FILE_LOAD_SLEEP_TIME);
+      await testNoDiagnostics(docUri);
     });
   });
 });
