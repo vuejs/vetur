@@ -13,7 +13,7 @@ import {
   listenerHelperName
 } from './transformTemplate';
 import { templateSourceMap } from './serviceHost';
-import { generateSourceMap, getAstWalker } from './sourceMap';
+import { generateSourceMap } from './sourceMap';
 import { isVirtualVueTemplateFile } from './util';
 
 export function isVue(filename: string): boolean {

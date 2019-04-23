@@ -13,7 +13,10 @@ interface TemplateSourceMapNodeFrom extends TemplateSourceMapRange {
 }
 interface TemplateSourceMapNodeTo extends TemplateSourceMapRange {
   fileName: string;
-  thisDotRanges: TemplateSourceMapRange[];
+}
+
+interface Mapping {
+  [k: number]: number;
 }
 
 /**
@@ -27,6 +30,8 @@ interface TemplateSourceMapNodeTo extends TemplateSourceMapRange {
 export interface TemplateSourceMapNode {
   from: TemplateSourceMapNodeFrom;
   to: TemplateSourceMapNodeTo;
+  offsetMapping: Mapping;
+  offsetBackMapping: Mapping;
 }
 
 export interface TemplateSourceMap {
@@ -49,7 +54,7 @@ export interface TemplateSourceMap {
  *     end: 18
  *     filename: 'foo.vue.template'
  *   },
- *   offsetMappings: {
+ *   offsetMapping: {
  *     0: 5,
  *     1: 6,
  *     2, 7
@@ -106,7 +111,7 @@ export function generateSourceMap(
       // if (tsModule.isObjectLiteralExpression(sc) && scSourceRange.pos !== -1 && scSourceRange.end !== -1) {
       //   const unmodifiedObjectLiteralExpression = templateCode.slice(scSourceRange.pos, scSourceRange.end);
       //   validSourceFile.update(unmodifiedObjectLiteralExpression, {
-      //   // tsModule.updateSourceFile(validSourceFile, unmodifiedObjectLiteralExpression, {
+      //     // tsModule.updateSourceFile(validSourceFile, unmodifiedObjectLiteralExpression, {
       //     span: { start: vc.getStart(), length: vc.getFullWidth() },
       //     newLength: unmodifiedObjectLiteralExpression.length
       //   });
@@ -126,19 +131,23 @@ export function generateSourceMap(
           to: {
             start: vc.getStart(),
             end: vc.getEnd(),
-            fileName: validSourceFile.fileName,
-            thisDotRanges: []
-          }
+            fileName: validSourceFile.fileName
+          },
+          offsetMapping: {},
+          offsetBackMapping: {}
         };
 
+        const thisDotRanges: TemplateSourceMapRange[] = [];
         walkASTTree(vc, n => {
           if (tsModule.isPropertyAccessExpression(n.parent) && n.kind === tsModule.SyntaxKind.ThisKeyword) {
-            sourceMapNode.to.thisDotRanges.push({
+            thisDotRanges.push({
               start: n.getStart(),
               end: n.getEnd() + `.`.length
             });
           }
         });
+
+        updateOffsetMapping(sourceMapNode, thisDotRanges);
 
         sourceMap[syntheticSourceFile.fileName].push(sourceMapNode);
         sourceMap[validSourceFile.fileName].push(sourceMapNode);
@@ -179,10 +188,9 @@ export function mapFromPositionToOffset(
 function mapFromOffsetToOffset(document: TextDocument, offset: number, sourceMap: TemplateSourceMap): number {
   const filePath = getFileFsPath(document.uri);
 
-  for (const sourceNode of sourceMap[filePath]) {
-    if (offset >= sourceNode.from.start && offset <= sourceNode.from.end) {
-      const fromOffset = sourceNode.to.start + (offset - sourceNode.from.start);
-      return handleThisDotRegions(fromOffset, sourceNode.to);
+  for (const sourceMapNode of sourceMap[filePath]) {
+    if (offset >= sourceMapNode.from.start && offset <= sourceMapNode.from.end) {
+      return sourceMapNode.offsetMapping[offset];
     }
   }
 
@@ -193,15 +201,16 @@ function mapFromOffsetToOffset(document: TextDocument, offset: number, sourceMap
 /**
  * Map a range from actual `.vue` file to `.vue.template` file
  */
-export function mapToRange(document: TextDocument, from: ts.TextSpan, sourceMap: TemplateSourceMap): Range {
-  const filePath = getFileFsPath(document.uri);
-  for (const sourceNode of sourceMap[filePath]) {
-    if (from.start >= sourceNode.from.start && from.start + from.length <= sourceNode.from.end) {
-      const start = sourceNode.to.start + (from.start - sourceNode.from.start);
-      const end = sourceNode.to.end + (from.start + from.length - sourceNode.from.end);
+export function mapToRange(toDocument: TextDocument, from: ts.TextSpan, sourceMap: TemplateSourceMap): Range {
+  const filePath = getFileFsPath(toDocument.uri);
+
+  for (const sourceMapNode of sourceMap[filePath]) {
+    if (from.start >= sourceMapNode.from.start && from.start + from.length <= sourceMapNode.from.end) {
+      const mappedStart = sourceMapNode.offsetMapping[from.start];
+      const mappedEnd = sourceMapNode.offsetMapping[from.start + from.length];
       return {
-        start: document.positionAt(start),
-        end: document.positionAt(end)
+        start: toDocument.positionAt(mappedStart),
+        end: toDocument.positionAt(mappedEnd)
       };
     }
   }
@@ -213,20 +222,17 @@ export function mapToRange(document: TextDocument, from: ts.TextSpan, sourceMap:
 /**
  * Map a range from virtual `.vue.template` file back to original `.vue` file
  */
-export function mapBackRange(document: TextDocument, to: ts.TextSpan, sourceMaps: TemplateSourceMap): Range {
-  const filePath = getFileFsPath(document.uri);
+export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, sourceMaps: TemplateSourceMap): Range {
+  const filePath = getFileFsPath(fromDocumnet.uri);
 
-  for (const sourceNode of sourceMaps[filePath]) {
-    if (to.start >= sourceNode.to.start && to.start + to.length <= sourceNode.to.end) {
-      const startOffset = to.start - sourceNode.to.start;
-      const endOffset = to.start + to.length - sourceNode.to.start;
-
-      const start = sourceNode.from.start + handleBackThisDotRegions(startOffset, sourceNode.to);
-      const end = sourceNode.from.start + handleBackThisDotRegions(endOffset, sourceNode.to);
+  for (const sourceMapNode of sourceMaps[filePath]) {
+    if (to.start >= sourceMapNode.to.start && to.start + to.length <= sourceMapNode.to.end) {
+      const mappedStart = sourceMapNode.offsetBackMapping[to.start];
+      const mappedEnd = sourceMapNode.offsetBackMapping[to.start + to.length];
 
       return {
-        start: document.positionAt(start),
-        end: document.positionAt(end)
+        start: fromDocumnet.positionAt(mappedStart),
+        end: fromDocumnet.positionAt(mappedEnd)
       };
     }
   }
@@ -235,32 +241,22 @@ export function mapBackRange(document: TextDocument, to: ts.TextSpan, sourceMaps
   return Range.create(0, 0, 0, 0);
 }
 
-function handleThisDotRegions(fromOffset: number, to: TemplateSourceMapNodeTo) {
-  let actualOffset = fromOffset;
+function updateOffsetMapping(node: TemplateSourceMapNode, thisDotRanges: TemplateSourceMapRange[]) {
+  const from = [...Array(node.from.end - node.from.start + 1).keys()];
+  const to: (number | undefined)[] = [...Array(node.to.end - node.to.start + 1).keys()];
 
-  for (const tdr of to.thisDotRanges) {
-    if (actualOffset < tdr.start - to.start) {
-      return actualOffset;
-    } else {
-      actualOffset += tdr.end - tdr.start;
+  thisDotRanges.forEach(tdr => {
+    for (let i = tdr.start; i < tdr.end; i++) {
+      to[i - node.to.start] = undefined;
     }
-  }
+  });
 
-  return actualOffset;
-}
+  const toFiltered = to.filter(x => x !== undefined) as number[];
 
-function handleBackThisDotRegions(toOffset: number, to: TemplateSourceMapNodeTo) {
-  let actualOffset = toOffset;
-  let accumulatedThisDotLength = 0;
-
-  for (const tdr of to.thisDotRanges) {
-    if (actualOffset + accumulatedThisDotLength >= tdr.end - to.start) {
-      actualOffset -= tdr.end - tdr.start;
-      accumulatedThisDotLength += tdr.end - tdr.start;
-    } else {
-      return actualOffset;
-    }
-  }
-
-  return actualOffset;
+  from.forEach((offset, i) => {
+    const from = offset + node.from.start;
+    const to = toFiltered[i] + node.to.start;
+    node.offsetMapping[from] = to;
+    node.offsetBackMapping[to] = from;
+  });
 }
