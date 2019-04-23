@@ -98,6 +98,16 @@ describe('Should find template-diagnostics in <template> region', () => {
           message: "Property 'foo' does not exist on type"
         }
       ]
+    },
+    {
+      file: 'jsdocs-type-check.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(2, 21, 25),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Argument of type 'string' is not assignable to parameter of type 'number'"
+        }
+      ]
     }
   ];
 
