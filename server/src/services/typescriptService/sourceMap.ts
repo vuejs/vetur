@@ -259,6 +259,16 @@ function updateOffsetMapping(node: TemplateSourceMapNode, thisDotRanges: Templat
     node.offsetMapping[from] = to;
     node.offsetBackMapping[to] = from;
   });
+
+  /**
+   * The case such as `foo` mapped to `this.foo`
+   * Both `|this.foo` and `this.|foo` should map to `|foo`
+   * If this is at the beginning, might cause errors ranges like
+   * `[this.foo]` not mappable to original source
+   */
+  if (!node.offsetBackMapping[node.to.start]) {
+    node.offsetBackMapping[node.to.start] = node.from.start;
+  }
 }
 
 export function printSourceMap(sourceMap: TemplateSourceMap, vueFileSrc: string, tsFileSrc: string) {

@@ -39,21 +39,21 @@ describe('Should find template-diagnostics in <template> region', () => {
     //     }
     //   ]
     // },
-    // {
-    //   file: 'v-on.vue',
-    //   diagnostics: [
-    //     {
-    //       range: sameLineRange(9, 31, 34),
-    //       severity: vscode.DiagnosticSeverity.Error,
-    //       message: "Argument of type '123' is not assignable to parameter of type 'string'"
-    //     },
-    //     {
-    //       range: sameLineRange(10, 20, 24),
-    //       severity: vscode.DiagnosticSeverity.Error,
-    //       message: `Type '"test"' is not assignable to type 'number'`
-    //     }
-    //   ]
-    // },
+    {
+      file: 'v-on.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(9, 31, 34),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Argument of type '123' is not assignable to parameter of type 'string'"
+        },
+        {
+          range: sameLineRange(10, 20, 24),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: `Type '"test"' is not assignable to type 'number'`
+        }
+      ]
+    },
     {
       file: 'class.vue',
       diagnostics: []

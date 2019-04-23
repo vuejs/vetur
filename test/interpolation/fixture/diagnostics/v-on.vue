@@ -21,9 +21,10 @@ export default Vue.extend({
       test: 0
     }
   },
-
   methods: {
+    // Interface from lib "dom"
     eventTest(event: Event): void {},
+    // Interface from lib "es5"
     argumentsTest(args: IArguments): void {},
     passString(str: string): void {}
   }
