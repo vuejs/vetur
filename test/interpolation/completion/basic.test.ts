@@ -1,11 +1,11 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
 import { position, getDocUri } from '../util';
-import { testCompletion, testNoSuchCompletion } from '../completion/helper';
-import { CompletionItem, CompletionItemKind } from 'vscode-languageclient';
+import { testCompletion, testNoSuchCompletion } from './helper';
+import { CompletionItem, CompletionItemKind } from 'vscode-languageserver-types';
 
 describe('Should autocomplete interpolation for <template>', () => {
-  const templateDocUri = getDocUri('client/templateCompletion/Basic.vue');
-  const parentTemplateDocUri = getDocUri('client/templateCompletion/Parent.vue');
+  const templateDocUri = getDocUri('completion/Basic.vue');
+  const parentTemplateDocUri = getDocUri('completion/Parent.vue');
 
   before('activate', async () => {
     await activateLS();

@@ -1,16 +1,11 @@
 import * as vscode from 'vscode';
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../helper';
-import { getDocUri } from '../util';
-import { sameLineRange } from '../../lsp-ts-28/util';
-import { testDiagnostics } from '../diagnostics/helper';
+import { activateLS, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { getDocUri, sleep, sameLineRange } from '../util';
+import { testDiagnostics } from './helper';
 
 describe('Should find template-diagnostics in <template> region', () => {
-  const docUri = getDocUri('client/templateDiagnostics/expression.vue');
-
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   const tests: TemplateDiagnosticTest[] = [
@@ -111,7 +106,7 @@ describe('Should find template-diagnostics in <template> region', () => {
 
   tests.forEach(t => {
     it(`Shows template diagnostics for ${t.file}`, async () => {
-      const docUri = getDocUri(`client/templateDiagnostics/${t.file}`);
+      const docUri = getDocUri(`diagnostics/${t.file}`);
       await showFile(docUri);
       await sleep(FILE_LOAD_SLEEP_TIME);
       await testDiagnostics(docUri, t.diagnostics);
