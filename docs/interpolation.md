@@ -37,3 +37,26 @@ Completion:
 - Collects information from `<script>` region by traversing its AST
 - Offer `props`, `data` and `methods` in interpolation regions
 - Offer `:prop` completion on child components
+
+## Type Checking with JSDocs
+
+You don't have to use `lang="ts"` for typing functions. This would show error that `'foo'` is not assignable to `number`
+
+```vue
+<template>
+  <div>{{ numOnly('foo') }}</div>
+</template>
+
+<script>
+export default {
+  methods: {
+    /**
+     * @param {number} num
+     */
+    numOnly(num) {
+
+    }
+  }
+}
+</script>
+```
