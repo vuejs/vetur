@@ -34,7 +34,7 @@ export function generateShowVirtualFileCommand(client: LanguageClient) {
     virtualFileSource = (result as any).source;
     prettySourceMap = (result as any).sourceMapNodesString;
 
-    vscode.window.showTextDocument(uri);
+    vscode.window.showTextDocument(uri, { viewColumn: vscode.ViewColumn.Beside });
   };
 }
 
