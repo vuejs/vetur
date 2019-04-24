@@ -48,14 +48,19 @@ describe('Should find template-diagnostics in <template> region', () => {
       file: 'v-on.vue',
       diagnostics: [
         {
-          range: sameLineRange(9, 31, 34),
+          range: sameLineRange(10, 31, 34),
           severity: vscode.DiagnosticSeverity.Error,
           message: "Argument of type '123' is not assignable to parameter of type 'string'"
         },
         {
-          range: sameLineRange(10, 20, 24),
+          range: sameLineRange(11, 20, 24),
           severity: vscode.DiagnosticSeverity.Error,
           message: `Type '"test"' is not assignable to type 'number'`
+        },
+        {
+          range: sameLineRange(12, 20, 28),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: `Property 'notExist' does not exist on type`
         }
       ]
     },

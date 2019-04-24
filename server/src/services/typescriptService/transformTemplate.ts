@@ -183,23 +183,22 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
     let exp: ts.Expression;
     if (vOn.value && vOn.value.expression) {
-      const vOnExp = vOn.value.expression as AST.VOnExpression;
-      const newScope = scope.concat(vOnScope);
+      // value.expression can be ESLintExpression (e.g. ArrowFunctionExpression)
+      const vOnExp = vOn.value.expression as AST.VOnExpression | AST.ESLintExpression;
 
-      // body may be undefined
-      const statements = vOnExp.body ? vOnExp.body.map(st => transformStatement(st, code, newScope)) : [];
-
-      const first = statements[0];
-      if (statements.length === 1 && isPathToIdentifier(first)) {
-        // The v-on expression is simple path to a method
-        // e.g. @click="onClick"
-        exp = first.expression;
+      if (vOnExp.type !== 'VOnExpression') {
+        // The v-on value is an expression of simple path to a method or a function
+        // e.g.
+        //   @click="onClick"
+        //   @click="() => value = 123"
+        exp = parseExpression(vOnExp, code, scope);
       } else {
         // The v-on has some complex expressions or statements.
         // Then wrap them with a function so that they can use `$event` and `arguments`.
         // e.g.
         //   @click="onClick($event, 'test')"
         //   @click="value = "foo""
+        const newScope = scope.concat(vOnScope);
         exp = ts.createCall(ts.createIdentifier(listenerHelperName), undefined, [
           ts.createThis(),
           ts.createFunctionExpression(
@@ -218,7 +217,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
               )
             ],
             undefined,
-            ts.createBlock(statements)
+            ts.createBlock(vOnExp.body.map(st => transformStatement(st, code, newScope)))
           )
         ]);
       }
@@ -490,23 +489,6 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       return flatMap(filtered, collectScope);
     } else {
       return [];
-    }
-  }
-
-  /**
-   * Return `true` if the statement is a simple path to the identifier.
-   * Examples of `simple path`:
-   *   foo
-   *   this.foo.bar
-   *   list[1]
-   *   record['key']
-   */
-  function isPathToIdentifier(statement: ts.Statement): statement is ts.ExpressionStatement {
-    if (ts.isExpressionStatement(statement)) {
-      const exp = statement.expression;
-      return ts.isIdentifier(exp) || ts.isPropertyAccessExpression(exp);
-    } else {
-      return false;
     }
   }
 
