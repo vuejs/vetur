@@ -9,8 +9,11 @@ const separator = Array(20)
   .fill('=')
   .join('');
 
+const onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
+
 export async function registerVeturTextDocumentProviders() {
   return vscode.workspace.registerTextDocumentContentProvider('vetur', {
+    onDidChange: onDidChangeEmitter.event,
     provideTextDocumentContent(uri: vscode.Uri) {
       return buildUpContent();
     }
@@ -33,8 +36,10 @@ export function generateShowVirtualFileCommand(client: LanguageClient) {
     const result = await client.sendRequest('$/queryVirtualFileInfo', { fileName, currFileText });
     virtualFileSource = (result as any).source;
     prettySourceMap = (result as any).sourceMapNodesString;
+    onDidChangeEmitter.fire(uri);
 
-    vscode.window.showTextDocument(uri, { viewColumn: vscode.ViewColumn.Beside });
+    const doc = await vscode.workspace.openTextDocument(uri);
+    vscode.window.showTextDocument(doc, { viewColumn: vscode.ViewColumn.Beside });
   };
 }
 
