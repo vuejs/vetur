@@ -331,24 +331,18 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     // we just want to check their types.
     // Do not care about existance of filters and matching between parameter
     // and argument types because filters will not appear on component type.
-    const filterExps = setTextRange(
-      ts.createArrayLiteral(
-        filter.filters.map(f => {
-          return setTextRange(
-            ts.createArrayLiteral(
-              f.arguments.map(arg => {
-                const exp = arg.type === 'SpreadElement' ? arg.argument : arg;
-                return parseExpression(exp, code, scope);
-              })
-            ),
-            filter
-          );
-        })
-      ),
-      filter
+    const filterExps = ts.createArrayLiteral(
+      filter.filters.map(f => {
+        return ts.createArrayLiteral(
+          f.arguments.map(arg => {
+            const exp = arg.type === 'SpreadElement' ? arg.argument : arg;
+            return parseExpression(exp, code, scope);
+          })
+        );
+      })
     );
 
-    return setTextRange(ts.createBinary(filterExps, ts.SyntaxKind.BarBarToken, exp), filter);
+    return ts.createBinary(filterExps, ts.SyntaxKind.BarBarToken, exp);
   }
 
   function parseExpression(expression: AST.ESLintExpression, code: string, scope: string[]): ts.Expression {
