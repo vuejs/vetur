@@ -183,7 +183,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
     let exp: ts.Expression;
     if (vOn.value && vOn.value.expression) {
-      // value can be ESLintExpression (e.g. ArrowFunctionExpression)
+      // value.expression can be ESLintExpression (e.g. ArrowFunctionExpression)
       const vOnExp = vOn.value.expression as AST.VOnExpression | AST.ESLintExpression;
 
       if (vOnExp.type !== 'VOnExpression') {
