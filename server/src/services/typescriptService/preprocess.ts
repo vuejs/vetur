@@ -85,8 +85,15 @@ export function createUpdater(tsModule: T_TypeScript) {
     // with the template mode
     const templateCode = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
     const program = parse(templateCode, { sourceType: 'module' });
-    const expressions = getTemplateTransformFunctions(tsModule).transformTemplate(program, templateCode);
-    injectVueTemplate(tsModule, sourceFile, expressions);
+
+    let expressions: ts.Expression[] = [];
+    try {
+      expressions = getTemplateTransformFunctions(tsModule).transformTemplate(program, templateCode);
+      injectVueTemplate(tsModule, sourceFile, expressions);
+    } catch (err) {
+      console.log(`Failed to transform template of ${fileName}`);
+      console.log(err);
+    }
 
     const newText = printer.printFile(sourceFile);
 
