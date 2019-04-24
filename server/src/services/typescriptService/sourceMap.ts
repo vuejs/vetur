@@ -271,3 +271,19 @@ export function printSourceMap(sourceMap: TemplateSourceMap, vueFileSrc: string,
     // console.log(JSON.stringify(sourceMap[fileName].offsetMapping));
   }
 }
+
+export function stringifySourceMapNodes(
+  sourceMapNodes: TemplateSourceMapNode[],
+  vueFileSrc: string,
+  tsFileSrc: string
+): string {
+  let result = '';
+
+  sourceMapNodes.forEach(node => {
+    const sf = vueFileSrc.slice(node.from.start, node.from.end);
+    const st = tsFileSrc.slice(node.to.start, node.to.end);
+    result += `[${node.from.start}, ${node.from.end}, ${sf}] => [${node.to.start}, ${node.to.end}, ${st}]\n`;
+  });
+
+  return result;
+}

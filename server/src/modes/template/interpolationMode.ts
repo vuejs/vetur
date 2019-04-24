@@ -30,6 +30,10 @@ export class VueInterpolationMode implements LanguageMode {
     this.config = c;
   }
 
+  queryVirtualFileInfo(fileName: string, currFileText: string) {
+    return this.serviceHost.queryVirtualFileInfo(fileName, currFileText);
+  }
+
   doValidation(document: TextDocument): Diagnostic[] {
     if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
       return [];

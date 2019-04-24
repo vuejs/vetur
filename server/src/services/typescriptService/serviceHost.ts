@@ -10,7 +10,7 @@ import { getFileFsPath, getFilePath } from '../../utils/paths';
 import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
 import { getVueSys } from './vueSys';
-import { TemplateSourceMap } from './sourceMap';
+import { TemplateSourceMap, TemplateSourceMapNode, stringifySourceMapNodes } from './sourceMap';
 import { isVirtualVueTemplateFile } from './util';
 
 function patchTS(tsModule: T_TypeScript) {
@@ -39,6 +39,7 @@ function getDefaultCompilerOptions(tsModule: T_TypeScript) {
 export const templateSourceMap: TemplateSourceMap = {};
 
 export interface IServiceHost {
+  queryVirtualFileInfo(fileName: string, currFileText: string): { source: string; sourceMapNodesString: string };
   updateCurrentTextDocument(
     doc: TextDocument
   ): {
@@ -71,6 +72,31 @@ export function getServiceHost(
     ...parsedConfig.options
   };
   compilerOptions.allowNonTsExtensions = true;
+
+  function queryVirtualFileInfo(
+    fileName: string,
+    currFileText: string
+  ): { source: string; sourceMapNodesString: string } {
+    const program = templateLanguageService.getProgram();
+    if (program) {
+      const tsVirtualFile = program.getSourceFile(fileName + '.template');
+      if (tsVirtualFile) {
+        return {
+          source: tsVirtualFile.getText(),
+          sourceMapNodesString: stringifySourceMapNodes(
+            templateSourceMap[fileName],
+            currFileText,
+            tsVirtualFile.getText()
+          )
+        };
+      }
+    }
+
+    return {
+      source: '',
+      sourceMapNodesString: ''
+    };
+  }
 
   function updateCurrentTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
@@ -228,6 +254,7 @@ export function getServiceHost(
   const templateLanguageService = tsModule.createLanguageService(templateHost, registry);
 
   return {
+    queryVirtualFileInfo,
     updateCurrentTextDocument,
     updateExternalDocument,
     dispose: () => {

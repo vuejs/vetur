@@ -26,7 +26,7 @@ import { getVueDocumentRegions, VueDocumentRegions, LanguageId, LanguageRange } 
 import { getVueMode } from '../modes/vue';
 import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from '../modes/style';
 import { getJavascriptMode } from '../modes/script/javascript';
-import { getVueHTMLMode } from '../modes/template';
+import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
@@ -117,7 +117,7 @@ export class LanguageModes {
     });
     this.serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
 
-    const vueHtmlMode = getVueHTMLMode(
+    const vueHtmlMode = new VueHTMLMode(
       tsModule,
       this.serviceHost,
       this.documentRegions,

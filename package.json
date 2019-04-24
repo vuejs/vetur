@@ -64,6 +64,10 @@
       {
         "command": "vetur.generateGrammar",
         "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
+      },
+      {
+        "command": "vetur.showCorrespondingVirtualFile",
+        "title": "Vetur: Show corresponding virtual file and sourcemap"
       }
     ],
     "breakpoints": [

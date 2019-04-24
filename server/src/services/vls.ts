@@ -43,6 +43,7 @@ import { DependencyService } from './dependencyService';
 import * as _ from 'lodash';
 import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
+import { VueHTMLMode } from '../modes/template';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -101,6 +102,7 @@ export class VLS {
 
     this.setupConfigListeners();
     this.setupLSPHandlers();
+    this.setupCustomLSPHandlers();
     this.setupFileChangeListeners();
 
     this.lspConnection.onShutdown(() => {
@@ -145,6 +147,12 @@ export class VLS {
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
 
     this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
+  }
+
+  private setupCustomLSPHandlers() {
+    this.lspConnection.onRequest('$/queryVirtualFileInfo', ({ fileName, currFileText }) => {
+      return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
+    });
   }
 
   private async setupDynamicFormatters(settings: any) {
