@@ -5,10 +5,12 @@
     <button @click="argumentsTest(arguments)">Arguments Test</button>
     <button @click="eventTest">Reference Test</button>
     <button @click="test = 123">Expression Test</button>
+    <button @click="() => test = 123">Block Statement Test</button>
 
     <!-- Providing errors -->
     <button @click="passString(123)">Invalid Argument Type</button>
     <button @click="test = 'test'">Invalid Update Type</button>
+    <button @click="notExist">Invalid Reference Test</button>
   </div>
 </template>
 
@@ -21,6 +23,7 @@ export default Vue.extend({
       test: 0
     }
   },
+
   methods: {
     // Interface from lib "dom"
     eventTest(event: Event): void {},
