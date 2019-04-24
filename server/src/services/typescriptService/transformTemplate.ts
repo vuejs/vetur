@@ -166,7 +166,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
   function transformNativeAttribute(attr: AST.VAttribute): ts.ObjectLiteralElementLike {
     return ts.createPropertyAssignment(
-      ts.createIdentifier(attr.key.name),
+      ts.createStringLiteral(attr.key.name),
       attr.value ? ts.createLiteral(attr.value.value) : ts.createLiteral(true)
     );
   }
@@ -245,7 +245,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       if (name.type === 'VIdentifier') {
         // Attribute name is specified
         // e.g. v-bind:value="foo"
-        return ts.createPropertyAssignment(ts.createIdentifier(name.name), dirExp);
+        return ts.createPropertyAssignment(ts.createStringLiteral(name.name), dirExp);
       } else {
         // Attribute name is dynamic
         // e.g. v-bind:[value]="foo"
