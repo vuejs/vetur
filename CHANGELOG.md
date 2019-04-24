@@ -1,15 +1,17 @@
 # Changelog
 
-### 0.19.0 | 2019-04-23
+### 0.19.0 | 2019-04-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.0/vspackage)
 
-- 🙌 Diagnostics / hover / jump to definition / find references for template interpolations. #209. #681. #1215. Thanks to the amzing contribution from [@ktsn](https://github.com/ktsn)! More details in [Vue Template Interpolation Language Features](#vue-template-interpolation-language-features)
+- Hover / jump to definition / find references for template interpolations. #1215.
+- 🙌 Diagnostics / type-checking for template interpolations. #209. #681. Thanks to amazing contribution from [Katashin](https://github.com/ktsn)! More details in [Vue Template Interpolation Language Features](#vue-template-interpolation-language-features)
 - Fix pug comment togglign bug. #1199.
 - Fix a grammar bug for `#` slot syntax. #1192.
 - 🙌 Fix a crash when VLS initialization option is not passed. #1188. Thanks to contribution from [Louis Bourque](https://github.com/louisbourque).
 
 #### Vue Template Interpolation Language Features
 
-TODO
+- Documentation: https://vuejs.github.io/vetur/interpolation.html
+- Blog Post: http://blog.matsu.io/generic-vue-template-interpolation-language-features
 
 ### 0.18.1 | 2019-04-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.1/vspackage)
 
