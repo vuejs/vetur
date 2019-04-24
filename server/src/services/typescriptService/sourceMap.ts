@@ -19,6 +19,9 @@ interface Mapping {
   [k: number]: number;
 }
 
+const INVALID_OFFSET = 0;
+const INVALID_RANGE = Range.create(0, 0, 0, 0);
+
 /**
  * Invariants:
  *
@@ -62,8 +65,7 @@ export interface TemplateSourceMap {
 export function generateSourceMap(
   tsModule: T_TypeScript,
   syntheticSourceFile: ts.SourceFile,
-  validSourceFile: ts.SourceFile,
-  templateCode: string
+  validSourceFile: ts.SourceFile
 ): TemplateSourceMap {
   const walkASTTree = getAstWalker(tsModule);
 
@@ -165,6 +167,9 @@ export function mapFromPositionToOffset(
  */
 function mapFromOffsetToOffset(document: TextDocument, offset: number, sourceMap: TemplateSourceMap): number {
   const filePath = getFileFsPath(document.uri);
+  if (!sourceMap[filePath]) {
+    return INVALID_OFFSET;
+  }
 
   for (const sourceMapNode of sourceMap[filePath]) {
     if (offset >= sourceMapNode.from.start && offset <= sourceMapNode.from.end) {
@@ -173,7 +178,7 @@ function mapFromOffsetToOffset(document: TextDocument, offset: number, sourceMap
   }
 
   // Handle the case when no original range can be mapped
-  return 0;
+  return INVALID_OFFSET;
 }
 
 /**
@@ -181,6 +186,9 @@ function mapFromOffsetToOffset(document: TextDocument, offset: number, sourceMap
  */
 export function mapToRange(toDocument: TextDocument, from: ts.TextSpan, sourceMap: TemplateSourceMap): Range {
   const filePath = getFileFsPath(toDocument.uri);
+  if (!sourceMap[filePath]) {
+    return INVALID_RANGE;
+  }
 
   for (const sourceMapNode of sourceMap[filePath]) {
     if (from.start >= sourceMapNode.from.start && from.start + from.length <= sourceMapNode.from.end) {
@@ -194,16 +202,19 @@ export function mapToRange(toDocument: TextDocument, from: ts.TextSpan, sourceMa
   }
 
   // Handle the case when no original range can be mapped
-  return Range.create(0, 0, 0, 0);
+  return INVALID_RANGE;
 }
 
 /**
  * Map a range from virtual `.vue.template` file back to original `.vue` file
  */
-export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, sourceMaps: TemplateSourceMap): Range {
+export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, sourceMap: TemplateSourceMap): Range {
   const filePath = getFileFsPath(fromDocumnet.uri);
+  if (!sourceMap[filePath]) {
+    return INVALID_RANGE;
+  }
 
-  for (const sourceMapNode of sourceMaps[filePath]) {
+  for (const sourceMapNode of sourceMap[filePath]) {
     if (to.start >= sourceMapNode.to.start && to.start + to.length <= sourceMapNode.to.end) {
       const mappedStart = sourceMapNode.offsetBackMapping[to.start];
       const mappedEnd = sourceMapNode.offsetBackMapping[to.start + to.length];
@@ -216,7 +227,7 @@ export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, source
   }
 
   // Handle the case when no original range can be mapped
-  return Range.create(0, 0, 0, 0);
+  return INVALID_RANGE;
 }
 
 function updateOffsetMapping(node: TemplateSourceMapNode, thisDotRanges: TemplateSourceMapRange[]) {

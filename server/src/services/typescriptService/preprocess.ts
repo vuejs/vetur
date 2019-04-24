@@ -98,7 +98,7 @@ export function createUpdater(tsModule: T_TypeScript) {
       tsModule.ScriptKind.JS
     );
 
-    const sourceMap = generateSourceMap(tsModule, sourceFile, newSourceFile, templateCode);
+    const sourceMap = generateSourceMap(tsModule, sourceFile, newSourceFile);
     Object.keys(sourceMap).forEach(fileName => {
       templateSourceMap[fileName] = sourceMap[fileName];
     });
