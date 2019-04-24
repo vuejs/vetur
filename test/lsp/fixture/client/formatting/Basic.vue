@@ -1,12 +1,6 @@
 <template>
-  <div   class="page">
-    <counter>
-
-
-          </counter>
-
-
-
+  <div class="page">
+    <counter></counter>
   </div>
 </template>
 
@@ -16,10 +10,6 @@ import Counter from 'components/Counter';
 export default {
   components: {
     Counter
-
-
   }
-}
-
-
+};
 </script>

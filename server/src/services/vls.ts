@@ -32,11 +32,12 @@ import {
   TextDocument,
   TextDocumentChangeEvent,
   TextEdit,
-  ColorPresentation
+  ColorPresentation,
+  Range
 } from 'vscode-languageserver-types';
 
 import Uri from 'vscode-uri';
-import { LanguageModes } from '../embeddedSupport/languageModes';
+import { LanguageModes, LanguageModeRange } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
@@ -238,10 +239,10 @@ export class VLS {
 
     const errMessages: string[] = [];
 
-    modeRanges.forEach(range => {
-      if (range.mode && range.mode.format) {
+    modeRanges.forEach(modeRange => {
+      if (modeRange.mode && modeRange.mode.format) {
         try {
-          const edits = range.mode.format(doc, range, options);
+          const edits = modeRange.mode.format(doc, this.toSimpleRange(modeRange), options);
           for (const edit of edits) {
             allEdits.push(edit);
           }
@@ -257,6 +258,13 @@ export class VLS {
     }
 
     return allEdits;
+  }
+
+  private toSimpleRange(modeRange: LanguageModeRange): Range {
+    return {
+      start: modeRange.start,
+      end: modeRange.end
+    };
   }
 
   onCompletion({ textDocument, position }: TextDocumentPositionParams): CompletionList {
