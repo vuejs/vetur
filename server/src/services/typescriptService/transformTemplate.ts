@@ -417,10 +417,14 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       );
     } else if (ts.isTemplateExpression(exp)) {
       const injectedSpans = exp.templateSpans.map(span => {
-        return ts.createTemplateSpan(injectThis(span.expression, scope, start), span.literal);
+        const literal = ts.isTemplateMiddle(span.literal)
+          ? ts.createTemplateMiddle(span.literal.text)
+          : ts.createTemplateTail(span.literal.text);
+
+        return ts.createTemplateSpan(injectThis(span.expression, scope, start), literal);
       });
 
-      res = ts.createTemplateExpression(exp.head, injectedSpans);
+      res = ts.createTemplateExpression(ts.createTemplateHead(exp.head.text), injectedSpans);
     } else {
       /**
        * Because Nodes can have non-virtual positions
