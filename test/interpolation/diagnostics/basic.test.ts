@@ -113,6 +113,22 @@ describe('Should find template-diagnostics in <template> region', () => {
           message: "Argument of type 'string' is not assignable to parameter of type 'number'"
         }
       ]
+    },
+    {
+      file: 'member-modifiers.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(9, 16, 17),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'b' is protected and only accessible within class 'Child' and its subclasses"
+        },
+
+        {
+          range: sameLineRange(10, 16, 17),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'c' is private and only accessible within class 'Child'"
+        }
+      ]
     }
   ];
 

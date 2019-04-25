@@ -16,6 +16,7 @@ import { mapBackRange, mapFromPositionToOffset } from '../../services/typescript
 import * as ts from 'typescript';
 import { T_TypeScript } from '../../services/dependencyService';
 import * as _ from 'lodash';
+import { templateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
 
 export class VueInterpolationMode implements LanguageMode {
   private config: any = {};
@@ -57,7 +58,7 @@ export class VueInterpolationMode implements LanguageMode {
     // compiled template is always valid JavaScript syntax.
     const rawTemplateDiagnostics = templateService.getSemanticDiagnostics(templateFileFsPath);
 
-    return rawTemplateDiagnostics.map(diag => {
+    return rawTemplateDiagnostics.filter(templateDiagnosticFilter).map(diag => {
       // syntactic/semantic diagnostic always has start and length
       // so we can safely cast diag to TextSpan
       return {
