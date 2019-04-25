@@ -441,9 +441,16 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   ): ts.ObjectLiteralElementLike {
     let res;
     if (ts.isPropertyAssignment(el)) {
-      const name = !ts.isComputedPropertyName(el.name)
-        ? el.name
-        : ts.createComputedPropertyName(injectThis(el.name.expression, scope, start));
+      let name: ts.PropertyName;
+      if (ts.isComputedPropertyName(el.name)) {
+        name = ts.createComputedPropertyName(injectThis(el.name.expression, scope, start));
+      } else if (ts.isStringLiteral(el.name)) {
+        name = ts.createStringLiteral(el.name.text);
+      } else if (ts.isNumericLiteral(el.name)) {
+        name = ts.createNumericLiteral(el.name.text);
+      } else {
+        name = el.name;
+      }
 
       if (!ts.isComputedPropertyName(el.name)) {
         ts.setSourceMapRange(name, { pos: start + el.name.getStart(), end: start + el.name.getEnd() });
