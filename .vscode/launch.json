@@ -54,7 +54,9 @@
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "args": ["${workspaceFolder}/server/test"],
       "cwd": "${workspaceFolder}/server",
-      "internalConsoleOptions": "openOnSessionStart"
+      "internalConsoleOptions": "openOnSessionStart",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"]
     },
     {
       "name": "E2E Test (Grammar)",
