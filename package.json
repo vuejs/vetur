@@ -421,7 +421,7 @@
         },
         "vetur.experimental.templateInterpolationService": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Enable template interpolation service that offers diagnostics / hover / definition / references."
         }
       }
