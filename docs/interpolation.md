@@ -16,6 +16,10 @@ Vetur now offers completion, diagnostics, hover, jump to definition, find refere
 
 ## Generic Language Features
 
+::: warning
+These features are experimental and you need to set `vetur.experimental.templateInterpolationService: true` to enable them. You can also only disable template diagnostics with `vetur.validation.template: false`, although that disables the built-in ESLint checking, too.
+:::
+
 Currently diagnostics, hover, jump to definition and find references are implemented in this way:
 
 - Compile original Vue template into a virtual TypeSript file
@@ -23,11 +27,15 @@ Currently diagnostics, hover, jump to definition and find references are impleme
 - Run language feature requests on the virtual TypeScript file
 - Map results back to original `.vue` file
 
-### Disabling
-
-These features are still experimental. You can turn them off through `"vetur.experimental.templateInterpolationService"` or `vetur.validation.template`. Note that `vetur.validation.template` disables the built-in ESLint diagnostics, too.
+:::tip
+Use the command "Vetur: Show corresponding virtual file and sourcemap" to understand how the
+templates are represented in Vetur. Useful for bug filing too.
+:::
 
 If you do find bugs, please [fill an issue](https://github.com/vuejs/vetur/issues).
+
+If you want more details as to how this feature is implemented, I wrote a blog post: [Generic Vue Template Interpolation Language Features
+](https://blog.matsu.io/generic-vue-template-interpolation-language-features).
 
 ## Completion
 
