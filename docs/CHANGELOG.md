@@ -7,7 +7,7 @@
   - Error showing private/protected members not accessible from template. #1224.
   - Ignore filters in template transformation. #1206.
 - Fix double color indicator in document with multiple `<style>` blocks. #1219.
-- Disables `vetur.experimental.templateInterpolationService` by default. #1246.
+- Disables `vetur.experimental.templateInterpolationService` by default. You need to enable Diagnostics / Hover / jump to definition / find references for template manually. #1246.
 
 ### 0.19.1 | 2019-04-24 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.1/vspackage)
 
