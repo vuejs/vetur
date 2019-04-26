@@ -68,7 +68,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
           if (lastAttributeName === 'src' && lastTagName.toLowerCase() === 'script') {
             let value = scanner.getTokenText();
             if (value[0] === "'" || value[0] === '"') {
-              value = value.substr(1, value.length - 1);
+              value = value.slice(1, value.length - 1);
             }
             importedScripts.push(value);
           }

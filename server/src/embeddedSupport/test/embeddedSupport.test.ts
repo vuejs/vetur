@@ -6,7 +6,7 @@ import { getSingleLanguageDocument, getSingleTypeDocument, getLanguageRangesOfTy
 suite('New Embedded Support', () => {
   const src = `
 <template>
- 
+
 </template>
 <script>
 export default {
@@ -116,5 +116,22 @@ suite('Double language blocks', () => {
     assert.equal(regions[0].languageId, 'vue-html');
     assert.equal(regions[1].languageId, 'scss');
     assert.equal(regions[2].languageId, 'stylus');
+  });
+});
+
+suite('External Source', () => {
+  const src = `
+<template>
+
+</template>
+
+<script src="./external.js">
+</script>
+`;
+
+  test('Get Script Src', () => {
+    const { importedScripts } = parseVueDocumentRegions(TextDocument.create('test://test.vue', 'vue', 0, src));
+
+    assert.equal(importedScripts[0], './external.js');
   });
 });
