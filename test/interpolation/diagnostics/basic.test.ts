@@ -125,7 +125,7 @@ describe('Should find template-diagnostics in <template> region', () => {
     });
   });
 
-  const noErrorTests: string[] = ['class.vue', 'style.vue', 'hyphen-attrs.vue'];
+  const noErrorTests: string[] = ['class.vue', 'style.vue', 'hyphen-attrs.vue', 'template-literal.vue'];
 
   noErrorTests.forEach(t => {
     it(`Shows no template diagnostics error for ${t}`, async () => {
