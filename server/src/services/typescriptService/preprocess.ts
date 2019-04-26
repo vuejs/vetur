@@ -27,6 +27,12 @@ export function parseVueScript(text: string): string {
   return script.getText() || 'export default {};';
 }
 
+function parseVueScriptSrc(text: string): string | undefined {
+  const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
+  const regions = getVueDocumentRegions(doc);
+  return regions.getImportedScripts()[0];
+}
+
 function parseVueTemplate(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getVueDocumentRegions(doc);
@@ -83,13 +89,15 @@ export function createUpdater(tsModule: T_TypeScript) {
   ) {
     // TODO: share the logic of transforming the code into AST
     // with the template mode
-    const templateCode = parseVueTemplate(scriptSnapshot.getText(0, scriptSnapshot.getLength()));
+    const vueText = scriptSnapshot.getText(0, scriptSnapshot.getLength());
+    const templateCode = parseVueTemplate(vueText);
+    const scriptSrc = parseVueScriptSrc(vueText);
     const program = parse(templateCode, { sourceType: 'module' });
 
     let expressions: ts.Expression[] = [];
     try {
       expressions = getTemplateTransformFunctions(tsModule).transformTemplate(program, templateCode);
-      injectVueTemplate(tsModule, sourceFile, expressions);
+      injectVueTemplate(tsModule, sourceFile, expressions, scriptSrc);
     } catch (err) {
       console.log(`Failed to transform template of ${fileName}`);
       console.log(err);
@@ -196,15 +204,30 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
  * Wrap render function with component options in the script block
  * to validate its types
  */
-function injectVueTemplate(tsModule: T_TypeScript, sourceFile: ts.SourceFile, renderBlock: ts.Expression[]): void {
+function injectVueTemplate(
+  tsModule: T_TypeScript,
+  sourceFile: ts.SourceFile,
+  renderBlock: ts.Expression[],
+  scriptSrc: string | undefined
+): void {
   // add import statement for corresponding Vue file
   // so that we acquire the component type from it.
-  const vueFilePath = './' + path.basename(sourceFile.fileName.slice(0, -9));
+  let componentFilePath: string;
+
+  if (scriptSrc) {
+    // When script block refers external file (<script src="./MyComp.ts"></script>).
+    // We need to strip `.ts` suffix to avoid a compilation error.
+    componentFilePath = scriptSrc.replace(/\.ts$/, '');
+  } else {
+    // Importing original `.vue` file will get component type when the script is written by inline.
+    componentFilePath = './' + path.basename(sourceFile.fileName.slice(0, -'.template'.length));
+  }
+
   const componentImport = tsModule.createImportDeclaration(
     undefined,
     undefined,
     tsModule.createImportClause(tsModule.createIdentifier('__Component'), undefined),
-    tsModule.createLiteral(vueFilePath)
+    tsModule.createLiteral(componentFilePath)
   );
 
   // import helper type to handle Vue's private methods
