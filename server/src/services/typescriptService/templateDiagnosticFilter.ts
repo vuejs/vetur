@@ -1,50 +1,55 @@
 import * as ts from 'typescript';
+import { T_TypeScript } from '../dependencyService';
 
 type DiagnosticFilter = (diagnostic: ts.Diagnostic) => boolean;
 
-/**
- * Ignores errors when accessing `private` or `protected` members on component.
- *
- * ```vue
- * <template>
- *   <!-- `a` is private but should not provide an error -->
- *   <p>{{ a }}</p>
- * </template>
- *
- * <script lang="ts">
- * import Vue from 'vue'
- * import Component from 'vue-class-component'
- *
- * @Component
- * export default class MyComp extends Vue {
- *   private a = 'Hi'
- * }
- * </script>
- * ```
- */
-const ignorePrivateProtectedViolation: DiagnosticFilter = diag => {
-  const protectedViolationCode = 2445;
-  const privateViolationCode = 2341;
+export function createTemplateDiagnosticFilter(tsModule: T_TypeScript) {
+  /**
+   * Ignores errors when accessing `private` or `protected` members on component.
+   *
+   * ```vue
+   * <template>
+   *   <!-- `a` is private but should not provide an error -->
+   *   <p>{{ a }}</p>
+   * </template>
+   *
+   * <script lang="ts">
+   * import Vue from 'vue'
+   * import Component from 'vue-class-component'
+   *
+   * @Component
+   * export default class MyComp extends Vue {
+   *   private a = 'Hi'
+   * }
+   * </script>
+   * ```
+   */
+  const ignorePrivateProtectedViolation: DiagnosticFilter = diag => {
+    const protectedViolationCode = 2445;
+    const privateViolationCode = 2341;
 
-  if (diag.code !== protectedViolationCode && diag.code !== privateViolationCode) {
-    return true;
-  }
-
-  const source = diag.file;
-  if (!source) {
-    return true;
-  }
-
-  // Only ignore accesses to a member of a component instance
-  const target = findNodeFromDiagnostic(diag, source);
-  if (target && ts.isPropertyAccessExpression(target.parent)) {
-    if (target.parent.expression.kind === ts.SyntaxKind.ThisKeyword) {
-      return false;
+    if (diag.code !== protectedViolationCode && diag.code !== privateViolationCode) {
+      return true;
     }
-  }
 
-  return true;
-};
+    const source = diag.file;
+    if (!source) {
+      return true;
+    }
+
+    // Only ignore accesses to a member of a component instance
+    const target = findNodeFromDiagnostic(diag, source);
+    if (target && tsModule.isPropertyAccessExpression(target.parent)) {
+      if (target.parent.expression.kind === tsModule.SyntaxKind.ThisKeyword) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  return mergeFilter([ignorePrivateProtectedViolation]);
+}
 
 /**
  * Merge an array of filter to create a filter function.
@@ -73,5 +78,3 @@ function findNodeFromDiagnostic(diag: ts.Diagnostic, node: ts.Node): ts.Node | u
 
   return childMatch ? childMatch : node;
 }
-
-export const templateDiagnosticFilter = mergeFilter([ignorePrivateProtectedViolation]);
