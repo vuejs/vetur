@@ -23,9 +23,11 @@ Currently diagnostics, hover, jump to definition and find references are impleme
 - Run language feature requests on the virtual TypeScript file
 - Map results back to original `.vue` file
 
-These features are still experimental. You can turn them off through `"vetur.experimental.templateInterpolationService"`.
+### Disabling
 
-If you do find bugs, please fill an issue at https://github.com/vuejs/vetur/issues.
+These features are still experimental. You can turn them off through `"vetur.experimental.templateInterpolationService"` or `vetur.validation.template`. Note that `vetur.validation.template` disables the built-in ESLint diagnostics, too.
+
+If you do find bugs, please [fill an issue](https://github.com/vuejs/vetur/issues).
 
 ## Completion
 
