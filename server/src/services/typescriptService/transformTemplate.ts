@@ -329,7 +329,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
     // Simply convert all filter arguments into array literal because
     // we just want to check their types.
-    // Do not care about existance of filters and matching between parameter
+    // Do not care about existence of filters and matching between parameter
     // and argument types because filters will not appear on component type.
     const filterExps = ts.createArrayLiteral(
       filter.filters.map(f => {
