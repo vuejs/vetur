@@ -37,7 +37,7 @@ import {
 } from 'vscode-languageserver-types';
 
 import Uri from 'vscode-uri';
-import { LanguageModes, LanguageModeRange } from '../embeddedSupport/languageModes';
+import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
@@ -370,11 +370,17 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const colors: ColorInformation[] = [];
 
+    const distinctModes: Set<LanguageMode> = new Set();
     this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
-      if (m.mode.findDocumentColors) {
-        pushAll(colors, m.mode.findDocumentColors(doc));
-      }
+      distinctModes.add(m.mode);
     });
+
+    for (const mode of distinctModes) {
+      if (mode.findDocumentColors) {
+        pushAll(colors, mode.findDocumentColors(doc));
+      }
+    }
+
     return colors;
   }
 

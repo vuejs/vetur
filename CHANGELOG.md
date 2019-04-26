@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.19.2
+
+- Fix double color indicator in document with multiple `<style>` blocks. #1219.
+
 ### 0.19.1 | 2019-04-24 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.1/vspackage)
 
 - Fix a server crash on failed attribute transformation for any attribute with dash such as `:prop-test`. #1220 and #1222.
