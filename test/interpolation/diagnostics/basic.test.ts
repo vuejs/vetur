@@ -20,6 +20,26 @@ describe('Should find template-diagnostics in <template> region', () => {
       ]
     },
     {
+      file: 'filter.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(1, 42, 46),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'test' does not exist on type"
+        },
+        {
+          range: sameLineRange(3, 10, 18),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'messaage' does not exist on type"
+        },
+        {
+          range: sameLineRange(3, 41, 45),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'test' does not exist on type"
+        }
+      ]
+    },
+    {
       file: 'v-for.vue',
       diagnostics: [
         {
