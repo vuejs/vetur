@@ -1,5 +1,14 @@
 # Changelog
 
+### 0.19.2 | 2019-04-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.2/vspackage)
+
+- 🙌 Various bug fixes for template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing fixes.
+  - Bug for transformating string templates inside template interpolations. #1230.
+  - Error showing private/protected members not accessible from template. #1224.
+  - Ignore filters in template transformation. #1206.
+- Fix double color indicator in document with multiple `<style>` blocks. #1219.
+- Disables `vetur.experimental.templateInterpolationService` by default. #1246.
+
 ### 0.19.1 | 2019-04-24 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.1/vspackage)
 
 - Fix a server crash on failed attribute transformation for any attribute with dash such as `:prop-test`. #1220 and #1222.

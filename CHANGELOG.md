@@ -1,8 +1,8 @@
 # Changelog
 
-### 0.19.2
+### 0.19.2 | 2019-04-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.2/vspackage)
 
-- 🙌 Various bug fixes for template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing PRs.
+- 🙌 Various bug fixes for template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing fixes.
   - Bug for transformating string templates inside template interpolations. #1230.
   - Error showing private/protected members not accessible from template. #1224.
   - Ignore filters in template transformation. #1206.
