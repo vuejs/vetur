@@ -33,12 +33,12 @@ describe('Should find template-diagnostics in <template> region', () => {
       file: 'object-literal.vue',
       diagnostics: [
         {
-          range: sameLineRange(3, 9, 12),
+          range: sameLineRange(4, 11, 14),
           severity: vscode.DiagnosticSeverity.Error,
           message: "Property 'bar' does not exist on type"
         },
         {
-          range: sameLineRange(4, 4, 7),
+          range: sameLineRange(5, 6, 9),
           severity: vscode.DiagnosticSeverity.Error,
           message: "Property 'baz' does not exist on type"
         }
