@@ -2,6 +2,10 @@
 
 ### 0.19.2
 
+- 🙌 Various bug fixes for template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing PRs.
+  - Bug for transformating string templates inside template interpolations. #1230.
+  - Error showing private/protected members not accessible from template. #1224.
+  - Ignore filters in template transformation. #1206.
 - Fix double color indicator in document with multiple `<style>` blocks. #1219.
 
 ### 0.19.1 | 2019-04-24 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.1/vspackage)
