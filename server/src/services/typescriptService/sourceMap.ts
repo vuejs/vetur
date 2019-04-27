@@ -66,16 +66,12 @@ export function generateSourceMap(
   tsModule: T_TypeScript,
   syntheticSourceFile: ts.SourceFile,
   validSourceFile: ts.SourceFile
-): TemplateSourceMap {
+): TemplateSourceMapNode[] {
   const walkASTTree = getAstWalker(tsModule);
 
-  const sourceMap: TemplateSourceMap = {};
-  sourceMap[syntheticSourceFile.fileName] = [];
-  const originalVueFileName = syntheticSourceFile.fileName.slice(0, -'.template'.length);
-  sourceMap[originalVueFileName] = sourceMap[syntheticSourceFile.fileName];
-
+  const sourceMapNodes: TemplateSourceMapNode[] = [];
   walkBothNode(syntheticSourceFile, validSourceFile);
-  return sourceMap;
+  return sourceMapNodes;
 
   function walkBothNode(syntheticNode: ts.Node, validNode: ts.Node) {
     const validNodeChildren: ts.Node[] = [];
@@ -130,7 +126,7 @@ export function generateSourceMap(
 
         updateOffsetMapping(sourceMapNode, thisDotRanges);
 
-        sourceMap[syntheticSourceFile.fileName].push(sourceMapNode);
+        sourceMapNodes.push(sourceMapNode);
       }
 
       walkBothNode(sc, vc);
@@ -231,8 +227,8 @@ export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, source
 }
 
 function updateOffsetMapping(node: TemplateSourceMapNode, thisDotRanges: TemplateSourceMapRange[]) {
-  const from = [...Array(node.from.end - node.from.start + 1).keys()];
-  const to: (number | undefined)[] = [...Array(node.to.end - node.to.start + 1).keys()];
+  const from = [...Array(node.from.end - node.from.start).keys()];
+  const to: (number | undefined)[] = [...Array(node.to.end - node.to.start).keys()];
 
   thisDotRanges.forEach(tdr => {
     for (let i = tdr.start; i < tdr.end; i++) {
