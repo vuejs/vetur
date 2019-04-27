@@ -227,8 +227,8 @@ export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, source
 }
 
 function updateOffsetMapping(node: TemplateSourceMapNode, thisDotRanges: TemplateSourceMapRange[]) {
-  const from = [...Array(node.from.end - node.from.start).keys()];
-  const to: (number | undefined)[] = [...Array(node.to.end - node.to.start).keys()];
+  const from = [...Array(node.from.end - node.from.start + 1).keys()];
+  const to: (number | undefined)[] = [...Array(node.to.end - node.to.start + 1).keys()];
 
   thisDotRanges.forEach(tdr => {
     for (let i = tdr.start; i < tdr.end; i++) {
