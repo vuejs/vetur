@@ -15,8 +15,6 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
   const documentSelector = ['vue'];
   const config = vscode.workspace.getConfiguration();
 
-  const foo = 5;
-
   let serverPath;
 
   const devVlsPackagePath = config.get('vetur.dev.vlsPath', '');
