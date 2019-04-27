@@ -48,13 +48,19 @@ function filePathToTest(filePath: string) {
     for (const fromIndex in node.offsetMapping) {
       const toIndex = node.offsetMapping[fromIndex];
       let errorMsg = `Pos ${fromIndex}: ${templateSrc[fromIndex]} doesn't map to ${toIndex}: ${
-        validSourceFile.getText()[toIndex]
+        validSourceFile.getFullText()[toIndex]
       }\n`;
-      errorMsg += `${templateSrc.slice(node.from.start, node.from.end)} should map to ${validSourceFile
-        .getText()
-        .slice(node.to.start, node.to.end)}`;
+      errorMsg += `${templateSrc.slice(
+        node.from.start,
+        node.from.end
+      )} should map to ${validSourceFile.getFullText().slice(node.to.start, node.to.end)}`;
 
-      assert.equal(templateSrc[fromIndex], validSourceFile.getText()[toIndex], errorMsg);
+      // Single/double quotes are lost during transformation
+      if (templateSrc[fromIndex] === `'` || templateSrc[fromIndex] === `"`) {
+        assert.ok([`'`, `"`].includes(validSourceFile.getFullText()[toIndex]), errorMsg);
+      } else {
+        assert.equal(templateSrc[fromIndex], validSourceFile.getFullText()[toIndex], errorMsg);
+      }
     }
   });
 }
@@ -63,10 +69,8 @@ suite('Source Map generation', () => {
   const repoRootPath = path.resolve(__dirname, '../../../../..');
   const fixturePath = path.resolve(__dirname, repoRootPath, './test/interpolation/fixture/diagnostics');
 
-  const failingCases = ['hyphen-attrs.vue', 'object-literal.vue', 'v-on.vue'];
-
   fs.readdirSync(fixturePath).forEach(file => {
-    if (file.endsWith('.vue') && !failingCases.includes(file)) {
+    if (file.endsWith('.vue')) {
       const filePath = path.resolve(fixturePath, file);
       test(`Source Map generation for ${path.relative(repoRootPath, filePath)}`, () => {
         filePathToTest(filePath);
