@@ -110,7 +110,8 @@ export async function getJavascriptMode(
       const fileFsPath = getFileFsPath(doc.uri);
       const rawScriptDiagnostics = [
         ...service.getSyntacticDiagnostics(fileFsPath),
-        ...service.getSemanticDiagnostics(fileFsPath)
+        ...service.getSemanticDiagnostics(fileFsPath),
+        ...service.getSuggestionDiagnostics(fileFsPath)
       ];
 
       return rawScriptDiagnostics.map(diag => {
