@@ -207,7 +207,7 @@ export function injectVueTemplate(
   tsModule: T_TypeScript,
   sourceFile: ts.SourceFile,
   renderBlock: ts.Expression[],
-  scriptSrc: string | undefined
+  scriptSrc?: string
 ): void {
   // add import statement for corresponding Vue file
   // so that we acquire the component type from it.
