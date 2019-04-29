@@ -184,6 +184,16 @@ describe('Should find template-diagnostics in <template> region', () => {
           message: "Property 'c' is private and only accessible within class 'Child'"
         }
       ]
+    },
+    {
+      file: 'external-script.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(1, 10, 18),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'messaage' does not exist on type"
+        }
+      ]
     }
   ];
 
