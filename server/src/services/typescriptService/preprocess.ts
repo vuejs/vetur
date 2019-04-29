@@ -33,7 +33,7 @@ function parseVueScriptSrc(text: string): string | undefined {
   return regions.getImportedScripts()[0];
 }
 
-function parseVueTemplate(text: string): string {
+export function parseVueTemplate(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getVueDocumentRegions(doc);
   const template = regions.getSingleTypeDocument('template');
@@ -83,7 +83,7 @@ export function createUpdater(tsModule: T_TypeScript) {
    * Use printer to print the AST as re-parse the source to get a valid SourceFile
    */
   function recreateVueTempalteSourceFile(
-    fileName: string,
+    vueTemplateFileName: string,
     sourceFile: ts.SourceFile,
     scriptSnapshot: ts.IScriptSnapshot
   ) {
@@ -99,24 +99,23 @@ export function createUpdater(tsModule: T_TypeScript) {
       expressions = getTemplateTransformFunctions(tsModule).transformTemplate(program, templateCode);
       injectVueTemplate(tsModule, sourceFile, expressions, scriptSrc);
     } catch (err) {
-      console.log(`Failed to transform template of ${fileName}`);
+      console.log(`Failed to transform template of ${vueTemplateFileName}`);
       console.log(err);
     }
 
     const newText = printer.printFile(sourceFile);
 
     const newSourceFile = tsModule.createSourceFile(
-      fileName,
+      vueTemplateFileName,
       newText,
       sourceFile.languageVersion,
       true /* setParentNodes: Need this to walk the AST */,
       tsModule.ScriptKind.JS
     );
 
-    const sourceMap = generateSourceMap(tsModule, sourceFile, newSourceFile);
-    Object.keys(sourceMap).forEach(fileName => {
-      templateSourceMap[fileName] = sourceMap[fileName];
-    });
+    const sourceMapNodes = generateSourceMap(tsModule, sourceFile, newSourceFile);
+    templateSourceMap[vueTemplateFileName] = sourceMapNodes;
+    templateSourceMap[vueTemplateFileName.slice(0, -'.template'.length)] = sourceMapNodes;
 
     return newSourceFile;
   }
@@ -204,7 +203,7 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
  * Wrap render function with component options in the script block
  * to validate its types
  */
-function injectVueTemplate(
+export function injectVueTemplate(
   tsModule: T_TypeScript,
   sourceFile: ts.SourceFile,
   renderBlock: ts.Expression[],
