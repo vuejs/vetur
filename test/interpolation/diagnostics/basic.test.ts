@@ -40,12 +40,47 @@ describe('Should find template-diagnostics in <template> region', () => {
       ]
     },
     {
+      file: 'v-if-narrowing.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(3, 16, 20),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Argument of type 'null' is not assignable"
+        },
+        {
+          range: sameLineRange(6, 16, 20),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Argument of type 'Element' is not assignable"
+        },
+        {
+          range: sameLineRange(9, 16, 20),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Argument of type 'Attribute' is not assignable"
+        },
+        {
+          range: sameLineRange(12, 16, 20),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Argument of type 'Text' is not assignable"
+        }
+      ]
+    },
+    {
       file: 'v-for.vue',
       diagnostics: [
         {
           range: sameLineRange(5, 15, 24),
           severity: vscode.DiagnosticSeverity.Error,
           message: "Property 'notExists' does not exist on type"
+        }
+      ]
+    },
+    {
+      file: 'v-if-and-v-for.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(3, 16, 17),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Argument of type 'string' is not assignable"
         }
       ]
     },
