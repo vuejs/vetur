@@ -21,7 +21,8 @@ const SCOPES: { [lang: string]: string } = {
   yaml: 'source.yaml',
   json: 'source.json',
   php: 'source.php',
-  graphql: 'source.graphql'
+  graphql: 'source.graphql',
+  liquid: 'text.html.liquid'
 };
 
 export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: string]: string }): string {
