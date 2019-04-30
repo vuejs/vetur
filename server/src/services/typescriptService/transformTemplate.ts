@@ -112,13 +112,8 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         return;
       }
 
-      // Skip v-for directive (handled in `transformElement`)
-      if (isVFor(attr)) {
-        return;
-      }
-
-      // Skip v-slot and slot-scope for now
-      if (isVSlot(attr)) {
+      // Skip v-slot, v-for and v-if family directive (handled in `transformChildren`)
+      if (isVSlot(attr) || isVFor(attr) || isVIf(attr) || isVElseIf(attr) || isVElse(attr)) {
         return;
       }
 
@@ -269,7 +264,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   }
 
   function transformChildren(children: ESLintVChild[], code: string, originalScope: string[]): ts.Expression[] {
-    type ChildData = VIfFamilyData | VForData | NodeData;
+    type ChildData = VIfFamilyData | VForData | VSlotData | NodeData;
 
     /**
      * For v-if, v-else-if and v-else
@@ -288,6 +283,13 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       scope: string[];
     }
 
+    interface VSlotData {
+      type: 'v-slot';
+      data: ChildData;
+      vSlot: AST.VDirective;
+      scope: string[];
+    }
+
     interface NodeData {
       type: 'node';
       data: ESLintVChild;
@@ -298,12 +300,25 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       const queue = children.slice();
 
       function element(el: AST.VElement, attrs: (AST.VAttribute | AST.VDirective)[]): ChildData {
+        const vSlot = attrs.find(isVSlot);
+        if (vSlot) {
+          const index = attrs.indexOf(vSlot);
+          const scope = el.variables.filter(v => v.kind === 'scope').map(v => v.id.name);
+
+          return {
+            type: 'v-slot',
+            vSlot,
+            data: element(el, [...attrs.slice(0, index), ...attrs.slice(index + 1)]),
+            scope
+          };
+        }
+
         // v-for has higher priority than v-if
         // https://vuejs.org/v2/guide/list.html#v-for-with-v-if
         const vFor = attrs.find(isVFor);
         if (vFor) {
           const index = attrs.indexOf(vFor);
-          const scope = el.variables.map(v => v.id.name);
+          const scope = el.variables.filter(v => v.kind === 'v-for').map(v => v.id.name);
 
           return {
             type: 'v-for',
@@ -380,6 +395,8 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
             return vForTransform(child, scope);
           case 'v-if-family':
             return vIfFamilyTransform(child, scope);
+          case 'v-slot':
+            return vSlotTransform(child, scope);
           case 'node':
             return nodeTransform(child, scope);
         }
@@ -429,6 +446,25 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
             genericTransform(vForData.data, newScope)
           )
         ]);
+      }
+
+      function vSlotTransform(vSlotData: VSlotData, scope: string[]): ts.Expression {
+        const vSlot = vSlotData.vSlot;
+        if (!vSlot.value || !vSlot.value.expression) {
+          return genericTransform(vSlotData.data, scope);
+        }
+
+        const exp = vSlot.value.expression as AST.VSlotScopeExpression;
+        const newScope = scope.concat(vSlotData.scope);
+
+        return ts.createArrowFunction(
+          undefined,
+          undefined,
+          parseParams(exp.params, code, scope),
+          undefined,
+          ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+          genericTransform(vSlotData.data, newScope)
+        );
       }
 
       function nodeTransform(nodeData: NodeData, scope: string[]): ts.Expression {
