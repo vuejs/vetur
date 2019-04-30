@@ -104,7 +104,9 @@ describe('Should find template-diagnostics in <template> region', () => {
           severity: vscode.DiagnosticSeverity.Error,
           message: "Property 'a' does not exist on type"
         }
-      ]
+      ],
+      // eslint-plugin-vue generates diagnostics too
+      skipSameDiagnosticCountAssert: true
     },
     {
       file: 'object-literal.vue',
