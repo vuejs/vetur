@@ -25,8 +25,10 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
   }
 
   const runExecArgv: string[] = [];
-  if (config.get('vetur.dev.vlsPort') !== -1) {
-    runExecArgv.push(`--inspect=${config.get('vetur.dev.vlsPort')}`);
+  const vlsPort = config.get('vetur.dev.vlsPort');
+  if (vlsPort !== -1) {
+    runExecArgv.push(`--inspect=${vlsPort}`);
+    console.log(`Will launch VLS in port: ${vlsPort}`);
   }
 
   const serverOptions: ServerOptions = {
