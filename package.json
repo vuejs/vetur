@@ -421,6 +421,11 @@
           "type": "string",
           "description": "Path to VLS for Vetur developers. There are two ways of using it. \n\n1. Clone vuejs/vetur from GitHub, build it and point it to the ABSOLUTE path of `/server`.\n2. `yarn global add vue-language-server` and point Vetur to the installed location (`yarn global dir` + node_modules/vue-language-server)"
         },
+        "vetur.dev.vlsPort": {
+          "type": "number",
+          "description": "The port that VLS listens to. Can be used for attaching to the VLS Node process for debugging / profiling.",
+          "default": -1
+        },
         "vetur.experimental.templateInterpolationService": {
           "type": "boolean",
           "default": false,

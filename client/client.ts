@@ -24,8 +24,13 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
     serverPath = vlsModulePath;
   }
 
+  const runExecArgv: string[] = [];
+  if (config.get('vetur.dev.vlsPort') !== -1) {
+    runExecArgv.push(`--inspect=${config.get('vetur.dev.vlsPort')}`);
+  }
+
   const serverOptions: ServerOptions = {
-    run: { module: serverPath, transport: TransportKind.ipc },
+    run: { module: serverPath, transport: TransportKind.ipc, options: { execArgv: runExecArgv } },
     debug: { module: serverPath, transport: TransportKind.ipc, options: debugOptions }
   };
 
