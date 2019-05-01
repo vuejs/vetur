@@ -1,5 +1,16 @@
 # Changelog
 
+### 0.19.3 | 2019-04-30 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.3/vspackage)
+
+- 🙌 Various improvements to template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing fixes.
+  - Support for `<script src="...">` in SFC for defining component. #1254 and #1255.
+  - Support for `v-if` type narrowing. #1204 and #1208.
+  - Support for `v-slot` and `slot-scope` (for Vue < 2.5). #1203 and #1255.
+- 🙌 Upgrade gridsome-helper-json definition for better gridsome support. Thanks to [tyankatsu](https://github.com/tyankatsu0105). #1258.
+- Liquid template syntax highlighting support for `<template lang="liquid">`. #1259 and #1081.
+- New config `vetur.dev.vlsPort` to allow debugging/profiling Vue Language Server. #1180.
+- [Performance issue reporting guideline](https://github.com/vuejs/vetur/blob/master/.github/PERF_ISSUE.md). #1180.
+
 ### 0.19.2 | 2019-04-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.2/vspackage)
 
 - 🙌 Various bug fixes for template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing fixes.
