@@ -34,7 +34,7 @@ import Uri from 'vscode-uri';
  * - Windows
  * ```
  * > Uri.parse('file:///c%3A/foo/bar.vue').fsPath
- * 'c:\foo\bar.vue'
+ * 'c:\\foo\\bar.vue' (\\ escapes to \)
  * > Uri.parse('file:///c%3A/foo/bar.vue').path
  * '/c:/foo/bar.vue'
  * ```
