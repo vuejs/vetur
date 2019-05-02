@@ -45,6 +45,7 @@ import * as _ from 'lodash';
 import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
+import { logger } from '../log';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -198,6 +199,8 @@ export class VLS {
   }
 
   configure(config: any): void {
+    logger.setLevel(_.get(config, ['vetur', 'dev', 'logLevel'], 'INFO'));
+
     const veturValidationOptions = config.vetur.validation;
     this.validation['vue-html'] = veturValidationOptions.template;
     this.validation.css = veturValidationOptions.style;

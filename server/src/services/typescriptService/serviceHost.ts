@@ -12,6 +12,7 @@ import { T_TypeScript } from '../../services/dependencyService';
 import { getVueSys } from './vueSys';
 import { TemplateSourceMap, TemplateSourceMapNode, stringifySourceMapNodes } from './sourceMap';
 import { isVirtualVueTemplateFile } from './util';
+import { logger } from '../../log';
 
 function patchTS(tsModule: T_TypeScript) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
@@ -66,6 +67,7 @@ export function getServiceHost(
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
+  logger.logDebug(`Initializing ServiceHost with files: ${JSON.stringify(files)}`);
   const scriptFileNameSet = new Set(files);
 
   const isOldVersion = inferIsOldVersion(tsModule, workspacePath);

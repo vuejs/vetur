@@ -426,6 +426,19 @@
           "description": "The port that VLS listens to. Can be used for attaching to the VLS Node process for debugging / profiling.",
           "default": -1
         },
+        "vetur.dev.logLevel": {
+          "type": "string",
+          "description": "Log level for VLS",
+          "default": "INFO",
+          "enum": [
+            "INFO",
+            "DEBUG"
+          ],
+          "enumDescriptions": [
+            "Only log info messages. This is the default.",
+            "Log info and debug messages."
+          ]
+        },
         "vetur.experimental.templateInterpolationService": {
           "type": "boolean",
           "default": false,
