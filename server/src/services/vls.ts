@@ -80,6 +80,8 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
+    logger.setLevel(_.get(params.initializationOptions.config, ['vetur', 'dev', 'logLevel'], 'INFO'));
+
     const workspacePath = params.rootPath;
     if (!workspacePath) {
       console.error('No workspace path found. Vetur initialization failed.');
@@ -199,8 +201,6 @@ export class VLS {
   }
 
   configure(config: any): void {
-    logger.setLevel(_.get(config, ['vetur', 'dev', 'logLevel'], 'INFO'));
-
     const veturValidationOptions = config.vetur.validation;
     this.validation['vue-html'] = veturValidationOptions.template;
     this.validation.css = veturValidationOptions.style;

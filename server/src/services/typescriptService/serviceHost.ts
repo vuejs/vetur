@@ -67,7 +67,7 @@ export function getServiceHost(
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
-  logger.logDebug(`Initializing ServiceHost with files: ${JSON.stringify(files)}`);
+  logger.logDebug(`Initializing ServiceHost with ${files.length} files: ${JSON.stringify(files)}`);
   const scriptFileNameSet = new Set(files);
 
   const isOldVersion = inferIsOldVersion(tsModule, workspacePath);
