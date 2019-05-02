@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.19.4 | 2019-05-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.4/vspackage)
+
+- Fix a regex performance issue. Thanks to help from [petternordholm](https://github.com/petternordholm). #1264.
+- Add some logging for diagnosing performance issue, and a setting `vls.dev.logLevel`. #922.
+- Fix Windows path handling issue that causes diagnostics in template region not mapped correctly. #1235. Thanks to help from [trixnz](https://github.com/trixnz).
+
 ### 0.19.3 | 2019-04-30 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.3/vspackage)
 
 - 🙌 Various improvements to template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing fixes.
