@@ -66,6 +66,8 @@ export function getServiceHost(
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
+  const scriptFileNameSet = new Set(files);
+
   const isOldVersion = inferIsOldVersion(tsModule, workspacePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
@@ -104,9 +106,10 @@ export function getServiceHost(
     // When file is not in language service, add it
     if (!scriptDocs.has(fileFsPath)) {
       if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
-        files.push(filePath);
+        scriptFileNameSet.add(filePath);
       }
     }
+
     if (isVirtualVueTemplateFile(fileFsPath)) {
       scriptDocs.set(fileFsPath, doc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
@@ -138,7 +141,7 @@ export function getServiceHost(
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
     return {
       getCompilationSettings: () => options,
-      getScriptFileNames: () => files,
+      getScriptFileNames: () => Array.from(scriptFileNameSet),
       getScriptVersion(fileName) {
         if (fileName === bridge.fileName) {
           return '0';
