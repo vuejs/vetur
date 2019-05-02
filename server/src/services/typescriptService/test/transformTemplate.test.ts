@@ -112,6 +112,10 @@ suite('transformTemplate', () => {
       );
     });
 
+    test('ArrowFunction: statement block', () => {
+      check('(bar) => { foo + bar; }', '(bar) => { this.foo + bar; }');
+    });
+
     test('TemplateExpression', () => {
       check('`font-size: ${size}px`', '`font-size: ${this.size}px`');
     });

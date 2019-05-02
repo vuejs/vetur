@@ -627,14 +627,24 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       res = ts.createArrayLiteral(exp.elements.map(e => injectThis(e, scope, start)));
     } else if (ts.isSpreadElement(exp)) {
       res = ts.createSpread(injectThis(exp.expression, scope, start));
-    } else if (ts.isArrowFunction(exp) && !ts.isBlock(exp.body)) {
+    } else if (ts.isArrowFunction(exp)) {
+      const fnScope = scope.concat(flatMap(exp.parameters, collectScope));
+      const body = ts.isBlock(exp.body)
+        ? ts.createBlock(
+            // Only handle expression statement
+            exp.body.statements.filter(ts.isExpressionStatement).map(st => {
+              return ts.createExpressionStatement(injectThis(st.expression, fnScope, start));
+            })
+          )
+        : injectThis(exp.body, fnScope, start);
+
       res = ts.createArrowFunction(
         exp.modifiers,
         exp.typeParameters,
         exp.parameters,
         exp.type,
         exp.equalsGreaterThanToken,
-        injectThis(exp.body, scope.concat(flatMap(exp.parameters, collectScope)), start)
+        body
       );
     } else if (ts.isTemplateExpression(exp)) {
       const injectedSpans = exp.templateSpans.map(span => {
