@@ -103,7 +103,10 @@ export function getSingleLanguageDocument(
   languageId: LanguageId
 ): TextDocument {
   const oldContent = document.getText();
-  let newContent = oldContent.replace(/./g, ' ');
+  let newContent = oldContent
+    .split('\n')
+    .map(line => ' '.repeat(line.length))
+    .join('\n');
 
   for (const r of regions) {
     if (r.languageId === languageId) {
@@ -120,7 +123,10 @@ export function getSingleTypeDocument(
   type: RegionType
 ): TextDocument {
   const oldContent = document.getText();
-  let newContent = oldContent.replace(/./g, ' ');
+  let newContent = oldContent
+    .split('\n')
+    .map(line => ' '.repeat(line.length))
+    .join('\n');
 
   let langId: string = defaultLanguageIdForBlockTypes[type];
 
