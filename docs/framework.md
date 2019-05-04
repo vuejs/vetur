@@ -29,7 +29,7 @@ Vetur reads the `package.json` **in your project root** to determine if it shoul
 | `gridsome` | [gridsome-helper-json](https://github.com/gridsome/gridsome-helper-json) |
 | `nuxt` / `nuxt-legacy` / `nuxt-ts` | Bundled in [@nuxt/vue-app](https://www.npmjs.com/package/@nuxt/vue-app) package, or fallback to [nuxt-helper-json](https://github.com/nuxt-community/nuxt-helper-json) |
 | `nuxt-edge` / `nuxt-ts-edge` | Bundled in [@nuxt/vue-app-edge](https://www.npmjs.com/package/@nuxt/vue-app-edge) package, or fallback to [nuxt-helper-json](https://github.com/nuxt-community/nuxt-helper-json) |
-| `quasar-framework` | Bundled in [quasar](https://www.npmjs.com/package/quasar) package |
+| `quasar` / `quasar-framework` | Bundled in [quasar](https://www.npmjs.com/package/quasar) (v1+) and [quasar-framework](https://www.npmjs.com/package/quasar-framework) (pre v1) packages |
 
 Getting `element-ui`'s completions is as easy as running `yarn add element-ui` and reloading VS Code.
 

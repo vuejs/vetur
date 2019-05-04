@@ -45,7 +45,8 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     bootstrap: false,
     buefy: false,
     vuetify: false,
-    quasar: false,
+    quasar: false, // Quasar v1+
+    'quasar-framework': false, // Quasar pre v1
     nuxt: false,
     gridsome: false
   };
@@ -58,30 +59,46 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       return settings;
     }
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
-    if (packageJson.dependencies['vue-router']) {
+    const dependencies = packageJson.dependencies;
+
+    if (dependencies['vue-router']) {
       settings['router'] = true;
     }
-    if (packageJson.dependencies['element-ui']) {
+    if (dependencies['element-ui']) {
       settings['element'] = true;
     }
-    if (packageJson.dependencies['vue-onsenui']) {
+    if (dependencies['vue-onsenui']) {
       settings['onsen'] = true;
     }
-    if (packageJson.dependencies['bootstrap-vue']) {
+    if (dependencies['bootstrap-vue']) {
       settings['bootstrap'] = true;
     }
-    if (packageJson.dependencies['buefy']) {
+    if (dependencies['buefy']) {
       settings['buefy'] = true;
     }
-    if (packageJson.dependencies['vuetify']) {
+    if (dependencies['vuetify']) {
       settings['vuetify'] = true;
     }
+    // Quasar v1+:
+    if (dependencies['quasar']) {
+      settings['quasar'] = true;
+    }
+    // Quasar pre v1 on non quasar-cli:
+    if (dependencies['quasar-framework']) {
+      settings['quasar-framework'] = true;
+    }
+    // Quasar pre v1 on quasar-cli:
+    if (packageJson.devDependencies && packageJson.devDependencies['quasar-cli']) {
+      // pushing dependency so we can check it
+      // and enable Quasar later below in the for()
+      dependencies['quasar-framework'] = '^0.0.17';
+    }
     if (
-      packageJson.dependencies['nuxt'] ||
-      packageJson.dependencies['nuxt-legacy'] ||
-      packageJson.dependencies['nuxt-edge'] ||
-      packageJson.dependencies['nuxt-ts'] ||
-      packageJson.dependencies['nuxt-ts-edge']
+      dependencies['nuxt'] ||
+      dependencies['nuxt-legacy'] ||
+      dependencies['nuxt-edge'] ||
+      dependencies['nuxt-ts'] ||
+      dependencies['nuxt-ts-edge']
     ) {
       const nuxtTagProvider = getNuxtTagProvider(workspacePath);
       if (nuxtTagProvider) {
@@ -89,11 +106,11 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
         allTagProviders.push(nuxtTagProvider);
       }
     }
-    if (packageJson.dependencies['gridsome']) {
+    if (dependencies['gridsome']) {
       settings['gridsome'] = true;
     }
 
-    for (const dep in packageJson.dependencies) {
+    for (const dep in dependencies) {
       const runtimePkgPath = ts.findConfigFile(
         workspacePath,
         ts.sys.fileExists,

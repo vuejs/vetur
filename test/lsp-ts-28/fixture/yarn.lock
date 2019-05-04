@@ -1251,10 +1251,10 @@ pseudomap@^1.0.2:
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
   integrity sha1-8FKijacOYYkX7wqKw0wa5aaChrM=
 
-quasar-framework@^0.17.12:
-  version "0.17.12"
-  resolved "https://registry.yarnpkg.com/quasar-framework/-/quasar-framework-0.17.12.tgz#76d4d094f3ca78108ae8436a810cb00ab55b93e5"
-  integrity sha512-hSv8Sx7mD+M6JFuQJJqc4BaKRB3cEWnYyOOwbsbEd2ks23GPXQKnz2UorYum03GSgzN9f8e6N2/IRjXSKWjvkQ==
+quasar@^1.0.0-beta.0:
+  version "1.0.0-beta.20"
+  resolved "https://registry.yarnpkg.com/quasar/-/quasar-1.0.0-beta.20.tgz#71f4ec4f31a4cd9d43cda623e7b987b1084099ee"
+  integrity sha512-oI0dlUsNVQl6WXkT6W8OesNCT0K4oAU20OTRgiid7+hngTTfDJa8UYfzKxq1jUogiRSFjvRoHU95EVlhHP7kUA==
 
 quick-lru@^1.0.0:
   version "1.1.0"
