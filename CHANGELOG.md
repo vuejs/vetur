@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.19.5 | 2019-05-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.5/vspackage)
+
+- 🙌 Re-add Quasar (pre v1) support. Thanks to PR from [@rstoenescu](https://github.com/rstoenescu) #1273.
+
 ### 0.19.4 | 2019-05-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.4/vspackage)
 
 - Fix a regex performance issue. Thanks to help from [petternordholm](https://github.com/petternordholm). #1264.
