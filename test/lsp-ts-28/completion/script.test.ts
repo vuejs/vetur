@@ -18,7 +18,8 @@ describe('Should autocomplete for <script>', () => {
   });
 
   it('completes for this.', async () => {
-    await testCompletion(scriptDocUri, position(15, 11), ['foo', 'bar', '$store', '$router', '$el', '$data']);
+    // await testCompletion(scriptDocUri, position(15, 11), ['foo', 'bar', '$store', '$router', '$el', '$data']);
+    await testCompletion(scriptDocUri, position(15, 11), ['foo', 'bar', '$el', '$data']);
   });
 
   it('completes for lodash methods with _.', async () => {
