@@ -65,6 +65,7 @@ export function getServiceHost(
   let scriptFileNames: string[] = [];
   const versions = new Map<string, number>();
   const scriptDocs = new Map<string, TextDocument>();
+  const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
@@ -145,6 +146,9 @@ export function getServiceHost(
       getCompilationSettings: () => options,
       getScriptFileNames: () => scriptFileNames,
       getScriptVersion(fileName) {
+        if (fileName.includes('node_modules')) {
+          return '0';
+        }
         if (fileName === bridge.fileName) {
           return '0';
         }
@@ -215,6 +219,19 @@ export function getServiceHost(
         });
       },
       getScriptSnapshot: (fileName: string) => {
+        if (fileName.includes('node_modules')) {
+          if (nodeModuleSnapshots.has(fileName)) {
+            return nodeModuleSnapshots.get(fileName);
+          }
+          const fileText = tsModule.sys.readFile(fileName) || '';
+          const snapshot: ts.IScriptSnapshot = {
+            getText: (start, end) => fileText.substring(start, end),
+            getLength: () => fileText.length,
+            getChangeRange: () => void 0
+          };
+          nodeModuleSnapshots.set(fileName, snapshot);
+          return snapshot;
+        }
         if (fileName === bridge.fileName) {
           const text = isOldVersion ? bridge.oldContent : bridge.content;
           return {
