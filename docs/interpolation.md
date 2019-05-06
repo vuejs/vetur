@@ -40,7 +40,7 @@ If you want more details as to how this feature is implemented, I wrote a blog p
 ## Completion
 
 Completion now works a little bit differently than the other language features. Mainly because completion works off a
-Syntactically incomplete file and the generic compiler from Vue templaet to virtual TypeScript file cannot handle that yet.
+Syntactically incomplete file and the generic compiler from Vue template to virtual TypeScript file cannot handle that yet.
 
 Completion:
 
