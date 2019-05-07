@@ -174,6 +174,11 @@ export function getServiceHost(
   function updateExternalDocument(filePath: string) {
     const ver = versions.get(filePath) || 0;
     versions.set(filePath, ver + 1);
+
+    // Clear cache so we read the js/ts file from file system again
+    if (projectFileSnapshots.has(filePath)) {
+      projectFileSnapshots.delete(filePath);
+    }
   }
 
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
