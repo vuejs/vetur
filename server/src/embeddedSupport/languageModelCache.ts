@@ -1,7 +1,12 @@
 import { TextDocument } from 'vscode-languageserver';
 
 export interface LanguageModelCache<T> {
-  get(document: TextDocument): T;
+  /**
+   * - Feed updated document
+   * - Use `parse` function to re-compute model
+   * - Return re-computed model
+   */
+  refreshAndGet(document: TextDocument): T;
   onDocumentRemoved(document: TextDocument): void;
   dispose(): void;
 }
@@ -30,7 +35,7 @@ export function getLanguageModelCache<T>(
   }
 
   return {
-    get(document: TextDocument): T {
+    refreshAndGet(document: TextDocument): T {
       const version = document.version;
       const languageId = document.languageId;
       const languageModelInfo = languageModels[document.uri];

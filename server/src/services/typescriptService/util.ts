@@ -1,3 +1,7 @@
+export function isVueFile(path: string) {
+  return path.endsWith('.vue');
+}
+
 /**
  * If the path ends with `.vue.ts`, it's a `.vue` file pre-processed by Vetur
  * to be used in TS Language Service

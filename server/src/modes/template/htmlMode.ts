@@ -39,7 +39,7 @@ export class HTMLMode implements LanguageMode {
     this.tagProviderSettings = getTagProviderSettings(workspacePath);
     this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
     this.embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
-      documentRegions.get(document).getSingleLanguageDocument('vue-html')
+      documentRegions.refreshAndGet(document).getSingleLanguageDocument('vue-html')
     );
     this.vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   }
@@ -55,11 +55,11 @@ export class HTMLMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument) {
-    const embedded = this.embeddedDocuments.get(document);
+    const embedded = this.embeddedDocuments.refreshAndGet(document);
     return doESLintValidation(embedded, this.lintEngine);
   }
   doComplete(document: TextDocument, position: Position) {
-    const embedded = this.embeddedDocuments.get(document);
+    const embedded = this.embeddedDocuments.refreshAndGet(document);
     const tagProviders: IHTMLTagProvider[] = [...this.enabledTagProviders];
 
     const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
@@ -67,30 +67,37 @@ export class HTMLMode implements LanguageMode {
       tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
     }
 
-    return doComplete(embedded, position, this.vueDocuments.get(embedded), tagProviders, this.config.emmet, info);
+    return doComplete(
+      embedded,
+      position,
+      this.vueDocuments.refreshAndGet(embedded),
+      tagProviders,
+      this.config.emmet,
+      info
+    );
   }
   doHover(document: TextDocument, position: Position) {
-    const embedded = this.embeddedDocuments.get(document);
+    const embedded = this.embeddedDocuments.refreshAndGet(document);
     const tagProviders: IHTMLTagProvider[] = [...this.enabledTagProviders];
 
-    return doHover(embedded, position, this.vueDocuments.get(embedded), tagProviders);
+    return doHover(embedded, position, this.vueDocuments.refreshAndGet(embedded), tagProviders);
   }
   findDocumentHighlight(document: TextDocument, position: Position) {
-    return findDocumentHighlights(document, position, this.vueDocuments.get(document));
+    return findDocumentHighlights(document, position, this.vueDocuments.refreshAndGet(document));
   }
   findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
     return findDocumentLinks(document, documentContext);
   }
   findDocumentSymbols(document: TextDocument) {
-    return findDocumentSymbols(document, this.vueDocuments.get(document));
+    return findDocumentSymbols(document, this.vueDocuments.refreshAndGet(document));
   }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
     return htmlFormat(document, range, this.config.vetur.format as VLSFormatConfig);
   }
   findDefinition(document: TextDocument, position: Position) {
-    const embedded = this.embeddedDocuments.get(document);
+    const embedded = this.embeddedDocuments.refreshAndGet(document);
     const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
-    return findDefinition(embedded, position, this.vueDocuments.get(embedded), info);
+    return findDefinition(embedded, position, this.vueDocuments.refreshAndGet(embedded), info);
   }
   onDocumentRemoved(document: TextDocument) {
     this.vueDocuments.onDocumentRemoved(document);

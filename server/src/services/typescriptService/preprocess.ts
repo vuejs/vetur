@@ -15,11 +15,7 @@ import {
 } from './transformTemplate';
 import { templateSourceMap } from './serviceHost';
 import { generateSourceMap } from './sourceMap';
-import { isVirtualVueTemplateFile } from './util';
-
-export function isVue(filename: string): boolean {
-  return path.extname(filename) === '.vue';
-}
+import { isVirtualVueTemplateFile, isVueFile } from './util';
 
 export function parseVueScript(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
@@ -72,7 +68,7 @@ export function createUpdater(tsModule: T_TypeScript) {
       return;
     }
 
-    if (isVue(fileName) && !isTSLike(scriptKind)) {
+    if (isVueFile(fileName) && !isTSLike(scriptKind)) {
       modifyVueScript(tsModule, sourceFile);
       modificationTracker.add(sourceFile);
       return;

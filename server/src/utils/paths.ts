@@ -53,3 +53,7 @@ export function getFilePath(documentUri: string): string {
     return Uri.parse(documentUri).path;
   }
 }
+
+export function normalizeFileNameToFsPath(fileName: string) {
+  return Uri.file(fileName).fsPath;
+}

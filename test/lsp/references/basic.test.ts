@@ -59,7 +59,7 @@ async function testReferences(docUri: vscode.Uri, position: vscode.Position, exp
   expectedLocations.forEach(el => {
     assert.ok(
       result.some(l => {
-        return l.range.isEqual(el.range) && l.uri.path === el.uri.path;
+        return l.range.isEqual(el.range) && l.uri.fsPath === el.uri.fsPath;
       })
     );
   });

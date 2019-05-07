@@ -43,7 +43,7 @@ function getStyleMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getSingleLanguageDocument(languageId)
+    documentRegions.refreshAndGet(document).getSingleLanguageDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
   let config: any = {};
@@ -60,14 +60,14 @@ function getStyleMode(
       if (languageId === 'postcss') {
         return [];
       } else {
-        const embedded = embeddedDocuments.get(document);
-        return languageService.doValidation(embedded, stylesheets.get(embedded));
+        const embedded = embeddedDocuments.refreshAndGet(document);
+        return languageService.doValidation(embedded, stylesheets.refreshAndGet(embedded));
       }
     },
     doComplete(document, position) {
-      const embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.refreshAndGet(document);
       const emmetSyntax = languageId === 'postcss' ? 'css' : languageId;
-      const lsCompletions = languageService.doComplete(embedded, position, stylesheets.get(embedded));
+      const lsCompletions = languageService.doComplete(embedded, position, stylesheets.refreshAndGet(embedded));
       const lsItems = lsCompletions
         ? _.map(lsCompletions.items, i => {
             return {
@@ -94,36 +94,36 @@ function getStyleMode(
       }
     },
     doHover(document, position) {
-      const embedded = embeddedDocuments.get(document);
-      return languageService.doHover(embedded, position, stylesheets.get(embedded)) || NULL_HOVER;
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      return languageService.doHover(embedded, position, stylesheets.refreshAndGet(embedded)) || NULL_HOVER;
     },
     findDocumentHighlight(document, position) {
-      const embedded = embeddedDocuments.get(document);
-      return languageService.findDocumentHighlights(embedded, position, stylesheets.get(embedded));
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      return languageService.findDocumentHighlights(embedded, position, stylesheets.refreshAndGet(embedded));
     },
     findDocumentSymbols(document) {
-      const embedded = embeddedDocuments.get(document);
-      return languageService.findDocumentSymbols(embedded, stylesheets.get(embedded));
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      return languageService.findDocumentSymbols(embedded, stylesheets.refreshAndGet(embedded));
     },
     findDefinition(document, position) {
-      const embedded = embeddedDocuments.get(document);
-      const definition = languageService.findDefinition(embedded, position, stylesheets.get(embedded));
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      const definition = languageService.findDefinition(embedded, position, stylesheets.refreshAndGet(embedded));
       if (!definition) {
         return [];
       }
       return definition;
     },
     findReferences(document, position) {
-      const embedded = embeddedDocuments.get(document);
-      return languageService.findReferences(embedded, position, stylesheets.get(embedded));
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      return languageService.findReferences(embedded, position, stylesheets.refreshAndGet(embedded));
     },
     findDocumentColors(document) {
-      const embedded = embeddedDocuments.get(document);
-      return languageService.findDocumentColors(embedded, stylesheets.get(embedded));
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      return languageService.findDocumentColors(embedded, stylesheets.refreshAndGet(embedded));
     },
     getColorPresentations(document, color, range) {
-      const embedded = embeddedDocuments.get(document);
-      return languageService.getColorPresentations(embedded, stylesheets.get(embedded), color, range);
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      return languageService.getColorPresentations(embedded, stylesheets.refreshAndGet(embedded), color, range);
     },
     format(document, currRange, formattingOptions) {
       if (config.vetur.format.defaultFormatter[languageId] === 'none') {
