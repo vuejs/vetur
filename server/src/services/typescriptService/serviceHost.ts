@@ -14,6 +14,8 @@ import { TemplateSourceMap, stringifySourceMapNodes } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { logger } from '../../log';
 
+const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
+
 function patchTS(tsModule: T_TypeScript) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: this is a global hack that all ts instances after is changed
@@ -341,7 +343,7 @@ export function getServiceHost(
       },
       getCurrentDirectory: () => workspacePath,
       getDefaultLibFileName: tsModule.getDefaultLibFilePath,
-      getNewLine: () => '\n',
+      getNewLine: () => NEWLINE,
       useCaseSensitiveFileNames: () => true
     };
   }
