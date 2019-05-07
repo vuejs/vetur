@@ -9,7 +9,7 @@ describe('Should do documentLink', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
+    await sleep(FILE_LOAD_SLEEP_TIME * 3);
   });
 
   it('shows all documentLinks for Basic.vue', async () => {
@@ -27,10 +27,13 @@ async function testLink(docUri: vscode.Uri, expectedLinks: vscode.DocumentLink[]
   const result = (await vscode.commands.executeCommand('vscode.executeLinkProvider', docUri)) as vscode.DocumentLink[];
 
   expectedLinks.forEach(el => {
-    assert.ok(result.some(l => isEqualLink(l, el)));
+    assert.ok(
+      result.some(l => isEqualLink(l, el)),
+      `Failed to find same link as ${el.target!.fsPath}. Seen links are:\n${JSON.stringify(result, null, 2)}`
+    );
   });
 
   function isEqualLink(h1: vscode.DocumentLink, h2: vscode.DocumentLink) {
-    return h1.target!.path === h2.target!.path && h1.range.isEqual(h2.range);
+    return h1.target!.fsPath === h2.target!.fsPath && h1.range.isEqual(h2.range);
   }
 }

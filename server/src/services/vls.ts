@@ -339,12 +339,7 @@ export class VLS {
           return Uri.file(path.resolve(this.workspacePath, ref)).toString();
         }
         const docUri = Uri.parse(doc.uri);
-        return docUri
-          .with({
-            // Reference from components need to go dwon from their parent dir
-            path: path.resolve(docUri.fsPath, '..', ref)
-          })
-          .toString();
+        return Uri.file(path.resolve(docUri.fsPath, '..', ref)).toString();
       }
     };
 
