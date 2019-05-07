@@ -48,7 +48,7 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return [];
     }
@@ -91,7 +91,7 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return {
         contents: []
@@ -130,7 +130,7 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return [];
     }
@@ -178,7 +178,7 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return [];
     }

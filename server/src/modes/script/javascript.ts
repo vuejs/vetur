@@ -77,7 +77,7 @@ export async function getJavascriptMode(
     }
   }
 
-  const { updateCurrentTextDocument } = serviceHost;
+  const { updateCurrentVueTextDocument } = serviceHost;
   let config: any = {};
   let supportedCodeFixCodes: Set<number>;
 
@@ -93,7 +93,7 @@ export async function getJavascriptMode(
         return;
       }
 
-      const { service } = updateCurrentTextDocument(doc);
+      const { service } = updateCurrentVueTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
       const info = getComponentInfo(tsModule, service, fileFsPath, config);
       if (info) {
@@ -102,7 +102,7 @@ export async function getJavascriptMode(
     },
 
     doValidation(doc: TextDocument): Diagnostic[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -133,7 +133,7 @@ export async function getJavascriptMode(
       });
     },
     doComplete(doc: TextDocument, position: Position): CompletionList {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return { isIncomplete: false, items: [] };
       }
@@ -175,7 +175,7 @@ export async function getJavascriptMode(
       };
     },
     doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
-      const { service } = updateCurrentTextDocument(doc);
+      const { service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return item;
       }
@@ -215,7 +215,7 @@ export async function getJavascriptMode(
       return item;
     },
     doHover(doc: TextDocument, position: Position): Hover {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return { contents: [] };
       }
@@ -237,7 +237,7 @@ export async function getJavascriptMode(
       return { contents: [] };
     },
     doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp | null {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return NULL_SIGNATURE;
       }
@@ -278,7 +278,7 @@ export async function getJavascriptMode(
       return ret;
     },
     findDocumentHighlight(doc: TextDocument, position: Position): DocumentHighlight[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -296,7 +296,7 @@ export async function getJavascriptMode(
       return [];
     },
     findDocumentSymbols(doc: TextDocument): SymbolInformation[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -336,7 +336,7 @@ export async function getJavascriptMode(
       return result;
     },
     findDefinition(doc: TextDocument, position: Position): Definition {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -362,7 +362,7 @@ export async function getJavascriptMode(
       return definitionResults;
     },
     findReferences(doc: TextDocument, position: Position): Location[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
@@ -390,7 +390,7 @@ export async function getJavascriptMode(
       return referenceResults;
     },
     getCodeActions(doc, range, _formatParams, context) {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       const fileName = getFileFsPath(scriptDoc.uri);
       const start = scriptDoc.offsetAt(range.start);
       const end = scriptDoc.offsetAt(range.end);
@@ -427,7 +427,7 @@ export async function getJavascriptMode(
       return result;
     },
     getRefactorEdits(doc: TextDocument, args: RefactorAction) {
-      const { service } = updateCurrentTextDocument(doc);
+      const { service } = updateCurrentVueTextDocument(doc);
       const response = service.getEditsForRefactor(
         args.fileName,
         args.formatOptions,
@@ -444,7 +444,7 @@ export async function getJavascriptMode(
       return createApplyCodeActionCommand('', uriMapping);
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
-      const { scriptDoc, service } = updateCurrentTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
 
       const defaultFormatter =
         scriptDoc.languageId === 'javascript'

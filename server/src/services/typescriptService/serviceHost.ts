@@ -41,13 +41,17 @@ export const templateSourceMap: TemplateSourceMap = {};
 
 export interface IServiceHost {
   queryVirtualFileInfo(fileName: string, currFileText: string): { source: string; sourceMapNodesString: string };
-  updateCurrentTextDocument(
+  updateCurrentVirtualVueTextDocument(
+    doc: TextDocument
+  ): {
+    templateService: ts.LanguageService;
+    templateSourceMap: TemplateSourceMap;
+  };
+  updateCurrentVueTextDocument(
     doc: TextDocument
   ): {
     service: ts.LanguageService;
-    templateService: ts.LanguageService;
     scriptDoc: TextDocument;
-    templateSourceMap: TemplateSourceMap;
   };
   updateExternalDocument(filePath: string): void;
   dispose(): void;
@@ -65,7 +69,7 @@ export function getServiceHost(
   tsModule: T_TypeScript,
   workspacePath: string,
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
-) {
+): IServiceHost {
   patchTS(tsModule);
   const vueSys = getVueSys(tsModule);
 
@@ -118,7 +122,7 @@ export function getServiceHost(
     };
   }
 
-  function updateCurrentTextDocument(doc: TextDocument) {
+  function updateCurrentVirtualVueTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
@@ -131,7 +135,25 @@ export function getServiceHost(
     if (isVirtualVueTemplateFile(fileFsPath)) {
       localScriptRegionDocuments.set(fileFsPath, doc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
-    } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
+    }
+
+    return {
+      templateService: templateLanguageService,
+      templateSourceMap
+    };
+  }
+
+  function updateCurrentVueTextDocument(doc: TextDocument) {
+    const fileFsPath = getFileFsPath(doc.uri);
+    const filePath = getFilePath(doc.uri);
+    // When file is not in language service, add it
+    if (!localScriptRegionDocuments.has(fileFsPath)) {
+      if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
+        scriptFileNameSet.add(filePath);
+      }
+    }
+
+    if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = updatedScriptRegionDocuments.refreshAndGet(doc)!;
       const localLastDoc = localScriptRegionDocuments.get(fileFsPath);
       if (localLastDoc && currentScriptDoc.languageId !== localLastDoc.languageId) {
@@ -144,9 +166,7 @@ export function getServiceHost(
     }
     return {
       service: jsLanguageService,
-      templateService: templateLanguageService,
-      scriptDoc: currentScriptDoc,
-      templateSourceMap
+      scriptDoc: currentScriptDoc
     };
   }
 
@@ -337,7 +357,8 @@ export function getServiceHost(
 
   return {
     queryVirtualFileInfo,
-    updateCurrentTextDocument,
+    updateCurrentVirtualVueTextDocument,
+    updateCurrentVueTextDocument,
     updateExternalDocument,
     dispose: () => {
       jsLanguageService.dispose();
