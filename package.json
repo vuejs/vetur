@@ -16,7 +16,7 @@
     "test:grammar": "node ./dist/test/codeTestRunner.js grammar",
     "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
     "test:int": "node ./dist/test/codeTestRunner.js interpolation",
-    "test": "run-s lint compile test:server test:e2e",
+    "test": "run-s compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepare-publish": "yarn compile -f && ./build/release-cleanup.sh"
   },
@@ -463,7 +463,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^1.17.0",
     "shelljs": "^0.8.3",
-    "tslint": "^5.8.0",
+    "tslint": "^5.16.0",
     "typescript": "^3.3.3333",
     "vscode": "1.1.29"
   }

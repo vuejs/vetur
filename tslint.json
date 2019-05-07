@@ -22,5 +22,11 @@
     "semicolon": [true, "always"],
     "triple-equals": true,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+  },
+  "linterOptions": {
+    "exclude": [
+      "**/node_modules/**",
+      "**/*.d.ts"
+    ]
   }
 }
