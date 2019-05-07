@@ -171,13 +171,13 @@ export function getServiceHost(
   }
 
   // External Documents: JS/TS, non Vue documents
-  function updateExternalDocument(filePath: string) {
-    const ver = versions.get(filePath) || 0;
-    versions.set(filePath, ver + 1);
+  function updateExternalDocument(fileFsPath: string) {
+    const ver = versions.get(fileFsPath) || 0;
+    versions.set(fileFsPath, ver + 1);
 
     // Clear cache so we read the js/ts file from file system again
-    if (projectFileSnapshots.has(filePath)) {
-      projectFileSnapshots.delete(filePath);
+    if (projectFileSnapshots.has(fileFsPath)) {
+      projectFileSnapshots.delete(fileFsPath);
     }
   }
 
@@ -308,16 +308,16 @@ export function getServiceHost(
 
         // js/ts files in workspace
         if (!isVueFile(fileFsPath)) {
-          if (projectFileSnapshots.has(fileName)) {
-            return projectFileSnapshots.get(fileName);
+          if (projectFileSnapshots.has(fileFsPath)) {
+            return projectFileSnapshots.get(fileFsPath);
           }
-          const fileText = tsModule.sys.readFile(fileName) || '';
+          const fileText = tsModule.sys.readFile(fileFsPath) || '';
           const snapshot: ts.IScriptSnapshot = {
             getText: (start, end) => fileText.substring(start, end),
             getLength: () => fileText.length,
             getChangeRange: () => void 0
           };
-          projectFileSnapshots.set(fileName, snapshot);
+          projectFileSnapshots.set(fileFsPath, snapshot);
           return snapshot;
         }
 
