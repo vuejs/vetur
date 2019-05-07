@@ -43,6 +43,7 @@ steps:
 
 - bash: yarn test:server
   displayName: Run Server Tests
+  continueOnError: true
   env:
     DISPLAY: :10
 
