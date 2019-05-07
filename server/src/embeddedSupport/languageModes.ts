@@ -111,11 +111,14 @@ export class LanguageModes {
       }
     }
 
-    const jsDocuments = getLanguageModelCache(10, 60, document => {
-      const vueDocument = this.documentRegions.get(document);
+    /**
+     * Documents where everything outside `<script>~ is replaced with whitespace
+     */
+    const scriptRegionDocuments = getLanguageModelCache(10, 60, document => {
+      const vueDocument = this.documentRegions.refreshAndGet(document);
       return vueDocument.getSingleTypeDocument('script');
     });
-    this.serviceHost = getServiceHost(tsModule, workspacePath, jsDocuments);
+    this.serviceHost = getServiceHost(tsModule, workspacePath, scriptRegionDocuments);
 
     const vueHtmlMode = new VueHTMLMode(
       tsModule,
@@ -145,14 +148,14 @@ export class LanguageModes {
   }
 
   getModeAtPosition(document: TextDocument, position: Position): LanguageMode | undefined {
-    const languageId = this.documentRegions.get(document).getLanguageAtPosition(position);
+    const languageId = this.documentRegions.refreshAndGet(document).getLanguageAtPosition(position);
     return this.modes[languageId];
   }
 
   getAllLanguageModeRangesInDocument(document: TextDocument): LanguageModeRange[] {
     const result: LanguageModeRange[] = [];
 
-    const documentRegions = this.documentRegions.get(document);
+    const documentRegions = this.documentRegions.refreshAndGet(document);
 
     documentRegions.getAllLanguageRanges().forEach(lr => {
       const mode = this.modes[lr.languageId];

@@ -56,14 +56,14 @@ export interface IServiceHost {
 export function getServiceHost(
   tsModule: T_TypeScript,
   workspacePath: string,
-  jsDocuments: LanguageModelCache<TextDocument>
+  updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ) {
   patchTS(tsModule);
   const vueSys = getVueSys(tsModule);
 
   let currentScriptDoc: TextDocument;
   const versions = new Map<string, number>();
-  const scriptDocs = new Map<string, TextDocument>();
+  const localScriptRegionDocuments = new Map<string, TextDocument>();
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
   const files = parsedConfig.fileNames;
@@ -106,24 +106,24 @@ export function getServiceHost(
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
-    if (!scriptDocs.has(fileFsPath)) {
+    if (!localScriptRegionDocuments.has(fileFsPath)) {
       if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
         scriptFileNameSet.add(filePath);
       }
     }
 
     if (isVirtualVueTemplateFile(fileFsPath)) {
-      scriptDocs.set(fileFsPath, doc);
+      localScriptRegionDocuments.set(fileFsPath, doc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     } else if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
-      currentScriptDoc = jsDocuments.get(doc);
-      const lastDoc = scriptDocs.get(fileFsPath);
-      if (lastDoc && currentScriptDoc.languageId !== lastDoc.languageId) {
+      currentScriptDoc = updatedScriptRegionDocuments.refreshAndGet(doc)!;
+      const localLastDoc = localScriptRegionDocuments.get(fileFsPath);
+      if (localLastDoc && currentScriptDoc.languageId !== localLastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
         jsLanguageService.dispose();
         jsLanguageService = tsModule.createLanguageService(jsHost);
       }
-      scriptDocs.set(fileFsPath, currentScriptDoc);
+      localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
@@ -156,9 +156,12 @@ export function getServiceHost(
         if (isVue(fileName)) {
           const uri = Uri.file(fileName);
           fileName = uri.fsPath;
-          const doc =
-            scriptDocs.get(fileName) ||
-            jsDocuments.get(TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || ''));
+          let doc = localScriptRegionDocuments.get(fileName);
+          if (!doc) {
+            doc = updatedScriptRegionDocuments.refreshAndGet(
+              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || '')
+            );
+          }
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
           return tsModule.ScriptKind.JS;
@@ -200,11 +203,14 @@ export function getServiceHost(
           }
           const resolvedFileName = resolved.resolvedFileName.slice(0, -'.ts'.length);
           const uri = Uri.file(resolvedFileName);
-          const doc =
-            scriptDocs.get(resolvedFileName) ||
-            jsDocuments.get(
+          let doc = localScriptRegionDocuments.get(resolvedFileName);
+          // Vue file not created yet
+          if (!doc) {
+            doc = updatedScriptRegionDocuments.refreshAndGet(
               TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
             );
+          }
+
           const extension =
             doc.languageId === 'typescript'
               ? tsModule.Extension.Ts
@@ -224,7 +230,7 @@ export function getServiceHost(
           };
         }
         const normalizedFileFsPath = getNormalizedFileFsPath(fileName);
-        const doc = scriptDocs.get(normalizedFileFsPath);
+        const doc = localScriptRegionDocuments.get(normalizedFileFsPath);
         let fileText = doc ? doc.getText() : tsModule.sys.readFile(normalizedFileFsPath) || '';
         if (!doc && isVue(fileName)) {
           // Note: This is required in addition to the parsing in embeddedSupport because

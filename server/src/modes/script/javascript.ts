@@ -59,12 +59,12 @@ export async function getJavascriptMode(
     };
   }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
-    const vueDocument = documentRegions.get(document);
+    const vueDocument = documentRegions.refreshAndGet(document);
     return vueDocument.getSingleTypeDocument('script');
   });
 
   const firstScriptRegion = getLanguageModelCache(10, 60, document => {
-    const vueDocument = documentRegions.get(document);
+    const vueDocument = documentRegions.refreshAndGet(document);
     const scriptRegions = vueDocument.getLanguageRangesOfType('script');
     return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
@@ -699,7 +699,7 @@ function convertCodeAction(
   codeActions: ts.CodeAction[],
   regionStart: LanguageModelCache<LanguageRange | undefined>
 ): TextEdit[] {
-  const scriptStartOffset = doc.offsetAt(regionStart.get(doc)!.start);
+  const scriptStartOffset = doc.offsetAt(regionStart.refreshAndGet(doc)!.start);
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
@@ -708,7 +708,7 @@ function convertCodeAction(
           // currently, only import codeAction is available
           // change start of doc to start of script region
           if (tc.span.start <= scriptStartOffset && tc.span.length === 0) {
-            const region = regionStart.get(doc);
+            const region = regionStart.refreshAndGet(doc);
             if (region) {
               const line = region.start.line;
               return {

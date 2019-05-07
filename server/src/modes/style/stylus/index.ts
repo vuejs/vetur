@@ -17,7 +17,7 @@ import { VLSFormatConfig } from '../../../config';
 
 export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
-    documentRegions.get(document).getSingleLanguageDocument('stylus')
+    documentRegions.refreshAndGet(document).getSingleLanguageDocument('stylus')
   );
   let baseIndentShifted = false;
   let config: any = {};
@@ -30,7 +30,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
     onDocumentRemoved() {},
     dispose() {},
     doComplete(document, position) {
-      const embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.refreshAndGet(document);
 
       const lsCompletions = provideCompletionItems(embedded, position);
       const lsItems = _.map(lsCompletions.items, i => {
@@ -57,11 +57,11 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       }
     },
     findDocumentSymbols(document) {
-      const embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.refreshAndGet(document);
       return provideDocumentSymbols(embedded);
     },
     doHover(document, position) {
-      const embedded = embeddedDocuments.get(document);
+      const embedded = embeddedDocuments.refreshAndGet(document);
       return stylusHover(embedded, position);
     },
     format(document, range, formatParams) {
