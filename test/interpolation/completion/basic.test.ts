@@ -15,11 +15,7 @@ describe('Should autocomplete interpolation for <template>', () => {
   });
 
   function wrapWithJSCodeRegion(src: string) {
-    return `
-\`\`\`js
-${src}
-\`\`\`
-`;
+    return '\n```js\n' + src + '\n```\n';
   }
 
   const defaultList: CompletionItem[] = [

@@ -39,12 +39,12 @@ export async function testCompletion(
 
       if (ei.documentation) {
         if (typeof match.documentation === 'string') {
-          assert.equal(match.documentation, ei.documentation);
+          assert.equal(normalizeNewline(match.documentation), normalizeNewline(ei.documentation as string));
         } else {
           if (ei.documentation && (ei.documentation as MarkupContent).value && match.documentation) {
             assert.equal(
-              (match.documentation as vscode.MarkdownString).value,
-              (ei.documentation as MarkupContent).value
+              normalizeNewline((match.documentation as vscode.MarkdownString).value),
+              normalizeNewline((ei.documentation as MarkupContent).value)
             );
           }
         }
@@ -94,4 +94,8 @@ export async function testNoSuchCompletion(
       assert.ok(!match, `Shouldn't find perfect match for ${JSON.stringify(ei, null, 2)}`);
     }
   });
+}
+
+function normalizeNewline(input: string) {
+  return input.replace(/\r\n/g, '\n');
 }
