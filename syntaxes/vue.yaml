@@ -13,15 +13,19 @@ patterns:
 
   # template - single line
   # <template src="index.html" />
-  - begin: (<)(template)\b(?=[^/>]*/>\s*$)
+  - begin: (<)(?=template.*[^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
-      '2': { name: entity.name.tag.template.html }
     end: (/>)
     endCaptures:
       '1': { name: punctuation.definition.tag.end.html }
     patterns:
-      - include: '#tag-stuff'
+      - begin: (template)
+        beginCaptures:
+          '1': { name: entity.name.tag.template.html }
+        end: (?=/>)
+        patterns:
+          - include: '#tag-stuff'
 
   # template - single line
   # <template src="index.html"></template>

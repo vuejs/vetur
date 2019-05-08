@@ -103,13 +103,10 @@
       }
     },
     {
-      "begin": "(<)(template)\\b(?=[^/>]*/>\\s*$)",
+      "begin": "(<)(?=template.*[^/>]*/>\\s*$)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.template.html"
         }
       },
       "end": "(/>)",
@@ -120,7 +117,18 @@
       },
       "patterns": [
         {
-          "include": "#tag-stuff"
+          "begin": "(template)",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.tag.template.html"
+            }
+          },
+          "end": "(?=/>)",
+          "patterns": [
+            {
+              "include": "#tag-stuff"
+            }
+          ]
         }
       ]
     },
