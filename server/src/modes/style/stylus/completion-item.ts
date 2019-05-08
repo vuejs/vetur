@@ -17,11 +17,9 @@ import {
   isVariableNode
 } from './parser';
 
-import * as cssSchema from './css-schema';
+import { cssData, LoadedCSSData } from './css-browser-data';
 import builtIn from './built-in';
 import * as _ from 'lodash';
-
-type CSSSchema = typeof cssSchema;
 
 function prepareName(name: string): string {
   return name.replace(/\{|\}/g, '').trim();
@@ -47,14 +45,14 @@ export function isAtRule(currentWord: string): boolean {
 
 /**
  * Naive check whether currentWord is value for given property
- * @param {Object} cssSchema
+ * @param {Object} data
  * @param {String} currentWord
  * @return {Boolean}
  */
-export function isValue(cssSchema: CSSSchema, currentWord: string): boolean {
+export function isValue(data: LoadedCSSData, currentWord: string): boolean {
   const property = getPropertyName(currentWord);
 
-  return !!property && Boolean(findPropertySchema(cssSchema, property));
+  return !!property && Boolean(findPropertySchema(data, property));
 }
 
 /**
@@ -71,13 +69,12 @@ export function getPropertyName(currentWord: string): string {
 
 /**
  * Search for property in cssSchema
- * @param {Object} cssSchema
+ * @param {Object} data
  * @param {String} property
  * @return {Object}
  */
-export function findPropertySchema(cssSchema: CSSSchema, property: string) {
-  const properties = cssSchema.data.css.properties;
-  return _.find(properties, item => item.name === property);
+export function findPropertySchema(data: LoadedCSSData, property: string) {
+  return _.find(data.properties, item => item.name === property);
 }
 
 /**
@@ -206,19 +203,19 @@ export function getAllSymbols(text: string, currentWord: string, position: Posit
 
 /**
  * Returns at rules list for completion
- * @param {Object} cssSchema
+ * @param {Object} data
  * @param {String} currentWord
  * @return {CompletionItem}
  */
-export function getAtRules(cssSchema: CSSSchema, currentWord: string): CompletionItem[] {
+export function getAtRules(data: LoadedCSSData, currentWord: string): CompletionItem[] {
   if (!isAtRule(currentWord)) {
     return [];
   }
 
-  return cssSchema.data.css.atdirectives.map(property => {
+  return data.atDirectives.map(property => {
     const completionItem = CompletionItem.create(property.name);
 
-    completionItem.detail = property.desc;
+    completionItem.detail = property.description;
     completionItem.kind = CompletionItemKind.Keyword;
 
     return completionItem;
@@ -227,20 +224,20 @@ export function getAtRules(cssSchema: CSSSchema, currentWord: string): Completio
 
 /**
  * Returns property list for completion
- * @param {Object} cssSchema
+ * @param {Object} data
  * @param {String} currentWord
  * @return {CompletionItem}
  */
-export function getProperties(cssSchema: CSSSchema, currentWord: string, useSeparator: boolean): CompletionItem[] {
+export function getProperties(data: LoadedCSSData, currentWord: string, useSeparator: boolean): CompletionItem[] {
   if (isClassOrId(currentWord) || isAtRule(currentWord)) {
     return [];
   }
 
-  return cssSchema.data.css.properties.map(property => {
+  return data.properties.map(property => {
     const completionItem = CompletionItem.create(property.name);
 
     completionItem.insertText = property.name + (useSeparator ? ': ' : ' ');
-    completionItem.detail = property.desc;
+    completionItem.detail = property.description;
     completionItem.kind = CompletionItemKind.Property;
 
     return completionItem;
@@ -249,13 +246,13 @@ export function getProperties(cssSchema: CSSSchema, currentWord: string, useSepa
 
 /**
  * Returns values for current property for completion list
- * @param {Object} cssSchema
+ * @param {Object} data
  * @param {String} currentWord
  * @return {CompletionItem}
  */
-export function getValues(cssSchema: CSSSchema, currentWord: string): CompletionItem[] {
+export function getValues(data: LoadedCSSData, currentWord: string): CompletionItem[] {
   const property = getPropertyName(currentWord);
-  const result = findPropertySchema(cssSchema, property);
+  const result = findPropertySchema(data, property);
   const values = result && result.values;
 
   if (!values) {
@@ -265,7 +262,7 @@ export function getValues(cssSchema: CSSSchema, currentWord: string): Completion
   return values.map(property => {
     const completionItem = CompletionItem.create(property.name);
 
-    completionItem.documentation = property.desc;
+    completionItem.documentation = property.description;
     completionItem.kind = CompletionItemKind.Value;
 
     return completionItem;
@@ -277,19 +274,19 @@ export function provideCompletionItems(document: TextDocument, position: Positio
   const end = document.offsetAt(position);
   const text = document.getText();
   const currentWord = text.slice(start, end).trim();
-  const value = isValue(cssSchema, currentWord);
+  const value = isValue(cssData, currentWord);
 
   let completions: CompletionItem[] = [];
 
   if (value) {
-    const values = getValues(cssSchema, currentWord);
+    const values = getValues(cssData, currentWord);
     const symbols = getAllSymbols(text, currentWord, position).filter(
       item => item.kind === CompletionItemKind.Variable || item.kind === CompletionItemKind.Function
     );
     completions = completions.concat(values, symbols, builtIn);
   } else {
-    const atRules = getAtRules(cssSchema, currentWord);
-    const properties = getProperties(cssSchema, currentWord, false);
+    const atRules = getAtRules(cssData, currentWord);
+    const properties = getProperties(cssData, currentWord, false);
     const symbols = getAllSymbols(text, currentWord, position).filter(
       item => item.kind !== CompletionItemKind.Variable
     );
