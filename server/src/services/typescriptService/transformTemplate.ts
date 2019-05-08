@@ -171,7 +171,14 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       if (!vOn.key.argument) {
         // e.g.
         //   v-on="$listeners"
-        exp = vOnExp.type !== 'VOnExpression' ? parseExpression(vOnExp, code, scope) : ts.createObjectLiteral([]);
+
+        // Annotate the expression with `any` because we do not expect type error
+        // with bridge type and it. Currently, bridge type should only be used
+        // for inferring `$event` type.
+        exp = ts.createAsExpression(
+          vOnExp.type !== 'VOnExpression' ? parseExpression(vOnExp, code, scope) : ts.createObjectLiteral([]),
+          ts.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword)
+        );
       } else {
         // e.g.
         //   @click="onClick"
@@ -187,7 +194,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
           undefined,
           undefined,
           undefined,
-          [ts.createParameter(undefined, undefined, undefined, '$event', undefined, undefined)],
+          [ts.createParameter(undefined, undefined, undefined, '$event')],
           undefined,
           ts.createBlock(statements)
         );
