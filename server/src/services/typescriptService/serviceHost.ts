@@ -396,11 +396,24 @@ function inferIsUsingOldVueVersion(tsModule: T_TypeScript, workspacePath: string
   const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
   try {
     const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);
-    const vueStr = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
-    // use a sloppy method to infer version, to reduce dep on semver or so
-    const vueDep = vueStr.match(/\d+\.\d+/)[0];
-    const sloppyVersion = parseFloat(vueDep);
-    return sloppyVersion < 2.5;
+    const vueDependencyVersion = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
+
+    if (vueDependencyVersion) {
+      // use a sloppy method to infer version, to reduce dep on semver or so
+      const vueDep = vueDependencyVersion.match(/\d+\.\d+/)[0];
+      const sloppyVersion = parseFloat(vueDep);
+      return sloppyVersion < 2.5;
+    }
+
+    const nodeModulesVuePackagePath = tsModule.findConfigFile(
+      path.resolve(workspacePath, 'node_modules/vue'),
+      tsModule.sys.fileExists,
+      'package.json'
+    );
+    const nodeModulesVuePackageJSON =
+      nodeModulesVuePackagePath && JSON.parse(tsModule.sys.readFile(nodeModulesVuePackagePath)!);
+    const nodeModulesVueVersion = parseFloat(nodeModulesVuePackageJSON.version.match(/\d+\.\d+/)[0]);
+    return nodeModulesVueVersion < 2.5;
   } catch (e) {
     return true;
   }
