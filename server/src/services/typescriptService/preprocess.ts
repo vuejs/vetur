@@ -10,8 +10,7 @@ import {
   getTemplateTransformFunctions,
   componentHelperName,
   iterationHelperName,
-  renderHelperName,
-  listenerHelperName
+  renderHelperName
 } from './transformTemplate';
 import { templateSourceMap } from './serviceHost';
 import { generateSourceMap } from './sourceMap';
@@ -236,8 +235,7 @@ export function injectVueTemplate(
       tsModule.createNamedImports([
         tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(renderHelperName)),
         tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentHelperName)),
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName)),
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(listenerHelperName))
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName))
       ])
     ),
     tsModule.createLiteral('vue-editor-bridge')

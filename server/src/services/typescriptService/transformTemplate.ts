@@ -5,7 +5,6 @@ import { T_TypeScript } from '../dependencyService';
 export const renderHelperName = '__vlsRenderHelper';
 export const componentHelperName = '__vlsComponentHelper';
 export const iterationHelperName = '__vlsIterationHelper';
-export const listenerHelperName = '__vlsListenerHelper';
 
 /**
  * Allowed global variables in templates.
@@ -55,6 +54,9 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    */
   function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
     return ts.createCall(ts.createIdentifier(componentHelperName), undefined, [
+      // Pass this value to propagate ThisType in listener handlers
+      ts.createIdentifier('this'),
+
       // Element / Component name
       ts.createLiteral(node.name),
 
@@ -166,40 +168,29 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       // value.expression can be ESLintExpression (e.g. ArrowFunctionExpression)
       const vOnExp = vOn.value.expression as AST.VOnExpression | AST.ESLintExpression;
 
-      if (vOnExp.type !== 'VOnExpression') {
-        // The v-on value is an expression of simple path to a method or a function
+      if (!vOn.key.argument) {
+        // e.g.
+        //   v-on="$listeners"
+        exp = vOnExp.type !== 'VOnExpression' ? parseExpression(vOnExp, code, scope) : ts.createObjectLiteral([]);
+      } else {
         // e.g.
         //   @click="onClick"
-        //   @click="() => value = 123"
-        exp = parseExpression(vOnExp, code, scope);
-      } else {
-        // The v-on has some complex expressions or statements.
-        // Then wrap them with a function so that they can use `$event` and `arguments`.
-        // e.g.
         //   @click="onClick($event, 'test')"
-        //   @click="value = "foo""
         const newScope = scope.concat(vOnScope);
-        exp = ts.createCall(ts.createIdentifier(listenerHelperName), undefined, [
-          ts.createThis(),
-          ts.createFunctionExpression(
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            [
-              ts.createParameter(
-                undefined,
-                undefined,
-                undefined,
-                '$event',
-                undefined,
-                ts.createTypeReferenceNode('Event', undefined)
-              )
-            ],
-            undefined,
-            ts.createBlock(vOnExp.body.map(st => transformStatement(st, code, newScope)))
-          )
-        ]);
+        const statements =
+          vOnExp.type !== 'VOnExpression'
+            ? [ts.createStatement(parseExpression(vOnExp, code, newScope))]
+            : vOnExp.body.map(st => transformStatement(st, code, newScope));
+
+        exp = ts.createFunctionExpression(
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          [ts.createParameter(undefined, undefined, undefined, '$event', undefined, undefined)],
+          undefined,
+          ts.createBlock(statements)
+        );
       }
     } else {
       // There are no statement in v-on value
