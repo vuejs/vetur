@@ -14,7 +14,7 @@ type ComponentListeners<T> = {
 interface ComponentData<T> {
   props: Record<string, any>;
   on: ComponentListeners<T>;
-  directives: any[]
+  directives: any[];
 }
 export declare const ${renderHelperName}: {
   <T>(Component: (new (...args: any[]) => T), fn: (this: T) => any): any;
