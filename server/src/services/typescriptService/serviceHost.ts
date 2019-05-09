@@ -33,7 +33,8 @@ function getDefaultCompilerOptions(tsModule: T_TypeScript) {
     moduleResolution: tsModule.ModuleResolutionKind.NodeJs,
     module: tsModule.ModuleKind.CommonJS,
     jsx: tsModule.JsxEmit.Preserve,
-    allowSyntheticDefaultImports: true
+    allowSyntheticDefaultImports: true,
+    experimentalDecorators: true
   };
 
   return defaultCompilerOptions;
