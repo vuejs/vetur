@@ -4,7 +4,7 @@
   "description": "This is a fork of vuejs/vetur",
   "author": "Nick <nickey91.lean@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "publisher": "nickeylean",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
