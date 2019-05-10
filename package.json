@@ -1,11 +1,11 @@
 {
-  "name": "vetur",
-  "displayName": "Vetur",
-  "description": "Vue tooling for VS Code",
-  "author": "Pine Wu <octref@gmail.com>",
+  "name": "veturing",
+  "displayName": "Veturing",
+  "description": "This is a fork of vuejs/vetur",
+  "author": "Nick <nickey91.lean@gmail.com>",
   "icon": "asset/vue.png",
   "version": "0.20.0",
-  "publisher": "octref",
+  "publisher": "nickeylean",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "tsc -b .",
