@@ -34,8 +34,8 @@ export async function testCompletion(
         return;
       }
 
-      assert.ok(match.label, ei.label);
-      assert.ok(match.kind, ei.kind as any);
+      assert.equal(match.label, ei.label);
+      assert.equal(match.kind, ei.kind);
 
       if (ei.documentation) {
         if (typeof match.documentation === 'string') {
@@ -56,6 +56,10 @@ export async function testCompletion(
         } else {
           assert.ok((match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart));
         }
+      }
+
+      if (ei.detail) {
+        assert.equal(match.detail, ei.detail);
       }
     }
   });
