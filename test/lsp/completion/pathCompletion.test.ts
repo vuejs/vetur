@@ -3,7 +3,7 @@ import { position, getDocUri } from '../util';
 import { testCompletion } from './helper';
 import { CompletionItemKind } from 'vscode';
 
-describe('Should do path-completion for import', () => {
+describe('Should do path completion for import', () => {
   const scriptDocUri = getDocUri('client/completion/script/PathCompletion.vue');
 
   before('activate', async () => {

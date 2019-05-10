@@ -1,7 +1,7 @@
 import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
 import { position, getDocUri } from '../util';
 import { testCompletion, testNoSuchCompletion } from './helper';
-import { CompletionItem, CompletionItemKind } from 'vscode-languageserver-types';
+import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
 
 describe('Should autocomplete interpolation for <template>', () => {
   const templateDocUri = getDocUri('completion/Basic.vue');
@@ -21,53 +21,42 @@ describe('Should autocomplete interpolation for <template>', () => {
   const defaultList: CompletionItem[] = [
     {
       label: 'foo',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My foo' +
-          wrapWithJSCodeRegion(
-            `foo: {
+      documentation: new MarkdownString('My foo').appendCodeblock(
+        `foo: {
   type: Boolean,
   default: false
-}`
-          )
-      },
+}`,
+        'javascript'
+      ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'msg',
-      documentation: {
-        kind: 'markdown',
-        value: 'My msg' + wrapWithJSCodeRegion(`msg: 'Vetur means "Winter" in icelandic.'`)
-      },
+      documentation: new MarkdownString('My msg').appendCodeblock(
+        `msg: 'Vetur means "Winter" in icelandic.'`,
+        'javascript'
+      ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'count',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My count' +
-          wrapWithJSCodeRegion(
-            `count () {
+      documentation: new MarkdownString('My count').appendCodeblock(
+        `count () {
   return this.$store.state.count
-}`
-          )
-      },
+}`,
+        'javascript'
+      ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'hello',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My greeting' +
-          wrapWithJSCodeRegion(
-            `hello () {
+      documentation: new MarkdownString('My greeting').appendCodeblock(
+        `hello () {
   console.log(this.msg)
-}`
-          )
-      },
+}`,
+        'javascript'
+      ),
+
       kind: CompletionItemKind.Method
     }
   ];

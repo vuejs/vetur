@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { showFile } from '../helper';
-import { CompletionItem, MarkupContent } from 'vscode-languageserver-types';
+import { CompletionItem, MarkdownString } from 'vscode';
 
 export interface ExpectedCompletionItem extends CompletionItem {
   documentationStart?: string;
@@ -41,10 +41,10 @@ export async function testCompletion(
         if (typeof match.documentation === 'string') {
           assert.equal(normalizeNewline(match.documentation), normalizeNewline(ei.documentation as string));
         } else {
-          if (ei.documentation && (ei.documentation as MarkupContent).value && match.documentation) {
+          if (ei.documentation && (ei.documentation as MarkdownString).value && match.documentation) {
             assert.equal(
               normalizeNewline((match.documentation as vscode.MarkdownString).value),
-              normalizeNewline((ei.documentation as MarkupContent).value)
+              normalizeNewline((ei.documentation as MarkdownString).value)
             );
           }
         }
