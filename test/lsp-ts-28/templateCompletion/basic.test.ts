@@ -4,8 +4,8 @@ import { testCompletion, testNoSuchCompletion } from '../completion/helper';
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
 
 describe('Should autocomplete interpolation for <template>', () => {
-  const templateDocUri = getDocUri('completion/Basic.vue');
-  const parentTemplateDocUri = getDocUri('completion/Parent.vue');
+  const templateDocUri = getDocUri('client/templateCompletion/Basic.vue');
+  const parentTemplateDocUri = getDocUri('client/templateCompletion/Parent.vue');
 
   before('activate', async () => {
     await activateLS();
@@ -13,10 +13,6 @@ describe('Should autocomplete interpolation for <template>', () => {
     await sleep(FILE_LOAD_SLEEP_TIME);
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
-
-  function wrapWithJSCodeRegion(src: string) {
-    return '\n```js\n' + src + '\n```\n';
-  }
 
   const defaultList: CompletionItem[] = [
     {
@@ -26,16 +22,13 @@ describe('Should autocomplete interpolation for <template>', () => {
   type: Boolean,
   default: false
 }`,
-        'javascript'
+        'js'
       ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'msg',
-      documentation: new MarkdownString('My msg').appendCodeblock(
-        `msg: 'Vetur means "Winter" in icelandic.'`,
-        'javascript'
-      ),
+      documentation: new MarkdownString('My msg').appendCodeblock(`msg: 'Vetur means "Winter" in icelandic.'`, 'js'),
       kind: CompletionItemKind.Property
     },
     {
@@ -44,7 +37,7 @@ describe('Should autocomplete interpolation for <template>', () => {
         `count () {
   return this.$store.state.count
 }`,
-        'javascript'
+        'js'
       ),
       kind: CompletionItemKind.Property
     },
@@ -54,7 +47,7 @@ describe('Should autocomplete interpolation for <template>', () => {
         `hello () {
   console.log(this.msg)
 }`,
-        'javascript'
+        'js'
       ),
 
       kind: CompletionItemKind.Method
@@ -79,14 +72,13 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
-          documentation:
-            'My foo' +
-            wrapWithJSCodeRegion(
-              `foo: {
+          documentation: new MarkdownString('My foo').appendCodeblock(
+            `foo: {
   type: Boolean,
   default: false
-}`
-            )
+}`,
+            'js'
+          )
         }
       ]);
     });
