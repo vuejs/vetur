@@ -14,10 +14,6 @@ describe('Should autocomplete interpolation for <template>', () => {
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
-  function wrapWithJSCodeRegion(src: string) {
-    return '\n```js\n' + src + '\n```\n';
-  }
-
   const defaultList: CompletionItem[] = [
     {
       label: 'foo',
@@ -76,14 +72,13 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
-          documentation:
-            'My foo' +
-            wrapWithJSCodeRegion(
-              `foo: {
+          documentation: new MarkdownString('My foo').appendCodeblock(
+            `foo: {
   type: Boolean,
   default: false
-}`
-            )
+}`,
+            'js'
+          )
         }
       ]);
     });
