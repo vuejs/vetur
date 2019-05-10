@@ -44,7 +44,7 @@ import { IServiceHost } from '../../services/typescriptService/serviceHost';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
-const NON_SCRIPT_TRIGGERS = ['<', '/', '*', ':'];
+const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
@@ -156,10 +156,12 @@ export async function getJavascriptMode(
         isIncomplete: false,
         items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
+          const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
           return {
             uri: doc.uri,
             position,
-            label: entry.name,
+            label,
+            detail,
             sortText: entry.sortText + index,
             kind: convertKind(entry.kind),
             textEdit: range && TextEdit.replace(range, entry.name),
@@ -173,6 +175,30 @@ export async function getJavascriptMode(
           };
         })
       };
+
+      function calculateLabelAndDetailTextForPathImport(entry: ts.CompletionEntry) {
+        // Is import path completion
+        if (entry.kind === ts.ScriptElementKind.scriptElement) {
+          if (entry.kindModifiers) {
+            return {
+              label: entry.name,
+              detail: entry.name + entry.kindModifiers
+            };
+          } else {
+            if (entry.name.endsWith('.vue')) {
+              return {
+                label: entry.name.slice(0, -'.vue'.length),
+                detail: entry.name
+              };
+            }
+          }
+        }
+
+        return {
+          label: entry.name,
+          detail: undefined
+        };
+      }
     },
     doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
       const { service } = updateCurrentVueTextDocument(doc);
@@ -193,7 +219,7 @@ export async function getJavascriptMode(
           includeCompletionsWithInsertText: true
         }
       );
-      if (details) {
+      if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
         item.detail = tsModule.displayPartsToString(details.displayParts);
         const documentation: MarkupContent = {
           kind: 'markdown',
@@ -641,6 +667,10 @@ function convertKind(kind: ts.ScriptElementKind): CompletionItemKind {
       return CompletionItemKind.Interface;
     case 'warning':
       return CompletionItemKind.File;
+    case 'script':
+      return CompletionItemKind.File;
+    case 'directory':
+      return CompletionItemKind.Folder;
   }
 
   return CompletionItemKind.Property;

@@ -231,7 +231,16 @@ export function getServiceHost(
       directoryExists: vueSys.directoryExists,
       fileExists: vueSys.fileExists,
       readFile: vueSys.readFile,
-      readDirectory: vueSys.readDirectory,
+      readDirectory(
+        path: string,
+        extensions?: ReadonlyArray<string>,
+        exclude?: ReadonlyArray<string>,
+        include?: ReadonlyArray<string>,
+        depth?: number
+      ): string[] {
+        const allExtensions = extensions ? extensions.concat(['.vue']) : extensions;
+        return vueSys.readDirectory(path, allExtensions, exclude, include, depth);
+      },
 
       resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
         // in the normal case, delegate to ts.resolveModuleName
