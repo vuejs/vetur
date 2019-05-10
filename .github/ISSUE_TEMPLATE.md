@@ -2,6 +2,11 @@
 - [ ] I have read through [docs](https://vuejs.github.io/vetur)
 - [ ] I have read [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
 
+<!--
+  If you are reporting a performance issue, read:
+  https://github.com/vuejs/vetur/blob/master/.github/PERF_ISSUE.md
+-->
+
 ## Info
 
 - Platform: <!-- Win/macOS/Linux -->

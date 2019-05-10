@@ -2,11 +2,7 @@ import { TextDocument, Position, Hover, Range } from 'vscode-languageserver-type
 
 import { buildAst, findNodeAtPosition } from './parser';
 
-// import {
-//   inspect
-// } from 'util'
-
-import * as cssSchema from './css-schema';
+import { cssData } from './css-browser-data';
 import * as _ from 'lodash';
 
 export function stylusHover(document: TextDocument, position: Position): Hover {
@@ -25,12 +21,12 @@ export function stylusHover(document: TextDocument, position: Position): Hover {
 
   if (node.__type === 'Property') {
     const property = node.segments[0].name;
-    const properties = cssSchema.data.css.properties;
+    const properties = cssData.properties;
     const item = _.find(properties, item => item.name === property);
     const lineno = node.lineno - 1;
     const column = node.column;
     return {
-      contents: (item && item.desc) || 'unknown property',
+      contents: (item && item.description) || 'unknown property',
       range: Range.create(lineno, column, lineno, column + properties.length)
     };
   }

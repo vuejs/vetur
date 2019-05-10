@@ -1,0 +1,57 @@
+{
+  "name": "veturpack",
+  "version": "0.1.0",
+  "description": "Vuepack adapted for Vetur.",
+  "main": "client/index.js",
+  "scripts": {
+    "build": "webpack --config build/webpack.prod.js",
+    "dev": "node build/server.js",
+    "lint": "xo **/client/**/*.{vue,js} !node_modules/**"
+  },
+  "author": "Pine Wu <octref@gmail.com>",
+  "license": "MIT",
+  "xo": {
+    "extends": "./.eslintrc",
+    "esnext": true,
+    "envs": [
+      "browser"
+    ]
+  },
+  "babel": {
+    "presets": [
+      [
+        "vue-app",
+        {
+          "useBuiltIns": true
+        }
+      ]
+    ]
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {},
+      "postcss-nested": {}
+    }
+  },
+  "browserslist": [
+    "last 2 versions",
+    "ie > 8"
+  ],
+  "dependencies": {
+    "element-ui": "^2.4.5",
+    "lodash": "^4.17.4",
+    "quasar": "^1.0.0-beta.0",
+    "vue": "^2.5.3",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.77",
+    "eslint": "^4.18.2",
+    "eslint-plugin-vue": "^4.3.0",
+    "prettier": "^1.7.4",
+    "prettier-eslint-cli": "^4.4.0",
+    "typescript": "2.8",
+    "vue-template-compiler": "^2.5.3"
+  }
+}

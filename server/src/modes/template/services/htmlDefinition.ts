@@ -19,7 +19,7 @@ export function findDefinition(
   }
 
   function getTagDefinition(tag: string, range: Range, open: boolean): Definition {
-    tag = tag.toLowerCase(); 
+    tag = tag.toLowerCase();
 
     if (vueFileInfo && vueFileInfo.componentInfo.childComponents) {
       for (const cc of vueFileInfo.componentInfo.childComponents) {

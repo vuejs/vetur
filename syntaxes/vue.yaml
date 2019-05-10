@@ -13,15 +13,19 @@ patterns:
 
   # template - single line
   # <template src="index.html" />
-  - begin: (<)(template)\b(?=[^/>]*/>\s*$)
+  - begin: (<)(?=template.*[^/>]*/>\s*$)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
-      '2': { name: entity.name.tag.template.html }
     end: (/>)
     endCaptures:
       '1': { name: punctuation.definition.tag.end.html }
     patterns:
-      - include: '#tag-stuff'
+      - begin: (template)
+        beginCaptures:
+          '1': { name: entity.name.tag.template.html }
+        end: (?=/>)
+        patterns:
+          - include: '#tag-stuff'
 
   # template - single line
   # <template src="index.html"></template>
@@ -53,13 +57,13 @@ patterns:
       '3': { name: punctuation.definition.tag.end.html }
     patterns:
       - include: '#tag-stuff'
-      - contentName: text.pug.vue-pug
+      - contentName: text.pug
         begin: (>)
         beginCaptures:
           '1': { name: punctuation.definition.tag.end.html }
         end: (?=</template>)
         patterns:
-          - include: text.pug.vue-pug
+          - include: text.pug
 
   # haml
   - begin: (<)(template)\b(?=[^>]*lang=('haml'|"haml"))(?![^/>]*/>\s*$)
@@ -100,6 +104,26 @@ patterns:
         end: (?=</template>)
         patterns:
           - include: text.jade.slm
+
+  # liquid
+  - begin: (<)(template)\b(?=[^>]*lang=('liquid'|"liquid"))(?![^/>]*/>\s*$)
+    beginCaptures:
+      '1': { name: punctuation.definition.tag.begin.html }
+      '2': { name: entity.name.tag.template.html }
+    end: (</)(template)(>)
+    endCaptures:
+      '1': { name: punctuation.definition.tag.begin.html }
+      '2': { name: entity.name.tag.template.html }
+      '3': { name: punctuation.definition.tag.end.html }
+    patterns:
+      - include: '#tag-stuff'
+      - contentName: text.html.liquid
+        begin: (>)
+        beginCaptures:
+          '1': { name: punctuation.definition.tag.end.html }
+        end: (?=</template>)
+        patterns:
+          - include: text.html.liquid
 
   # html
   - begin: (<)(template)(?![^/>]*/>\s*$)
@@ -434,8 +458,8 @@ repository:
       - include: '#string-single-quoted'
   vue-directives:
     name: meta.directive.vue
-    begin: (?:\b(v-)|(:|@))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
-    end: (?<='|"|`)
+    begin: (?:\b(v-)|(:|@|#))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
+    end: (?<='|")|(?=[\s<>`])
     captures:
       '1': { name: entity.other.attribute-name.html }
       '2': { name: punctuation.separator.key-value.html }
@@ -452,7 +476,7 @@ repository:
         endCaptures:
           '0': { name: punctuation.definition.string.end.html }
         patterns:
-          - include: source.js
+          - include: source.js#expression
       - name: source.directive.vue
         begin: '"'
         beginCaptures:
@@ -461,7 +485,7 @@ repository:
         endCaptures:
           '0': { name: punctuation.definition.string.end.html }
         patterns:
-          - include: source.js
+          - include: source.js#expression
       - name: source.directive.vue
         begin: "'"
         beginCaptures:
@@ -470,10 +494,10 @@ repository:
         endCaptures:
           '0': { name: punctuation.definition.string.end.html }
         patterns:
-          - include: source.js
+          - include: source.js#expression
   vue-interpolations:
     patterns:
-      - name: expression.embbeded.vue
+      - name: expression.embedded.vue
         begin: \{\{\{?
         beginCaptures:
           '0': { name: punctuation.definition.generic.begin.html }
@@ -481,4 +505,4 @@ repository:
         endCaptures:
           '0': { name: punctuation.definition.generic.end.html }
         patterns:
-          - include: source.js
+          - include: source.js#expression

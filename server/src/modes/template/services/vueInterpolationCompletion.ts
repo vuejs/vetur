@@ -1,30 +1,7 @@
 import { CompletionList, CompletionItemKind } from 'vscode-languageserver';
 import { VueFileInfo } from '../../../services/vueInfoService';
 
-/**
- * Naive approach
- * Switch to use vue-eslint-parser to parse expression and walk AST instead
- */
-export function shouldDoInterpolationComplete(text: string, relativeOffset: number) {
-  const segments = text.split(' ');
-  let offset = 0;
-  for (const s of segments) {
-    if (relativeOffset > offset && relativeOffset <= offset + s.length) {
-      if (!s.includes('.')) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    offset += s.length;
-    offset += 1; // For the space
-  }
-
-  return true;
-}
-
 export function doVueInterpolationComplete(vueFileInfo: VueFileInfo): CompletionList {
-
   const result: CompletionList = {
     isIncomplete: false,
     items: []

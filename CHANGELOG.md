@@ -1,5 +1,99 @@
 # Changelog
 
+### 0.20.0 | 2019-05-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.20.0/vspackage)
+
+- Improve file system access to reduce memory / cpu usage. #1277.
+- 🙌 Support arrow function in interpolation, such as `@click="() => { foo + 1 }"`. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1267.
+
+### 0.19.5 | 2019-05-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.5/vspackage)
+
+- 🙌 Re-add Quasar (pre v1) support. Thanks to PR from [@rstoenescu](https://github.com/rstoenescu) #1273.
+
+### 0.19.4 | 2019-05-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.4/vspackage)
+
+- Fix a regex performance issue. Thanks to help from [petternordholm](https://github.com/petternordholm). #1264.
+- Add some logging for diagnosing performance issue, and a setting `vls.dev.logLevel`. #922.
+- Fix Windows path handling issue that causes diagnostics in template region not mapped correctly. #1235. Thanks to help from [trixnz](https://github.com/trixnz).
+
+### 0.19.3 | 2019-04-30 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.3/vspackage)
+
+- 🙌 Various improvements to template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing fixes.
+  - Support for `<script src="...">` in SFC for defining component. #1254 and #1255.
+  - Support for `v-if` type narrowing. #1204 and #1208.
+  - Support for `v-slot` and `slot-scope` (for Vue < 2.5). #1203 and #1255.
+- 🙌 Upgrade gridsome-helper-json definition for better gridsome support. Thanks to [tyankatsu](https://github.com/tyankatsu0105). #1258.
+- Liquid template syntax highlighting support for `<template lang="liquid">`. #1259 and #1081.
+- New config `vetur.dev.vlsPort` to allow debugging/profiling Vue Language Server. #1180.
+- [Performance issue reporting guideline](https://github.com/vuejs/vetur/blob/master/.github/PERF_ISSUE.md). #1180.
+
+### 0.19.2 | 2019-04-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.2/vspackage)
+
+- 🙌 Various bug fixes for template interpolation. Thanks to [@ktsn](https://github.com/ktsn) for providing fixes.
+  - Bug for transformating string templates inside template interpolations. #1230.
+  - Error showing private/protected members not accessible from template. #1224.
+  - Ignore filters in template transformation. #1206.
+- Fix double color indicator in document with multiple `<style>` blocks. #1219.
+- Disables `vetur.experimental.templateInterpolationService` by default. You need to enable Diagnostics / Hover / jump to definition / find references for template manually. #1246.
+
+### 0.19.1 | 2019-04-24 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.1/vspackage)
+
+- Fix a server crash on failed attribute transformation for any attribute with dash such as `:prop-test`. #1220 and #1222.
+- Fix a server crash on failed v-on transformation such as `@click="() => foo = 123"`. #1227 and #1228.
+- Server now will gracefully fallback in cases of failed transformations.
+- Add a command `Vetur: Show corresponding virtual file and sourcemap" to help diagnose template interpolation related issues. #1233.
+
+### 0.19.0 | 2019-04-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.19.0/vspackage)
+
+- Hover / jump to definition / find references for template interpolations. #1215.
+- 🙌 Diagnostics / type-checking for template interpolations. #209. #681. Thanks to amazing contribution from [Katashin](https://github.com/ktsn)! More details in [Vue Template Interpolation Language Features](#vue-template-interpolation-language-features)
+- Fix pug comment togglign bug. #1199.
+- Fix a grammar bug for `#` slot syntax. #1192.
+- 🙌 Fix a crash when VLS initialization option is not passed. #1188. Thanks to contribution from [Louis Bourque](https://github.com/louisbourque).
+
+#### Vue Template Interpolation Language Features
+
+- Documentation: https://vuejs.github.io/vetur/interpolation.html
+- Blog Post: http://blog.matsu.io/generic-vue-template-interpolation-language-features
+
+### 0.18.1 | 2019-04-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.1/vspackage)
+
+- Improve embedded language support to fix second style block having no auto completion bug. #430 and #852.
+- Fix a Stylus formatting bug where it wrongly formats multiple Stylus blocks. #499.
+- 🙌 Fix a bug where Vetur doesn't clear document for diagnostics. Thanks to contribution from [James Lave](https://github.com/jlave-dev). #1181 and #1147.
+
+### 0.18.0 | 2019-04-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.18.0/vspackage)
+
+- Vetur now bundles TypeScript 3.3.4000. This fixes many TS/JS related issues. See more in #1163.
+- Vetur falls back to using bundled TS if workspace TS is not found. #1164.
+- 🙌 Syntax highlighting for `#` shorthand for `v-slot`. Thanks to contribution from [Patrick](https://github.com/Patcher56). #1108.
+- Greyed-out unused varibles in `*.vue` files. (For plain `<script>`, you need to set `checkJs: true` in `jsconfig.json`) #1063.
+- 🙌 Code actions (autofixes, refactors) are now available in `*.vue` files. Thanks to contribution from [Daniel Rosenwasser](https://github.com/DanielRosenwasser). #907.
+- Auto import now works for variables / methods exported from `JS/TS` files. #1170.
+
+### 0.17.1 | 2019-03-25 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.17.1/vspackage)
+
+- `vetur.format.enable` option and dynamic formatter registration so Vetur works better with other Vue document formatters. #1121.
+
+### 0.17.0 | 2019-03-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.17.0/vspackage)
+
+- Allow using workspace TS version. See below for details. #682.
+- Switch PostCSS grammar to base on [hudochenkov/Syntax-highlighting-for-PostCSS](https://github.com/hudochenkov/Syntax-highlighting-for-PostCSS). #1115.
+- Fix a bug where Vetur does not update language features for newly created files. #1091.
+- Use `text.jade.slm` instead of `text.pug.slm` for proper SLM syntax highlighting. #1134.
+- Fix a bug where Vetur fails to resolve links in `<script src="">` correctly. #991 and #1150.
+- Add Gridsome support. Thanks to contribution from [@tyankatsu0105](https://github.com/tyankatsu0105). #1101.
+
+#### Using Workspace TypeScript version
+
+Vetur depends on TypeScript's Language Server for its JavaScript/TypeScript capabilities. Previously Vetur bundles TS 2.8.4,
+but now Vetur can run on any TypeScript > 2.8 from workspace `node_modules/typescript`. Use `vetur.useWorkspaceDependencies`
+to enable this behavior.
+
+Note that `vetur.useWorkspaceDependencies` can only be configured in user settings (no workspace setting) and defaults to `false`
+because Vetur should not run 3rd party code without user's explicit approval.
+
+Currently this setting does not affect `prettier` and other formatters, where workspace dependencies is preferred, but this will change in the future.
+
 ### 0.16.2 | 2019-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.16.2/vspackage)
 
 - Prettier as an option for `vetur.format.defaultFormatter.html`. #950.

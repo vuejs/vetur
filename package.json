@@ -4,18 +4,21 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.16.2",
+  "version": "0.20.0",
   "publisher": "octref",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "tsc -b .",
     "watch": "tsc -b -w .",
-    "lint": "tslint -p tslint.json",
+    "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
     "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
-    "test": "run-s lint compile test:server test:e2e",
+    "test:grammar": "node ./dist/test/codeTestRunner.js grammar",
+    "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
+    "test:int": "node ./dist/test/codeTestRunner.js interpolation",
+    "test": "run-s compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "prepare-publish": "yarn compile -f && ./build/release-cleanup.sh"
   },
   "husky": {
     "hooks": {
@@ -47,11 +50,11 @@
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.26.0"
+    "vscode": "^1.32.0"
   },
   "dependencies": {
-    "vscode-languageclient": "^5.0.1",
-    "vscode-languageserver-types": "^3.14.0"
+    "vscode-languageclient": "^5.3.0-next.3",
+    "vscode-languageserver-types": "^3.15.0-next.1"
   },
   "activationEvents": [
     "onLanguage:vue"
@@ -62,6 +65,10 @@
       {
         "command": "vetur.generateGrammar",
         "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
+      },
+      {
+        "command": "vetur.showCorrespondingVirtualFile",
+        "title": "Vetur: Show corresponding virtual file and sourcemap"
       }
     ],
     "breakpoints": [
@@ -89,19 +96,13 @@
         "configuration": "./languages/vue-html-language-configuration.json"
       },
       {
-        "id": "vue-pug",
+        "id": "vue-postcss",
         "aliases": [
-          "Vue-pug"
+          "Vue-PostCSS",
+          "Vue-POSTCSS",
+          "vue-postcss"
         ],
-        "configuration": "./languages/vue-pug-language-configuration.json"
-      },
-      {
-        "id": "postcss",
-        "aliases": [
-          "PostCSS",
-          "POSTCSS"
-        ],
-        "configuration": "./languages/postcss-language-configuration.json"
+        "configuration": "./languages/vue-postcss-language-configuration.json"
       }
     ],
     "grammars": [
@@ -112,14 +113,14 @@
         "embeddedLanguages": {
           "text.html.basic": "html",
           "text.html.vue-html": "vue-html",
-          "text.pug": "jade",
-          "text.pug.vue-pug": "vue-pug",
           "text.jade.slm": "slm",
+          "text.pug": "jade",
           "text.haml": "haml",
+          "text.html.liquid": "liquid",
           "source.css": "css",
           "source.css.scss": "scss",
           "source.css.less": "less",
-          "source.css.postcss": "postcss",
+          "source.css.postcss": "vue-postcss",
           "source.sass": "sass",
           "source.stylus": "stylus",
           "source.js": "javascript",
@@ -133,9 +134,9 @@
         }
       },
       {
-        "language": "postcss",
+        "language": "vue-postcss",
         "scopeName": "source.css.postcss",
-        "path": "./syntaxes/postcss.json"
+        "path": "./syntaxes/vue-postcss.json"
       },
       {
         "language": "vue-html",
@@ -146,17 +147,29 @@
         }
       },
       {
-        "language": "vue-pug",
-        "scopeName": "text.pug.vue-pug",
-        "path": "./syntaxes/vue-pug.tmLanguage.json",
-        "embeddedLanguages": {
-          "source.js": "javascript"
-        }
+        "path": "./syntaxes/pug/directives.tmLanguage.json",
+        "scopeName": "vue.pug.directives",
+        "injectTo": [
+          "source.vue"
+        ]
+      },
+      {
+        "path": "./syntaxes/pug/interpolations.tmLanguage.json",
+        "scopeName": "vue.pug.interpolations",
+        "injectTo": [
+          "source.vue"
+        ]
       }
     ],
     "configuration": {
       "title": "Vetur",
       "properties": {
+        "vetur.useWorkspaceDependencies": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use dependencies from workspace. Currently only for TypeScript.",
+          "scope": "application"
+        },
         "vetur.completion.autoImport": {
           "type": "boolean",
           "default": true,
@@ -202,6 +215,11 @@
           "type": "boolean",
           "default": true,
           "description": "Validate js/ts in <script>"
+        },
+        "vetur.format.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable the Vetur document formatter."
         },
         "vetur.format.options.tabSize": {
           "type": "number",
@@ -402,6 +420,29 @@
         "vetur.dev.vlsPath": {
           "type": "string",
           "description": "Path to VLS for Vetur developers. There are two ways of using it. \n\n1. Clone vuejs/vetur from GitHub, build it and point it to the ABSOLUTE path of `/server`.\n2. `yarn global add vue-language-server` and point Vetur to the installed location (`yarn global dir` + node_modules/vue-language-server)"
+        },
+        "vetur.dev.vlsPort": {
+          "type": "number",
+          "description": "The port that VLS listens to. Can be used for attaching to the VLS Node process for debugging / profiling.",
+          "default": -1
+        },
+        "vetur.dev.logLevel": {
+          "type": "string",
+          "description": "Log level for VLS",
+          "default": "INFO",
+          "enum": [
+            "INFO",
+            "DEBUG"
+          ],
+          "enumDescriptions": [
+            "Only log info messages. This is the default.",
+            "Log info and debug messages."
+          ]
+        },
+        "vetur.experimental.templateInterpolationService": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable template interpolation service that offers diagnostics / hover / definition / references."
         }
       }
     }
@@ -413,16 +454,17 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.11.0",
     "@types/shelljs": "^0.8.3",
+    "@types/vscode": "^1.32.0",
     "glob": "^7.1.3",
     "husky": "^1.0.0-rc.15",
     "js-yaml": "^3.12.1",
     "lint-staged": "^7.3.0",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^1.16.4",
+    "prettier": "^1.17.0",
     "shelljs": "^0.8.3",
-    "tslint": "^5.8.0",
+    "tslint": "^5.16.0",
     "typescript": "^3.3.3333",
-    "vscode": "^1.1.29"
+    "vscode": "1.1.29"
   }
 }

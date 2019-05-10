@@ -24,7 +24,7 @@ async function assertUnchangedTokens(testFixurePath: string, done: (err?: Error)
         try {
           deepEqual(data, previousData);
         } catch (e) {
-          if (Array.isArray(data) && Array.isArray(previousData) && data.length === previousData.length) {
+          if (Array.isArray(data) && Array.isArray(previousData)) {
             for (let i = 0; i < data.length; i++) {
               const d = data[i];
               const p = previousData[i];
@@ -32,6 +32,10 @@ async function assertUnchangedTokens(testFixurePath: string, done: (err?: Error)
                 throw new Error(`Syntax difference in file ${fileName}: ${d.c} does not equal ${p.c}
                   at ${(e as AssertionError).message}`);
               }
+            }
+
+            if (data.length !== previousData.length) {
+              throw new Error(`Unequal token length at file ${fileName}`);
             }
             // different but no tokenization or color change: no failure
           } else {
@@ -68,6 +72,7 @@ describe('colorization', () => {
     fixturesFiles.forEach(fixturesFile => {
       // define a test for each fixture
       it('should colorize ' + fixturesFile + ' right', function(done) {
+        // tslint:disable-next-line
         assertUnchangedTokens(join(extensionColorizeFixturePath, fixturesFile), done);
       });
     });

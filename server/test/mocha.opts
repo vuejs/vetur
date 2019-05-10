@@ -2,7 +2,4 @@
 --useColors true
 --require source-map-support/register
 --exit
-./dist/modes/template/test
-./dist/modes/style/stylus/test
-./dist/modes/test/
-./dist/modes/script/
+./dist/**/*.test.js

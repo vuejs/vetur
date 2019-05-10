@@ -21,20 +21,24 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
   return new Promise((resolve, reject) => {
     const testWorkspace = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'fixture');
     const extTestPath = path.resolve(EXT_ROOT, 'dist', testWorkspaceRelativePath);
+    const userDataDir = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'data-dir');
 
     const args = [
       testWorkspace,
       '--extensionDevelopmentPath=' + EXT_ROOT,
       '--extensionTestsPath=' + extTestPath,
-      '--locale=en'
+      '--locale=en',
+      '--disable-extensions'
     ];
-
-    if (process.env.CODE_DISABLE_EXTENSIONS) {
-      args.push('--disable-extensions');
+    if (fs.existsSync(userDataDir)) {
+      args.push(`--user-data-dir=${userDataDir}`);
     }
 
     console.log(`Test folder: ${path.join('dist', testWorkspaceRelativePath)}`);
     console.log(`Workspace:   ${testWorkspaceRelativePath}`);
+    if (fs.existsSync(userDataDir)) {
+      console.log(`Data dir:    ${userDataDir}`);
+    }
 
     const cmd = cp.spawn(executable, args);
 
@@ -42,6 +46,13 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
       const s = data.toString();
       if (!s.includes('update#setState idle')) {
         console.log(s);
+      }
+    });
+
+    cmd.stderr.on('data', function(data) {
+      const s = data.toString();
+      if (!s.includes('stty: stdin')) {
+        console.log(`Spawn Error: ${data.toString()}`);
       }
     });
 
@@ -65,13 +76,24 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
 async function runAllTests() {
   const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
 
-  for (const dir of testDirs) {
+  const targetDir = process.argv[2];
+  if (targetDir && testDirs.indexOf(targetDir) !== -1) {
     try {
-      installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${dir}/fixture`)));
-      await runTests(`test/${dir}`);
+      installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${targetDir}/fixture`)));
+      await runTests(`test/${targetDir}`);
     } catch (err) {
       console.error(err);
       process.exit(1);
+    }
+  } else {
+    for (const dir of testDirs) {
+      try {
+        installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${dir}/fixture`)));
+        await runTests(`test/${dir}`);
+      } catch (err) {
+        console.error(err);
+        process.exit(1);
+      }
     }
   }
 }
@@ -93,4 +115,8 @@ async function go() {
   await runAllTests();
 }
 
-go();
+go()
+  .then(() => {
+    console.log('All done');
+  })
+  .catch(err => {});

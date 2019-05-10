@@ -17,13 +17,10 @@
       }
     },
     {
-      "begin": "(<)(template)\\b(?=[^/>]*/>\\s*$)",
+      "begin": "(<)(?=template.*[^/>]*/>\\s*$)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
-        },
-        "2": {
-          "name": "entity.name.tag.template.html"
         }
       },
       "end": "(/>)",
@@ -34,7 +31,18 @@
       },
       "patterns": [
         {
-          "include": "#tag-stuff"
+          "begin": "(template)",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.tag.template.html"
+            }
+          },
+          "end": "(?=/>)",
+          "patterns": [
+            {
+              "include": "#tag-stuff"
+            }
+          ]
         }
       ]
     },
@@ -102,7 +110,7 @@
           "include": "#tag-stuff"
         },
         {
-          "contentName": "text.pug.vue-pug",
+          "contentName": "text.pug",
           "begin": "(>)",
           "beginCaptures": {
             "1": {
@@ -112,7 +120,7 @@
           "end": "(?=</template>)",
           "patterns": [
             {
-              "include": "text.pug.vue-pug"
+              "include": "text.pug"
             }
           ]
         }
@@ -199,6 +207,49 @@
           "patterns": [
             {
               "include": "text.jade.slm"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(<)(template)\\b(?=[^>]*lang=('liquid'|\"liquid\"))(?![^/>]*/>\\s*$)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
+        }
+      },
+      "end": "(</)(template)(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.end.html"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#tag-stuff"
+        },
+        {
+          "contentName": "text.html.liquid",
+          "begin": "(>)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          },
+          "end": "(?=</template>)",
+          "patterns": [
+            {
+              "include": "text.html.liquid"
             }
           ]
         }
@@ -908,8 +959,8 @@
     },
     "vue-directives": {
       "name": "meta.directive.vue",
-      "begin": "(?:\\b(v-)|(:|@))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)",
-      "end": "(?<='|\"|`)",
+      "begin": "(?:\\b(v-)|(:|@|#))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)",
+      "end": "(?<='|\")|(?=[\\s<>`])",
       "captures": {
         "1": {
           "name": "entity.other.attribute-name.html"
@@ -947,7 +998,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         },
@@ -967,7 +1018,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         },
@@ -987,7 +1038,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         }
@@ -996,7 +1047,7 @@
     "vue-interpolations": {
       "patterns": [
         {
-          "name": "expression.embbeded.vue",
+          "name": "expression.embedded.vue",
           "begin": "\\{\\{\\{?",
           "beginCaptures": {
             "0": {
@@ -1011,7 +1062,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "source.js#expression"
             }
           ]
         }

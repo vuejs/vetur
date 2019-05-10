@@ -24,8 +24,15 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
     serverPath = vlsModulePath;
   }
 
+  const runExecArgv: string[] = [];
+  const vlsPort = config.get('vetur.dev.vlsPort');
+  if (vlsPort !== -1) {
+    runExecArgv.push(`--inspect=${vlsPort}`);
+    console.log(`Will launch VLS in port: ${vlsPort}`);
+  }
+
   const serverOptions: ServerOptions = {
-    run: { module: serverPath, transport: TransportKind.ipc },
+    run: { module: serverPath, transport: TransportKind.ipc, options: { execArgv: runExecArgv } },
     debug: { module: serverPath, transport: TransportKind.ipc, options: debugOptions }
   };
 
@@ -33,7 +40,7 @@ export function initializeLanguageClient(vlsModulePath: string): LanguageClient 
     documentSelector,
     synchronize: {
       configurationSection: ['vetur', 'emmet', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy'],
-      fileEvents: vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', true, false, true)
+      fileEvents: vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', false, false, true)
     },
     initializationOptions: {
       config

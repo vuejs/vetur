@@ -1,0 +1,56 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pr:
+- master
+
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.13'
+    windows:
+      imageName: 'vs2017-win2016'
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '8.x'
+  displayName: 'Install Node.js'
+
+- bash: yarn install
+  displayName: Install Dependencies
+- bash: cd server && yarn install && cd ..
+  displayName: Install Server Dependencies
+- bash: yarn compile
+  displayName: Compile
+
+- bash: |
+    if [ $AGENT_OS == "Linux" ]; then
+      set -e
+      /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
+      disown -ar
+      echo "Started xvfb"
+    fi
+  displayName: Start xvfb
+
+- bash: yarn test:server
+  displayName: Run Server Tests
+  continueOnError: true
+  env:
+    DISPLAY: :10
+
+- bash: yarn test:e2e
+  displayName: Run E2E Tests
+  env:
+    DISPLAY: :10

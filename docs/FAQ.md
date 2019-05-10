@@ -10,7 +10,14 @@ Sometimes new releases have bugs that you want to avoid. Here's an easy way to d
 
 ## No Syntax Highlighting & No Language Features working
 
-This is probably caused by VS Code not installing Vetur properly. Try these methods:
+The two possible causes are:
+
+1. Other extensions also contribute a Vue language, and that conflicts with Vetur.
+2. VS Code didn't install Vetur properly.
+
+For 1, try disabling all other Vue related extensions.
+
+For 2, try these methods:
 
 - Run command: `Developer: Reinstall Extension` for Vetur.
 - Remove Vetur in your [extensions folder](https://code.visualstudio.com/docs/editor/extension-gallery#_common-questions) and do a clean reinstall.
@@ -80,8 +87,8 @@ Then, clone the repository and compile it.
 git clone https://github.com/vuejs/vetur
 cd vetur
 yarn 
-cd server && yarn && yarn compile 
-cd ../ && yarn compile 
+cd server && yarn && cd ..
+yarn compile
 vsce package
 ```
   

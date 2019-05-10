@@ -12,16 +12,12 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "smartStep": true,
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "server",
@@ -29,13 +25,11 @@
       "request": "attach",
       "port": 6005,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/server/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
       "protocol": "inspector",
       "restart": true,
       "smartStep": true,
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "E2E Test (LSP)",
@@ -43,17 +37,58 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}",
-        "--extensionTestsPath=${workspaceRoot}/dist/test/lsp",
-        "${workspaceRoot}/test/lsp/fixture"
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
+        "${workspaceFolder}/test/lsp/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
       "smartStep": true,
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    }
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "E2E Test (Interpolation)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/interpolation",
+        "${workspaceFolder}/test/interpolation/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Unit Test (LSP)",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": ["${workspaceFolder}/server/test"],
+      "cwd": "${workspaceFolder}/server",
+      "internalConsoleOptions": "openOnSessionStart",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"]
+    },
+    {
+      "name": "E2E Test (Grammar)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/grammar",
+        "${workspaceFolder}/test/grammar/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
   ]
 }
