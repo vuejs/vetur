@@ -1,5 +1,5 @@
-# Veturing
-<p align="center">
+# Vetur
+<p>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
     <img src="https://vsmarketplacebadge.apphb.com/version-short/octref.vetur.svg?style=flat-square">
   </a>
@@ -11,6 +11,20 @@
   </a>
   <a href="https://travis-ci.org/vuejs/vetur">
     <img src="https://img.shields.io/travis/vuejs/vetur.svg?style=flat-square">
+  </a>
+</p>
+
+# Veturing
+
+<p>
+  <a href="https://marketplace.visualstudio.com/items?itemName=nickeylean.veturing">
+    <img src="https://vsmarketplacebadge.apphb.com/version-short/nickeylean.veturing.svg?style=flat-square">
+  </a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=nickeylean.veturing">
+    <img src="https://vsmarketplacebadge.apphb.com/installs-short/nickeylean.veturing.svg?style=flat-square">
+  </a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=nickeylean.veturing">
+    <img src="https://vsmarketplacebadge.apphb.com/rating-short/nickeylean.veturing.svg?style=flat-square">
   </a>
 </p>
 
