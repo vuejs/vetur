@@ -1,5 +1,14 @@
 # Changelog
 
+### 0.21.0 | 2019-05-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.21.0/vspackage)
+
+- Path completion for `import ... from ''`. Fix #822.
+- 🙌 More accurate inferrence of `$event` types. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1287.
+- Enable `experimentalDecorator` by default in the case no jsconfig/tsconfig is found. #1289.
+- Use installed `node_modules/vue` to determine Vue version in case `vue` is added as a transitive dependency. #799.
+- Fix syntax highlighting for single line template import such as `<template src="./index.html" />`. #813.
+- Update to latest `vscode-css-languageservice` for update CSS completion properties. #1274.
+
 ### 0.20.0 | 2019-05-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.20.0/vspackage)
 
 - Improve file system access to reduce memory / cpu usage. #1277.
