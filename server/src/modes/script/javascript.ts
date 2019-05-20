@@ -113,7 +113,7 @@ export async function getJavascriptMode(
       return [...templateDiags, ...scriptDiags];
 
       function getTemplateDiagnostics(): Diagnostic[] {
-        const enabledTemplateValidation = config.vetur.experimental.templateTypeCheck;
+        const enabledTemplateValidation = config.vetur.experimental && config.vetur.experimental.templateTypeCheck;
         if (!enabledTemplateValidation) {
           return [];
         }
