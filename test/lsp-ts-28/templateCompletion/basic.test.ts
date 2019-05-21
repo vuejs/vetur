@@ -1,7 +1,7 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
 import { position, getDocUri } from '../util';
-import { testCompletion } from '../completion/helper';
-import { CompletionItem, CompletionItemKind } from 'vscode-languageclient';
+import { testCompletion, testNoSuchCompletion } from '../completion/helper';
+import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
 
 describe('Should autocomplete interpolation for <template>', () => {
   const templateDocUri = getDocUri('client/templateCompletion/Basic.vue');
@@ -11,62 +11,45 @@ describe('Should autocomplete interpolation for <template>', () => {
     await activateLS();
     await showFile(templateDocUri);
     await sleep(FILE_LOAD_SLEEP_TIME);
+    await sleep(FILE_LOAD_SLEEP_TIME);
   });
-
-  function wrapWithJSCodeRegion(src: string) {
-    return '\n```js\n' + src + '\n```\n';
-  }
 
   const defaultList: CompletionItem[] = [
     {
       label: 'foo',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My foo' +
-          wrapWithJSCodeRegion(
-            `foo: {
+      documentation: new MarkdownString('My foo').appendCodeblock(
+        `foo: {
   type: Boolean,
   default: false
-}`
-          )
-      },
+}`,
+        'js'
+      ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'msg',
-      documentation: {
-        kind: 'markdown',
-        value: 'My msg' + wrapWithJSCodeRegion(`msg: 'Vetur means "Winter" in icelandic.'`)
-      },
+      documentation: new MarkdownString('My msg').appendCodeblock(`msg: 'Vetur means "Winter" in icelandic.'`, 'js'),
       kind: CompletionItemKind.Property
     },
     {
       label: 'count',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My count' +
-          wrapWithJSCodeRegion(
-            `count () {
+      documentation: new MarkdownString('My count').appendCodeblock(
+        `count () {
   return this.$store.state.count
-}`
-          )
-      },
+}`,
+        'js'
+      ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'hello',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My greeting' +
-          wrapWithJSCodeRegion(
-            `hello () {
+      documentation: new MarkdownString('My greeting').appendCodeblock(
+        `hello () {
   console.log(this.msg)
-}`
-          )
-      },
+}`,
+        'js'
+      ),
+
       kind: CompletionItemKind.Method
     }
   ];
@@ -89,14 +72,13 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
-          documentation:
-            'My foo' +
-            wrapWithJSCodeRegion(
-              `foo: {
+          documentation: new MarkdownString('My foo').appendCodeblock(
+            `foo: {
   type: Boolean,
   default: false
-}`
-            )
+}`,
+            'js'
+          )
         }
       ]);
     });
@@ -104,11 +86,31 @@ describe('Should autocomplete interpolation for <template>', () => {
     it('completes inside v-if=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 17), defaultList);
     });
+    it(`doesn't completes on the edge " of v-if=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 16), defaultList);
+    });
+    it(`doesn't completes on the edge " of v-if=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 18), defaultList);
+    });
+
     it('completes inside @click=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 27), defaultList);
     });
+    it(`doesn't completes on the edge " of @click=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 26), defaultList);
+    });
+    it(`doesn't completes on the edge " of @click=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 28), defaultList);
+    });
+
     it('completes inside :foo=""', async () => {
       await testCompletion(parentTemplateDocUri, position(3, 35), defaultList);
+    });
+    it(`doesn't completes on the edge " of :foo=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 34), defaultList);
+    });
+    it(`doesn't completes on the edge " of :foo=""`, async () => {
+      await testNoSuchCompletion(parentTemplateDocUri, position(3, 36), defaultList);
     });
   });
 });

@@ -34,8 +34,13 @@ export async function testCompletion(
         return;
       }
 
-      assert.ok(match.label, ei.label);
-      assert.ok(match.kind, ei.kind as any);
+      assert.equal(match.label, ei.label);
+      if (ei.kind) {
+        assert.equal(match.kind, ei.kind);
+      }
+      if (ei.detail) {
+        assert.equal(match.detail, ei.detail);
+      }
 
       if (ei.documentation) {
         if (typeof match.documentation === 'string') {

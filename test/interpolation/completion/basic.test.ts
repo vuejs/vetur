@@ -1,7 +1,7 @@
 import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
 import { position, getDocUri } from '../util';
 import { testCompletion, testNoSuchCompletion } from './helper';
-import { CompletionItem, CompletionItemKind } from 'vscode-languageserver-types';
+import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
 
 describe('Should autocomplete interpolation for <template>', () => {
   const templateDocUri = getDocUri('completion/Basic.vue');
@@ -14,60 +14,42 @@ describe('Should autocomplete interpolation for <template>', () => {
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
-  function wrapWithJSCodeRegion(src: string) {
-    return '\n```js\n' + src + '\n```\n';
-  }
-
   const defaultList: CompletionItem[] = [
     {
       label: 'foo',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My foo' +
-          wrapWithJSCodeRegion(
-            `foo: {
+      documentation: new MarkdownString('My foo').appendCodeblock(
+        `foo: {
   type: Boolean,
   default: false
-}`
-          )
-      },
+}`,
+        'js'
+      ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'msg',
-      documentation: {
-        kind: 'markdown',
-        value: 'My msg' + wrapWithJSCodeRegion(`msg: 'Vetur means "Winter" in icelandic.'`)
-      },
+      documentation: new MarkdownString('My msg').appendCodeblock(`msg: 'Vetur means "Winter" in icelandic.'`, 'js'),
       kind: CompletionItemKind.Property
     },
     {
       label: 'count',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My count' +
-          wrapWithJSCodeRegion(
-            `count () {
+      documentation: new MarkdownString('My count').appendCodeblock(
+        `count () {
   return this.$store.state.count
-}`
-          )
-      },
+}`,
+        'js'
+      ),
       kind: CompletionItemKind.Property
     },
     {
       label: 'hello',
-      documentation: {
-        kind: 'markdown',
-        value:
-          'My greeting' +
-          wrapWithJSCodeRegion(
-            `hello () {
+      documentation: new MarkdownString('My greeting').appendCodeblock(
+        `hello () {
   console.log(this.msg)
-}`
-          )
-      },
+}`,
+        'js'
+      ),
+
       kind: CompletionItemKind.Method
     }
   ];
@@ -90,14 +72,13 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
-          documentation:
-            'My foo' +
-            wrapWithJSCodeRegion(
-              `foo: {
+          documentation: new MarkdownString('My foo').appendCodeblock(
+            `foo: {
   type: Boolean,
   default: false
-}`
-            )
+}`,
+            'js'
+          )
         }
       ]);
     });
