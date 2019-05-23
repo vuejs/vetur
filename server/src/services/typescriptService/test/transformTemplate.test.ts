@@ -119,5 +119,10 @@ suite('transformTemplate', () => {
     test('TemplateExpression', () => {
       check('`font-size: ${size}px`', '`font-size: ${this.size}px`');
     });
+
+    test('NewExpression', () => {
+      check('new Date(test)', 'new Date(this.test)', ['Date']);
+      check('new Test()', 'new this.Test()');
+    });
   });
 });
