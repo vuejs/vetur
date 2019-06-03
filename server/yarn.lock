@@ -4728,10 +4728,6 @@ vue-onsenui-helper-json@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/vue-onsenui-helper-json/-/vue-onsenui-helper-json-1.0.2.tgz#b8c900fe3f89ba6a318335de73a55dee99a1846e"
 
-vuetify-helper-json@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/vuetify-helper-json/-/vuetify-helper-json-1.0.0.tgz#f429a6e6156bab865f9d6c79aa6739eb187dd778"
-
 wcwidth@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/wcwidth/-/wcwidth-1.0.1.tgz#f0b0dcf915bc5ff1528afadb2c0e17b532da2fe8"

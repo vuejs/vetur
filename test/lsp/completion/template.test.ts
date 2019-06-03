@@ -6,6 +6,7 @@ describe('Should autocomplete for <template>', () => {
   const templateDocUri = getDocUri('client/completion/template/Basic.vue');
   const templateFrameworkDocUri = getDocUri('client/completion/template/Framework.vue');
   const templateQuasarDocUri = getDocUri('client/completion/template/Quasar.vue');
+  const templateVuetifyDocUri = getDocUri('client/completion/template/Vuetify.vue');
 
   before('activate', async () => {
     await activateLS();
@@ -85,6 +86,16 @@ describe('Should autocomplete for <template>', () => {
 
     it('completes attributes for <q-btn>', async () => {
       await testCompletion(templateQuasarDocUri, position(1, 10), ['label', 'icon']);
+    });
+  });
+
+  describe('Should complete Vuetify components', () => {
+    it('completes <v-btn>', async () => {
+      await testCompletion(templateVuetifyDocUri, position(2, 5), ['v-btn']);
+    });
+
+    it('completes attributes for <v-btn>', async () => {
+      await testCompletion(templateVuetifyDocUri, position(1, 10), ['color', 'fab']);
     });
   });
 });

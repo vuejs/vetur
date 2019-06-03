@@ -7,7 +7,6 @@ import {
   onsenTagProvider,
   bootstrapTagProvider,
   buefyTagProvider,
-  vuetifyTagProvider,
   gridsomeTagProvider,
   getRuntimeTagProvider
 } from './externalTagProviders';
@@ -27,7 +26,6 @@ export let allTagProviders: IHTMLTagProvider[] = [
   onsenTagProvider,
   bootstrapTagProvider,
   buefyTagProvider,
-  vuetifyTagProvider,
   gridsomeTagProvider
 ];
 
@@ -58,6 +56,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     if (!packagePath) {
       return settings;
     }
+
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
     const dependencies = packageJson.dependencies;
 
