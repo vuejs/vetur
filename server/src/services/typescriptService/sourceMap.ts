@@ -71,7 +71,7 @@ export function generateSourceMap(
 
   const sourceMapNodes: TemplateSourceMapNode[] = [];
   walkBothNode(syntheticSourceFile, validSourceFile);
-  return sourceMapNodes;
+  return foldSourceMapNodes(sourceMapNodes);
 
   function walkBothNode(syntheticNode: ts.Node, validNode: ts.Node) {
     const validNodeChildren: ts.Node[] = [];
@@ -132,6 +132,43 @@ export function generateSourceMap(
       walkBothNode(sc, vc);
     });
   }
+}
+
+/**
+ * Merge source map nodes when a node overwraps another node.
+ * For example, the following expression will generates three source map nodes,
+ * for `foo` identifier, `bar` identifier and entire binary expression `foo + bar`.
+ *
+ * `foo + bar`
+ *
+ * In this case `foo + bar` contains `foo` and `bar`. Then we will merge source map nodes
+ * for the identifiers into the map for `foo + bar`.
+ */
+function foldSourceMapNodes(nodes: TemplateSourceMapNode[]): TemplateSourceMapNode[] {
+  return nodes.reduce<TemplateSourceMapNode[]>((folded, node) => {
+    const last = folded[folded.length - 1];
+    if (!last) {
+      return folded.concat(node);
+    }
+
+    // Children source map nodes always appear after a parent node
+    // because of how we traverse source mapping in `walkBothNode` function.
+    if (node.from.start < last.from.start || last.from.end < node.from.end) {
+      return folded.concat(node);
+    }
+
+    last.offsetMapping = {
+      ...last.offsetMapping,
+      ...node.offsetMapping
+    };
+
+    last.offsetBackMapping = {
+      ...last.offsetBackMapping,
+      ...node.offsetBackMapping
+    };
+
+    return folded;
+  }, []);
 }
 
 export function getAstWalker(tsModule: T_TypeScript) {

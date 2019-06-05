@@ -223,6 +223,21 @@ describe('Should find template-diagnostics in <template> region', () => {
           message: "Property 'messaage' does not exist on type"
         }
       ]
+    },
+    {
+      file: 'trivia.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(4, 10, 18),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'loading3' does not exist on type"
+        },
+        {
+          range: sameLineRange(6, 7, 16),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Operator '+' cannot be applied to types 'number' and 'true'"
+        }
+      ]
     }
   ];
 
