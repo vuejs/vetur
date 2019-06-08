@@ -1,5 +1,10 @@
 import * as ts from 'typescript';
-import { getLastChild, buildDocumentation, getDefaultExportNode } from './componentInfo';
+import {
+  getLastChild,
+  buildDocumentation,
+  getDefaultExportNode,
+  getClassDecoratorArgumentType
+} from './componentInfo';
 import { T_TypeScript } from '../../services/dependencyService';
 
 interface InternalChildComponent {
@@ -22,9 +27,11 @@ export function getChildComponents(
   let type = defaultExportType;
   if (defaultExportType.isClass()) {
     // get decorator argument type when class
-    type = checker.getTypeAtLocation(
-      (defaultExportType.symbol.declarations[0].decorators![0].expression as ts.CallExpression).arguments[0]
-    );
+    const classDecoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
+    if (!classDecoratorArgumentType) {
+      return undefined;
+    }
+    type = classDecoratorArgumentType;
   }
 
   const componentsSymbol = checker.getPropertyOfType(type, 'components');

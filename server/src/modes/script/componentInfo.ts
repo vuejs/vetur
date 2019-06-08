@@ -103,10 +103,10 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
   if (defaultExportType.isClass()) {
     result.push.apply(result, getClassProps(defaultExportType) || []);
 
-    const decoratorArgumentType = checker.getTypeAtLocation(
-      (defaultExportType.symbol.declarations[0].decorators![0].expression as ts.CallExpression).arguments[0]
-    );
-    result.push.apply(result, getObjectProps(decoratorArgumentType) || []);
+    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
+    if (decoratorArgumentType) {
+      result.push.apply(result, getObjectProps(decoratorArgumentType) || []);
+    }
   } else {
     result.push.apply(result, getObjectProps(defaultExportType) || []);
   }
@@ -199,10 +199,10 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
   if (defaultExportType.isClass()) {
     result.push.apply(result, getClassData(defaultExportType) || []);
 
-    const decoratorArgumentType = checker.getTypeAtLocation(
-      (defaultExportType.symbol.declarations[0].decorators![0].expression as ts.CallExpression).arguments[0]
-    );
-    result.push.apply(result, getObjectData(decoratorArgumentType) || []);
+    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
+    if (decoratorArgumentType) {
+      result.push.apply(result, getObjectData(decoratorArgumentType) || []);
+    }
   } else {
     result.push.apply(result, getObjectData(defaultExportType) || []);
   }
@@ -264,10 +264,10 @@ function getComputed(
   if (defaultExportType.isClass()) {
     result.push.apply(result, getClassComputed(defaultExportType) || []);
 
-    const decoratorArgumentType = checker.getTypeAtLocation(
-      (defaultExportType.symbol.declarations[0].decorators![0].expression as ts.CallExpression).arguments[0]
-    );
-    result.push.apply(result, getObjectComputed(decoratorArgumentType) || []);
+    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
+    if (decoratorArgumentType) {
+      result.push.apply(result, getObjectComputed(decoratorArgumentType) || []);
+    }
   } else {
     result.push.apply(result, getObjectComputed(defaultExportType) || []);
   }
@@ -348,10 +348,10 @@ function getMethods(
   if (defaultExportType.isClass()) {
     result.push.apply(result, getClassMethods(defaultExportType) || []);
 
-    const decoratorArgumentType = checker.getTypeAtLocation(
-      (defaultExportType.symbol.declarations[0].decorators![0].expression as ts.CallExpression).arguments[0]
-    );
-    result.push.apply(result, getObjectMethods(decoratorArgumentType) || []);
+    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
+    if (decoratorArgumentType) {
+      result.push.apply(result, getObjectMethods(decoratorArgumentType) || []);
+    }
   } else {
     result.push.apply(result, getObjectMethods(defaultExportType) || []);
   }
@@ -427,6 +427,24 @@ export function getLastChild(d: ts.Declaration) {
   }
 
   return children[children.length - 1];
+}
+
+export function getClassDecoratorArgumentType(
+  tsModule: T_TypeScript,
+  type: ts.Type,
+  checker: ts.TypeChecker
+) {
+  const decorators = type.symbol.declarations[0].decorators;
+  if (!decorators || decorators.length === 0) {
+    return undefined;
+  }
+
+  const decoratorArguments = (decorators[0].expression as ts.CallExpression).arguments;
+  if (!decoratorArguments || decoratorArguments.length === 0) {
+    return undefined;
+  }
+
+  return checker.getTypeAtLocation(decoratorArguments[0]);
 }
 
 export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker: ts.TypeChecker) {
