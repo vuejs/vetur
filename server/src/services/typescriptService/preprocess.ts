@@ -275,5 +275,5 @@ function getWrapperRangeSetter(
   tsModule: T_TypeScript,
   wrapped: ts.TextRange
 ): <T extends ts.TextRange>(wrapperNode: T) => T {
-  return <T extends ts.TextRange>(wrapperNode: T) => tsModule.setTextRange(wrapperNode, wrapped);
+  return wrapperNode => tsModule.setTextRange(wrapperNode, wrapped);
 }
