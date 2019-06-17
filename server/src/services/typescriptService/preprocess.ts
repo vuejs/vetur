@@ -243,8 +243,8 @@ export function injectVueTemplate(
 
   // wrap render code with a function decralation
   // with `this` type of component.
-  const statements = renderBlock.map(exp => tsModule.createStatement(exp));
-  const renderElement = tsModule.createStatement(
+  const statements = renderBlock.map(exp => tsModule.createExpressionStatement(exp));
+  const renderElement = tsModule.createExpressionStatement(
     tsModule.createCall(tsModule.createIdentifier(renderHelperName), undefined, [
       // Reference to the component
       tsModule.createIdentifier('__Component'),
