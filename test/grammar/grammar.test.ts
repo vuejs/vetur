@@ -29,6 +29,7 @@ async function assertUnchangedTokens(testFixurePath: string, done: (err?: Error)
               const d = data[i];
               const p = previousData[i];
               if (d.c !== p.c || hasThemeChange(d.r, p.r)) {
+                writeFileSync(resultPath, JSON.stringify(data, null, '\t'));
                 throw new Error(`Syntax difference in file ${fileName}: ${d.c} does not equal ${p.c}
                   at ${(e as AssertionError).message}`);
               }
@@ -41,7 +42,7 @@ async function assertUnchangedTokens(testFixurePath: string, done: (err?: Error)
           } else {
             throw new Error(`Syntax not equal at file '${fileName}': ${(e as AssertionError).message}`);
           }
-          writeFileSync(resultPath, JSON.stringify(data, null, '\t'), { flag: 'w' });
+          writeFileSync(resultPath, JSON.stringify(data, null, '\t'));
         }
       } else {
         writeFileSync(resultPath, JSON.stringify(data, null, '\t'));
