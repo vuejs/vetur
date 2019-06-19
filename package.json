@@ -419,7 +419,8 @@
         },
         "vetur.dev.vlsPath": {
           "type": "string",
-          "description": "Path to VLS for Vetur developers. There are two ways of using it. \n\n1. Clone vuejs/vetur from GitHub, build it and point it to the ABSOLUTE path of `/server`.\n2. `yarn global add vue-language-server` and point Vetur to the installed location (`yarn global dir` + node_modules/vue-language-server)"
+          "description": "Path to VLS for Vetur developers. There are two ways of using it. \n\n1. Clone vuejs/vetur from GitHub, build it and point it to the ABSOLUTE path of `/server`.\n2. `yarn global add vue-language-server` and point Vetur to the installed location (`yarn global dir` + node_modules/vue-language-server)",
+          "scope": "machine"
         },
         "vetur.dev.vlsPort": {
           "type": "number",
