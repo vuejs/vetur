@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.21.1
+
+- Upgrade js-beautify to 1.10.0. #1312.
+
 ### 0.21.0 | 2019-05-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.21.0/vspackage)
 
 - Path completion for `import ... from ''`. Fix #822.
