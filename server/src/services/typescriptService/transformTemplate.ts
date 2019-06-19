@@ -654,6 +654,12 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       });
 
       res = ts.createTemplateExpression(ts.createTemplateHead(exp.head.text), injectedSpans);
+    } else if (ts.isNewExpression(exp)) {
+      res = ts.createNew(
+        injectThis(exp.expression, scope, start),
+        exp.typeArguments,
+        exp.arguments && exp.arguments.map(arg => injectThis(arg, scope, start))
+      );
     } else {
       /**
        * Because Nodes can have non-virtual positions
