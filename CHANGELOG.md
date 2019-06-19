@@ -3,6 +3,7 @@
 ### 0.21.1
 
 - Fix wrong template interpolation diagnostics on `new` statement. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1308.
+- Upgrade prettyhtml to 0.9.0. #1321.
 - Upgrade js-beautify to 1.10.0. #1312.
 
 ### 0.21.0 | 2019-05-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.21.0/vspackage)
