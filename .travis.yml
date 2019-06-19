@@ -4,19 +4,18 @@ os:
   - linux
 node_js: 8
 
+env:
+  global:
+    - DISPLAY=:10
+
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.12.3
   - export PATH=$HOME/.yarn/bin:$PATH
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      set -e
-      /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
-      disown -ar
-      echo "Started xvfb"
+      export CXX="g++-4.9" CC="gcc-4.9" DISPLAY=:10;
+      sh -e /etc/init.d/xvfb start;
+      sleep 3;
     fi
-
-env:
-  global:
-    - DISPLAY=:10
 
 install:
   - yarn
