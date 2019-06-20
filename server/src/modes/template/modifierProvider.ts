@@ -39,16 +39,16 @@ const keyModifiers = [
 ];
 
 const mouseModifiers = [
-  genModifier('left', 'Trigger mouse event when "left" mouse button'),
-  genModifier('right', 'Trigger mouse event when "right" mouse button'),
-  genModifier('middle', 'Trigger mouse event when "middle" mouse button')
+  genModifier('left', 'Triggers mouse event when "left" mouse button is clicked.'),
+  genModifier('right', 'Triggers mouse event when "right" mouse button is clicked.'),
+  genModifier('middle', 'Triggers mouse event when "middle" mouse button is clicked.')
 ];
 
 const systemModifiers = [
-  genModifier('ctrl', 'Trigger mouse or keyboard event when <Control> is pressed.'),
-  genModifier('alt', 'Trigger mouse or keyboard event when <Alt> is pressed.'),
-  genModifier('shift', 'Trigger mouse or keyboard event when <Shift> is pressed.'),
-  genModifier('meta', 'Trigger mouse or keyboard event when <Meta> is pressed.'),
+  genModifier('ctrl', 'Triggers mouse or keyboard event when <Control> is pressed.'),
+  genModifier('alt', 'Triggers mouse or keyboard event when <Alt> is pressed.'),
+  genModifier('shift', 'Triggers mouse or keyboard event when <Shift> is pressed.'),
+  genModifier('meta', 'Triggers mouse or keyboard event when <Meta> is pressed.'),
   genModifier(
     'exact',
     'The `.exact` modifier allows control of the exact combination of system modifiers needed to trigger an event.'
