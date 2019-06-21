@@ -2,6 +2,7 @@
 
 ### 0.21.1
 
+- Completion for event modifiers. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #780 and #1326.
 - Make `vetur.dev.vlsPath` a [`machine`](https://code.visualstudio.com/updates/v1_34#_machinespecific-settings) scoped config. #1334.
 - Fix wrong template interpolation diagnostics on `new` statement. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1308.
 - Upgrade prettier to 1.18.2.
