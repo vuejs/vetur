@@ -16,6 +16,7 @@ import { VueFileInfo } from '../../../services/vueInfoService';
 import { doVueInterpolationComplete } from './vueInterpolationCompletion';
 import { NULL_COMPLETION } from '../../nullMode';
 import { isInsideInterpolation } from './isInsideInterpolation';
+import { getModifierProvider, Modifier } from '../modifierProvider';
 
 export function doComplete(
   document: TextDocument,
@@ -25,6 +26,8 @@ export function doComplete(
   emmetConfig: emmet.EmmetConfiguration,
   vueFileInfo?: VueFileInfo
 ): CompletionList {
+  const modifierProvider = getModifierProvider();
+
   const result: CompletionList = {
     isIncomplete: false,
     items: []
@@ -185,6 +188,48 @@ export function doComplete(
         });
       });
     });
+    const attributeName = scanner.getTokenText();
+    if (/\.$/.test(attributeName)) {
+      function addModifier(modifiers: { items: Modifier[]; priority: number }) {
+        modifiers.items.forEach(modifier => {
+          result.items.push({
+            label: modifier.label,
+            kind: CompletionItemKind.Method,
+            textEdit: TextEdit.insert(document.positionAt(nameEnd), modifier.label),
+            insertTextFormat: InsertTextFormat.Snippet,
+            sortText: modifiers.priority + modifier.label,
+            documentation: modifier.documentation
+          });
+        });
+      }
+
+      if (attributeName.startsWith('@') || attributeName.startsWith('v-on')) {
+        addModifier(modifierProvider.eventModifiers);
+      }
+
+      const execArray = /^(?:@|v-on:)([A-Za-z]*)\.?/.exec(attributeName);
+      const eventName = execArray && execArray[1] ? execArray[1] : '';
+
+      const keyEvent = ['keydown', 'keypress', 'keyup'];
+      if (keyEvent.includes(eventName)) {
+        addModifier(modifierProvider.keyModifiers);
+        addModifier(modifierProvider.systemModifiers);
+      }
+
+      const mouseEvent = ['click', 'dblclick', 'mouseup', 'mousedown'];
+      if (mouseEvent.includes(eventName)) {
+        addModifier(modifierProvider.mouseModifiers);
+        addModifier(modifierProvider.systemModifiers);
+      }
+
+      if (attributeName.startsWith('v-bind') || attributeName.startsWith(':')) {
+        addModifier(modifierProvider.propsModifiers);
+      }
+
+      if (attributeName.startsWith('v-model')) {
+        addModifier(modifierProvider.vModelModifiers);
+      }
+    }
     return result;
   }
 
