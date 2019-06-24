@@ -1,8 +1,10 @@
 language: node_js
-os:
-  - osx
-  - linux
-    dist: trusty
+matrix:
+  include:
+    - os: osx
+    - os: linux
+      dist: trusty
+
 node_js: 8
 
 env:
