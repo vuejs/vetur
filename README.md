@@ -16,7 +16,7 @@
     <img src="https://img.shields.io/azure-devops/build/octref/d2f425a7-816a-4e0c-a9bb-dd51d4d7efba/1.svg?label=Azure%20DevOps&logo=Azure%20Devops&style=flat-square">
   </a>
   <a href="https://travis-ci.org/vuejs/vetur">
-    <img src="https://img.shields.io/travis/vuejs/vetur.svg?style=flat-square">
+    <img src="https://img.shields.io/travis/vuejs/vetur.svg?label=Travis&style=flat-square">
   </a>
 </p>
 
