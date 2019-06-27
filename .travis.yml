@@ -1,30 +1,15 @@
 language: node_js
-matrix:
-  include:
-    - os: osx
-    - os: linux
-      dist: trusty
-
+os:
+  - osx
+  - linux
 node_js: 8
 
-env:
-  global:
-    - DISPLAY=:10
-
-before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.12.3
-  - export PATH=$HOME/.yarn/bin:$PATH
-  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      export CXX="g++-4.9" CC="gcc-4.9" DISPLAY=:10;
-      sh -e /etc/init.d/xvfb start;
-      sleep 3;
-    fi
-  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      sudo apt-get update;
-      sudo apt-get install -y libdbus-1-3;
-    fi
-
 install:
+  - |
+    if [ $TRAVIS_OS_NAME == "linux" ]; then
+      export DISPLAY=':99.0'
+      /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+    fi
   - yarn
   - cd server && yarn
   - cd ..
