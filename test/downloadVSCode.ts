@@ -45,7 +45,10 @@ export function downloadVSCode(testRunFolderAbsolute: string): Promise<any> {
           .pipe(vfs.dest(testRunFolderAbsolute));
       }
 
-      stream.on('error', reject);
+      stream.on('error', (err) => {
+        console.error(err);
+        reject();
+      });
       stream.on('end', resolve);
     });
   });
