@@ -3,7 +3,8 @@ import {
   getLastChild,
   buildDocumentation,
   getDefaultExportNode,
-  getClassDecoratorArgumentType
+  getClassDecoratorArgumentType,
+  isClassType
 } from './componentInfo';
 import { T_TypeScript } from '../../services/dependencyService';
 
@@ -25,7 +26,7 @@ export function getChildComponents(
   tagCasing = 'kebab'
 ): InternalChildComponent[] | undefined {
   let type = defaultExportType;
-  if (defaultExportType.isClass()) {
+  if (isClassType(tsModule, type)) {
     // get decorator argument type when class
     const classDecoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
     if (!classDecoratorArgumentType) {

@@ -100,7 +100,7 @@ export function getDefaultExportNode(
 
 function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
   const result: PropInfo[] = [];
-  if (defaultExportType.isClass()) {
+  if (isClassType(tsModule, defaultExportType)) {
     result.push.apply(result, getClassProps(defaultExportType) || []);
 
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
@@ -196,7 +196,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
  */
 function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[] | undefined {
   const result: DataInfo[] = [];
-  if (defaultExportType.isClass()) {
+  if (isClassType(tsModule, defaultExportType)) {
     result.push.apply(result, getClassData(defaultExportType) || []);
 
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
@@ -261,7 +261,7 @@ function getComputed(
   checker: ts.TypeChecker
 ): ComputedInfo[] | undefined {
   const result: ComputedInfo[] = [];
-  if (defaultExportType.isClass()) {
+  if (isClassType(tsModule, defaultExportType)) {
     result.push.apply(result, getClassComputed(defaultExportType) || []);
 
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
@@ -345,7 +345,7 @@ function getMethods(
   checker: ts.TypeChecker
 ): MethodInfo[] | undefined {
   const result: MethodInfo[] = [];
-  if (defaultExportType.isClass()) {
+  if (isClassType(tsModule, defaultExportType)) {
     result.push.apply(result, getClassMethods(defaultExportType) || []);
 
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
@@ -427,6 +427,18 @@ export function getLastChild(d: ts.Declaration) {
   }
 
   return children[children.length - 1];
+}
+
+export function isClassType (
+  tsModule: T_TypeScript,
+  type: ts.Type
+) {
+  if (type.isClass === undefined) {
+    return !!((type.flags & tsModule.TypeFlags.Object ? (type as ts.ObjectType).objectFlags : 0)
+    & tsModule.ObjectFlags.Class);
+  } else {
+    return type.isClass();
+  }
 }
 
 export function getClassDecoratorArgumentType(
