@@ -450,6 +450,16 @@ export async function getJavascriptMode(
       const refactorings = service.getApplicableRefactors(fileName, textRange, /*preferences*/ {});
       collectRefactoringCommands(refactorings, fileName, formatSettings, textRange, result);
 
+      result.push(
+        createApplyCodeActionCommand(
+          'Organize Imports',
+          createUriMappingForEdits(
+            service.organizeImports({ type: 'file', fileName }, formatSettings, /*preferences*/ {}).slice(),
+            service
+          )
+        )
+      );
+
       return result;
     },
     getRefactorEdits(doc: TextDocument, args: RefactorAction) {
@@ -720,7 +730,8 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   return {
     tabSize: config.vetur.format.options.tabSize,
     indentSize: config.vetur.format.options.tabSize,
-    convertTabsToSpaces: !config.vetur.format.options.useTabs
+    convertTabsToSpaces: !config.vetur.format.options.useTabs,
+    insertSpaceAfterCommaDelimiter: true
   };
 }
 
