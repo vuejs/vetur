@@ -1,6 +1,6 @@
 import { TextEdit, Range } from 'vscode-languageserver-types';
 
-import { ParserOption, Prettier, PrettierEslintFormat } from './prettier';
+import { ParserOption, Prettier, PrettierEslintFormat, PrettierTslintFormat } from './prettier';
 import { indentSection } from '../strings';
 
 import { requireLocalPkg } from './requirePkg';
@@ -54,7 +54,34 @@ export function prettierEslintify(
     return [];
   }
 }
+export function prettierTslintify(
+  code: string,
+  fileFsPath: string,
+  range: Range,
+  vlsFormatConfig: VLSFormatConfig,
+  parser: ParserOption,
+  initialIndent: boolean
+): TextEdit[] {
+  try {
+    const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
+    const prettierTslint = requireLocalPkg(fileFsPath, 'prettier-tslint').format as PrettierTslintFormat;
 
+    const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+
+    const prettierifiedCode = prettierTslint({
+      prettierOptions: { parser },
+      text: code,
+      filePath: fileFsPath,
+      fallbackPrettierOptions: prettierOptions
+    });
+
+    return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
+  } catch (e) {
+    console.log('Prettier-Tslint format failed');
+    console.error(e.message);
+    return [];
+  }
+}
 function getPrettierOptions(
   prettierModule: Prettier,
   fileFsPath: string,

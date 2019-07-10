@@ -27,7 +27,7 @@ import {
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
-import { prettierify, prettierEslintify } from '../../utils/prettier';
+import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
 import Uri from 'vscode-uri';
@@ -485,13 +485,22 @@ export async function getJavascriptMode(
       const needInitialIndent = config.vetur.format.scriptInitialIndent;
       const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
 
-      if (defaultFormatter === 'prettier' || defaultFormatter === 'prettier-eslint') {
+      if (
+        defaultFormatter === 'prettier' ||
+        defaultFormatter === 'prettier-eslint' ||
+        defaultFormatter === 'prettier-tslint'
+      ) {
         const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
-
-        return defaultFormatter === 'prettier'
-          ? prettierify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent)
-          : prettierEslintify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
+        let prettierlikeify;
+        if (defaultFormatter === 'prettier-eslint') {
+          prettierlikeify = prettierEslintify;
+        } else if (defaultFormatter === 'prettier-tslint') {
+          prettierlikeify = prettierTslintify;
+        } else {
+          prettierlikeify = prettierify;
+        }
+        return prettierlikeify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
       } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
