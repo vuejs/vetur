@@ -2,7 +2,7 @@
 
 ## Extensions
 
-- Install [Sass](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented) for sass syntax highlighting.
+- Install [Sass](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) for sass syntax highlighting.
 - Install [language-stylus](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus) for stylus syntax highlighting.
 - Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for linting vue and js files.
 
