@@ -16,7 +16,7 @@ These formatters are available:
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 
-Vetur bundles all the above formatters. When Vetur observes a local install of the formattesr, it'll prefer to use the local version.
+Vetur bundles all the above formatters. When Vetur observes a local install of the formatter, it'll prefer to use the local version.
 
 You can choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
 **Setting a language's formatter to `none` disables formatter for that language.**
