@@ -7,6 +7,7 @@
     <button @click="test = 123">Expression Test</button>
     <button @click="() => test = 123">Block Statement Test</button>
     <button v-on="{ click: eventTest }">Object Style Test</button>
+    <button @click.stop>Empty Value Test</button>
 
     <!-- Providing errors -->
     <button @click="passString(123)">Invalid Argument Type</button>

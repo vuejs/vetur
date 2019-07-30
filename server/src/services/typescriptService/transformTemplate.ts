@@ -201,7 +201,15 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       }
     } else {
       // There are no statement in v-on value
-      exp = ts.createLiteral(true);
+      exp = ts.createFunctionExpression(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        ts.createBlock([])
+      );
     }
 
     return directiveToObjectElement(vOn, exp, code, scope);
