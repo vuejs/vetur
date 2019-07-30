@@ -112,13 +112,13 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
   }
 
   function getClassProps (type: ts.Type) {
+    const propDecoratorNames = ['Prop', 'Model', 'PropSync'];
     const propsSymbols = type.getProperties()
       .filter((property) =>
         property.valueDeclaration.kind === tsModule.SyntaxKind.PropertyDeclaration &&
         property.declarations[0].decorators &&
         property.declarations[0].decorators.some((decorator) =>
-          (decorator.expression as ts.CallExpression).expression.getText() === 'Prop' ||
-          (decorator.expression as ts.CallExpression).expression.getText() === 'Model'
+          propDecoratorNames.includes((decorator.expression as ts.CallExpression).expression.getText())
         )
       );
     if (propsSymbols.length === 0) { return undefined; }
@@ -208,15 +208,14 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
   }
 
   function getClassData (type: ts.Type) {
+    const noDataDecoratorNames = ['Prop', 'Model', 'Provide', 'ProvideReactive', 'Ref'];
     const dataSymbols = type.getProperties()
       .filter((property) =>
         property.valueDeclaration.kind === tsModule.SyntaxKind.PropertyDeclaration && (
           property.declarations[0].decorators === undefined || (
             property.declarations[0].decorators &&
             !property.declarations[0].decorators.some((decorator) =>
-              (decorator.expression as ts.CallExpression).expression.getText() === 'Prop' ||
-              (decorator.expression as ts.CallExpression).expression.getText() === 'Model' ||
-              (decorator.expression as ts.CallExpression).expression.getText() === 'Inject'
+              noDataDecoratorNames.includes((decorator.expression as ts.CallExpression).expression.getText())
             )
           )
         ) &&
