@@ -67,9 +67,6 @@ function filePathToTest(filePath: string) {
         if (fromChar === `'` || fromChar === `"`) {
           // Single/double quotes are lost during transformation
           assert.ok([`'`, `"`].includes(toChar), errorMsg);
-        } else if (/^\s$/.test(fromChar)) {
-          // Whitespace can be converted another kind of whitespace
-          assert.ok(/^\s$/.test(toChar), errorMsg);
         } else {
           assert.equal(fromChar, toChar, errorMsg);
         }
