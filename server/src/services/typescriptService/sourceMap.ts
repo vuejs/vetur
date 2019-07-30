@@ -33,6 +33,7 @@ export interface TemplateSourceMapNode {
   to: TemplateSourceMapNodeTo;
   offsetMapping: Mapping;
   offsetBackMapping: Mapping;
+  mergedNodes: TemplateSourceMapNode[];
 }
 
 export interface TemplateSourceMap {
@@ -109,7 +110,8 @@ export function generateSourceMap(
             fileName: validSourceFile.fileName
           },
           offsetMapping: {},
-          offsetBackMapping: {}
+          offsetBackMapping: {},
+          mergedNodes: []
         };
 
         const isThisInjected =
@@ -156,6 +158,8 @@ function foldSourceMapNodes(nodes: TemplateSourceMapNode[]): TemplateSourceMapNo
       ...last.offsetBackMapping,
       ...node.offsetBackMapping
     };
+
+    last.mergedNodes.push(node);
 
     return folded;
   }, []);

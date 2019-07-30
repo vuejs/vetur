@@ -45,20 +45,25 @@ function filePathToTest(filePath: string) {
   const sourceMapNodes = generateSourceMap(ts, syntheticSourceFile, validSourceFile);
 
   sourceMapNodes.forEach(node => {
+    const endOffsets = [...node.mergedNodes, node].reduce((acc, node) => {
+      acc.add(node.from.end);
+      return acc;
+    }, new Set<number>());
+
     for (const fromIndex in node.offsetMapping) {
       // Only map from [start, end)
-      if (parseInt(fromIndex, 10) !== node.from.end) {
+      if (!endOffsets.has(parseInt(fromIndex, 10))) {
         const toIndex = node.offsetMapping[fromIndex];
-        let errorMsg = `Pos ${fromIndex}: ${templateSrc[fromIndex]} doesn't map to ${toIndex}: ${
-          validSourceFile.getFullText()[toIndex]
-        }\n`;
+        const fromChar = templateSrc[fromIndex];
+        const toChar = validSourceFile.getFullText()[toIndex];
+
+        let errorMsg = `Pos ${fromIndex}: "${fromChar}" doesn't map to ${toIndex}: "${toChar}"\n`;
+
         errorMsg += `${templateSrc.slice(
           node.from.start,
           node.from.end
         )} should map to ${validSourceFile.getFullText().slice(node.to.start, node.to.end)}`;
 
-        const fromChar = templateSrc[fromIndex];
-        const toChar = validSourceFile.getFullText()[toIndex];
         if (fromChar === `'` || fromChar === `"`) {
           // Single/double quotes are lost during transformation
           assert.ok([`'`, `"`].includes(toChar), errorMsg);
@@ -78,10 +83,6 @@ suite('Source Map generation', () => {
   const fixturePath = path.resolve(__dirname, repoRootPath, './test/interpolation/fixture/diagnostics');
 
   fs.readdirSync(fixturePath).forEach(file => {
-    // FIXME: temporary skip a few tests
-    if (file === 'trivia.vue') {
-      return;
-    }
     if (file.endsWith('.vue')) {
       const filePath = path.resolve(fixturePath, file);
       test(`Source Map generation for ${path.relative(repoRootPath, filePath)}`, () => {
