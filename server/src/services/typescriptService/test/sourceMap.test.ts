@@ -57,11 +57,16 @@ function filePathToTest(filePath: string) {
           node.from.end
         )} should map to ${validSourceFile.getFullText().slice(node.to.start, node.to.end)}`;
 
-        // Single/double quotes are lost during transformation
-        if (templateSrc[fromIndex] === `'` || templateSrc[fromIndex] === `"`) {
-          assert.ok([`'`, `"`].includes(validSourceFile.getFullText()[toIndex]), errorMsg);
+        const fromChar = templateSrc[fromIndex];
+        const toChar = validSourceFile.getFullText()[toIndex];
+        if (fromChar === `'` || fromChar === `"`) {
+          // Single/double quotes are lost during transformation
+          assert.ok([`'`, `"`].includes(toChar), errorMsg);
+        } else if (/^\s$/.test(fromChar)) {
+          // Whitespace can be converted another kind of whitespace
+          assert.ok(/^\s$/.test(toChar), errorMsg);
         } else {
-          assert.equal(templateSrc[fromIndex], validSourceFile.getFullText()[toIndex], errorMsg);
+          assert.equal(fromChar, toChar, errorMsg);
         }
       }
     }
@@ -74,7 +79,7 @@ suite('Source Map generation', () => {
 
   fs.readdirSync(fixturePath).forEach(file => {
     // FIXME: temporary skip a few tests
-    if (file === 'object-literal.vue' || file === 'trivia.vue') {
+    if (file === 'trivia.vue') {
       return;
     }
     if (file.endsWith('.vue')) {

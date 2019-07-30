@@ -551,17 +551,18 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
     // Compensate for the added `(` that adds 1 to each Node's offset
     const offset = start - '('.length;
-    return walkExpression(ts, parenthesis.expression, (node, additionalScope) => {
+    return walkExpression(ts, parenthesis.expression, createWalkCallback(scope, offset, source));
+  }
+
+  function createWalkCallback(scope: string[], offset: number, source: ts.SourceFile) {
+    return (node: ts.Expression, additionalScope: ts.Identifier[]) => {
       const thisScope = scope.concat(additionalScope.map(id => id.text));
 
-      const injected = injectThis(node, thisScope, offset);
-      ts.setSourceMapRange(injected, {
-        pos: offset + node.getStart(source),
-        end: offset + node.getEnd()
-      });
+      const injected = injectThis(node, thisScope, offset, source);
+      setSourceMapRange(injected, node, offset, source);
       resetTextRange(injected);
       return injected;
-    });
+    };
   }
 
   function parseParams(
@@ -580,7 +581,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     return exp.parameters;
   }
 
-  function injectThis(exp: ts.Expression, scope: string[], start: number): ts.Expression {
+  function injectThis(exp: ts.Expression, scope: string[], start: number, source: ts.SourceFile): ts.Expression {
     if (ts.isIdentifier(exp)) {
       return scope.indexOf(exp.text) < 0 ? ts.createPropertyAccess(ts.createThis(), exp) : exp;
     }
@@ -592,17 +593,31 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         }
 
         // Divide short hand property to name and initializer and inject `this`
-        const initializer = injectThis(p.name, scope, start);
-        ts.setSourceMapRange(initializer, {
-          pos: start + p.name.getStart(),
-          end: start + p.name.getEnd()
-        });
+        // We need to walk generated initializer expression.
+        const initializer = createWalkCallback(scope, start, source)(p.name, []);
         return ts.createPropertyAssignment(p.name, initializer);
       });
       return ts.createObjectLiteral(properties);
     }
 
     return exp;
+  }
+
+  function setSourceMapRange(exp: ts.Expression, range: ts.Expression, offset: number, source: ts.SourceFile): void {
+    ts.setSourceMapRange(exp, {
+      pos: offset + range.getStart(source),
+      end: offset + range.getEnd()
+    });
+
+    if (ts.isPropertyAccessExpression(exp)) {
+      // May be transformed from Identifier by injecting `this`
+      const r = ts.isPropertyAccessExpression(range) ? range.name : range;
+      ts.setSourceMapRange(exp.name, {
+        pos: offset + r.getStart(source),
+        end: offset + r.getEnd()
+      });
+      return;
+    }
   }
 
   /**
