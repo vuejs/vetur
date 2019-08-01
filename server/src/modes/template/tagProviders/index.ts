@@ -58,7 +58,8 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
 
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
-    const dependencies = packageJson.dependencies;
+    const dependencies = packageJson.dependencies || {};
+    const devDependencies = packageJson.devDependencies || {};
 
     if (dependencies['vue-router']) {
       settings['router'] = true;
@@ -75,8 +76,11 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     if (dependencies['buefy']) {
       settings['buefy'] = true;
     }
-    if (dependencies['vuetify']) {
+    if (dependencies['vuetify'] || devDependencies['vuetify']) {
       settings['vuetify'] = true;
+    }
+    if (dependencies['@nuxtjs/vuetify'] || devDependencies['@nuxtjs/vuetify']) {
+      dependencies['vuetify'] = true;
     }
     // Quasar v1+:
     if (dependencies['quasar']) {
@@ -87,7 +91,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       settings['quasar-framework'] = true;
     }
     // Quasar pre v1 on quasar-cli:
-    if (packageJson.devDependencies && packageJson.devDependencies['quasar-cli']) {
+    if (devDependencies['quasar-cli']) {
       // pushing dependency so we can check it
       // and enable Quasar later below in the for()
       dependencies['quasar-framework'] = '^0.0.17';
