@@ -626,6 +626,42 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       });
       return;
     }
+
+    if (ts.isArrowFunction(exp)) {
+      const walkBinding = (name: ts.BindingName, range: ts.BindingName) => {
+        ts.setSourceMapRange(name, {
+          pos: offset + range.getStart(source),
+          end: offset + range.getEnd()
+        });
+
+        if (ts.isObjectBindingPattern(name) || ts.isArrayBindingPattern(name)) {
+          name.elements.forEach((el, i) => {
+            if (ts.isOmittedExpression(el)) {
+              return;
+            }
+            const elRange = (range as typeof name).elements[i] as typeof el;
+
+            ts.setSourceMapRange(el, {
+              pos: offset + elRange.getStart(source),
+              end: offset + elRange.getEnd()
+            });
+
+            walkBinding(el.name, elRange.name);
+          });
+        }
+      };
+
+      const r = range as ts.ArrowFunction;
+      exp.parameters.forEach((p, i) => {
+        const range = r.parameters[i];
+        ts.setSourceMapRange(p, {
+          pos: offset + range.getStart(source),
+          end: offset + range.getEnd()
+        });
+
+        walkBinding(p.name, range.name);
+      });
+    }
   }
 
   /**
