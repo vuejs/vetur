@@ -57,3 +57,21 @@ export default {
 
 </style>
 ```
+
+## Customizable Scaffold Snippets
+
+Three sources supplement Vetur with scaffold snippets:
+
+- User data directory. You can open the folder with the command `Vetur: Open snippet folder`. These scaffold snippets are available in all workspaces.
+- Workspace. Located at `<WORKSPACE>/.vscode/vetur/snippets`. These scaffold snippets are only available in the workspace.
+- Vetur. Vetur offers a few scaffold snippets out of the box.
+
+You can turn them on/off with `vetur.snippet.sources`
+
+```json
+"vetur.snippet.sources": {
+  "user": true,
+  "workspace": true,
+  "vetur": false
+}
+```

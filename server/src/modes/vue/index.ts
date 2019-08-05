@@ -1,8 +1,11 @@
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { doScaffoldComplete } from './scaffoldCompletion';
+import { SnippetManager } from './snippets';
 
-export function getVueMode(): LanguageMode {
+export function getVueMode(workspacePath: string, globalSnippetDir: string | undefined): LanguageMode {
   let config: any = {};
+  
+  const snippetManager = new SnippetManager(workspacePath, globalSnippetDir);
 
   return {
     getId() {
@@ -15,17 +18,21 @@ export function getVueMode(): LanguageMode {
       if (!config.vetur.completion.useScaffoldSnippets) {
         return { isIncomplete: false, items: [] };
       }
-      const offset = document.offsetAt(position);
-      const text = document.getText().slice(0, offset);
-      const needBracket = /<\w*$/.test(text);
-      const ret = doScaffoldComplete();
-      // remove duplicate <
-      if (needBracket) {
-        ret.items.forEach(item => {
-          item.insertText = item.insertText!.slice(1);
-        });
-      }
-      return ret;
+      return {
+        isIncomplete: false,
+        items: snippetManager.completeSnippets()
+      };
+      // const offset = document.offsetAt(position);
+      // const text = document.getText().slice(0, offset);
+      // const needBracket = /<\w*$/.test(text);
+      // const ret = doScaffoldComplete();
+      // // remove duplicate <
+      // if (needBracket) {
+      //   ret.items.forEach(item => {
+      //     item.insertText = item.insertText!.slice(1);
+      //   });
+      // }
+      // return ret;
     },
     onDocumentRemoved() {},
     dispose() {}
