@@ -492,15 +492,15 @@ export async function getJavascriptMode(
       ) {
         const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
-        let prettierlikeify;
+        let doFormat;
         if (defaultFormatter === 'prettier-eslint') {
-          prettierlikeify = prettierEslintify;
+          doFormat = prettierEslintify;
         } else if (defaultFormatter === 'prettier-tslint') {
-          prettierlikeify = prettierTslintify;
+          doFormat = prettierTslintify;
         } else {
-          prettierlikeify = prettierify;
+          doFormat = prettierify;
         }
-        return prettierlikeify(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
+        return doFormat(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
       } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =

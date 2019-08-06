@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.22.0
+
+- 🙌 `prettier-tslint` formatter option for TS region. Thanks to contribution from [@NickeyLin](https://github.com/NickeyLin). #1354.
+
 ### 0.21.1 | 2019-06-28 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.21.1/vspackage)
 
 - Completion for event modifiers. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #780 and #1326.
