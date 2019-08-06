@@ -336,6 +336,7 @@
           "enum": [
             "none",
             "prettier",
+            "prettier-tslint",
             "vscode-typescript"
           ],
           "enumDescriptions": [
