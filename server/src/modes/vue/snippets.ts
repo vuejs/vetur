@@ -18,7 +18,8 @@ export class SnippetManager {
     if (globalSnippetDir && fs.existsSync(globalSnippetDir)) {
       this._snippets = [
         ...loadAllSnippets(path.resolve(workspacePath, '.vscode/vetur/snippets'), 'workspace'),
-        ...loadAllSnippets(globalSnippetDir, 'user')
+        ...loadAllSnippets(globalSnippetDir, 'user'),
+        ...loadAllSnippets(path.resolve(__dirname, '../../../../server/src/modes/vue/veturSnippets'), 'vetur')
       ];
     }
   }
@@ -26,7 +27,21 @@ export class SnippetManager {
   // Return all snippets in order
   completeSnippets(): CompletionItem[] {
     return this._snippets.map(s => {
-      const scaffoldLabelPre = s.type === 'file' ? 'Scaffold with' : `Scaffold ${s.type} with`;
+      let scaffoldLabelPre = '';
+      switch (s.type) {
+        case 'file':
+          scaffoldLabelPre = '<file> with';
+          break;
+        case 'custom':
+          scaffoldLabelPre = '<custom> with';
+          break;
+        case 'template':
+        case 'style':
+        case 'script':
+          scaffoldLabelPre = `<${s.type}>`;
+          break;
+      }
+
       const shortUpperSource = s.source[0].toUpperCase();
 
       const label = `${scaffoldLabelPre} ${s.name} (${shortUpperSource})`;
@@ -67,7 +82,7 @@ function loadSnippetsFromDir(dir: string, source: SnippetSource, type: SnippetTy
           source,
           name: p,
           type,
-          content: fs.readFileSync(path.resolve(dir, p), 'utf-8')
+          content: fs.readFileSync(path.resolve(dir, p), 'utf-8').replace(/\\t/g, '\t')
         });
       });
   } catch (err) {}
@@ -89,6 +104,6 @@ function computeSortTextPrefix(source: SnippetSource, type: SnippetType) {
     script: 'd',
     custom: 'e'
   }[type];
-  
+
   return s + t;
 }
