@@ -30,6 +30,7 @@ steps:
 - task: NodeTool@0
   inputs:
     versionSpec: '8.x'
+    checkLatest: true
   displayName: 'Install Node.js'
 
 # Don't use latest yarn 1.19 — Azure DevOps run into https://github.com/yarnpkg/yarn/issues/7584
