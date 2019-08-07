@@ -5,8 +5,10 @@ import { IPrettyHtml } from './prettyhtml';
 import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
-import { Prettier } from '../../../utils/prettier/prettier';
+import { Prettier, PrettierConfig } from '../../../utils/prettier/prettier';
 import { prettierify } from '../../../utils/prettier';
+
+type PrettyHtmlConfig = IPrettyHtml extends (input: string, options: infer R) => any ? NonNullable<R> : never;
 
 const TEMPLATE_HEAD = '<template>';
 const TEMPLATE_TAIL = '</template>';
@@ -55,15 +57,7 @@ function formatWithPrettyHtml(fileFsPath: string, input: string, vlsFormatConfig
 
   const prettyhtml: IPrettyHtml = requireLocalPkg(fileFsPath, '@starptech/prettyhtml');
 
-  const result = prettyhtml(input, {
-    useTabs: vlsFormatConfig.options.useTabs,
-    tabWidth: vlsFormatConfig.options.tabSize,
-    usePrettier: true,
-    prettier: {
-      ...prettierrcOptions
-    },
-    ...vlsFormatConfig.defaultFormatterOptions['prettyhtml']
-  });
+  const result = prettyhtml(input, getPrettyHtmlOptions(prettierrcOptions, vlsFormatConfig));
   return result.contents.trim();
 }
 
@@ -89,6 +83,30 @@ function formatWithPrettier(
   initialIndent: boolean
 ) {
   return prettierify(code, fileFsPath, range, vlsFormatConfig, 'vue', initialIndent);
+}
+
+function getPrettyHtmlOptions(prettierrcOptions: Partial<PrettierConfig> | null, vlsFormatConfig: VLSFormatConfig) {
+  const fromVls = {
+    useTabs: vlsFormatConfig.options.useTabs,
+    tabWidth: vlsFormatConfig.options.tabSize
+  };
+
+  const fromPrettier: Partial<PrettyHtmlConfig> = {};
+  if (prettierrcOptions) {
+    fromPrettier.useTabs = prettierrcOptions.useTabs;
+    fromPrettier.tabWidth = prettierrcOptions.tabWidth;
+    fromPrettier.printWidth = prettierrcOptions.printWidth;
+  }
+
+  return {
+    ...fromVls,
+    ...fromPrettier,
+    usePrettier: true,
+    prettier: {
+      ...prettierrcOptions
+    },
+    ...vlsFormatConfig.defaultFormatterOptions['prettyhtml']
+  };
 }
 
 function getValueAndRange(document: TextDocument, currRange: Range): { value: string; range: Range } {
