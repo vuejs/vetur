@@ -4,6 +4,7 @@
 
 - 🙌 `prettier-tslint` formatter option for TS region. Thanks to contribution from [@NickeyLin](https://github.com/NickeyLin). #1354.
 - 🙌 Replaced bundled Vuetify support with official tag/attribute definition from Vuetify@2.0. Thanks to contribution from [@nekosaur](https://github.com/nekosaur). #1365.
+- 🙌 Avoid template diagnostic error on empty v-on. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1371.
 
 ### 0.21.1 | 2019-06-28 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.21.1/vspackage)
 
