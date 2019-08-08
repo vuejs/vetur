@@ -2,13 +2,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { CompletionItem, InsertTextFormat, CompletionItemKind } from 'vscode-languageserver-types';
 
-type SnippetSource = 'user' | 'workspace' | 'vetur';
+type SnippetSource = 'workspace' | 'user' | 'vetur';
 type SnippetType = 'file' | 'template' | 'style' | 'script' | 'custom';
 interface Snippet {
   source: SnippetSource;
   name: string;
   type: SnippetType;
   content: string;
+}
+
+export interface ScaffoldSnippetSources {
+  workspace: string | undefined;
+  user: string | undefined;
+  vetur: string | undefined;
 }
 
 export class SnippetManager {
@@ -25,35 +31,39 @@ export class SnippetManager {
   }
 
   // Return all snippets in order
-  completeSnippets(): CompletionItem[] {
-    return this._snippets.map(s => {
-      let scaffoldLabelPre = '';
-      switch (s.type) {
-        case 'file':
-          scaffoldLabelPre = '<file> with';
-          break;
-        case 'custom':
-          scaffoldLabelPre = '<custom> with';
-          break;
-        case 'template':
-        case 'style':
-        case 'script':
-          scaffoldLabelPre = `<${s.type}>`;
-          break;
-      }
+  completeSnippets(scaffoldSnippetSources: ScaffoldSnippetSources): CompletionItem[] {
+    return this._snippets
+      .filter(s => {
+        return scaffoldSnippetSources[s.source] !== '';
+      })
+      .map(s => {
+        let scaffoldLabelPre = '';
+        switch (s.type) {
+          case 'file':
+            scaffoldLabelPre = '<file> with';
+            break;
+          case 'custom':
+            scaffoldLabelPre = '<custom> with';
+            break;
+          case 'template':
+          case 'style':
+          case 'script':
+            scaffoldLabelPre = `<${s.type}>`;
+            break;
+        }
 
-      const shortUpperSource = s.source[0].toUpperCase();
+        const sourceIndicator = scaffoldSnippetSources[s.source];
 
-      const label = `${scaffoldLabelPre} ${s.name} (${shortUpperSource})`;
-      const sortText = computeSortTextPrefix(s.source, s.type) + label;
-      return <CompletionItem>{
-        label,
-        kind: CompletionItemKind.Snippet,
-        insertText: s.content,
-        insertTextFormat: InsertTextFormat.Snippet,
-        sortText
-      };
-    });
+        const label = `${scaffoldLabelPre} ${s.name} ${sourceIndicator}`;
+        const sortText = computeSortTextPrefix(s.source, s.type) + label;
+        return <CompletionItem>{
+          label,
+          kind: CompletionItemKind.Snippet,
+          insertText: s.content,
+          insertTextFormat: InsertTextFormat.Snippet,
+          sortText
+        };
+      });
   }
 }
 

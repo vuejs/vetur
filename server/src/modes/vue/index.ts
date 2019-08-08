@@ -1,11 +1,16 @@
 import { LanguageMode } from '../../embeddedSupport/languageModes';
-import { SnippetManager } from './snippets';
+import { SnippetManager, ScaffoldSnippetSources } from './snippets';
 import { Range } from 'vscode-css-languageservice';
 
 export function getVueMode(workspacePath: string, globalSnippetDir: string | undefined): LanguageMode {
   let config: any = {};
 
   const snippetManager = new SnippetManager(workspacePath, globalSnippetDir);
+  let scaffoldSnippetSources: ScaffoldSnippetSources = {
+    workspace: '💼',
+    user: '🗒️',
+    vetur: '✌'
+  };
 
   return {
     getId() {
@@ -13,9 +18,16 @@ export function getVueMode(workspacePath: string, globalSnippetDir: string | und
     },
     configure(c) {
       config = c;
+      if (c.vetur.completion['scaffoldSnippetSources']) {
+        scaffoldSnippetSources = c.vetur.completion['scaffoldSnippetSources'];
+      }
     },
     doComplete(document, position) {
-      if (!config.vetur.completion.useScaffoldSnippets) {
+      if (
+        scaffoldSnippetSources['workspace'] === '' &&
+        scaffoldSnippetSources['user'] === '' &&
+        scaffoldSnippetSources['vetur'] === ''
+      ) {
         return { isIncomplete: false, items: [] };
       }
 
@@ -26,7 +38,7 @@ export function getVueMode(workspacePath: string, globalSnippetDir: string | und
         .split('\n');
       const currentLine = lines[position.line];
 
-      const items = snippetManager.completeSnippets();
+      const items = snippetManager.completeSnippets(scaffoldSnippetSources);
 
       // If a line starts with `<`, it's probably a starting region tag that can be wholly replaced
       if (currentLine.length > 0 && currentLine.startsWith('<')) {
@@ -46,7 +58,7 @@ export function getVueMode(workspacePath: string, globalSnippetDir: string | und
 
       return {
         isIncomplete: false,
-        items 
+        items
       };
     },
     onDocumentRemoved() {},

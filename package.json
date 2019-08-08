@@ -175,10 +175,31 @@
           "default": true,
           "description": "Include completion for module export and auto import them"
         },
-        "vetur.completion.useScaffoldSnippets": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable/disable Vetur's built-in scaffolding snippets"
+        "vetur.completion.scaffoldSnippetSources": {
+          "type": "object",
+          "default": {
+            "workspace": "💼",
+            "user": "🗒️",
+            "vetur": "✌"
+          },
+          "properties": {
+            "workspace": {
+              "type": "string",
+              "default": "💼",
+              "description": "Show Scaffold Snippets from `<WORKSPACE>/.vscode/vetur/snippets`."
+            },
+            "user": {
+              "type": "string",
+              "default": "🗒️",
+              "description": "Show Scaffold Snippets from `<USER-DATA-DIR>/User/snippets/vetur`."
+            },
+            "vetur": {
+              "type": "string",
+              "default": "✌",
+              "description": "Show Scaffold Snippets bundled in Vetur."
+            }
+          },
+          "description": "Where Vetur source Scaffold Snippets from and how to indicate them. Set a source to \"\" to disable it.\n\n- workspace: `<WORKSPACE>/.vscode/vetur/snippets`.\n- user: `<USER-DATA-DIR>/User/snippets/vetur`.\n- vetur: Bundled in Vetur.\n\nThe default is:\n```\n\"vetur.completion.scaffoldSnippetSources\": {\n  \"workspace\": \"💼\",\n  \"user\": \"🗒️\",\n  \"vetur\": \"✌\"\n}\n```\n\nAlternatively, you can do:\n\n```\n\"vetur.completion.scaffoldSnippetSources\": {\n  \"workspace\": \"(W)\",\n  \"user\": \"(U)\",\n  \"vetur\": \"(V)\"\n}\n```\n\nRead more: https://vuejs.github.io/vetur/snippet.html."
         },
         "vetur.completion.tagCasing": {
           "type": "string",
