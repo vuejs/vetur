@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { CompletionItem, InsertTextFormat, CompletionItemKind } from 'vscode-languageserver-types';
+import { CompletionItem, InsertTextFormat, CompletionItemKind, MarkupContent } from 'vscode-languageserver-types';
 
 type SnippetSource = 'workspace' | 'user' | 'vetur';
 type SnippetType = 'file' | 'template' | 'style' | 'script' | 'custom';
@@ -51,18 +51,17 @@ export class SnippetManager {
         }
 
         const sourceIndicator = scaffoldSnippetSources[s.source];
-
         const label = `${scaffoldLabelPre} ${s.name} ${sourceIndicator}`;
-        const sortText = computeSortTextPrefix(s.source, s.type) + label;
-        const detail = computeDetailsForFileIcon(s.name, s.type);
+
         return <CompletionItem>{
           label,
           insertText: s.content,
           insertTextFormat: InsertTextFormat.Snippet,
           // Use file icon to indicate file/template/style/script/custom completions
           kind: CompletionItemKind.File,
-          detail,
-          sortText
+          documentation: computeDocumentation(s),
+          detail: computeDetailsForFileIcon(s),
+          sortText: computeSortTextPrefix(s) + label
         };
       });
   }
@@ -101,12 +100,12 @@ function loadSnippetsFromDir(dir: string, source: SnippetSource, type: SnippetTy
   return snippets;
 }
 
-function computeSortTextPrefix(source: SnippetSource, type: SnippetType) {
+function computeSortTextPrefix(snippet: Snippet) {
   const s = {
     workspace: 0,
     user: 1,
     vetur: 2
-  }[source];
+  }[snippet.source];
 
   const t = {
     file: 'a',
@@ -114,22 +113,35 @@ function computeSortTextPrefix(source: SnippetSource, type: SnippetType) {
     style: 'c',
     script: 'd',
     custom: 'e'
-  }[type];
+  }[snippet.type];
 
   return s + t;
 }
 
-function computeDetailsForFileIcon(name: string, type: SnippetType) {
-  switch (type) {
-    case 'file':
-      return name + '.vue';
-    case 'template':
-      return name + '.html';
-    case 'style':
-      return name + '.css';
-    case 'template':
-      return name + '.js';
-    case 'custom':
-      return name;
+function computeDetailsForFileIcon(s: Snippet) {
+  let segments = s.name.split('.');
+  if (segments.length >= 2) {
+    segments = segments.slice(0, segments.length - 1);
   }
+  const nameWithoutSuffix = segments.join('.');
+
+  switch (s.type) {
+    case 'file':
+      return nameWithoutSuffix + '.vue';
+    case 'template':
+      return nameWithoutSuffix + '.html';
+    case 'style':
+      return nameWithoutSuffix + '.css';
+    case 'template':
+      return nameWithoutSuffix + '.js';
+    case 'custom':
+      return nameWithoutSuffix;
+  }
+}
+
+function computeDocumentation(s: Snippet): MarkupContent {
+  return {
+    kind: 'markdown',
+    value: `\`\`\`vue\n${s.content}\n\`\`\``
+  };
 }
