@@ -54,11 +54,14 @@ export class SnippetManager {
 
         const label = `${scaffoldLabelPre} ${s.name} ${sourceIndicator}`;
         const sortText = computeSortTextPrefix(s.source, s.type) + label;
+        const detail = computeDetailsForFileIcon(s.name, s.type);
         return <CompletionItem>{
           label,
-          kind: CompletionItemKind.Snippet,
           insertText: s.content,
           insertTextFormat: InsertTextFormat.Snippet,
+          // Use file icon to indicate file/template/style/script/custom completions
+          kind: CompletionItemKind.File,
+          detail,
           sortText
         };
       });
@@ -114,4 +117,19 @@ function computeSortTextPrefix(source: SnippetSource, type: SnippetType) {
   }[type];
 
   return s + t;
+}
+
+function computeDetailsForFileIcon(name: string, type: SnippetType) {
+  switch (type) {
+    case 'file':
+      return name + '.vue';
+    case 'template':
+      return name + '.html';
+    case 'style':
+      return name + '.css';
+    case 'template':
+      return name + '.js';
+    case 'custom':
+      return name;
+  }
 }
