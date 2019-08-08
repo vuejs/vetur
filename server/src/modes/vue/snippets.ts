@@ -20,14 +20,12 @@ export interface ScaffoldSnippetSources {
 export class SnippetManager {
   private _snippets: Snippet[] = [];
 
-  constructor(workspacePath: string, globalSnippetDir: string | undefined) {
-    if (globalSnippetDir && fs.existsSync(globalSnippetDir)) {
-      this._snippets = [
-        ...loadAllSnippets(path.resolve(workspacePath, '.vscode/vetur/snippets'), 'workspace'),
-        ...loadAllSnippets(globalSnippetDir, 'user'),
-        ...loadAllSnippets(path.resolve(__dirname, '../../../../server/src/modes/vue/veturSnippets'), 'vetur')
-      ];
-    }
+  constructor(workspacePath: string, globalSnippetDir: string) {
+    this._snippets = [
+      ...loadAllSnippets(path.resolve(workspacePath, '.vscode/vetur/snippets'), 'workspace'),
+      ...loadAllSnippets(globalSnippetDir, 'user'),
+      ...loadAllSnippets(path.resolve(__dirname, './veturSnippets'), 'vetur')
+    ];
   }
 
   // Return all snippets in order

@@ -2,7 +2,7 @@ import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { SnippetManager, ScaffoldSnippetSources } from './snippets';
 import { Range } from 'vscode-css-languageservice';
 
-export function getVueMode(workspacePath: string, globalSnippetDir: string | undefined): LanguageMode {
+export function getVueMode(workspacePath: string, globalSnippetDir: string): LanguageMode {
   let config: any = {};
 
   const snippetManager = new SnippetManager(workspacePath, globalSnippetDir);

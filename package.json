@@ -9,7 +9,9 @@
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "tsc -b .",
-    "watch": "tsc -b -w .",
+    "watch": "run-s compile copy:snippets watch:build",
+    "watch:build": "tsc -b -w .",
+    "copy:snippets": "cp -r server/src/modes/vue/veturSnippets server/dist/modes/vue/veturSnippets",
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
     "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",

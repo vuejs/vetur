@@ -102,7 +102,7 @@ export class LanguageModes {
     this.modelCaches.push(this.documentRegions);
   }
 
-  async init(workspacePath: string, services: VLSServices, globalSnippetDir: string | undefined) {
+  async init(workspacePath: string, services: VLSServices, globalSnippetDir: string) {
     let tsModule = await import('typescript');
     if (services.dependencyService) {
       const ts = services.dependencyService.getDependency('typescript');
