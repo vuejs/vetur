@@ -71,6 +71,10 @@
       {
         "command": "vetur.showCorrespondingVirtualFile",
         "title": "Vetur: Show corresponding virtual file and sourcemap"
+      },
+      {
+        "command": "vetur.openUserScaffoldSnippetFolder",
+        "title": "Vetur: Open user scaffold snippet folder"
       }
     ],
     "breakpoints": [
