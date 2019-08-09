@@ -8,7 +8,8 @@
   "publisher": "octref",
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
-    "compile": "tsc -b .",
+    "compile": "run-s compile:source copy:snippets",
+    "compile:source": "tsc -b .",
     "watch": "run-s compile copy:snippets watch:build",
     "watch:build": "tsc -b -w .",
     "copy:snippets": "cp -r server/src/modes/vue/veturSnippets server/dist/modes/vue/veturSnippets",
@@ -20,7 +21,7 @@
     "test:int": "node ./dist/test/codeTestRunner.js interpolation",
     "test": "run-s compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
-    "prepare-publish": "yarn compile -f && ./build/release-cleanup.sh"
+    "prepare-publish": "./build/release-cleanup.sh"
   },
   "husky": {
     "hooks": {
