@@ -8,6 +8,7 @@ interface Snippet {
   source: SnippetSource;
   name: string;
   type: SnippetType;
+  customTypeName?: string;
   content: string;
 }
 
@@ -38,10 +39,10 @@ export class SnippetManager {
         let scaffoldLabelPre = '';
         switch (s.type) {
           case 'file':
-            scaffoldLabelPre = '<file> with';
+            scaffoldLabelPre = '<vue> with';
             break;
           case 'custom':
-            scaffoldLabelPre = '<custom> with';
+            scaffoldLabelPre = `<${s.customTypeName || 'custom'}> with`;
             break;
           case 'template':
           case 'style':
@@ -68,13 +69,30 @@ export class SnippetManager {
 }
 
 function loadAllSnippets(rootDir: string, source: SnippetSource): Snippet[] {
-  return [
+  let snippets = [
     ...loadSnippetsFromDir(rootDir, source, 'file'),
     ...loadSnippetsFromDir(path.resolve(rootDir, 'template'), source, 'template'),
     ...loadSnippetsFromDir(path.resolve(rootDir, 'style'), source, 'style'),
-    ...loadSnippetsFromDir(path.resolve(rootDir, 'script'), source, 'script'),
-    ...loadSnippetsFromDir(path.resolve(rootDir, 'custom'), source, 'custom')
+    ...loadSnippetsFromDir(path.resolve(rootDir, 'script'), source, 'script')
   ];
+
+  try {
+    fs.readdirSync(rootDir).forEach(p => {
+      const absPath = path.resolve(rootDir, p);
+      if (!absPath.endsWith('.vue') && fs.existsSync(absPath) && fs.lstatSync(absPath).isDirectory()) {
+        const customDirSnippets = loadSnippetsFromDir(absPath, source, 'custom').map(s => {
+          return {
+            ...s,
+            customTypeName: p
+          };
+        });
+
+        snippets = [...snippets, ...customDirSnippets];
+      }
+    });
+  } catch (err) {}
+
+  return snippets;
 }
 
 function loadSnippetsFromDir(dir: string, source: SnippetSource, type: SnippetType): Snippet[] {
@@ -119,23 +137,17 @@ function computeSortTextPrefix(snippet: Snippet) {
 }
 
 function computeDetailsForFileIcon(s: Snippet) {
-  let segments = s.name.split('.');
-  if (segments.length >= 2) {
-    segments = segments.slice(0, segments.length - 1);
-  }
-  const nameWithoutSuffix = segments.join('.');
-
   switch (s.type) {
     case 'file':
-      return nameWithoutSuffix + '.vue';
+      return s.name + '/.vue';
     case 'template':
-      return nameWithoutSuffix + '.html';
+      return s.name + '/.html';
     case 'style':
-      return nameWithoutSuffix + '.css';
+      return s.name + '/.css';
     case 'template':
-      return nameWithoutSuffix + '.js';
+      return s.name + '/.js';
     case 'custom':
-      return nameWithoutSuffix;
+      return s.name;
   }
 }
 
