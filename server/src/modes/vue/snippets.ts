@@ -139,13 +139,13 @@ function computeSortTextPrefix(snippet: Snippet) {
 function computeDetailsForFileIcon(s: Snippet) {
   switch (s.type) {
     case 'file':
-      return s.name + '/.vue';
+      return s.name + ' | .vue';
     case 'template':
-      return s.name + '/.html';
+      return s.name + ' | .html';
     case 'style':
-      return s.name + '/.css';
+      return s.name + ' | .css';
     case 'template':
-      return s.name + '/.js';
+      return s.name + ' | .js';
     case 'custom':
       return s.name;
   }
