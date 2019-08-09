@@ -37,3 +37,5 @@ For example, `vue` packages type definition in its module, so
 - `npm i -D @types/lodash`
 - `import * as _ from 'lodash'`
 - `_.` should prompt IntelliSense for lodash.
+
+See also the [Frequently Asked Questions](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md#faq) for more information on module resolution with regards to path aliases and Single File Components.
