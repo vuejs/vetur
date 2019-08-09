@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getGeneratedGrammar } from './grammar';
+import { getGeneratedGrammar } from '../grammar';
 
 export function generateGrammarCommandHandler(extensionPath: string) {
   return () => {

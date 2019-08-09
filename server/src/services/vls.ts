@@ -99,10 +99,11 @@ export class VLS {
         ? _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
         : false
     );
+
     await this.languageModes.init(workspacePath, {
       infoService: this.vueInfoService,
       dependencyService: this.dependencyService
-    });
+    }, params.initializationOptions['globalSnippetDir']);
 
     this.setupConfigListeners();
     this.setupLSPHandlers();

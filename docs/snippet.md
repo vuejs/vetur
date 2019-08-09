@@ -57,3 +57,41 @@ export default {
 
 </style>
 ```
+
+## Customizable Scaffold Snippets
+
+Three sources supplement Vetur with scaffold snippets:
+
+![Snippet Main](./images/snippet-main.png)
+
+- 💼 Workspace. Located at `<WORKSPACE>/.vscode/vetur/snippets`. These scaffold snippets are only available in the workspace.
+- 🗒️ User data directory. You can open the folder with the command `Vetur: Open user scaffold snippet folder`. These scaffold snippets are available in all workspaces.
+- ✌ Vetur. Vetur offers a few scaffold snippets out of the box.
+
+The workspace/user Vetur snippet folders share the same structure:
+
+```
+vetur/snippets
+├── docs
+│   │   // Completed as `<docs>`. Will have default completion icon.
+│   └── docs.vue
+├── style
+│   │   // Completed as `<style>`. Will have CSS completion icon.
+│   │   // `template` and `script` folder will have HTML/JS icons.
+│   └── scss-module.vue 
+└── vue-class-component.vue // Top level files will be completed as `<vue>`
+```
+
+Completions of scaffold snippets are sorted by their categories. Workspace > User > Vetur.
+
+You can customize the suffix and turn sources on/off with `vetur.completion.scaffoldSnippetSources`:
+
+```json
+"vetur.completion.scaffoldSnippetSources": {
+  "workspace": "💼", // Suffix workspace snippets with `💼`
+  "user": "(️User)", // Suffix workspace snippets with `(User)`
+  "vetur": "" // Disable Vetur's builtin scaffold snippets
+}
+```
+
+![Snippet Partial](./images/snippet-main.png)

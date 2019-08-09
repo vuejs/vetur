@@ -102,7 +102,7 @@ export class LanguageModes {
     this.modelCaches.push(this.documentRegions);
   }
 
-  async init(workspacePath: string, services: VLSServices) {
+  async init(workspacePath: string, services: VLSServices, globalSnippetDir: string) {
     let tsModule = await import('typescript');
     if (services.dependencyService) {
       const ts = services.dependencyService.getDependency('typescript');
@@ -135,7 +135,7 @@ export class LanguageModes {
       services.dependencyService
     );
 
-    this.modes['vue'] = getVueMode();
+    this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
     this.modes['css'] = getCSSMode(this.documentRegions);
     this.modes['postcss'] = getPostCSSMode(this.documentRegions);

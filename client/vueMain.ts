@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { LanguageClient, WorkspaceEdit } from 'vscode-languageclient';
-import { generateGrammarCommandHandler } from './generate_grammar';
+import { generateGrammarCommandHandler } from './commands/generateGrammarCommand';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
 import { join } from 'path';
@@ -8,9 +8,14 @@ import {
   setVirtualContents,
   registerVeturTextDocumentProviders,
   generateShowVirtualFileCommand
-} from './virtualFileCommands';
+} from './commands/virtualFileCommand';
+import { getGlobalSnippetDir } from './userSnippetDir';
+import { generateOpenUserScaffoldSnippetFolderCommand } from './commands/openUserScaffoldSnippetFolderCommand';
 
 export async function activate(context: vscode.ExtensionContext) {
+  const isInsiders = vscode.env.appName.includes('Insiders');
+  const globalSnippetDir = getGlobalSnippetDir(isInsiders);
+
   /**
    * Virtual file display command for debugging template interpolation
    */
@@ -21,6 +26,16 @@ export async function activate(context: vscode.ExtensionContext) {
    */
   context.subscriptions.push(
     vscode.commands.registerCommand('vetur.generateGrammar', generateGrammarCommandHandler(context.extensionPath))
+  );
+
+  /**
+   * Open custom snippet folder
+   */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'vetur.openUserScaffoldSnippetFolder',
+      generateOpenUserScaffoldSnippetFolderCommand(globalSnippetDir)
+    )
   );
 
   context.subscriptions.push(
@@ -45,7 +60,7 @@ export async function activate(context: vscode.ExtensionContext) {
    */
 
   const serverModule = context.asAbsolutePath(join('server', 'dist', 'vueServerMain.js'));
-  const client = initializeLanguageClient(serverModule);
+  const client = initializeLanguageClient(serverModule, globalSnippetDir);
   context.subscriptions.push(client.start());
 
   client
