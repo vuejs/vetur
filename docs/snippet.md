@@ -95,3 +95,7 @@ You can customize the suffix and turn sources on/off with `vetur.completion.scaf
 ```
 
 ![Snippet Partial](./images/snippet-main.png)
+
+#### Snippet Syntax
+
+You can use everything that's allowed in [VS Code Snippet Syntax](https://code.visualstudio.com/docs/editor/userdefinedsnippets). The good thing is, you write them in `.vue` files instead of `.json` files, and there's no escape for special characters you need to do.
