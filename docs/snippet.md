@@ -94,7 +94,7 @@ You can customize the suffix and turn sources on/off with `vetur.completion.scaf
 }
 ```
 
-![Snippet Partial](./images/snippet-main.png)
+![Snippet Partial](./images/snippet-partial.png)
 
 #### Snippet Syntax
 
