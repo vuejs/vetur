@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.22.0
+### 0.22.0 | 2019-08-09 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.0/vspackage)
 
 - New Scaffold Snippets system that allows system / workspace level customizable snippets. See details in [snippet docs](https://vuejs.github.io/vetur/snippet.html). #1151.
 - 🙌 `prettier-tslint` formatter option for TS region. Thanks to contribution from [@NickeyLin](https://github.com/NickeyLin). #1354.

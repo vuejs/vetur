@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.22.0 | 2019-08-09 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.0/vspackage)
+
+- New Scaffold Snippets system that allows system / workspace level customizable snippets. See details in [snippet docs](https://vuejs.github.io/vetur/snippet.html). #1151.
+- 🙌 `prettier-tslint` formatter option for TS region. Thanks to contribution from [@NickeyLin](https://github.com/NickeyLin). #1354.
+- 🙌 Replaced bundled Vuetify support with official tag/attribute definition from Vuetify@2.0. Thanks to contribution from [@nekosaur](https://github.com/nekosaur). #1365.
+- 🙌 Avoid template diagnostic error on empty v-on. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1371.
+- 🙌 Read `.prettierrc` config for prettyhtml formatting. Thanks to contributino from [@bolasblack](https://github.com/bolasblack). #1036.
+
 ### 0.21.1 | 2019-06-28 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.21.1/vspackage)
 
 - Completion for event modifiers. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #780 and #1326.
