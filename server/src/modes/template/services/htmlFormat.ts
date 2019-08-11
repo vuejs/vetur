@@ -99,13 +99,13 @@ function getPrettyHtmlOptions(prettierrcOptions: Partial<PrettierConfig> | null,
   }
 
   return {
+    ...vlsFormatConfig.defaultFormatterOptions['prettyhtml'],
     ...fromVls,
     ...fromPrettier,
     usePrettier: true,
     prettier: {
       ...prettierrcOptions
-    },
-    ...vlsFormatConfig.defaultFormatterOptions['prettyhtml']
+    }
   };
 }
 
