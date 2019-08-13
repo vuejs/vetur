@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.22.1 | 2019-08-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.1/vspackage)
+
+- Fix command "Open user scaffold snippet folder" failure when the global snippet dir doens't exist yet. #1383.
+- Add back sass/postcss/stylus scaffold snippet into the new snippet system. #1386.
+
 ### 0.22.0 | 2019-08-09 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.0/vspackage)
 
 - New Scaffold Snippets system that allows system / workspace level customizable snippets. See details in [snippet docs](https://vuejs.github.io/vetur/snippet.html). #1151.
