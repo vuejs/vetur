@@ -22,43 +22,10 @@ Two exceptions:
 </style>
 ```
 
-## Scaffold snippets
+## Customizable Scaffold Snippets
 
 Vetur provides scaffolding snippets for quickly defining regions.  
 They are `vue` snippets and can be used outside language regions.
-
-`scaffold`
-```html
-<template>
-  
-</template>
-
-<script>
-export default {
-
-}
-</script>
-
-<style>
-
-</style>
-```
-
-`template with html`
-```html
-<template>
-
-</template>
-```
-
-`style with scss`
-```html
-<style lang="scss">
-
-</style>
-```
-
-## Customizable Scaffold Snippets
 
 Three sources supplement Vetur with scaffold snippets:
 
