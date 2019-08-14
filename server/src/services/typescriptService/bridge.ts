@@ -23,7 +23,7 @@ export declare const ${componentHelperName}: {
   <T>(
     vm: T,
     tag: string,
-    data: ComponentData<HTMLElementEventMap & Record<string, any>> & ThisType<T>,
+    data: ComponentData<Record<string, any>> & ThisType<T>,
     children: any[]
   ): any;
 };
