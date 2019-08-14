@@ -27,6 +27,13 @@ Two exceptions:
 Vetur provides scaffolding snippets for quickly defining regions.  
 They are `vue` snippets and can be used outside language regions.
 
+To start using them, type:
+
+- `<vue` for file scaffolding snippets
+- `<template` for template scaffolding snippets
+- `<style` for style scaffolding snippets
+- `<script` for script scaffolding snippets
+
 Three sources supplement Vetur with scaffold snippets:
 
 ![Snippet Main](./images/snippet-main.png)
