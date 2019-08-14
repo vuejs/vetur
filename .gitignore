@@ -18,3 +18,5 @@ docs/.vuepress/dist
 
 .nyc_output
 coverage.lcov
+
+**/*.tsbuildinfo
