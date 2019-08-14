@@ -12,7 +12,7 @@
     "compile:source": "tsc -b .",
     "watch": "run-s compile copy:snippets watch:build",
     "watch:build": "tsc -b -w .",
-    "copy:snippets": "rm -r server/dist/modes/vue/veturSnippets && cp -r server/src/modes/vue/veturSnippets server/dist/modes/vue/veturSnippets",
+    "copy:snippets": "bash ./build/copy-snippets.sh",
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
     "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
