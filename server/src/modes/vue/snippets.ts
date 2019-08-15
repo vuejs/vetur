@@ -78,6 +78,9 @@ function loadAllSnippets(rootDir: string, source: SnippetSource): Snippet[] {
 
   try {
     fs.readdirSync(rootDir).forEach(p => {
+      if (p === 'template' || p === 'style' || p === 'script') {
+        return;
+      }
       const absPath = path.resolve(rootDir, p);
       if (!absPath.endsWith('.vue') && fs.existsSync(absPath) && fs.lstatSync(absPath).isDirectory()) {
         const customDirSnippets = loadSnippetsFromDir(absPath, source, 'custom').map(s => {
