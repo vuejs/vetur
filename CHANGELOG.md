@@ -4,6 +4,7 @@
 
 - Update to TypeScript 3.5.3. #1389.
 - Relax `$event` type to avoid type error on `@` events. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1306.
+- Fix a bug that causes scaffold snippets to show twice. #1386.
 
 ### 0.22.1 | 2019-08-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.1/vspackage)
 
