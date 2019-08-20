@@ -1228,9 +1228,10 @@ editorconfig@^0.15.3:
     semver "^5.6.0"
     sigmund "^1.0.1"
 
-element-helper-json@^2.0.2:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/element-helper-json/-/element-helper-json-2.0.5.tgz#8a8dad0d256da582181073f15b7593ba1c7c37b1"
+element-helper-json@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/element-helper-json/-/element-helper-json-2.0.6.tgz#cd1c4b14b29d8515c3e86ea36da3a1dc44330934"
+  integrity sha512-AzJvyAAYwFvv4zesXVQbB8zNBMJl/6HjDulY2NfxHdOEhsjq1knIoYOI+Ln20OlYX431sxSBO/5ji+aaQr/VoQ==
 
 emoji-regex@^7.0.1:
   version "7.0.3"

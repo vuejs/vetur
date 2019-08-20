@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.23.0
+
+- Upgrade `element-helper-json` dependency for correct auto-completion. #1391.
+
 ### 0.22.2 | 2019-08-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.2/vspackage)
 
 - Update to TypeScript 3.5.3. #1389.
