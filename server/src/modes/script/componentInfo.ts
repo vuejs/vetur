@@ -92,38 +92,31 @@ export function getDefaultExportNode(
   if (exportStmts.length === 0) {
     return undefined;
   }
-  const exportNode = (exportStmts[0].kind === tsModule.SyntaxKind.ExportAssignment) ?
-    (exportStmts[0] as ts.ExportAssignment).expression : (exportStmts[0] as ts.ClassDeclaration);
+  const exportNode =
+    exportStmts[0].kind === tsModule.SyntaxKind.ExportAssignment
+      ? (exportStmts[0] as ts.ExportAssignment).expression
+      : (exportStmts[0] as ts.ClassDeclaration);
 
   return getNodeFromExportNode(tsModule, exportNode);
 }
 
 function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
-  const result: PropInfo[] = [];
-  if (isClassType(tsModule, defaultExportType)) {
-    result.push.apply(result, getClassProps(defaultExportType) || []);
+  const result: PropInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
 
-    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
-    if (decoratorArgumentType) {
-      result.push.apply(result, getObjectProps(decoratorArgumentType) || []);
-    }
-  } else {
-    result.push.apply(result, getObjectProps(defaultExportType) || []);
-  }
-
-  function getClassProps (type: ts.Type) {
+  function getClassProps(type: ts.Type) {
     const propDecoratorNames = ['Prop', 'Model', 'PropSync'];
-    const propsSymbols = type.getProperties()
-      .filter((property) =>
-        property.valueDeclaration.kind === tsModule.SyntaxKind.PropertyDeclaration &&
-        property.declarations[0].decorators &&
-        property.declarations[0].decorators.some((decorator) =>
-          propDecoratorNames.includes((decorator.expression as ts.CallExpression).expression.getText())
+    const propsSymbols = type
+      .getProperties()
+      .filter(property =>
+        getPropertyDecoratorNames(property, tsModule.SyntaxKind.PropertyDeclaration).some(decoratorName =>
+          propDecoratorNames.includes(decoratorName)
         )
       );
-    if (propsSymbols.length === 0) { return undefined; }
+    if (propsSymbols.length === 0) {
+      return undefined;
+    }
 
-    return propsSymbols.map((prop) => {
+    return propsSymbols.map(prop => {
       return {
         name: prop.name,
         documentation: buildDocumentation(tsModule, prop, checker)
@@ -131,7 +124,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
     });
   }
 
-  function getObjectProps (type: ts.Type) {
+  function getObjectProps(type: ts.Type) {
     const propsSymbol = checker.getPropertyOfType(type, 'props');
     if (!propsSymbol || !propsSymbol.valueDeclaration) {
       return undefined;
@@ -176,6 +169,8 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
         };
       });
     }
+
+    return undefined;
   }
 
   return result.length === 0 ? undefined : result;
@@ -195,35 +190,25 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
  * ```
  */
 function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[] | undefined {
-  const result: DataInfo[] = [];
-  if (isClassType(tsModule, defaultExportType)) {
-    result.push.apply(result, getClassData(defaultExportType) || []);
+  const result: DataInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassData, getObjectData);
 
-    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
-    if (decoratorArgumentType) {
-      result.push.apply(result, getObjectData(decoratorArgumentType) || []);
-    }
-  } else {
-    result.push.apply(result, getObjectData(defaultExportType) || []);
-  }
-
-  function getClassData (type: ts.Type) {
+  function getClassData(type: ts.Type) {
     const noDataDecoratorNames = ['Prop', 'Model', 'Provide', 'ProvideReactive', 'Ref'];
-    const dataSymbols = type.getProperties()
-      .filter((property) =>
-        property.valueDeclaration.kind === tsModule.SyntaxKind.PropertyDeclaration && (
-          property.declarations[0].decorators === undefined || (
-            property.declarations[0].decorators &&
-            !property.declarations[0].decorators.some((decorator) =>
-              noDataDecoratorNames.includes((decorator.expression as ts.CallExpression).expression.getText())
-            )
-          )
-        ) &&
-        !property.name.startsWith('_') && !property.name.startsWith('$')
+    const dataSymbols = type
+      .getProperties()
+      .filter(
+        property =>
+          !getPropertyDecoratorNames(property, tsModule.SyntaxKind.PropertyDeclaration).some(decoratorName =>
+            noDataDecoratorNames.includes(decoratorName)
+          ) &&
+          !property.name.startsWith('_') &&
+          !property.name.startsWith('$')
       );
-    if (dataSymbols.length === 0) { return undefined; }
+    if (dataSymbols.length === 0) {
+      return undefined;
+    }
 
-    return dataSymbols.map((data) => {
+    return dataSymbols.map(data => {
       return {
         name: data.name,
         documentation: buildDocumentation(tsModule, data, checker)
@@ -231,7 +216,7 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
     });
   }
 
-  function getObjectData (type: ts.Type) {
+  function getObjectData(type: ts.Type) {
     const dataSymbol = checker.getPropertyOfType(type, 'data');
     if (!dataSymbol || !dataSymbol.valueDeclaration) {
       return undefined;
@@ -259,40 +244,37 @@ function getComputed(
   defaultExportType: ts.Type,
   checker: ts.TypeChecker
 ): ComputedInfo[] | undefined {
-  const result: ComputedInfo[] = [];
-  if (isClassType(tsModule, defaultExportType)) {
-    result.push.apply(result, getClassComputed(defaultExportType) || []);
+  const result: ComputedInfo[] = getClassAndObjectInfo(
+    tsModule,
+    defaultExportType,
+    checker,
+    getClassComputed,
+    getObjectComputed
+  );
 
-    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
-    if (decoratorArgumentType) {
-      result.push.apply(result, getObjectComputed(decoratorArgumentType) || []);
+  function getClassComputed(type: ts.Type) {
+    const getAccessorSymbols = type
+      .getProperties()
+      .filter(property => property.valueDeclaration.kind === tsModule.SyntaxKind.GetAccessor);
+    const setAccessorSymbols = defaultExportType
+      .getProperties()
+      .filter(property => property.valueDeclaration.kind === tsModule.SyntaxKind.SetAccessor);
+    if (getAccessorSymbols.length === 0) {
+      return undefined;
     }
-  } else {
-    result.push.apply(result, getObjectComputed(defaultExportType) || []);
-  }
 
-  function getClassComputed (type: ts.Type) {
-    const getAccessorSymbols = type.getProperties()
-      .filter((property) =>
-        property.valueDeclaration.kind === tsModule.SyntaxKind.GetAccessor
-      );
-    const setAccessorSymbols = defaultExportType.getProperties()
-    .filter((property) =>
-      property.valueDeclaration.kind === tsModule.SyntaxKind.SetAccessor
-    );
-    if (getAccessorSymbols.length === 0) { return undefined; }
-
-    return getAccessorSymbols.map((computed) => {
-      const setComputed = setAccessorSymbols.find((setAccessor) => setAccessor.name === computed.name);
+    return getAccessorSymbols.map(computed => {
+      const setComputed = setAccessorSymbols.find(setAccessor => setAccessor.name === computed.name);
       return {
         name: computed.name,
-        documentation: buildDocumentation(tsModule, computed, checker) +
-        ((setComputed !== undefined) ? buildDocumentation(tsModule, setComputed, checker) : '')
+        documentation:
+          buildDocumentation(tsModule, computed, checker) +
+          (setComputed !== undefined ? buildDocumentation(tsModule, setComputed, checker) : '')
       };
     });
   }
 
-  function getObjectComputed (type: ts.Type) {
+  function getObjectComputed(type: ts.Type) {
     const computedSymbol = checker.getPropertyOfType(type, 'computed');
     if (!computedSymbol || !computedSymbol.valueDeclaration) {
       return undefined;
@@ -318,7 +300,7 @@ function getComputed(
   return result.length === 0 ? undefined : result;
 }
 
-function isInternalHook (methodName: string) {
+function isInternalHook(methodName: string) {
   const $internalHooks = [
     'data',
     'beforeCreate',
@@ -343,33 +325,28 @@ function getMethods(
   defaultExportType: ts.Type,
   checker: ts.TypeChecker
 ): MethodInfo[] | undefined {
-  const result: MethodInfo[] = [];
-  if (isClassType(tsModule, defaultExportType)) {
-    result.push.apply(result, getClassMethods(defaultExportType) || []);
+  const result: MethodInfo[] = getClassAndObjectInfo(
+    tsModule,
+    defaultExportType,
+    checker,
+    getClassMethods,
+    getObjectMethods
+  );
 
-    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
-    if (decoratorArgumentType) {
-      result.push.apply(result, getObjectMethods(decoratorArgumentType) || []);
-    }
-  } else {
-    result.push.apply(result, getObjectMethods(defaultExportType) || []);
-  }
-
-  function getClassMethods (type: ts.Type) {
-    const methodSymbols = type.getProperties()
-      .filter((property) =>
-        property.valueDeclaration.kind === tsModule.SyntaxKind.MethodDeclaration && (
-          property.declarations[0].decorators === undefined || (
-            property.declarations[0].decorators &&
-            !property.declarations[0].decorators.some((decorator) =>
-              (decorator.expression as ts.CallExpression).expression.getText() === 'Watch'
-            )
-          )
-        ) && !isInternalHook(property.name)
+  function getClassMethods(type: ts.Type) {
+    const methodSymbols = type
+      .getProperties()
+      .filter(
+        property =>
+          !getPropertyDecoratorNames(property, tsModule.SyntaxKind.MethodDeclaration).some(
+            decoratorName => decoratorName === 'Watch'
+          ) && !isInternalHook(property.name)
       );
-    if (methodSymbols.length === 0) { return undefined; }
+    if (methodSymbols.length === 0) {
+      return undefined;
+    }
 
-    return methodSymbols.map((method) => {
+    return methodSymbols.map(method => {
       return {
         name: method.name,
         documentation: buildDocumentation(tsModule, method, checker)
@@ -377,7 +354,7 @@ function getMethods(
     });
   }
 
-  function getObjectMethods (type: ts.Type) {
+  function getObjectMethods(type: ts.Type) {
     const methodsSymbol = checker.getPropertyOfType(type, 'methods');
     if (!methodsSymbol || !methodsSymbol.valueDeclaration) {
       return undefined;
@@ -428,23 +405,17 @@ export function getLastChild(d: ts.Declaration) {
   return children[children.length - 1];
 }
 
-export function isClassType (
-  tsModule: T_TypeScript,
-  type: ts.Type
-) {
+export function isClassType(tsModule: T_TypeScript, type: ts.Type) {
   if (type.isClass === undefined) {
-    return !!((type.flags & tsModule.TypeFlags.Object ? (type as ts.ObjectType).objectFlags : 0)
-    & tsModule.ObjectFlags.Class);
+    return !!(
+      (type.flags & tsModule.TypeFlags.Object ? (type as ts.ObjectType).objectFlags : 0) & tsModule.ObjectFlags.Class
+    );
   } else {
     return type.isClass();
   }
 }
 
-export function getClassDecoratorArgumentType(
-  tsModule: T_TypeScript,
-  type: ts.Type,
-  checker: ts.TypeChecker
-) {
+export function getClassDecoratorArgumentType(tsModule: T_TypeScript, type: ts.Type, checker: ts.TypeChecker) {
   const decorators = type.symbol.declarations[0].decorators;
   if (!decorators || decorators.length === 0) {
     return undefined;
@@ -456,6 +427,46 @@ export function getClassDecoratorArgumentType(
   }
 
   return checker.getTypeAtLocation(decoratorArguments[0]);
+}
+
+function getClassAndObjectInfo<C, O>(
+  tsModule: T_TypeScript,
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker,
+  getClassResult: (type: ts.Type) => C[] | undefined,
+  getObjectResult: (type: ts.Type) => O[] | undefined
+) {
+  const result: Array<C | O> = [];
+  if (isClassType(tsModule, defaultExportType)) {
+    result.push.apply(result, getClassResult(defaultExportType) || []);
+    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
+    if (decoratorArgumentType) {
+      result.push.apply(result, getObjectResult(decoratorArgumentType) || []);
+    }
+  } else {
+    result.push.apply(result, getObjectResult(defaultExportType) || []);
+  }
+  return result;
+}
+
+function getPropertyDecoratorNames(property: ts.Symbol, checkSyntaxKind: ts.SyntaxKind): string[] {
+  if (property.valueDeclaration.kind !== checkSyntaxKind) {
+    return [];
+  }
+
+  if (property.declarations.length === 0) {
+    return [];
+  }
+
+  const decorators = property.declarations[0].decorators;
+  if (decorators === undefined) {
+    return [];
+  }
+
+  return decorators
+    .map(decorator => decorator.expression as ts.CallExpression)
+    .filter(decoratorExpression => decoratorExpression.expression !== undefined)
+    .map(decoratorExpression => decoratorExpression.expression.getText());
 }
 
 export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker: ts.TypeChecker) {
