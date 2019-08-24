@@ -69,7 +69,7 @@ export class SnippetManager {
 }
 
 function loadAllSnippets(rootDir: string, source: SnippetSource): Snippet[] {
-  let snippets = [
+  let snippets = typeof source !== 'string' ? [] : [
     ...loadSnippetsFromDir(rootDir, source, 'file'),
     ...loadSnippetsFromDir(path.resolve(rootDir, 'template'), source, 'template'),
     ...loadSnippetsFromDir(path.resolve(rootDir, 'style'), source, 'style'),
