@@ -5,7 +5,7 @@ import { Range } from 'vscode-css-languageservice';
 export function getVueMode(workspacePath: string, globalSnippetDir: string): LanguageMode {
   let config: any = {};
 
-  const snippetManager = new SnippetManager(workspacePath, globalSnippetDir);
+  const snippetManager = globalSnippetDir ? new SnippetManager(workspacePath, globalSnippetDir) : null;
   let scaffoldSnippetSources: ScaffoldSnippetSources = {
     workspace: '💼',
     user: '🗒️',
@@ -38,7 +38,7 @@ export function getVueMode(workspacePath: string, globalSnippetDir: string): Lan
         .split('\n');
       const currentLine = lines[position.line];
 
-      const items = snippetManager.completeSnippets(scaffoldSnippetSources);
+      const items = snippetManager ? snippetManager.completeSnippets(scaffoldSnippetSources) : [];
 
       // If a line starts with `<`, it's probably a starting region tag that can be wholly replaced
       if (currentLine.length > 0 && currentLine.startsWith('<')) {
