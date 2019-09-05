@@ -2,27 +2,41 @@
 
 Vetur supports syntax highlighting for the following languages:
 
-|syntax|lang|required extension|
-|---|---|---|
-|`<template>`|`html`|
-|`<template lang="pug">`|`pug`|
-|`<template lang="jade">`|`pug`|
-|`<template lang="haml">`|`haml`|[Better Haml](https://marketplace.visualstudio.com/items?itemName=karunamurti.haml) or [Ruby Haml](https://marketplace.visualstudio.com/items?itemName=vayan.haml)|
-|`<template lang="slm">`|`slm`|[Slm Syntax](https://marketplace.visualstudio.com/items?itemName=mrmlnc.vscode-slm)|
-|`<template lang="liquid">`|`liquid`|[Liquid Language Support](https://github.com/GingerBear/vscode-liquid)|
-|`<style>`|`css`|
-|`<style lang="postcss">`|`postcss`|
-|`<style lang="scss">`|`scss`|
-|`<style lang="sass">`|`sass`|[Sass](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented)|
-|`<style lang="less">`|`less`|
-|`<style lang="stylus">`|`stylus`|[language-stylus](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus)|
-|`<script>`|`js`|
-|`<script lang="ts">`|`ts`|
-|`<script lang="coffee">`|`coffee`|
+| syntax                   | lang      | required extension                                                                                                                                                 |
+| ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `<template>`             | `html`    |
+| `<template lang="pug">`  | `pug`     |
+| `<template lang="jade">` | `pug`     |
+| `<template lang="haml">` | `haml`    | [Better Haml](https://marketplace.visualstudio.com/items?itemName=karunamurti.haml) or [Ruby Haml](https://marketplace.visualstudio.com/items?itemName=vayan.haml) |
+| `<template lang="slm">`  | `slm`     | [Slm Syntax](https://marketplace.visualstudio.com/items?itemName=mrmlnc.vscode-slm)                                                                                |
+| `<style>`                | `css`     |
+| `<style lang="postcss">` | `postcss` |
+| `<style lang="scss">`    | `scss`    |
+| `<style lang="sass">`    | `sass`    | [Sass](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented)                                                                             |
+| `<style lang="less">`    | `less`    |
+| `<style lang="stylus">`  | `stylus`  | [language-stylus](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus)                                                                      |
+| `<script>`               | `js`      |
+| `<script lang="ts">`     | `ts`      |
+| `<script lang="coffee">` | `coffee`  |
 
+::: v-pre
 Vetur supports syntax highlighting for vue directives (e.g. `v-if` or `:attribute=`) and vue interpolations (e.g. `{{variable}}`).
+:::
 The supported attribute string literals are `'` and `"`.
 Vetur does not support the `` ` `` backtick literal, as it makes things more complex and there is no observed benefit of using it.
+
+Vetur does not support explicitly adding the default language:
+
+```vue
+<template lang="html"></template>
+
+<style lang="css"></style>
+
+<script lang="js"></script>
+<script lang="javascript"></script>
+```
+
+Preprocessors are also not languages, so `<script lang="babel">` would be invalid as well.
 
 ## Custom Block
 
@@ -36,10 +50,11 @@ Vetur provides a setting `vetur.grammar.customBlocks` that defaults to:
 ```
 
 You can
-  - change `vetur.grammar.customBlocks`
-  - run the command "Vetur: Generate grammar from `vetur.grammar.customBlocks`
-  - restart VS Code
-to get syntax highlighting for custom blocks.
+
+- change `vetur.grammar.customBlocks`
+- run the command "Vetur: Generate grammar from `vetur.grammar.customBlocks`
+- restart VS Code
+  to get syntax highlighting for custom blocks.
 
 Valid language value for custom blocks:
 
