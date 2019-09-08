@@ -33,6 +33,7 @@ export interface TemplateSourceMapNode {
   to: TemplateSourceMapNodeTo;
   offsetMapping: Mapping;
   offsetBackMapping: Mapping;
+  mergedNodes: TemplateSourceMapNode[];
 }
 
 export interface TemplateSourceMap {
@@ -67,11 +68,9 @@ export function generateSourceMap(
   syntheticSourceFile: ts.SourceFile,
   validSourceFile: ts.SourceFile
 ): TemplateSourceMapNode[] {
-  const walkASTTree = getAstWalker(tsModule);
-
   const sourceMapNodes: TemplateSourceMapNode[] = [];
   walkBothNode(syntheticSourceFile, validSourceFile);
-  return sourceMapNodes;
+  return foldSourceMapNodes(sourceMapNodes);
 
   function walkBothNode(syntheticNode: ts.Node, validNode: ts.Node) {
     const validNodeChildren: ts.Node[] = [];
@@ -111,20 +110,13 @@ export function generateSourceMap(
             fileName: validSourceFile.fileName
           },
           offsetMapping: {},
-          offsetBackMapping: {}
+          offsetBackMapping: {},
+          mergedNodes: []
         };
 
-        const thisDotRanges: TemplateSourceMapRange[] = [];
-        walkASTTree(vc, n => {
-          if (tsModule.isPropertyAccessExpression(n.parent) && n.kind === tsModule.SyntaxKind.ThisKeyword) {
-            thisDotRanges.push({
-              start: n.getStart(),
-              end: n.getEnd() + `.`.length
-            });
-          }
-        });
-
-        updateOffsetMapping(sourceMapNode, thisDotRanges);
+        const isThisInjected =
+          tsModule.isPropertyAccessExpression(vc) && vc.expression.kind === tsModule.SyntaxKind.ThisKeyword;
+        updateOffsetMapping(sourceMapNode, isThisInjected, !canIncludeTrivia(tsModule, vc));
 
         sourceMapNodes.push(sourceMapNode);
       }
@@ -134,15 +126,52 @@ export function generateSourceMap(
   }
 }
 
-export function getAstWalker(tsModule: T_TypeScript) {
-  return function walkASTTree(node: ts.Node, f: (n: ts.Node) => any) {
-    f(node);
+/**
+ * Merge source map nodes when a node overwraps another node.
+ * For example, the following expression will generates three source map nodes,
+ * for `foo` identifier, `bar` identifier and entire binary expression `foo + bar`.
+ *
+ * `foo + bar`
+ *
+ * In this case `foo + bar` contains `foo` and `bar`. Then we will merge source map nodes
+ * for the identifiers into the map for `foo + bar`.
+ */
+function foldSourceMapNodes(nodes: TemplateSourceMapNode[]): TemplateSourceMapNode[] {
+  return nodes.reduce<TemplateSourceMapNode[]>((folded, node) => {
+    const last = folded[folded.length - 1];
+    if (!last) {
+      return folded.concat(node);
+    }
 
-    tsModule.forEachChild(node, c => {
-      walkASTTree(c, f);
-      return false;
-    });
-  };
+    // Children source map nodes always appear after a parent node
+    // because of how we traverse source mapping in `walkBothNode` function.
+    if (node.from.start < last.from.start || last.from.end < node.from.end) {
+      return folded.concat(node);
+    }
+
+    last.offsetMapping = {
+      ...last.offsetMapping,
+      ...node.offsetMapping
+    };
+
+    last.offsetBackMapping = {
+      ...last.offsetBackMapping,
+      ...node.offsetBackMapping
+    };
+
+    last.mergedNodes.push(node);
+
+    return folded;
+  }, []);
+}
+
+function canIncludeTrivia(tsModule: T_TypeScript, node: ts.Node): boolean {
+  return !(
+    tsModule.isIdentifier(node) ||
+    tsModule.isStringLiteral(node) ||
+    tsModule.isNumericLiteral(node) ||
+    tsModule.isBigIntLiteral(node)
+  );
 }
 
 /**
@@ -226,32 +255,34 @@ export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, source
   return INVALID_RANGE;
 }
 
-function updateOffsetMapping(node: TemplateSourceMapNode, thisDotRanges: TemplateSourceMapRange[]) {
+function updateOffsetMapping(node: TemplateSourceMapNode, isThisInjected: boolean, fillIntermediate: boolean) {
   const from = [...Array(node.from.end - node.from.start + 1).keys()];
   const to: (number | undefined)[] = [...Array(node.to.end - node.to.start + 1).keys()];
 
-  thisDotRanges.forEach(tdr => {
-    for (let i = tdr.start; i < tdr.end; i++) {
-      to[i - node.to.start] = undefined;
+  if (isThisInjected) {
+    for (let i = 0; i < 'this.'.length; i++) {
+      to[node.to.start + i] = undefined;
     }
-  });
+
+    /**
+     * The case such as `foo` mapped to `this.foo`
+     * Both `|this.foo` and `this.|foo` should map to `|foo`
+     * Without this back mapping, mapping error from `this.bar` in `f(this.bar)` would fail
+     */
+    node.offsetBackMapping[node.to.start] = node.from.start + 'this.'.length;
+  }
 
   const toFiltered = to.filter(x => x !== undefined) as number[];
 
-  from.forEach((offset, i) => {
-    const from = offset + node.from.start;
-    const to = toFiltered[i] + node.to.start;
+  const mapping = fillIntermediate
+    ? from.map((from, i) => [from, toFiltered[i]])
+    : [[from[0], toFiltered[0]], [from[from.length - 1], toFiltered[toFiltered.length - 1]]];
+
+  mapping.forEach(([fromOffset, toOffset]) => {
+    const from = fromOffset + node.from.start;
+    const to = toOffset + node.to.start;
     node.offsetMapping[from] = to;
     node.offsetBackMapping[to] = from;
-  });
-
-  /**
-   * The case such as `foo` mapped to `this.foo`
-   * Both `|this.foo` and `this.|foo` should map to `|foo`
-   * Without this back mapping, mapping error from `this.bar` in `f(this.bar)` would fail
-   */
-  thisDotRanges.forEach(tdr => {
-    node.offsetBackMapping[tdr.start] = node.offsetBackMapping[tdr.end];
   });
 }
 

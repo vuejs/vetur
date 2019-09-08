@@ -45,23 +45,30 @@ function filePathToTest(filePath: string) {
   const sourceMapNodes = generateSourceMap(ts, syntheticSourceFile, validSourceFile);
 
   sourceMapNodes.forEach(node => {
+    const endOffsets = [...node.mergedNodes, node].reduce((acc, node) => {
+      acc.add(node.from.end);
+      return acc;
+    }, new Set<number>());
+
     for (const fromIndex in node.offsetMapping) {
       // Only map from [start, end)
-      if (parseInt(fromIndex, 10) !== node.from.end) {
+      if (!endOffsets.has(parseInt(fromIndex, 10))) {
         const toIndex = node.offsetMapping[fromIndex];
-        let errorMsg = `Pos ${fromIndex}: ${templateSrc[fromIndex]} doesn't map to ${toIndex}: ${
-          validSourceFile.getFullText()[toIndex]
-        }\n`;
+        const fromChar = templateSrc[fromIndex];
+        const toChar = validSourceFile.getFullText()[toIndex];
+
+        let errorMsg = `Pos ${fromIndex}: "${fromChar}" doesn't map to ${toIndex}: "${toChar}"\n`;
+
         errorMsg += `${templateSrc.slice(
           node.from.start,
           node.from.end
         )} should map to ${validSourceFile.getFullText().slice(node.to.start, node.to.end)}`;
 
-        // Single/double quotes are lost during transformation
-        if (templateSrc[fromIndex] === `'` || templateSrc[fromIndex] === `"`) {
-          assert.ok([`'`, `"`].includes(validSourceFile.getFullText()[toIndex]), errorMsg);
+        if (fromChar === `'` || fromChar === `"`) {
+          // Single/double quotes are lost during transformation
+          assert.ok([`'`, `"`].includes(toChar), errorMsg);
         } else {
-          assert.equal(templateSrc[fromIndex], validSourceFile.getFullText()[toIndex], errorMsg);
+          assert.equal(fromChar, toChar, errorMsg);
         }
       }
     }
