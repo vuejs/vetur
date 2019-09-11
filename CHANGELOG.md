@@ -4,6 +4,7 @@
 
 - Upgrade `element-helper-json` dependency for correct auto-completion. #1391.
 - 🙌 Fix VLS fail to start when `globalSnippetDir` is undefined. Thanks to contribution from [@demsking](https://github.com/demsking). #1402.
+- Show hover info for v-for variables. #1374.
 
 ### 0.22.2 | 2019-08-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.2/vspackage)
 
