@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.22.3 | 2019-09-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.3/vspackage)
+
+- Upgrade `element-helper-json` dependency for correct auto-completion. #1391.
+- 🙌 Fix VLS fail to start when `globalSnippetDir` is undefined. Thanks to contribution from [@demsking](https://github.com/demsking). #1402.
+- Improve source map for better handling of interpolation expression containing whitespace trivia. #1335.
+- Show hover info for v-for variables. #1374.
+- Update TypeScript to 3.6.3 for VLS. #1425.
+
 ### 0.22.2 | 2019-08-15 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.2/vspackage)
 
 - Update to TypeScript 3.5.3. #1389.
