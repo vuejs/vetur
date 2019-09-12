@@ -4,6 +4,7 @@
 
 - Upgrade `element-helper-json` dependency for correct auto-completion. #1391.
 - 🙌 Fix VLS fail to start when `globalSnippetDir` is undefined. Thanks to contribution from [@demsking](https://github.com/demsking). #1402.
+- Improve source map for better handling of interpolation expression containing whitespace trivia. #1335.
 - Show hover info for v-for variables. #1374.
 - Update TypeScript to 3.6.3 for VLS. #1425.
 
