@@ -9,8 +9,10 @@
   "scripts": {
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "run-s compile:source copy:snippets",
+    "compile2": "run-s compile:source",
     "compile:source": "tsc -b .",
     "watch": "run-s compile copy:snippets watch:build",
+    "watch2": "run-s compile2 watch:build",
     "watch:build": "tsc -b -w .",
     "copy:snippets": "bash ./build/copy-snippets.sh",
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
@@ -24,10 +26,7 @@
     "prepare-publish": "./build/release-cleanup.sh"
   },
   "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test:server"
-    }
+    "hooks": {}
   },
   "lint-staged": {
     "*.ts": [
@@ -314,6 +313,19 @@
             "scss formatter using scss parser from prettier"
           ],
           "description": "Default formatter for <style lang='scss'> region"
+        },
+        "vetur.format.defaultFormatter.sass": {
+          "type": "string",
+          "default": "sass",
+          "enum": [
+            "none",
+            "sass"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "sass formatter"
+          ],
+          "description": "Default formatter for <style lang='sass'> region"
         },
         "vetur.format.defaultFormatter.less": {
           "type": "string",

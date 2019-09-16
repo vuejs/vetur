@@ -33,6 +33,7 @@ import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
+import { SassLanguageMode } from './sassLanguageMode';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -82,6 +83,7 @@ export class LanguageModes {
     css: nullMode,
     postcss: nullMode,
     scss: nullMode,
+    sass: nullMode,
     less: nullMode,
     stylus: nullMode,
     javascript: nullMode,
@@ -140,6 +142,7 @@ export class LanguageModes {
     this.modes['css'] = getCSSMode(this.documentRegions);
     this.modes['postcss'] = getPostCSSMode(this.documentRegions);
     this.modes['scss'] = getSCSSMode(this.documentRegions);
+    this.modes['sass'] = new SassLanguageMode();
     this.modes['less'] = getLESSMode(this.documentRegions);
     this.modes['stylus'] = getStylusMode(this.documentRegions);
     this.modes['javascript'] = jsMode;
@@ -166,7 +169,6 @@ export class LanguageModes {
         });
       }
     });
-
     return result;
   }
 
