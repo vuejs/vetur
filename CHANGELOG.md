@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.23.0
+
+- Load Vetur built-in snippets and workspace snippets even when `globalSnippetDir` is unset. #1421.
+
 ### 0.22.3 | 2019-09-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.3/vspackage)
 
 - Upgrade `element-helper-json` dependency for correct auto-completion. #1391.
