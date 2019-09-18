@@ -1,28 +1,20 @@
-import { LanguageMode } from './languageModes';
-
-import { LanguageModelCache, getLanguageModelCache } from './languageModelCache';
+import { LanguageMode } from '../../../embeddedSupport/languageModes';
 
 import { TextDocument, Range, FormattingOptions, CompletionList } from 'vscode-languageserver-types/lib/umd/main';
 
-import { HTMLDocument, parseHTMLDocument } from '../modes/template/parser/htmlParser';
+import { Position, TextEdit } from 'vscode-css-languageservice';
 
-import { Position, TextEdit } from 'vscode-css-languageservice/lib/umd/cssLanguageTypes';
-
-import { DocumentContext } from '../types';
+import { DocumentContext } from '../../../types';
 
 import { SassFormatter, SassTextDocument } from 'sass-formatter';
 
 export class SassLanguageMode implements LanguageMode {
-  private vueDocuments: LanguageModelCache<HTMLDocument>;
-
   private config: any = {};
 
-  constructor() {
-    this.vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
-  }
+  constructor() {}
 
   getId() {
-    return 'html';
+    return 'sass';
   }
 
   configure(c: any) {
@@ -48,23 +40,38 @@ export class SassLanguageMode implements LanguageMode {
     return [];
   }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
+    const sassConfig = this.config.sass.format || {
+      convert: true,
+      deleteCompact: true,
+      deleteEmptyRows: true,
+      deleteWhitespace: true,
+      replaceSpacesOrTabs: true,
+      setPropertySpace: true
+    };
     return [
       TextEdit.replace(
         range,
-        SassFormatter.Format(new SassTextDocument(document.getText(range)), {
-          insertSpaces: formattingOptions.insertSpaces,
-          tabSize: formattingOptions.tabSize
-        })
+        SassFormatter.Format(
+          new SassTextDocument(document.getText(range)),
+          {
+            insertSpaces: formattingOptions.insertSpaces,
+            tabSize: formattingOptions.tabSize
+          },
+          {
+            convert: sassConfig.convert,
+            deleteCompact: sassConfig.deleteCompact,
+            deleteEmptyRows: sassConfig.deleteEmptyRows,
+            deleteWhitespace: sassConfig.deleteWhitespace,
+            replaceSpacesOrTabs: sassConfig.replaceSpacesOrTabs,
+            setPropertySpace: sassConfig.setPropertySpace
+          }
+        )
       )
     ];
   }
   findDefinition(document: TextDocument, position: Position): any {
     return undefined;
   }
-  onDocumentRemoved(document: TextDocument) {
-    this.vueDocuments.onDocumentRemoved(document);
-  }
-  dispose() {
-    this.vueDocuments.dispose();
-  }
+  onDocumentRemoved(document: TextDocument) {}
+  dispose() {}
 }

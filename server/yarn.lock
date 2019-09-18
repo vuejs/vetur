@@ -3911,10 +3911,12 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sass-formatter@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.0.2.tgz#bf4f472763943dc2ceed29ea350988f70441e58e"
-  integrity sha512-LxpHt9oyt9fPf6ONH93kvvQD+m48gGcJETsbEzOB+AYg48QgYgq2mdEZfL72dlFDQoURUaxM6xp8C0zIXddeGw==
+sass-formatter@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.0.4.tgz#7cd1cbace678ebd2b88a258286d9348c8f673a4f"
+  integrity sha512-jNQbF46iEBbk+uO3oQqDDcbv831HMETkWS/rv/DU0CMabrNChu5CtL66x4LaJf3zX3CtoW4ycfNR0e4TNYMHyg==
+  dependencies:
+    suf-regex "^0.0.2"
 
 sax@0.5.x:
   version "0.5.8"
@@ -4286,6 +4288,11 @@ stylus@^0.54.5:
     mkdirp "0.5.x"
     sax "0.5.x"
     source-map "0.1.x"
+
+suf-regex@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.2.tgz#d15a2b5a0efccb5d7ef396f9c7d88224e909ed0b"
+  integrity sha512-ntDtKKE6sYUOzjULRNlPrs5ln/SMJ1J/ygSZrk+CYdxmT6UKOGH8wJHjJCibBaPkszK6LICs6KWgt0P/Yllk/A==
 
 supports-color@5.4.0:
   version "5.4.0"

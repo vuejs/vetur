@@ -39,7 +39,16 @@ export function initializeLanguageClient(vlsModulePath: string, globalSnippetDir
   const clientOptions: LanguageClientOptions = {
     documentSelector,
     synchronize: {
-      configurationSection: ['vetur', 'emmet', 'html', 'javascript', 'typescript', 'prettier', 'stylusSupremacy'],
+      configurationSection: [
+        'vetur',
+        'sass',
+        'emmet',
+        'html',
+        'javascript',
+        'typescript',
+        'prettier',
+        'stylusSupremacy'
+      ],
       fileEvents: vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts}', false, false, true)
     },
     initializationOptions: {

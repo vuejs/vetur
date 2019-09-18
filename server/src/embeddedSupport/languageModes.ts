@@ -33,7 +33,7 @@ import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
-import { SassLanguageMode } from './sassLanguageMode';
+import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 
 export interface VLSServices {
   infoService?: VueInfoService;
