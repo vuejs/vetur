@@ -24,7 +24,10 @@
     "prepare-publish": "./build/release-cleanup.sh"
   },
   "husky": {
-    "hooks": {}
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:server"
+    }
   },
   "lint-staged": {
     "*.ts": [
