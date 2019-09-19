@@ -40,7 +40,7 @@ export class SassLanguageMode implements LanguageMode {
     return [];
   }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-    const sassConfig = this.config.sass.format || {
+    let sassConfig: any = {
       convert: true,
       deleteCompact: true,
       deleteEmptyRows: true,
@@ -48,6 +48,9 @@ export class SassLanguageMode implements LanguageMode {
       replaceSpacesOrTabs: true,
       setPropertySpace: true
     };
+    if (this.config.sass && this.config.sass.format) {
+      sassConfig = this.config.sass.format;
+    }
     return [
       TextEdit.replace(
         range,
