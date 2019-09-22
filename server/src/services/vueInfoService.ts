@@ -2,6 +2,7 @@ import { TextDocument } from 'vscode-languageserver';
 import { getFileFsPath } from '../utils/paths';
 import { Definition } from 'vscode-languageserver-types';
 import { LanguageModes } from '../embeddedSupport/languageModes';
+import { LanguageId } from '../embeddedSupport/embeddedSupport';
 
 /**
  * State associated with a specific Vue file
@@ -81,5 +82,9 @@ export class VueInfoService {
       }
     });
     return this.vueFileInfo.get(getFileFsPath(doc.uri));
+  }
+
+  documentIncludesLanguage(doc: TextDocument, languageId: LanguageId): boolean {
+    return this.languageModes.getAllLanguageModeRangesInDocument(doc).some(m => m.languageId === languageId);
   }
 }

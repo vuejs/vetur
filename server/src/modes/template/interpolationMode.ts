@@ -25,6 +25,7 @@ import { toCompletionItemKind } from '../../services/typescriptService/util';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
+import { VueInfoService } from '../../services/vueInfoService';
 
 export class VueInterpolationMode implements LanguageMode {
   private config: any = {};
@@ -32,7 +33,8 @@ export class VueInterpolationMode implements LanguageMode {
   constructor(
     private tsModule: T_TypeScript,
     private serviceHost: IServiceHost,
-    private vueDocuments: LanguageModelCache<HTMLDocument>
+    private vueDocuments: LanguageModelCache<HTMLDocument>,
+    private vueInfoService?: VueInfoService
   ) {}
 
   getId() {
@@ -48,7 +50,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument): Diagnostic[] {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
       return [];
     }
 
@@ -216,7 +218,7 @@ export class VueInterpolationMode implements LanguageMode {
     contents: MarkedString[];
     range?: Range;
   } {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
       return { contents: [] };
     }
 
@@ -255,7 +257,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findDefinition(document: TextDocument, position: Position): Location[] {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
       return [];
     }
 
@@ -303,7 +305,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findReferences(document: TextDocument, position: Position): Location[] {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
       return [];
     }
 
@@ -353,6 +355,14 @@ export class VueInterpolationMode implements LanguageMode {
   onDocumentRemoved() {}
 
   dispose() {}
+
+  private interpolationEnabledInTypeScriptDocument(document: TextDocument): boolean {
+    const documentIncludesTypeScript =
+      !!this.vueInfoService && this.vueInfoService.documentIncludesLanguage(document, 'typescript');
+    return (
+      _.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true) && documentIncludesTypeScript
+    );
+  }
 }
 
 function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
