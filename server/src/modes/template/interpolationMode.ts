@@ -50,7 +50,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument): Diagnostic[] {
-    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
+    if (!this.interpolationEnabled || !this.documentTypeChecked(document)) {
       return [];
     }
 
@@ -218,7 +218,7 @@ export class VueInterpolationMode implements LanguageMode {
     contents: MarkedString[];
     range?: Range;
   } {
-    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
+    if (!this.interpolationEnabled()) {
       return { contents: [] };
     }
 
@@ -257,7 +257,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findDefinition(document: TextDocument, position: Position): Location[] {
-    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
+    if (!this.interpolationEnabled()) {
       return [];
     }
 
@@ -305,7 +305,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findReferences(document: TextDocument, position: Position): Location[] {
-    if (!this.interpolationEnabledInTypeScriptDocument(document)) {
+    if (!this.interpolationEnabled()) {
       return [];
     }
 
@@ -356,12 +356,11 @@ export class VueInterpolationMode implements LanguageMode {
 
   dispose() {}
 
-  private interpolationEnabledInTypeScriptDocument(document: TextDocument): boolean {
-    const documentIncludesTypeScript =
-      !!this.vueInfoService && this.vueInfoService.documentIncludesLanguage(document, 'typescript');
-    return (
-      _.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true) && documentIncludesTypeScript
-    );
+  private interpolationEnabled(): boolean {
+    return _.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true);
+  }
+  private documentTypeChecked(document: TextDocument): boolean {
+    return !!this.vueInfoService && this.vueInfoService.documentIncludesLanguage(document, 'typescript');
   }
 }
 
