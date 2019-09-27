@@ -13,6 +13,7 @@ import { getVueSys } from './vueSys';
 import { TemplateSourceMap, stringifySourceMapNodes } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { logger } from '../../log';
+import { ModuleResolutionCache } from './moduleResolutionCache';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -82,6 +83,7 @@ export function getServiceHost(
   const localScriptRegionDocuments = new Map<string, TextDocument>();
   const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
   const projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
+  const moduleResolutionCache = new ModuleResolutionCache();
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
   /**
@@ -214,6 +216,7 @@ export function getServiceHost(
             doc = updatedScriptRegionDocuments.refreshAndGet(
               TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || '')
             );
+            localScriptRegionDocuments.set(fileName, doc);
           }
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
@@ -242,44 +245,66 @@ export function getServiceHost(
         return vueSys.readDirectory(path, allExtensions, exclude, include, depth);
       },
 
-      resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
+      resolveModuleNames(moduleNames: string[], containingFile: string): (ts.ResolvedModule | undefined)[] {
         // in the normal case, delegate to ts.resolveModuleName
         // in the relative-imported.vue case, manually build a resolved filename
-        return moduleNames.map(name => {
+        const result: (ts.ResolvedModule | undefined)[] = moduleNames.map(name => {
           if (name === bridge.moduleName) {
             return {
               resolvedFileName: bridge.fileName,
               extension: tsModule.Extension.Ts
             };
           }
-          if (path.isAbsolute(name) || !isVueFile(name)) {
-            return tsModule.resolveModuleName(name, containingFile, options, tsModule.sys).resolvedModule;
-          }
-          const resolved = tsModule.resolveModuleName(name, containingFile, options, vueSys).resolvedModule;
-          if (!resolved) {
-            return undefined as any;
-          }
-          if (!resolved.resolvedFileName.endsWith('.vue.ts')) {
-            return resolved;
-          }
-          const resolvedFileName = resolved.resolvedFileName.slice(0, -'.ts'.length);
-          const uri = Uri.file(resolvedFileName);
-          let doc = localScriptRegionDocuments.get(resolvedFileName);
-          // Vue file not created yet
-          if (!doc) {
-            doc = updatedScriptRegionDocuments.refreshAndGet(
-              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
-            );
+          const cachedResolvedModule = moduleResolutionCache.getCache(name, containingFile);
+          if (cachedResolvedModule) {
+            return cachedResolvedModule;
           }
 
-          const extension =
-            doc.languageId === 'typescript'
-              ? tsModule.Extension.Ts
-              : doc.languageId === 'tsx'
-              ? tsModule.Extension.Tsx
-              : tsModule.Extension.Js;
-          return { resolvedFileName, extension };
+          if (path.isAbsolute(name) || !isVueFile(name)) {
+            const tsResolvedModule = tsModule.resolveModuleName(name, containingFile, options, tsModule.sys)
+              .resolvedModule;
+
+            if (tsResolvedModule) {
+              moduleResolutionCache.setCache(name, containingFile, tsResolvedModule);
+            }
+
+            return tsResolvedModule;
+          }
+
+          const tsResolvedModule = tsModule.resolveModuleName(name, containingFile, options, vueSys).resolvedModule;
+          if (!tsResolvedModule) {
+            return undefined;
+          }
+
+          if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
+            const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
+            const uri = Uri.file(resolvedFileName);
+            let doc = localScriptRegionDocuments.get(resolvedFileName);
+            // Vue file not created yet
+            if (!doc) {
+              doc = updatedScriptRegionDocuments.refreshAndGet(
+                TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
+              );
+              localScriptRegionDocuments.set(resolvedFileName, doc);
+            }
+
+            const extension =
+              doc.languageId === 'typescript'
+                ? tsModule.Extension.Ts
+                : doc.languageId === 'tsx'
+                ? tsModule.Extension.Tsx
+                : tsModule.Extension.Js;
+
+            const tsResolvedVueModule = { resolvedFileName, extension };
+            moduleResolutionCache.setCache(name, containingFile, tsResolvedVueModule);
+            return tsResolvedVueModule;
+          } else {
+            moduleResolutionCache.setCache(name, containingFile, tsResolvedModule);
+            return tsResolvedModule;
+          }
         });
+
+        return result;
       },
       getScriptSnapshot: (fileName: string) => {
         if (fileName.includes('node_modules')) {
