@@ -34,8 +34,8 @@ export async function testCompletion(
         return;
       }
 
-      assert.ok(match.label, ei.label);
-      assert.ok(match.kind, ei.kind as any);
+      assert.equal(match.label, ei.label);
+      assert.equal(match.kind, ei.kind as any);
 
       if (ei.documentation) {
         if (typeof match.documentation === 'string') {

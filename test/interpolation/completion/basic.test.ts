@@ -63,6 +63,7 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(4, 5), [
         {
           label: 'basic',
+          kind: CompletionItemKind.Property,
           documentationStart: 'My basic tag\n```js\nexport default {'
         }
       ]);
@@ -72,6 +73,7 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
+          kind: CompletionItemKind.Value,
           documentation: new MarkdownString('My foo').appendCodeblock(
             `foo: {
   type: Boolean,
