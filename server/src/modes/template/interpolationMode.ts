@@ -7,7 +7,9 @@ import {
   MarkedString,
   Range,
   Location,
-  Definition
+  Definition,
+  CompletionList,
+  TextEdit
 } from 'vscode-languageserver-types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { languageServiceIncludesFile } from '../script/javascript';
@@ -17,11 +19,23 @@ import * as ts from 'typescript';
 import { T_TypeScript } from '../../services/dependencyService';
 import * as _ from 'lodash';
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
+import { NULL_COMPLETION } from '../nullMode';
+import { toCompletionItemKind } from '../../services/typescriptService/util';
+import { VueInfoService } from '../../services/vueInfoService';
+import { getVueInterpolationCompletionMap } from './services/vueInterpolationCompletion';
+import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
+import { HTMLDocument } from './parser/htmlParser';
+import { isInsideInterpolation } from './services/isInsideInterpolation';
 
 export class VueInterpolationMode implements LanguageMode {
   private config: any = {};
 
-  constructor(private tsModule: T_TypeScript, private serviceHost: IServiceHost) {}
+  constructor(
+    private tsModule: T_TypeScript,
+    private serviceHost: IServiceHost,
+    private vueDocuments: LanguageModelCache<HTMLDocument>,
+    private vueInfoService?: VueInfoService
+  ) {}
 
   getId() {
     return 'vue-html-interpolation';
@@ -70,6 +84,78 @@ export class VueInterpolationMode implements LanguageMode {
         source: 'Vetur'
       };
     });
+  }
+
+  doComplete(document: TextDocument, position: Position): CompletionList {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return NULL_COMPLETION;
+    }
+
+    const offset = document.offsetAt(position);
+    const node = this.vueDocuments.refreshAndGet(document).findNodeBefore(offset);
+    const nodeRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
+    const nodeText = document.getText(nodeRange);
+    if (!isInsideInterpolation(node, nodeText, offset - node.start)) {
+      return NULL_COMPLETION;
+    }
+
+    // Add suffix to process this doc as vue template.
+    const templateDoc = TextDocument.create(
+      document.uri + '.template',
+      document.languageId,
+      document.version,
+      document.getText()
+    );
+
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return NULL_COMPLETION;
+    }
+
+    const mappedOffset = mapFromPositionToOffset(templateDoc, position, templateSourceMap);
+    const templateFileFsPath = getFileFsPath(templateDoc.uri);
+    const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
+
+    const completions = templateService.getCompletionsAtPosition(templateFileFsPath, mappedOffset, {
+      includeCompletionsWithInsertText: true,
+      includeCompletionsForModuleExports: false
+    });
+
+    if (!completions) {
+      return NULL_COMPLETION;
+    }
+
+    const componentCompletionMap = info
+      ? getVueInterpolationCompletionMap(this.tsModule, templateFileFsPath, mappedOffset, templateService, info)
+      : undefined;
+
+    const tsItems = completions.entries.map((entry, index) => {
+      return {
+        uri: templateDoc.uri,
+        position,
+        label: entry.name,
+        detail: undefined,
+        sortText: entry.sortText + index,
+        kind: toCompletionItemKind(entry.kind),
+        textEdit:
+          entry.replacementSpan &&
+          TextEdit.replace(mapBackRange(templateDoc, entry.replacementSpan, templateSourceMap), entry.name),
+        data: {
+          // data used for resolving item details (see 'doResolve')
+          languageId: templateDoc.languageId,
+          uri: templateDoc.uri,
+          offset: position,
+          source: entry.source
+        }
+      };
+    });
+
+    return {
+      isIncomplete: false,
+      items: !componentCompletionMap
+        ? tsItems
+        : [...componentCompletionMap.values(), ...tsItems.filter(item => !componentCompletionMap.has(item.label))]
+    };
   }
 
   doHover(

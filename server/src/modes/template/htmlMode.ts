@@ -25,7 +25,6 @@ export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
   private enabledTagProviders: IHTMLTagProvider[];
   private embeddedDocuments: LanguageModelCache<TextDocument>;
-  private vueDocuments: LanguageModelCache<HTMLDocument>;
 
   private config: any = {};
 
@@ -34,6 +33,7 @@ export class HTMLMode implements LanguageMode {
   constructor(
     documentRegions: LanguageModelCache<VueDocumentRegions>,
     workspacePath: string | undefined,
+    private vueDocuments: LanguageModelCache<HTMLDocument>,
     private vueInfoService?: VueInfoService
   ) {
     this.tagProviderSettings = getTagProviderSettings(workspacePath);
@@ -41,7 +41,6 @@ export class HTMLMode implements LanguageMode {
     this.embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
       documentRegions.refreshAndGet(document).getSingleLanguageDocument('vue-html')
     );
-    this.vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
   }
 
   getId() {
@@ -67,14 +66,7 @@ export class HTMLMode implements LanguageMode {
       tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
     }
 
-    return doComplete(
-      embedded,
-      position,
-      this.vueDocuments.refreshAndGet(embedded),
-      tagProviders,
-      this.config.emmet,
-      info
-    );
+    return doComplete(embedded, position, this.vueDocuments.refreshAndGet(embedded), tagProviders, this.config.emmet);
   }
   doHover(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);

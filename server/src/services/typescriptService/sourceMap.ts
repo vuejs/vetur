@@ -19,7 +19,7 @@ interface Mapping {
   [k: number]: number;
 }
 
-const INVALID_OFFSET = 0;
+export const INVALID_OFFSET = 0;
 const INVALID_RANGE = Range.create(0, 0, 0, 0);
 
 /**

@@ -59,6 +59,15 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(templateDocUri, position(2, 7), defaultList);
     });
 
+    it('completes an object property', async () => {
+      await testCompletion(templateDocUri, position(3, 11), [
+        {
+          label: 'msg',
+          kind: CompletionItemKind.Field
+        }
+      ]);
+    });
+
     it(`completes child component tag`, async () => {
       await testCompletion(parentTemplateDocUri, position(4, 5), [
         {

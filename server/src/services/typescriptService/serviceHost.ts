@@ -14,6 +14,7 @@ import { TemplateSourceMap, stringifySourceMapNodes } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { logger } from '../../log';
 import { ModuleResolutionCache } from './moduleResolutionCache';
+import { globalScope } from './transformTemplate';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -395,7 +396,7 @@ export function getServiceHost(
 
   const registry = tsModule.createDocumentRegistry(true);
   let jsLanguageService = tsModule.createLanguageService(jsHost, registry);
-  const templateLanguageService = tsModule.createLanguageService(templateHost, registry);
+  const templateLanguageService = patchTemplateService(tsModule.createLanguageService(templateHost, registry));
 
   return {
     queryVirtualFileInfo,
@@ -404,6 +405,33 @@ export function getServiceHost(
     updateExternalDocument,
     dispose: () => {
       jsLanguageService.dispose();
+    }
+  };
+}
+
+function patchTemplateService(original: ts.LanguageService): ts.LanguageService {
+  const allowedGlobals = new Set(globalScope);
+
+  return {
+    ...original,
+
+    getCompletionsAtPosition(fileName, position, options) {
+      const result = original.getCompletionsAtPosition(fileName, position, options);
+      if (!result) {
+        return;
+      }
+
+      if (result.isMemberCompletion) {
+        return result;
+      }
+
+      return {
+        ...result,
+
+        entries: result.entries.filter(entry => {
+          return allowedGlobals.has(entry.name);
+        })
+      };
     }
   };
 }

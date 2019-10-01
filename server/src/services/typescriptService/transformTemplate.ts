@@ -11,7 +11,7 @@ export const iterationHelperName = '__vlsIterationHelper';
  * Allowed global variables in templates.
  * Borrowed from: https://github.com/vuejs/vue/blob/dev/src/core/instance/proxy.js
  */
-const globalScope = (
+export const globalScope = (
   'Infinity,undefined,NaN,isFinite,isNaN,' +
   'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
   'Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,' +
@@ -201,7 +201,6 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         ts.createBlock([])
       );
     }
-
     return directiveToObjectElement(vOn, exp, code, scope);
   }
 
@@ -731,9 +730,5 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
   function isVSlot(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
     return node.directive && (node.key.name.name === 'slot' || node.key.name.name === 'slot-scope');
-  }
-
-  function hasValidPos(node: ts.Node) {
-    return node.pos !== -1 && node.end !== -1;
   }
 }
