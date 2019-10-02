@@ -14,6 +14,7 @@ These formatters are available:
 - [`prettier-eslint`](https://github.com/prettier/prettier-eslint): For js. Run `prettier` and `eslint --fix`.
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
+- [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter): For sass.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 
 Vetur bundles all the above formatters. When Vetur observes a local install of the formatter, it'll prefer to use the local version.
@@ -31,6 +32,7 @@ Current default:
   "vetur.format.defaultFormatter.scss": "prettier",
   "vetur.format.defaultFormatter.less": "prettier",
   "vetur.format.defaultFormatter.stylus": "stylus-supremacy",
+  "vetur.format.defaultFormatter.sass": "sass",
   "vetur.format.defaultFormatter.js": "prettier",
   "vetur.format.defaultFormatter.ts": "prettier"
 }
@@ -124,12 +126,33 @@ Default settings are [here](https://github.com/vuejs/vetur/blob/master/server/sr
 
 #### [stylus-supremacy](https://thisismanta.github.io/stylus-supremacy/)
 
-Other settings are read from `stylusSupremacy.*`. You can install [Stylus Supremacy extension](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) to get IntelliSense for settings, but Vetur will work without it. A useful default:
+Settings are read from `stylusSupremacy.*`. You can install [Stylus Supremacy extension](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy) to get IntelliSense for settings, but Vetur will work without it. A useful default:
 
 ```json
 {
   "stylusSupremacy.insertBraces": false,
   "stylusSupremacy.insertColons": false,
   "stylusSupremacy.insertSemicolons": false
+}
+```
+
+#### [sass-formatter](https://github.com/TheRealSyler/sass-formatter)
+
+Settings are read from `sass.format.*`. You can install [Sass] extension(https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) to get IntelliSense for settings, but Vetur will work without it. A useful default:
+
+```json
+{
+  // Convert scss/css to sass.
+  "sass.format.convert": true,
+  // also removes empty rows that are near a property.
+  "sass.format.deleteCompact": true,
+  // removes empty rows.
+  "sass.format.deleteEmptyRows": true,
+  // removes trailing whitespace.
+  "sass.format.deleteWhitespace": true,
+  // replace spaces or tabs to the opposite based on the selected preference(indent Using Spaces/Tabs).
+  "sass.format.replaceSpacesOrTabs": true,
+  // If true space between the property: value, is always set to 1.
+  "sass.format.setPropertySpace": true
 }
 ```

@@ -14,6 +14,9 @@ describe('Should format', () => {
   const docUri3 = getDocUri('client/formatting/TwoStylus.vue');
   const expectedDocUri3 = getDocUri('client/formatting/TwoStylus.Expected.vue');
 
+  const docUri4 = getDocUri('client/formatting/Sass.vue');
+  const expectedDocUri4 = getDocUri('client/formatting/Sass.Expected.vue');
+
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
@@ -26,6 +29,7 @@ describe('Should format', () => {
     await testFormat(docUri, expectedDocUri);
     await testFormat(docUri2, expectedDocUri2);
     await testFormat(docUri3, expectedDocUri3);
+    await testFormat(docUri4, expectedDocUri4);
   });
 });
 

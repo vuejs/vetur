@@ -1,6 +1,5 @@
 {
   "files.exclude": {
     "docs/_book": true
-  },
-  "prettier.printWidth": 120
+  }
 }
