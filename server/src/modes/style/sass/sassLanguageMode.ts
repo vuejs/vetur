@@ -6,7 +6,7 @@ import { Position, TextEdit } from 'vscode-css-languageservice';
 
 import { DocumentContext } from '../../../types';
 
-import { SassFormatter, SassTextDocument } from 'sass-formatter';
+import { SassFormatter, SassTextDocument, SassFormatterConfig } from 'sass-formatter';
 
 export class SassLanguageMode implements LanguageMode {
   private config: any = {};
@@ -40,7 +40,7 @@ export class SassLanguageMode implements LanguageMode {
     return [];
   }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-    let sassConfig: any = {
+    const sassConfig: SassFormatterConfig = {
       convert: true,
       deleteCompact: true,
       deleteEmptyRows: true,
@@ -48,9 +48,7 @@ export class SassLanguageMode implements LanguageMode {
       replaceSpacesOrTabs: true,
       setPropertySpace: true
     };
-    if (this.config.sass && this.config.sass.format) {
-      sassConfig = this.config.sass.format;
-    }
+    Object.assign(this.config.sass.format, sassConfig);
     return [
       TextEdit.replace(
         range,
@@ -61,12 +59,12 @@ export class SassLanguageMode implements LanguageMode {
             tabSize: formattingOptions.tabSize
           },
           {
-            convert: sassConfig.convert,
-            deleteCompact: sassConfig.deleteCompact,
-            deleteEmptyRows: sassConfig.deleteEmptyRows,
-            deleteWhitespace: sassConfig.deleteWhitespace,
-            replaceSpacesOrTabs: sassConfig.replaceSpacesOrTabs,
-            setPropertySpace: sassConfig.setPropertySpace
+            convert: this.config.sass.format.convert,
+            deleteCompact: this.config.sass.format.deleteCompact,
+            deleteEmptyRows: this.config.sass.format.deleteEmptyRows,
+            deleteWhitespace: this.config.sass.format.deleteWhitespace,
+            replaceSpacesOrTabs: this.config.sass.format.replaceSpacesOrTabs,
+            setPropertySpace: this.config.sass.format.setPropertySpace
           }
         )
       )

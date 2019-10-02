@@ -89,6 +89,6 @@
       "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
-    },
+    }
   ]
 }
