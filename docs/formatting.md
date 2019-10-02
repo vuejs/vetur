@@ -138,7 +138,7 @@ Settings are read from `stylusSupremacy.*`. You can install [Stylus Supremacy ex
 
 #### [sass-formatter](https://github.com/TheRealSyler/sass-formatter)
 
-Settings are read from `sass.format.*`. You can install [Sass] extension(https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) to get IntelliSense for settings, but Vetur will work without it. A useful default:
+Settings are read from `sass.format.*`. You can install [Sass extension](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) to get IntelliSense for settings, but Vetur will work without it. A useful default:
 
 ```json
 {
