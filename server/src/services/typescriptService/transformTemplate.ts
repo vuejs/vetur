@@ -25,7 +25,7 @@ type ESLintVChild = AST.VElement | AST.VExpressionContainer | AST.VText;
 export function getTemplateTransformFunctions(ts: T_TypeScript) {
   return {
     transformTemplate,
-    parseExpressionImpl
+    parseExpression
   };
 
   /**
@@ -148,27 +148,13 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   }
 
   function transformVBind(vBind: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
-    let exp: ts.Expression;
-    if (!vBind.value || !vBind.value.expression) {
-      exp = ts.createLiteral(true);
-    } else {
-      const value = vBind.value.expression as AST.ESLintExpression | AST.VFilterSequenceExpression;
-      if (value.type === 'VFilterSequenceExpression') {
-        exp = transformFilter(value, code, scope);
-      } else {
-        exp = parseExpression(value, code, scope);
-      }
-    }
-
+    const exp = vBind.value ? transformExpressionContainer(vBind.value, code, scope) : ts.createLiteral(true);
     return directiveToObjectElement(vBind, exp, code, scope);
   }
 
   function transformVOn(vOn: AST.VDirective, code: string, scope: string[]): ts.ObjectLiteralElementLike {
     let exp: ts.Expression;
-    if (vOn.value && vOn.value.expression) {
-      // value.expression can be ESLintExpression (e.g. ArrowFunctionExpression)
-      const vOnExp = vOn.value.expression as AST.VOnExpression | AST.ESLintExpression;
-
+    if (vOn.value) {
       if (!vOn.key.argument) {
         // e.g.
         //   v-on="$listeners"
@@ -177,17 +163,20 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         // with bridge type and it. Currently, bridge type should only be used
         // for inferring `$event` type.
         exp = ts.createAsExpression(
-          vOnExp.type !== 'VOnExpression' ? parseExpression(vOnExp, code, scope) : ts.createObjectLiteral([]),
+          transformExpressionContainer(vOn.value, code, scope),
           ts.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword)
         );
       } else {
         // e.g.
         //   @click="onClick"
         //   @click="onClick($event, 'test')"
+
+        // value.expression can be ESLintExpression (e.g. ArrowFunctionExpression)
+        const vOnExp = vOn.value.expression as AST.VOnExpression | AST.ESLintExpression | null;
         const newScope = scope.concat(vOnScope);
         const statements =
-          vOnExp.type !== 'VOnExpression'
-            ? [ts.createExpressionStatement(parseExpression(vOnExp, code, newScope))]
+          !vOnExp || vOnExp.type !== 'VOnExpression'
+            ? [ts.createExpressionStatement(transformExpressionContainer(vOn.value, code, newScope))]
             : vOnExp.body.map(st => transformStatement(st, code, newScope));
 
         exp = ts.createFunctionExpression(
@@ -235,15 +224,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       } else {
         // Attribute name is dynamic
         // e.g. v-bind:[value]="foo"
-
-        // Empty expression is invalid. Return empty object spread.
-        if (name.expression === null) {
-          return ts.createSpreadAssignment(ts.createObjectLiteral());
-        }
-
-        const propertyName = ts.createComputedPropertyName(
-          parseExpression(name.expression as AST.ESLintExpression, code, scope)
-        );
+        const propertyName = ts.createComputedPropertyName(transformExpressionContainer(name, code, scope));
         return ts.createPropertyAssignment(propertyName, dirExp);
       }
     } else {
@@ -259,12 +240,12 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   function transformDirective(dir: AST.VDirective, code: string, scope: string[]): ts.Expression[] {
     const res: ts.Expression[] = [];
 
-    if (dir.key.argument && dir.key.argument.type === 'VExpressionContainer' && dir.key.argument.expression) {
-      res.push(parseExpression(dir.key.argument.expression as AST.ESLintExpression, code, scope));
+    if (dir.key.argument && dir.key.argument.type === 'VExpressionContainer') {
+      res.push(transformExpressionContainer(dir.key.argument, code, scope));
     }
 
-    if (dir.value && dir.value.expression) {
-      res.push(parseExpression(dir.value.expression as AST.ESLintExpression, code, scope));
+    if (dir.value) {
+      res.push(transformExpressionContainer(dir.value, code, scope));
     }
 
     return res;
@@ -411,9 +392,8 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
       function vIfFamilyTransform(vIfFamily: VIfFamilyData, scope: string[]): ts.Expression {
         const dir = vIfFamily.directive;
-        const exp = dir.value && (dir.value.expression as AST.ESLintExpression | null);
 
-        const condition = exp ? parseExpression(exp, code, scope) : ts.createLiteral(true);
+        const condition = dir.value ? transformExpressionContainer(dir.value, code, scope) : ts.createLiteral(true);
         const next = vIfFamily.next ? vIfFamilyTransform(vIfFamily.next, scope) : ts.createLiteral(true);
 
         return ts.createConditional(
@@ -440,7 +420,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
 
         return ts.createCall(ts.createIdentifier(iterationHelperName), undefined, [
           // Iteration target
-          parseExpression(exp.right, code, scope),
+          transformExpression(exp.right, code, scope),
 
           // Callback
 
@@ -479,18 +459,8 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         switch (child.type) {
           case 'VElement':
             return transformElement(child, code, scope);
-          case 'VExpressionContainer': {
-            const exp = child.expression as AST.ESLintExpression | AST.VFilterSequenceExpression | null;
-            if (!exp) {
-              return ts.createLiteral('');
-            }
-
-            if (exp.type === 'VFilterSequenceExpression') {
-              return transformFilter(exp, code, scope);
-            }
-
-            return parseExpression(exp, code, scope);
-          }
+          case 'VExpressionContainer':
+            return transformExpressionContainer(child, code, scope);
           case 'VText':
             return ts.createLiteral(child.value);
         }
@@ -513,11 +483,11 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       return ts.createExpressionStatement(ts.createLiteral(''));
     }
 
-    return ts.createExpressionStatement(parseExpression(statement.expression, code, scope));
+    return ts.createExpressionStatement(transformExpression(statement.expression, code, scope));
   }
 
   function transformFilter(filter: AST.VFilterSequenceExpression, code: string, scope: string[]): ts.Expression {
-    const exp = parseExpression(filter.expression, code, scope);
+    const exp = transformExpression(filter.expression, code, scope);
 
     // Simply convert all filter arguments into array literal because
     // we just want to check their types.
@@ -528,7 +498,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
         return ts.createArrayLiteral(
           f.arguments.map(arg => {
             const exp = arg.type === 'SpreadElement' ? arg.argument : arg;
-            return parseExpression(exp, code, scope);
+            return transformExpression(exp, code, scope);
           })
         );
       })
@@ -537,14 +507,37 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     return ts.createBinary(filterExps, ts.SyntaxKind.BarBarToken, exp);
   }
 
-  function parseExpression(expression: AST.ESLintExpression, code: string, scope: string[]): ts.Expression {
-    const [start, end] = expression.range;
+  function transformExpressionContainer(
+    container: AST.VExpressionContainer,
+    code: string,
+    scope: string[]
+  ): ts.Expression {
+    const exp = container.expression;
+    if (exp) {
+      if (exp.type === 'VOnExpression' || exp.type === 'VForExpression' || exp.type === 'VSlotScopeExpression') {
+        throw new Error(`'${exp.type}' should not be transformed with 'transformExpressionContainer'`);
+      }
+
+      if (exp.type === 'VFilterSequenceExpression') {
+        return transformFilter(exp, code, scope);
+      }
+    }
+
+    // Other type of expression should parsed by TypeScript compiler
+    const [start, end] = expressionCodeRange(container);
     const expStr = code.slice(start, end);
 
-    return parseExpressionImpl(expStr, scope, start);
+    return parseExpression(expStr, scope, start);
   }
 
-  function parseExpressionImpl(exp: string, scope: string[], start: number): ts.Expression {
+  function transformExpression(exp: AST.ESLintExpression, code: string, scope: string[]): ts.Expression {
+    const [start, end] = exp.range;
+    const expStr = code.slice(start, end);
+
+    return parseExpression(expStr, scope, start);
+  }
+
+  function parseExpression(exp: string, scope: string[], start: number): ts.Expression {
     // Add parenthesis to deal with object literal expression
     const wrappedExp = '(' + exp + ')';
     const source = ts.createSourceFile('/tmp/parsed.ts', wrappedExp, ts.ScriptTarget.Latest, true);
@@ -560,6 +553,21 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     // Compensate for the added `(` that adds 1 to each Node's offset
     const offset = start - '('.length;
     return walkExpression(ts, parenthesis.expression, createWalkCallback(scope, offset, source));
+  }
+
+  function expressionCodeRange(container: AST.VExpressionContainer): [number, number] {
+    const parent = container.parent;
+    const offset =
+      parent.type === 'VElement' || parent.type === 'VDocumentFragment'
+        ? // Text node interpolation
+          // {{ exp }} => 2
+          2
+        : // Attribute interpolation
+          // v-test:[exp] => 1
+          // :name="exp" => 1
+          1;
+
+    return [container.range[0] + offset, container.range[1] - offset];
   }
 
   function createWalkCallback(scope: string[], offset: number, source: ts.SourceFile) {
@@ -585,7 +593,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     const arrowFnStr = '(' + paramsStr + ') => {}';
 
     // Decrement the offset since the expression now has the open parenthesis.
-    const exp = parseExpressionImpl(arrowFnStr, scope, start - 1) as ts.ArrowFunction;
+    const exp = parseExpression(arrowFnStr, scope, start - 1) as ts.ArrowFunction;
     return exp.parameters;
   }
 
