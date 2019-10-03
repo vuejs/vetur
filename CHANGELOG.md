@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.23.0
+
+- Support analyzing invalid template interpolation expression. #1448.
+
 ### 0.22.4 | 2019-10-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.4/vspackage)
 
 - Improve performance by caching module resolution results. #1442.
