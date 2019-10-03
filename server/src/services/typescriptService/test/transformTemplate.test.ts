@@ -6,7 +6,7 @@ suite('transformTemplate', () => {
   suite('`this` injection', () => {
     function check(inputTsCode: string, expectedTsCode: string, scope: string[] = []): void {
       const source = ts.createSourceFile('test.ts', inputTsCode, ts.ScriptTarget.Latest, true);
-      const output = getTemplateTransformFunctions(require('typescript')).parseExpressionImpl(source.text, scope, 0);
+      const output = getTemplateTransformFunctions(require('typescript')).parseExpression(source.text, scope, 0);
 
       const printer = ts.createPrinter();
       const outputStr = printer.printNode(ts.EmitHint.Expression, output, source);
