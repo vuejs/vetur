@@ -139,6 +139,7 @@ export function getServiceHost(
 
     if (isVirtualVueTemplateFile(fileFsPath)) {
       localScriptRegionDocuments.set(fileFsPath, doc);
+      scriptFileNameSet.add(fileFsPath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
 
@@ -167,6 +168,7 @@ export function getServiceHost(
         jsLanguageService = tsModule.createLanguageService(jsHost);
       }
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
+      scriptFileNameSet.add(fileFsPath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
@@ -217,6 +219,7 @@ export function getServiceHost(
               TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || '')
             );
             localScriptRegionDocuments.set(fileName, doc);
+            scriptFileNameSet.add(fileName);
           }
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
@@ -286,6 +289,7 @@ export function getServiceHost(
                 TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
               );
               localScriptRegionDocuments.set(resolvedFileName, doc);
+              scriptFileNameSet.add(resolvedFileName);
             }
 
             const extension =
