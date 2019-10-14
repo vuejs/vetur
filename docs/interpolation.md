@@ -54,11 +54,26 @@ You don't have to use `lang="ts"` for typing functions. This would show error th
 
 ```vue
 <template>
-  <div>{{ numOnly('foo') }}</div>
+  <div>{{ numOnly(post.body) }}</div>
 </template>
 
 <script>
+/**
+ * @typedef {object} Post
+ * @property {string} body
+ */
+
 export default {
+  props: {
+    post: {
+      /**
+       * @type {import('vue').PropType<Post>}
+       */
+      type: Object,
+      required: true
+    }
+  },
+
   methods: {
     /**
      * @param {number} num
