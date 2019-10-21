@@ -1,8 +1,9 @@
 # Changelog
 
-### 0.23.0
+### 0.22.5
 
 - Support analyzing invalid template interpolation expression. #1448.
+- 🙌 Fix a TypeScript integration issue that cuases completions to fail. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1449.
 
 ### 0.22.4 | 2019-10-01 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.4/vspackage)
 
