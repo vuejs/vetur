@@ -279,8 +279,7 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, position);
     if (mode && mode.doComplete) {
-      const res = mode.doComplete(doc, position);
-      return res;
+      return mode.doComplete(doc, position);
     }
 
     return NULL_COMPLETION;
