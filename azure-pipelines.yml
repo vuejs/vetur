@@ -32,6 +32,12 @@ steps:
     versionSpec: '8.x'
   displayName: 'Install Node.js'
 
+# Don't use latest yarn 1.19 — Azure DevOps run into https://github.com/yarnpkg/yarn/issues/7584
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@3
+  displayName: 'Use Yarn 1.17.3'
+  inputs:
+    versionSpec: 1.17.3
+
 - bash: yarn install
   displayName: Install Dependencies
 - bash: cd server && yarn install && cd ..
