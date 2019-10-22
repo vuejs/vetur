@@ -100,10 +100,14 @@ export class VLS {
         : false
     );
 
-    await this.languageModes.init(workspacePath, {
-      infoService: this.vueInfoService,
-      dependencyService: this.dependencyService
-    }, params.initializationOptions['globalSnippetDir']);
+    await this.languageModes.init(
+      workspacePath,
+      {
+        infoService: this.vueInfoService,
+        dependencyService: this.dependencyService
+      },
+      params.initializationOptions['globalSnippetDir']
+    );
 
     this.setupConfigListeners();
     this.setupLSPHandlers();
@@ -275,7 +279,8 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, position);
     if (mode && mode.doComplete) {
-      return mode.doComplete(doc, position);
+      const res = mode.doComplete(doc, position);
+      return res;
     }
 
     return NULL_COMPLETION;

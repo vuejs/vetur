@@ -33,6 +33,7 @@ import { getFileFsPath, getFilePath } from '../../utils/paths';
 import Uri from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
+import * as path from 'path';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
@@ -639,7 +640,7 @@ function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
 export function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
   const filePaths = ls.getProgram()!.getRootFileNames();
   const filePath = getFilePath(documentUri);
-  return filePaths.includes(filePath);
+  return filePaths.includes(path.normalize(filePath));
 }
 
 function convertRange(document: TextDocument, span: ts.TextSpan): Range {
