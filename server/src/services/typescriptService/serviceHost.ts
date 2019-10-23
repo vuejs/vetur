@@ -212,11 +212,11 @@ export function getServiceHost(
 
         if (isVueFile(fileName)) {
           const uri = Uri.file(fileName);
-          const fileFsPath = uri.fsPath;
+          const fileFsPath = normalizeFileNameToFsPath(fileName);
           let doc = localScriptRegionDocuments.get(fileFsPath);
           if (!doc) {
             doc = updatedScriptRegionDocuments.refreshAndGet(
-              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileFsPath) || '')
+              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || '')
             );
             localScriptRegionDocuments.set(fileFsPath, doc);
             scriptFileNameSet.add(fileName);
@@ -282,13 +282,14 @@ export function getServiceHost(
           if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
             const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
             const uri = Uri.file(resolvedFileName);
-            let doc = localScriptRegionDocuments.get(resolvedFileName);
+            const resolvedFileFsPath = normalizeFileNameToFsPath(resolvedFileName);
+            let doc = localScriptRegionDocuments.get(resolvedFileFsPath);
             // Vue file not created yet
             if (!doc) {
               doc = updatedScriptRegionDocuments.refreshAndGet(
                 TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
               );
-              localScriptRegionDocuments.set(uri.fsPath, doc);
+              localScriptRegionDocuments.set(resolvedFileFsPath, doc);
               scriptFileNameSet.add(resolvedFileName);
             }
 
