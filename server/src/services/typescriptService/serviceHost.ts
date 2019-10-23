@@ -139,7 +139,7 @@ export function getServiceHost(
 
     if (isVirtualVueTemplateFile(fileFsPath)) {
       localScriptRegionDocuments.set(fileFsPath, doc);
-      scriptFileNameSet.add(fileFsPath);
+      scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
 
@@ -168,7 +168,7 @@ export function getServiceHost(
         jsLanguageService = tsModule.createLanguageService(jsHost);
       }
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
-      scriptFileNameSet.add(fileFsPath);
+      scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
@@ -212,13 +212,13 @@ export function getServiceHost(
 
         if (isVueFile(fileName)) {
           const uri = Uri.file(fileName);
-          fileName = uri.fsPath;
-          let doc = localScriptRegionDocuments.get(fileName);
+          const fileFsPath = normalizeFileNameToFsPath(fileName);
+          let doc = localScriptRegionDocuments.get(fileFsPath);
           if (!doc) {
             doc = updatedScriptRegionDocuments.refreshAndGet(
               TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || '')
             );
-            localScriptRegionDocuments.set(fileName, doc);
+            localScriptRegionDocuments.set(fileFsPath, doc);
             scriptFileNameSet.add(fileName);
           }
           return getScriptKind(tsModule, doc.languageId);
@@ -282,13 +282,14 @@ export function getServiceHost(
           if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
             const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
             const uri = Uri.file(resolvedFileName);
-            let doc = localScriptRegionDocuments.get(resolvedFileName);
+            const resolvedFileFsPath = normalizeFileNameToFsPath(resolvedFileName);
+            let doc = localScriptRegionDocuments.get(resolvedFileFsPath);
             // Vue file not created yet
             if (!doc) {
               doc = updatedScriptRegionDocuments.refreshAndGet(
                 TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
               );
-              localScriptRegionDocuments.set(resolvedFileName, doc);
+              localScriptRegionDocuments.set(resolvedFileFsPath, doc);
               scriptFileNameSet.add(resolvedFileName);
             }
 

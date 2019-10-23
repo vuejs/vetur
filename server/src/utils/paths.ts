@@ -7,6 +7,9 @@ import Uri from 'vscode-uri';
  * - `TextDocument` from `vscode-languageserver`
  * - `SourceFile` from `typescript`
  *
+ * TypeScript Language Service uses `fileName`, which is a file path without scheme.
+ * Convert them into standard URI by `Uri.file`.
+ *
  * ## `TextDocument.uri`
  *
  * - macOS / Linux: file:///foo/bar.vue
