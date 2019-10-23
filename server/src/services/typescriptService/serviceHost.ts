@@ -212,14 +212,14 @@ export function getServiceHost(
 
         if (isVueFile(fileName)) {
           const uri = Uri.file(fileName);
-          fileName = uri.fsPath;
-          let doc = localScriptRegionDocuments.get(fileName);
+          const fileFsPath = uri.fsPath;
+          let doc = localScriptRegionDocuments.get(fileFsPath);
           if (!doc) {
             doc = updatedScriptRegionDocuments.refreshAndGet(
-              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || '')
+              TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileFsPath) || '')
             );
-            localScriptRegionDocuments.set(fileName, doc);
-            scriptFileNameSet.add(uri.path);
+            localScriptRegionDocuments.set(fileFsPath, doc);
+            scriptFileNameSet.add(fileName);
           }
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
@@ -288,8 +288,8 @@ export function getServiceHost(
               doc = updatedScriptRegionDocuments.refreshAndGet(
                 TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
               );
-              localScriptRegionDocuments.set(resolvedFileName, doc);
-              scriptFileNameSet.add(uri.path);
+              localScriptRegionDocuments.set(uri.fsPath, doc);
+              scriptFileNameSet.add(resolvedFileName);
             }
 
             const extension =
