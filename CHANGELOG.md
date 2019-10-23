@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.22.6 | 2019-10-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.6/vspackage)
+
+- Fix path handling issues that causes TypeScript language features to stop working. #1476.
+
 ### 0.22.5 | 2019-10-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.5/vspackage)
 
 - Support analyzing invalid template interpolation expression. #1448.
