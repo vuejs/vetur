@@ -1,4 +1,5 @@
 {
+  "scopeName": "markdown.vue.codeblock",
   "fileTypes": [],
   "injectionSelector": "L:text.html.markdown",
   "patterns": [
@@ -40,6 +41,5 @@
         }
       ]
     }
-  },
-  "scopeName": "markdown.vue.codeblock"
+  }
 }
