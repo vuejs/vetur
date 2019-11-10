@@ -496,7 +496,7 @@ export class VLS {
       textDocumentSync: TextDocumentSyncKind.Full,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
       signatureHelpProvider: { triggerCharacters: ['('] },
-      documentFormattingProvider: false,
+      documentFormattingProvider: true,
       hoverProvider: true,
       documentHighlightProvider: true,
       documentLinkProvider: {
@@ -505,7 +505,17 @@ export class VLS {
       documentSymbolProvider: true,
       definitionProvider: true,
       referencesProvider: true,
-      codeActionProvider: true,
+      codeActionProvider: {
+        codeActionKinds: [
+          CodeActionKind.QuickFix,
+          CodeActionKind.Refactor,
+          CodeActionKind.RefactorExtract,
+          CodeActionKind.RefactorInline,
+          CodeActionKind.RefactorRewrite,
+          CodeActionKind.Source,
+          CodeActionKind.SourceOrganizeImports
+        ]
+      },
       colorProvider: true
     };
   }
