@@ -45,22 +45,27 @@ describe('Should find template-diagnostics in <template> region', () => {
         {
           range: sameLineRange(3, 16, 20),
           severity: vscode.DiagnosticSeverity.Error,
-          message: "Argument of type 'null' is not assignable"
+          message: "Argument of type 'null' is not assignable to parameter of type 'never'"
         },
         {
           range: sameLineRange(6, 16, 20),
           severity: vscode.DiagnosticSeverity.Error,
-          message: "Argument of type 'Element' is not assignable"
+          message: "Argument of type 'Element' is not assignable to parameter of type 'never'"
         },
         {
           range: sameLineRange(9, 16, 20),
           severity: vscode.DiagnosticSeverity.Error,
-          message: "Argument of type 'Attribute' is not assignable"
+          message: "Argument of type 'Attribute' is not assignable to parameter of type 'never'"
         },
         {
           range: sameLineRange(12, 16, 20),
           severity: vscode.DiagnosticSeverity.Error,
-          message: "Argument of type 'Text' is not assignable"
+          message: "Argument of type 'Text' is not assignable to parameter of type 'never'"
+        },
+        {
+          range: sameLineRange(42, 11, 15),
+          severity: vscode.DiagnosticSeverity.Hint,
+          message: "'node' is declared but its value is never read"
         }
       ]
     },
@@ -139,13 +144,33 @@ describe('Should find template-diagnostics in <template> region', () => {
         {
           range: sameLineRange(14, 20, 28),
           severity: vscode.DiagnosticSeverity.Error,
-          message: `Property 'notExist' does not exist on type`
+          message: `Property 'notExist' does not exist on type
+ 'CombinedVueInstance<{ test: number; } &
+ { eventTest(event: MouseEvent): void; argumentsTest(args: IArguments): void; passString(str: string): void; } &
+ Record<never, any> & Vue, object, object, object, Record<...>>'`.replace(/\n/g, '')
         },
-
         {
           range: sameLineRange(15, 27, 35),
           severity: vscode.DiagnosticSeverity.Error,
-          message: `Property 'notExist' does not exist on type`
+          message: `Property 'notExist' does not exist on type
+ 'CombinedVueInstance<{ test: number; } &
+ { eventTest(event: MouseEvent): void; argumentsTest(args: IArguments): void; passString(str: string): void; } &
+ Record<never, any> & Vue, object, object, object, Record<...>>'`.replace(/\n/g, '')
+        },
+        {
+          range: sameLineRange(31, 14, 19),
+          severity: vscode.DiagnosticSeverity.Hint,
+          message: `'event' is declared but its value is never read`
+        },
+        {
+          range: sameLineRange(33, 18, 22),
+          severity: vscode.DiagnosticSeverity.Hint,
+          message: `'args' is declared but its value is never read`
+        },
+        {
+          range: sameLineRange(34, 15, 18),
+          severity: vscode.DiagnosticSeverity.Hint,
+          message: `'str' is declared but its value is never read`
         }
       ]
     },
@@ -196,6 +221,11 @@ describe('Should find template-diagnostics in <template> region', () => {
           range: sameLineRange(2, 23, 26),
           severity: vscode.DiagnosticSeverity.Error,
           message: "Argument of type 'string' is not assignable to parameter of type 'number'"
+        },
+        {
+          range: sameLineRange(17, 15, 18),
+          severity: vscode.DiagnosticSeverity.Hint,
+          message: "'num' is declared but its value is never read"
         }
       ]
     },
