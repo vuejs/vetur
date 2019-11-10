@@ -14,6 +14,7 @@ import {
   Position,
   FormattingOptions,
   SymbolInformation,
+  CodeAction,
   CodeActionContext,
   ColorInformation,
   Color,
@@ -28,7 +29,7 @@ import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from '../modes/s
 import { getJavascriptMode } from '../modes/script/javascript';
 import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
-import { DocumentContext, RefactorAction } from '../types';
+import { DocumentContext, RefactorAction, CodeActionReq } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
@@ -52,8 +53,8 @@ export interface LanguageMode {
     range: Range,
     formatParams: FormattingOptions,
     context: CodeActionContext
-  ): Command[];
-  getRefactorEdits?(doc: TextDocument, args: RefactorAction): Command;
+  ): CodeAction[];
+  getCodeActionEdits?(doc: TextDocument, req: CodeActionReq): Command;
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
   doHover?(document: TextDocument, position: Position): Hover;

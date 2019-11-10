@@ -46,7 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
+    vscode.commands.registerCommand('vetur.chooseTypeScriptCodeAction', (args: any) => {
       client
         .sendRequest<vscode.Command | undefined>('requestCodeActionEdits', args)
         .then(command => command && vscode.commands.executeCommand(command.command, ...command.arguments!));

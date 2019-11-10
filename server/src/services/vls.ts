@@ -34,7 +34,8 @@ import {
   TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation,
-  Range
+  Range,
+  CodeActionKind
 } from 'vscode-languageserver-types';
 
 import Uri from 'vscode-uri';
@@ -43,7 +44,7 @@ import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
 import { DependencyService } from './dependencyService';
 import * as _ from 'lodash';
-import { DocumentContext, RefactorAction } from '../types';
+import { DocumentContext, CodeActionReq } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
@@ -153,7 +154,7 @@ export class VLS {
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
 
-    this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
+    this.lspConnection.onRequest('requestCodeActionEdits', this.getCodeActionEdits.bind(this));
   }
 
   private setupCustomLSPHandlers() {
@@ -438,13 +439,13 @@ export class VLS {
     return [];
   }
 
-  getRefactorEdits(refactorAction: RefactorAction) {
-    const uri = Uri.file(refactorAction.fileName).toString();
+  getCodeActionEdits(action: CodeActionReq) {
+    const uri = Uri.file(action.fileName).toString();
     const doc = this.documentService.getDocument(uri)!;
-    const startPos = doc.positionAt(refactorAction.textRange.pos);
+    const startPos = doc.positionAt(action.textRange.pos);
     const mode = this.languageModes.getModeAtPosition(doc, startPos);
-    if (mode && mode.getRefactorEdits) {
-      return mode.getRefactorEdits(doc, refactorAction);
+    if (mode && mode.getCodeActionEdits) {
+      return mode.getCodeActionEdits(doc, action);
     }
     return undefined;
   }

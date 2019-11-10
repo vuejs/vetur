@@ -2,15 +2,35 @@ export interface DocumentContext {
   resolveReference(ref: string, base?: string): string;
 }
 
-export interface RefactorAction {
+export enum CodeActionReqKind {
+  CombinedCodeFix,
+  RefactorAction,
+  OrganizeImports
+}
+
+export interface CodeActionReqBase<K, A> {
+  kind: K;
   fileName: string;
-  formatOptions: any;
   textRange: {
     pos: number;
     end: number;
   };
+  formatSettings: any;
+  preferences: {};
+  arguments: A;
+}
+
+export type CodeActionReq =
+  | CodeActionReqBase<CodeActionReqKind.RefactorAction, RefactorAction>
+  | CodeActionReqBase<CodeActionReqKind.CombinedCodeFix, CombinedCodeFixAction>
+  | CodeActionReqBase<CodeActionReqKind.OrganizeImports, {}>;
+
+export interface RefactorAction {
   refactorName: string;
   actionName: string;
-  preferences: {};
   description: string;
+}
+
+export interface CombinedCodeFixAction {
+  fixId: {};
 }
