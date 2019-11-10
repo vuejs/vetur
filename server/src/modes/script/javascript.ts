@@ -805,7 +805,8 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   return {
     tabSize: config.vetur.format.options.tabSize,
     indentSize: config.vetur.format.options.tabSize,
-    convertTabsToSpaces: !config.vetur.format.options.useTabs
+    convertTabsToSpaces: !config.vetur.format.options.useTabs,
+    insertSpaceAfterCommaDelimiter: true
   };
 }
 
