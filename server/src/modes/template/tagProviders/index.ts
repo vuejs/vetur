@@ -113,12 +113,16 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       settings['gridsome'] = true;
     }
 
+    if (packageJson['vetur']) {
+      const tagProvider = getRuntimeTagProvider(workspacePath, packageJson);
+      if (tagProvider) {
+        allTagProviders.push(tagProvider);
+      }
+    }
+
     for (const dep in dependencies) {
-      const runtimePkgPath = ts.findConfigFile(
-        workspacePath,
-        ts.sys.fileExists,
-        join('node_modules', dep, 'package.json')
-      );
+      const dependencyPath = join(workspacePath, 'node_modules', dep);
+      const runtimePkgPath = ts.findConfigFile(dependencyPath, ts.sys.fileExists, 'package.json');
 
       if (!runtimePkgPath) {
         continue;
@@ -129,7 +133,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
         continue;
       }
 
-      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg);
+      const tagProvider = getRuntimeTagProvider(dependencyPath, runtimePkg);
       if (!tagProvider) {
         continue;
       }

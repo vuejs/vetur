@@ -25,21 +25,13 @@ export const bootstrapTagProvider = getExternalTagProvider('bootstrap', bootstra
 export const buefyTagProvider = getExternalTagProvider('buefy', buefyTags, buefyAttributes);
 export const gridsomeTagProvider = getExternalTagProvider('gridsome', gridsomeTags, gridsomeAttributes);
 
-export function getRuntimeTagProvider(workspacePath: string, pkg: any): IHTMLTagProvider | null {
+export function getRuntimeTagProvider(workspaceOrDependencyPath: string, pkg: any): IHTMLTagProvider | null {
   if (!pkg.vetur) {
     return null;
   }
 
-  const tagsPath = ts.findConfigFile(
-    workspacePath,
-    ts.sys.fileExists,
-    path.join('node_modules/', pkg.name, pkg.vetur.tags)
-  );
-  const attrsPath = ts.findConfigFile(
-    workspacePath,
-    ts.sys.fileExists,
-    path.join('node_modules/', pkg.name, pkg.vetur.attributes)
-  );
+  const tagsPath = ts.findConfigFile(workspaceOrDependencyPath, ts.sys.fileExists, pkg.vetur.tags);
+  const attrsPath = ts.findConfigFile(workspaceOrDependencyPath, ts.sys.fileExists, pkg.vetur.attributes);
 
   try {
     if (tagsPath && attrsPath) {
