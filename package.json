@@ -480,7 +480,7 @@
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/js-yaml": "^3.12.1",
-    "@types/lodash": "^4.14.117",
+    "@types/lodash": "^4.14.149",
     "@types/mocha": "^5.2.6",
     "@types/node": "^12.12.11",
     "@types/shelljs": "^0.8.5",
