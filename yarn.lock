@@ -98,10 +98,10 @@
     "@types/glob" "*"
     "@types/node" "*"
 
-"@types/vscode@^1.32.0":
-  version "1.32.0"
-  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.32.0.tgz#e0a57de5fc8690a8a3a473996a6b6dfbccc28fbd"
-  integrity sha512-fpHR6iE38V3+2ezMwopt726uRYKK9c89OQDO+t8VEUXNJCaYvnMFbHYgxXvQ/jOvP2ZanlL6r6joRZlsUowzoA==
+"@types/vscode@^1.40.0":
+  version "1.40.0"
+  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.40.0.tgz#47d19e9e32da512c986f579fe6afbc8d3e6e0c55"
+  integrity sha512-5kEIxL3qVRkwhlMerxO7XuMffa+0LBl+iG2TcRa0NsdoeSFLkt/9hJ02jsi/Kvc6y8OVF2N2P2IHP5S4lWf/5w==
 
 aggregate-error@^3.0.0:
   version "3.0.1"

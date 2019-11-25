@@ -484,7 +484,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.12",
     "@types/shelljs": "^0.8.5",
-    "@types/vscode": "^1.32.0",
+    "@types/vscode": "^1.40.0",
     "glob": "^7.1.6",
     "husky": "^3.1.0",
     "js-yaml": "^3.13.1",
