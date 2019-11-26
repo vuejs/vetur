@@ -2780,10 +2780,15 @@ vscode-languageserver-protocol@3.15.0-next.3:
     vscode-jsonrpc "^4.0.0"
     vscode-languageserver-types "3.15.0-next.1"
 
-vscode-languageserver-types@3.15.0-next.1, vscode-languageserver-types@^3.15.0-next.1:
+vscode-languageserver-types@3.15.0-next.1:
   version "3.15.0-next.1"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.0-next.1.tgz#eddca4cf2a2547357006d4f0cc177ddc56043b65"
   integrity sha512-R0kzmaI8gOGEoU7b9huYQAzgZzRQ/5Q8HKjsIUdfz0MjXcBZ4tr1ik1So1p1O5kGrI1VTCd22Fw/wI7ECGoIPw==
+
+vscode-languageserver-types@^3.15.0-next.8:
+  version "3.15.0-next.8"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.0-next.8.tgz#59bfe70e5690bcef7d28d0f3a7f813915edf62e1"
+  integrity sha512-AEfWrSNyeamWMKPehh/kd3nBnKD9ZGCPhzfxMnW9YNqElSh28G2+Puk3knIQWyaWyV6Bzh28ok9BRJsPzXFCkQ==
 
 vscode@1.1.29:
   version "1.1.29"
