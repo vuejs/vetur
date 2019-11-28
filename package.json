@@ -291,11 +291,13 @@
           "default": "prettier",
           "enum": [
             "none",
-            "prettier"
+            "prettier",
+            "prettier-stylelint"
           ],
           "enumDescriptions": [
             "disable formatting",
-            "css formatter using css parser from prettier"
+            "css formatter using css parser from prettier",
+            "prettier-stylelint"
           ],
           "description": "Default formatter for <style> region"
         },
@@ -304,11 +306,13 @@
           "default": "prettier",
           "enum": [
             "none",
-            "prettier"
+            "prettier",
+            "prettier-stylelint"
           ],
           "enumDescriptions": [
             "disable formatting",
-            "postcss formatter using css parser from prettier"
+            "postcss formatter using css parser from prettier",
+            "prettier-stylelint"
           ],
           "description": "Default formatter for <style lang='postcss'> region"
         },
@@ -317,11 +321,13 @@
           "default": "prettier",
           "enum": [
             "none",
-            "prettier"
+            "prettier",
+            "prettier-stylelint"
           ],
           "enumDescriptions": [
             "disable formatting",
-            "scss formatter using scss parser from prettier"
+            "scss formatter using scss parser from prettier",
+            "prettier-stylelint"
           ],
           "description": "Default formatter for <style lang='scss'> region"
         },
@@ -330,11 +336,13 @@
           "default": "prettier",
           "enum": [
             "none",
-            "prettier"
+            "prettier",
+            "prettier-stylelint"
           ],
           "enumDescriptions": [
             "disable formatting",
-            "less formatter using postcss parser from prettier"
+            "less formatter using postcss parser from prettier",
+            "prettier-stylelint"
           ],
           "description": "Default formatter for <style lang='less'> region"
         },

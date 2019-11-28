@@ -100,10 +100,14 @@ export class VLS {
         : false
     );
 
-    await this.languageModes.init(workspacePath, {
-      infoService: this.vueInfoService,
-      dependencyService: this.dependencyService
-    }, params.initializationOptions['globalSnippetDir']);
+    await this.languageModes.init(
+      workspacePath,
+      {
+        infoService: this.vueInfoService,
+        dependencyService: this.dependencyService
+      },
+      params.initializationOptions['globalSnippetDir']
+    );
 
     this.setupConfigListeners();
     this.setupLSPHandlers();
@@ -235,7 +239,7 @@ export class VLS {
    * Language Features
    */
 
-  onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
+  async onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): Promise<TextEdit[]> {
     const doc = this.documentService.getDocument(textDocument.uri)!;
 
     const modeRanges = this.languageModes.getAllLanguageModeRangesInDocument(doc);
@@ -243,10 +247,10 @@ export class VLS {
 
     const errMessages: string[] = [];
 
-    modeRanges.forEach(modeRange => {
+    for (const modeRange of modeRanges) {
       if (modeRange.mode && modeRange.mode.format) {
         try {
-          const edits = modeRange.mode.format(doc, this.toSimpleRange(modeRange), options);
+          const edits = await modeRange.mode.format(doc, this.toSimpleRange(modeRange), options);
           for (const edit of edits) {
             allEdits.push(edit);
           }
@@ -254,7 +258,7 @@ export class VLS {
           errMessages.push(err.toString());
         }
       }
-    });
+    }
 
     if (errMessages.length !== 0) {
       this.displayErrorMessage('Formatting failed: "' + errMessages.join('\n') + '"');

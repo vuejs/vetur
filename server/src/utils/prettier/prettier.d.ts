@@ -157,3 +157,7 @@ interface PrettierTslintOptions {
  * @returns {string} the formatted code.
  */
 export type PrettierTslintFormat = (options: PrettierTslintOptions) => string;
+
+export interface PrettierStylelint {
+  format: (options: PrettierEslintOptions) => Promise<string>;
+}

@@ -61,7 +61,7 @@ export interface LanguageMode {
   findDocumentLinks?(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
   findDefinition?(document: TextDocument, position: Position): Definition;
   findReferences?(document: TextDocument, position: Position): Location[];
-  format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
+  format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[] | Promise<TextEdit[]>;
   findDocumentColors?(document: TextDocument): ColorInformation[];
   getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
 
