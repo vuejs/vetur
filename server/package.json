@@ -35,7 +35,7 @@
     "prettier": "^1.18.2",
     "prettier-eslint": "^8.8.2",
     "prettier-tslint": "^0.4.2",
-    "read-pkg-up": "^4.0.0",
+    "read-pkg-up": "^7.0.0",
     "resolve": "^1.8.1",
     "stylus": "^0.54.5",
     "stylus-supremacy": "^2.12.6",
