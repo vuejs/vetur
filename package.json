@@ -276,13 +276,15 @@
             "none",
             "prettyhtml",
             "js-beautify-html",
-            "prettier"
+            "prettier",
+            "prettier-eslint"
           ],
           "enumDescriptions": [
             "disable formatting",
             "prettyhtml",
             "html formatter of js-beautify",
-            "prettier"
+            "prettier",
+            "prettier-eslint"
           ],
           "description": "Default formatter for <template> region"
         },

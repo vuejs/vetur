@@ -6,7 +6,7 @@ import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
 import { Prettier, PrettierConfig } from '../../../utils/prettier/prettier';
-import { prettierify } from '../../../utils/prettier';
+import { prettierify, prettierEslintify } from '../../../utils/prettier';
 
 type PrettyHtmlConfig = IPrettyHtml extends (input: string, options: infer R) => any ? NonNullable<R> : never;
 
@@ -14,7 +14,8 @@ const TEMPLATE_HEAD = '<template>';
 const TEMPLATE_TAIL = '</template>';
 
 export function htmlFormat(document: TextDocument, currRange: Range, vlsFormatConfig: VLSFormatConfig): TextEdit[] {
-  if (vlsFormatConfig.defaultFormatter.html === 'none') {
+  const defaultFormatter = vlsFormatConfig.defaultFormatter.html;
+  if (defaultFormatter === 'none') {
     return [];
   }
 
@@ -23,16 +24,12 @@ export function htmlFormat(document: TextDocument, currRange: Range, vlsFormatCo
   const originalSource = TEMPLATE_HEAD + value + TEMPLATE_TAIL;
   let beautifiedHtml: string;
 
-  if (vlsFormatConfig.defaultFormatter.html === 'prettyhtml') {
+  if (defaultFormatter === 'prettyhtml') {
     beautifiedHtml = formatWithPrettyHtml(getFileFsPath(document.uri), originalSource, vlsFormatConfig);
-  } else if (vlsFormatConfig.defaultFormatter.html === 'prettier') {
-    const prettierResult = formatWithPrettier(
-      originalSource,
-      getFileFsPath(document.uri),
-      currRange,
-      vlsFormatConfig,
-      false
-    );
+  } else if (defaultFormatter === 'prettier' || defaultFormatter === 'prettier-eslint') {
+    console.log('Formatting html using ' + defaultFormatter);
+    const doFormat = defaultFormatter === 'prettier' ? formatWithPrettier : formatWithPrettierEslint;
+    const prettierResult = doFormat(originalSource, getFileFsPath(document.uri), currRange, vlsFormatConfig, false);
     if (prettierResult[0] && prettierResult[0].newText) {
       beautifiedHtml = prettierResult[0].newText.trim();
     } else {
@@ -83,6 +80,16 @@ function formatWithPrettier(
   initialIndent: boolean
 ) {
   return prettierify(code, fileFsPath, range, vlsFormatConfig, 'vue', initialIndent);
+}
+
+function formatWithPrettierEslint(
+  code: string,
+  fileFsPath: string,
+  range: Range,
+  vlsFormatConfig: VLSFormatConfig,
+  initialIndent: boolean
+) {
+  return prettierEslintify(code, fileFsPath, range, vlsFormatConfig, 'vue', initialIndent);
 }
 
 function getPrettyHtmlOptions(prettierrcOptions: Partial<PrettierConfig> | null, vlsFormatConfig: VLSFormatConfig) {
