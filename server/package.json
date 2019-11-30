@@ -26,7 +26,7 @@
     "buefy-helper-json": "^1.0.2",
     "element-helper-json": "^2.0.6",
     "eslint": "^5.9.0",
-    "eslint-plugin-vue": "^5.0.0",
+    "eslint-plugin-vue": "^6.0.1",
     "gridsome-helper-json": "^1.0.3",
     "js-beautify": "^1.10.0",
     "lodash": "^4.17.4",
