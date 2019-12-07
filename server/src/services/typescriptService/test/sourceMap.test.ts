@@ -123,7 +123,7 @@ suite('Source Map generation', () => {
     const fixturePath = path.resolve(__dirname, repoRootPath, './test/interpolation/fixture/diagnostics');
 
     fs.readdirSync(fixturePath).forEach(file => {
-      if (file.endsWith('.vue')) {
+      if (file.toLowerCase().endsWith('.vue')) {
         const filePath = path.resolve(fixturePath, file);
         test(`Source Map generation for ${path.relative(repoRootPath, filePath)}`, () => {
           filePathToTest(filePath);

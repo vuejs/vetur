@@ -132,7 +132,7 @@ export function getServiceHost(
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
     if (!localScriptRegionDocuments.has(fileFsPath)) {
-      if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
+      if (fileFsPath.toLowerCase().endsWith('.vue') || fileFsPath.toLowerCase().endsWith('.vue.template')) {
         scriptFileNameSet.add(filePath);
       }
     }
@@ -154,7 +154,7 @@ export function getServiceHost(
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
     if (!localScriptRegionDocuments.has(fileFsPath)) {
-      if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
+      if (fileFsPath.toLowerCase().endsWith('.vue') || fileFsPath.toLowerCase().endsWith('.vue.template')) {
         scriptFileNameSet.add(filePath);
       }
     }
@@ -279,7 +279,7 @@ export function getServiceHost(
             return undefined;
           }
 
-          if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
+          if (tsResolvedModule.resolvedFileName.toLowerCase().endsWith('.vue.ts')) {
             const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
             const uri = Uri.file(resolvedFileName);
             const resolvedFileFsPath = normalizeFileNameToFsPath(resolvedFileName);
