@@ -235,7 +235,7 @@ describe('Should find template-diagnostics in <template> region', () => {
         {
           range: sameLineRange(6, 7, 16),
           severity: vscode.DiagnosticSeverity.Error,
-          message: "Operator '+' cannot be applied to types 'number' and 'true'"
+          message: "Operator '+' cannot be applied to types 'number' and 'boolean'"
         }
       ]
     }

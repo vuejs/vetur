@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.23.0 | 2019-12-11
+
+- Upgrade to TypeScript 3.7 with Optional Chaining and Nullish Coalescing. #1510.
+
 ### 0.22.6 | 2019-10-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.6/vspackage)
 
 - Fix path handling issues that causes TypeScript language features to stop working. #1476.
