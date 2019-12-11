@@ -482,7 +482,7 @@
     "@types/js-yaml": "^3.12.1",
     "@types/lodash": "^4.14.149",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.16",
+    "@types/node": "^12.12.17",
     "@types/shelljs": "^0.8.5",
     "@types/vscode": "^1.32.0",
     "glob": "^7.1.6",
