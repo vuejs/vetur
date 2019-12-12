@@ -166,6 +166,16 @@
         "injectTo": [
           "source.vue"
         ]
+      },
+      {
+        "scopeName": "markdown.vue.codeblock",
+        "path": "./syntaxes/markdown-vue.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.vue": "vue"
+        }
       }
     ],
     "configuration": {

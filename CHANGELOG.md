@@ -4,6 +4,7 @@
 
 - Upgrade to TypeScript 3.7 with Optional Chaining and Nullish Coalescing. #1510.
 - 🙌 Fix syntax highlighting for interpolation in attributes with numbers (such as `x1`). Thanks to contribution from [Niklas Higi](https://github.com/shroudedcode). #1465.
+- 🙌 Fix syntax highlighting for backticked vue code block in Markdown file. Thanks to contribution from [Abdelrahman Awad](https://github.com/logaretm). #1024 and #1485.
 
 ### 0.22.6 | 2019-10-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.22.6/vspackage)
 
