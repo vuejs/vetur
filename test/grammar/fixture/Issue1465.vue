@@ -1,0 +1,10 @@
+<template>
+  <div>
+    <svg>
+      <line
+        :x1="line.start[0]"
+        :y1="true"
+      ></line>
+    </svg>
+  </div>
+</template>
