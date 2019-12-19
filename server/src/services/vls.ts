@@ -100,10 +100,14 @@ export class VLS {
         : false
     );
 
-    await this.languageModes.init(workspacePath, {
-      infoService: this.vueInfoService,
-      dependencyService: this.dependencyService
-    }, params.initializationOptions['globalSnippetDir']);
+    await this.languageModes.init(
+      workspacePath,
+      {
+        infoService: this.vueInfoService,
+        dependencyService: this.dependencyService
+      },
+      params.initializationOptions['globalSnippetDir']
+    );
 
     this.setupConfigListeners();
     this.setupLSPHandlers();
@@ -157,6 +161,14 @@ export class VLS {
   private setupCustomLSPHandlers() {
     this.lspConnection.onRequest('$/queryVirtualFileInfo', ({ fileName, currFileText }) => {
       return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
+    });
+
+    this.lspConnection.onRequest('$/getDiagnostics', params => {
+      const doc = this.documentService.getDocument(params.uri);
+      if (doc) {
+        return this.doValidate(doc);
+      }
+      return [];
     });
   }
 
