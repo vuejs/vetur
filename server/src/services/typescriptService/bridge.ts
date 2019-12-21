@@ -35,7 +35,7 @@ export declare const ${iterationHelperName}: {
 };
 `;
 
-export const oldContent =
+export const preVue25Content =
   `
 import Vue from 'vue';
 export interface GeneralOption extends Vue.ComponentOptions<Vue> {
@@ -46,9 +46,16 @@ export default function bridge<T>(t: T & GeneralOption): T {
 }
 ` + renderHelpers;
 
-export const content =
+export const vue25Content =
   `
 import Vue from 'vue';
 const func = Vue.extend;
+export default func;
+` + renderHelpers;
+
+export const vue30Content =
+  `
+import { createComponent } from 'vue';
+const func = createComponent;
 export default func;
 ` + renderHelpers;
