@@ -504,7 +504,7 @@
     "prettier": "^1.19.1",
     "shelljs": "^0.8.3",
     "tslint": "^5.20.1",
-    "typescript": "^3.7.3",
+    "typescript": "^3.7.4",
     "vscode": "1.1.29"
   }
 }
