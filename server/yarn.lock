@@ -300,10 +300,10 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
 
-"@types/node@*", "@types/node@^12.7.4":
-  version "12.12.18"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.18.tgz#8d16634797d63c2af5bc647ce879f8de20b56469"
-  integrity sha512-DBkZuIMFuAfjJHiunyRc+aNvmXYNwV1IPMgGKGlwCp6zh6MKrVtmvjSWK/axWcD25KJffkXgkfvFra8ndenXAw==
+"@types/node@*", "@types/node@^13.1.1":
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.1.tgz#6d11a8c2d58405b3db9388ab740106cbfa64c3c9"
+  integrity sha512-hx6zWtudh3Arsbl3cXay+JnkvVgCKzCWKv42C9J01N2T2np4h8w5X8u6Tpz5mj38kE3M9FM0Pazx8vKFFMnjLQ==
 
 "@types/normalize-package-data@*":
   version "2.4.0"
