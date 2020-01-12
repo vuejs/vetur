@@ -14,6 +14,7 @@ import {
   TextDocumentSyncKind,
   DocumentFormattingRequest,
   Disposable,
+  DocumentSymbolParams,
   CodeActionParams
 } from 'vscode-languageserver';
 import {
@@ -24,7 +25,6 @@ import {
   Diagnostic,
   DocumentHighlight,
   DocumentLink,
-  DocumentSymbolParams,
   Hover,
   Location,
   SignatureHelp,
