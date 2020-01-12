@@ -4545,10 +4545,10 @@ vue-eslint-parser@^7.0.0:
     esquery "^1.0.1"
     lodash "^4.17.15"
 
-vue-language-server@^0.0.66:
-  version "0.0.66"
-  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.66.tgz#3373669cea05f7b78d73d10e0c2afd48ce8506ee"
-  integrity sha512-mxwJV+jTVNlrZEk0XjnucTl3S3HH2bMPW2HOdQ2DEX0DwPWBwh2rnjtN4P/F+1EWgNccX3RRFxph52Jlm5wsSA==
+vue-language-server@^0.0.67:
+  version "0.0.67"
+  resolved "https://registry.yarnpkg.com/vue-language-server/-/vue-language-server-0.0.67.tgz#5baaf59edb504a3aece6dc75c8093b52532d094e"
+  integrity sha512-/dd2bJLxOmX8Ie0EPTlmU+F8cxAekn/1m8K9OAFoijm4fc8SdHznFUUEKuz2RMMhsaL5+rccj8xLFAJELYNbaA==
   dependencies:
     "@starptech/prettyhtml" "^0.10.0"
     bootstrap-vue-helper-json "^1.1.1"

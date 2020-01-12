@@ -13,7 +13,7 @@
     "vscode-languageserver-protocol": "^3.15.0-next.1",
     "vscode-languageserver-types": "^3.15.0-next.1",
     "vscode-uri": "^1.0.1",
-    "vue-language-server": "^0.0.66"
+    "vue-language-server": "^0.0.67"
   },
   "scripts": {
     "compile": "tsc -p .",
