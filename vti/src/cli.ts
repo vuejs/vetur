@@ -12,7 +12,7 @@ import {
 } from 'vscode-languageserver-protocol';
 import { createConnection } from 'vscode-languageserver';
 import { Duplex } from 'stream';
-import { VLS } from '../services/vls';
+import { VLS } from 'vue-language-server';
 import { params } from './initParams';
 import * as fs from 'fs';
 import Uri from 'vscode-uri';
@@ -44,7 +44,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
   const clientConnection = createProtocolConnection(new StreamMessageReader(down), new StreamMessageWriter(up), logger);
 
   const serverConnection = createConnection(new StreamMessageReader(up), new StreamMessageWriter(down));
-  const vls = new VLS(serverConnection);
+  const vls = new VLS(serverConnection as any);
 
   serverConnection.onInitialize(
     async (params: InitializeParams): Promise<InitializeResult> => {
@@ -98,6 +98,12 @@ async function getDiagnostics(workspaceUri: Uri) {
       if (res.length > 0) {
         console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
         res.forEach(d => {
+          /**
+           * Ignore eslint errors for now
+           */
+          if (d.source === 'eslint-plugin-vue') {
+            return;
+          }
           if (d.severity === DiagnosticSeverity.Error) {
             console.log(`${chalk.red('Error')}: ${d.message}`);
           } else {
@@ -112,51 +118,18 @@ async function getDiagnostics(workspaceUri: Uri) {
   }
 }
 
-// async function getFormattingOutput(print: boolean) {
-//   const clientConnection = await prepareClientConnection();
-
-//   const files = glob.sync('**/*.vue', { cwd: workspacePath });
-//   const absFilePaths = files.map(f => path.resolve(workspacePath, f));
-
-//   console.log('');
-//   for (const absFilePath of absFilePaths) {
-//     console.log('');
-
-//     const vueFileText = fs.readFileSync(absFilePath, 'utf-8');
-//     const vueFileUri = Uri.file(absFilePath).toString();
-
-//     await clientConnection.sendNotification(DidOpenTextDocumentNotification.type, {
-//       textDocument: {
-//         languageId: 'vue',
-//         uri: vueFileUri,
-//         version: 1,
-//         text: vueFileText
-//       }
-//     });
-
-//     const res = await clientConnection.sendRequest(DocumentFormattingRequest.type, {
-//       textDocument: {
-//         uri: Uri.file(absFilePath).toString()
-//       }
-//     });
-//     const doc = TextDocument.create(vueFileUri, 'vue', 1, vueFileText);
-
-//     const formattedText = res ? TextDocument.applyEdits(doc, res) : vueFileText;
-
-//     if (print) {
-//       fs.writeFileSync(absFilePath, formattedText);
-//       console.log(`File: ${absFilePath} rewritten`);
-//     } else {
-//       console.log(`File: ${absFilePath}`);
-//       console.log(formattedText);
-//     }
-//     console.log('');
-//   }
-// }
-
 const myArgs = process.argv.slice(2);
-// vls diag
-if (myArgs[0] === 'diagnostics') {
+// no args
+if (myArgs.length === 0) {
+  console.log('Vetur Terminal Interface');
+  console.log('');
+  console.log('Usage:');
+  console.log('');
+  console.log('  vti diagnostics ---- Print all diagnostics');
+  console.log('');
+}
+// vls diagnostics
+else if (myArgs[0] === 'diagnostics') {
   console.log('Getting Vetur diagnostics');
   let workspaceUri;
 
@@ -168,15 +141,9 @@ if (myArgs[0] === 'diagnostics') {
     workspaceUri = Uri.file(process.cwd());
   }
 
+  console.log('');
   console.log('====================================');
   getDiagnostics(workspaceUri).then(() => {
     console.log('====================================');
   });
-} else if (myArgs[0] === 'format') {
-  console.log('Getting Vetur diagnostics');
-  console.log('====================================');
-  const print = myArgs[1] === '-w' || myArgs[1] === '--write';
-  // getFormattingOutput(print).then(() => {
-  //   console.log('====================================');
-  // });
 }

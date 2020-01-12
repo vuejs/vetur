@@ -85,7 +85,7 @@ export async function getJavascriptMode(
     getId() {
       return 'javascript';
     },
-    configure(c: any) {
+    configure(c) {
       config = c;
     },
     updateFileInfo(doc: TextDocument): void {

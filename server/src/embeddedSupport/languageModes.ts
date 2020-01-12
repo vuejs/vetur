@@ -33,6 +33,7 @@ import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
+import { VLSFullConfig } from '../config';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -41,7 +42,7 @@ export interface VLSServices {
 
 export interface LanguageMode {
   getId(): string;
-  configure?(options: any): void;
+  configure?(options: VLSFullConfig): void;
   updateFileInfo?(doc: TextDocument): void;
 
   doValidation?(document: TextDocument): Diagnostic[];

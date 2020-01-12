@@ -2,6 +2,7 @@
 
 ### 0.23.0 | 2019-12-11
 
+- VTI (Vetur Terminal Interface). #1149.
 - Upgrade to TypeScript 3.7 with Optional Chaining and Nullish Coalescing. #1510.
 - 🙌 Fix syntax highlighting for interpolation in attributes with numbers (such as `x1`). Thanks to contribution from [Niklas Higi](https://github.com/shroudedcode). #1465.
 - 🙌 Fix syntax highlighting for backticked vue code block in Markdown file. Thanks to contribution from [Abdelrahman Awad](https://github.com/logaretm). #1024 and #1485.
