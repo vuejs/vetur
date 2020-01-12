@@ -24,7 +24,7 @@ module.exports = {
           '/debugging',
           '/framework',
           '/interpolation',
-          '/cli'
+          '/vti'
         ]
       },
       '/FAQ',
