@@ -4,4 +4,5 @@
 
 ## Todo
 
+- [ ] Exit with 1 when errors are present
 - [ ] Formatting
