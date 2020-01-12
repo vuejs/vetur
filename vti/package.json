@@ -1,7 +1,7 @@
 {
   "name": "vti",
   "description": "Vetur Terminal Interface",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.0",
   "main": "./dist/cli.js",
   "bin": "./dist/cli.js",
   "author": "Pine Wu <octref@gmail.com>",
