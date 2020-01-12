@@ -14,6 +14,7 @@ import {
   TextDocumentSyncKind,
   DocumentFormattingRequest,
   Disposable,
+  DocumentSymbolParams,
   CodeActionParams
 } from 'vscode-languageserver';
 import {
@@ -24,7 +25,6 @@ import {
   Diagnostic,
   DocumentHighlight,
   DocumentLink,
-  DocumentSymbolParams,
   Hover,
   Location,
   SignatureHelp,
@@ -46,6 +46,7 @@ import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
+import { getDefaultVLSConfig, VLSFullConfig } from '../config';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -80,7 +81,11 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
-    logger.setLevel(_.get(params.initializationOptions.config, ['vetur', 'dev', 'logLevel'], 'INFO'));
+    const config: VLSFullConfig = params.initializationOptions.config
+      ? _.merge(getDefaultVLSConfig(), params.initializationOptions.config)
+      : getDefaultVLSConfig();
+
+    logger.setLevel(config.vetur.dev.logLevel);
 
     const workspacePath = params.rootPath;
     if (!workspacePath) {
@@ -93,17 +98,16 @@ export class VLS {
     this.workspacePath = workspacePath;
 
     await this.vueInfoService.init(this.languageModes);
-    await this.dependencyService.init(
-      workspacePath,
-      params.initializationOptions
-        ? _.get(params.initializationOptions.config, ['vetur', 'useWorkspaceDependencies'], false)
-        : false
-    );
+    await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies);
 
-    await this.languageModes.init(workspacePath, {
-      infoService: this.vueInfoService,
-      dependencyService: this.dependencyService
-    }, params.initializationOptions['globalSnippetDir']);
+    await this.languageModes.init(
+      workspacePath,
+      {
+        infoService: this.vueInfoService,
+        dependencyService: this.dependencyService
+      },
+      params.initializationOptions['globalSnippetDir']
+    );
 
     this.setupConfigListeners();
     this.setupLSPHandlers();
@@ -114,9 +118,7 @@ export class VLS {
       this.dispose();
     });
 
-    if (params.initializationOptions && params.initializationOptions.config) {
-      this.configure(params.initializationOptions.config);
-    }
+    this.configure(config);
   }
 
   listen() {
@@ -157,6 +159,14 @@ export class VLS {
   private setupCustomLSPHandlers() {
     this.lspConnection.onRequest('$/queryVirtualFileInfo', ({ fileName, currFileText }) => {
       return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
+    });
+
+    this.lspConnection.onRequest('$/getDiagnostics', params => {
+      const doc = this.documentService.getDocument(params.uri);
+      if (doc) {
+        return this.doValidate(doc);
+      }
+      return [];
     });
   }
 
