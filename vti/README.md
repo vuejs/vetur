@@ -1,4 +1,4 @@
-# Vue Terminal Interface
+# Vetur Terminal Interface
 
 🚧 Work in progress 🚧
 
