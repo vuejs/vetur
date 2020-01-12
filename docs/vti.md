@@ -10,4 +10,3 @@ Currently, this is only used for generating interpolation type-checking errors o
 neither Vue's compiler nor Webpack would catch.
 
 Please send feedback to: https://github.com/vuejs/vetur/issues/1635.
-
