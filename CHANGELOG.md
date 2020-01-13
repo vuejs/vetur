@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.23.0 | 2019-12-11
+### 0.23.0 | 2019-12-11 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.23.0/vspackage)
 
 - VTI (Vetur Terminal Interface). #1149.
 - Provide default VLS config and do not crash when no config is provided. #977.
