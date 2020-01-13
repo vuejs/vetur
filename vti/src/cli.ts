@@ -79,9 +79,9 @@ async function getDiagnostics(workspaceUri: Uri) {
   const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
 
   console.log('');
-  for (const absFilePath of absFilePaths) {
-    console.log('');
+  let errCount = 0;
 
+  for (const absFilePath of absFilePaths) {
     await clientConnection.sendNotification(DidOpenTextDocumentNotification.type, {
       textDocument: {
         languageId: 'vue',
@@ -96,6 +96,7 @@ async function getDiagnostics(workspaceUri: Uri) {
         uri: Uri.file(absFilePath).toString()
       })) as Diagnostic[];
       if (res.length > 0) {
+        console.log('');
         console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
         res.forEach(d => {
           /**
@@ -106,8 +107,9 @@ async function getDiagnostics(workspaceUri: Uri) {
           }
           if (d.severity === DiagnosticSeverity.Error) {
             console.log(`${chalk.red('Error')}: ${d.message}`);
+            errCount++;
           } else {
-            console.log(`${chalk.yellow('Error')}: ${d.message}`);
+            console.log(`${chalk.yellow('Warn')} : ${d.message}`);
           }
         });
         console.log('');
@@ -116,34 +118,47 @@ async function getDiagnostics(workspaceUri: Uri) {
       console.log(err);
     }
   }
+
+  return errCount;
 }
 
-const myArgs = process.argv.slice(2);
-// no args
-if (myArgs.length === 0) {
-  console.log('Vetur Terminal Interface');
-  console.log('');
-  console.log('Usage:');
-  console.log('');
-  console.log('  vti diagnostics ---- Print all diagnostics');
-  console.log('');
-}
-// vls diagnostics
-else if (myArgs[0] === 'diagnostics') {
-  console.log('Getting Vetur diagnostics');
-  let workspaceUri;
-
-  if (myArgs[1]) {
-    console.log(`Loading Vetur in workspace path: ${myArgs[1]}`);
-    workspaceUri = Uri.file(myArgs[1]);
-  } else {
-    console.log(`Loading Vetur in current directory: ${process.cwd()}`);
-    workspaceUri = Uri.file(process.cwd());
+(async () => {
+  const myArgs = process.argv.slice(2);
+  // no args
+  if (myArgs.length === 0) {
+    console.log('Vetur Terminal Interface');
+    console.log('');
+    console.log('Usage:');
+    console.log('');
+    console.log('  vti diagnostics ---- Print all diagnostics');
+    console.log('');
   }
+  // vls diagnostics
+  else if (myArgs[0] === 'diagnostics') {
+    console.log('Getting Vetur diagnostics');
+    let workspaceUri;
 
-  console.log('');
-  console.log('====================================');
-  getDiagnostics(workspaceUri).then(() => {
+    if (myArgs[1]) {
+      console.log(`Loading Vetur in workspace path: ${myArgs[1]}`);
+      workspaceUri = Uri.file(myArgs[1]);
+    } else {
+      console.log(`Loading Vetur in current directory: ${process.cwd()}`);
+      workspaceUri = Uri.file(process.cwd());
+    }
+
+    console.log('');
     console.log('====================================');
-  });
-}
+    const errCount = await getDiagnostics(workspaceUri);
+    console.log('====================================');
+
+    if (errCount === 0) {
+      console.log(chalk.green(`VTI found no error`));
+      process.exit(0);
+    } else {
+      console.log(chalk.red(`VTI found ${errCount} ${errCount === 1 ? 'error' : 'errors'}`));
+      process.exit(1);
+    }
+  }
+})().catch(_err => {
+  console.error('VTI operation failed');
+});
