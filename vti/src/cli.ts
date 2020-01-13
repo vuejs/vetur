@@ -75,7 +75,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
 async function getDiagnostics(workspaceUri: Uri) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
-  const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath });
+  const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
   const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
 
   console.log('');
