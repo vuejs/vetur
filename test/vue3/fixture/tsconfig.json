@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["dom", "es5"],
+    "experimentalDecorators": true
+  }
+}

@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.23.1
+
+- Support Vue 3 interface with `defineComponent`. #1636.
+
 ### 0.23.0 | 2020-01-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.23.0/vspackage)
 
 - VTI (Vetur Terminal Interface). #1149.
