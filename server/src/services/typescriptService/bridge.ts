@@ -55,7 +55,7 @@ export default func;
 
 export const vue30Content =
   `
-import { createComponent } from 'vue';
-const func = createComponent;
+import { defineComponent } from 'vue';
+const func = defineComponent;
 export default func;
 ` + renderHelpers;
