@@ -8,6 +8,7 @@ export type LanguageId =
   | 'css'
   | 'postcss'
   | 'scss'
+  | 'sass'
   | 'less'
   | 'stylus'
   | 'javascript'
