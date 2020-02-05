@@ -438,7 +438,7 @@ export async function getJavascriptMode(
 
       const result: CodeAction[] = [];
 
-      provideQuickFicCodeActions(
+      provideQuickFixCodeActions(
         fileName,
         textRange,
         context,
@@ -647,7 +647,7 @@ function provideRefactoringCommands(
   }
 }
 
-function provideQuickFicCodeActions(
+function provideQuickFixCodeActions(
   fileName: string,
   textRange: { pos: number; end: number },
   context: CodeActionContext,
