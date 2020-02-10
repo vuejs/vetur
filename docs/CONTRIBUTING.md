@@ -8,7 +8,8 @@ Contribution is welcome! There are many ways you could help Vetur's development:
 
 ## Code
 
-Comment on feature requests that you'd like to contribute before sending PR.
+- **When issue is complex, comment on feature requests first to get feedback and implementation pointers before sending PR.**
+- **Tick _[Allow Edits from Maintainers](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/allowing-changes-to-a-pull-request-branch-created-from-a-fork)_**
 
 #### Coding Style
 
@@ -29,7 +30,7 @@ To compile:
 
 ```bash
 yarn
-cd server && yarn && cd ..
+(cd server && yarn) && (cd vti && yarn)
 yarn compile
 # or yarn watch
 ```
