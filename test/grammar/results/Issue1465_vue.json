@@ -89,7 +89,7 @@
 	},
 	{
 		"c": "<",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.begin.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
@@ -100,7 +100,7 @@
 	},
 	{
 		"c": "svg",
-		"t": "source.vue text.html.vue-html meta.tag.other.html entity.name.tag.other.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
 		"r": {
 			"dark_plus": "entity.name.tag: #569CD6",
 			"light_plus": "entity.name.tag: #800000",
@@ -111,7 +111,7 @@
 	},
 	{
 		"c": ">",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.end.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
@@ -133,7 +133,7 @@
 	},
 	{
 		"c": "<",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.begin.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
@@ -144,7 +144,7 @@
 	},
 	{
 		"c": "line",
-		"t": "source.vue text.html.vue-html meta.tag.other.html entity.name.tag.other.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
 		"r": {
 			"dark_plus": "entity.name.tag: #569CD6",
 			"light_plus": "entity.name.tag: #800000",
@@ -155,7 +155,7 @@
 	},
 	{
 		"c": "        ",
-		"t": "source.vue text.html.vue-html meta.tag.other.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -166,7 +166,7 @@
 	},
 	{
 		"c": ":",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -177,7 +177,7 @@
 	},
 	{
 		"c": "x1",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -188,7 +188,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -199,7 +199,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -210,7 +210,7 @@
 	},
 	{
 		"c": "line",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue variable.other.object.js",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue variable.other.object.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -221,7 +221,7 @@
 	},
 	{
 		"c": ".",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue punctuation.accessor.js",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue punctuation.accessor.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -232,7 +232,7 @@
 	},
 	{
 		"c": "start",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue variable.other.property.js",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue variable.other.property.js",
 		"r": {
 			"dark_plus": "variable: #9CDCFE",
 			"light_plus": "variable: #001080",
@@ -243,7 +243,7 @@
 	},
 	{
 		"c": "[",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue meta.array.literal.js meta.brace.square.js",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue meta.array.literal.js meta.brace.square.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -254,7 +254,7 @@
 	},
 	{
 		"c": "0",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue meta.array.literal.js constant.numeric.decimal.js",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue meta.array.literal.js constant.numeric.decimal.js",
 		"r": {
 			"dark_plus": "constant.numeric: #B5CEA8",
 			"light_plus": "constant.numeric: #098658",
@@ -265,7 +265,7 @@
 	},
 	{
 		"c": "]",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue meta.array.literal.js meta.brace.square.js",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue meta.array.literal.js meta.brace.square.js",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -276,7 +276,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -287,7 +287,7 @@
 	},
 	{
 		"c": "        ",
-		"t": "source.vue text.html.vue-html meta.tag.other.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -298,7 +298,7 @@
 	},
 	{
 		"c": ":",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -309,7 +309,7 @@
 	},
 	{
 		"c": "y1",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue entity.other.attribute-name.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue entity.other.attribute-name.html",
 		"r": {
 			"dark_plus": "entity.other.attribute-name: #9CDCFE",
 			"light_plus": "entity.other.attribute-name: #FF0000",
@@ -320,7 +320,7 @@
 	},
 	{
 		"c": "=",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue punctuation.separator.key-value.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue punctuation.separator.key-value.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -331,7 +331,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue punctuation.definition.string.begin.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -342,7 +342,7 @@
 	},
 	{
 		"c": "true",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue constant.language.boolean.true.js",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue constant.language.boolean.true.js",
 		"r": {
 			"dark_plus": "constant.language: #569CD6",
 			"light_plus": "constant.language: #0000FF",
@@ -353,7 +353,7 @@
 	},
 	{
 		"c": "\"",
-		"t": "source.vue text.html.vue-html meta.tag.other.html meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html meta.directive.vue source.directive.vue punctuation.definition.string.end.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -364,7 +364,7 @@
 	},
 	{
 		"c": "      ",
-		"t": "source.vue text.html.vue-html meta.tag.other.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html",
 		"r": {
 			"dark_plus": "default: #D4D4D4",
 			"light_plus": "default: #000000",
@@ -375,7 +375,7 @@
 	},
 	{
 		"c": ">",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.end.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
@@ -386,7 +386,7 @@
 	},
 	{
 		"c": "</",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.begin.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
@@ -397,7 +397,7 @@
 	},
 	{
 		"c": "line",
-		"t": "source.vue text.html.vue-html meta.tag.other.html entity.name.tag.other.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
 		"r": {
 			"dark_plus": "entity.name.tag: #569CD6",
 			"light_plus": "entity.name.tag: #800000",
@@ -408,7 +408,7 @@
 	},
 	{
 		"c": ">",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.end.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
@@ -430,7 +430,7 @@
 	},
 	{
 		"c": "</",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.begin.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.begin.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
@@ -441,7 +441,7 @@
 	},
 	{
 		"c": "svg",
-		"t": "source.vue text.html.vue-html meta.tag.other.html entity.name.tag.other.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html entity.name.tag.block.any.html",
 		"r": {
 			"dark_plus": "entity.name.tag: #569CD6",
 			"light_plus": "entity.name.tag: #800000",
@@ -452,7 +452,7 @@
 	},
 	{
 		"c": ">",
-		"t": "source.vue text.html.vue-html meta.tag.other.html punctuation.definition.tag.end.html",
+		"t": "source.vue text.html.vue-html meta.tag.block.any.html punctuation.definition.tag.end.html",
 		"r": {
 			"dark_plus": "punctuation.definition.tag: #808080",
 			"light_plus": "punctuation.definition.tag: #800000",
