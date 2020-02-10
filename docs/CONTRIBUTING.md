@@ -71,6 +71,16 @@ Two ways of using it:
 
 ![scope](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/scope.png)
 
+After you are done, verify the grammar integration test passes by running `yarn test:grammar`.
+
+If a file `test/grammar/results/<FILE>_vue.json` exists, the testing script will compare the actual tokenization result
+of tokenizing `test/grammar/fixture/<FILE>.vue` against the JSON.
+
+If `test/grammar/fixture/<FILE>.vue` exists but no corresponding JSON file exists, the script will generate a new JSON file. So:
+
+- If you are adding a new test, add a file `test/grammar/fixture/<FILE>.vue` and run the test script to generate a corresponding JSON file. Commit both.
+- If you see a test failure but you verify the color looks correct when running the `client` debug target, delete the JSON file and run the test script to generate a new one. Compare the diff and commit the changes.
+
 ## Doc
 
 PR that fixes grammar & typo or clarify & illustrate usage is welcome.
