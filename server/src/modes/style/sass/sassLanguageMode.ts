@@ -1,10 +1,8 @@
 import { LanguageMode } from '../../../embeddedSupport/languageModes';
 
-import { TextDocument, Range, FormattingOptions, CompletionList } from 'vscode-languageserver-types/lib/umd/main';
+import { TextDocument, Range, FormattingOptions } from 'vscode-languageserver-types/lib/umd/main';
 
-import { Position, TextEdit } from 'vscode-css-languageservice';
-
-import { DocumentContext } from '../../../types';
+import { TextEdit } from 'vscode-css-languageservice';
 
 import { SassFormatter, SassFormatterConfig } from 'sass-formatter';
 
@@ -21,24 +19,6 @@ export class SassLanguageMode implements LanguageMode {
     this.config = c;
   }
 
-  doValidation(document: TextDocument): any {
-    return undefined;
-  }
-  doComplete(document: TextDocument, position: Position) {
-    return CompletionList.create();
-  }
-  doHover(document: TextDocument, position: Position): any {
-    return undefined;
-  }
-  findDocumentHighlight(document: TextDocument, position: Position) {
-    return [];
-  }
-  findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
-    return [];
-  }
-  findDocumentSymbols(document: TextDocument) {
-    return [];
-  }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
     const sassConfig: SassFormatterConfig = {
       convert: true,
@@ -49,12 +29,15 @@ export class SassLanguageMode implements LanguageMode {
       tabSize: formattingOptions.tabSize,
       setPropertySpace: true
     };
-    Object.assign(this.config.sass.format, sassConfig);
-    return [TextEdit.replace(range, SassFormatter.Format(document.getText(range), sassConfig))];
+
+    Object.assign(sassConfig, this.config.sass.format);
+
+    if (this.config.vetur.format.defaultFormatter.sass === 'sass-formatter') {
+      return [TextEdit.replace(range, SassFormatter.Format(document.getText(range), sassConfig))];
+    }
+    return [];
   }
-  findDefinition(document: TextDocument, position: Position): any {
-    return undefined;
-  }
+
   onDocumentRemoved(document: TextDocument) {}
   dispose() {}
 }

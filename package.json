@@ -328,10 +328,10 @@
         },
         "vetur.format.defaultFormatter.sass": {
           "type": "string",
-          "default": "sass",
+          "default": "sass-formatter",
           "enum": [
             "none",
-            "sass"
+            "sass-formatter"
           ],
           "enumDescriptions": [
             "disable formatting",

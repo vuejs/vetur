@@ -34,7 +34,7 @@ Current default:
   "vetur.format.defaultFormatter.stylus": "stylus-supremacy",
   "vetur.format.defaultFormatter.js": "prettier",
   "vetur.format.defaultFormatter.ts": "prettier",
-  "vetur.format.defaultFormatter.sass": "sass"
+  "vetur.format.defaultFormatter.sass": "sass-formatter"
 }
 ```
 
