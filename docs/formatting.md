@@ -140,17 +140,17 @@ Other settings are read from `stylusSupremacy.*`. You can install [Stylus Suprem
 
 Settings are read from `sass.format.*`. You can install [Sass extension](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) to get IntelliSense for settings, but Vetur will work without it. A useful default:
 
-```json
+```jsonc
 {
-  //Enable debug messages */
-  "debug": false,
-  //delete rows that are empty. */
-  "deleteEmptyRows": true,
-  //Delete trailing whitespace.*/
-  "deleteWhitespace": true,
-  //Convert css or scss to sass */
-  "convert": true,
-  //set the space after the colon of a property to one.*/
-  "setPropertySpace": true
+  // enables debug mode.
+  "sass.format.debug": false,
+  // removes empty rows.
+  "sass.format.deleteEmptyRows": true,
+  // removes trailing whitespace.
+  "sass.format.deleteWhitespace": true,
+  // Convert scss/css to sass.
+  "sass.format.convert": true,
+  // If true space between the property: value, is always set to 1.
+  "sass.format.setPropertySpace": true
 }
 ```
