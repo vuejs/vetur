@@ -83,7 +83,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       dependencies['vuetify'] = true;
     }
     // Quasar v1+:
-    if (dependencies['quasar']) {
+    if (dependencies['quasar'] || devDependencies['quasar']) {
       settings['quasar'] = true;
     }
     // Quasar pre v1 on non quasar-cli:
