@@ -7,6 +7,7 @@
 - Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
 - 🙌 Fix syntax highlighting when `</template` and `>` are not on the same line. Thanks to contribution from [Ross Allen](https://github.com/ssorallen). #1211.
 - 🙌 Add [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter) as a formatter for SASS region. Thanks to contribution from [@TheRealSyler](https://github.com/TheRealSyler). #1433.
+- 🙌 Provide Quasar support when `quasar` is in `devDependencies`. Thanks to contribution from [@moander](https://github.com/moander). #1504.
 
 ### 0.23.0 | 2020-01-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.23.0/vspackage)
 
