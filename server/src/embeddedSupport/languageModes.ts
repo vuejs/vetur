@@ -34,6 +34,7 @@ import { DependencyService, State } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
 import { VLSFullConfig } from '../config';
+import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -84,6 +85,7 @@ export class LanguageModes {
     postcss: nullMode,
     scss: nullMode,
     less: nullMode,
+    sass: nullMode,
     stylus: nullMode,
     javascript: nullMode,
     typescript: nullMode,
@@ -141,6 +143,7 @@ export class LanguageModes {
     this.modes['css'] = getCSSMode(this.documentRegions);
     this.modes['postcss'] = getPostCSSMode(this.documentRegions);
     this.modes['scss'] = getSCSSMode(this.documentRegions);
+    this.modes['sass'] = new SassLanguageMode();
     this.modes['less'] = getLESSMode(this.documentRegions);
     this.modes['stylus'] = getStylusMode(this.documentRegions);
     this.modes['javascript'] = jsMode;

@@ -326,6 +326,19 @@
           ],
           "description": "Default formatter for <style lang='scss'> region"
         },
+        "vetur.format.defaultFormatter.sass": {
+          "type": "string",
+          "default": "sass-formatter",
+          "enum": [
+            "none",
+            "sass-formatter"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "sass formatter"
+          ],
+          "description": "Default formatter for <style lang='sass'> region"
+        },
         "vetur.format.defaultFormatter.less": {
           "type": "string",
           "default": "prettier",

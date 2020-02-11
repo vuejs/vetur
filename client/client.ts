@@ -41,6 +41,7 @@ export function initializeLanguageClient(vlsModulePath: string, globalSnippetDir
     synchronize: {
       configurationSection: [
         'vetur',
+        'sass',
         'emmet',
         'html',
         'css',

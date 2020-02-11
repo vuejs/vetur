@@ -112,6 +112,13 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
+"@sorg/log@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@sorg/log/-/log-1.0.3.tgz#479f2dc3bb8390b27481e96d890fc50f141d20bb"
+  integrity sha512-IxSoP+H9BDJ3eXHbtvDCge7b5jN4O6u+piKgtqG8lEEvypfmX8MZRjx7EZWFzk8ZAhdJOdNaAd27WsglPpT5HA==
+  dependencies:
+    s.color "^0.0.11"
+
 "@starptech/expression-parser@^0.10.0":
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@starptech/expression-parser/-/expression-parser-0.10.0.tgz#5fa4d2fd0b36cd14a1f4ac3dcb176d123f9d9e37"
@@ -4092,6 +4099,11 @@ rxjs@^6.4.0:
   dependencies:
     tslib "^1.9.0"
 
+s.color@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/s.color/-/s.color-0.0.11.tgz#9e9eded020e66cb758697ed601b6cef545fabe76"
+  integrity sha512-HohE7NgIyKhYRdyiIgloaP1mh4Gi4EavCcLyl129N/2UdM+4aJF7ZmtoU3fb6zy+iZ6eraM2oRhNoe/itfBmUg==
+
 safe-buffer@^5.0.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
@@ -4107,6 +4119,15 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
+
+sass-formatter@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.4.2.tgz#6132ffbed671812392ed1856bb055dae45d3b476"
+  integrity sha512-xpsELuv+T1CAaqo+ugC7nxTWTNZ6ZJ1vmRMnZ2pcS0mOqY6tlKC4SlW0zgPMKjWfxcS+l0ippnbDzPsEF4j92A==
+  dependencies:
+    "@sorg/log" "^1.0.3"
+    suf-regex "0.0.14"
+    tslib "^1.10.0"
 
 sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
@@ -4522,6 +4543,11 @@ stylus@^0.54.5, stylus@^0.54.7:
     semver "^6.0.0"
     source-map "^0.7.3"
 
+suf-regex@0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.14.tgz#a2f2b80448eae8b6c7c8d4597c77cba1f2a119d8"
+  integrity sha512-+WE5PZTfD6lVNCNsyBInJIAbok8LpqgOhvCbSViZeQ/JTxdxq7Lw+tSJXGM+jrIp81jj9GCMYvkl00JAkn2CtA==
+
 supports-color@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-6.0.0.tgz#76cfe742cf1f41bb9b1c29ad03068c05b4c0e40a"
@@ -4695,7 +4721,7 @@ trough@^1.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-1.0.3.tgz#e29bd1614c6458d44869fc28b255ab7857ef7c24"
   integrity sha512-fwkLWH+DimvA4YCy+/nvJd61nWQQ2liO/nF/RjkTpiOGi+zxZzVkhb1mvbHIIW4b/8nDsYI8uTmAlc0nNkRMOw==
 
-tslib@^1.8.0, tslib@^1.8.1:
+tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
