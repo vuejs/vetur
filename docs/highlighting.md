@@ -63,7 +63,7 @@ You can
   ```
 
 - Run the command "Vetur: Generate grammar from `vetur.grammar.customBlocks`
-- Restart VS Code to get syntax highlighting for custom blocks.
+- **Restart VS Code** to get syntax highlighting for custom blocks.
 
 Valid language value for custom blocks:
 
