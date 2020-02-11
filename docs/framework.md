@@ -11,7 +11,7 @@ Vetur currently provides framework support for the following vue libraries:
 - [Bootstrap Vue](https://bootstrap-vue.js.org/)
 - [Buefy](https://buefy.github.io/#/)
 - [Vuetify](https://vuetifyjs.com/en/)
-- [Quasar Framework](https://quasar-framework.org/)
+- [Quasar Framework](https://quasar.dev/)
 - [Gridsome](https://gridsome.org/)
 
 ## Usage
