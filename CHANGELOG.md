@@ -4,6 +4,7 @@
 
 - Support Vue 3 interface with `defineComponent`. #1636.
 - Update to TS 3.7.5 to avoid TypeScript issues with files not stored in C: drives on Windows. #1589.
+- Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
 - 🙌 Fix syntax highlighting when `</template` and `>` are not on the same line. Thanks to contribution from [Ross Allen](https://github.com/ssorallen). #1211.
 - 🙌 Add [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter) as a formatter for SASS region. Thanks to contribution from [@TheRealSyler](https://github.com/TheRealSyler). #1433.
 
