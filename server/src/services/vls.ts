@@ -46,7 +46,7 @@ import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
-import { getDefaultVLSConfig, VLSFullConfig } from '../config';
+import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -84,8 +84,6 @@ export class VLS {
     const config: VLSFullConfig = params.initializationOptions.config
       ? _.merge(getDefaultVLSConfig(), params.initializationOptions.config)
       : getDefaultVLSConfig();
-
-    logger.setLevel(config.vetur.dev.logLevel);
 
     const workspacePath = params.rootPath;
     if (!workspacePath) {
@@ -211,7 +209,7 @@ export class VLS {
     });
   }
 
-  configure(config: any): void {
+  configure(config: VLSConfig): void {
     const veturValidationOptions = config.vetur.validation;
     this.validation['vue-html'] = veturValidationOptions.template;
     this.validation.css = veturValidationOptions.style;
@@ -225,6 +223,8 @@ export class VLS {
         m.configure(config);
       }
     });
+
+    logger.setLevel(config.vetur.dev.logLevel);
   }
 
   /**
