@@ -23,7 +23,10 @@ import {
   Position,
   FormattingOptions,
   DiagnosticTag,
-  MarkupContent
+  MarkupContent,
+  CodeAction,
+  CodeActionKind,
+  WorkspaceEdit
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -435,7 +438,7 @@ export async function getJavascriptMode(
 
       const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(config);
 
-      const result: Command[] = [];
+      const result: CodeAction[] = [];
       const fixes = service.getCodeFixesAtPosition(
         fileName,
         start,
@@ -452,7 +455,7 @@ export async function getJavascriptMode(
 
       return result;
     },
-    getRefactorEdits(doc: TextDocument, args: RefactorAction) {
+    getRefactorEdits(doc: TextDocument, args: RefactorAction): WorkspaceEdit {
       const { service } = updateCurrentVueTextDocument(doc);
       const response = service.getEditsForRefactor(
         args.fileName,
@@ -464,10 +467,9 @@ export async function getJavascriptMode(
       );
       if (!response) {
         // TODO: What happens when there's no response?
-        return createApplyCodeActionCommand('', {});
+        return {};
       }
-      const uriMapping = createUriMappingForEdits(response.edits, service);
-      return createApplyCodeActionCommand('', uriMapping);
+      return { changes: createUriMappingForEdits(response.edits, service) };
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
@@ -551,7 +553,7 @@ function collectRefactoringCommands(
   fileName: string,
   formatSettings: any,
   textRange: { pos: number; end: number },
-  result: Command[]
+  result: CodeAction[]
 ) {
   const actions: RefactorAction[] = [];
   for (const refactoring of refactorings) {
@@ -582,9 +584,13 @@ function collectRefactoringCommands(
   }
   for (const action of actions) {
     result.push({
-      command: 'vetur.chooseTypeScriptRefactoring',
       title: action.description,
-      arguments: [action]
+      kind: CodeActionKind.Refactor,
+      command: {
+        title: action.description,
+        command: 'vetur.chooseTypeScriptRefactoring',
+        arguments: [action]
+      }
     });
   }
 }
@@ -592,23 +598,25 @@ function collectRefactoringCommands(
 function collectQuickFixCommands(
   fixes: ReadonlyArray<ts.CodeFixAction>,
   service: ts.LanguageService,
-  result: Command[]
+  result: CodeAction[]
 ) {
   for (const fix of fixes) {
     const uriTextEditMapping = createUriMappingForEdits(fix.changes, service);
-    result.push(createApplyCodeActionCommand(fix.description, uriTextEditMapping));
+    result.push(createApplyCodeAction(CodeActionKind.QuickFix, fix.description, uriTextEditMapping));
   }
 }
 
-function createApplyCodeActionCommand(title: string, uriTextEditMapping: Record<string, TextEdit[]>): Command {
+function createApplyCodeAction(
+  kind: CodeActionKind,
+  title: string,
+  uriTextEditMapping: Record<string, TextEdit[]>
+): CodeAction {
   return {
     title,
-    command: 'vetur.applyWorkspaceEdits',
-    arguments: [
-      {
-        changes: uriTextEditMapping
-      }
-    ]
+    kind,
+    edit: {
+      changes: uriTextEditMapping
+    }
   };
 }
 

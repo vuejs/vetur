@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
 import { getDocUri, sameLineRange } from '../util';
+import { CodeAction, WorkspaceEdit } from 'vscode-languageclient';
 
 describe('Should do codeAction', () => {
   const docUri = getDocUri('client/codeAction/Basic.vue');
@@ -17,21 +18,16 @@ describe('Should do codeAction', () => {
   });
 
   it('finds codeAction for unused import', async () => {
-    const codeActions = [{ title: `Remove declaration for: 'lodash'`, command: 'vetur.applyWorkspaceEdits' }];
+    const codeActions: CodeAction[] = [{ title: `Remove declaration for: 'lodash'` }];
     await testCodeAction(docUri, sameLineRange(5, 6, 6), codeActions);
   });
 
   it('finds codeAction for unused variables', async () => {
-    const codeActions = [{ title: `Remove declaration for: 'foo'`, command: 'vetur.applyWorkspaceEdits' }];
+    const codeActions: CodeAction[] = [{ title: `Remove declaration for: 'foo'` }];
 
     await testCodeAction(docUri, sameLineRange(7, 6, 6), codeActions);
   });
 });
-
-interface CodeAction {
-  title: string;
-  command: string;
-}
 
 async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedActions: CodeAction[]) {
   // For diagnostics to show up
@@ -41,13 +37,12 @@ async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedA
     'vscode.executeCodeActionProvider',
     docUri,
     range
-  )) as CodeAction[];
+  )) as vscode.CodeAction[];
 
   expectedActions.forEach(eAction => {
+    const matchingAction = result.find(rAction => rAction.title === eAction.title);
     assert.ok(
-      result.some(rAction => {
-        return rAction.title === eAction.title && rAction.command === eAction.command;
-      }),
+      matchingAction,
       `Cannot find matching codeAction with title '${eAction.title}'\n` +
         `Seen codeActions are:\n${JSON.stringify(result, null, 2)}`
     );
