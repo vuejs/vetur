@@ -129,10 +129,13 @@ export class VLS {
 
   private setupConfigListeners() {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
-      this.configure(settings);
 
-      // onDidChangeConfiguration will fire for Language Server startup
-      await this.setupDynamicFormatters(settings);
+      if (settings) {
+        this.configure(settings);
+
+        // onDidChangeConfiguration will fire for Language Server startup
+        await this.setupDynamicFormatters(settings);
+      }
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
