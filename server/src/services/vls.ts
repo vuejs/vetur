@@ -83,7 +83,7 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
-    const config: VLSFullConfig = params.initializationOptions.config
+    const config: VLSFullConfig = params.initializationOptions?.config
       ? _.merge(getDefaultVLSConfig(), params.initializationOptions.config)
       : getDefaultVLSConfig();
 
@@ -106,7 +106,9 @@ export class VLS {
         infoService: this.vueInfoService,
         dependencyService: this.dependencyService
       },
-      params.initializationOptions['globalSnippetDir']
+      params.initializationOptions
+        ? params.initializationOptions['globalSnippetDir']
+        : undefined
     );
 
     this.setupConfigListeners();
