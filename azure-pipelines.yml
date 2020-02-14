@@ -19,17 +19,25 @@ strategy:
       imageName: 'ubuntu-16.04'
     mac:
       imageName: 'macos-10.14'
-    # windows:
-    #   imageName: 'vs2017-win2016'
+    windows:
+      imageName: 'vs2017-win2016'
 
 pool:
   vmImage: $(imageName)
 
 steps:
 
+- script: |
+    git config --global core.autocrlf false
+    git config --global core.eol lf
+  displayName: Configure LF for Windows
+
+- checkout: self
+
 - task: NodeTool@0
   inputs:
     versionSpec: '8.x'
+    checkLatest: true
   displayName: 'Install Node.js'
 
 # Don't use latest yarn 1.19 — Azure DevOps run into https://github.com/yarnpkg/yarn/issues/7584
