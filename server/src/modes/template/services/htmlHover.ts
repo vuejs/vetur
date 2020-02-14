@@ -1,8 +1,9 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
+import { TextDocument, Range, Position, Hover } from 'vscode-languageserver-types';
 import { IHTMLTagProvider } from '../tagProviders';
 import { NULL_HOVER } from '../../nullMode';
+import { toMarkupContent } from '../../../utils/strings';
 
 const TRIVIAL_TOKEN = [TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace];
 
@@ -23,15 +24,10 @@ export function doHover(
     for (const provider of tagProviders) {
       let hover: Hover | null = null;
       provider.collectTags((t, documentation) => {
-        if (t === tag) {
-          if (typeof documentation === 'string') {
-            const contents = [documentation ? MarkedString.fromPlainText(documentation) : ''];
-            hover = { contents, range };
-          } else {
-            const contents = documentation ? documentation : MarkedString.fromPlainText('');
-            hover = { contents, range };
-          }
+        if (t !== tag) {
+          return;
         }
+        hover = { contents: toMarkupContent(documentation), range };
       });
       if (hover) {
         return hover;
@@ -42,22 +38,19 @@ export function doHover(
 
   function getAttributeHover(tag: string, attribute: string, range: Range): Hover {
     tag = tag.toLowerCase();
-    let hover: Hover = NULL_HOVER;
     for (const provider of tagProviders) {
+      let hover: Hover | null = null;
       provider.collectAttributes(tag, (attr, type, documentation) => {
         if (attribute !== attr) {
           return;
         }
-        if (typeof documentation === 'string') {
-          const contents = [documentation ? MarkedString.fromPlainText(documentation) : ''];
-          hover = { contents, range };
-        } else {
-          const contents = documentation ? documentation : MarkedString.fromPlainText('');
-          hover = { contents, range };
-        }
+        hover = { contents: toMarkupContent(documentation), range };
       });
+      if (hover) {
+        return hover;
+      }
     }
-    return hover;
+    return NULL_HOVER;
   }
 
   const inEndTag = node.endTagStart && offset >= node.endTagStart; // <html></ht|ml>
