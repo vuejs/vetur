@@ -98,6 +98,8 @@ Other settings include:
   "prettyhtml": {
     "printWidth": 100, // No line exceeds 100 characters
     "singleQuote": false // Prefer double quotes over single quotes
+    "wrapAttributes": false // Force to wrap attributes(when it has multiple)
+    "sortAttributes": false // Sort attributes alphabetically
   }
 }
 ```
