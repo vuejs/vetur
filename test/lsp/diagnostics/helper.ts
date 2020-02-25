@@ -3,7 +3,11 @@ import * as assert from 'assert';
 import { sleep } from '../helper';
 import * as _ from 'lodash';
 
-export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.Diagnostic[]) {
+export async function testDiagnostics(
+  docUri: vscode.Uri,
+  expectedDiagnostics: vscode.Diagnostic[],
+  unexpectedDiagnostics: vscode.Diagnostic[] = []
+) {
   // For diagnostics to show up
   await sleep(2000);
 
@@ -15,6 +19,16 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
         return isEqualDiagnostic(ed, d);
       }),
       `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
+        `Seen diagnostics are:\n${JSON.stringify(result)}`
+    );
+  });
+
+  unexpectedDiagnostics.forEach(ed => {
+    assert.ok(
+      result.every(d => {
+        return !isEqualDiagnostic(ed, d);
+      }),
+      `Found unexpected matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
         `Seen diagnostics are:\n${JSON.stringify(result)}`
     );
   });
