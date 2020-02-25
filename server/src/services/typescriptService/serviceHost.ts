@@ -6,7 +6,7 @@ import * as parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { createUpdater, parseVueScript } from './preprocess';
-import { getFileFsPath, getFilePath, normalizeFileNameToFsPath } from '../../utils/paths';
+import { getFileFsPath, getFilePath, normalizeFileNameToFsPath, getDirectoryName } from '../../utils/paths';
 import * as bridge from './bridge';
 import { T_TypeScript } from '../../services/dependencyService';
 import { getVueSys } from './vueSys';
@@ -81,11 +81,12 @@ export function getServiceHost(
 
   const versions = new Map<string, number>();
   const localScriptRegionDocuments = new Map<string, TextDocument>();
+  const subWorkspaceLanguageServices = new Map<string, [ts.LanguageService, ts.LanguageService]>();
   const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
   const projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
   const moduleResolutionCache = new ModuleResolutionCache();
 
-  const parsedConfig = getParsedConfig(tsModule, workspacePath);
+  const parsedConfig = getParsedConfig(tsModule, workspacePath, workspacePath);
   /**
    * Only js/ts files in local project
    */
@@ -106,7 +107,7 @@ export function getServiceHost(
     fileName: string,
     currFileText: string
   ): { source: string; sourceMapNodesString: string } {
-    const program = templateLanguageService.getProgram();
+    const program = defaultTemplateLanguageService.getProgram();
     if (program) {
       const tsVirtualFile = program.getSourceFile(fileName + '.template');
       if (tsVirtualFile) {
@@ -130,6 +131,7 @@ export function getServiceHost(
   function updateCurrentVirtualVueTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
+    const dirPath = getDirectoryName(fileFsPath);
     // When file is not in language service, add it
     if (!localScriptRegionDocuments.has(fileFsPath)) {
       if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
@@ -144,7 +146,7 @@ export function getServiceHost(
     }
 
     return {
-      templateService: templateLanguageService,
+      templateService: getTemplateLanguageServer(dirPath),
       templateSourceMap
     };
   }
@@ -152,6 +154,7 @@ export function getServiceHost(
   function updateCurrentVueTextDocument(doc: TextDocument) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
+    const dirPath = getDirectoryName(fileFsPath);
     // When file is not in language service, add it
     if (!localScriptRegionDocuments.has(fileFsPath)) {
       if (fileFsPath.endsWith('.vue') || fileFsPath.endsWith('.vue.template')) {
@@ -159,20 +162,22 @@ export function getServiceHost(
       }
     }
 
+    const languageServices = getSubWorkspaceLanguageServers(dirPath);
+
     if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = updatedScriptRegionDocuments.refreshAndGet(doc)!;
       const localLastDoc = localScriptRegionDocuments.get(fileFsPath);
       if (localLastDoc && currentScriptDoc.languageId !== localLastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
-        jsLanguageService.dispose();
-        jsLanguageService = tsModule.createLanguageService(jsHost);
+        languageServices[0].dispose();
+        languageServices[0] = tsModule.createLanguageService(jsHost);
       }
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
       scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
-      service: jsLanguageService,
+      service: languageServices[0],
       scriptDoc: currentScriptDoc
     };
   }
@@ -405,8 +410,41 @@ export function getServiceHost(
   });
 
   const registry = tsModule.createDocumentRegistry(true);
-  let jsLanguageService = tsModule.createLanguageService(jsHost, registry);
-  const templateLanguageService = tsModule.createLanguageService(templateHost, registry);
+  const jsLanguageService = tsModule.createLanguageService(jsHost, registry);
+  const defaultTemplateLanguageService = tsModule.createLanguageService(templateHost, registry);
+
+  function getSubWorkspaceLanguageServers(subWorkspacePath: string): [ts.LanguageService, ts.LanguageService] {
+    if (!subWorkspaceLanguageServices.has(subWorkspacePath)) {
+      logger.logDebug(`New sub workspace at "${subWorkspacePath}" (total ${subWorkspaceLanguageServices.size + 1})`);
+
+      // FIXME Cache already parsed config files ?
+      const subWorkspaceParsedConfig = getParsedConfig(tsModule, subWorkspacePath, workspacePath);
+      const compilerOptions = {
+        ...getDefaultCompilerOptions(tsModule),
+        ...parsedConfig.options,
+        ...subWorkspaceParsedConfig.options
+      };
+      const jsHost = createLanguageServiceHost(compilerOptions);
+      const templateHost = createLanguageServiceHost({
+        ...compilerOptions,
+        noImplicitAny: false,
+        noUnusedLocals: false,
+        noUnusedParameters: false,
+        allowJs: true,
+        checkJs: true
+      });
+
+      const jsLanguageService = tsModule.createLanguageService(jsHost, registry);
+      const templateLanguageService = tsModule.createLanguageService(templateHost, registry);
+      subWorkspaceLanguageServices.set(subWorkspacePath, [jsLanguageService, templateLanguageService]);
+      return [jsLanguageService, templateLanguageService];
+    }
+    return subWorkspaceLanguageServices.get(subWorkspacePath)!;
+  }
+
+  function getTemplateLanguageServer(subWorkspacePath: string) {
+    return getSubWorkspaceLanguageServers(subWorkspacePath)[1];
+  }
 
   return {
     queryVirtualFileInfo,
@@ -415,6 +453,11 @@ export function getServiceHost(
     updateExternalDocument,
     dispose: () => {
       jsLanguageService.dispose();
+      // FIXME Also clear template language services ?
+      for (const [jsLanguageService] of subWorkspaceLanguageServices.values()) {
+        jsLanguageService.dispose();
+      }
+      subWorkspaceLanguageServices.clear();
     }
   };
 }
@@ -482,10 +525,10 @@ function inferVueVersion(tsModule: T_TypeScript, workspacePath: string): VueVers
   }
 }
 
-function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
+function getParsedConfig(tsModule: T_TypeScript, subWorkspacePath: string, workspacePath: string) {
   const configFilename =
-    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
-    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'jsconfig.json');
+    tsModule.findConfigFile(subWorkspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
+    tsModule.findConfigFile(subWorkspacePath, tsModule.sys.fileExists, 'jsconfig.json');
   const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
     exclude: defaultIgnorePatterns(tsModule, workspacePath)
   };
@@ -493,7 +536,7 @@ function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
   return tsModule.parseJsonConfigFileContent(
     configJson,
     tsModule.sys,
-    workspacePath,
+    configFilename ? getDirectoryName(configFilename) : workspacePath,
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,
