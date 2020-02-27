@@ -510,7 +510,7 @@
     "@types/shelljs": "^0.8.6",
     "@types/vscode": "^1.32.0",
     "glob": "^7.1.6",
-    "husky": "^3.1.0",
+    "husky": "^4.2.3",
     "js-yaml": "^3.13.1",
     "lint-staged": "^9.5.0",
     "mocha": "^6.2.2",
