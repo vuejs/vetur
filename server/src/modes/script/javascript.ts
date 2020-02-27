@@ -124,7 +124,7 @@ export async function getJavascriptMode(
         // so we can safely cast diag to TextSpan
         return <Diagnostic>{
           range: convertRange(scriptDoc, diag as ts.TextSpan),
-          severity: DiagnosticSeverity.Error,
+          severity: convertTSDiagnosticCategoryToDiagnosticSeverity(diag.category),
           message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
           tags,
           code: diag.code,
@@ -765,4 +765,17 @@ function convertCodeAction(
     }
   }
   return textEdits;
+}
+
+function convertTSDiagnosticCategoryToDiagnosticSeverity(c: ts.DiagnosticCategory) {
+  switch (c) {
+    case ts.DiagnosticCategory.Error:
+      return DiagnosticSeverity.Error;
+    case ts.DiagnosticCategory.Warning:
+      return DiagnosticSeverity.Warning;
+    case ts.DiagnosticCategory.Message:
+      return DiagnosticSeverity.Information;
+    case ts.DiagnosticCategory.Suggestion:
+      return DiagnosticSeverity.Hint;
+  }
 }
