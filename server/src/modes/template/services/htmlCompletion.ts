@@ -233,10 +233,27 @@ export function doComplete(
     return result;
   }
 
-  function collectAttributeValueSuggestions(attr: string, valueStart: number, valueEnd?: number): CompletionList {
+  function collectAttributeValueSuggestions(
+    attr: string,
+    valueStart: number,
+    valueEnd?: number,
+    currentText?: string,
+    cursorOffset?: number
+  ): CompletionList {
     if (attr.startsWith('v-') || attr.startsWith('@') || attr.startsWith(':')) {
       if (vueFileInfo && insideInterpolation) {
-        return doVueInterpolationComplete(vueFileInfo);
+        const complete = doVueInterpolationComplete(vueFileInfo);
+
+        const prevText = currentText?.slice(0, cursorOffset);
+        complete.items = complete.items
+          // starts with the prev text
+          .filter(x => !prevText || x.label.startsWith(prevText))
+          // only show labels available for the current object level
+          .filter(x => x.label.indexOf('.', cursorOffset) === -1);
+
+        complete.isIncomplete = !complete.items.find(x => x.label === currentText);
+
+        return complete;
       } else {
         return NULL_COMPLETION;
       }
@@ -316,7 +333,9 @@ export function doComplete(
           return collectAttributeValueSuggestions(
             currentAttributeName,
             scanner.getTokenOffset(),
-            scanner.getTokenEnd()
+            scanner.getTokenEnd(),
+            scanner.getTokenText().slice(1, -1),
+            offset - scanner.getTokenOffset() - 1
           );
         }
         break;

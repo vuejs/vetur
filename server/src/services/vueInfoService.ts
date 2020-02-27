@@ -1,6 +1,6 @@
 import { TextDocument } from 'vscode-languageserver';
 import { getFileFsPath } from '../utils/paths';
-import { Definition } from 'vscode-languageserver-types';
+import { Definition, CompletionItemKind } from 'vscode-languageserver-types';
 import { LanguageModes } from '../embeddedSupport/languageModes';
 
 /**
@@ -43,22 +43,18 @@ export interface ChildComponent {
   info?: VueFileInfo;
 }
 
-export interface PropInfo {
+export interface MemberInfo {
   name: string;
   documentation?: string;
+
+  members?: DataInfo[];
+  kind?: CompletionItemKind;
 }
-export interface DataInfo {
-  name: string;
-  documentation?: string;
-}
-export interface ComputedInfo {
-  name: string;
-  documentation?: string;
-}
-export interface MethodInfo {
-  name: string;
-  documentation?: string;
-}
+
+export interface PropInfo extends MemberInfo {}
+export interface DataInfo extends MemberInfo {}
+export interface ComputedInfo extends MemberInfo {}
+export interface MethodInfo extends MemberInfo {}
 
 export class VueInfoService {
   private languageModes: LanguageModes;

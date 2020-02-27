@@ -5,8 +5,10 @@ import {
   ComputedInfo,
   DataInfo,
   MethodInfo,
-  ChildComponent
+  ChildComponent,
+  MemberInfo
 } from '../../services/vueInfoService';
+import { CompletionItemKind, combineClientFeatures } from 'vscode-languageserver';
 import { getChildComponents } from './childComponents';
 import { T_TypeScript } from '../../services/dependencyService';
 
@@ -94,6 +96,56 @@ function getDefaultExportObjectLiteralExpr(
   return getObjectLiteralExprFromExportExpr(tsModule, exportExpr);
 }
 
+function ignoreMembersType(tsType: ts.TypeFlags): boolean {
+  return !!(tsType & ts.TypeFlags.String || tsType & ts.TypeFlags.StringLike || tsType & ts.TypeFlags.NumberLike);
+}
+
+function getMemberInfo(tsType: ts.Type, tsModule: T_TypeScript, checker: ts.TypeChecker): MemberInfo[] {
+  function getMembers(tsSymbol: ts.Symbol): MemberInfo[] {
+    const type = checker.getTypeOfSymbolAtLocation(tsSymbol, (tsSymbol as any).parent);
+
+    return type.getProperties().map(s => ({
+      name: s.name,
+      documentation: buildDocumentation(tsModule, s, checker),
+      members: ignoreMembersType(type.getFlags()) ? undefined : getMembers(s),
+      kind: getSymbolKind(s.getFlags())
+    }));
+  }
+
+  function getSymbolKind(flag: ts.SymbolFlags): CompletionItemKind | undefined {
+    if (flag & ts.SymbolFlags.Method) {
+      return CompletionItemKind.Method;
+    }
+    if (flag & ts.SymbolFlags.ObjectLiteral) {
+      return CompletionItemKind.Property;
+    }
+    if (flag & ts.SymbolFlags.Value) {
+      return CompletionItemKind.Value;
+    }
+
+    return CompletionItemKind.Property;
+  }
+
+  return tsType.getProperties().map(s => {
+    const propType = checker.getTypeOfSymbolAtLocation(s, (s as any).parent);
+    const kind = getSymbolKind(s.getFlags()); //computed
+    //   ? getTypeKind(
+    //       propType
+    //         .getCallSignatures()[0]
+    //         .getReturnType()
+    //         .getFlags()
+    //     )
+    //   : getSymbolKind(s.getFlags());
+
+    return {
+      name: s.name,
+      documentation: buildDocumentation(tsModule, s, checker),
+      members: ignoreMembersType(propType.getFlags()) ? undefined : getMembers(s),
+      kind
+    };
+  });
+}
+
 function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
   const propsSymbol = checker.getPropertyOfType(defaultExportType, 'props');
   if (!propsSymbol || !propsSymbol.valueDeclaration) {
@@ -167,13 +219,43 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
   if (dataSignatures.length === 0) {
     return undefined;
   }
-  const dataReturnTypeProperties = checker.getReturnTypeOfSignature(dataSignatures[0]);
-  return dataReturnTypeProperties.getProperties().map(s => {
-    return {
-      name: s.name,
-      documentation: buildDocumentation(tsModule, s, checker)
-    };
-  });
+  // function getMembers(tsSymbol: ts.Symbol): DataInfo[] {
+  //   return checker
+  //     .getTypeOfSymbolAtLocation(tsSymbol, (tsSymbol as any).parent)
+  //     .getProperties()
+  //     .map(s => ({
+  //       name: s.name,
+  //       documentation: buildDocumentation(tsModule, s, checker),
+  //       members: getMembers(s),
+  //       kind: getTypeKind(s.getFlags())
+  //     }));
+  // }
+
+  // function getTypeKind(flag: ts.SymbolFlags): CompletionItemKind | undefined {
+  //   if (flag & ts.SymbolFlags.Method) {
+  //     return CompletionItemKind.Method;
+  //   }
+  //   if (flag & ts.SymbolFlags.ObjectLiteral) {
+  //     return CompletionItemKind.Property;
+  //   }
+  //   if (flag & ts.SymbolFlags.Value) {
+  //     return CompletionItemKind.Value;
+  //   }
+
+  //   return CompletionItemKind.Value;
+  // }
+
+  // const dataReturnTypeProperties = checker.getReturnTypeOfSignature(dataSignatures[0]);
+  // return dataReturnTypeProperties.getProperties().map(s => {
+  //   return {
+  //     name: s.name,
+  //     documentation: buildDocumentation(tsModule, s, checker),
+  //     members: getMembers(s),
+  //     kind: getTypeKind(s.getFlags())
+  //   };
+  // });
+
+  return getMemberInfo(checker.getReturnTypeOfSignature(dataSignatures[0]), tsModule, checker);
 }
 
 function getComputed(
@@ -194,12 +276,28 @@ function getComputed(
   if (computedDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const computedType = checker.getTypeOfSymbolAtLocation(computedSymbol, computedDeclaration);
 
+    // return checker.getPropertiesOfType(computedType).map(s => {
+    //   return {
+    //     name: s.name,
+    //     documentation: buildDocumentation(tsModule, s, checker)
+    //   };
+    // });
+
     return checker.getPropertiesOfType(computedType).map(s => {
+      const r = checker
+        .getTypeOfSymbolAtLocation(s, (s as any).parent)
+        .getCallSignatures()[0]
+        .getReturnType();
+
       return {
         name: s.name,
-        documentation: buildDocumentation(tsModule, s, checker)
+        documentation: buildDocumentation(tsModule, s, checker),
+        members: r.getFlags() & ts.TypeFlags.StringLike ? undefined : getMemberInfo(r, tsModule, checker)
       };
+      // members.push(...getMemberInfo(r, tsModule, checker));
     });
+
+    // return getMemberInfo(computedType.getReturnType(), tsModule, checker);
   }
 
   return undefined;
@@ -223,12 +321,13 @@ function getMethods(
   if (methodsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const methodsType = checker.getTypeOfSymbolAtLocation(methodsSymbol, methodsDeclaration);
 
-    return checker.getPropertiesOfType(methodsType).map(s => {
-      return {
-        name: s.name,
-        documentation: buildDocumentation(tsModule, s, checker)
-      };
-    });
+    // return checker.getPropertiesOfType(methodsType).map(s => {
+    //   return {
+    //     name: s.name,
+    //     documentation: buildDocumentation(tsModule, s, checker)
+    //   };
+    // });
+    return getMemberInfo(methodsType, tsModule, checker);
   }
 
   return undefined;
