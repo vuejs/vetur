@@ -104,7 +104,7 @@ export class VLS {
     this.workspacePath = workspacePath;
 
     await this.vueInfoService.init(this.languageModes);
-    await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies);
+    await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies, config.typescript.tsdk);
 
     await this.languageModes.init(
       workspacePath,

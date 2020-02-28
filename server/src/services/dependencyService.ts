@@ -54,7 +54,7 @@ export class DependencyService {
 
   constructor() {}
 
-  async init(workspacePath: string, useWorkspaceDependencies: boolean) {
+  async init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath: string) {
     if (!useWorkspaceDependencies) {
       const tsModule = await import('typescript');
       console.log(`Loaded bundled typescript@${tsModule.version}.`);
@@ -67,7 +67,7 @@ export class DependencyService {
         module: tsModule
       };
     } else {
-      const workspaceTSPath = path.resolve(workspacePath, 'node_modules/typescript');
+      const workspaceTSPath = path.resolve(workspacePath, tsSDKPath || 'node_modules/typescript');
       let tsModule: T_TypeScript;
       let bundled = false;
       try {
