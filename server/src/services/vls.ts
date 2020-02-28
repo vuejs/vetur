@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { getFileFsPath } from '../utils/paths';
 
 import {
   DidChangeConfigurationParams,
@@ -198,7 +199,7 @@ export class VLS {
 
       changes.forEach(c => {
         if (c.type === FileChangeType.Changed) {
-          const fsPath = Uri.parse(c.uri).fsPath;
+          const fsPath = getFileFsPath(c.uri);
           jsMode.onDocumentChanged!(fsPath);
         }
       });
@@ -349,8 +350,8 @@ export class VLS {
         if (this.workspacePath && ref[0] === '/') {
           return Uri.file(path.resolve(this.workspacePath, ref)).toString();
         }
-        const docUri = Uri.parse(doc.uri);
-        return Uri.file(path.resolve(docUri.fsPath, '..', ref)).toString();
+        const fsPath = getFileFsPath(doc.uri);
+        return Uri.file(path.resolve(fsPath, '..', ref)).toString();
       }
     };
 
