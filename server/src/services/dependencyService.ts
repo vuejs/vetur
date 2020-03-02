@@ -67,7 +67,8 @@ export class DependencyService {
         module: tsModule
       };
     } else {
-      const workspaceTSPath = path.resolve(workspacePath, tsSDKPath || 'node_modules/typescript');
+      const tsPath = tsSDKPath && path.join(tsSDKPath, '..');
+      const workspaceTSPath = path.resolve(workspacePath, tsPath || 'node_modules/typescript');
       let tsModule: T_TypeScript;
       let bundled = false;
       try {
