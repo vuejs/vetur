@@ -59,7 +59,7 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^13.1.8",
     "@types/prettier": "^1.16.1",
-    "@types/read-pkg-up": "^3.0.1",
+    "@types/read-pkg-up": "^6.0.0",
     "@types/resolve": "0.0.8",
     "codecov": "^3.0.4",
     "glob": "^7.1.2",
