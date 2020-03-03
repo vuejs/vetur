@@ -2,22 +2,14 @@ import * as path from 'path';
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as $ from 'shelljs';
-import { downloadVSCode } from './downloadVSCode';
+import { downloadAndUnzipVSCode } from 'vscode-test';
 
 console.log('### Vetur Integration Test ###');
 console.log('');
 
 const EXT_ROOT = path.resolve(__dirname, '../../');
-const testRunFolderAbsolute = path.resolve(EXT_ROOT, '.vscode-test/stable');
 
-const windowsExecutable = path.join(testRunFolderAbsolute, 'Code.exe');
-const darwinExecutable = path.join(testRunFolderAbsolute, 'Visual Studio Code.app', 'Contents', 'MacOS', 'Electron');
-const linuxExecutable = path.join(testRunFolderAbsolute, 'VSCode-linux-x64', 'code');
-
-const executable =
-  process.platform === 'darwin' ? darwinExecutable : process.platform === 'win32' ? windowsExecutable : linuxExecutable;
-
-function runTests(testWorkspaceRelativePath: string): Promise<number> {
+function runTests(execPath: string, testWorkspaceRelativePath: string): Promise<number> {
   return new Promise((resolve, reject) => {
     const testWorkspace = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'fixture');
     const extTestPath = path.resolve(EXT_ROOT, 'dist', testWorkspaceRelativePath);
@@ -30,9 +22,7 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
       '--locale=en',
       '--disable-extensions'
     ];
-    if (fs.existsSync(userDataDir)) {
-      args.push(`--user-data-dir=${userDataDir}`);
-    }
+    args.push(`--user-data-dir=${userDataDir}`);
 
     console.log(`Test folder: ${path.join('dist', testWorkspaceRelativePath)}`);
     console.log(`Workspace:   ${testWorkspaceRelativePath}`);
@@ -40,7 +30,7 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
       console.log(`Data dir:    ${userDataDir}`);
     }
 
-    const cmd = cp.spawn(executable, args);
+    const cmd = cp.spawn(execPath, args);
 
     cmd.stdout.on('data', function(data) {
       const s = data.toString();
@@ -73,14 +63,14 @@ function runTests(testWorkspaceRelativePath: string): Promise<number> {
   });
 }
 
-async function runAllTests() {
+async function runAllTests(execPath: string) {
   const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
 
   const targetDir = process.argv[2];
   if (targetDir && testDirs.indexOf(targetDir) !== -1) {
     try {
       installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${targetDir}/fixture`)));
-      await runTests(`test/${targetDir}`);
+      await runTests(execPath, `test/${targetDir}`);
     } catch (err) {
       console.error(err);
       process.exit(1);
@@ -89,7 +79,7 @@ async function runAllTests() {
     for (const dir of testDirs) {
       try {
         installMissingDependencies(path.resolve(path.resolve(EXT_ROOT, `./test/${dir}/fixture`)));
-        await runTests(`test/${dir}`);
+        await runTests(execPath, `test/${dir}`);
       } catch (err) {
         console.error(err);
         process.exit(1);
@@ -109,10 +99,8 @@ function installMissingDependencies(fixturePath: string) {
 }
 
 async function go() {
-  if (!fs.existsSync(executable)) {
-    await downloadVSCode(testRunFolderAbsolute);
-  }
-  await runAllTests();
+  const execPath = await downloadAndUnzipVSCode('stable');
+  await runAllTests(execPath);
 }
 
 go()
