@@ -6,8 +6,7 @@ export function run(): Promise<void> {
   // Create the mocha test
   const mocha = new Mocha({
     ui: 'bdd',
-    timeout: 100000,
-    grep: 'hover'
+    timeout: 100000
   });
   mocha.useColors(true);
 

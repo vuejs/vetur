@@ -14,7 +14,6 @@ export function run(): Promise<void> {
 
   return new Promise((c, e) => {
     glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
-      console.log(files.join(','));
       if (err) {
         return e(err);
       }

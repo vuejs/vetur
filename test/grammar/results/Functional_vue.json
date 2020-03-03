@@ -883,11 +883,11 @@
 		"c": "v-if",
 		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue entity.other.attribute-name.html",
 		"r": {
-			"dark_plus": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"light_plus": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"dark_vs": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"light_vs": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"hc_black": "meta.directive.vue entity.other.attribute-name.html: #EE9900"
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
 		}
 	},
 	{
@@ -1114,11 +1114,11 @@
 		"c": "attr",
 		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue entity.other.attribute-name.html",
 		"r": {
-			"dark_plus": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"light_plus": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"dark_vs": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"light_vs": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"hc_black": "meta.directive.vue entity.other.attribute-name.html: #EE9900"
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
 		}
 	},
 	{
@@ -1554,11 +1554,11 @@
 		"c": "v-if",
 		"t": "source.vue text.html.vue-html meta.tag.any.html meta.directive.vue entity.other.attribute-name.html",
 		"r": {
-			"dark_plus": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"light_plus": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"dark_vs": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"light_vs": "meta.directive.vue entity.other.attribute-name.html: #EE9900",
-			"hc_black": "meta.directive.vue entity.other.attribute-name.html: #EE9900"
+			"dark_plus": "entity.other.attribute-name: #9CDCFE",
+			"light_plus": "entity.other.attribute-name: #FF0000",
+			"dark_vs": "entity.other.attribute-name: #9CDCFE",
+			"light_vs": "entity.other.attribute-name: #FF0000",
+			"hc_black": "entity.other.attribute-name: #9CDCFE"
 		}
 	},
 	{

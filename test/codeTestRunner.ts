@@ -22,9 +22,7 @@ function runTests(execPath: string, testWorkspaceRelativePath: string): Promise<
       '--locale=en',
       '--disable-extensions'
     ];
-    if (fs.existsSync(userDataDir)) {
-      args.push(`--user-data-dir=${userDataDir}`);
-    }
+    args.push(`--user-data-dir=${userDataDir}`);
 
     console.log(`Test folder: ${path.join('dist', testWorkspaceRelativePath)}`);
     console.log(`Workspace:   ${testWorkspaceRelativePath}`);
