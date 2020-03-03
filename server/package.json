@@ -37,17 +37,18 @@
     "prettier-tslint": "^0.4.2",
     "read-pkg-up": "^4.0.0",
     "resolve": "^1.8.1",
+    "sass-formatter": "^0.4.2",
     "stylus": "^0.54.5",
     "stylus-supremacy": "^2.12.6",
     "typescript": "^3.7.5",
-    "vscode-css-languageservice": "^4.0.2-next.3",
+    "vscode-css-languageservice": "^4.1.0",
     "vscode-emmet-helper": "^1.1.19",
-    "vscode-languageserver": "^5.3.0-next.4",
-    "vscode-languageserver-types": "^3.15.0-next.1",
+    "vscode-languageserver": "^6.1.1",
+    "vscode-languageserver-textdocument": "^1.0.1",
+    "vscode-languageserver-types": "^3.15.1",
     "vscode-uri": "^1.0.1",
     "vue-eslint-parser": "^7.0.0",
-    "vue-onsenui-helper-json": "^1.0.2",
-    "sass-formatter": "^0.4.2"
+    "vue-onsenui-helper-json": "^1.0.2"
   },
   "devDependencies": {
     "@types/eslint": "^6.1.3",
