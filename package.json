@@ -32,12 +32,10 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint --fix",
-      "git add"
+      "tslint --fix"
     ],
     "*.{js,ts,yaml}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "repository": {
