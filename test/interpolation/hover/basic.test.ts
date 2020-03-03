@@ -42,11 +42,16 @@ async function testHover(docUri: vscode.Uri, position: vscode.Position, expected
 
   const contents = result[0].contents;
   contents.forEach((c, i) => {
-    const val = (c as any).value;
-    assert.equal(val, expectedHover.contents[i]);
+    const actualContent = markedStringToSTring(c);
+    const expectedContent = markedStringToSTring(expectedHover.contents[i]);
+    assert.ok(actualContent.startsWith(expectedContent));
   });
 
   if (result[0] && result[0].range) {
     assert.ok(result[0].range!.isEqual(expectedHover.range!));
   }
+}
+
+function markedStringToSTring(s: vscode.MarkedString) {
+  return typeof s === 'string' ? s : s.value;
 }
