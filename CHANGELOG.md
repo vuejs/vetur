@@ -7,6 +7,9 @@
 - Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
 - Enable Windows CI with Azure DevOps. #1266.
 - Upgrade to `vscode-langaugeclient`/`vscode-languageserver` V6. #1719.
+  - Fix a file lock issue on asar files. #1474.
+  - MDN links on CSS completion. #1751.
+  - Fix an error on VTI not able to load `vscode-css-languageservice/lib/umd/data/browsers`. #1732.
   - Pull latest [web data](https://www.npmjs.com/package/vscode-web-custom-data) for Stylus support.
   - Use Markdown documentation for Stylus completion description.
 - 🙌 Fix syntax highlighting when `</template` and `>` are not on the same line. Thanks to contribution from [Ross Allen](https://github.com/ssorallen). #1211.
