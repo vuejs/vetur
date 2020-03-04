@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.24.0
+### 0.24.0 | 2020-03-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.24.0/vspackage)
 
 - **`vue-language-server` deprecated and will be published as `vls`**.
 - Support Vue 3 interface with `defineComponent`. #1638.
