@@ -1,14 +1,14 @@
 ## Vue Language Server
 
-`vue-language-server` is a language server implementation compatible with [`language-server-protocol`](https://github.com/Microsoft/language-server-protocol).
+Vue Language Server (`vls`) is a language server implementation compatible with [`language-server-protocol`](https://github.com/Microsoft/language-server-protocol).
 
-Vetur is the VS Code client consuming `vue-language-server`.
+Vetur is the VS Code client consuming `vls`.
 
-It's possible for other `language-server-protocol` compatible editors to build language server clients that consume VLS.
+It's possible for other LSP compatible editors to build language server clients that consume `vls`.
 
 ## Usage
 
-There are two ways to integrate `vue-language-server` into editors:
+There are two ways to integrate `vls` into editors:
 
 1. As a global executable.
 
@@ -17,7 +17,7 @@ There are two ways to integrate `vue-language-server` into editors:
   First, install VLS globally.
 
   ```bash
-  npm install vue-language-server -g
+  npm install vls -g
   ```
 
   This will provide you the global `vls` command.
@@ -35,18 +35,18 @@ There are two ways to integrate `vue-language-server` into editors:
 
   Example: https://github.com/HerringtonDarkholme/atom-vue
 
-  First, install vue-language-server as a local dependency.
+  First, install vls as a local dependency.
 
   ```bash
-  npm install vue-language-server --save
+  npm install vls --save
   ```
 
-  Then, require the vue-language-server, this would typically look like:
+  Then, require the vls, this would typically look like:
 
   ```ts
   class VueLanguageClient extends AutoLanguageClient {
     startServerProcess () {
-      return cp.spawn('node', [require.resolve('vue-language-server/dist/htmlServerMain')])
+      return cp.spawn('node', [require.resolve('vls/dist/htmlServerMain')])
     }
   }
   ```
