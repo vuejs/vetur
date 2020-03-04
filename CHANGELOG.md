@@ -2,6 +2,7 @@
 
 ### 0.24.0
 
+- **`vue-language-server` deprecated and will be published as `vls`**.
 - Support Vue 3 interface with `defineComponent`. #1638.
 - Update to TS 3.7.5 to avoid TypeScript issues with files not stored in C: drives on Windows. #1589.
 - Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
