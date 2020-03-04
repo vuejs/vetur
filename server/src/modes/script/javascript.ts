@@ -207,17 +207,15 @@ export async function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
+      const userPrefs: ts.UserPreferences =
+        doc.languageId === 'javascript' ? config.javascript.preferences : config.typescript.preferences;
       const details = service.getCompletionEntryDetails(
         fileFsPath,
         item.data.offset,
         item.label,
         getFormatCodeSettings(config),
         item.data.source,
-        {
-          importModuleSpecifierEnding: 'minimal',
-          importModuleSpecifierPreference: 'relative',
-          includeCompletionsWithInsertText: true
-        }
+        userPrefs
       );
       if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
         item.detail = tsModule.displayPartsToString(details.displayParts);
