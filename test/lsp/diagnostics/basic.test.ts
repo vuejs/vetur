@@ -44,7 +44,7 @@ describe('Should find common diagnostics for all regions', () => {
       {
         range: range(17, 2, 21, 3),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Argument of type '{ components: { Ite: any; };"
+        message: 'No overload matches this call.'
       },
       {
         range: sameLineRange(24, 14, 16),
