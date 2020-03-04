@@ -18,7 +18,7 @@ describe('Vue 3 integration test', () => {
       await testCompletion(fileUri, position(6, 2), [
         {
           label: 'setup',
-          kind: CompletionItemKind.Property
+          kind: CompletionItemKind.Field
         }
       ]);
     });
