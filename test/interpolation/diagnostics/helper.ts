@@ -30,7 +30,7 @@ export async function testDiagnostics(
         return isEqualDiagnostic(ed, d);
       }),
       `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
-        `Seen diagnostics are:\n${JSON.stringify(result)}`
+        `Seen diagnostics are:\n${JSON.stringify(result, null, 2)}`
     );
   });
 
