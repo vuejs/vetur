@@ -1,6 +1,7 @@
 import { CLIEngine, Linter } from 'eslint';
 import { configs } from 'eslint-plugin-vue';
 import { TextDocument, Diagnostic, Range, DiagnosticSeverity } from 'vscode-languageserver-types';
+import { resolve } from 'path';
 
 function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const line = error.line - 1;
@@ -28,8 +29,11 @@ export function doESLintValidation(document: TextDocument, engine: CLIEngine): D
 }
 
 export function createLintEngine() {
+  const SERVER_ROOT = resolve(__dirname, '../../../../');
   return new CLIEngine({
     useEslintrc: false,
+    // So ESLint can find the bundled eslint-plugin-vue
+    cwd: SERVER_ROOT,
     ...configs.base,
     ...configs.essential
   });
