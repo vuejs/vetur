@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.23.1
+### 0.24.0
 
 - Support Vue 3 interface with `defineComponent`. #1638.
 - Update to TS 3.7.5 to avoid TypeScript issues with files not stored in C: drives on Windows. #1589.
@@ -12,6 +12,7 @@
   - Fix an error on VTI not able to load `vscode-css-languageservice/lib/umd/data/browsers`. #1732.
   - Pull latest [web data](https://www.npmjs.com/package/vscode-web-custom-data) for Stylus support.
   - Use Markdown documentation for Stylus completion description.
+- 🙌 Better template interpolation auto completion. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1129 and #1446.
 - 🙌 Fix syntax highlighting when `</template` and `>` are not on the same line. Thanks to contribution from [Ross Allen](https://github.com/ssorallen). #1211.
 - 🙌 Add [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter) as a formatter for SASS region. Thanks to contribution from [@TheRealSyler](https://github.com/TheRealSyler). #1433.
 - 🙌 Provide Quasar support when `quasar` is in `devDependencies`. Thanks to contribution from [@moander](https://github.com/moander). #1504.
