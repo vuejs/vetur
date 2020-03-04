@@ -10,8 +10,7 @@ describe('Should autocomplete interpolation for <template>', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(templateDocUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-    await sleep(FILE_LOAD_SLEEP_TIME);
+    await sleep(FILE_LOAD_SLEEP_TIME * 3);
   });
 
   const defaultList: CompletionItem[] = [

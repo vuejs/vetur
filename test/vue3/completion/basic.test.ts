@@ -9,8 +9,7 @@ describe('Vue 3 integration test', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(fileUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-    await sleep(FILE_LOAD_SLEEP_TIME);
+    await sleep(FILE_LOAD_SLEEP_TIME * 3);
   });
 
   describe('Should complete Vue 3 options', () => {
