@@ -51,12 +51,22 @@ Vetur provides a setting `vetur.grammar.customBlocks` that defaults to:
 
 You can
 
-- change `vetur.grammar.customBlocks`
-- run the command "Vetur: Generate grammar from `vetur.grammar.customBlocks`
-- restart VS Code
-  to get syntax highlighting for custom blocks.
+- Change `vetur.grammar.customBlocks`, for example:
+
+  ```json
+  "vetur.grammar.customBlocks": {
+    "docs": "md",
+    "i18n": "json",
+    "page-query": "graphql",
+    "static-query": "graphql"
+  }
+  ```
+
+- Run the command "Vetur: Generate grammar from `vetur.grammar.customBlocks`
+- **Restart VS Code** to get syntax highlighting for custom blocks.
 
 Valid language value for custom blocks:
 
 - All `lang` values in the support table.
 - `md | yaml | json | php | graphql`
+

@@ -54,7 +54,7 @@ patterns:
       - name: invalid.illegal.bad-comments-or-CDATA.html
         match: (\s*)(?!--|>)\S(\s*)
   - name: meta.tag.block.any.html
-    begin: (</?)((?i:template)[a-zA-Z0-9:-]+\b)
+    begin: (</?)([a-zA-Z0-9:-]+\b)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
       '2': { name: entity.name.tag.block.any.html }
@@ -63,33 +63,6 @@ patterns:
       '1': { name: punctuation.definition.tag.end.html }
     patterns:
       - include: '#tag-stuff'
-  - begin: (<)(template)\b(?=[^/>]*/>\s*$)
-    beginCaptures:
-      '1': { name: punctuation.definition.tag.begin.html }
-      '2': { name: entity.name.tag.style.html }
-    end: (/>)
-    endCaptures:
-      '1': { name: punctuation.definition.tag.end.html }
-    patterns:
-      - include: '#tag-stuff'
-  - begin: (<)(template)
-    beginCaptures:
-      '1': { name: punctuation.definition.tag.begin.html }
-      '2': { name: entity.name.tag.style.html }
-    end: (</)(template)(>)
-    endCaptures:
-      '1': { name: punctuation.definition.tag.begin.html }
-      '2': { name: entity.name.tag.style.html }
-      '3': { name: punctuation.definition.tag.end.html }
-    patterns:
-      - include: '#tag-stuff'
-      - contentName: text.html.vue-html
-        begin: (>)
-        beginCaptures:
-          '1': { name: punctuation.definition.tag.end.html }
-        end: (?=</template>)
-        patterns:
-          - include: text.html.vue-html
   - name: meta.tag.structure.any.html
     begin: (</?)((?i:body|head|html)\b)
     end: (>)
@@ -217,7 +190,7 @@ repository:
     match: (?<==)(?:[^\s<>/'"]|/(?!>))+
   vue-directives:
     name: meta.directive.vue
-    begin: (?:\b(v-)|(:|@|#))([a-zA-Z\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
+    begin: (?:\b(v-)|(:|@|#))([a-zA-Z0-9\-_]+)(?:\:([a-zA-Z\-_]+))?(?:\.([a-zA-Z\-_]+))*\s*(=)
     end: (?<='|")|(?=[\s<>`])
     captures:
       '1': { name: entity.other.attribute-name.html }

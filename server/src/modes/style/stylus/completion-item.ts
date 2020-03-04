@@ -215,7 +215,7 @@ export function getAtRules(data: LoadedCSSData, currentWord: string): Completion
   return data.atDirectives.map(property => {
     const completionItem = CompletionItem.create(property.name);
 
-    completionItem.detail = property.description;
+    completionItem.documentation = property.description;
     completionItem.kind = CompletionItemKind.Keyword;
 
     return completionItem;
@@ -237,7 +237,7 @@ export function getProperties(data: LoadedCSSData, currentWord: string, useSepar
     const completionItem = CompletionItem.create(property.name);
 
     completionItem.insertText = property.name + (useSeparator ? ': ' : ' ');
-    completionItem.detail = property.description;
+    completionItem.documentation = property.description;
     completionItem.kind = CompletionItemKind.Property;
 
     return completionItem;

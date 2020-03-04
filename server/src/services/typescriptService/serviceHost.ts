@@ -96,7 +96,7 @@ export function getServiceHost(
   );
   const scriptFileNameSet = new Set(initialProjectFiles);
 
-  const isOldVersion = inferIsUsingOldVueVersion(tsModule, workspacePath);
+  const vueVersion = inferVueVersion(tsModule, workspacePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
@@ -140,6 +140,7 @@ export function getServiceHost(
 
     if (isVirtualVueTemplateFile(fileFsPath)) {
       localScriptRegionDocuments.set(fileFsPath, doc);
+      scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
 
@@ -168,6 +169,7 @@ export function getServiceHost(
         jsLanguageService = tsModule.createLanguageService(jsHost);
       }
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
+      scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
@@ -211,13 +213,14 @@ export function getServiceHost(
 
         if (isVueFile(fileName)) {
           const uri = Uri.file(fileName);
-          fileName = uri.fsPath;
-          let doc = localScriptRegionDocuments.get(fileName);
+          const fileFsPath = normalizeFileNameToFsPath(fileName);
+          let doc = localScriptRegionDocuments.get(fileFsPath);
           if (!doc) {
             doc = updatedScriptRegionDocuments.refreshAndGet(
               TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(fileName) || '')
             );
-            localScriptRegionDocuments.set(fileName, doc);
+            localScriptRegionDocuments.set(fileFsPath, doc);
+            scriptFileNameSet.add(fileName);
           }
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
@@ -280,13 +283,15 @@ export function getServiceHost(
           if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
             const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
             const uri = Uri.file(resolvedFileName);
-            let doc = localScriptRegionDocuments.get(resolvedFileName);
+            const resolvedFileFsPath = normalizeFileNameToFsPath(resolvedFileName);
+            let doc = localScriptRegionDocuments.get(resolvedFileFsPath);
             // Vue file not created yet
             if (!doc) {
               doc = updatedScriptRegionDocuments.refreshAndGet(
                 TextDocument.create(uri.toString(), 'vue', 0, tsModule.sys.readFile(resolvedFileName) || '')
               );
-              localScriptRegionDocuments.set(resolvedFileName, doc);
+              localScriptRegionDocuments.set(resolvedFileFsPath, doc);
+              scriptFileNameSet.add(resolvedFileName);
             }
 
             const extension =
@@ -323,7 +328,13 @@ export function getServiceHost(
         }
 
         if (fileName === bridge.fileName) {
-          const text = isOldVersion ? bridge.oldContent : bridge.content;
+          const text =
+            vueVersion === VueVersion.VPre25
+              ? bridge.preVue25Content
+              : vueVersion === VueVersion.V25
+              ? bridge.vue25Content
+              : bridge.vue30Content;
+
           return {
             getText: (start, end) => text.substring(start, end),
             getLength: () => text.length,
@@ -455,7 +466,23 @@ function getScriptKind(tsModule: T_TypeScript, langId: string): ts.ScriptKind {
     : tsModule.ScriptKind.JS;
 }
 
-function inferIsUsingOldVueVersion(tsModule: T_TypeScript, workspacePath: string): boolean {
+enum VueVersion {
+  VPre25,
+  V25,
+  V30
+}
+
+function floatVersionToEnum(v: number) {
+  if (v < 2.5) {
+    return VueVersion.VPre25;
+  } else if (v < 3.0) {
+    return VueVersion.V25;
+  } else {
+    return VueVersion.V30;
+  }
+}
+
+function inferVueVersion(tsModule: T_TypeScript, workspacePath: string): VueVersion {
   const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
   try {
     const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);
@@ -465,7 +492,7 @@ function inferIsUsingOldVueVersion(tsModule: T_TypeScript, workspacePath: string
       // use a sloppy method to infer version, to reduce dep on semver or so
       const vueDep = vueDependencyVersion.match(/\d+\.\d+/)[0];
       const sloppyVersion = parseFloat(vueDep);
-      return sloppyVersion < 2.5;
+      return floatVersionToEnum(sloppyVersion);
     }
 
     const nodeModulesVuePackagePath = tsModule.findConfigFile(
@@ -476,9 +503,10 @@ function inferIsUsingOldVueVersion(tsModule: T_TypeScript, workspacePath: string
     const nodeModulesVuePackageJSON =
       nodeModulesVuePackagePath && JSON.parse(tsModule.sys.readFile(nodeModulesVuePackagePath)!);
     const nodeModulesVueVersion = parseFloat(nodeModulesVuePackageJSON.version.match(/\d+\.\d+/)[0]);
-    return nodeModulesVueVersion < 2.5;
+
+    return floatVersionToEnum(nodeModulesVueVersion);
   } catch (e) {
-    return true;
+    return VueVersion.VPre25;
   }
 }
 

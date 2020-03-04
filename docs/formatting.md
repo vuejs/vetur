@@ -15,6 +15,7 @@ These formatters are available:
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
+- [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter): For the .sass section of the files.
 
 Vetur bundles all the above formatters. When Vetur observes a local install of the formatter, it'll prefer to use the local version.
 
@@ -32,7 +33,8 @@ Current default:
   "vetur.format.defaultFormatter.less": "prettier",
   "vetur.format.defaultFormatter.stylus": "stylus-supremacy",
   "vetur.format.defaultFormatter.js": "prettier",
-  "vetur.format.defaultFormatter.ts": "prettier"
+  "vetur.format.defaultFormatter.ts": "prettier",
+  "vetur.format.defaultFormatter.sass": "sass-formatter"
 }
 ```
 
@@ -67,7 +69,7 @@ Opinionated formatter. Settings are read from `.prettierrc` at project root. See
 
 If you want to set global prettier setting, either:
 
-- Make a `.prettierrc` config at your home directory 
+- Make a `.prettierrc` config at your home directory
 - Use the below config and do NOT include a `.prettierrc` in your home directory
 
   ```json
@@ -131,5 +133,24 @@ Other settings are read from `stylusSupremacy.*`. You can install [Stylus Suprem
   "stylusSupremacy.insertBraces": false,
   "stylusSupremacy.insertColons": false,
   "stylusSupremacy.insertSemicolons": false
+}
+```
+
+#### [sass-formatter](https://github.com/TheRealSyler/sass-formatter)
+
+Settings are read from `sass.format.*`. You can install [Sass extension](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) to get IntelliSense for settings, but Vetur will work without it. A useful default:
+
+```jsonc
+{
+  // enables debug mode.
+  "sass.format.debug": false,
+  // removes empty rows.
+  "sass.format.deleteEmptyRows": true,
+  // removes trailing whitespace.
+  "sass.format.deleteWhitespace": true,
+  // Convert scss/css to sass.
+  "sass.format.convert": true,
+  // If true space between the property: value, is always set to 1.
+  "sass.format.setPropertySpace": true
 }
 ```

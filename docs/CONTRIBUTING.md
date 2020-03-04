@@ -8,7 +8,8 @@ Contribution is welcome! There are many ways you could help Vetur's development:
 
 ## Code
 
-Comment on feature requests that you'd like to contribute before sending PR.
+- **When issue is complex, comment on feature requests first to get feedback and implementation pointers before sending PR.**
+- **Tick _[Allow Edits from Maintainers](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/allowing-changes-to-a-pull-request-branch-created-from-a-fork)_**
 
 #### Coding Style
 
@@ -29,7 +30,7 @@ To compile:
 
 ```bash
 yarn
-cd server && yarn && cd ..
+(cd server && yarn) && (cd vti && yarn)
 yarn compile
 # or yarn watch
 ```
@@ -69,6 +70,16 @@ Two ways of using it:
 > Tip: In VS Code, use F1 -> Inspect TM Scopes to view language scopes to debug the grammar:
 
 ![scope](https://raw.githubusercontent.com/vuejs/vetur/master/docs/images/scope.png)
+
+After you are done, verify the grammar integration test passes by running `yarn test:grammar`.
+
+If a file `test/grammar/results/<FILE>_vue.json` exists, the testing script will compare the actual tokenization result
+of tokenizing `test/grammar/fixture/<FILE>.vue` against the JSON.
+
+If `test/grammar/fixture/<FILE>.vue` exists but no corresponding JSON file exists, the script will generate a new JSON file. So:
+
+- If you are adding a new test, add a file `test/grammar/fixture/<FILE>.vue` and run the test script to generate a corresponding JSON file. Commit both.
+- If you see a test failure but you verify the color looks correct when running the `client` debug target, delete the JSON file and run the test script to generate a new one. Compare the diff and commit the changes.
 
 ## Doc
 

@@ -351,7 +351,7 @@
           "name": "entity.name.tag.template.html"
         }
       },
-      "end": "(</)(template)(>)",
+      "end": "^(</)(template)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -375,7 +375,7 @@
               "name": "punctuation.definition.tag.end.html"
             }
           },
-          "end": "(?=</template>)",
+          "end": "(?=^</template>)",
           "patterns": [
             {
               "include": "text.html.vue-html"
@@ -1045,7 +1045,7 @@
     },
     "vue-directives": {
       "name": "meta.directive.vue",
-      "begin": "(?:\\b(v-)|(:|@|#))([a-zA-Z\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)",
+      "begin": "(?:\\b(v-)|(:|@|#))([a-zA-Z0-9\\-_]+)(?:\\:([a-zA-Z\\-_]+))?(?:\\.([a-zA-Z\\-_]+))*\\s*(=)",
       "end": "(?<='|\")|(?=[\\s<>`])",
       "captures": {
         "1": {

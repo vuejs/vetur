@@ -37,6 +37,7 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 - Formatting
 - Auto Completion
 - Debugging
+- [VTI / CLI](https://vuejs.github.io/vetur/vti.html)
 
 ## Quick Start
 

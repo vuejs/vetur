@@ -5,6 +5,7 @@ import { indentSection } from '../strings';
 
 import { requireLocalPkg } from './requirePkg';
 import { VLSFormatConfig } from '../../config';
+import { logger } from '../../log';
 
 export function prettierify(
   code: string,
@@ -17,6 +18,7 @@ export function prettierify(
   try {
     const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
     const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+    logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
@@ -40,6 +42,7 @@ export function prettierEslintify(
     const prettierEslint = requireLocalPkg(fileFsPath, 'prettier-eslint') as PrettierEslintFormat;
 
     const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+    logger.logDebug(`Using prettier-eslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierEslint({
       prettierOptions: { parser },
@@ -67,6 +70,7 @@ export function prettierTslintify(
     const prettierTslint = requireLocalPkg(fileFsPath, 'prettier-tslint').format as PrettierTslintFormat;
 
     const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+    logger.logDebug(`Using prettier-tslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierTslint({
       prettierOptions: { parser },

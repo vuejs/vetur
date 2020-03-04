@@ -6,6 +6,7 @@ docs/
 client/
 **/test/
 server/src/
+vti
 
 .**
 

@@ -17,7 +17,7 @@ import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings, IHTMLTagProvider, CompletionConfiguration } from './tagProviders';
 import { getEnabledTagProviders } from './tagProviders';
 import { DocumentContext } from '../../types';
-import { VLSFormatConfig } from '../../config';
+import { VLSFormatConfig, VLSConfig, VLSFullConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
 
@@ -47,8 +47,7 @@ export class HTMLMode implements LanguageMode {
     return 'html';
   }
 
-  configure(c: any) {
-    this.tagProviderSettings = _.assign(this.tagProviderSettings, c.html.suggest);
+  configure(c: VLSFullConfig) {
     this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
     this.config = c;
   }

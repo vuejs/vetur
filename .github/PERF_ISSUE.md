@@ -23,7 +23,8 @@ The perf issue is mostly caused by the server. Here's how to profile it.
 - Set `vetur.dev.vlsPort` to a number, say `8000`.
 - Open [chrome://inspect/](chrome://inspect/) in Chrome.
 - You should see a Node.js remote target like below. That's the VLS process. Click it.
-- ![image](https://user-images.githubusercontent.com/4033249/56996577-d61d0c00-6b59-11e9-85f0-29dc15e2e2aa.png)
+    ![image](https://user-images.githubusercontent.com/4033249/56996577-d61d0c00-6b59-11e9-85f0-29dc15e2e2aa.png)
+    - If you don't see the target, click `Open dedicated DevTools for Node` and in the `Connection` tab, click `Add connection` and add `localhost:<vetur.dev.vlsPort>`
 - Go to the `Profiler` tab. Click `Start`.
 - Edit some Vue files in your editor.
 - Click `Stop`.

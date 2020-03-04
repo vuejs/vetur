@@ -23,10 +23,7 @@ After you installed [ESLint plugin](https://marketplace.visualstudio.com/items?i
   "eslint.validate": [
     "javascript",
     "javascriptreact",
-    {
-      "language": "vue",
-      "autoFix": true
-    },
+    "vue"
   ]
 }
 ```

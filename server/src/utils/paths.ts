@@ -7,6 +7,9 @@ import Uri from 'vscode-uri';
  * - `TextDocument` from `vscode-languageserver`
  * - `SourceFile` from `typescript`
  *
+ * TypeScript Language Service uses `fileName`, which is a file path without scheme.
+ * Convert them into standard URI by `Uri.file`.
+ *
  * ## `TextDocument.uri`
  *
  * - macOS / Linux: file:///foo/bar.vue
@@ -48,7 +51,9 @@ export function getFilePath(documentUri: string): string {
   const IS_WINDOWS = platform() === 'win32';
   if (IS_WINDOWS) {
     // Windows have a leading slash like /C:/Users/pine
-    return Uri.parse(documentUri).path.slice(1);
+    // vscode-uri use lower-case drive letter
+    // https://github.com/microsoft/vscode-uri/blob/95e03c06f87d38f25eda1ae3c343fe5b7eec3f52/src/index.ts#L1017
+    return Uri.parse(documentUri).path.replace(/^\/[a-zA-Z]/, (s: string) => s.slice(1).toLowerCase());
   } else {
     return Uri.parse(documentUri).path;
   }
