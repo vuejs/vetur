@@ -9,7 +9,8 @@ import {
   Location,
   Definition,
   CompletionList,
-  TextEdit
+  TextEdit,
+  CompletionItem
 } from 'vscode-languageserver-types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { languageServiceIncludesFile } from '../script/javascript';
@@ -21,8 +22,6 @@ import * as _ from 'lodash';
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
 import { NULL_COMPLETION } from '../nullMode';
 import { toCompletionItemKind } from '../../services/typescriptService/util';
-import { VueInfoService } from '../../services/vueInfoService';
-import { getVueInterpolationCompletionMap } from './services/vueInterpolationCompletion';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
@@ -33,8 +32,7 @@ export class VueInterpolationMode implements LanguageMode {
   constructor(
     private tsModule: T_TypeScript,
     private serviceHost: IServiceHost,
-    private vueDocuments: LanguageModelCache<HTMLDocument>,
-    private vueInfoService?: VueInfoService
+    private vueDocuments: LanguageModelCache<HTMLDocument>
   ) {}
 
   getId() {
@@ -114,7 +112,6 @@ export class VueInterpolationMode implements LanguageMode {
 
     const mappedOffset = mapFromPositionToOffset(templateDoc, position, templateSourceMap);
     const templateFileFsPath = getFileFsPath(templateDoc.uri);
-    const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
 
     const completions = templateService.getCompletionsAtPosition(templateFileFsPath, mappedOffset, {
       includeCompletionsWithInsertText: true,
@@ -125,16 +122,11 @@ export class VueInterpolationMode implements LanguageMode {
       return NULL_COMPLETION;
     }
 
-    const componentCompletionMap = info
-      ? getVueInterpolationCompletionMap(this.tsModule, templateFileFsPath, mappedOffset, templateService, info)
-      : undefined;
-
     const tsItems = completions.entries.map((entry, index) => {
       return {
         uri: templateDoc.uri,
         position,
         label: entry.name,
-        detail: undefined,
         sortText: entry.sortText + index,
         kind: toCompletionItemKind(entry.kind),
         textEdit:
@@ -142,7 +134,7 @@ export class VueInterpolationMode implements LanguageMode {
           TextEdit.replace(mapBackRange(templateDoc, entry.replacementSpan, templateSourceMap), entry.name),
         data: {
           // data used for resolving item details (see 'doResolve')
-          languageId: templateDoc.languageId,
+          languageId: 'vue-html',
           uri: templateDoc.uri,
           offset: position,
           source: entry.source
@@ -152,10 +144,54 @@ export class VueInterpolationMode implements LanguageMode {
 
     return {
       isIncomplete: false,
-      items: !componentCompletionMap
-        ? tsItems
-        : [...componentCompletionMap.values(), ...tsItems.filter(item => !componentCompletionMap.has(item.label))]
+      items: tsItems
     };
+  }
+
+  doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return item;
+    }
+
+    /**
+     * resolve is called for both HTMl and interpolation completions
+     * HTML completions send back no data
+     */
+    if (!item.data) {
+      return item;
+    }
+
+    // Add suffix to process this doc as vue template.
+    const templateDoc = TextDocument.create(
+      document.uri + '.template',
+      document.languageId,
+      document.version,
+      document.getText()
+    );
+
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return item;
+    }
+
+    const templateFileFsPath = getFileFsPath(templateDoc.uri);
+    const mappedOffset = mapFromPositionToOffset(templateDoc, item.data.offset, templateSourceMap);
+
+    const details = templateService.getCompletionEntryDetails(
+      templateFileFsPath,
+      mappedOffset,
+      item.label,
+      undefined,
+      undefined,
+      undefined
+    );
+
+    if (details) {
+      item.detail = ts.displayPartsToString(details.displayParts);
+      item.documentation = ts.displayPartsToString(details.documentation);
+      delete item.data;
+    }
+    return item;
   }
 
   doHover(

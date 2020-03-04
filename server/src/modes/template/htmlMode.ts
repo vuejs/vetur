@@ -11,7 +11,6 @@ import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
-import { parseHTMLDocument } from './parser/htmlParser';
 import { doESLintValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings, IHTMLTagProvider, CompletionConfiguration } from './tagProviders';

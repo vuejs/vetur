@@ -19,7 +19,7 @@ interface Mapping {
   [k: number]: number;
 }
 
-export const INVALID_OFFSET = 0;
+const INVALID_OFFSET = 0;
 const INVALID_RANGE = Range.create(0, 0, 0, 0);
 
 /**
@@ -276,7 +276,10 @@ function updateOffsetMapping(node: TemplateSourceMapNode, isThisInjected: boolea
 
   const mapping = fillIntermediate
     ? from.map((from, i) => [from, toFiltered[i]])
-    : [[from[0], toFiltered[0]], [from[from.length - 1], toFiltered[toFiltered.length - 1]]];
+    : [
+        [from[0], toFiltered[0]],
+        [from[from.length - 1], toFiltered[toFiltered.length - 1]]
+      ];
 
   mapping.forEach(([fromOffset, toOffset]) => {
     const from = fromOffset + node.from.start;

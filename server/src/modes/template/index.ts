@@ -1,4 +1,12 @@
-import { FormattingOptions, Position, Range, TextDocument, Hover, Location } from 'vscode-languageserver-types';
+import {
+  FormattingOptions,
+  Position,
+  Range,
+  TextDocument,
+  Hover,
+  Location,
+  CompletionItem
+} from 'vscode-languageserver-types';
 import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -25,7 +33,7 @@ export class VueHTMLMode implements LanguageMode {
   ) {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
     this.htmlMode = new HTMLMode(documentRegions, workspacePath, vueDocuments, vueInfoService);
-    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments, vueInfoService);
+    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments);
   }
   getId() {
     return 'vue-html';
@@ -47,6 +55,9 @@ export class VueHTMLMode implements LanguageMode {
       isIncomplete: htmlList.isIncomplete || intList.isIncomplete,
       items: htmlList.items.concat(intList.items)
     };
+  }
+  doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
+    return this.vueInterpolationMode.doResolve(document, item);
   }
   doHover(document: TextDocument, position: Position): Hover {
     const interpolationHover = this.vueInterpolationMode.doHover(document, position);

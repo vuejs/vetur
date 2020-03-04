@@ -3,7 +3,6 @@ import { CompletionItemKind, CompletionItem } from 'vscode-languageserver';
 import { VueFileInfo } from '../../../services/vueInfoService';
 import { findNodeByOffset } from '../../../services/typescriptService/util';
 import { T_TypeScript } from '../../../services/dependencyService';
-import { INVALID_OFFSET } from '../../../services/typescriptService/sourceMap';
 
 export function getVueInterpolationCompletionMap(
   tsModule: T_TypeScript,
