@@ -1,7 +1,6 @@
 import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import {
   SymbolInformation,
-  SymbolKind,
   CompletionItem,
   Location,
   SignatureHelp,
@@ -41,6 +40,7 @@ import { getComponentInfo } from './componentInfo';
 import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
 import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
+import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -163,7 +163,7 @@ export async function getJavascriptMode(
             label,
             detail,
             sortText: entry.sortText + index,
-            kind: convertKind(entry.kind),
+            kind: toCompletionItemKind(entry.kind),
             textEdit: range && TextEdit.replace(range, entry.name),
             data: {
               // data used for resolving item details (see 'doResolve')
@@ -339,7 +339,7 @@ export async function getJavascriptMode(
         if (item.kind !== 'script' && !existing[sig]) {
           const symbol: SymbolInformation = {
             name: item.text,
-            kind: convertSymbolKind(item.kind),
+            kind: toSymbolKind(item.kind),
             location: {
               uri: doc.uri,
               range: convertRange(scriptDoc, item.spans[0])
@@ -646,70 +646,6 @@ function convertRange(document: TextDocument, span: ts.TextSpan): Range {
   const startPosition = document.positionAt(span.start);
   const endPosition = document.positionAt(span.start + span.length);
   return Range.create(startPosition, endPosition);
-}
-
-function convertKind(kind: ts.ScriptElementKind): CompletionItemKind {
-  switch (kind) {
-    case 'primitive type':
-    case 'keyword':
-      return CompletionItemKind.Keyword;
-    case 'var':
-    case 'local var':
-      return CompletionItemKind.Variable;
-    case 'property':
-    case 'getter':
-    case 'setter':
-      return CompletionItemKind.Field;
-    case 'function':
-    case 'method':
-    case 'construct':
-    case 'call':
-    case 'index':
-      return CompletionItemKind.Function;
-    case 'enum':
-      return CompletionItemKind.Enum;
-    case 'module':
-      return CompletionItemKind.Module;
-    case 'class':
-      return CompletionItemKind.Class;
-    case 'interface':
-      return CompletionItemKind.Interface;
-    case 'warning':
-      return CompletionItemKind.File;
-    case 'script':
-      return CompletionItemKind.File;
-    case 'directory':
-      return CompletionItemKind.Folder;
-  }
-
-  return CompletionItemKind.Property;
-}
-
-function convertSymbolKind(kind: ts.ScriptElementKind): SymbolKind {
-  switch (kind) {
-    case 'var':
-    case 'local var':
-    case 'const':
-      return SymbolKind.Variable;
-    case 'function':
-    case 'local function':
-      return SymbolKind.Function;
-    case 'enum':
-      return SymbolKind.Enum;
-    case 'module':
-      return SymbolKind.Module;
-    case 'class':
-      return SymbolKind.Class;
-    case 'interface':
-      return SymbolKind.Interface;
-    case 'method':
-      return SymbolKind.Method;
-    case 'property':
-    case 'getter':
-    case 'setter':
-      return SymbolKind.Property;
-  }
-  return SymbolKind.Variable;
 }
 
 function convertOptions(

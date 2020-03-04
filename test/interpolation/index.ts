@@ -3,10 +3,19 @@ import * as Mocha from 'mocha';
 import * as glob from 'glob';
 
 export function run(): Promise<void> {
+  const args = {};
+
+  Object.keys(process.env)
+    .filter(k => k.startsWith('MOCHA_'))
+    .forEach(k => {
+      args[k.slice('MOCHA_'.length)] = process.env[k];
+    });
+
   // Create the mocha test
   const mocha = new Mocha({
     ui: 'bdd',
-    timeout: 100000
+    timeout: 100000,
+    ...args
   });
   mocha.useColors(true);
 

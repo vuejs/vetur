@@ -9,8 +9,7 @@ describe('Vue 3 integration test', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(fileUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-    await sleep(FILE_LOAD_SLEEP_TIME);
+    await sleep(FILE_LOAD_SLEEP_TIME * 2);
   });
 
   describe('Should complete Vue 3 options', () => {
@@ -18,7 +17,7 @@ describe('Vue 3 integration test', () => {
       await testCompletion(fileUri, position(6, 2), [
         {
           label: 'setup',
-          kind: CompletionItemKind.Property
+          kind: CompletionItemKind.Field
         }
       ]);
     });

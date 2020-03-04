@@ -12,10 +12,7 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
-import { VueFileInfo } from '../../../services/vueInfoService';
-import { doVueInterpolationComplete } from './vueInterpolationCompletion';
 import { NULL_COMPLETION } from '../../nullMode';
-import { isInsideInterpolation } from './isInsideInterpolation';
 import { getModifierProvider, Modifier } from '../modifierProvider';
 
 export function doComplete(
@@ -23,8 +20,7 @@ export function doComplete(
   position: Position,
   htmlDocument: HTMLDocument,
   tagProviders: IHTMLTagProvider[],
-  emmetConfig: emmet.EmmetConfiguration,
-  vueFileInfo?: VueFileInfo
+  emmetConfig: emmet.EmmetConfiguration
 ): CompletionList {
   const modifierProvider = getModifierProvider();
 
@@ -35,28 +31,8 @@ export function doComplete(
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
-  if (!node) {
+  if (!node || node.isInterpolation) {
     return result;
-  }
-
-  const nodeRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
-  const nodeText = document.getText(nodeRange);
-  const insideInterpolation = isInsideInterpolation(node, nodeText, document.offsetAt(position) - node.start);
-
-  if (node.isInterpolation) {
-    if (!insideInterpolation) {
-      return NULL_COMPLETION;
-    }
-
-    if (document.getText()[document.offsetAt(position) - 1] === '.') {
-      return NULL_COMPLETION;
-    }
-
-    if (vueFileInfo) {
-      return doVueInterpolationComplete(vueFileInfo);
-    } else {
-      return NULL_COMPLETION;
-    }
   }
 
   const text = document.getText();
@@ -235,11 +211,7 @@ export function doComplete(
 
   function collectAttributeValueSuggestions(attr: string, valueStart: number, valueEnd?: number): CompletionList {
     if (attr.startsWith('v-') || attr.startsWith('@') || attr.startsWith(':')) {
-      if (vueFileInfo && insideInterpolation) {
-        return doVueInterpolationComplete(vueFileInfo);
-      } else {
-        return NULL_COMPLETION;
-      }
+      return NULL_COMPLETION;
     }
 
     let range: Range;
