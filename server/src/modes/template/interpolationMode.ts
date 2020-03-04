@@ -110,7 +110,22 @@ export class VueInterpolationMode implements LanguageMode {
       return NULL_COMPLETION;
     }
 
-    const mappedOffset = mapFromPositionToOffset(templateDoc, position, templateSourceMap);
+    /**
+     * In the cases of empty content inside node
+     * For example, completion in {{ | }}
+     * Source map would only map this position {{|  }}
+     * And position mapped back wouldn't fall into any source map ranges
+     */
+    let completionPos = position;
+    // Case {{ }}
+    if (node.isInterpolation) {
+      if (nodeText.match(/{{\s*}}/)) {
+        completionPos = document.positionAt(node.start + '{{'.length);
+      }
+    }
+    // Todo: Case v-, : or @ directives
+
+    const mappedOffset = mapFromPositionToOffset(templateDoc, completionPos, templateSourceMap);
     const templateFileFsPath = getFileFsPath(templateDoc.uri);
 
     const completions = templateService.getCompletionsAtPosition(templateFileFsPath, mappedOffset, {
