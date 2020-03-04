@@ -142,7 +142,7 @@ export class VueInterpolationMode implements LanguageMode {
         uri: templateDoc.uri,
         position,
         label: entry.name,
-        sortText: entry.sortText + index,
+        sortText: entry.name.startsWith('$') ? '1' + entry.sortText : '0' + entry.sortText,
         kind: toCompletionItemKind(entry.kind),
         textEdit:
           entry.replacementSpan &&

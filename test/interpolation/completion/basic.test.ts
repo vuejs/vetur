@@ -24,12 +24,12 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'msg',
       documentation: new MarkdownString('My msg').appendCodeblock(`msg: 'Vetur means "Winter" in icelandic.'`, 'js'),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'count',
@@ -39,7 +39,7 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'hello',
@@ -50,7 +50,7 @@ describe('Should autocomplete interpolation for <template>', () => {
         'js'
       ),
 
-      kind: CompletionItemKind.Method
+      kind: CompletionItemKind.Function
     }
   ];
 
