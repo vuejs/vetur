@@ -1,5 +1,24 @@
 # Changelog
 
+### 0.24.0 | 2020-03-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.24.0/vspackage)
+
+- **`vue-language-server` deprecated and will be published as `vls`**.
+- Support Vue 3 interface with `defineComponent`. #1638.
+- Update to TS 3.7.5 to avoid TypeScript issues with files not stored in C: drives on Windows. #1589.
+- Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
+- Enable Windows CI with Azure DevOps. #1266.
+- Upgrade to `vscode-langaugeclient`/`vscode-languageserver` V6. #1719.
+  - Fix a file lock issue on asar files. #1474.
+  - MDN links on CSS completion. #1751.
+  - Fix an error on VTI not able to load `vscode-css-languageservice/lib/umd/data/browsers`. #1732.
+  - Pull latest [web data](https://www.npmjs.com/package/vscode-web-custom-data) for Stylus support.
+  - Use Markdown documentation for Stylus completion description.
+- 🙌 Better template interpolation auto completion. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1129 and #1446.
+- 🙌 Fix syntax highlighting when `</template` and `>` are not on the same line. Thanks to contribution from [Ross Allen](https://github.com/ssorallen). #1211.
+- 🙌 Add [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter) as a formatter for SASS region. Thanks to contribution from [@TheRealSyler](https://github.com/TheRealSyler). #1433.
+- 🙌 Provide Quasar support when `quasar` is in `devDependencies`. Thanks to contribution from [@moander](https://github.com/moander). #1504.
+- 🙌 Fix Windows path handling. Thanks to contribution from [@mattn](https://github.com/mattn). #1662.
+
 ### 0.23.0 | 2020-01-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.23.0/vspackage)
 
 - VTI (Vetur Terminal Interface). #1149.

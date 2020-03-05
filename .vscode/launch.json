@@ -12,7 +12,10 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--disable-extensions"
+      ],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
@@ -39,6 +42,7 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
+        "--user-data-dir=${workspaceFolder}/test/lsp/data-dir",
         "${workspaceFolder}/test/lsp/fixture"
       ],
       "stopOnEntry": false,
@@ -55,6 +59,7 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/interpolation",
+        "--user-data-dir=${workspaceFolder}/test/interpolation/data-dir",
         "${workspaceFolder}/test/interpolation/fixture"
       ],
       "stopOnEntry": false,
@@ -82,6 +87,7 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/grammar",
+        "--user-data-dir=${workspaceFolder}/test/grammar/data-dir",
         "${workspaceFolder}/test/grammar/fixture"
       ],
       "stopOnEntry": false,

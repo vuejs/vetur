@@ -1,6 +1,7 @@
 <template>
   <div>
     {{  }}
+    {{ obj. }}
   </div>
 </template>
 
@@ -24,12 +25,20 @@ export default {
       /**
        * My msg
        */
-      msg: 'Vetur means "Winter" in icelandic.'
+      msg: 'Vetur means "Winter" in icelandic.',
+
+      /**
+       * My obj
+       */
+      obj: {
+        msg: 'Object message.'
+      }
     }
   },
   computed: {
     /**
      * My count
+     * @return {number}
      */
     count () {
       return this.$store.state.count
@@ -38,6 +47,7 @@ export default {
   methods: {
     /**
      * My greeting
+     * @return {void}
      */
     hello () {
       console.log(this.msg)

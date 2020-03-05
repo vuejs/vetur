@@ -7,7 +7,10 @@ import {
   MarkedString,
   Range,
   Location,
-  Definition
+  Definition,
+  CompletionList,
+  TextEdit,
+  CompletionItem
 } from 'vscode-languageserver-types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { languageServiceIncludesFile } from '../script/javascript';
@@ -17,11 +20,20 @@ import * as ts from 'typescript';
 import { T_TypeScript } from '../../services/dependencyService';
 import * as _ from 'lodash';
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
+import { NULL_COMPLETION } from '../nullMode';
+import { toCompletionItemKind } from '../../services/typescriptService/util';
+import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
+import { HTMLDocument } from './parser/htmlParser';
+import { isInsideInterpolation } from './services/isInsideInterpolation';
 
 export class VueInterpolationMode implements LanguageMode {
   private config: any = {};
 
-  constructor(private tsModule: T_TypeScript, private serviceHost: IServiceHost) {}
+  constructor(
+    private tsModule: T_TypeScript,
+    private serviceHost: IServiceHost,
+    private vueDocuments: LanguageModelCache<HTMLDocument>
+  ) {}
 
   getId() {
     return 'vue-html-interpolation';
@@ -70,6 +82,131 @@ export class VueInterpolationMode implements LanguageMode {
         source: 'Vetur'
       };
     });
+  }
+
+  doComplete(document: TextDocument, position: Position): CompletionList {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return NULL_COMPLETION;
+    }
+
+    const offset = document.offsetAt(position);
+    const node = this.vueDocuments.refreshAndGet(document).findNodeBefore(offset);
+    const nodeRange = Range.create(document.positionAt(node.start), document.positionAt(node.end));
+    const nodeText = document.getText(nodeRange);
+    if (!isInsideInterpolation(node, nodeText, offset - node.start)) {
+      return NULL_COMPLETION;
+    }
+
+    // Add suffix to process this doc as vue template.
+    const templateDoc = TextDocument.create(
+      document.uri + '.template',
+      document.languageId,
+      document.version,
+      document.getText()
+    );
+
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return NULL_COMPLETION;
+    }
+
+    /**
+     * In the cases of empty content inside node
+     * For example, completion in {{ | }}
+     * Source map would only map this position {{|  }}
+     * And position mapped back wouldn't fall into any source map ranges
+     */
+    let completionPos = position;
+    // Case {{ }}
+    if (node.isInterpolation) {
+      if (nodeText.match(/{{\s*}}/)) {
+        completionPos = document.positionAt(node.start + '{{'.length);
+      }
+    }
+    // Todo: Case v-, : or @ directives
+
+    const mappedOffset = mapFromPositionToOffset(templateDoc, completionPos, templateSourceMap);
+    const templateFileFsPath = getFileFsPath(templateDoc.uri);
+
+    const completions = templateService.getCompletionsAtPosition(templateFileFsPath, mappedOffset, {
+      includeCompletionsWithInsertText: true,
+      includeCompletionsForModuleExports: false
+    });
+
+    if (!completions) {
+      return NULL_COMPLETION;
+    }
+
+    const tsItems = completions.entries.map((entry, index) => {
+      return {
+        uri: templateDoc.uri,
+        position,
+        label: entry.name,
+        sortText: entry.name.startsWith('$') ? '1' + entry.sortText : '0' + entry.sortText,
+        kind: toCompletionItemKind(entry.kind),
+        textEdit:
+          entry.replacementSpan &&
+          TextEdit.replace(mapBackRange(templateDoc, entry.replacementSpan, templateSourceMap), entry.name),
+        data: {
+          // data used for resolving item details (see 'doResolve')
+          languageId: 'vue-html',
+          uri: templateDoc.uri,
+          offset: position,
+          source: entry.source
+        }
+      };
+    });
+
+    return {
+      isIncomplete: false,
+      items: tsItems
+    };
+  }
+
+  doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
+    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+      return item;
+    }
+
+    /**
+     * resolve is called for both HTMl and interpolation completions
+     * HTML completions send back no data
+     */
+    if (!item.data) {
+      return item;
+    }
+
+    // Add suffix to process this doc as vue template.
+    const templateDoc = TextDocument.create(
+      document.uri + '.template',
+      document.languageId,
+      document.version,
+      document.getText()
+    );
+
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return item;
+    }
+
+    const templateFileFsPath = getFileFsPath(templateDoc.uri);
+    const mappedOffset = mapFromPositionToOffset(templateDoc, item.data.offset, templateSourceMap);
+
+    const details = templateService.getCompletionEntryDetails(
+      templateFileFsPath,
+      mappedOffset,
+      item.label,
+      undefined,
+      undefined,
+      undefined
+    );
+
+    if (details) {
+      item.detail = ts.displayPartsToString(details.displayParts);
+      item.documentation = ts.displayPartsToString(details.documentation);
+      delete item.data;
+    }
+    return item;
   }
 
   doHover(

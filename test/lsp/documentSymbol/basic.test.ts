@@ -38,9 +38,9 @@ describe('Should do documentSymbol', () => {
             range: range(5, 0, 13, 9),
             children: [
               {
-                name: 'data',
-                kind: 5,
-                range: range(7, 2, 11, 3),
+                name: 'default',
+                kind: 12,
+                range: range(6, 0, 12, 1),
                 children: []
               }
             ]
