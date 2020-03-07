@@ -23,12 +23,11 @@ export function findDefinition(
 
     if (vueFileInfo && vueFileInfo.componentInfo.childComponents) {
       for (const cc of vueFileInfo.componentInfo.childComponents) {
-        if (tag === cc.name) {
+        if (tag === cc.name.toLowerCase()) {
           if (cc.definition) {
             const loc: Location = {
               uri: URI.file(cc.definition.path).toString(),
-              // Todo: Resolve actual default export range
-              range: Range.create(0, 0, 0, 0)
+              range: cc.definition.range
             };
             return loc;
           }
