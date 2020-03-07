@@ -10,6 +10,7 @@
     <button @click="$store.commit('INCREMENT')">Increment</button>
     <button @click="$store.commit('DECREMENT')">Decrement</button>
     <button @click="$store.dispatch('incrementAsync')">Increment Async</button>
+    <Item />
   </div>
 </template>
 
@@ -18,6 +19,9 @@ import * as _ from 'lodash'
 import Item from './Basic.Item.vue'
 
 export default {
+  components: {
+    Item,
+  },
   data () {
     return {
       msg: 'Vetur means "Winter" in icelandic.'

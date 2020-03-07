@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import { Range } from 'vscode-languageserver-types';
 import { getLastChild, buildDocumentation, getObjectLiteralExprFromExportExpr } from './componentInfo';
 import { T_TypeScript } from '../../services/dependencyService';
 
@@ -7,8 +8,7 @@ interface InternalChildComponent {
   documentation?: string;
   definition?: {
     path: string;
-    start: number;
-    end: number;
+    range: Range;
   };
   defaultExportExpr?: ts.Node;
 }
@@ -63,13 +63,20 @@ export function getChildComponents(
             return;
           }
 
+          const sourceFile = defaultExportExpr.getSourceFile();
+          const decalration = definitionObjectLiteralSymbol.valueDeclaration;
+          // the range of the definition, not of the defaultExportExpr,
+          // for the later one's start may be incorrect
+          const definitionRange = Range.create(
+            tsModule.getLineAndCharacterOfPosition(sourceFile, decalration.getStart()),
+            tsModule.getLineAndCharacterOfPosition(sourceFile, decalration.getEnd())
+          );
           result.push({
             name: componentName,
             documentation: buildDocumentation(tsModule, definitionObjectLiteralSymbol, checker),
             definition: {
               path: definitionObjectLiteralSymbol.valueDeclaration.getSourceFile().fileName,
-              start: defaultExportExpr.getStart(undefined, true),
-              end: defaultExportExpr.getEnd()
+              range: definitionRange
             },
             defaultExportExpr: getObjectLiteralExprFromExportExpr(tsModule, defaultExportExpr)
           });
