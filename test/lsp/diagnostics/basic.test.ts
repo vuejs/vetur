@@ -39,12 +39,12 @@ describe('Should find common diagnostics for all regions', () => {
       {
         range: sameLineRange(11, 16, 19),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Cannot find name 'Ite'."
+        message: "No value exists in scope for the shorthand property 'Ite'."
       },
       {
         range: range(17, 2, 21, 3),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Argument of type '{ components: { Ite: any; };"
+        message: 'No overload matches this call.'
       },
       {
         range: sameLineRange(24, 14, 16),

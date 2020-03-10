@@ -15,7 +15,7 @@ describe('Should find correct diagnostics for sub folders with local `tsconfig.j
   it('shows diagnostic errors for <script> region', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [
       {
-        range: sameLineRange(9, 2, 6),
+        range: sameLineRange(9, 2, 9),
         severity: vscode.DiagnosticSeverity.Error,
         message: 'Fallthrough case in switch.',
         code: 7029

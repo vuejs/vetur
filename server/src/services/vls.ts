@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { getFileFsPath } from '../utils/paths';
 
 import {
   DidChangeConfigurationParams,
@@ -47,6 +48,7 @@ import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
+import { LanguageId } from '../embeddedSupport/embeddedSupport';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -198,7 +200,7 @@ export class VLS {
 
       changes.forEach(c => {
         if (c.type === FileChangeType.Changed) {
-          const fsPath = Uri.parse(c.uri).fsPath;
+          const fsPath = getFileFsPath(c.uri);
           jsMode.onDocumentChanged!(fsPath);
         }
       });
@@ -293,7 +295,20 @@ export class VLS {
 
   onCompletionResolve(item: CompletionItem): CompletionItem {
     if (item.data) {
-      const { uri, languageId } = item.data;
+      const uri: string = item.data.uri;
+      const languageId: LanguageId = item.data.languageId;
+
+      /**
+       * Template files need to go through HTML-template service
+       */
+      if (uri.endsWith('.template')) {
+        const doc = this.documentService.getDocument(uri.slice(0, -'.template'.length));
+        const mode = this.languageModes.getMode(languageId);
+        if (doc && mode && mode.doResolve) {
+          return mode.doResolve(doc, item);
+        }
+      }
+
       if (uri && languageId) {
         const doc = this.documentService.getDocument(uri);
         const mode = this.languageModes.getMode(languageId);
@@ -349,8 +364,8 @@ export class VLS {
         if (this.workspacePath && ref[0] === '/') {
           return Uri.file(path.resolve(this.workspacePath, ref)).toString();
         }
-        const docUri = Uri.parse(doc.uri);
-        return Uri.file(path.resolve(docUri.fsPath, '..', ref)).toString();
+        const fsPath = getFileFsPath(doc.uri);
+        return Uri.file(path.resolve(fsPath, '..', ref)).toString();
       }
     };
 

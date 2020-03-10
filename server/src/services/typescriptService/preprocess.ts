@@ -16,6 +16,8 @@ import { templateSourceMap } from './serviceHost';
 import { generateSourceMap } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
 
+const importedComponentName = '__vlsComponent';
+
 export function parseVueScript(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getVueDocumentRegions(doc);
@@ -222,7 +224,7 @@ export function injectVueTemplate(
   const componentImport = tsModule.createImportDeclaration(
     undefined,
     undefined,
-    tsModule.createImportClause(tsModule.createIdentifier('__Component'), undefined),
+    tsModule.createImportClause(tsModule.createIdentifier(importedComponentName), undefined),
     tsModule.createLiteral(componentFilePath)
   );
 
@@ -247,7 +249,7 @@ export function injectVueTemplate(
   const renderElement = tsModule.createExpressionStatement(
     tsModule.createCall(tsModule.createIdentifier(renderHelperName), undefined, [
       // Reference to the component
-      tsModule.createIdentifier('__Component'),
+      tsModule.createIdentifier(importedComponentName),
       // A function simulating the render function
       tsModule.createFunctionExpression(
         undefined,

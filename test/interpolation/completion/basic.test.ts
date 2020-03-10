@@ -10,8 +10,7 @@ describe('Should autocomplete interpolation for <template>', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(templateDocUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-    await sleep(FILE_LOAD_SLEEP_TIME);
+    await sleep(FILE_LOAD_SLEEP_TIME * 2);
   });
 
   const defaultList: CompletionItem[] = [
@@ -24,12 +23,12 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'msg',
       documentation: new MarkdownString('My msg').appendCodeblock(`msg: 'Vetur means "Winter" in icelandic.'`, 'js'),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'count',
@@ -39,7 +38,7 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'hello',
@@ -50,7 +49,7 @@ describe('Should autocomplete interpolation for <template>', () => {
         'js'
       ),
 
-      kind: CompletionItemKind.Method
+      kind: CompletionItemKind.Function
     }
   ];
 
@@ -59,10 +58,20 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(templateDocUri, position(2, 7), defaultList);
     });
 
+    it('completes an object property', async () => {
+      await testCompletion(templateDocUri, position(3, 11), [
+        {
+          label: 'msg',
+          kind: CompletionItemKind.Field
+        }
+      ]);
+    });
+
     it(`completes child component tag`, async () => {
       await testCompletion(parentTemplateDocUri, position(4, 5), [
         {
           label: 'basic',
+          kind: CompletionItemKind.Property,
           documentationStart: 'My basic tag\n```js\nexport default {'
         }
       ]);
@@ -72,6 +81,7 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
           label: 'foo',
+          kind: CompletionItemKind.Value,
           documentation: new MarkdownString('My foo').appendCodeblock(
             `foo: {
   type: Boolean,

@@ -30,12 +30,18 @@ export async function testCompletion(
     } else {
       const match = result.items.find(i => i.label === ei.label);
       if (!match) {
-        assert.fail(`Can't find matching item for ${JSON.stringify(ei, null, 2)}`);
+        assert.fail(
+          `Can't find matching item for\n${JSON.stringify(ei, null, 2)}\nSeen items:\n${JSON.stringify(
+            result.items,
+            null,
+            2
+          )}`
+        );
         return;
       }
 
-      assert.ok(match.label, ei.label);
-      assert.ok(match.kind, ei.kind as any);
+      assert.equal(match.label, ei.label);
+      assert.equal(match.kind, ei.kind as any);
 
       if (ei.documentation) {
         if (typeof match.documentation === 'string') {
