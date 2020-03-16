@@ -507,7 +507,7 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.0",
     "@types/shelljs": "^0.8.6",
-    "@types/vscode": "^1.42.0",
+    "@types/vscode": "^1.43.0",
     "glob": "^7.1.6",
     "husky": "^3.1.0",
     "js-yaml": "^3.13.1",
