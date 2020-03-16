@@ -305,9 +305,9 @@
     "@types/node" "*"
 
 "@types/js-beautify@^1.8.0":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.8.1.tgz#c210b3206bece04dc240b1deeec185f7b5b03534"
-  integrity sha512-B1Br8yE27obcYvFx5ECZswT/947aAFNb9lHqnkUOhtOfvJqaa6Axibo4T+5G6iQlUfjgSd8am9R/9j9UBfRlrw==
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.8.2.tgz#9303412f142f30c45450948b5d95b5c24117d804"
+  integrity sha512-mOJgFuIN8HPbcTXXp50yKQIZo+/lzRL6pezQ4leEA0p3JXIbc0afYJq4MoDcJWIS8ibWBBjykvHpO58d+Y3dhQ==
 
 "@types/json-schema@*", "@types/json-schema@^7.0.3":
   version "7.0.4"
