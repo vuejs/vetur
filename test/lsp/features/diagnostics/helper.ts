@@ -1,13 +1,10 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { sleep } from '../../helper';
+import { getDiagnosticsAndTimeout } from '../../helper';
 import * as _ from 'lodash';
 
 export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.Diagnostic[]) {
-  // For diagnostics to show up
-  await sleep(2000);
-
-  const result = vscode.languages.getDiagnostics(docUri);
+  const result = await getDiagnosticsAndTimeout(docUri);
 
   expectedDiagnostics.forEach((ed) => {
     assert.ok(

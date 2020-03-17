@@ -245,7 +245,6 @@ describe('Should find template-diagnostics in <template> region', () => {
     it(`Shows template diagnostics for ${t.file}`, async () => {
       const docUri = getDocUri(`diagnostics/${t.file}`);
       await showFile(docUri);
-      await sleep(FILE_LOAD_SLEEP_TIME);
       await testDiagnostics(docUri, t.diagnostics, !!t.skipSameDiagnosticCountAssert);
     });
   });

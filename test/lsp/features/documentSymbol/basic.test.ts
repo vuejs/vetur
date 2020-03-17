@@ -66,7 +66,6 @@ describe('Should do documentSymbol', () => {
 
 async function testSymbol(docUri: vscode.Uri, expectedSymbols: PartialDocumentSymbol[]) {
   await showFile(docUri);
-  await sleep(2000);
 
   const result = (await vscode.commands.executeCommand(
     'vscode.executeDocumentSymbolProvider',

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME, getDiagnosticsAndTimeout } from '../../helper';
 import { getDocUri, sameLineRange } from '../../util';
 
 describe('Should do codeAction', () => {
@@ -9,10 +9,6 @@ describe('Should do codeAction', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-
-    // More sleep for waiting diagnostics
-    await sleep(FILE_LOAD_SLEEP_TIME);
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
@@ -34,8 +30,7 @@ interface CodeAction {
 }
 
 async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedActions: CodeAction[]) {
-  // For diagnostics to show up
-  await sleep(2000);
+  await getDiagnosticsAndTimeout(docUri);
 
   const result = (await vscode.commands.executeCommand(
     'vscode.executeCodeActionProvider',
