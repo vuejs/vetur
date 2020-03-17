@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.24.1
+
+- 🙌 Fix template interpolation hover info of v-for readonly array item. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1788.
+
 ### 0.24.0 | 2020-03-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.24.0/vspackage)
 
 - **`vue-language-server` deprecated and will be published as `vls`**.
