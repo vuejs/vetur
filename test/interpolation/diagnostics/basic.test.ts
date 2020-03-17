@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { activateLS, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
-import { getDocUri, sleep, sameLineRange } from '../util';
+import { activateLS, showFile } from '../helper';
+import { getDocUri, sameLineRange } from '../util';
 import { testDiagnostics, testNoDiagnostics } from './helper';
 
 describe('Should find template-diagnostics in <template> region', () => {
@@ -255,7 +255,6 @@ describe('Should find template-diagnostics in <template> region', () => {
     it(`Shows no template diagnostics error for ${t}`, async () => {
       const docUri = getDocUri(`diagnostics/${t}`);
       await showFile(docUri);
-      await sleep(FILE_LOAD_SLEEP_TIME);
       await testNoDiagnostics(docUri);
     });
   });

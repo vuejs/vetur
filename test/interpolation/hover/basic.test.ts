@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
+import { activateLS, showFile } from '../../lsp/helper';
 import { position, sameLineRange, getDocUri } from '../util';
 
 describe('Should do hover interpolation for <template>', () => {
@@ -9,7 +9,6 @@ describe('Should do hover interpolation for <template>', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('shows hover for msg in mustache', async () => {

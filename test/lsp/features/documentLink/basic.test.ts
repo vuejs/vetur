@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { sameLineRange, getDocUri } from '../../util';
 
 describe('Should do documentLink', () => {
@@ -9,7 +9,6 @@ describe('Should do documentLink', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME * 3);
   });
 
   it('shows all documentLinks for Basic.vue', async () => {

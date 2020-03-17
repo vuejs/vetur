@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { position, sameLineRange, getDocUri } from '../../util';
 
 describe('Should do documentHighlight', () => {
@@ -9,7 +9,6 @@ describe('Should do documentHighlight', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('shows highlights for <div> tags', async () => {

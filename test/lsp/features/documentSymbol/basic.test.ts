@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { range, getDocUri } from '../../util';
 
 describe('Should do documentSymbol', () => {
@@ -9,7 +9,6 @@ describe('Should do documentSymbol', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('shows all documentSymbols for Basic.vue', async () => {

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME, getDiagnosticsAndTimeout } from '../../helper';
+import { activateLS, showFile, getDiagnosticsAndTimeout } from '../../helper';
 import { getDocUri, sameLineRange } from '../../util';
 
 describe('Should do codeAction', () => {
@@ -9,7 +9,6 @@ describe('Should do codeAction', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('finds codeAction for unused import', async () => {

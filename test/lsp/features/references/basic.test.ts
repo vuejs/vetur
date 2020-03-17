@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { position, location, sameLineLocation, getDocUri } from '../../util';
 
 describe('Should find references', () => {
@@ -9,9 +9,6 @@ describe('Should find references', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-    // Wait a bit more for references to load
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('finds references for this.msg', async () => {

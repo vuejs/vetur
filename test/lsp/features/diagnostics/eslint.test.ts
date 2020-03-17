@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { sameLineRange, getDocUri } from '../../util';
 import { testDiagnostics } from './helper';
 
@@ -9,7 +9,6 @@ describe('Should find diagnostics using eslint-plugin-vue', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   it('shows diagnostic errors for template errors', async () => {

@@ -1,4 +1,4 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 
@@ -8,9 +8,6 @@ describe('Should autocomplete scaffold snippets', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(scriptDocUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-    // TS LS completion starts slow.
-    await sleep(2000);
   });
 
   it('completes all scaffold snippets', async () => {
