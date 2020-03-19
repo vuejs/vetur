@@ -53,5 +53,5 @@ export default {
       console.log(this.msg)
     }
   }
-}
+};
 </script>
