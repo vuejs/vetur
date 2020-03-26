@@ -25,7 +25,8 @@ import {
   MarkupContent,
   CodeAction,
   CodeActionKind,
-  WorkspaceEdit
+  WorkspaceEdit,
+  InsertTextFormat
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -157,17 +158,29 @@ export async function getJavascriptMode(
       const entries = completions.entries.filter(entry => entry.name !== '__vueEditorBridge');
       return {
         isIncomplete: false,
-        items: entries.map((entry, index) => {
+        items: entries.map(entry => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
+          const filterText = entry.insertText && range && entry.insertText[0] === '[' ? '.' + entry.name : undefined;
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
+          const kind = toCompletionItemKind(entry.kind);
+          const insertTextFormat =
+            kind === CompletionItemKind.Function || kind === CompletionItemKind.Method
+              ? InsertTextFormat.Snippet
+              : undefined;
+          const insertText = entry.insertText || entry.name;
+
           return {
             uri: doc.uri,
             position,
+            preselect: entry.isRecommended ? true : undefined,
             label,
             detail,
-            sortText: entry.sortText + index,
+            filterText,
+            insertTextFormat,
+            sortText: entry.sortText,
             kind: toCompletionItemKind(entry.kind),
-            textEdit: range && TextEdit.replace(range, entry.name),
+            textEdit: range && TextEdit.replace(range, insertText),
+            insertText: range ? undefined : insertText,
             data: {
               // data used for resolving item details (see 'doResolve')
               languageId: scriptDoc.languageId,
