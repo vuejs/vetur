@@ -35,7 +35,7 @@ Getting `element-ui`'s completions is as easy as running `yarn add element-ui` a
 
 ## Custom Tags / Attributes
 
-If a package listed in `dependencies` has a `vetur` key, then Vetur will try to read the tags / attriutes specified by that key.
+If a package listed in `dependencies` has a `vetur` key, then Vetur will try to read the tags / attributes specified by that key.
 
 ```json
 {
