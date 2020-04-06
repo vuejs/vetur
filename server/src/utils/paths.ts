@@ -65,7 +65,6 @@ export function normalizeFileNameToFsPath(fileName: string) {
 }
 
 export function resolveUriAndPaths(documentUri: string, ...pathSegments: string[]) {
-  const { scheme } = Uri.parse(documentUri);
-  const resolvedPath = path.resolve(getFileFsPath(documentUri), ...pathSegments);
-  return Uri.from({ scheme, path: resolvedPath }).toString();
+  const resolvedPath = path.resolve(getFilePath(documentUri), ...pathSegments);
+  return Uri.file(resolvedPath).toString();
 }
