@@ -256,24 +256,30 @@ export function mapBackRange(fromDocumnet: TextDocument, to: ts.TextSpan, source
 }
 
 function updateOffsetMapping(node: TemplateSourceMapNode, isThisInjected: boolean, fillIntermediate: boolean) {
+  const nodeFromStart = node.from.start;
+  const nodeToStart = node.to.start;
   const from = [...Array(node.from.end - node.from.start + 1).keys()];
   const to: (number | undefined)[] = [...Array(node.to.end - node.to.start + 1).keys()];
-
+  
   if (isThisInjected) {
-    for (let i = 0; i < 'this.'.length; i++) {
-      to[node.to.start + i] = undefined;
-    }
+    
+    to[nodeToStart] = undefined;
+    to[nodeToStart + 1] = undefined;
+    to[nodeToStart + 2] = undefined;
+    to[nodeToStart + 3] = undefined;
+    to[nodeToStart + 4] = undefined;
 
     /**
      * The case such as `foo` mapped to `this.foo`
      * Both `|this.foo` and `this.|foo` should map to `|foo`
      * Without this back mapping, mapping error from `this.bar` in `f(this.bar)` would fail
      */
-    node.offsetBackMapping[node.to.start] = node.from.start + 'this.'.length;
+    node.offsetBackMapping[nodeToStart] = nodeFromStart + 5;
   }
-
-  const toFiltered = to.filter(x => x !== undefined) as number[];
-
+  const toFiltered = to as number[];
+  if (isThisInjected) {
+    toFiltered.splice(nodeToStart, 5);
+  }
   const mapping = fillIntermediate
     ? from.map((from, i) => [from, toFiltered[i]])
     : [
@@ -282,8 +288,8 @@ function updateOffsetMapping(node: TemplateSourceMapNode, isThisInjected: boolea
       ];
 
   mapping.forEach(([fromOffset, toOffset]) => {
-    const from = fromOffset + node.from.start;
-    const to = toOffset + node.to.start;
+    const from = fromOffset + nodeFromStart;
+    const to = toOffset + nodeToStart;
     node.offsetMapping[from] = to;
     node.offsetBackMapping[to] = from;
   });
