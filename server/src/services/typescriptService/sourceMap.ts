@@ -274,7 +274,7 @@ function updateOffsetMapping(node: TemplateSourceMapNode, isThisInjected: boolea
   }
   const toFiltered = to as number[];
   if (isThisInjected) {
-    toFiltered.splice(nodeToStart, 5);
+    toFiltered.splice(nodeToStart, 'this.'.length);
   }
   const mapping = fillIntermediate
     ? from.map((from, i) => [from, toFiltered[i]])
