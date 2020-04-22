@@ -38,6 +38,7 @@
     "ie > 8"
   ],
   "dependencies": {
+    "buefy": "^0.8.16",
     "element-ui": "^2.4.5",
     "lodash": "^4.17.4",
     "quasar": "^1.0.0-beta.0",

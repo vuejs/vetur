@@ -23,7 +23,6 @@
   "dependencies": {
     "@starptech/prettyhtml": "^0.10.0",
     "bootstrap-vue-helper-json": "^1.1.1",
-    "buefy-helper-json": "^1.0.2",
     "element-helper-json": "^2.0.6",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.1",
