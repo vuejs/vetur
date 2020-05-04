@@ -5352,13 +5352,13 @@ vfile@^4.0.0, vfile@^4.0.1:
     vfile-message "^2.0.0"
 
 vscode-css-languageservice@^4.1.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/vscode-css-languageservice/-/vscode-css-languageservice-4.1.1.tgz#9131dd465e4b20f3ba78ab9734b2c7cdb9237443"
-  integrity sha512-2r2bYbhscivRu1zqh5kNe8aYpFnfksMYC7wTpKX2HqFsSzSJYXk0sCqPaWsP5ptqz0OFBTXnzx2JlE+Nb5Edgw==
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/vscode-css-languageservice/-/vscode-css-languageservice-4.1.2.tgz#533bfeb79b38e8add07230dc67001cceb80253e8"
+  integrity sha512-clIjSS940NPBvtfubZokKT/YDNfE5ST9VDwsuwdCbQSkJAVZPAbmIgfmgrz/f/o8PawYQU/ooUBEuRIvIYq3ag==
   dependencies:
     vscode-languageserver-textdocument "^1.0.1"
     vscode-languageserver-types "^3.15.1"
-    vscode-nls "^4.1.1"
+    vscode-nls "^4.1.2"
     vscode-uri "^2.1.1"
 
 vscode-emmet-helper@^1.1.19:
@@ -5400,10 +5400,10 @@ vscode-languageserver@^6.1.1:
   dependencies:
     vscode-languageserver-protocol "^3.15.3"
 
-vscode-nls@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/vscode-nls/-/vscode-nls-4.1.1.tgz#f9916b64e4947b20322defb1e676a495861f133c"
-  integrity sha512-4R+2UoUUU/LdnMnFjePxfLqNhBS8lrAFyX7pjb2ud/lqDkrUavFUTcG7wR0HBZFakae0Q6KLBFjMS6W93F403A==
+vscode-nls@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/vscode-nls/-/vscode-nls-4.1.2.tgz#ca8bf8bb82a0987b32801f9fddfdd2fb9fd3c167"
+  integrity sha512-7bOHxPsfyuCqmP+hZXscLhiHwe7CSuFE4hyhbs22xPIhQ4jv99FcR4eBzfYYVLP356HNFpdvz63FFb/xw6T4Iw==
 
 vscode-uri@^1.0.1:
   version "1.0.6"
