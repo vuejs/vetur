@@ -3990,12 +3990,12 @@ safe-regex@^1.1.0:
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
 sass-formatter@^0.4.2:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.4.4.tgz#e8533c05c0dce3aecc0bb796a658f5178f514a49"
-  integrity sha512-pI/2olF5F3AMkAXbn71nJK7yAsWfRYLlyp7Suhiy4hzuNga05XaUzLO74lplCpvS8GVeUdFgef+8lU5+cHr60g==
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.4.5.tgz#419037762ddbe0258c97c7be5a801ad92e320919"
+  integrity sha512-hBDkbtTE020JwUaGKo5q+ELNXXji1kyajVMt3YLRYD1PAwUQYR5aAdfAUAcb88AmYgJpQRQrsqZj+YGmUCdgCw==
   dependencies:
     "@sorg/log" "^2.0.1"
-    suf-regex "0.0.14"
+    suf-regex "0.0.17"
     tslib "^1.10.0"
 
 sax@~1.2.4:
@@ -4438,10 +4438,10 @@ suf-node@^1.0.0, suf-node@^1.1.0:
   resolved "https://registry.yarnpkg.com/suf-node/-/suf-node-1.1.1.tgz#040327281c0b2d1b70ed49526c2e120c27fe6be4"
   integrity sha512-XiyPqLdiHJ3CMphADCJg/JVQYcj3JfO8NomlLubSdGYgppfzE+g/7Fyusza/Kr7lC919BdwbfIqFxK8VO7+l4w==
 
-suf-regex@0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.14.tgz#a2f2b80448eae8b6c7c8d4597c77cba1f2a119d8"
-  integrity sha512-+WE5PZTfD6lVNCNsyBInJIAbok8LpqgOhvCbSViZeQ/JTxdxq7Lw+tSJXGM+jrIp81jj9GCMYvkl00JAkn2CtA==
+suf-regex@0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.17.tgz#feb3ee3dd47e7fe8abfc063ead2193c9aef9be6d"
+  integrity sha512-/TIMx0G1iXCGHm5XbqHTV86tkdETO7OUOB8UAWHc04M2mMQnWAIZeO6M9GuSibRVM8ewRcHAV3fOFY2z1XtWaQ==
 
 supports-color@6.0.0:
   version "6.0.0"
