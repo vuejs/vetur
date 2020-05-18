@@ -99,10 +99,10 @@
     "@types/glob" "*"
     "@types/node" "*"
 
-"@types/vscode@^1.45.0":
-  version "1.45.0"
-  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.45.0.tgz#8a07e740aa1ca7264da8cb17be87b733836d6c01"
-  integrity sha512-b0Gyir7sPBCqiKLygAhn/AYVfzWD+SMPkWltBrIuPEyTOxSU1wVApWY/FcxYO2EWTRacoubTl4+gvZf86RkecA==
+"@types/vscode@^1.45.1":
+  version "1.45.1"
+  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.45.1.tgz#672fb8c2cc33cf14cd4d3bdaa19bb294fe2b2706"
+  integrity sha512-0NO9qrrEJBO8FsqHCrFMgR2suKnwCsKBWvRSb2OzH5gs4i3QO5AhEMQYrSzDbU/wLPt7N617/rN9lPY213gmwg==
 
 agent-base@4, agent-base@^4.3.0:
   version "4.3.0"
