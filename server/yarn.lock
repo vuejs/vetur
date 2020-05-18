@@ -350,10 +350,10 @@
   dependencies:
     read-pkg-up "*"
 
-"@types/resolve@1.17.0":
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.17.0.tgz#eb25b38e2682f641d33841df162e052d7364eaa8"
-  integrity sha512-CKOBcXAHvoGEjYsg6Bkc/kLPqTmtnUEGrWnJJC6LNnk+D36uc1GAHcNnwK2g58x/JWjGlqGfIao9rsJk7LePWw==
+"@types/resolve@1.17.1":
+  version "1.17.1"
+  resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.17.1.tgz#3afd6ad8967c77e4376c598a82ddd58f46ec45d6"
+  integrity sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==
   dependencies:
     "@types/node" "*"
 
