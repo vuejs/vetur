@@ -9,7 +9,9 @@ export function getNuxtTagProvider(workspacePath: string) {
     if (tryResolve(join(source, 'package.json'), workspacePath)) {
       nuxtTags = tryRequire(join(source, 'vetur/nuxt-tags.json'), workspacePath);
       nuxtAttributes = tryRequire(join(source, 'vetur/nuxt-attributes.json'), workspacePath);
-      break;
+      if (nuxtTags) {
+        break;
+      }
     }
   }
 
@@ -18,14 +20,8 @@ export function getNuxtTagProvider(workspacePath: string) {
 
   return getExternalTagProvider(
     'nuxt',
-    {
-      ...nuxtTags,
-      ...componentsTags
-    },
-    {
-      ...nuxtAttributes,
-      ...componentsAttributes
-    }
+    { ...nuxtTags, ...componentsTags },
+    { ...nuxtAttributes, ...componentsAttributes }
   );
 }
 
@@ -33,9 +29,7 @@ function tryRequire(modulePath: string, workspacePath: string) {
   try {
     const resolved = tryResolve(modulePath, workspacePath);
     return resolved ? require(resolved) : undefined;
-  } catch (_err) {
-    return {};
-  }
+  } catch (_err) {}
 }
 
 function tryResolve(modulePath: string, workspacePath: string) {
