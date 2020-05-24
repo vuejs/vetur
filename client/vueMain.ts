@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { LanguageClient, WorkspaceEdit } from 'vscode-languageclient';
+import { LanguageClient, WorkspaceEdit, WorkspaceFolder } from 'vscode-languageclient';
 import { generateGrammarCommandHandler } from './commands/generateGrammarCommand';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
@@ -11,6 +11,11 @@ import {
 } from './commands/virtualFileCommand';
 import { getGlobalSnippetDir } from './userSnippetDir';
 import { generateOpenUserScaffoldSnippetFolderCommand } from './commands/openUserScaffoldSnippetFolderCommand';
+
+/**
+ * Map of workspace folder URI -> LanguageClient
+ */
+const clients = new Map<string, LanguageClient>();
 
 export async function activate(context: vscode.ExtensionContext) {
   const isInsiders = vscode.env.appName.includes('Insiders');
@@ -27,6 +32,15 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('vetur.generateGrammar', generateGrammarCommandHandler(context.extensionPath))
   );
+
+  registerLanguageConfigurations();
+
+  /**
+   * Vue Language Server path
+   * To be able to work with multiple workspaces, we initialize one language service per workspace folder
+   */
+
+  const serverModule = context.asAbsolutePath(join('server', 'dist', 'vueServerMain.js'));
 
   /**
    * Open custom snippet folder
