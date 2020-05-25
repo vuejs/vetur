@@ -4379,9 +4379,9 @@ stylint@^2.0.0:
     yargs "4.7.1"
 
 stylus-supremacy@^2.12.6:
-  version "2.14.2"
-  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.14.2.tgz#0de821d8d37350d7942fe01859da6b9c58985296"
-  integrity sha512-ZqNjs+qSGqLQZu1o7LXqpf+d22qQT3j9y1PQX7DJmlOOTaQNjq5N7CGe0RTxhD04o5/WTK/+EVEzdTStqpu4nw==
+  version "2.14.5"
+  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.14.5.tgz#47b723d160768d3679aeaa195e94cc85f34f51fa"
+  integrity sha512-JZjCn4GxPhghgAZ7cdYOKjbo9LIU42BcksNCeLgWQa2FtjyEz44mKKnaXVgUYw+AQIm+x/MblV+VJ04Yk5DSqw==
   dependencies:
     glob "^7.1.6"
     js-yaml "^3.13.1"
