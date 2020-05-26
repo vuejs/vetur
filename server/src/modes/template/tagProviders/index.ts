@@ -71,7 +71,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     if (dependencies['bootstrap-vue']) {
       settings['bootstrap'] = true;
     }
-    if (dependencies['buefy'] || devDependencies['vuetify']) {
+    if (dependencies['buefy'] || devDependencies['buefy']) {
       settings['buefy'] = true;
     }
     if (dependencies['nuxt-buefy'] || devDependencies['nuxt-buefy']) {
