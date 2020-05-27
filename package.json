@@ -505,7 +505,7 @@
     "@types/lodash": "^4.14.152",
     "@types/minimist": "^1.2.0",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.13.5",
+    "@types/node": "^14.0.5",
     "@types/shelljs": "^0.8.6",
     "@types/vscode": "^1.45.1",
     "glob": "^7.1.6",
