@@ -6,7 +6,6 @@ import {
   elementTagProvider,
   onsenTagProvider,
   bootstrapTagProvider,
-  buefyTagProvider,
   gridsomeTagProvider,
   getRuntimeTagProvider
 } from './externalTagProviders';
@@ -25,7 +24,6 @@ export let allTagProviders: IHTMLTagProvider[] = [
   elementTagProvider,
   onsenTagProvider,
   bootstrapTagProvider,
-  buefyTagProvider,
   gridsomeTagProvider
 ];
 
@@ -73,8 +71,11 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     if (dependencies['bootstrap-vue']) {
       settings['bootstrap'] = true;
     }
-    if (dependencies['buefy']) {
+    if (dependencies['buefy'] || devDependencies['buefy']) {
       settings['buefy'] = true;
+    }
+    if (dependencies['nuxt-buefy'] || devDependencies['nuxt-buefy']) {
+      dependencies['buefy'] = true;
     }
     if (dependencies['vuetify'] || devDependencies['vuetify']) {
       settings['vuetify'] = true;
