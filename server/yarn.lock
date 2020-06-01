@@ -305,9 +305,9 @@
     "@types/node" "*"
 
 "@types/js-beautify@^1.8.0":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.8.2.tgz#9303412f142f30c45450948b5d95b5c24117d804"
-  integrity sha512-mOJgFuIN8HPbcTXXp50yKQIZo+/lzRL6pezQ4leEA0p3JXIbc0afYJq4MoDcJWIS8ibWBBjykvHpO58d+Y3dhQ==
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.11.0.tgz#f1311fe280a5f83b1e6517cab1116aad63465cd0"
+  integrity sha512-RqTqKEenGBSa/vS3qHQuhudWE1d1NbollRDoArx85k1vUg4rugc+odFQW13c6O5re7hjf6zaRnWz9St/j8h15w==
 
 "@types/json-schema@*", "@types/json-schema@^7.0.3":
   version "7.0.4"
@@ -700,10 +700,6 @@ braces@^3.0.2, braces@~3.0.2:
 browser-stdout@1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/browser-stdout/-/browser-stdout-1.3.1.tgz#baa559ee14ced73452229bad7326467c61fabd60"
-
-buefy-helper-json@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/buefy-helper-json/-/buefy-helper-json-1.0.3.tgz#cec977ffed1390e287275cd3b52c8c35fb41f84f"
 
 buffer-from@^1.0.0:
   version "1.1.1"
