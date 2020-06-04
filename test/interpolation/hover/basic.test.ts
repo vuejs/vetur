@@ -25,6 +25,13 @@ describe('Should do hover interpolation for <template>', () => {
       range: sameLineRange(5, 18, 22)
     });
   });
+
+  it('shows hover for v-for variable on readonly array', async () => {
+    await testHover(docUri, position(10, 20), {
+      contents: ['\n```ts\n(parameter) item: string\n```\n'],
+      range: sameLineRange(10, 18, 22)
+    });
+  });
 });
 
 async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedHover: vscode.Hover) {

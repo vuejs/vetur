@@ -23,7 +23,6 @@
   "dependencies": {
     "@starptech/prettyhtml": "^0.10.0",
     "bootstrap-vue-helper-json": "^1.1.1",
-    "buefy-helper-json": "^1.0.2",
     "element-helper-json": "^2.0.6",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.1",
@@ -62,7 +61,7 @@
     "@types/node": "^13.1.8",
     "@types/prettier": "^1.16.1",
     "@types/read-pkg-up": "^6.0.0",
-    "@types/resolve": "1.14.0",
+    "@types/resolve": "1.17.1",
     "codecov": "^3.0.4",
     "glob": "^7.1.2",
     "mocha": "^7.1.0",

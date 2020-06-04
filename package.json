@@ -55,7 +55,7 @@
     "vscode": "^1.42.0"
   },
   "dependencies": {
-    "vscode-languageclient": "^6.1.1",
+    "vscode-languageclient": "^6.1.3",
     "vscode-languageserver-types": "^3.15.0-next.9"
   },
   "activationEvents": [
@@ -501,24 +501,24 @@
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
-    "@types/js-yaml": "^3.12.2",
-    "@types/lodash": "^4.14.149",
+    "@types/js-yaml": "^3.12.4",
+    "@types/lodash": "^4.14.152",
     "@types/minimist": "^1.2.0",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.9.0",
+    "@types/node": "^13.13.5",
     "@types/shelljs": "^0.8.6",
-    "@types/vscode": "^1.42.0",
+    "@types/vscode": "^1.45.1",
     "glob": "^7.1.6",
     "husky": "^3.1.0",
-    "js-yaml": "^3.13.1",
-    "lint-staged": "^10.0.8",
-    "minimist": "^1.2.0",
-    "mocha": "^7.1.0",
+    "js-yaml": "^3.14.0",
+    "lint-staged": "^10.1.3",
+    "minimist": "^1.2.5",
+    "mocha": "^7.2.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "shelljs": "^0.8.3",
-    "tslint": "^6.0.0",
-    "typescript": "^3.8.3",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.3",
     "vscode-test": "^1.3.0"
   }
 }
