@@ -481,7 +481,7 @@ export async function getJavascriptMode(
         return [];
       }
 
-      const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
+      const parser = scriptDoc.languageId === 'javascript' ? 'babel' : 'typescript';
       const needInitialIndent = config.vetur.format.scriptInitialIndent;
       const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
 
