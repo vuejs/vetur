@@ -1876,10 +1876,10 @@ vscode-languageserver-types@^3.15.0-next.9:
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.0-next.9.tgz#957a9d1d5998a02edf62298fb7e37d9efcc6c157"
   integrity sha512-Rl/8qJ6932nrHCdPn+9y0x08uLVQaSLRG+U4JzhyKpWU4eJbVaDRoAcz1Llj7CErJGbPr6kdBvShPy5fRfR+Uw==
 
-vscode-test@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/vscode-test/-/vscode-test-1.3.0.tgz#3310ab385d9b887b4c82e8f52be1030e7cf9493d"
-  integrity sha512-LddukcBiSU2FVTDr3c1D8lwkiOvwlJdDL2hqVbn6gIz+rpTqUCkMZSKYm94Y1v0WXlHSDQBsXyY+tchWQgGVsw==
+vscode-test@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/vscode-test/-/vscode-test-1.4.0.tgz#a56f73c1667b4d37ba6baa6765f233a19d4ffbfe"
+  integrity sha512-Jt7HNGvSE0+++Tvtq5wc4hiXLIr2OjDShz/gbAfM/mahQpy4rKBnmOK33D+MR67ATWviQhl+vpmU3p/qwSH/Pg==
   dependencies:
     http-proxy-agent "^2.1.0"
     https-proxy-agent "^2.2.4"
