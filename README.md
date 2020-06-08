@@ -50,6 +50,11 @@ Vue tooling for VS Code.
 
 [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
 
+## Limitations
+
+- No multi root suppport yet ([#424](https://github.com/vuejs/vetur/issues/424))
+- Cannot handle tsconfig from non-top-level folder ([#815](https://github.com/vuejs/vetur/issues/815))
+
 ## Roadmap
 
 See [#873](https://github.com/vuejs/vetur/issues/873).
