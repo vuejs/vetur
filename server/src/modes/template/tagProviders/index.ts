@@ -97,13 +97,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       // and enable Quasar later below in the for()
       dependencies['quasar-framework'] = '^0.0.17';
     }
-    if (
-      dependencies['nuxt'] ||
-      dependencies['nuxt-legacy'] ||
-      dependencies['nuxt-edge'] ||
-      dependencies['nuxt-ts'] ||
-      dependencies['nuxt-ts-edge']
-    ) {
+    if (dependencies['nuxt'] || dependencies['nuxt-edge'] || devDependencies['nuxt'] || devDependencies['nuxt-edge']) {
       const nuxtTagProvider = getNuxtTagProvider(workspacePath);
       if (nuxtTagProvider) {
         settings['nuxt'] = true;
