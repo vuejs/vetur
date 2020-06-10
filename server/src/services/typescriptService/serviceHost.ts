@@ -77,7 +77,6 @@ export function getServiceHost(
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ): IServiceHost {
   patchTS(tsModule);
-  const vueSys = getVueSys(tsModule);
 
   let currentScriptDoc: TextDocument;
 
@@ -96,6 +95,8 @@ export function getServiceHost(
     `Initializing ServiceHost with ${initialProjectFiles.length} files: ${JSON.stringify(initialProjectFiles)}`
   );
   const scriptFileNameSet = new Set(initialProjectFiles);
+
+  const vueSys = getVueSys(tsModule, scriptFileNameSet);
 
   const vueVersion = inferVueVersion(tsModule, workspacePath);
   const compilerOptions = {
@@ -482,6 +483,6 @@ function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,
-    [{ extension: 'vue', isMixedContent: true }]
+    [{ extension: 'vue', isMixedContent: true, scriptKind: ts.ScriptKind.Deferred }]
   );
 }
