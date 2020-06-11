@@ -1,6 +1,11 @@
 # Vetur Terminal Interface
 
-🚧 Work in progress 🚧
+🚧 WIP. This feature is not stable yet. 🚧
+
+VTI is a CLI that exposes some of Vetur's language features:
+
+- [x] Diagnostic errors
+- [ ] Formatting
 
 ## Usage
 
@@ -9,8 +14,3 @@ npm i -g vti
 # In your Vue project root
 vti diagnostics
 ```
-
-## Todo
-
-- [ ] Exit with 1 when errors are present
-- [ ] Formatting

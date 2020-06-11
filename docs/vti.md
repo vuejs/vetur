@@ -1,8 +1,11 @@
 # VTI
 
-🚧This feature is not stable yet.🚧
+🚧 WIP. This feature is not stable yet. 🚧
 
-VTI (Vetur Terminal Interface) is a CLI that exposes some of Vetur's features.
+VTI (Vetur Terminal Interface) is a CLI that exposes some of Vetur's language features:
+
+- [x] Diagnostic errors
+- [ ] Formatting
 
 ## Usage
 
