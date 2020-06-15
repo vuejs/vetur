@@ -50,7 +50,7 @@ By bundling the tags / attributes definitions together with the framework librar
 
 ## Adding a Framework
 
-If your Vue UI framework has a lot of users, we might consider adding support for it in Vetur.
+If your Vue UI framework has a lot of users, we might consider bundling its support in Vetur. However, this means Vetur's definition for the framework might become outdated.
 
 Here are the two PRs for [Element](https://github.com/vuejs/vetur/pull/234) and [Onsen](https://github.com/vuejs/vetur/pull/308). Open an issue for discussion first before sending PR.
 
