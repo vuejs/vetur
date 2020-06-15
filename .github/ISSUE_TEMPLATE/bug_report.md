@@ -1,38 +1,36 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: "\U0001F41B Bug Report"
+about: Something doesn't work
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+<!-- Check those before opening an issue -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+- [ ] I have searched through existing issues
+- [ ] I have read through [docs](https://vuejs.github.io/vetur)
+- [ ] I have read [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Info
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+- Platform: <!-- Win/macOS/Linux -->
+- Vetur version:
+- VS Code version:
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+## Problem
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+<!-- Include error message from Panel -> Output -> Vue Language Server -->
+<!-- With screenshot / gif if possible -->
 
-**Additional context**
-Add any other context about the problem here.
+## Reproducible Case
+
+<!--
+  Please provide clear steps for reproducing the problem. Otherwise we might close your issue.
+
+  - Clone https://github.com/octref/veturpack and install its dependencies
+  - Make a minimal code change to demonstrate your problem
+  - Push your commit to a fork
+  - Include link to the fork in the issue
+-->
