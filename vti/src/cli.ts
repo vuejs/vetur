@@ -64,6 +64,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
   const init: InitializeParams = {
     rootPath: workspaceUri.fsPath,
     rootUri: workspaceUri.toString(),
+    processId: process.pid,
     ...params
   } as InitializeParams;
 
