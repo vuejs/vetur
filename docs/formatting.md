@@ -10,7 +10,7 @@ Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/
 
 These formatters are available:
 
-- [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
+- [`prettier`](https://github.com/prettier/prettier): For pug/css/scss/less/js/ts.
 - [`prettier-eslint`](https://github.com/prettier/prettier-eslint): For js. Run `prettier` and `eslint --fix`.
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
@@ -27,6 +27,7 @@ Current default:
 ```json
 {
   "vetur.format.defaultFormatter.html": "prettyhtml",
+  "vetur.format.defaultFormatter.pug": "prettier",
   "vetur.format.defaultFormatter.css": "prettier",
   "vetur.format.defaultFormatter.postcss": "prettier",
   "vetur.format.defaultFormatter.scss": "prettier",
