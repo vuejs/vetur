@@ -285,6 +285,19 @@
           ],
           "description": "Default formatter for <template> region"
         },
+        "vetur.format.defaultFormatter.pug": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "prettier"
+          ],
+          "description": "Default formatter for <template lang='pug'> region"
+        },
         "vetur.format.defaultFormatter.css": {
           "type": "string",
           "default": "prettier",
