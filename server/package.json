@@ -51,7 +51,7 @@
     "vue-onsenui-helper-json": "^1.0.2"
   },
   "devDependencies": {
-    "@types/eslint": "^6.1.3",
+    "@types/eslint": "^7.2.0",
     "@types/eslint-scope": "^3.7.0",
     "@types/eslint-visitor-keys": "^1.0.0",
     "@types/glob": "^7.1.0",
