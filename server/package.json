@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/vuejs/vetur/tree/master/server",
   "dependencies": {
+    "@prettier/plugin-pug": "^1.4.4",
     "@starptech/prettyhtml": "^0.10.0",
     "bootstrap-vue-helper-json": "^1.1.1",
     "element-helper-json": "^2.0.6",
@@ -31,7 +32,7 @@
     "lodash": "^4.17.4",
     "nuxt-helper-json": "^1.0.0",
     "parse-gitignore": "^1.0.1",
-    "prettier": "^1.18.2",
+    "prettier": "^2.0.5",
     "prettier-eslint": "^9.0.1",
     "prettier-tslint": "^0.4.2",
     "read-pkg-up": "^7.0.1",
@@ -51,7 +52,6 @@
     "vue-onsenui-helper-json": "^1.0.2"
   },
   "devDependencies": {
-    "@prettier/plugin-pug": "^1.4.4",
     "@types/eslint": "^7.2.0",
     "@types/eslint-scope": "^3.7.0",
     "@types/eslint-visitor-keys": "^1.0.0",
