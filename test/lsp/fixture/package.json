@@ -48,10 +48,11 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@prettier/plugin-pug": "^1.4.4",
     "@types/lodash": "^4.14.77",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.1",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.5",
     "prettier-eslint-cli": "^5.0.0",
     "typescript": "^3.8.3",
     "vue-template-compiler": "^2.6.11"

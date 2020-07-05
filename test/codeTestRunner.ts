@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as $ from 'shelljs';
 import * as minimist from 'minimist';
