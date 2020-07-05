@@ -2,6 +2,7 @@
 
 ### 0.25.0
 
+- `vls` now only supports Node `>=10`, as Prettier 2.0 drops support for Node 8.
 - Upgrade to prettier 2.0. #1925 and #1794.
 - Add [prettier/plugin-pug](https://github.com/prettier/plugin-pug) as default formatter for `pug`. #527.
 - 🙌 Detect tags from @nuxt/components. Thanks to contribution from [pooya parsa](https://github.com/pi0). #1921.
