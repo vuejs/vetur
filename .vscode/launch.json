@@ -43,6 +43,7 @@
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
         "--user-data-dir=${workspaceFolder}/test/lsp/data-dir",
+        "--disable-extensions",
         "${workspaceFolder}/test/lsp/fixture"
       ],
       "stopOnEntry": false,
@@ -60,6 +61,7 @@
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/interpolation",
         "--user-data-dir=${workspaceFolder}/test/interpolation/data-dir",
+        "--disable-extensions",
         "${workspaceFolder}/test/interpolation/fixture"
       ],
       "stopOnEntry": false,
@@ -88,6 +90,7 @@
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/grammar",
         "--user-data-dir=${workspaceFolder}/test/grammar/data-dir",
+        "--disable-extensions",
         "${workspaceFolder}/test/grammar/fixture"
       ],
       "stopOnEntry": false,
