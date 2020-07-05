@@ -518,7 +518,7 @@
     "@types/lodash": "^4.14.157",
     "@types/minimist": "^1.2.0",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^14.0.13",
+    "@types/node": "^14.0.14",
     "@types/shelljs": "^0.8.6",
     "@types/vscode": "^1.46.0",
     "glob": "^7.1.6",
