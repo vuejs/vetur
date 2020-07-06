@@ -58,6 +58,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
     const dependencies = packageJson.dependencies || {};
     const devDependencies = packageJson.devDependencies || {};
+    const vetur = packageJson.vetur || undefined;
 
     if (dependencies['vue-router']) {
       settings['router'] = true;
@@ -108,6 +109,11 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       settings['gridsome'] = true;
     }
 
+    const tagProvider = getRuntimeTagProvider(workspacePath, '', packageJson);
+    if (tagProvider) {
+      allTagProviders.push(tagProvider);
+    }
+
     for (const dep in dependencies) {
       const runtimePkgPath = ts.findConfigFile(
         workspacePath,
@@ -124,7 +130,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
         continue;
       }
 
-      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg);
+      const tagProvider = getRuntimeTagProvider(workspacePath, join('node_modules/', runtimePkg.name), runtimePkg);
       if (!tagProvider) {
         continue;
       }
