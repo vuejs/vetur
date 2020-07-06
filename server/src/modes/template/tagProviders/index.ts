@@ -58,7 +58,6 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
     const dependencies = packageJson.dependencies || {};
     const devDependencies = packageJson.devDependencies || {};
-    const vetur = packageJson.vetur || undefined;
 
     if (dependencies['vue-router']) {
       settings['router'] = true;
