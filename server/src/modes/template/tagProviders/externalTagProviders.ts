@@ -37,7 +37,6 @@ export function getRuntimeTagProvider(workspacePath: string, pkgRelative: string
     }
     return null;
   } catch (err) {
-    console.error('erorr found', err);
     return null;
   }
 }
