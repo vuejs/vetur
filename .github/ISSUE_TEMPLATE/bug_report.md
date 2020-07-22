@@ -29,8 +29,8 @@ assignees: ''
 <!--
   Please provide clear steps for reproducing the problem. Otherwise we might close your issue.
 
-  - Clone https://github.com/octref/veturpack and install its dependencies
+  - Generate a project from https://github.com/octref/veturpack/generate
   - Make a minimal code change to demonstrate your problem
-  - Push your commit to a fork
-  - Include link to the fork in the issue
+  - Push your commit
+  - Include link to your changes in the issue
 -->
