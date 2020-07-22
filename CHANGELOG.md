@@ -1,7 +1,8 @@
 # Changelog
 
-### 0.25.0
+### 0.25.0 | 2020-07-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.25.0/vspackage)
 
+- Publish `vls@0.3.0` and `vti@0.0.4`.
 - `vls` now only supports Node `>=10`, as Prettier 2.0 drops support for Node 8.
 - Upgrade to prettier 2.0. #1925 and #1794.
 - Add [prettier/plugin-pug](https://github.com/prettier/plugin-pug) as default formatter for `pug`. #527.

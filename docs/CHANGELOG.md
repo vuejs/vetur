@@ -1,5 +1,16 @@
 # Changelog
 
+### 0.25.0 | 2020-07-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.25.0/vspackage)
+
+- `vls` now only supports Node `>=10`, as Prettier 2.0 drops support for Node 8.
+- Upgrade to prettier 2.0. #1925 and #1794.
+- Add [prettier/plugin-pug](https://github.com/prettier/plugin-pug) as default formatter for `pug`. #527.
+- 🙌 Cusom tags IntelliSense for local `tags.json`/`attributes.json`. [Usage Docs](https://vuejs.github.io/vetur/framework.html#workspace-custom-tags). Thanks to contribution from [Carlos Rodrigues](https://github.com/pikax). #1364 and #2018.
+- 🙌 Detect tags from @nuxt/components. Thanks to contribution from [pooya parsa](https://github.com/pi0). #1921.
+- 🙌 Fix VTI crash by passing correct PID to language server. Thanks to contribution from [Daniil Yastremskiy](@TheBeastOfCaerbannog). #1699 and #1805.
+- 🙌 Fix template interpolation hover info of v-for readonly array item. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1788.
+- 🙌 Improve performance while using template interpolation service. Thanks to contribution from [@IWANABETHATGUY](https://github.com/IWANABETHATGUY). #1839.
+
 ### 0.24.0 | 2020-03-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.24.0/vspackage)
 
 - **`vue-language-server` deprecated and will be published as `vls`**.
