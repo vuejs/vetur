@@ -56,5 +56,8 @@
     "prettier-eslint-cli": "^5.0.0",
     "typescript": "^3.8.3",
     "vue-template-compiler": "^2.6.11"
+  },
+  "vetur": {
+    "tags": "./tags.json"
   }
 }
