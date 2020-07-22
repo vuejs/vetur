@@ -7,7 +7,8 @@ import {
   onsenTagProvider,
   bootstrapTagProvider,
   gridsomeTagProvider,
-  getRuntimeTagProvider
+  getDependencyTagProvider,
+  getWorkspaceTagProvider
 } from './externalTagProviders';
 export { getComponentInfoTagProvider as getComponentTags } from './componentInfoTagProvider';
 export { IHTMLTagProvider } from './common';
@@ -55,9 +56,9 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       return settings;
     }
 
-    const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
-    const dependencies = packageJson.dependencies || {};
-    const devDependencies = packageJson.devDependencies || {};
+    const rootPkgJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+    const dependencies = rootPkgJson.dependencies || {};
+    const devDependencies = rootPkgJson.devDependencies || {};
 
     if (dependencies['vue-router']) {
       settings['router'] = true;
@@ -108,28 +109,33 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       settings['gridsome'] = true;
     }
 
+    const workspaceTagProvider = getWorkspaceTagProvider(workspacePath, rootPkgJson);
+    if (workspaceTagProvider) {
+      allTagProviders.push(workspaceTagProvider);
+    }
+
     for (const dep in dependencies) {
-      const runtimePkgPath = ts.findConfigFile(
+      const runtimePkgJsonPath = ts.findConfigFile(
         workspacePath,
         ts.sys.fileExists,
         join('node_modules', dep, 'package.json')
       );
 
-      if (!runtimePkgPath) {
+      if (!runtimePkgJsonPath) {
         continue;
       }
 
-      const runtimePkg = JSON.parse(fs.readFileSync(runtimePkgPath, 'utf-8'));
-      if (!runtimePkg) {
+      const runtimePkgJson = JSON.parse(fs.readFileSync(runtimePkgJsonPath, 'utf-8'));
+      if (!runtimePkgJson) {
         continue;
       }
 
-      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg);
-      if (!tagProvider) {
+      const depTagProvider = getDependencyTagProvider(workspacePath, runtimePkgJson);
+      if (!depTagProvider) {
         continue;
       }
 
-      allTagProviders.push(tagProvider);
+      allTagProviders.push(depTagProvider);
       settings[dep] = true;
     }
   } catch (e) {}

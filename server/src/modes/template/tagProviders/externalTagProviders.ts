@@ -21,27 +21,53 @@ export const onsenTagProvider = getExternalTagProvider('onsen', onsenTags, onsen
 export const bootstrapTagProvider = getExternalTagProvider('bootstrap', bootstrapTags, bootstrapAttributes);
 export const gridsomeTagProvider = getExternalTagProvider('gridsome', gridsomeTags, gridsomeAttributes);
 
-export function getRuntimeTagProvider(workspacePath: string, pkg: any): IHTMLTagProvider | null {
-  if (!pkg.vetur) {
+/**
+ * Get tag providers specified in workspace root's packaage.json
+ */
+export function getWorkspaceTagProvider(workspacePath: string, rootPkgJson: any): IHTMLTagProvider | null {
+  if (!rootPkgJson.vetur) {
+    return null;
+  }
+
+  const tagsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, rootPkgJson.vetur.tags);
+  const attrsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, rootPkgJson.vetur.attributes);
+
+  try {
+    if (tagsPath && attrsPath) {
+      const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
+      const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
+      return getExternalTagProvider(rootPkgJson.name, tagsJson, attrsJson);
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
+ * Get tag providers specified in packaage.json's `vetur` key
+ */
+export function getDependencyTagProvider(workspacePath: string, depPkgJson: any): IHTMLTagProvider | null {
+  if (!depPkgJson.vetur) {
     return null;
   }
 
   const tagsPath = ts.findConfigFile(
     workspacePath,
     ts.sys.fileExists,
-    path.join('node_modules/', pkg.name, pkg.vetur.tags)
+    path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.tags)
   );
   const attrsPath = ts.findConfigFile(
     workspacePath,
     ts.sys.fileExists,
-    path.join('node_modules/', pkg.name, pkg.vetur.attributes)
+    path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.attributes)
   );
 
   try {
     if (tagsPath && attrsPath) {
       const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
       const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
-      return getExternalTagProvider(pkg.name, tagsJson, attrsJson);
+      return getExternalTagProvider(depPkgJson.name, tagsJson, attrsJson);
     }
     return null;
   } catch (err) {

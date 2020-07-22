@@ -1,6 +1,6 @@
 # Framework Support
 
-Vue frameworks can define custom components used in `<template>` region. For example, `vue-router` provides `<router-link>` component that could have attributes such as `to` and `replace`. Vetur currently provides autocomplete support for the component names and attributes.
+Vue libraries or frameworks can define custom components used in `<template>` region. For example, [`vue-router`](https://router.vuejs.org/) provides [`<router-link>`](https://router.vuejs.org/api/#router-link) component that could have attributes such as `to` and `replace`. Vetur currently provides autocomplete support for the component names and attributes.
 
 Vetur currently provides framework support for the following vue libraries:
 
@@ -13,6 +13,8 @@ Vetur currently provides framework support for the following vue libraries:
 - [Vuetify](https://vuetifyjs.com/en/)
 - [Quasar Framework](https://quasar.dev/)
 - [Gridsome](https://gridsome.org/)
+
+🚧 The data format is not specified yet. 🚧
 
 ## Usage
 
@@ -47,6 +49,26 @@ If a package listed in `dependencies` has a `vetur` key, then Vetur will try to 
 ```
 
 By bundling the tags / attributes definitions together with the framework library, you ensure that users will always get the matching tags / attributes with the specific version of your library they are using.
+
+## Workspace Custom Tags
+
+You can define custom tags/attributes for your workspace by specifying a `vetur` key in package.json. For example, to get auto completion for tag `<foo-tag>`, all you need to do is:
+
+- Create a file `tags.json` with:
+
+  ```json
+  { "foo-bar": { "description": "A foo tag" } }
+  ```
+
+- Add this line to `package.json`:
+
+  ```json
+  {
+    "vetur": { "tags": "./tags.json" }
+  }
+  ```
+
+- Reload VS Code. You'll get `foo-bar` when completing `<|`.
 
 ## Adding a Framework
 
