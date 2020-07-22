@@ -19,7 +19,7 @@
 - Update to TS 3.7.5 to avoid TypeScript issues with files not stored in C: drives on Windows. #1589.
 - Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
 - Enable Windows CI with Azure DevOps. #1266.
-- Upgrade to `vscode-langaugeclient`/`vscode-languageserver` V6. #1719.
+- Upgrade to `vscode-languageclient`/`vscode-languageserver` V6. #1719.
   - Fix a file lock issue on asar files. #1474.
   - MDN links on CSS completion. #1751.
   - Fix an error on VTI not able to load `vscode-css-languageservice/lib/umd/data/browsers`. #1732.
