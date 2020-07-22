@@ -30,7 +30,13 @@ export async function testCompletion(
     } else {
       const match = result.items.find(i => i.label === ei.label);
       if (!match) {
-        assert.fail(`Can't find matching item for ${JSON.stringify(ei, null, 2)}`);
+        assert.fail(
+          `Can't find matching item for\n${JSON.stringify(ei, null, 2)}\nSeen items:\n${JSON.stringify(
+            result.items,
+            null,
+            2
+          )}`
+        );
         return;
       }
 

@@ -35,7 +35,7 @@ export default {
      * My count
      */
     count () {
-      return this.$store.state.count
+      return 42;
     }
   },
   methods: {

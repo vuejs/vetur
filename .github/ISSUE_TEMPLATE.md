@@ -10,8 +10,8 @@
 ## Info
 
 - Platform: <!-- Win/macOS/Linux -->
-- Vetur version:
-- VS Code version:
+- Vetur/VLS version:
+- VS Code (or other LSP client) version:
 
 ## Problem
 

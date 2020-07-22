@@ -20,11 +20,11 @@
   </a>
 </p>
 
-Vue tooling for VS Code, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
+Vue tooling for VS Code.
 
-Doc: https://vuejs.github.io/vetur
-
-Try it out with [Veturpack](https://github.com/octref/veturpack)!  
+- [vls](./server): Vue Language Server
+- [vti](./vti): Vetur Terminal Interface
+- Docs: https://vuejs.github.io/vetur
 
 🎉 VueConf 2017 [Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) & [Video](https://www.youtube.com/watch?v=05tNXJ-Kric) 🎉
 
@@ -49,6 +49,11 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 ## FAQ
 
 [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
+
+## Limitations
+
+- No multi root suppport yet ([#424](https://github.com/vuejs/vetur/issues/424))
+- Cannot handle tsconfig from non-top-level folder ([#815](https://github.com/vuejs/vetur/issues/815))
 
 ## Roadmap
 

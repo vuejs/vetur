@@ -25,6 +25,13 @@ describe('Should do hover interpolation for <template>', () => {
       range: sameLineRange(5, 18, 22)
     });
   });
+
+  it('shows hover for v-for variable on readonly array', async () => {
+    await testHover(docUri, position(10, 20), {
+      contents: ['\n```ts\n(parameter) item: string\n```\n'],
+      range: sameLineRange(10, 18, 22)
+    });
+  });
 });
 
 async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedHover: vscode.Hover) {
@@ -42,11 +49,16 @@ async function testHover(docUri: vscode.Uri, position: vscode.Position, expected
 
   const contents = result[0].contents;
   contents.forEach((c, i) => {
-    const val = (c as any).value;
-    assert.equal(val, expectedHover.contents[i]);
+    const actualContent = markedStringToSTring(c);
+    const expectedContent = markedStringToSTring(expectedHover.contents[i]);
+    assert.ok(actualContent.startsWith(expectedContent));
   });
 
   if (result[0] && result[0].range) {
     assert.ok(result[0].range!.isEqual(expectedHover.range!));
   }
+}
+
+function markedStringToSTring(s: vscode.MarkedString) {
+  return typeof s === 'string' ? s : s.value;
 }

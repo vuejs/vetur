@@ -1,6 +1,6 @@
 # Formatting
 
-Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.
+Vetur has support for formatting embedded `html/pug/css/scss/less/postcss/stylus/js/ts`.
 
 **Vetur only has a "whole document formatter" and cannot format arbitrary ranges.**  
 **As a result, only the `Format Document` command is available.**  
@@ -11,6 +11,7 @@ Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/
 These formatters are available:
 
 - [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
+- [`prettier`](https://github.com/prettier/prettier) with [@prettier/plugin-pug](https://github.com/prettier/plugin-pug): For pug.
 - [`prettier-eslint`](https://github.com/prettier/prettier-eslint): For js. Run `prettier` and `eslint --fix`.
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
@@ -27,6 +28,7 @@ Current default:
 ```json
 {
   "vetur.format.defaultFormatter.html": "prettyhtml",
+  "vetur.format.defaultFormatter.pug": "prettier",
   "vetur.format.defaultFormatter.css": "prettier",
   "vetur.format.defaultFormatter.postcss": "prettier",
   "vetur.format.defaultFormatter.scss": "prettier",
@@ -140,7 +142,7 @@ Other settings are read from `stylusSupremacy.*`. You can install [Stylus Suprem
 
 Settings are read from `sass.format.*`. You can install [Sass extension](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) to get IntelliSense for settings, but Vetur will work without it. A useful default:
 
-```jsonc
+```json
 {
   // enables debug mode.
   "sass.format.debug": false,

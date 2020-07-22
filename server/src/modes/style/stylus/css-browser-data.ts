@@ -18,7 +18,7 @@ export interface LoadedCSSData {
   pseudoElements: IPseudoElementData[];
 }
 
-const rawData: CSSDataV1 = require('vscode-css-languageservice/lib/umd/data/browsers').cssData;
+const rawData: CSSDataV1 = require('vscode-web-custom-data/data/browsers.css-data.json');
 
 export const cssData: LoadedCSSData = {
   properties: rawData.properties || [],

@@ -1,14 +1,15 @@
 import { IConnection, TextDocuments } from 'vscode-languageserver';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 /**
  * Service responsible for managing documents being syned through LSP
  * Todo - Switch to incremental sync
  */
 export class DocumentService {
-  private documents: TextDocuments;
+  private documents: TextDocuments<TextDocument>;
 
   constructor(conn: IConnection) {
-    this.documents = new TextDocuments();
+    this.documents = new TextDocuments(TextDocument);
     this.documents.listen(conn);
   }
 

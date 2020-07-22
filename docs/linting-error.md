@@ -32,7 +32,7 @@ When configured correctly, ESLint should work for both `<template>` and `<script
 
 #### Linting for `<template>`
 
-Vetur bundles a version of [`eslint-plugin-vue`](https://eslint.vuejs.org/) for linting `<template>` section. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://vuejs.github.io/eslint-plugin-vue/rules/#priority-a-essential-error-prevention).
+Vetur bundles a version of [`eslint-plugin-vue`](https://eslint.vuejs.org/) for linting `<template>` section. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://eslint.vuejs.org/rules/#priority-a-essential-error-prevention).
 
 This linting is not configurable and based on a fixed version of `eslint-plugin-vue`. If you would like to configure the template linting rules:
 
