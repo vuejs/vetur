@@ -6,8 +6,8 @@ export function run(): Promise<void> {
   const args = {};
 
   Object.keys(process.env)
-    .filter(k => k.startsWith('MOCHA_'))
-    .forEach(k => {
+    .filter((k) => k.startsWith('MOCHA_'))
+    .forEach((k) => {
       args[k.slice('MOCHA_'.length)] = process.env[k];
     });
 
@@ -15,9 +15,9 @@ export function run(): Promise<void> {
   const mocha = new Mocha({
     ui: 'bdd',
     timeout: 100000,
-    ...args
+    color: true,
+    ...args,
   });
-  mocha.useColors(true);
 
   const testsRoot = __dirname;
 
@@ -28,11 +28,11 @@ export function run(): Promise<void> {
       }
 
       // Add files to the test suite
-      files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
+      files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
 
       try {
         // Run the mocha test
-        mocha.run(failures => {
+        mocha.run((failures) => {
           if (failures > 0) {
             e(new Error(`${failures} tests failed.`));
           } else {
