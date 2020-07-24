@@ -6,6 +6,7 @@ const { ensureDirSync } = require('fs-extra');
 const PDIR = 'server/dist/modes/vue';
 const DIR = 'server/dist/modes/vue/veturSnippets';
 
+// Create parent dir and ensure clean snippet dir
 ensureDirSync(PDIR);
 rimraf.sync(DIR);
 
