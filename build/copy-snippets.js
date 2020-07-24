@@ -1,5 +1,4 @@
 const rimraf = require('rimraf');
-const { resolve } = require('path');
 const { ncp } = require('ncp');
 const { ensureDirSync } = require('fs-extra');
 

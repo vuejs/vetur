@@ -17,8 +17,6 @@ describe('Should do codeAction', () => {
   });
 
   it('finds codeAction for unused import', async () => {
-    await sleep(2000); // waiting more, on windows is really slow
-
     const codeActions = [{ title: `Remove unused declaration for: 'lodash'`, command: 'vetur.applyWorkspaceEdits' }];
     await testCodeAction(docUri, sameLineRange(5, 6, 6), codeActions);
   });
