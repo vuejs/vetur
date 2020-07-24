@@ -2,12 +2,16 @@ import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper'
 import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 
+import { workspace, ConfigurationTarget } from 'vscode';
+
 describe('Should autocomplete for <template>', () => {
   const basicUri = getDocUri('completion/template/Basic.vue');
   const elementUri = getDocUri('completion/template/Element.vue');
   const quasarUri = getDocUri('completion/template/Quasar.vue');
   const vuetifyUri = getDocUri('completion/template/Vuetify.vue');
   const workspaceCustomTagsUri = getDocUri('completion/template/WorkspaceCustomTags.vue');
+
+  const parentUri = getDocUri('completion/template/childComponent/Parent.vue');
 
   before('activate', async () => {
     await activateLS();
@@ -110,6 +114,23 @@ describe('Should autocomplete for <template>', () => {
 
     it('completes attributes for <foo-bar>', async () => {
       await testCompletion(workspaceCustomTagsUri, position(1, 12), ['foo-attr']);
+    });
+  });
+
+  describe('Parent - Child component completion', () => {
+    it('completes tags/attributes for ChildComp', async () => {
+      const c = workspace.getConfiguration();
+
+      // test this in "vetur.completion.tagCasing": "initial"
+      await c.update('vetur.completion.tagCasing', 'initial', ConfigurationTarget.Global);
+
+      await testCompletion(parentUri, position(4, 6), ['ChildComp']);
+
+      await testCompletion(parentUri, position(2, 15), ['attr-a']);
+      await testCompletion(parentUri, position(3, 16), ['attr-a']);
+
+      // set it back
+      await c.update('vetur.completion.tagCasing', 'kebab', ConfigurationTarget.Global);
     });
   });
 });
