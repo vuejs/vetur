@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
-import { sameLineRange, getDocUri } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { sameLineRange, getDocUri } from '../../util';
 import { testDiagnostics } from './helper';
 import { DiagnosticTag } from 'vscode-languageclient';
 

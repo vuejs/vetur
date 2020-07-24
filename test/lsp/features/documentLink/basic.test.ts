@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
-import { sameLineRange, getDocUri } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { sameLineRange, getDocUri } from '../../util';
 
 describe('Should do documentLink', () => {
   const docUri = getDocUri('documentLink/Basic.vue');

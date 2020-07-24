@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
-import { range, getDocUri } from '../util';
+import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { range, getDocUri } from '../../util';
 
 describe('Should do documentSymbol', () => {
   const docUri = getDocUri('documentSymbol/Basic.vue');
