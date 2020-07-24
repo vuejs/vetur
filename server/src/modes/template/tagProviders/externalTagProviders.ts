@@ -1,8 +1,9 @@
 import * as ts from 'typescript';
 import * as fs from 'fs';
 import * as path from 'path';
+import { kebabCase } from 'lodash';
 
-import { IHTMLTagProvider, Priority } from './common';
+import { IHTMLTagProvider, Priority, getSameTagInSet } from './common';
 
 import * as elementTags from 'element-helper-json/element-tags.json';
 import * as elementAttributes from 'element-helper-json/element-attributes.json';
@@ -77,7 +78,12 @@ export function getDependencyTagProvider(workspacePath: string, depPkgJson: any)
 
 export function getExternalTagProvider(id: string, tags: any, attributes: any): IHTMLTagProvider {
   function findAttributeDetail(tag: string, attr: string) {
-    return attributes[attr] || attributes[tag + '/' + attr];
+    return (
+      attributes[attr] ||
+      attributes[`${tag}/${attr}`] ||
+      attributes[`${tag.toLowerCase}/${attr}`] ||
+      attributes[`${kebabCase(tag)}/${attr}`]
+    );
   }
 
   return {
@@ -89,10 +95,7 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
       }
     },
     collectAttributes(tag, collector) {
-      if (!tags[tag]) {
-        return;
-      }
-      const attrs = tags[tag].attributes;
+      const attrs = getSameTagInSet<any>(tags, tag)?.attributes;
       if (!attrs) {
         return;
       }
@@ -102,10 +105,7 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
       }
     },
     collectValues(tag, attr, collector) {
-      if (!tags[tag]) {
-        return;
-      }
-      const attrs = tags[tag].attributes;
+      const attrs = getSameTagInSet<any>(tags, tag)?.attributes;
       if (!attrs || attrs.indexOf(attr) < 0) {
         return;
       }
@@ -116,6 +116,6 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
       for (const option of detail.options) {
         collector(option);
       }
-    }
+    },
   };
 }

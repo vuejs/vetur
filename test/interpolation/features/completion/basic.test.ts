@@ -22,12 +22,12 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Field
+      kind: CompletionItemKind.Field,
     },
     {
       label: 'msg',
       documentation: new MarkdownString('My msg').appendCodeblock(`msg: 'Vetur means "Winter" in icelandic.'`, 'js'),
-      kind: CompletionItemKind.Field
+      kind: CompletionItemKind.Field,
     },
     {
       label: 'count',
@@ -37,7 +37,7 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Field
+      kind: CompletionItemKind.Field,
     },
     {
       label: 'hello',
@@ -48,8 +48,8 @@ describe('Should autocomplete interpolation for <template>', () => {
         'js'
       ),
 
-      kind: CompletionItemKind.Function
-    }
+      kind: CompletionItemKind.Function,
+    },
   ];
 
   describe('Should complete props, data, computed and methods', () => {
@@ -61,18 +61,18 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(templateDocUri, position(3, 11), [
         {
           label: 'msg',
-          kind: CompletionItemKind.Field
-        }
+          kind: CompletionItemKind.Field,
+        },
       ]);
     });
 
     it(`completes child component tag`, async () => {
-      await testCompletion(parentTemplateDocUri, position(4, 5), [
+      await testCompletion(parentTemplateDocUri, position(6, 5), [
         {
           label: 'basic',
           kind: CompletionItemKind.Property,
-          documentationStart: 'My basic tag\n```js\nexport default {'
-        }
+          documentationStart: 'My basic tag\n```js\nexport default {',
+        },
       ]);
     });
 
@@ -87,8 +87,28 @@ describe('Should autocomplete interpolation for <template>', () => {
   default: false
 }`,
             'js'
-          )
-        }
+          ),
+        },
+      ]);
+    });
+
+    it(`completes child component's props when kebab case component name`, async () => {
+      await testCompletion(parentTemplateDocUri, position(4, 15), [
+        {
+          label: 'bar',
+          kind: CompletionItemKind.Value,
+          documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js'),
+        },
+      ]);
+    });
+
+    it(`completes child component's props when camel case component name`, async () => {
+      await testCompletion(parentTemplateDocUri, position(5, 14), [
+        {
+          label: 'bar',
+          kind: CompletionItemKind.Value,
+          documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js'),
+        },
       ]);
     });
 

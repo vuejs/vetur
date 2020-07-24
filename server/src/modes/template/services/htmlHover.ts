@@ -41,7 +41,6 @@ export function doHover(
   }
 
   function getAttributeHover(tag: string, attribute: string, range: Range): Hover {
-    tag = tag.toLowerCase();
     let hover: Hover = NULL_HOVER;
     for (const provider of tagProviders) {
       provider.collectAttributes(tag, (attr, type, documentation) => {
@@ -89,7 +88,7 @@ export function doHover(
   }
   const tagRange = {
     start: document.positionAt(scanner.getTokenOffset()),
-    end: document.positionAt(scanner.getTokenEnd())
+    end: document.positionAt(scanner.getTokenEnd()),
   };
   switch (token) {
     case TokenType.StartTag:
