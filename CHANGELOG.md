@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.26.0
+
+- `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053
+
 ### 0.25.0 | 2020-07-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.25.0/vspackage)
 
 - Publish `vls@0.3.0` and `vti@0.0.4`.
