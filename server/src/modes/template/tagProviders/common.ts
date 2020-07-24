@@ -25,7 +25,7 @@ export enum Priority {
   UserCode,
   Library,
   Framework,
-  Platform
+  Platform,
 }
 
 export interface IHTMLTagProvider {
@@ -63,7 +63,15 @@ export function collectAttributesDefault(
   globalAttributes: StandaloneAttribute[]
 ): void {
   if (tag) {
-    const tags = tagSet[tag];
+    let tags = tagSet[tag];
+    if (!tags) {
+      for (const t in tagSet) {
+        if (t.toLowerCase() === tag) {
+          tags = tagSet[t];
+        }
+      }
+    }
+
     if (tags) {
       const attributes = tags.attributes;
       for (const attr of attributes) {
@@ -71,7 +79,7 @@ export function collectAttributesDefault(
       }
     }
   }
-  globalAttributes.forEach(attr => {
+  globalAttributes.forEach((attr) => {
     collector(attr.label, attr.type, attr.documentation);
   });
 }
