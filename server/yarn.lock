@@ -108,9 +108,9 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 "@prettier/plugin-pug@^1.4.4":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@prettier/plugin-pug/-/plugin-pug-1.4.4.tgz#252c8dfac574c82d1e95492b9bd4cb59c44d3ee6"
-  integrity sha512-Lb3cc0a4IwUy9oNeYuN1YHg/+J5JDsJNSKFMGpcp6cq6vnMcNyWn+KNBkTo/ZYEIT2JAsl6X+KKAvjH1p+XGeQ==
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@prettier/plugin-pug/-/plugin-pug-1.5.0.tgz#3d7208eb95781dab38d0daf7a25d550ec678e9f1"
+  integrity sha512-VdXe7R5hIKkW7KOmyCocJHXwNY0WwBGzM4QfdGEWLa0uxN3g/wmSmLqtCBLTcLtLCH4qULWdWwiQW2rl6UFE1Q==
   dependencies:
     pug-lexer "~5.0.0"
 
