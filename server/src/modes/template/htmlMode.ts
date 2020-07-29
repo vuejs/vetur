@@ -16,9 +16,10 @@ import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings, IHTMLTagProvider, CompletionConfiguration } from './tagProviders';
 import { getEnabledTagProviders } from './tagProviders';
 import { DocumentContext } from '../../types';
-import { VLSFormatConfig, VLSConfig, VLSFullConfig } from '../../config';
+import { VLSFormatConfig, VLSFullConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
+import { VueVersion } from '../../services/typescriptService/vueVersion';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
@@ -27,11 +28,12 @@ export class HTMLMode implements LanguageMode {
 
   private config: any = {};
 
-  private lintEngine = createLintEngine();
+  private lintEngine: any;
 
   constructor(
     documentRegions: LanguageModelCache<VueDocumentRegions>,
     workspacePath: string | undefined,
+    vueVersion: VueVersion,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
     private vueInfoService?: VueInfoService
   ) {
@@ -40,6 +42,7 @@ export class HTMLMode implements LanguageMode {
     this.embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
       documentRegions.refreshAndGet(document).getSingleLanguageDocument('vue-html')
     );
+    this.lintEngine = createLintEngine(vueVersion);
   }
 
   getId() {

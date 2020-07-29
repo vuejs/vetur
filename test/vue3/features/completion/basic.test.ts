@@ -1,5 +1,5 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
-import { position, getDocUri } from '../util';
+import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../../lsp/helper';
+import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 import { CompletionItemKind } from 'vscode';
 

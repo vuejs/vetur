@@ -41,3 +41,7 @@ export function readFileAsync(path: string) {
     });
   });
 }
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
