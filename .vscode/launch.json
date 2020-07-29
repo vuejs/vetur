@@ -99,5 +99,23 @@
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
     },
+    {
+      "name": "E2E Test (Vue3)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/vue3",
+        "--user-data-dir=${workspaceFolder}/test/vue3/data-dir",
+        "--disable-extensions",
+        "${workspaceFolder}/test/vue3/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
   ]
 }
