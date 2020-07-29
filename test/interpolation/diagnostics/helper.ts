@@ -2,16 +2,14 @@ import * as vscode from 'vscode';
 import * as assert from 'assert';
 import * as _ from 'lodash';
 import { sleep } from '../util';
+import { getDiagnosticsAndTimeout } from '../helper';
 
 export async function testDiagnostics(
   docUri: vscode.Uri,
   expectedDiagnostics: vscode.Diagnostic[],
   skipSameDiagnosticCountAssert: boolean
 ) {
-  // For diagnostics to show up
-  await sleep(2000);
-
-  const result = vscode.languages.getDiagnostics(docUri);
+  const result = await getDiagnosticsAndTimeout(docUri);
 
   if (!skipSameDiagnosticCountAssert) {
     assert.equal(
@@ -53,7 +51,7 @@ export async function testDiagnostics(
 
 export async function testNoDiagnostics(docUri: vscode.Uri) {
   // For diagnostics to show up
-  await sleep(2000);
+  await sleep(3500);
 
   const result = vscode.languages.getDiagnostics(docUri);
 

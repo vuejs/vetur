@@ -63,7 +63,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const client = initializeLanguageClient(serverModule, globalSnippetDir);
   context.subscriptions.push(client.start());
 
-  client
+  const promise = client
     .onReady()
     .then(() => {
       registerCustomClientNotificationHandlers(client);
@@ -72,6 +72,14 @@ export async function activate(context: vscode.ExtensionContext) {
     .catch(e => {
       console.log('Client initialization failed');
     });
+
+  return vscode.window.withProgress(
+    {
+      title: 'Vetur initialization',
+      location: vscode.ProgressLocation.Window
+    },
+    () => promise
+  );
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient) {

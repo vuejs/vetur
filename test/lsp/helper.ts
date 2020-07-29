@@ -45,3 +45,17 @@ export function readFileAsync(path: string) {
 export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+// Retry to get diagnostics until length > 0 or timeout
+export async function getDiagnosticsAndTimeout(docUri: vscode.Uri, timeout = 5000) {
+  const startTime = Date.now();
+
+  let result = vscode.languages.getDiagnostics(docUri);
+
+  while (result.length <= 0 && startTime + timeout > Date.now()) {
+    result = vscode.languages.getDiagnostics(docUri);
+    await sleep(100);
+  }
+
+  return result;
+}

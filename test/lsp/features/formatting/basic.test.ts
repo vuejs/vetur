@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as assert from 'assert';
-import { activateLS, showFile, sleep, readFileAsync, setEditorContent, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile, readFileAsync, setEditorContent } from '../../helper';
 import { getDocUri, getDocPath } from '../../util';
 
 describe('Should format', () => {
@@ -17,8 +17,6 @@ describe('Should format', () => {
     for (let i = 0; i < cases.length; i++) {
       await showFile(getDocUri(`formatting/${cases[i]}.vue`));
     }
-
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   for (let i = 0; i < cases.length; i++) {

@@ -1,4 +1,4 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { testCompletion } from './helper';
 import { position, getDocUri } from '../../util';
 
@@ -10,7 +10,6 @@ describe('Should autocomplete for <style>', () => {
     await activateLS();
     await showFile(docUri);
     await showFile(doubleDocUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   describe('Should complete <style> section for all languages', () => {

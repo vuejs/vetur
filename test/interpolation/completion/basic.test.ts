@@ -1,4 +1,4 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
+import { activateLS, showFile } from '../../lsp/helper';
 import { position, getDocUri } from '../util';
 import { testCompletion, testNoSuchCompletion } from './helper';
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
@@ -10,7 +10,6 @@ describe('Should autocomplete interpolation for <template>', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(templateDocUri);
-    await sleep(FILE_LOAD_SLEEP_TIME * 2);
   });
 
   const defaultList: CompletionItem[] = [

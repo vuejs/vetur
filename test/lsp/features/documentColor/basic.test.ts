@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { position, sameLineRange, getDocUri } from '../../util';
 
 describe('Should do documentColor', () => {
@@ -9,7 +9,6 @@ describe('Should do documentColor', () => {
   before('activate', async () => {
     await activateLS();
     await showFile(docUri);
-    await sleep(FILE_LOAD_SLEEP_TIME * 2);
   });
 
   it('show no duplicate document colors', async () => {
