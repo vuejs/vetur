@@ -11,7 +11,7 @@ function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const endColumn = error.endColumn ? error.endColumn - 1 : column;
   return {
     range: Range.create(line, column, endLine, endColumn),
-    message: `\n[${error.ruleId}]\n${error.message}`,
+    message: `[${error.ruleId}]\n${error.message}`,
     source: 'eslint-plugin-vue',
     severity: error.severity === 1 ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error
   };
