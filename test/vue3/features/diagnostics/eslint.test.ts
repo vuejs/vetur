@@ -11,7 +11,7 @@ describe('Should find diagnostics using eslint-plugin-vue', () => {
     await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
-  it('shows no error for multi-root template', async () => {
+  it('shows no error for multi-root template, which is valid in v3', async () => {
     await testNoDiagnostics(docUri);
   });
 });
