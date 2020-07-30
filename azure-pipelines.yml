@@ -25,6 +25,9 @@ strategy:
 pool:
   vmImage: $(imageName)
 
+variables:
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+
 steps:
 
 - script: |
@@ -56,7 +59,9 @@ steps:
 - task: Cache@2
   inputs:
     key: 'yarn | "$(Agent.OS)" | yarn.lock'
-    path: '$(Pipeline.Workspace)/.yarn'
+    restoreKeys: |
+       yarn | "$(Agent.OS)"
+    path: $(YARN_CACHE_FOLDER)
   displayName: Restore yarn cache
 
 - bash: yarn --frozen-lockfile
