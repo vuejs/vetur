@@ -1,5 +1,0 @@
---ui tdd
---color true
---require source-map-support/register
---exit
-./dist/**/*.test.js
