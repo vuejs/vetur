@@ -52,10 +52,8 @@ steps:
 # Restore .vscode-test cache
 - task: Cache@2
   inputs:
-    key: vscode-test | $(Agent.OS) | $(Pipeline.Workspace)/.vscode-test
-    restoreKeys: |
-      vscode-test | $(Agent.OS)
-    path: $(Pipeline.Workspace)/.vscode-test
+    key: vscode-test | $(Agent.OS)
+    path: .vscode-test
   displayName: Restore .vscode-test cache
 
 - task: Cache@2
