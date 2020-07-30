@@ -1,43 +1,41 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { join } from 'path';
 import { getExternalTagProvider } from './externalTagProviders';
 
-const NUXT_VUE_APP_PATH = 'node_modules/@nuxt/vue-app';
-const NUXT_EDGE_VUE_APP_PATH = 'node_modules/@nuxt/vue-app-edge';
+const NUXT_JSON_SOURCES = ['@nuxt/vue-app-edge', '@nuxt/vue-app', 'nuxt-helper-json'];
 
 export function getNuxtTagProvider(workspacePath: string) {
-  if (fs.existsSync(path.resolve(workspacePath, NUXT_VUE_APP_PATH, 'package.json'))) {
-    const { nuxtTags, nuxtAttributes } = getNuxtTagsAndAttributes(NUXT_VUE_APP_PATH);
-    return getExternalTagProvider('nuxt', nuxtTags, nuxtAttributes);
+  let nuxtTags, nuxtAttributes;
+  for (const source of NUXT_JSON_SOURCES) {
+    if (tryResolve(join(source, 'package.json'), workspacePath)) {
+      nuxtTags = tryRequire(join(source, 'vetur/nuxt-tags.json'), workspacePath);
+      nuxtAttributes = tryRequire(join(source, 'vetur/nuxt-attributes.json'), workspacePath);
+      if (nuxtTags) {
+        break;
+      }
+    }
   }
 
-  if (fs.existsSync(path.resolve(workspacePath, NUXT_EDGE_VUE_APP_PATH, 'package.json'))) {
-    const { nuxtTags, nuxtAttributes } = getNuxtTagsAndAttributes(NUXT_EDGE_VUE_APP_PATH);
-    return getExternalTagProvider('nuxt', nuxtTags, nuxtAttributes);
-  }
+  const componentsTags = tryRequire(join(workspacePath, '.nuxt/vetur/tags.json'), workspacePath);
+  const componentsAttributes = tryRequire(join(workspacePath, '.nuxt/vetur/attributes.json'), workspacePath);
+
+  return getExternalTagProvider(
+    'nuxt',
+    { ...nuxtTags, ...componentsTags },
+    { ...nuxtAttributes, ...componentsAttributes }
+  );
 }
 
-function getNuxtTagsAndAttributes(nuxtVueAppPath: string) {
-  let nuxtVer = '0.0.0';
+function tryRequire(modulePath: string, workspacePath: string) {
   try {
-    nuxtVer = require(path.resolve(nuxtVueAppPath, 'package.json')).version;
-  } catch (err) {}
+    const resolved = tryResolve(modulePath, workspacePath);
+    return resolved ? require(resolved) : undefined;
+  } catch (_err) {}
+}
 
-  if (nuxtVer < '2.4.0') {
-    const nuxtTags = require('nuxt-helper-json/nuxt-tags.json');
-    const nuxtAttributes = require('nuxt-helper-json/nuxt-attributes.json');
-
-    return {
-      nuxtTags,
-      nuxtAttributes
-    };
-  } else {
-    const nuxtTags = require(path.resolve(nuxtVueAppPath, 'vetur/nuxt-tags.json'));
-    const nuxtAttributes = require(path.resolve(nuxtVueAppPath, 'vetur/nuxt-attributes.json'));
-
-    return {
-      nuxtTags,
-      nuxtAttributes
-    };
-  }
+function tryResolve(modulePath: string, workspacePath: string) {
+  try {
+    return require.resolve(modulePath, {
+      paths: [workspacePath, __dirname]
+    });
+  } catch (_err) {}
 }

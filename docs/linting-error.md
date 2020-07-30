@@ -14,35 +14,14 @@ You can selectively turn error checking off by `vetur.validation.[template/style
 
 ## Linting
 
-Install [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for the best linting experience. Vetur's template linting is only for quick start and does not support rule configuration.
+Vetur bundles [`eslint-plugin-vue`](https://eslint.vuejs.org) for template error checking. By default, Vetur loads the [`vue/essential`](https://eslint.vuejs.org/rules/#priority-a-essential-error-prevention-for-vue-js-2-x) ruleset for Vue 2 projects and [`vue3-essential`](https://eslint.vuejs.org/rules/#priority-a-essential-error-prevention-for-vue-js-3-x) ruleset for Vue 3 projects.
 
-After you installed [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), add `vue` to `eslint.validate` in VS Code config:
-
-```json
-{
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "vue"
-  ]
-}
-```
-
-When configured correctly, ESLint should work for both `<template>` and `<script>`.
-
-#### Linting for `<template>`
-
-Vetur bundles a version of [`eslint-plugin-vue`](https://eslint.vuejs.org/) for linting `<template>` section. Linting configuration is based on eslint-plugin-vue's [essential rule set](https://vuejs.github.io/eslint-plugin-vue/rules/#priority-a-essential-error-prevention).
-
-This linting is not configurable and based on a fixed version of `eslint-plugin-vue`. If you would like to configure the template linting rules:
-
-To configure linting rules:
+If you want to config ESLint rules, do the following:
 
 - Turn off Vetur's template validation with `vetur.validation.template: false`
 - Make sure you have the [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint). The errors will come from ESLint plugin, not Vetur.
 - `yarn add -D eslint eslint-plugin-vue` in your workspace root
-- Set ESLint rules in `.eslintrc`. An example:
-
+- Set ESLint rules in `.eslintrc`. For example:
   ```json
   {
     "extends": [

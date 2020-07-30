@@ -63,7 +63,15 @@ export function collectAttributesDefault(
   globalAttributes: StandaloneAttribute[]
 ): void {
   if (tag) {
-    const tags = tagSet[tag];
+    let tags = tagSet[tag];
+    if (!tags) {
+      for (const t in tagSet) {
+        if (t.toLowerCase() === tag) {
+          tags = tagSet[t];
+        }
+      }
+    }
+
     if (tags) {
       const attributes = tags.attributes;
       for (const attr of attributes) {

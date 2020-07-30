@@ -12,7 +12,7 @@ import {
 } from 'vscode-languageserver-protocol';
 import { createConnection } from 'vscode-languageserver';
 import { Duplex } from 'stream';
-import { VLS } from 'vue-language-server';
+import { VLS } from 'vls';
 import { params } from './initParams';
 import * as fs from 'fs';
 import Uri from 'vscode-uri';
@@ -64,6 +64,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
   const init: InitializeParams = {
     rootPath: workspaceUri.fsPath,
     rootUri: workspaceUri.toString(),
+    processId: process.pid,
     ...params
   } as InitializeParams;
 

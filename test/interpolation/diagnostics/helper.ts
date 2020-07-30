@@ -2,22 +2,23 @@ import * as vscode from 'vscode';
 import * as assert from 'assert';
 import * as _ from 'lodash';
 import { sleep } from '../util';
+import { getDiagnosticsAndTimeout } from '../helper';
 
 export async function testDiagnostics(
   docUri: vscode.Uri,
   expectedDiagnostics: vscode.Diagnostic[],
   skipSameDiagnosticCountAssert: boolean
 ) {
-  // For diagnostics to show up
-  await sleep(2000);
-
-  const result = vscode.languages.getDiagnostics(docUri);
+  const result = await getDiagnosticsAndTimeout(docUri);
 
   if (!skipSameDiagnosticCountAssert) {
     assert.equal(
       expectedDiagnostics.length,
       result.length,
-      'Expected diagnostics length is not same as actual diagnostics one'
+      `Expected diagnostics message length is not same as actual.\n` +
+        `Expected:\n${JSON.stringify(expectedDiagnostics, null, 2)}` +
+        `\n\n` +
+        `Actual:\n${JSON.stringify(result, null, 2)}`
     );
   }
 
@@ -27,7 +28,7 @@ export async function testDiagnostics(
         return isEqualDiagnostic(ed, d);
       }),
       `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
-        `Seen diagnostics are:\n${JSON.stringify(result)}`
+        `Seen diagnostics are:\n${JSON.stringify(result, null, 2)}`
     );
   });
 
@@ -50,7 +51,7 @@ export async function testDiagnostics(
 
 export async function testNoDiagnostics(docUri: vscode.Uri) {
   // For diagnostics to show up
-  await sleep(2000);
+  await sleep(3500);
 
   const result = vscode.languages.getDiagnostics(docUri);
 

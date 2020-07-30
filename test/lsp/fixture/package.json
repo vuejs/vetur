@@ -38,21 +38,26 @@
     "ie > 8"
   ],
   "dependencies": {
+    "buefy": "^0.8.16",
     "element-ui": "^2.4.5",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.19",
     "quasar": "^1.0.0-beta.0",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-router": "^3.0.1",
     "vuetify": "^2.0.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@prettier/plugin-pug": "^1.4.4",
     "@types/lodash": "^4.14.77",
-    "eslint": "^4.18.2",
-    "eslint-plugin-vue": "^4.3.0",
-    "prettier": "^1.7.4",
-    "prettier-eslint-cli": "^4.4.0",
-    "typescript": "^3.3.4000",
-    "vue-template-compiler": "^2.5.3"
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.2.1",
+    "prettier": "^2.0.5",
+    "prettier-eslint-cli": "^5.0.0",
+    "typescript": "^3.8.3",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "vetur": {
+    "tags": "./tags.json"
   }
 }

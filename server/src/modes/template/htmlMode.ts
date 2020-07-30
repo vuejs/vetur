@@ -11,29 +11,30 @@ import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
-import { parseHTMLDocument } from './parser/htmlParser';
 import { doESLintValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
 import { getTagProviderSettings, IHTMLTagProvider, CompletionConfiguration } from './tagProviders';
 import { getEnabledTagProviders } from './tagProviders';
 import { DocumentContext } from '../../types';
-import { VLSFormatConfig, VLSConfig, VLSFullConfig } from '../../config';
+import { VLSFormatConfig, VLSFullConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
+import { VueVersion } from '../../services/typescriptService/vueVersion';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
   private enabledTagProviders: IHTMLTagProvider[];
   private embeddedDocuments: LanguageModelCache<TextDocument>;
-  private vueDocuments: LanguageModelCache<HTMLDocument>;
 
   private config: any = {};
 
-  private lintEngine = createLintEngine();
+  private lintEngine: any;
 
   constructor(
     documentRegions: LanguageModelCache<VueDocumentRegions>,
     workspacePath: string | undefined,
+    vueVersion: VueVersion,
+    private vueDocuments: LanguageModelCache<HTMLDocument>,
     private vueInfoService?: VueInfoService
   ) {
     this.tagProviderSettings = getTagProviderSettings(workspacePath);
@@ -41,7 +42,7 @@ export class HTMLMode implements LanguageMode {
     this.embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
       documentRegions.refreshAndGet(document).getSingleLanguageDocument('vue-html')
     );
-    this.vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
+    this.lintEngine = createLintEngine(vueVersion);
   }
 
   getId() {
@@ -66,14 +67,7 @@ export class HTMLMode implements LanguageMode {
       tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
     }
 
-    return doComplete(
-      embedded,
-      position,
-      this.vueDocuments.refreshAndGet(embedded),
-      tagProviders,
-      this.config.emmet,
-      info
-    );
+    return doComplete(embedded, position, this.vueDocuments.refreshAndGet(embedded), tagProviders, this.config.emmet);
   }
   doHover(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);
