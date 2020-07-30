@@ -6,10 +6,9 @@ export function run(): Promise<void> {
   // Create the mocha test
   const mocha = new Mocha({
     ui: 'bdd',
-    timeout: 100000
+    timeout: 100000,
+    color: true
   });
-  mocha.useColors(true);
-
   const testsRoot = __dirname;
 
   return new Promise((c, e) => {
