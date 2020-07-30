@@ -52,12 +52,12 @@ By bundling the tags / attributes definitions together with the framework librar
 
 ## Workspace Custom Tags
 
-You can define custom tags/attributes for your workspace by specifying a `vetur` key in package.json. For example, to get auto completion for tag `<foo-tag>`, all you need to do is:
+You can define custom tags/attributes for your workspace by specifying a `vetur` key in package.json. For example, to get auto completion for tag `<foo-tag>` and it's attribute `foo-attr`, all you need to do is:
 
 - Create a file `tags.json` with:
 
   ```json
-  { "foo-bar": { "description": "A foo tag" } }
+  { "foo-bar": { "description": "A foo tag", "attributes": ["foo-attr"] } }
   ```
 
 - Add this line to `package.json`:
@@ -68,7 +68,9 @@ You can define custom tags/attributes for your workspace by specifying a `vetur`
   }
   ```
 
-- Reload VS Code. You'll get `foo-bar` when completing `<|`.
+- Reload VS Code. You'll get:  
+  - `foo-bar` when completing `<|`
+  - `foo-attr` when completing `<foo-bar |`  
 
 ## Adding a Framework
 
