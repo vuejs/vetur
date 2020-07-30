@@ -27,9 +27,9 @@ describe('Should do documentSymbol', () => {
                 name: 'div.counter-wrapper',
                 kind: 7,
                 range: range(1, 2, 2, 8),
-                children: [],
-              },
-            ],
+                children: []
+              }
+            ]
           },
           {
             name: 'script',
@@ -40,9 +40,9 @@ describe('Should do documentSymbol', () => {
                 name: 'default',
                 kind: 12,
                 range: range(6, 0, 12, 1),
-                children: [],
-              },
-            ],
+                children: []
+              }
+            ]
           },
           {
             name: 'style',
@@ -53,12 +53,12 @@ describe('Should do documentSymbol', () => {
                 name: '.counter-wrapper > *',
                 kind: 4,
                 range: range(16, 0, 18, 1),
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
+                children: []
+              }
+            ]
+          }
+        ]
+      }
     ]);
   });
 });
@@ -98,7 +98,7 @@ function convertToPartialDocumentSymbols(symbol: vscode.DocumentSymbol): Partial
   const ps: PartialDocumentSymbol = {
     name: symbol.name,
     kind: symbol.kind,
-    range: symbol.range,
+    range: symbol.range
   };
   if (symbol.children) {
     ps.children = symbol.children.map(convertToPartialDocumentSymbols);

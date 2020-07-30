@@ -61,10 +61,7 @@ export function isValue(data: LoadedCSSData, currentWord: string): boolean {
  * @return {String}
  */
 export function getPropertyName(currentWord: string): string {
-  return currentWord
-    .trim()
-    .replace(':', ' ')
-    .split(' ')[0];
+  return currentWord.trim().replace(':', ' ').split(' ')[0];
 }
 
 /**

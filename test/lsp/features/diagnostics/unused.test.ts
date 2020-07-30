@@ -18,14 +18,14 @@ describe('Should find diagnostics for unused variables', () => {
         severity: vscode.DiagnosticSeverity.Error,
         message: "'lodash' is declared but its value is never read.",
         range: sameLineRange(5, 0, 33),
-        tags: [DiagnosticTag.Unnecessary],
+        tags: [DiagnosticTag.Unnecessary]
       },
       {
         severity: vscode.DiagnosticSeverity.Error,
         message: "'foo' is declared but its value is never read.",
         range: sameLineRange(7, 6, 9),
-        tags: [DiagnosticTag.Unnecessary],
-      },
+        tags: [DiagnosticTag.Unnecessary]
+      }
     ];
 
     await testDiagnostics(docUri, expectedDiagnostics);

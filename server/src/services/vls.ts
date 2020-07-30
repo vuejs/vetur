@@ -16,7 +16,7 @@ import {
   DocumentFormattingRequest,
   Disposable,
   DocumentSymbolParams,
-  CodeActionParams,
+  CodeActionParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -34,7 +34,7 @@ import {
   TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation,
-  Range,
+  Range
 } from 'vscode-languageserver-types';
 
 import Uri from 'vscode-uri';
@@ -69,7 +69,7 @@ export class VLS {
     scss: true,
     less: true,
     postcss: true,
-    javascript: true,
+    javascript: true
   };
 
   private documentFormatterRegistration: Disposable | undefined;
@@ -91,7 +91,7 @@ export class VLS {
     if (!workspacePath) {
       console.error('No workspace path found. Vetur initialization failed.');
       return {
-        capabilities: {},
+        capabilities: {}
       };
     }
 
@@ -104,7 +104,7 @@ export class VLS {
       workspacePath,
       {
         infoService: this.vueInfoService,
-        dependencyService: this.dependencyService,
+        dependencyService: this.dependencyService
       },
       params.initializationOptions?.globalSnippetDir
     );
@@ -163,7 +163,7 @@ export class VLS {
       return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
     });
 
-    this.lspConnection.onRequest('$/getDiagnostics', (params) => {
+    this.lspConnection.onRequest('$/getDiagnostics', params => {
       const doc = this.documentService.getDocument(params.uri);
       if (doc) {
         return this.doValidate(doc);
@@ -176,7 +176,7 @@ export class VLS {
     if (settings.vetur.format.enable === true) {
       if (!this.documentFormatterRegistration) {
         this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
-          documentSelector: ['vue'],
+          documentSelector: ['vue']
         });
       }
     } else {
@@ -190,7 +190,7 @@ export class VLS {
     this.documentService.onDidChangeContent((change: TextDocumentChangeEvent) => {
       this.triggerValidation(change.document);
     });
-    this.documentService.onDidClose((e) => {
+    this.documentService.onDidClose(e => {
       this.removeDocument(e.document);
       this.lspConnection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
     });
@@ -200,14 +200,14 @@ export class VLS {
         throw Error(`Can't find JS mode.`);
       }
 
-      changes.forEach((c) => {
+      changes.forEach(c => {
         if (c.type === FileChangeType.Changed) {
           const fsPath = getFileFsPath(c.uri);
           jsMode.onDocumentChanged!(fsPath);
         }
       });
 
-      this.documentService.getAllDocuments().forEach((d) => {
+      this.documentService.getAllDocuments().forEach(d => {
         this.triggerValidation(d);
       });
     });
@@ -222,7 +222,7 @@ export class VLS {
     this.validation.less = veturValidationOptions.style;
     this.validation.javascript = veturValidationOptions.script;
 
-    this.languageModes.getAllModes().forEach((m) => {
+    this.languageModes.getAllModes().forEach(m => {
       if (m.configure) {
         m.configure(config);
       }
@@ -257,7 +257,7 @@ export class VLS {
 
     const errMessages: string[] = [];
 
-    modeRanges.forEach((modeRange) => {
+    modeRanges.forEach(modeRange => {
       if (modeRange.mode && modeRange.mode.format) {
         try {
           const edits = modeRange.mode.format(doc, this.toSimpleRange(modeRange), options);
@@ -281,7 +281,7 @@ export class VLS {
   private toSimpleRange(modeRange: LanguageModeRange): Range {
     return {
       start: modeRange.start,
-      end: modeRange.end,
+      end: modeRange.end
     };
   }
 
@@ -362,17 +362,17 @@ export class VLS {
   onDocumentLinks({ textDocument }: DocumentLinkParams): DocumentLink[] {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const documentContext: DocumentContext = {
-      resolveReference: (ref) => {
+      resolveReference: ref => {
         if (this.workspacePath && ref[0] === '/') {
           return Uri.file(path.resolve(this.workspacePath, ref)).toString();
         }
         const fsPath = getFileFsPath(doc.uri);
         return Uri.file(path.resolve(fsPath, '..', ref)).toString();
-      },
+      }
     };
 
     const links: DocumentLink[] = [];
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach((m) => {
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
       if (m.mode.findDocumentLinks) {
         pushAll(links, m.mode.findDocumentLinks(doc, documentContext));
       }
@@ -384,7 +384,7 @@ export class VLS {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const symbols: SymbolInformation[] = [];
 
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach((m) => {
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
       if (m.mode.findDocumentSymbols) {
         pushAll(symbols, m.mode.findDocumentSymbols(doc));
       }
@@ -397,7 +397,7 @@ export class VLS {
     const colors: ColorInformation[] = [];
 
     const distinctModes: Set<LanguageMode> = new Set();
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach((m) => {
+    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
       distinctModes.add(m.mode);
     });
 
@@ -475,7 +475,7 @@ export class VLS {
   doValidate(doc: TextDocument): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
-      this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach((lmr) => {
+      this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
         if (lmr.mode.doValidation && this.validation[lmr.mode.getId()]) {
           pushAll(diagnostics, lmr.mode.doValidation(doc));
         }
@@ -501,13 +501,13 @@ export class VLS {
       hoverProvider: true,
       documentHighlightProvider: true,
       documentLinkProvider: {
-        resolveProvider: false,
+        resolveProvider: false
       },
       documentSymbolProvider: true,
       definitionProvider: true,
       referencesProvider: true,
       codeActionProvider: true,
-      colorProvider: true,
+      colorProvider: true
     };
   }
 }

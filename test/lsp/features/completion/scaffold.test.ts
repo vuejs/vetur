@@ -28,15 +28,15 @@ describe('Should autocomplete scaffold snippets', () => {
       '<style> stylus-scoped.vue ✌',
       '<style> stylus.vue ✌',
       '<script> javascript.vue ✌',
-      '<script> typescript.vue ✌',
+      '<script> typescript.vue ✌'
     ]);
   });
 
   it('completes project wide scaffold snippets', async () => {
     await testCompletion(scriptDocUri, position(0, 1), [
       {
-        label: '<vue> with foo.vue 💼',
-      },
+        label: '<vue> with foo.vue 💼'
+      }
     ]);
   });
 });

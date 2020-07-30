@@ -15,7 +15,7 @@ describe('Should do documentLink', () => {
     await testLink(docUri, [
       { target: vscode.Uri.parse('https://vuejs.org/images/logo.png'), range: sameLineRange(2, 14, 47) },
       { target: getDocUri('documentLink/foo'), range: sameLineRange(3, 13, 18) },
-      { target: getDocUri('documentLink/foo.js'), range: sameLineRange(7, 13, 21) },
+      { target: getDocUri('documentLink/foo.js'), range: sameLineRange(7, 13, 21) }
     ]);
   });
 });
@@ -25,9 +25,9 @@ async function testLink(docUri: vscode.Uri, expectedLinks: vscode.DocumentLink[]
 
   const result = (await vscode.commands.executeCommand('vscode.executeLinkProvider', docUri)) as vscode.DocumentLink[];
 
-  expectedLinks.forEach((el) => {
+  expectedLinks.forEach(el => {
     assert.ok(
-      result.some((l) => isEqualLink(l, el)),
+      result.some(l => isEqualLink(l, el)),
       `Failed to find same link as ${el.target!.fsPath}. Seen links are:\n${JSON.stringify(result, null, 2)}`
     );
   });

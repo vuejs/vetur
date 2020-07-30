@@ -8,8 +8,8 @@ describe('Should format', () => {
   const fixturePath = getDocPath('formatting');
   const cases = fs
     .readdirSync(fixturePath)
-    .filter((s) => !s.includes('Expected'))
-    .map((s) => s.slice(0, -'.vue'.length));
+    .filter(s => !s.includes('Expected'))
+    .map(s => s.slice(0, -'.vue'.length));
 
   before('activate', async () => {
     await activateLS();
@@ -32,11 +32,11 @@ async function testFormat(docUri: vscode.Uri, expectedDocUri: vscode.Uri) {
 
   const result = (await vscode.commands.executeCommand('vscode.executeFormatDocumentProvider', docUri, {
     tabSize: 2,
-    insertSpaces: true,
+    insertSpaces: true
   })) as vscode.TextEdit[];
 
   if (result) {
-    await editor.edit((b) => result.forEach((f) => b.replace(f.range, f.newText)));
+    await editor.edit(b => result.forEach(f => b.replace(f.range, f.newText)));
   }
 
   const expected = await readFileAsync(expectedDocUri.fsPath);
