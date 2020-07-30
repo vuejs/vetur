@@ -1,7 +1,7 @@
-import { activateLS, showFile } from '../../lsp/helper';
-import { position, getDocUri } from '../util';
-import { testCompletion, testNoSuchCompletion } from './helper';
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
+import { activateLS, showFile } from '../../helper';
+import { getDocUri, position } from '../../util';
+import { testCompletion, testNoSuchCompletion } from './helper';
 
 describe('Should autocomplete interpolation for <template>', () => {
   const templateDocUri = getDocUri('completion/Basic.vue');
