@@ -38,7 +38,7 @@ describe('Should find common diagnostics for all regions', () => {
       {
         range: sameLineRange(11, 16, 19),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "No value exists in scope for the shorthand property 'Ite'"
+        message: "Cannot find name 'Ite'. Did you mean 'Item'"
       },
       {
         range: range(17, 2, 21, 3),
