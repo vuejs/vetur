@@ -17,38 +17,38 @@ describe('Should find common diagnostics for all regions', () => {
       {
         range: sameLineRange(25, 4, 5),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "',' expected."
+        message: "',' expected"
       },
       {
         range: sameLineRange(7, 9, 12),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Argument of type '\"5\"' is not assignable to parameter of type 'number'."
+        message: "Argument of type '\"5\"' is not assignable to parameter of type 'number'"
       },
       {
         range: sameLineRange(8, 0, 29),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "'Item' is declared but its value is never read.",
+        message: "'Item' is declared but its value is never read",
         tags: [DiagnosticTag.Unnecessary]
       },
       {
         range: sameLineRange(8, 17, 29),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Cannot find module './Void.vue'."
+        message: "Cannot find module './Void.vue'"
       },
       {
         range: sameLineRange(11, 16, 19),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "No value exists in scope for the shorthand property 'Ite'."
+        message: "No value exists in scope for the shorthand property 'Ite'"
       },
       {
         range: range(17, 2, 21, 3),
         severity: vscode.DiagnosticSeverity.Error,
-        message: 'No overload matches this call.'
+        message: 'No overload matches this call'
       },
       {
         range: sameLineRange(24, 14, 16),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Property 'lo' does not exist on type 'Console'."
+        message: "Property 'lo' does not exist on type 'Console'"
       }
     ];
 
