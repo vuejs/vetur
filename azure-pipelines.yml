@@ -48,10 +48,6 @@ steps:
 
 - bash: yarn install
   displayName: Install Dependencies
-- bash: cd server && yarn install && cd ..
-  displayName: Install Server Dependencies
-- bash: cd vti && yarn install && cd ..
-  displayName: Install VTI Dependencies
 - bash: yarn compile
   displayName: Compile
 

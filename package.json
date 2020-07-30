@@ -7,6 +7,9 @@
   "version": "0.25.0",
   "publisher": "octref",
   "scripts": {
+    "postinstall": "run-s install:*",
+    "install:server": "cd server && yarn",
+    "install:vti": "cd vti && yarn",
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "run-s compile:source copy:snippets",
     "compile:source": "tsc -b .",
