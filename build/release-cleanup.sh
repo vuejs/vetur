@@ -1,6 +1,5 @@
 # Deps
 yarn
-cd server && yarn && cd ..
 
 # Compile / Test
 yarn compile
