@@ -129,7 +129,7 @@ describe('Should autocomplete for <template>', () => {
       await testCompletion(parentUri, position(3, 16), ['attr-a']);
 
       // set it back
-      await c.update('vetur.completion.tagCasing', 'kebab', ConfigurationTarget.Global);
+      await c.update('vetur.completion.tagCasing', undefined, ConfigurationTarget.Global);
     });
   });
 });
