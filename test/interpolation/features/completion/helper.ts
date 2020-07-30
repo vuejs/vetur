@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { showFile } from '../helper';
 import { CompletionItem, MarkdownString } from 'vscode';
+import { showFile } from '../../helper';
 
 export interface ExpectedCompletionItem extends CompletionItem {
   documentationStart?: string;

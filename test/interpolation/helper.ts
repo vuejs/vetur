@@ -1,10 +1,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { sleep } from './util';
 import { performance } from 'perf_hooks';
 
 export const EXT_IDENTIFIER = 'octref.vetur';
-export const FILE_LOAD_SLEEP_TIME = 1500;
 
 export const ext = vscode.extensions.getExtension(EXT_IDENTIFIER);
 
@@ -56,4 +54,8 @@ export async function getDiagnosticsAndTimeout(docUri: vscode.Uri, timeout = 500
   }
 
   return result;
+}
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

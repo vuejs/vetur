@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import { performance } from 'perf_hooks';
 
 export const EXT_IDENTIFIER = 'octref.vetur';
-export const FILE_LOAD_SLEEP_TIME = 1500;
 
 export const ext = vscode.extensions.getExtension(EXT_IDENTIFIER);
 

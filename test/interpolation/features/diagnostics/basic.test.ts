@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { activateLS, showFile } from '../helper';
-import { getDocUri, sameLineRange } from '../util';
+import { activateLS, showFile } from '../../helper';
+import { getDocUri, sameLineRange } from '../../util';
 import { testDiagnostics, testNoDiagnostics } from './helper';
 
 describe('Should find template-diagnostics in <template> region', () => {
