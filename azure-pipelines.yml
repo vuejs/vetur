@@ -46,6 +46,13 @@ steps:
   inputs:
     versionSpec: 1.17.3
 
+# Restore .vscode-test cache
+- task: Cache@2
+  inputs:
+    key: vscode-test | $(Agent.OS)
+    path: .vscode-test
+  displayName: Cache .vscode-test
+
 - bash: yarn install
   displayName: Install Dependencies
 - bash: cd server && yarn install && cd ..
