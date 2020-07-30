@@ -66,7 +66,7 @@
     "codecov": "^3.0.4",
     "glob": "^7.1.2",
     "mocha": "^8.0.1",
-    "nyc": "^14.1.1",
+    "nyc": "^15.1.0",
     "source-map-support": "^0.5.0"
   },
   "scripts": {
