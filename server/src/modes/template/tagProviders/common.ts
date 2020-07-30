@@ -25,7 +25,7 @@ export enum Priority {
   UserCode,
   Library,
   Framework,
-  Platform,
+  Platform
 }
 
 export interface IHTMLTagProvider {
@@ -79,7 +79,7 @@ export function collectAttributesDefault(
       }
     }
   }
-  globalAttributes.forEach((attr) => {
+  globalAttributes.forEach(attr => {
     collector(attr.label, attr.type, attr.documentation);
   });
 }

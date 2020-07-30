@@ -39,17 +39,12 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.applyWorkspaceEdits', (args: WorkspaceEdit) => {
-      const edit = client.protocol2CodeConverter.asWorkspaceEdit(args)!;
-      vscode.workspace.applyEdit(edit);
-    })
-  );
-
-  context.subscriptions.push(
     vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
-      client
-        .sendRequest<vscode.Command | undefined>('requestCodeActionEdits', args)
-        .then(command => command && vscode.commands.executeCommand(command.command, ...command.arguments!));
+      client.sendRequest<WorkspaceEdit | undefined>('requestCodeActionEdits', args).then(edits => {
+        if (edits) {
+          vscode.workspace.applyEdit(client.protocol2CodeConverter.asWorkspaceEdit(edits)!);
+        }
+      });
     })
   );
 

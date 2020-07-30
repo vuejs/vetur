@@ -14,7 +14,7 @@ describe('Should find references', () => {
   it('finds references for this.msg', async () => {
     await testReferences(docUri, position(33, 23), [
       sameLineLocation(docUri, 23, 6, 9),
-      sameLineLocation(docUri, 33, 23, 26),
+      sameLineLocation(docUri, 33, 23, 26)
     ]);
   });
 
@@ -23,7 +23,7 @@ describe('Should find references', () => {
     await testReferences(docUri, position(16, 12), [
       location(docUri, 16, 12, 16, 13),
       sameLineLocation(lodashDtsUri, 243, 9, 10),
-      sameLineLocation(lodashDtsUri, 246, 12, 13),
+      sameLineLocation(lodashDtsUri, 246, 12, 13)
     ]);
   });
 
@@ -31,7 +31,7 @@ describe('Should find references', () => {
     const vueOptionsDtsUri = getDocUri('node_modules/vue/types/options.d.ts');
     await testReferences(docUri, position(21, 2), [
       sameLineLocation(vueOptionsDtsUri, 73, 2, 6),
-      sameLineLocation(docUri, 21, 2, 6),
+      sameLineLocation(docUri, 21, 2, 6)
     ]);
   });
 
@@ -39,7 +39,7 @@ describe('Should find references', () => {
     const itemUri = getDocUri('references/Basic.Item.vue');
     await testReferences(docUri, position(20, 16), [
       sameLineLocation(docUri, 17, 7, 11),
-      sameLineLocation(itemUri, 5, 7, 14),
+      sameLineLocation(itemUri, 5, 7, 14)
     ]);
   });
 });
@@ -53,9 +53,9 @@ async function testReferences(docUri: vscode.Uri, position: vscode.Position, exp
     position
   )) as vscode.Location[];
 
-  expectedLocations.forEach((el) => {
+  expectedLocations.forEach(el => {
     assert.ok(
-      result.some((l) => {
+      result.some(l => {
         return l.range.isEqual(el.range) && l.uri.fsPath === el.uri.fsPath;
       })
     );

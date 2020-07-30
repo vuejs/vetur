@@ -1,4 +1,4 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../helper';
+import { activateLS, showFile } from '../../helper';
 import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 
@@ -20,7 +20,6 @@ describe('Should autocomplete for <template>', () => {
     await showFile(quasarUri);
     await showFile(vuetifyUri);
     await showFile(workspaceCustomTagsUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
   });
 
   describe('Should complete <template> section', () => {
@@ -130,7 +129,7 @@ describe('Should autocomplete for <template>', () => {
       await testCompletion(parentUri, position(3, 16), ['attr-a']);
 
       // set it back
-      await c.update('vetur.completion.tagCasing', 'kebab', ConfigurationTarget.Global);
+      await c.update('vetur.completion.tagCasing', undefined, ConfigurationTarget.Global);
     });
   });
 });

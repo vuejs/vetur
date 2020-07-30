@@ -6,9 +6,9 @@ import * as _ from 'lodash';
 export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.Diagnostic[]) {
   const result = await getDiagnosticsAndTimeout(docUri);
 
-  expectedDiagnostics.forEach((ed) => {
+  expectedDiagnostics.forEach(ed => {
     assert.ok(
-      result.some((d) => {
+      result.some(d => {
         return isEqualDiagnostic(ed, d);
       }),
       `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +

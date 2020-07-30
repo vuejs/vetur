@@ -16,13 +16,13 @@ describe('Should do path completion for import', () => {
       {
         label: 'Basic',
         kind: CompletionItemKind.File,
-        detail: 'Basic.vue',
+        detail: 'Basic.vue'
       },
       {
         label: 'Item',
         kind: CompletionItemKind.File,
-        detail: 'Item.vue',
-      },
+        detail: 'Item.vue'
+      }
     ]);
   });
 
@@ -30,16 +30,16 @@ describe('Should do path completion for import', () => {
     await testCompletion(scriptDocUri, position(6, 11), [
       {
         label: 'script',
-        kind: CompletionItemKind.Folder,
+        kind: CompletionItemKind.Folder
       },
       {
         label: 'style',
-        kind: CompletionItemKind.Folder,
+        kind: CompletionItemKind.Folder
       },
       {
         label: 'template',
-        kind: CompletionItemKind.Folder,
-      },
+        kind: CompletionItemKind.Folder
+      }
     ]);
   });
 });

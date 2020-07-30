@@ -18,7 +18,9 @@ import {
   ColorInformation,
   Color,
   ColorPresentation,
-  Command
+  Command,
+  CodeAction,
+  WorkspaceEdit
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -53,8 +55,8 @@ export interface LanguageMode {
     range: Range,
     formatParams: FormattingOptions,
     context: CodeActionContext
-  ): Command[];
-  getRefactorEdits?(doc: TextDocument, args: RefactorAction): Command;
+  ): CodeAction[];
+  getRefactorEdits?(doc: TextDocument, args: RefactorAction): WorkspaceEdit;
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
   doHover?(document: TextDocument, position: Position): Hover;

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { performance } from 'perf_hooks';
 
 export const EXT_IDENTIFIER = 'octref.vetur';
 export const FILE_LOAD_SLEEP_TIME = 1500;
@@ -48,11 +49,11 @@ export function sleep(ms: number) {
 
 // Retry to get diagnostics until length > 0 or timeout
 export async function getDiagnosticsAndTimeout(docUri: vscode.Uri, timeout = 5000) {
-  const startTime = Date.now();
+  const startTime = performance.now();
 
   let result = vscode.languages.getDiagnostics(docUri);
 
-  while (result.length <= 0 && startTime + timeout > Date.now()) {
+  while (result.length <= 0 && startTime + timeout > performance.now()) {
     result = vscode.languages.getDiagnostics(docUri);
     await sleep(100);
   }

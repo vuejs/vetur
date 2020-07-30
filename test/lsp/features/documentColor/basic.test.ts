@@ -14,7 +14,7 @@ describe('Should do documentColor', () => {
   it('show no duplicate document colors', async () => {
     await testHighlight(docUri, position(2, 5), [
       { color: { red: 1, blue: 1, green: 1, alpha: 1 }, range: sameLineRange(2, 22, 27) },
-      { color: { red: 0, blue: 0, green: 0, alpha: 1 }, range: sameLineRange(8, 11, 16) },
+      { color: { red: 0, blue: 0, green: 0, alpha: 1 }, range: sameLineRange(8, 11, 16) }
     ]);
   });
 });
@@ -28,8 +28,8 @@ async function testHighlight(docUri: vscode.Uri, position: vscode.Position, expe
     position
   )) as vscode.ColorInformation[];
 
-  expectedColors.forEach((eh) => {
-    assert.ok(result.some((h) => isEqualColor(h, eh)));
+  expectedColors.forEach(eh => {
+    assert.ok(result.some(h => isEqualColor(h, eh)));
   });
 
   function isEqualColor(h1: vscode.DocumentHighlight, h2: vscode.DocumentHighlight) {

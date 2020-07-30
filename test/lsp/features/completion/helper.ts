@@ -20,15 +20,15 @@ export async function testCompletion(
     position
   )) as vscode.CompletionList;
 
-  expectedItems.forEach((ei) => {
+  expectedItems.forEach(ei => {
     if (typeof ei === 'string') {
       assert.ok(
-        result.items.some((i) => {
+        result.items.some(i => {
           return i.label === ei;
         })
       );
     } else {
-      const match = result.items.find((i) => i.label === ei.label);
+      const match = result.items.find(i => i.label === ei.label);
       if (!match) {
         assert.fail(
           `Can't find matching item for\n${JSON.stringify(ei, null, 2)}\nSeen items:\n${JSON.stringify(
@@ -85,15 +85,15 @@ export async function testNoSuchCompletion(
     position
   )) as vscode.CompletionList;
 
-  notExpectedItems.forEach((ei) => {
+  notExpectedItems.forEach(ei => {
     if (typeof ei === 'string') {
       assert.ok(
-        !result.items.some((i) => {
+        !result.items.some(i => {
           return i.label === ei;
         })
       );
     } else {
-      const match = result.items.find((i) => {
+      const match = result.items.find(i => {
         for (const x in ei) {
           if (ei[x] !== i[x]) {
             return false;
