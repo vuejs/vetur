@@ -51,9 +51,18 @@ steps:
   inputs:
     key: vscode-test | $(Agent.OS)
     path: .vscode-test
-  displayName: Cache .vscode-test
+  displayName: Restore .vscode-test cache
 
-- bash: yarn install
+- task: Cache@2
+  inputs:
+    key: 'yarn | "$(Agent.OS)" | yarn.lock'
+    restoreKeys: |
+       yarn | "$(Agent.OS)"
+       yarn
+    path: '$(Pipeline.Workspace)/.yarn'
+  displayName: Restore yarn cache
+
+- bash: yarn --frozen-lockfile
   displayName: Install Dependencies
 - bash: yarn compile
   displayName: Compile
