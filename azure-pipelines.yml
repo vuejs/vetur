@@ -51,6 +51,8 @@ steps:
 
 # Restore .vscode-test cache
 - task: Cache@2
+  # For some reason retrieving 250MB cache on macOS takes 7 minutes
+  condition: ne(variables['Agent.OS'], 'Darwin')
   inputs:
     key: vscode-test | $(Agent.OS)
     path: .vscode-test
