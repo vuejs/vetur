@@ -25,8 +25,7 @@ import {
   MarkupContent,
   CodeAction,
   CodeActionKind,
-  WorkspaceEdit,
-  InsertTextFormat
+  WorkspaceEdit
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -158,29 +157,19 @@ export async function getJavascriptMode(
       const entries = completions.entries.filter(entry => entry.name !== '__vueEditorBridge');
       return {
         isIncomplete: false,
-        items: entries.map(entry => {
+        items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
-          const filterText = entry.insertText && range && entry.insertText[0] === '[' ? '.' + entry.name : undefined;
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
-          const kind = toCompletionItemKind(entry.kind);
-          const insertTextFormat =
-            kind === CompletionItemKind.Function || kind === CompletionItemKind.Method
-              ? InsertTextFormat.Snippet
-              : undefined;
-          const insertText = entry.insertText || entry.name;
-
           return {
             uri: doc.uri,
             position,
-            preselect: entry.isRecommended ? true : undefined,
             label,
             detail,
-            filterText,
-            insertTextFormat,
-            sortText: entry.sortText,
+            filterText: getFilterText(entry.insertText),
+            sortText: entry.sortText + index,
             kind: toCompletionItemKind(entry.kind),
-            textEdit: range && TextEdit.replace(range, insertText),
-            insertText: range ? undefined : insertText,
+            textEdit: range && TextEdit.replace(range, entry.name),
+            insertText: entry.insertText,
             data: {
               // data used for resolving item details (see 'doResolve')
               languageId: scriptDoc.languageId,
@@ -735,4 +724,29 @@ function convertTSDiagnosticCategoryToDiagnosticSeverity(c: ts.DiagnosticCategor
     case ts.DiagnosticCategory.Suggestion:
       return DiagnosticSeverity.Hint;
   }
+}
+
+/* tslint:disable:max-line-length */
+/**
+ * Adapted from https://github.com/microsoft/vscode/blob/2b090abd0fdab7b21a3eb74be13993ad61897f84/extensions/typescript-language-features/src/languageFeatures/completions.ts#L147-L181
+ */
+function getFilterText(insertText: string | undefined): string | undefined {
+  // For `this.` completions, generally don't set the filter text since we don't want them to be overly prioritized. #74164
+  if (insertText?.startsWith('this.')) {
+    return undefined;
+  }
+
+  // Handle the case:
+  // ```
+  // const xyz = { 'ab c': 1 };
+  // xyz.ab|
+  // ```
+  // In which case we want to insert a bracket accessor but should use `.abc` as the filter text instead of
+  // the bracketed insert text.
+  else if (insertText?.startsWith('[')) {
+    return insertText.replace(/^\[['"](.+)[['"]\]$/, '.$1');
+  }
+
+  // In all other cases, fallback to using the insertText
+  return insertText;
 }
