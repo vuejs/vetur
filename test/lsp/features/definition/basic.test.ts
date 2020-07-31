@@ -26,7 +26,7 @@ describe('Should find definition', () => {
   });
 
   it('finds definition for imported Vue files', async () => {
-    const itemUri = getDocUri('client/definition/Basic.Item.vue');
+    const itemUri = getDocUri('definition/Basic.Item.vue');
     await testDefinition(docUri, position(18, 7), location(itemUri, 5, 0, 7, 1));
   });
 
