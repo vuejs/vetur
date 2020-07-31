@@ -1,8 +1,6 @@
-import { activateLS, showFile } from '../../helper';
-import { position, getDocUri } from '../../util';
+import { ConfigurationTarget, workspace } from 'vscode';
+import { getDocUri, position } from '../../util';
 import { testCompletion } from './helper';
-
-import { workspace, ConfigurationTarget } from 'vscode';
 
 describe('Should autocomplete for <template>', () => {
   const basicUri = getDocUri('completion/template/Basic.vue');
@@ -12,10 +10,6 @@ describe('Should autocomplete for <template>', () => {
   const workspaceCustomTagsUri = getDocUri('completion/template/WorkspaceCustomTags.vue');
 
   const parentUri = getDocUri('completion/template/childComponent/Parent.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   describe('Should complete <template> section', () => {
     it('completes directives such as v-if', async () => {

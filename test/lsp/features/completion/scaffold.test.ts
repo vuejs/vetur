@@ -1,13 +1,8 @@
-import { activateLS, showFile } from '../../helper';
 import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 
 describe('Should autocomplete scaffold snippets', () => {
   const scriptDocUri = getDocUri('completion/script/Scaffold.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   it('completes all scaffold snippets', async () => {
     await testCompletion(scriptDocUri, position(0, 1), [

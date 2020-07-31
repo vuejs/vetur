@@ -1,15 +1,10 @@
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
-import { activateLS } from '../../helper';
 import { getDocUri, position } from '../../util';
 import { testCompletion, testNoSuchCompletion } from './helper';
 
 describe('Should autocomplete interpolation for <template>', () => {
   const templateDocUri = getDocUri('completion/Basic.vue');
   const parentTemplateDocUri = getDocUri('completion/Parent.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   const defaultList: CompletionItem[] = [
     {

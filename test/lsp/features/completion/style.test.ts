@@ -1,14 +1,9 @@
-import { activateLS } from '../../helper';
+import { getDocUri, position } from '../../util';
 import { testCompletion } from './helper';
-import { position, getDocUri } from '../../util';
 
 describe('Should autocomplete for <style>', () => {
   const docUri = getDocUri('completion/style/Basic.vue');
   const doubleDocUri = getDocUri('completion/style/Double.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   describe('Should complete <style> section for all languages', () => {
     it('completes CSS properties for <style lang="css">', async () => {

@@ -1,15 +1,10 @@
 import * as vscode from 'vscode';
-import { activateLS, showFile } from '../../helper';
-import { sameLineRange, range, getDocUri } from '../../util';
-import { testDiagnostics } from './helper';
 import { DiagnosticTag } from 'vscode-languageclient';
+import { getDocUri, range, sameLineRange } from '../../util';
+import { testDiagnostics } from './helper';
 
 describe('Should find common diagnostics for all regions', () => {
   const docUri = getDocUri('diagnostics/Basic.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   it('shows diagnostic errors for <script> region', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [

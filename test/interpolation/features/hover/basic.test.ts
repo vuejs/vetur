@@ -1,14 +1,10 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, showFile } from '../../helper';
+import { showFile } from '../../helper';
 import { position, sameLineRange, getDocUri } from '../../util';
 
 describe('Should do hover interpolation for <template>', () => {
   const docUri = getDocUri('hover/Basic.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   it('shows hover for msg in mustache', async () => {
     await testHover(docUri, position(2, 11), {

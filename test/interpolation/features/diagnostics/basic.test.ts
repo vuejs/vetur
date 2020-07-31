@@ -1,13 +1,8 @@
 import * as vscode from 'vscode';
-import { activateLS, showFile } from '../../helper';
 import { getDocUri, sameLineRange } from '../../util';
 import { testDiagnostics, testNoDiagnostics } from './helper';
 
 describe('Should find template-diagnostics in <template> region', () => {
-  before('activate', async () => {
-    await activateLS();
-  });
-
   const tests: TemplateDiagnosticTest[] = [
     {
       file: 'expression.vue',

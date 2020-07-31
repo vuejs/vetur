@@ -1,15 +1,11 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, showFile, getDiagnosticsAndTimeout } from '../../helper';
+import { showFile, getDiagnosticsAndTimeout } from '../../helper';
 import { getDocUri, sameLineRange } from '../../util';
-import { CodeAction, WorkspaceEdit } from 'vscode-languageclient';
+import { CodeAction } from 'vscode-languageclient';
 
 describe('Should do codeAction', () => {
   const docUri = getDocUri('codeAction/Basic.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   it('finds codeAction for unused import', async () => {
     const codeActions: CodeAction[] = [{ title: `Remove unused declaration for: 'lodash'` }];

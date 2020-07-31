@@ -1,14 +1,10 @@
-import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, showFile } from '../../helper';
-import { sameLineRange, getDocUri } from '../../util';
+import * as vscode from 'vscode';
+import { showFile } from '../../helper';
+import { getDocUri, sameLineRange } from '../../util';
 
 describe('Should do documentLink', () => {
   const docUri = getDocUri('documentLink/Basic.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   it('shows all documentLinks for Basic.vue', async () => {
     await testLink(docUri, [

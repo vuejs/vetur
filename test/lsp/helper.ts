@@ -2,23 +2,6 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { performance } from 'perf_hooks';
 
-export const EXT_IDENTIFIER = 'octref.vetur';
-
-export const ext = vscode.extensions.getExtension(EXT_IDENTIFIER);
-
-/**
- * Activate Extension
- */
-export async function activateLS() {
-  try {
-    await ext!.activate();
-  } catch (err) {
-    console.error(err);
-    console.log(`Failed to activate ${EXT_IDENTIFIER}`);
-    process.exit(1);
-  }
-}
-
 export async function showFile(docUri: vscode.Uri) {
   const doc = await vscode.workspace.openTextDocument(docUri);
   return await vscode.window.showTextDocument(doc);

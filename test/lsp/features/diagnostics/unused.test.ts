@@ -1,15 +1,10 @@
 import * as vscode from 'vscode';
-import { activateLS, showFile } from '../../helper';
-import { sameLineRange, getDocUri } from '../../util';
-import { testDiagnostics } from './helper';
 import { DiagnosticTag } from 'vscode-languageclient';
+import { getDocUri, sameLineRange } from '../../util';
+import { testDiagnostics } from './helper';
 
 describe('Should find diagnostics for unused variables', () => {
   const docUri = getDocUri('diagnostics/Unused.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   it('shows diagnostic errors for unused variables', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [
