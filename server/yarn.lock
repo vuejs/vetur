@@ -1624,9 +1624,9 @@ escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
 eslint-plugin-vue@^7.0.0-beta.0:
-  version "7.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-7.0.0-beta.0.tgz#ea33ab9410e105972d8f59c70c4a86a209f3d98a"
-  integrity sha512-EVF6d1wOJKHNFHA2LQoq21YrPmi/YgHAT593ek8k47kUl2GkJLA/1CHa2TBzpy/0k9iwBLxp7oaIbxsZg/4Yfg==
+  version "7.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-7.0.0-beta.1.tgz#818e2e88767581c136e6964f18179910e36ff5f9"
+  integrity sha512-kUkSwRZeMDwaNcCoj5ZTuaxRTzPNazKJCgd56MxKzsIe7SbNBpIiyyS2QQYh5WOr9M3tTKNROQJGSrh3KV5LOw==
   dependencies:
     eslint-utils "^2.1.0"
     natural-compare "^1.4.0"
