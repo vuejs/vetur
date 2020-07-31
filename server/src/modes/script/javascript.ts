@@ -163,6 +163,7 @@ export async function getJavascriptMode(
           return {
             uri: doc.uri,
             position,
+            preselect: entry.isRecommended ? true : undefined,
             label,
             detail,
             filterText: getFilterText(entry.insertText),
