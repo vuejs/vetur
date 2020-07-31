@@ -1,28 +1,32 @@
-import { activateLS, showFile } from '../../helper';
+import { activateLS } from '../../helper';
 import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 
 describe('Should autocomplete for <script>', () => {
-  const scriptDocUri = getDocUri('completion/script/Basic.vue');
+  const basicUri = getDocUri('completion/script/Basic.vue');
+  const hyphenUri = getDocUri('completion/script/Hyphen.vue');
 
   before('activate', async () => {
     await activateLS();
-    await showFile(scriptDocUri);
   });
 
   it('completes module names when importing', async () => {
-    await testCompletion(scriptDocUri, position(5, 8), ['lodash', 'vue', 'vuex']);
+    await testCompletion(basicUri, position(5, 8), ['lodash', 'vue', 'vuex']);
   });
 
   it('completes for this.', async () => {
-    await testCompletion(scriptDocUri, position(15, 11), ['foo', 'bar', '$store', '$router', '$el', '$data']);
+    await testCompletion(basicUri, position(15, 11), ['foo', 'bar', '$store', '$router', '$el', '$data']);
   });
 
   it('completes for lodash methods with _.', async () => {
-    await testCompletion(scriptDocUri, position(18, 8), ['curry', 'fill']);
+    await testCompletion(basicUri, position(18, 8), ['curry', 'fill']);
   });
 
   it('completes Vue default export methods', async () => {
-    await testCompletion(scriptDocUri, position(20, 4), ['data', 'props', 'mounted']);
+    await testCompletion(basicUri, position(20, 4), ['data', 'props', 'mounted']);
+  });
+
+  it('completes hyphen properties in object', async () => {
+    await testCompletion(hyphenUri, position(6, 4), ['a', 'a-2']);
   });
 });
