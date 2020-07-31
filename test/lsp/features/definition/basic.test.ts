@@ -31,7 +31,7 @@ describe('Should find definition', () => {
   });
 
   it('finds definition for child component inside template region', async () => {
-    const itemUri = getDocUri('client/definition/Basic.Item.vue');
+    const itemUri = getDocUri('definition/Basic.Item.vue');
     await testDefinition(docUri, position(12, 5), location(itemUri, 5, 0, 7, 1));
   });
 });
