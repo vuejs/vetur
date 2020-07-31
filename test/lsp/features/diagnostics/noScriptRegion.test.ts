@@ -8,8 +8,6 @@ describe('Should find no error when <script> is not present', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(childUri);
-    await showFile(parentUri);
   });
 
   it('shows no diagnostics error for component without <script> region', async () => {

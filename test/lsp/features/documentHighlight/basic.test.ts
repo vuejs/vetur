@@ -8,7 +8,6 @@ describe('Should do documentHighlight', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows highlights for <div> tags', async () => {

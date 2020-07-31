@@ -7,7 +7,6 @@ describe('Should find diagnostics using eslint-plugin-vue', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows no error for multi-root template, which is valid in v3', async () => {

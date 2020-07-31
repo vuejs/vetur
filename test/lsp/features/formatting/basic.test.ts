@@ -13,10 +13,6 @@ describe('Should format', () => {
 
   before('activate', async () => {
     await activateLS();
-
-    for (let i = 0; i < cases.length; i++) {
-      await showFile(getDocUri(`formatting/${cases[i]}.vue`));
-    }
   });
 
   for (let i = 0; i < cases.length; i++) {

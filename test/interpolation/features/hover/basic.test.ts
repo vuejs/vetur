@@ -8,7 +8,6 @@ describe('Should do hover interpolation for <template>', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows hover for msg in mustache', async () => {

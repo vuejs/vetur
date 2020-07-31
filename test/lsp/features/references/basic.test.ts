@@ -8,7 +8,6 @@ describe('Should find references', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('finds references for this.msg', async () => {

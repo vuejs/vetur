@@ -1,4 +1,4 @@
-import { activateLS, showFile } from '../../helper';
+import { activateLS } from '../../helper';
 import { testCompletion } from './helper';
 import { position, getDocUri } from '../../util';
 
@@ -8,8 +8,6 @@ describe('Should autocomplete for <style>', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
-    await showFile(doubleDocUri);
   });
 
   describe('Should complete <style> section for all languages', () => {

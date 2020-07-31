@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDiagnosticsAndTimeout, sleep } from '../../helper';
+import { getDiagnosticsAndTimeout, sleep, showFile } from '../../helper';
 import * as _ from 'lodash';
 
 export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.Diagnostic[]) {
+  await showFile(docUri);
+
   const result = await getDiagnosticsAndTimeout(docUri);
 
   expectedDiagnostics.forEach(ed => {
@@ -34,6 +36,8 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
 }
 
 export async function testNoDiagnostics(docUri: vscode.Uri) {
+  await showFile(docUri);
+
   // For diagnostics to show up
   await sleep(3000);
 

@@ -9,7 +9,6 @@ describe('Should do codeAction', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('finds codeAction for unused import', async () => {
@@ -24,6 +23,8 @@ describe('Should do codeAction', () => {
 });
 
 async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedActions: CodeAction[]) {
+  await showFile(docUri);
+
   await getDiagnosticsAndTimeout(docUri);
 
   const result = (await vscode.commands.executeCommand(

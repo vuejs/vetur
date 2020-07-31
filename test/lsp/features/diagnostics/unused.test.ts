@@ -9,7 +9,6 @@ describe('Should find diagnostics for unused variables', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows diagnostic errors for unused variables', async () => {

@@ -244,7 +244,6 @@ describe('Should find template-diagnostics in <template> region', () => {
   tests.forEach(t => {
     it(`Shows template diagnostics for ${t.file}`, async () => {
       const docUri = getDocUri(`diagnostics/${t.file}`);
-      await showFile(docUri);
       await testDiagnostics(docUri, t.diagnostics, !!t.skipSameDiagnosticCountAssert);
     });
   });
@@ -254,7 +253,6 @@ describe('Should find template-diagnostics in <template> region', () => {
   noErrorTests.forEach(t => {
     it(`Shows no template diagnostics error for ${t}`, async () => {
       const docUri = getDocUri(`diagnostics/${t}`);
-      await showFile(docUri);
       await testNoDiagnostics(docUri);
     });
   });

@@ -8,7 +8,6 @@ describe('Should do hover', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows hover for <img> tag', async () => {

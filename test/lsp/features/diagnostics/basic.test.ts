@@ -9,7 +9,6 @@ describe('Should find common diagnostics for all regions', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows diagnostic errors for <script> region', async () => {

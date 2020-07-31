@@ -8,7 +8,6 @@ describe('Vue 3 integration test', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(fileUri);
   });
 
   describe('Should complete Vue 3 options', () => {

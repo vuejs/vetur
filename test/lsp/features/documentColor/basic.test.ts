@@ -8,7 +8,6 @@ describe('Should do documentColor', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('show no duplicate document colors', async () => {

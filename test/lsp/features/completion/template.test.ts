@@ -15,11 +15,6 @@ describe('Should autocomplete for <template>', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(basicUri);
-    await showFile(elementUri);
-    await showFile(quasarUri);
-    await showFile(vuetifyUri);
-    await showFile(workspaceCustomTagsUri);
   });
 
   describe('Should complete <template> section', () => {

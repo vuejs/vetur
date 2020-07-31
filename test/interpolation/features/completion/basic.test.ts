@@ -1,5 +1,5 @@
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
-import { activateLS, showFile } from '../../helper';
+import { activateLS } from '../../helper';
 import { getDocUri, position } from '../../util';
 import { testCompletion, testNoSuchCompletion } from './helper';
 
@@ -9,7 +9,6 @@ describe('Should autocomplete interpolation for <template>', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(templateDocUri);
   });
 
   const defaultList: CompletionItem[] = [

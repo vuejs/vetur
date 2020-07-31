@@ -7,7 +7,7 @@ export const EXT_IDENTIFIER = 'octref.vetur';
 export const ext = vscode.extensions.getExtension(EXT_IDENTIFIER);
 
 /**
- * Activate Extension and open a Vue file to make sure LS is running
+ * Activate Extension
  */
 export async function activateLS() {
   try {

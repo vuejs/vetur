@@ -37,7 +37,6 @@ export async function testCompletion(
             2
           )}`
         );
-        return;
       }
 
       assert.equal(match.label, ei.label);

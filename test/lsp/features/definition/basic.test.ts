@@ -8,7 +8,6 @@ describe('Should find definition', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('finds definition for this.msg', async () => {

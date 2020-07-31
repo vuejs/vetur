@@ -8,7 +8,6 @@ describe('Should do documentSymbol', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows all documentSymbols for Basic.vue', async () => {

@@ -8,7 +8,6 @@ describe('Should do path completion for import', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(scriptDocUri);
   });
 
   it('completes local file names when importing', async () => {

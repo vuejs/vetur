@@ -7,7 +7,6 @@ describe('Should autocomplete scaffold snippets', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(scriptDocUri);
   });
 
   it('completes all scaffold snippets', async () => {

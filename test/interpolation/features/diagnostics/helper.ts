@@ -1,13 +1,15 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import * as _ from 'lodash';
-import { getDiagnosticsAndTimeout, sleep } from '../../helper';
+import { getDiagnosticsAndTimeout, sleep, showFile } from '../../helper';
 
 export async function testDiagnostics(
   docUri: vscode.Uri,
   expectedDiagnostics: vscode.Diagnostic[],
   skipSameDiagnosticCountAssert: boolean
 ) {
+  await showFile(docUri);
+
   const result = await getDiagnosticsAndTimeout(docUri);
 
   if (!skipSameDiagnosticCountAssert) {
@@ -49,6 +51,7 @@ export async function testDiagnostics(
 }
 
 export async function testNoDiagnostics(docUri: vscode.Uri) {
+  await showFile(docUri);
   // For diagnostics to show up
   await sleep(3000);
 

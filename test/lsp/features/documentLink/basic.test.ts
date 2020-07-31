@@ -8,7 +8,6 @@ describe('Should do documentLink', () => {
 
   before('activate', async () => {
     await activateLS();
-    await showFile(docUri);
   });
 
   it('shows all documentLinks for Basic.vue', async () => {
