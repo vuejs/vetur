@@ -138,6 +138,10 @@ export function getSingleTypeDocument(
     }
   }
 
+  if (type === 'script' && newContent.trim().length === 0) {
+    newContent = 'export default {};';
+  }
+
   return TextDocument.create(document.uri, langId, document.version, newContent);
 }
 
