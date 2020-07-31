@@ -88,7 +88,7 @@ export function doHover(
   }
   const tagRange = {
     start: document.positionAt(scanner.getTokenOffset()),
-    end: document.positionAt(scanner.getTokenEnd()),
+    end: document.positionAt(scanner.getTokenEnd())
   };
   switch (token) {
     case TokenType.StartTag:

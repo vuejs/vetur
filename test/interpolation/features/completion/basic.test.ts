@@ -22,12 +22,12 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Field,
+      kind: CompletionItemKind.Field
     },
     {
       label: 'msg',
       documentation: new MarkdownString('My msg').appendCodeblock(`msg: 'Vetur means "Winter" in icelandic.'`, 'js'),
-      kind: CompletionItemKind.Field,
+      kind: CompletionItemKind.Field
     },
     {
       label: 'count',
@@ -37,7 +37,7 @@ describe('Should autocomplete interpolation for <template>', () => {
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Field,
+      kind: CompletionItemKind.Field
     },
     {
       label: 'hello',
@@ -48,8 +48,8 @@ describe('Should autocomplete interpolation for <template>', () => {
         'js'
       ),
 
-      kind: CompletionItemKind.Function,
-    },
+      kind: CompletionItemKind.Function
+    }
   ];
 
   describe('Should complete props, data, computed and methods', () => {
@@ -61,8 +61,8 @@ describe('Should autocomplete interpolation for <template>', () => {
       await testCompletion(templateDocUri, position(3, 11), [
         {
           label: 'msg',
-          kind: CompletionItemKind.Field,
-        },
+          kind: CompletionItemKind.Field
+        }
       ]);
     });
 
@@ -71,8 +71,8 @@ describe('Should autocomplete interpolation for <template>', () => {
         {
           label: 'basic',
           kind: CompletionItemKind.Property,
-          documentationStart: 'My basic tag\n```js\nexport default {',
-        },
+          documentationStart: 'My basic tag\n```js\nexport default {'
+        }
       ]);
     });
 
@@ -87,8 +87,8 @@ describe('Should autocomplete interpolation for <template>', () => {
   default: false
 }`,
             'js'
-          ),
-        },
+          )
+        }
       ]);
     });
 
@@ -97,8 +97,8 @@ describe('Should autocomplete interpolation for <template>', () => {
         {
           label: 'bar',
           kind: CompletionItemKind.Value,
-          documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js'),
-        },
+          documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js')
+        }
       ]);
     });
 
@@ -107,8 +107,8 @@ describe('Should autocomplete interpolation for <template>', () => {
         {
           label: 'bar',
           kind: CompletionItemKind.Value,
-          documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js'),
-        },
+          documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js')
+        }
       ]);
     });
 

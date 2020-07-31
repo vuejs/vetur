@@ -116,6 +116,6 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
       for (const option of detail.options) {
         collector(option);
       }
-    },
+    }
   };
 }

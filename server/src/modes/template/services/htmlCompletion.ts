@@ -6,7 +6,7 @@ import {
   Range,
   TextEdit,
   InsertTextFormat,
-  CompletionItem,
+  CompletionItem
 } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
@@ -26,7 +26,7 @@ export function doComplete(
 
   const result: CompletionList = {
     isIncomplete: false,
-    items: [],
+    items: []
   };
 
   const offset = document.offsetAt(position);
@@ -49,7 +49,7 @@ export function doComplete(
 
   function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
     const range = getReplaceRange(afterOpenBracket, tagNameEnd);
-    tagProviders.forEach((provider) => {
+    tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectTags((tag, label) => {
         result.items.push({
@@ -58,7 +58,7 @@ export function doComplete(
           documentation: label,
           textEdit: TextEdit.replace(range, tag),
           sortText: priority + tag,
-          insertTextFormat: InsertTextFormat.PlainText,
+          insertTextFormat: InsertTextFormat.PlainText
         });
       });
     });
@@ -96,7 +96,7 @@ export function doComplete(
           kind: CompletionItemKind.Property,
           filterText: '/' + tag + closeTag,
           textEdit: TextEdit.replace(range, '/' + tag + closeTag),
-          insertTextFormat: InsertTextFormat.PlainText,
+          insertTextFormat: InsertTextFormat.PlainText
         };
         const startIndent = getLineIndent(curr.start);
         const endIndent = getLineIndent(afterOpenBracket - 1);
@@ -114,7 +114,7 @@ export function doComplete(
       return result;
     }
 
-    tagProviders.forEach((provider) => {
+    tagProviders.forEach(provider => {
       provider.collectTags((tag, label) => {
         result.items.push({
           label: '/' + tag,
@@ -122,7 +122,7 @@ export function doComplete(
           documentation: label,
           filterText: '/' + tag + closeTag,
           textEdit: TextEdit.replace(range, '/' + tag + closeTag),
-          insertTextFormat: InsertTextFormat.PlainText,
+          insertTextFormat: InsertTextFormat.PlainText
         });
       });
     });
@@ -143,7 +143,7 @@ export function doComplete(
     const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)
       ? ''
       : '="$1"';
-    tagProviders.forEach((provider) => {
+    tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectAttributes(currentTag, (attribute, type, documentation) => {
         if ((type === 'event' && filterPrefix !== '@') || (type !== 'event' && filterPrefix === '@')) {
@@ -159,21 +159,21 @@ export function doComplete(
           textEdit: TextEdit.replace(range, codeSnippet),
           insertTextFormat: InsertTextFormat.Snippet,
           sortText: priority + attribute,
-          documentation,
+          documentation
         });
       });
     });
     const attributeName = scanner.getTokenText();
     if (/\.$/.test(attributeName)) {
       function addModifier(modifiers: { items: Modifier[]; priority: number }) {
-        modifiers.items.forEach((modifier) => {
+        modifiers.items.forEach(modifier => {
           result.items.push({
             label: modifier.label,
             kind: CompletionItemKind.Method,
             textEdit: TextEdit.insert(document.positionAt(nameEnd), modifier.label),
             insertTextFormat: InsertTextFormat.Snippet,
             sortText: modifiers.priority + modifier.label,
-            documentation: modifier.documentation,
+            documentation: modifier.documentation
           });
         });
       }
@@ -229,15 +229,15 @@ export function doComplete(
       addQuotes = true;
     }
     const attribute = currentAttributeName.toLowerCase();
-    tagProviders.forEach((provider) => {
-      provider.collectValues(currentTag, attribute, (value) => {
+    tagProviders.forEach(provider => {
+      provider.collectValues(currentTag, attribute, value => {
         const insertText = addQuotes ? '"' + value + '"' : value;
         result.items.push({
           label: value,
           filterText: insertText,
           kind: CompletionItemKind.Unit,
           textEdit: TextEdit.replace(range, insertText),
-          insertTextFormat: InsertTextFormat.PlainText,
+          insertTextFormat: InsertTextFormat.PlainText
         });
       });
     });
