@@ -1,4 +1,4 @@
-import { activateLS, sleep, showFile, FILE_LOAD_SLEEP_TIME } from '../helper';
+import { activateLS, showFile } from '../helper';
 import { getDocUri } from '../util';
 import { testNoDiagnostics } from '../features/diagnostics/helper';
 
