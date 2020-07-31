@@ -12,10 +12,7 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--disable-extensions"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--disable-extensions"],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
@@ -71,17 +68,6 @@
       "skipFiles": ["<node_internals>/**"]
     },
     {
-      "type": "node",
-      "request": "launch",
-      "name": "Unit Test (LSP)",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": ["${workspaceFolder}/server/test"],
-      "cwd": "${workspaceFolder}/server",
-      "internalConsoleOptions": "openOnSessionStart",
-      "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"]
-    },
-    {
       "name": "E2E Test (Grammar)",
       "type": "extensionHost",
       "request": "launch",
@@ -116,6 +102,17 @@
       "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Unit Test (LSP)",
+      "program": "${workspaceFolder}/server/node_modules/mocha/bin/_mocha",
+      "args": ["${workspaceFolder}/server/test"],
+      "cwd": "${workspaceFolder}/server",
+      "internalConsoleOptions": "openOnSessionStart",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"]
     }
   ]
 }
