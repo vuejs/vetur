@@ -1,0 +1,24 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: husky
+    versions:
+    - ">= 4.a"
+    - "< 5"
+  - dependency-name: vscode
+    versions:
+    - "> 1.1.29"
+- package-ecosystem: npm
+  directory: "/server"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: vscode-uri
+    versions:
+    - "> 1.0.6"
