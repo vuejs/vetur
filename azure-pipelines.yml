@@ -25,6 +25,9 @@ strategy:
 pool:
   vmImage: $(imageName)
 
+variables:
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+
 steps:
 
 - script: |
@@ -36,7 +39,7 @@ steps:
 
 - task: NodeTool@0
   inputs:
-    versionSpec: '8.x'
+    versionSpec: '10.x'
     checkLatest: true
   displayName: 'Install Node.js'
 
@@ -46,31 +49,62 @@ steps:
   inputs:
     versionSpec: 1.17.3
 
-- bash: yarn install
+# Restore .vscode-test cache
+- task: Cache@2
+  # For some reason retrieving 250MB cache on macOS takes 7 minutes
+  condition: ne(variables['Agent.OS'], 'Darwin')
+  inputs:
+    key: vscode-test | $(Agent.OS)
+    path: .vscode-test
+  displayName: Restore .vscode-test cache
+
+- task: Cache@2
+  inputs:
+    key: 'yarn | "$(Agent.OS)" | yarn.lock'
+    restoreKeys: |
+       yarn | "$(Agent.OS)"
+    path: $(YARN_CACHE_FOLDER)
+  displayName: Restore yarn cache
+
+- bash: yarn --frozen-lockfile
   displayName: Install Dependencies
-- bash: cd server && yarn install && cd ..
-  displayName: Install Server Dependencies
-- bash: cd vti && yarn install && cd ..
-  displayName: Install VTI Dependencies
 - bash: yarn compile
   displayName: Compile
 
 - bash: |
-    if [ $AGENT_OS == "Linux" ]; then
-      set -e
-      /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
-      disown -ar
-      echo "Started xvfb"
-    fi
+    set -e
+    /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
+    disown -ar
+    echo "Started xvfb"
+  condition: eq(variables['Agent.OS'], 'Linux')
   displayName: Start xvfb
 
 - bash: yarn test:server
   displayName: Run Server Tests
-  continueOnError: true
+  condition: always()
   env:
     DISPLAY: :10
 
-- bash: yarn test:e2e
-  displayName: Run E2E Tests
+- bash: yarn test:grammar
+  displayName: Run grammar E2E Tests
+  condition: always()
+  env:
+    DISPLAY: :10
+
+- bash: yarn test:lsp
+  displayName: Run LSP E2E Tests
+  condition: always()
+  env:
+    DISPLAY: :10
+
+- bash: yarn test:vue3
+  displayName: Run vue3 E2E Tests
+  condition: always()
+  env:
+    DISPLAY: :10
+
+- bash: yarn test:int
+  displayName: Run template interpolation E2E Tests
+  condition: always()
   env:
     DISPLAY: :10

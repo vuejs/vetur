@@ -1,13 +1,48 @@
 # Changelog
 
-### 0.23.1
+### 0.26.0
 
-- Support Vue 3 interface with `defineComponent`. #1636.
+- Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
+- Remove leading empty line in diagnostic errors. #2067.
+- `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053
+- 🙌 Fix no props completion when child component `export default {}` ends with `;`. Thanks to contribution from [@yoyo930021](@yoyo930021). #1775 and #1791.
+- 🙌 Fix object property completion when have hyphen. Thanks to contribution from [@yoyo930021](@yoyo930021). #1804 and #1808.
+- 🙌 SFC without a script tag show an error when trying to import. Thanks to contribution from [@yoyo930021](@yoyo930021). #1187 and #1806.
+- 🙌 Fix initializationOptions: Cannot read property 'config' of undefined. Thanks to contribution from [Dawid Pakuła](https://github.com/zulus). #1897 and #1341.
+- 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](@yoyo930021). #1841 and #2056.
+- 🙌 When passing incorrect first arg to vti, show help message. Thanks to contribution from [Rafal Tynski](@rafalt). #1841.
+- 🙌 Use CodeAction over command. Thanks to contribution from [Matt Bierner](@mjbvz). #1704.
+
+### 0.25.0 | 2020-07-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.25.0/vspackage)
+
+- Publish `vls@0.3.0` and `vti@0.0.4`.
+- `vls` now only supports Node `>=10`, as Prettier 2.0 drops support for Node 8.
+- Upgrade to prettier 2.0. #1925 and #1794.
+- Add [prettier/plugin-pug](https://github.com/prettier/plugin-pug) as default formatter for `pug`. #527.
+- 🙌 Cusom tags IntelliSense for local `tags.json`/`attributes.json`. [Usage Docs](https://vuejs.github.io/vetur/framework.html#workspace-custom-tags). Thanks to contribution from [Carlos Rodrigues](https://github.com/pikax). #1364 and #2018.
+- 🙌 Detect tags from @nuxt/components. Thanks to contribution from [pooya parsa](https://github.com/pi0). #1921.
+- 🙌 Fix VTI crash by passing correct PID to language server. Thanks to contribution from [Daniil Yastremskiy](@TheBeastOfCaerbannog). #1699 and #1805.
+- 🙌 Fix template interpolation hover info of v-for readonly array item. Thanks to contribution from [@yoyo930021](@yoyo930021). #1788.
+- 🙌 Improve performance while using template interpolation service. Thanks to contribution from [@IWANABETHATGUY](https://github.com/IWANABETHATGUY). #1839.
+
+### 0.24.0 | 2020-03-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.24.0/vspackage)
+
+- **`vue-language-server` deprecated and will be published as `vls`**.
+- Support Vue 3 interface with `defineComponent`. #1638.
 - Update to TS 3.7.5 to avoid TypeScript issues with files not stored in C: drives on Windows. #1589.
 - Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
+- Enable Windows CI with Azure DevOps. #1266.
+- Upgrade to `vscode-languageclient`/`vscode-languageserver` V6. #1719.
+  - Fix a file lock issue on asar files. #1474.
+  - MDN links on CSS completion. #1751.
+  - Fix an error on VTI not able to load `vscode-css-languageservice/lib/umd/data/browsers`. #1732.
+  - Pull latest [web data](https://www.npmjs.com/package/vscode-web-custom-data) for Stylus support.
+  - Use Markdown documentation for Stylus completion description.
+- 🙌 Better template interpolation auto completion. Thanks to contribution from [@ktsn](https://github.com/ktsn). #1129 and #1446.
 - 🙌 Fix syntax highlighting when `</template` and `>` are not on the same line. Thanks to contribution from [Ross Allen](https://github.com/ssorallen). #1211.
 - 🙌 Add [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter) as a formatter for SASS region. Thanks to contribution from [@TheRealSyler](https://github.com/TheRealSyler). #1433.
 - 🙌 Provide Quasar support when `quasar` is in `devDependencies`. Thanks to contribution from [@moander](https://github.com/moander). #1504.
+- 🙌 Fix Windows path handling. Thanks to contribution from [@mattn](https://github.com/mattn). #1662.
 
 ### 0.23.0 | 2020-01-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.23.0/vspackage)
 

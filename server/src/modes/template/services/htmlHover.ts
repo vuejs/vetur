@@ -37,7 +37,7 @@ export function doHover(
   }
 
   function getAttributeHover(tag: string, attribute: string, range: Range): Hover {
-    tag = tag.toLowerCase();
+    const hover: Hover = NULL_HOVER;
     for (const provider of tagProviders) {
       let hover: Hover | null = null;
       provider.collectAttributes(tag, (attr, type, documentation) => {

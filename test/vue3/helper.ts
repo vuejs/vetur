@@ -1,23 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-
-export const EXT_IDENTIFIER = 'octref.vetur';
-export const FILE_LOAD_SLEEP_TIME = 1500;
-
-export const ext = vscode.extensions.getExtension(EXT_IDENTIFIER);
-
-/**
- * Activate Extension and open a Vue file to make sure LS is running
- */
-export async function activateLS() {
-  try {
-    await ext!.activate();
-  } catch (err) {
-    console.error(err);
-    console.log(`Failed to activate ${EXT_IDENTIFIER}`);
-    process.exit(1);
-  }
-}
+import { performance } from 'perf_hooks';
 
 export async function showFile(docUri: vscode.Uri) {
   const doc = await vscode.workspace.openTextDocument(docUri);
@@ -40,4 +23,22 @@ export function readFileAsync(path: string) {
       resolve(data);
     });
   });
+}
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Retry to get diagnostics until length > 0 or timeout
+export async function getDiagnosticsAndTimeout(docUri: vscode.Uri, timeout = 5000) {
+  const startTime = performance.now();
+
+  let result = vscode.languages.getDiagnostics(docUri);
+
+  while (result.length <= 0 && startTime + timeout > performance.now()) {
+    result = vscode.languages.getDiagnostics(docUri);
+    await sleep(100);
+  }
+
+  return result;
 }

@@ -12,7 +12,7 @@ import {
 } from 'vscode-languageserver-protocol';
 import { createConnection } from 'vscode-languageserver';
 import { Duplex } from 'stream';
-import { VLS } from 'vue-language-server';
+import { VLS } from 'vls';
 import { params } from './initParams';
 import * as fs from 'fs';
 import Uri from 'vscode-uri';
@@ -64,6 +64,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
   const init: InitializeParams = {
     rootPath: workspaceUri.fsPath,
     rootUri: workspaceUri.toString(),
+    processId: process.pid,
     ...params
   } as InitializeParams;
 
@@ -124,17 +125,9 @@ async function getDiagnostics(workspaceUri: Uri) {
 
 (async () => {
   const myArgs = process.argv.slice(2);
-  // no args
-  if (myArgs.length === 0) {
-    console.log('Vetur Terminal Interface');
-    console.log('');
-    console.log('Usage:');
-    console.log('');
-    console.log('  vti diagnostics ---- Print all diagnostics');
-    console.log('');
-  }
+
   // vls diagnostics
-  else if (myArgs[0] === 'diagnostics') {
+  if (myArgs.length > 0 && myArgs[0] === 'diagnostics') {
     console.log('Getting Vetur diagnostics');
     let workspaceUri;
 
@@ -158,6 +151,14 @@ async function getDiagnostics(workspaceUri: Uri) {
       console.log(chalk.red(`VTI found ${errCount} ${errCount === 1 ? 'error' : 'errors'}`));
       process.exit(1);
     }
+  } else {
+    // no args or wrong first args
+    console.log('Vetur Terminal Interface');
+    console.log('');
+    console.log('Usage:');
+    console.log('');
+    console.log('  vti diagnostics ---- Print all diagnostics');
+    console.log('');
   }
 })().catch(_err => {
   console.error('VTI operation failed');

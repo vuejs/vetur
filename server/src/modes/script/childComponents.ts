@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { getLastChild, buildDocumentation, getObjectLiteralExprFromExportExpr } from './componentInfo';
+import { getLastChild, buildDocumentation, getDefaultExportObjectLiteralExpr } from './componentInfo';
 import { T_TypeScript } from '../../services/dependencyService';
 
 interface InternalChildComponent {
@@ -58,7 +58,10 @@ export function getChildComponents(
       if (objectLiteralSymbol.flags & tsModule.SymbolFlags.Alias) {
         const definitionObjectLiteralSymbol = checker.getAliasedSymbol(objectLiteralSymbol);
         if (definitionObjectLiteralSymbol.valueDeclaration) {
-          const defaultExportExpr = getLastChild(definitionObjectLiteralSymbol.valueDeclaration);
+          const defaultExportExpr = getDefaultExportObjectLiteralExpr(
+            tsModule,
+            definitionObjectLiteralSymbol.valueDeclaration.getSourceFile()
+          );
           if (!defaultExportExpr) {
             return;
           }
@@ -71,7 +74,7 @@ export function getChildComponents(
               start: defaultExportExpr.getStart(undefined, true),
               end: defaultExportExpr.getEnd()
             },
-            defaultExportExpr: getObjectLiteralExprFromExportExpr(tsModule, defaultExportExpr)
+            defaultExportExpr
           });
         }
       }

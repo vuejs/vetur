@@ -7,6 +7,11 @@
         {{ item }}
       </li>
     </ul>
+    <ul>
+      <li v-for="(item, i) in readonlyList" :key="i">
+        {{ item }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -15,7 +20,8 @@ export default {
   data () {
     return {
       msg: 'Vetur means "Winter" in icelandic.',
-      list: [0, 1, 2]
+      list: [0, 1, 2],
+      readonlyList: ['foo', 'bar'] as Readonly<string[]>
     }
   }
 }

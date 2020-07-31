@@ -30,7 +30,6 @@ To compile:
 
 ```bash
 yarn
-(cd server && yarn) && (cd vti && yarn)
 yarn compile
 # or yarn watch
 ```

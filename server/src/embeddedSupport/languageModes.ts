@@ -18,7 +18,9 @@ import {
   ColorInformation,
   Color,
   ColorPresentation,
-  Command
+  Command,
+  CodeAction,
+  WorkspaceEdit
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -35,6 +37,7 @@ import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
 import { VLSFullConfig } from '../config';
 import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
+import { getPugMode } from '../modes/pug';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -52,8 +55,8 @@ export interface LanguageMode {
     range: Range,
     formatParams: FormattingOptions,
     context: CodeActionContext
-  ): Command[];
-  getRefactorEdits?(doc: TextDocument, args: RefactorAction): Command;
+  ): CodeAction[];
+  getRefactorEdits?(doc: TextDocument, args: RefactorAction): WorkspaceEdit;
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
   doHover?(document: TextDocument, position: Position): Hover;
@@ -130,6 +133,7 @@ export class LanguageModes {
       workspacePath,
       services.infoService
     );
+
     const jsMode = await getJavascriptMode(
       this.serviceHost,
       this.documentRegions,
@@ -140,6 +144,7 @@ export class LanguageModes {
 
     this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
+    this.modes['pug'] = getPugMode();
     this.modes['css'] = getCSSMode(this.documentRegions);
     this.modes['postcss'] = getPostCSSMode(this.documentRegions);
     this.modes['scss'] = getSCSSMode(this.documentRegions);
