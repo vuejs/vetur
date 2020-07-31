@@ -143,10 +143,9 @@ export function doComplete(
     const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)
       ? ''
       : '="$1"';
-    const tag = currentTag.toLowerCase();
     tagProviders.forEach(provider => {
       const priority = provider.priority;
-      provider.collectAttributes(tag, (attribute, type, documentation) => {
+      provider.collectAttributes(currentTag, (attribute, type, documentation) => {
         if ((type === 'event' && filterPrefix !== '@') || (type !== 'event' && filterPrefix === '@')) {
           return;
         }
@@ -229,10 +228,9 @@ export function doComplete(
       range = getReplaceRange(valueStart, valueEnd);
       addQuotes = true;
     }
-    const tag = currentTag.toLowerCase();
     const attribute = currentAttributeName.toLowerCase();
     tagProviders.forEach(provider => {
-      provider.collectValues(tag, attribute, value => {
+      provider.collectValues(currentTag, attribute, value => {
         const insertText = addQuotes ? '"' + value + '"' : value;
         result.items.push({
           label: value,

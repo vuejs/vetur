@@ -6,6 +6,7 @@
 - Remove leading empty line in diagnostic errors. #2067.
 - `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053
 - 🙌 Fix initializationOptions: Cannot read property 'config' of undefined. Thanks to contribution from [Dawid Pakuła](https://github.com/zulus). #1897 and #1341.
+- 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](@yoyo930021). #1841 and #2056.
 - 🙌 When passing incorrect first arg to vti, show help message. Thanks to contribution from [Rafal Tynski](@rafalt). #1841.
 - 🙌 Use CodeAction over command. Thanks to contribution from [Matt Bierner](@mjbvz). #1704.
 
@@ -18,7 +19,7 @@
 - 🙌 Cusom tags IntelliSense for local `tags.json`/`attributes.json`. [Usage Docs](https://vuejs.github.io/vetur/framework.html#workspace-custom-tags). Thanks to contribution from [Carlos Rodrigues](https://github.com/pikax). #1364 and #2018.
 - 🙌 Detect tags from @nuxt/components. Thanks to contribution from [pooya parsa](https://github.com/pi0). #1921.
 - 🙌 Fix VTI crash by passing correct PID to language server. Thanks to contribution from [Daniil Yastremskiy](@TheBeastOfCaerbannog). #1699 and #1805.
-- 🙌 Fix template interpolation hover info of v-for readonly array item. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1788.
+- 🙌 Fix template interpolation hover info of v-for readonly array item. Thanks to contribution from [@yoyo930021](@yoyo930021). #1788.
 - 🙌 Improve performance while using template interpolation service. Thanks to contribution from [@IWANABETHATGUY](https://github.com/IWANABETHATGUY). #1839.
 
 ### 0.24.0 | 2020-03-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.24.0/vspackage)
