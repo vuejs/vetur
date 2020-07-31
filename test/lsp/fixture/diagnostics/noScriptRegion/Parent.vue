@@ -2,12 +2,12 @@
   <div></div>
 </template>
 
-<script>
-import SimpleChild from './SimpleChild.vue'
+<script lang="ts">
+import Child from './Child.vue'
 
 export default {
   components: {
-    SimpleChild
+    Child
   }
 }
 </script>
