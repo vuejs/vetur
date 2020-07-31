@@ -1,4 +1,5 @@
 import { VLSFormatConfig } from '../config';
+import { MarkupContent, MarkupKind } from 'vscode-languageserver';
 
 export function getWordAtText(text: string, offset: number, wordDefinition: RegExp): { start: number; length: number } {
   let lineStart = offset;
@@ -49,4 +50,12 @@ function generateIndent(options: VLSFormatConfig) {
   } else {
     return '\t';
   }
+}
+
+export function toMarkupContent(value: string | MarkupContent | undefined) {
+  if (!value) {
+    return '';
+  }
+
+  return typeof value === 'string' ? { kind: MarkupKind.Markdown, value } : value;
 }

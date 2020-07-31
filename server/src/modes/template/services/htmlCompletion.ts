@@ -6,7 +6,8 @@ import {
   Range,
   TextEdit,
   InsertTextFormat,
-  CompletionItem
+  CompletionItem,
+  MarkupKind
 } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
@@ -14,6 +15,7 @@ import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
 import { NULL_COMPLETION } from '../../nullMode';
 import { getModifierProvider, Modifier } from '../modifierProvider';
+import { toMarkupContent } from '../../../utils/strings';
 
 export function doComplete(
   document: TextDocument,
@@ -55,7 +57,7 @@ export function doComplete(
         result.items.push({
           label: tag,
           kind: CompletionItemKind.Property,
-          documentation: label,
+          documentation: toMarkupContent(label),
           textEdit: TextEdit.replace(range, tag),
           sortText: priority + tag,
           insertTextFormat: InsertTextFormat.PlainText
@@ -119,7 +121,7 @@ export function doComplete(
         result.items.push({
           label: '/' + tag,
           kind: CompletionItemKind.Property,
-          documentation: label,
+          documentation: toMarkupContent(label),
           filterText: '/' + tag + closeTag,
           textEdit: TextEdit.replace(range, '/' + tag + closeTag),
           insertTextFormat: InsertTextFormat.PlainText
@@ -159,7 +161,7 @@ export function doComplete(
           textEdit: TextEdit.replace(range, codeSnippet),
           insertTextFormat: InsertTextFormat.Snippet,
           sortText: priority + attribute,
-          documentation
+          documentation: toMarkupContent(documentation)
         });
       });
     });
@@ -173,7 +175,7 @@ export function doComplete(
             textEdit: TextEdit.insert(document.positionAt(nameEnd), modifier.label),
             insertTextFormat: InsertTextFormat.Snippet,
             sortText: modifiers.priority + modifier.label,
-            documentation: modifier.documentation
+            documentation: toMarkupContent(modifier.documentation)
           });
         });
       }
