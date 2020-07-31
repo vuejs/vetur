@@ -2,34 +2,42 @@ import { getDocUri, position } from '../../util';
 import { testCompletion } from './helper';
 
 describe('Should autocomplete for <style>', () => {
-  const docUri = getDocUri('completion/style/Basic.vue');
-  const doubleDocUri = getDocUri('completion/style/Double.vue');
-
-  describe('Should complete <style> section for all languages', () => {
+  describe('Should complete <style> region for all languages', () => {
+    const basicUri = getDocUri('completion/style/Basic.vue');
     it('completes CSS properties for <style lang="css">', async () => {
-      await testCompletion(docUri, position(6, 3), ['width', 'word-wrap']);
+      await testCompletion(basicUri, position(6, 3), ['width', 'word-wrap']);
     });
 
     it('completes CSS properties for <style lang="less">', async () => {
-      await testCompletion(docUri, position(12, 3), ['width', 'word-wrap']);
+      await testCompletion(basicUri, position(12, 3), ['width', 'word-wrap']);
     });
 
     it('completes CSS properties for <style lang="scss">', async () => {
-      await testCompletion(docUri, position(18, 3), ['width', 'word-wrap']);
+      await testCompletion(basicUri, position(18, 3), ['width', 'word-wrap']);
     });
 
     it('completes CSS properties for <style lang="stylus">', async () => {
-      await testCompletion(docUri, position(24, 3), ['width', 'word-wrap']);
+      await testCompletion(basicUri, position(24, 3), ['width', 'word-wrap']);
     });
 
     it('completes CSS properties for <style lang="postcss">', async () => {
-      await testCompletion(docUri, position(30, 3), ['width', 'word-wrap']);
+      await testCompletion(basicUri, position(30, 3), ['width', 'word-wrap']);
     });
   });
 
-  describe('Should complete second <style> section', () => {
+  describe('Should complete second <style> region', () => {
+    const doubleUri = getDocUri('completion/style/Double.vue');
+
     it('completes CSS properties for second <style lang="scss">', async () => {
-      await testCompletion(doubleDocUri, position(8, 3), ['width', 'word-wrap']);
+      await testCompletion(doubleUri, position(8, 3), ['width', 'word-wrap']);
+    });
+  });
+
+  describe('Should complete emmet in <style lang="sass"> region', () => {
+    const sassEmmetUri = getDocUri('completion/style/SassEmmet.vue');
+
+    it('completes CSS properties for second <style lang="scss">', async () => {
+      await testCompletion(sassEmmetUri, position(2, 4), ['left: 0']);
     });
   });
 });
