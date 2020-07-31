@@ -1,8 +1,8 @@
-import * as vscode from 'vscode';
-import * as fs from 'fs';
 import * as assert from 'assert';
-import { activateLS, showFile, readFileAsync, setEditorContent } from '../../helper';
-import { getDocUri, getDocPath } from '../../util';
+import * as fs from 'fs';
+import * as vscode from 'vscode';
+import { readFileAsync, setEditorContent, showFile } from '../../helper';
+import { getDocPath, getDocUri } from '../../util';
 
 describe('Should format', () => {
   const fixturePath = getDocPath('formatting');
@@ -10,14 +10,6 @@ describe('Should format', () => {
     .readdirSync(fixturePath)
     .filter(s => !s.includes('Expected'))
     .map(s => s.slice(0, -'.vue'.length));
-
-  before('activate', async () => {
-    await activateLS();
-
-    for (let i = 0; i < cases.length; i++) {
-      await showFile(getDocUri(`formatting/${cases[i]}.vue`));
-    }
-  });
 
   for (let i = 0; i < cases.length; i++) {
     it(`formats ${cases[i]}.vue`, async () => {

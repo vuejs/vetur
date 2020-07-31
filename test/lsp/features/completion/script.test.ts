@@ -1,14 +1,9 @@
-import { activateLS } from '../../helper';
 import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 
 describe('Should autocomplete for <script>', () => {
   const basicUri = getDocUri('completion/script/Basic.vue');
   const hyphenUri = getDocUri('completion/script/Hyphen.vue');
-
-  before('activate', async () => {
-    await activateLS();
-  });
 
   it('completes module names when importing', async () => {
     await testCompletion(basicUri, position(5, 8), ['lodash', 'vue', 'vuex']);
