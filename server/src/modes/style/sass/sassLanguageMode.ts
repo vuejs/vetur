@@ -6,7 +6,6 @@ import { TextEdit, Position } from 'vscode-css-languageservice';
 
 import { SassFormatter, SassFormatterConfig } from 'sass-formatter';
 
-import _ = require('lodash');
 import * as emmet from 'vscode-emmet-helper';
 import { Priority } from '../emmet';
 
@@ -28,7 +27,7 @@ export class SassLanguageMode implements LanguageMode {
     if (!emmetCompletions) {
       return { isIncomplete: false, items: [] };
     } else {
-      const emmetItems = _.map(emmetCompletions.items, i => {
+      const emmetItems = emmetCompletions.items.map(i => {
         return {
           ...i,
           sortText: Priority.Emmet + i.label
