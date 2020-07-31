@@ -175,16 +175,6 @@ describe('Should find template-diagnostics in <template> region', () => {
       ]
     },
     {
-      file: 'template-position.vue',
-      diagnostics: [
-        {
-          range: sameLineRange(13, 18, 21),
-          severity: vscode.DiagnosticSeverity.Error,
-          message: "Property 'foo' does not exist on type"
-        }
-      ]
-    },
-    {
       file: 'jsdocs-type-check.vue',
       diagnostics: [
         {
@@ -238,6 +228,30 @@ describe('Should find template-diagnostics in <template> region', () => {
 
   tests.forEach(t => {
     it(`Shows template diagnostics for ${t.file}`, async () => {
+      const docUri = getDocUri(`diagnostics/${t.file}`);
+      await testDiagnostics(docUri, t.diagnostics, !!t.skipSameDiagnosticCountAssert);
+    });
+  });
+
+  /**
+   * These tests are somewhat flakey, especially on Windows
+   */
+  const flakeyTests: TemplateDiagnosticTest[] = [
+    {
+      file: 'template-position.vue',
+      diagnostics: [
+        {
+          range: sameLineRange(13, 18, 21),
+          severity: vscode.DiagnosticSeverity.Error,
+          message: "Property 'foo' does not exist on type"
+        }
+      ]
+    }
+  ];
+  flakeyTests.forEach(t => {
+    it(`Shows template diagnostics for ${t.file}`, async function () {
+      // Retry on fail
+      this.retries(3);
       const docUri = getDocUri(`diagnostics/${t.file}`);
       await testDiagnostics(docUri, t.diagnostics, !!t.skipSameDiagnosticCountAssert);
     });
