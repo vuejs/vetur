@@ -32,7 +32,7 @@ import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embedde
 import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 
@@ -387,7 +387,7 @@ export async function getJavascriptMode(
       definitions.forEach(d => {
         const definitionTargetDoc = getSourceDoc(d.fileName, program);
         definitionResults.push({
-          uri: Uri.file(d.fileName).toString(),
+          uri: URI.file(d.fileName).toString(),
           range: convertRange(definitionTargetDoc, d.textSpan)
         });
       });
@@ -414,7 +414,7 @@ export async function getJavascriptMode(
         const referenceTargetDoc = getSourceDoc(r.fileName, program);
         if (referenceTargetDoc) {
           referenceResults.push({
-            uri: Uri.file(r.fileName).toString(),
+            uri: URI.file(r.fileName).toString(),
             range: convertRange(referenceTargetDoc, r.textSpan)
           });
         }
@@ -632,7 +632,7 @@ function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.Lan
       newText,
       range: convertRange(targetDoc, span)
     }));
-    const uri = Uri.file(fileName).toString();
+    const uri = URI.file(fileName).toString();
     if (result[uri]) {
       result[uri].push(...edits);
     } else {

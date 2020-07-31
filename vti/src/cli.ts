@@ -15,7 +15,7 @@ import { Duplex } from 'stream';
 import { VLS } from 'vls';
 import { params } from './initParams';
 import * as fs from 'fs';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import * as glob from 'glob';
 import * as path from 'path';
 import * as chalk from 'chalk';
@@ -36,7 +36,7 @@ class TestStream extends Duplex {
   _read(_size: number) {}
 }
 
-async function prepareClientConnection(workspaceUri: Uri) {
+async function prepareClientConnection(workspaceUri: URI) {
   const up = new TestStream();
   const down = new TestStream();
   const logger = new NullLogger();
@@ -73,7 +73,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
   return clientConnection;
 }
 
-async function getDiagnostics(workspaceUri: Uri) {
+async function getDiagnostics(workspaceUri: URI) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
   const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
@@ -86,7 +86,7 @@ async function getDiagnostics(workspaceUri: Uri) {
     await clientConnection.sendNotification(DidOpenTextDocumentNotification.type, {
       textDocument: {
         languageId: 'vue',
-        uri: Uri.file(absFilePath).toString(),
+        uri: URI.file(absFilePath).toString(),
         version: 1,
         text: fs.readFileSync(absFilePath, 'utf-8')
       }
@@ -94,7 +94,7 @@ async function getDiagnostics(workspaceUri: Uri) {
 
     try {
       const res = (await clientConnection.sendRequest('$/getDiagnostics', {
-        uri: Uri.file(absFilePath).toString()
+        uri: URI.file(absFilePath).toString()
       })) as Diagnostic[];
       if (res.length > 0) {
         console.log('');
@@ -133,10 +133,10 @@ async function getDiagnostics(workspaceUri: Uri) {
 
     if (myArgs[1]) {
       console.log(`Loading Vetur in workspace path: ${myArgs[1]}`);
-      workspaceUri = Uri.file(myArgs[1]);
+      workspaceUri = URI.file(myArgs[1]);
     } else {
       console.log(`Loading Vetur in current directory: ${process.cwd()}`);
-      workspaceUri = Uri.file(process.cwd());
+      workspaceUri = URI.file(process.cwd());
     }
 
     console.log('');

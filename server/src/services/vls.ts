@@ -37,7 +37,7 @@ import {
   Range
 } from 'vscode-languageserver-types';
 
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
@@ -364,10 +364,10 @@ export class VLS {
     const documentContext: DocumentContext = {
       resolveReference: ref => {
         if (this.workspacePath && ref[0] === '/') {
-          return Uri.file(path.resolve(this.workspacePath, ref)).toString();
+          return URI.file(path.resolve(this.workspacePath, ref)).toString();
         }
         const fsPath = getFileFsPath(doc.uri);
-        return Uri.file(path.resolve(fsPath, '..', ref)).toString();
+        return URI.file(path.resolve(fsPath, '..', ref)).toString();
       }
     };
 
@@ -441,7 +441,7 @@ export class VLS {
   }
 
   getRefactorEdits(refactorAction: RefactorAction) {
-    const uri = Uri.file(refactorAction.fileName).toString();
+    const uri = URI.file(refactorAction.fileName).toString();
     const doc = this.documentService.getDocument(uri)!;
     const startPos = doc.positionAt(refactorAction.textRange.pos);
     const mode = this.languageModes.getModeAtPosition(doc, startPos);

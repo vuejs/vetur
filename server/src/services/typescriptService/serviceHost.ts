@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as ts from 'typescript';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
@@ -213,7 +213,7 @@ export function getServiceHost(
         }
 
         if (isVueFile(fileName)) {
-          const uri = Uri.file(fileName);
+          const uri = URI.file(fileName);
           const fileFsPath = normalizeFileNameToFsPath(fileName);
           let doc = localScriptRegionDocuments.get(fileFsPath);
           if (!doc) {
@@ -283,7 +283,7 @@ export function getServiceHost(
 
           if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
             const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
-            const uri = Uri.file(resolvedFileName);
+            const uri = URI.file(resolvedFileName);
             const resolvedFileFsPath = normalizeFileNameToFsPath(resolvedFileName);
             let doc = localScriptRegionDocuments.get(resolvedFileFsPath);
             // Vue file not created yet

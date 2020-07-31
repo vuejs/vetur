@@ -1,6 +1,6 @@
 import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, DocumentLink } from 'vscode-languageserver-types';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { DocumentContext } from '../../../types';
 
 function stripQuotes(url: string): string {
@@ -8,7 +8,7 @@ function stripQuotes(url: string): string {
 }
 
 function getWorkspaceUrl(
-  modelAbsoluteUri: Uri,
+  modelAbsoluteUri: URI,
   tokenContent: string,
   documentContext: DocumentContext,
   base: string
@@ -45,7 +45,7 @@ function createLink(
   endOffset: number,
   base: string
 ): DocumentLink | null {
-  const documentUri = Uri.parse(document.uri);
+  const documentUri = URI.parse(document.uri);
   const tokenContent = stripQuotes(attributeValue);
   if (tokenContent.length === 0) {
     return null;
@@ -66,7 +66,7 @@ function createLink(
 
 function isValidURI(uri: string) {
   try {
-    Uri.parse(uri);
+    URI.parse(uri);
     return true;
   } catch (e) {
     return false;
