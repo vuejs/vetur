@@ -1,15 +1,10 @@
-import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, showFile } from '../../helper';
-import { position, sameLineRange, getDocUri } from '../../util';
+import * as vscode from 'vscode';
+import { showFile } from '../../helper';
+import { getDocUri, position, sameLineRange } from '../../util';
 
 describe('Should do documentColor', () => {
   const docUri = getDocUri('documentColor/Basic.vue');
-
-  before('activate', async () => {
-    await activateLS();
-    await showFile(docUri);
-  });
 
   it('show no duplicate document colors', async () => {
     await testHighlight(docUri, position(2, 5), [

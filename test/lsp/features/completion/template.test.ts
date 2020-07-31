@@ -1,28 +1,11 @@
-import { activateLS, showFile } from '../../helper';
-import { position, getDocUri } from '../../util';
+import { ConfigurationTarget, workspace } from 'vscode';
+import { getDocUri, position } from '../../util';
 import { testCompletion } from './helper';
 
-import { workspace, ConfigurationTarget } from 'vscode';
-
 describe('Should autocomplete for <template>', () => {
-  const basicUri = getDocUri('completion/template/Basic.vue');
-  const elementUri = getDocUri('completion/template/Element.vue');
-  const quasarUri = getDocUri('completion/template/Quasar.vue');
-  const vuetifyUri = getDocUri('completion/template/Vuetify.vue');
-  const workspaceCustomTagsUri = getDocUri('completion/template/WorkspaceCustomTags.vue');
-
-  const parentUri = getDocUri('completion/template/childComponent/Parent.vue');
-
-  before('activate', async () => {
-    await activateLS();
-    await showFile(basicUri);
-    await showFile(elementUri);
-    await showFile(quasarUri);
-    await showFile(vuetifyUri);
-    await showFile(workspaceCustomTagsUri);
-  });
-
   describe('Should complete <template> section', () => {
+    const basicUri = getDocUri('completion/template/Basic.vue');
+
     it('completes directives such as v-if', async () => {
       await testCompletion(basicUri, position(1, 8), ['v-if', 'v-cloak']);
     });
@@ -77,6 +60,8 @@ describe('Should autocomplete for <template>', () => {
   });
 
   describe('Should complete element-ui components', () => {
+    const elementUri = getDocUri('completion/template/Element.vue');
+
     it('completes <el-button> and <el-card>', async () => {
       await testCompletion(elementUri, position(2, 5), ['el-button', 'el-card']);
     });
@@ -87,6 +72,8 @@ describe('Should autocomplete for <template>', () => {
   });
 
   describe('Should complete Quasar components', () => {
+    const quasarUri = getDocUri('completion/template/Quasar.vue');
+
     it('completes <q-btn>', async () => {
       await testCompletion(quasarUri, position(2, 5), ['q-btn']);
     });
@@ -97,6 +84,8 @@ describe('Should autocomplete for <template>', () => {
   });
 
   describe('Should complete Vuetify components', () => {
+    const vuetifyUri = getDocUri('completion/template/Vuetify.vue');
+
     it('completes <v-btn>', async () => {
       await testCompletion(vuetifyUri, position(2, 5), ['v-btn']);
     });
@@ -107,6 +96,8 @@ describe('Should autocomplete for <template>', () => {
   });
 
   describe('Should complete tags defined in workspace', () => {
+    const workspaceCustomTagsUri = getDocUri('completion/template/WorkspaceCustomTags.vue');
+
     it('completes <foo-tag>', async () => {
       await testCompletion(workspaceCustomTagsUri, position(2, 6), ['foo-tag']);
     });
@@ -117,6 +108,8 @@ describe('Should autocomplete for <template>', () => {
   });
 
   describe('Parent - Child component completion', () => {
+    const parentUri = getDocUri('completion/template/childComponent/Parent.vue');
+
     it('completes tags/attributes for ChildComp', async () => {
       const c = workspace.getConfiguration();
 
@@ -130,6 +123,11 @@ describe('Should autocomplete for <template>', () => {
 
       // set it back
       await c.update('vetur.completion.tagCasing', undefined, ConfigurationTarget.Global);
+    });
+
+    const parent1775Uri = getDocUri('completion/template/childComponent/Parent1775.vue');
+    it('AAA completes child when child `export default {}` ends with `;`', async () => {
+      await testCompletion(parent1775Uri, position(1, 13), ['attr']);
     });
   });
 });

@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDiagnosticsAndTimeout } from '../../helper';
+import { getDiagnosticsAndTimeout, sleep, showFile } from '../../helper';
 import * as _ from 'lodash';
 
 export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.Diagnostic[]) {
+  await showFile(docUri);
+
   const result = await getDiagnosticsAndTimeout(docUri);
 
   expectedDiagnostics.forEach(ed => {
@@ -31,4 +33,18 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
       ed.severity === ad.severity && messaagesAreEqual && ed.range.isEqual(ad.range) && tagsAreEqual && sourcesAreEqual
     );
   }
+}
+
+export async function testNoDiagnostics(docUri: vscode.Uri) {
+  await showFile(docUri);
+
+  // For diagnostics to show up
+  await sleep(3000);
+
+  const result = vscode.languages.getDiagnostics(docUri);
+
+  assert.ok(
+    result.length === 0,
+    `Should find no diagnostics for ${docUri.fsPath} but found:\n` + `${JSON.stringify(result)}`
+  );
 }

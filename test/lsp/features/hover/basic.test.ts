@@ -1,19 +1,14 @@
-import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, showFile } from '../../helper';
-import { position, sameLineRange, getDocUri } from '../../util';
+import * as vscode from 'vscode';
+import { showFile } from '../../helper';
+import { getDocUri, position, sameLineRange } from '../../util';
 
 describe('Should do hover', () => {
   const docUri = getDocUri('hover/Basic.vue');
 
-  before('activate', async () => {
-    await activateLS();
-    await showFile(docUri);
-  });
-
   it('shows hover for <img> tag', async () => {
     await testHover(docUri, position(4, 7), {
-      contents: ['An img element represents an image\\.'],
+      contents: ['An img element represents an image.'],
       range: sameLineRange(4, 7, 10)
     });
   });

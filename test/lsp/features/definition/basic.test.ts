@@ -1,15 +1,10 @@
-import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, showFile } from '../../helper';
-import { location, position, sameLineLocation, getDocUri } from '../../util';
+import * as vscode from 'vscode';
+import { showFile } from '../../helper';
+import { getDocUri, location, position, sameLineLocation } from '../../util';
 
 describe('Should find definition', () => {
   const docUri = getDocUri('definition/Basic.vue');
-
-  before('activate', async () => {
-    await activateLS();
-    await showFile(docUri);
-  });
 
   it('finds definition for this.msg', async () => {
     await testDefinition(docUri, position(36, 23), sameLineLocation(docUri, 26, 6, 9));

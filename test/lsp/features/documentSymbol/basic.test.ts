@@ -1,15 +1,10 @@
-import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateLS, showFile } from '../../helper';
-import { range, getDocUri } from '../../util';
+import * as vscode from 'vscode';
+import { showFile } from '../../helper';
+import { getDocUri, range } from '../../util';
 
 describe('Should do documentSymbol', () => {
   const docUri = getDocUri('documentSymbol/Basic.vue');
-
-  before('activate', async () => {
-    await activateLS();
-    await showFile(docUri);
-  });
 
   it('shows all documentSymbols for Basic.vue', async () => {
     await testSymbol(docUri, [

@@ -1,15 +1,9 @@
-import { activateLS, showFile } from '../../helper';
 import { position, getDocUri } from '../../util';
 import { testCompletion } from './helper';
 import { CompletionItemKind } from 'vscode';
 
 describe('Should do path completion for import', () => {
   const scriptDocUri = getDocUri('completion/script/PathCompletion.vue');
-
-  before('activate', async () => {
-    await activateLS();
-    await showFile(scriptDocUri);
-  });
 
   it('completes local file names when importing', async () => {
     await testCompletion(scriptDocUri, position(5, 10), [

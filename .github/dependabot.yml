@@ -1,0 +1,17 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 3
+- package-ecosystem: npm
+  directory: "/server"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 3
+- package-ecosystem: npm
+  directory: "/vti"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 3

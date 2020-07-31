@@ -1,15 +1,9 @@
 import * as vscode from 'vscode';
-import { activateLS, showFile } from '../../helper';
-import { sameLineRange, getDocUri } from '../../util';
+import { getDocUri, sameLineRange } from '../../util';
 import { testDiagnostics } from './helper';
 
 describe('Should find diagnostics using eslint-plugin-vue', () => {
   const docUri = getDocUri('diagnostics/ESLint.vue');
-
-  before('activate', async () => {
-    await activateLS();
-    await showFile(docUri);
-  });
 
   it('shows diagnostic errors for template errors', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [

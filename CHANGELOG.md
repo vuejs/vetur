@@ -5,6 +5,9 @@
 - Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
 - Remove leading empty line in diagnostic errors. #2067.
 - `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053
+- 🙌 Fix no props completion when child component `export default {}` ends with `;`. Thanks to contribution from [@yoyo930021](@yoyo930021). #1775 and #1791.
+- 🙌 Fix object property completion when have hyphen. Thanks to contribution from [@yoyo930021](@yoyo930021). #1804 and #1808.
+- 🙌 SFC without a script tag show an error when trying to import. Thanks to contribution from [@yoyo930021](@yoyo930021). #1187 and #1806.
 - 🙌 Fix initializationOptions: Cannot read property 'config' of undefined. Thanks to contribution from [Dawid Pakuła](https://github.com/zulus). #1897 and #1341.
 - 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](@yoyo930021). #1841 and #2056.
 - 🙌 When passing incorrect first arg to vti, show help message. Thanks to contribution from [Rafal Tynski](@rafalt). #1841.
