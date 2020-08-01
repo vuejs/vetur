@@ -1,6 +1,7 @@
 <template>
   <div>
     {{  }}
+    {{ obj. }}
   </div>
 </template>
 
@@ -27,6 +28,13 @@ export default class BasicClass extends Vue {
    * My msg
    */
   msg = 'Vetur means "Winter" in icelandic.'
+
+  /**
+   * My obj
+   */
+  obj = {
+    msg: 'Object message.'
+  }
 
   /**
    * My count

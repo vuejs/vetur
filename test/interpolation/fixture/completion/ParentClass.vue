@@ -2,6 +2,7 @@
   <div>
     <basic-class :></basic-class>
     <basic-class v-if="" @click="" :foo=""></basic-class>
+    <BasicClass  />
     <
   </div>
 </template>

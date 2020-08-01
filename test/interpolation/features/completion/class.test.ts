@@ -1,5 +1,4 @@
-import { activateLS, showFile, sleep, FILE_LOAD_SLEEP_TIME } from '../../lsp/helper';
-import { position, getDocUri } from '../util';
+import { position, getDocUri } from '../../util';
 import { testCompletion, testNoSuchCompletion } from './helper';
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
 
@@ -7,29 +6,24 @@ describe('Should autocomplete interpolation for <template> in class component', 
   const templateDocUri = getDocUri('completion/BasicClass.vue');
   const parentTemplateDocUri = getDocUri('completion/ParentClass.vue');
 
-  before('activate', async () => {
-    await activateLS();
-    await showFile(templateDocUri);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-    await sleep(FILE_LOAD_SLEEP_TIME);
-  });
-
   const defaultList: CompletionItem[] = [
-    {
-      label: 'foo',
-      documentation: new MarkdownString('My foo').appendCodeblock(
-        `foo: {
-  type: Boolean,
-  default: false
-}`,
-        'js'
-      ),
-      kind: CompletionItemKind.Property
-    },
+    // Typescript can't typing when `@Component({ props: { foo: String } })`.
+    // Because decorator cant affect return type.
+    //     {
+    //       label: 'foo',
+    //       documentation: new MarkdownString('My foo').appendCodeblock(
+    //         `foo: {
+    //   type: Boolean,
+    //   default: false
+    // }`,
+    //         'js'
+    //       ),
+    //       kind: CompletionItemKind.Field
+    //     },
     {
       label: 'msg',
       documentation: new MarkdownString('My msg').appendCodeblock(`msg = 'Vetur means "Winter" in icelandic.'`, 'js'),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'count',
@@ -39,7 +33,7 @@ describe('Should autocomplete interpolation for <template> in class component', 
 }`,
         'js'
       ),
-      kind: CompletionItemKind.Property
+      kind: CompletionItemKind.Field
     },
     {
       label: 'hello',
@@ -50,7 +44,7 @@ describe('Should autocomplete interpolation for <template> in class component', 
         'js'
       ),
 
-      kind: CompletionItemKind.Method
+      kind: CompletionItemKind.Function
     }
   ];
 
@@ -59,10 +53,20 @@ describe('Should autocomplete interpolation for <template> in class component', 
       await testCompletion(templateDocUri, position(2, 7), defaultList);
     });
 
+    it('completes an object property', async () => {
+      await testCompletion(templateDocUri, position(3, 11), [
+        {
+          label: 'msg',
+          kind: CompletionItemKind.Field
+        }
+      ]);
+    });
+
     it(`completes child component tag`, async () => {
-      await testCompletion(parentTemplateDocUri, position(4, 5), [
+      await testCompletion(parentTemplateDocUri, position(5, 5), [
         {
           label: 'basic-class',
+          kind: CompletionItemKind.Property,
           documentationStart: 'My basic tag\n```js\n@Component('
         }
       ]);
@@ -72,6 +76,23 @@ describe('Should autocomplete interpolation for <template> in class component', 
       await testCompletion(parentTemplateDocUri, position(2, 18), [
         {
           label: 'foo',
+          kind: CompletionItemKind.Value,
+          documentation: new MarkdownString('My foo').appendCodeblock(
+            `foo: {
+  type: Boolean,
+  default: false
+}`,
+            'js'
+          )
+        }
+      ]);
+    });
+
+    it(`completes child component's props when camel case component name`, async () => {
+      await testCompletion(parentTemplateDocUri, position(4, 16), [
+        {
+          label: 'foo',
+          kind: CompletionItemKind.Value,
           documentation: new MarkdownString('My foo').appendCodeblock(
             `foo: {
   type: Boolean,
