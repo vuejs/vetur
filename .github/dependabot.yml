@@ -5,13 +5,16 @@ updates:
   schedule:
     interval: weekly
   open-pull-requests-limit: 3
+  version_requirement_updates: increase_versions
 - package-ecosystem: npm
   directory: "/server"
   schedule:
     interval: weekly
   open-pull-requests-limit: 3
+  version_requirement_updates: increase_versions
 - package-ecosystem: npm
   directory: "/vti"
   schedule:
     interval: weekly
   open-pull-requests-limit: 3
+  version_requirement_updates: increase_versions
