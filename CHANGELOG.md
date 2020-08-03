@@ -5,6 +5,7 @@
 - Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
 - Remove leading empty line in diagnostic errors. #2067.
 - `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053.
+- 🙌 Handle different tag casing when doing html definition. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2096.
 - 🙌 Allow analyzing Vue files in `node_modules`. Thanks to contribution from [Tiago Roldão](https://github.com/tiagoroldao). #1127 and #1979.
 - 🙌 Fix markdown rendering for library documentation. Thanks to contribution from [Albert Kaaman](https://github.com/nekosaur). #1775 and #1791.
 - 🙌 Fix no props completion when child component `export default {}` ends with `;`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1775 and #1791.
