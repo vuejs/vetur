@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { showFile } from '../../helper';
-import { getDocUri, location, position, sameLineLocation } from '../../util';
+import { getDocUri, position, sameLineLocation } from '../../util';
 
 describe('Should find definition', () => {
   const docUri = getDocUri('definition/Basic.vue');
