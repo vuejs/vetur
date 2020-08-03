@@ -4,6 +4,7 @@
     { "path": "scripts" },
     { "path": "client" },
     { "path": "server" },
+    { "path": "vti" },
     { "path": "test" }
   ]
 }

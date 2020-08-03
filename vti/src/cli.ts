@@ -1,0 +1,165 @@
+import {
+  InitializeParams,
+  InitializeRequest,
+  InitializeResult,
+  createProtocolConnection,
+  StreamMessageReader,
+  StreamMessageWriter,
+  Logger,
+  DidOpenTextDocumentNotification,
+  Diagnostic,
+  DiagnosticSeverity
+} from 'vscode-languageserver-protocol';
+import { createConnection } from 'vscode-languageserver';
+import { Duplex } from 'stream';
+import { VLS } from 'vls';
+import { params } from './initParams';
+import * as fs from 'fs';
+import { URI } from 'vscode-uri';
+import * as glob from 'glob';
+import * as path from 'path';
+import * as chalk from 'chalk';
+
+class NullLogger implements Logger {
+  error(_message: string): void {}
+  warn(_message: string): void {}
+  info(_message: string): void {}
+  log(_message: string): void {}
+}
+
+class TestStream extends Duplex {
+  _write(chunk: string, _encoding: string, done: () => void) {
+    this.emit('data', chunk);
+    done();
+  }
+
+  _read(_size: number) {}
+}
+
+async function prepareClientConnection(workspaceUri: URI) {
+  const up = new TestStream();
+  const down = new TestStream();
+  const logger = new NullLogger();
+
+  const clientConnection = createProtocolConnection(new StreamMessageReader(down), new StreamMessageWriter(up), logger);
+
+  const serverConnection = createConnection(new StreamMessageReader(up), new StreamMessageWriter(down));
+  const vls = new VLS(serverConnection as any);
+
+  serverConnection.onInitialize(
+    async (params: InitializeParams): Promise<InitializeResult> => {
+      await vls.init(params);
+
+      console.log('Vetur initialized');
+
+      return {
+        capabilities: vls.capabilities
+      };
+    }
+  );
+
+  vls.listen();
+  clientConnection.listen();
+
+  const init: InitializeParams = {
+    rootPath: workspaceUri.fsPath,
+    rootUri: workspaceUri.toString(),
+    processId: process.pid,
+    ...params
+  } as InitializeParams;
+
+  await clientConnection.sendRequest(InitializeRequest.type, init);
+
+  return clientConnection;
+}
+
+async function getDiagnostics(workspaceUri: URI) {
+  const clientConnection = await prepareClientConnection(workspaceUri);
+
+  const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
+  const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
+
+  console.log('');
+  let errCount = 0;
+
+  for (const absFilePath of absFilePaths) {
+    await clientConnection.sendNotification(DidOpenTextDocumentNotification.type, {
+      textDocument: {
+        languageId: 'vue',
+        uri: URI.file(absFilePath).toString(),
+        version: 1,
+        text: fs.readFileSync(absFilePath, 'utf-8')
+      }
+    });
+
+    try {
+      const res = (await clientConnection.sendRequest('$/getDiagnostics', {
+        uri: URI.file(absFilePath).toString()
+      })) as Diagnostic[];
+      if (res.length > 0) {
+        console.log('');
+        console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
+        res.forEach(d => {
+          /**
+           * Ignore eslint errors for now
+           */
+          if (d.source === 'eslint-plugin-vue') {
+            return;
+          }
+          if (d.severity === DiagnosticSeverity.Error) {
+            console.log(`${chalk.red('Error')}: ${d.message}`);
+            errCount++;
+          } else {
+            console.log(`${chalk.yellow('Warn')} : ${d.message}`);
+          }
+        });
+        console.log('');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  return errCount;
+}
+
+(async () => {
+  const myArgs = process.argv.slice(2);
+
+  // vls diagnostics
+  if (myArgs.length > 0 && myArgs[0] === 'diagnostics') {
+    console.log('Getting Vetur diagnostics');
+    let workspaceUri;
+
+    if (myArgs[1]) {
+      console.log(`Loading Vetur in workspace path: ${myArgs[1]}`);
+      workspaceUri = URI.file(myArgs[1]);
+    } else {
+      console.log(`Loading Vetur in current directory: ${process.cwd()}`);
+      workspaceUri = URI.file(process.cwd());
+    }
+
+    console.log('');
+    console.log('====================================');
+    const errCount = await getDiagnostics(workspaceUri);
+    console.log('====================================');
+
+    if (errCount === 0) {
+      console.log(chalk.green(`VTI found no error`));
+      process.exit(0);
+    } else {
+      console.log(chalk.red(`VTI found ${errCount} ${errCount === 1 ? 'error' : 'errors'}`));
+      process.exit(1);
+    }
+  } else {
+    // no args or wrong first args
+    console.log('Vetur Terminal Interface');
+    console.log('');
+    console.log('Usage:');
+    console.log('');
+    console.log('  vti diagnostics ---- Print all diagnostics');
+    console.log('');
+  }
+})().catch(_err => {
+  console.error('VTI operation failed');
+});

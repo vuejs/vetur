@@ -28,14 +28,14 @@ export declare const ${componentHelperName}: {
   ): any;
 };
 export declare const ${iterationHelperName}: {
-  <T>(list: T[], fn: (value: T, index: number) => any): any;
+  <T>(list: readonly T[], fn: (value: T, index: number) => any): any;
   <T>(obj: { [key: string]: T }, fn: (value: T, key: string, index: number) => any): any;
   (num: number, fn: (value: number) => any): any;
   <T>(obj: object, fn: (value: any, key: string, index: number) => any): any;
 };
 `;
 
-export const oldContent =
+export const preVue25Content =
   `
 import Vue from 'vue';
 export interface GeneralOption extends Vue.ComponentOptions<Vue> {
@@ -46,9 +46,16 @@ export default function bridge<T>(t: T & GeneralOption): T {
 }
 ` + renderHelpers;
 
-export const content =
+export const vue25Content =
   `
 import Vue from 'vue';
 const func = Vue.extend;
+export default func;
+` + renderHelpers;
+
+export const vue30Content =
+  `
+import { defineComponent } from 'vue';
+const func = defineComponent;
 export default func;
 ` + renderHelpers;

@@ -23,7 +23,8 @@ module.exports = {
           '/intellisense',
           '/debugging',
           '/framework',
-          '/interpolation'
+          '/interpolation',
+          '/vti'
         ]
       },
       '/FAQ',

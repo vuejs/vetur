@@ -1,6 +1,6 @@
 # Formatting
 
-Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/ts`.
+Vetur has support for formatting embedded `html/pug/css/scss/less/postcss/stylus/js/ts`.
 
 **Vetur only has a "whole document formatter" and cannot format arbitrary ranges.**  
 **As a result, only the `Format Document` command is available.**  
@@ -11,10 +11,12 @@ Vetur has support for formatting embedded `html/css/scss/less/postcss/stylus/js/
 These formatters are available:
 
 - [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
+- [`prettier`](https://github.com/prettier/prettier) with [@prettier/plugin-pug](https://github.com/prettier/plugin-pug): For pug.
 - [`prettier-eslint`](https://github.com/prettier/prettier-eslint): For js. Run `prettier` and `eslint --fix`.
 - [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
+- [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter): For the .sass section of the files.
 
 Vetur bundles all the above formatters. When Vetur observes a local install of the formatter, it'll prefer to use the local version.
 
@@ -26,13 +28,15 @@ Current default:
 ```json
 {
   "vetur.format.defaultFormatter.html": "prettyhtml",
+  "vetur.format.defaultFormatter.pug": "prettier",
   "vetur.format.defaultFormatter.css": "prettier",
   "vetur.format.defaultFormatter.postcss": "prettier",
   "vetur.format.defaultFormatter.scss": "prettier",
   "vetur.format.defaultFormatter.less": "prettier",
   "vetur.format.defaultFormatter.stylus": "stylus-supremacy",
   "vetur.format.defaultFormatter.js": "prettier",
-  "vetur.format.defaultFormatter.ts": "prettier"
+  "vetur.format.defaultFormatter.ts": "prettier",
+  "vetur.format.defaultFormatter.sass": "sass-formatter"
 }
 ```
 
@@ -41,7 +45,7 @@ Current default:
 A global switch `vetur.format.enable` toggles Vetur formatter on and off. This is useful if you want to let Prettier handle `*.vue` file formatting completely.
 
 - The benefits of using Prettier: CLI support, one single formatter.
-- The downsides: No Stylus support, can't use `js-beautify`, `prettyhtml` or TypeScript formatter, no options for indenting script/style blocks [yet](https://github.com/prettier/prettier/issues/3888).
+- The downsides: No Stylus support, can't use `js-beautify`, `prettyhtml` or TypeScript formatter.
 
 ### Vetur Formatter Config
 
@@ -67,7 +71,7 @@ Opinionated formatter. Settings are read from `.prettierrc` at project root. See
 
 If you want to set global prettier setting, either:
 
-- Make a `.prettierrc` config at your home directory 
+- Make a `.prettierrc` config at your home directory
 - Use the below config and do NOT include a `.prettierrc` in your home directory
 
   ```json
@@ -131,5 +135,24 @@ Other settings are read from `stylusSupremacy.*`. You can install [Stylus Suprem
   "stylusSupremacy.insertBraces": false,
   "stylusSupremacy.insertColons": false,
   "stylusSupremacy.insertSemicolons": false
+}
+```
+
+#### [sass-formatter](https://github.com/TheRealSyler/sass-formatter)
+
+Settings are read from `sass.format.*`. You can install [Sass extension](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented) to get IntelliSense for settings, but Vetur will work without it. A useful default:
+
+```json
+{
+  // enables debug mode.
+  "sass.format.debug": false,
+  // removes empty rows.
+  "sass.format.deleteEmptyRows": true,
+  // removes trailing whitespace.
+  "sass.format.deleteWhitespace": true,
+  // Convert scss/css to sass.
+  "sass.format.convert": true,
+  // If true space between the property: value, is always set to 1.
+  "sass.format.setPropertySpace": true
 }
 ```

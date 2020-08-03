@@ -44,7 +44,7 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
       if (!emmetCompletions) {
         return { isIncomplete: false, items: lsItems };
       } else {
-        const emmetItems = _.map(emmetCompletions.items, i => {
+        const emmetItems = emmetCompletions.items.map(i => {
           return {
             ...i,
             sortText: Priority.Emmet + i.label

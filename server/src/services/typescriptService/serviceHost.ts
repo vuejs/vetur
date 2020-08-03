@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as ts from 'typescript';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
@@ -14,6 +14,8 @@ import { TemplateSourceMap, stringifySourceMapNodes } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { logger } from '../../log';
 import { ModuleResolutionCache } from './moduleResolutionCache';
+import { globalScope } from './transformTemplate';
+import { inferVueVersion, VueVersion } from './vueVersion';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -95,7 +97,7 @@ export function getServiceHost(
   );
   const scriptFileNameSet = new Set(initialProjectFiles);
 
-  const isOldVersion = inferIsUsingOldVueVersion(tsModule, workspacePath);
+  const vueVersion = inferVueVersion(tsModule, workspacePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
@@ -211,7 +213,7 @@ export function getServiceHost(
         }
 
         if (isVueFile(fileName)) {
-          const uri = Uri.file(fileName);
+          const uri = URI.file(fileName);
           const fileFsPath = normalizeFileNameToFsPath(fileName);
           let doc = localScriptRegionDocuments.get(fileFsPath);
           if (!doc) {
@@ -281,7 +283,7 @@ export function getServiceHost(
 
           if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
             const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
-            const uri = Uri.file(resolvedFileName);
+            const uri = URI.file(resolvedFileName);
             const resolvedFileFsPath = normalizeFileNameToFsPath(resolvedFileName);
             let doc = localScriptRegionDocuments.get(resolvedFileFsPath);
             // Vue file not created yet
@@ -327,7 +329,13 @@ export function getServiceHost(
         }
 
         if (fileName === bridge.fileName) {
-          const text = isOldVersion ? bridge.oldContent : bridge.content;
+          const text =
+            vueVersion === VueVersion.VPre25
+              ? bridge.preVue25Content
+              : vueVersion === VueVersion.V25
+              ? bridge.vue25Content
+              : bridge.vue30Content;
+
           return {
             getText: (start, end) => text.substring(start, end),
             getLength: () => text.length,
@@ -400,7 +408,7 @@ export function getServiceHost(
 
   const registry = tsModule.createDocumentRegistry(true);
   let jsLanguageService = tsModule.createLanguageService(jsHost, registry);
-  const templateLanguageService = tsModule.createLanguageService(templateHost, registry);
+  const templateLanguageService = patchTemplateService(tsModule.createLanguageService(templateHost, registry));
 
   return {
     queryVirtualFileInfo,
@@ -409,6 +417,33 @@ export function getServiceHost(
     updateExternalDocument,
     dispose: () => {
       jsLanguageService.dispose();
+    }
+  };
+}
+
+function patchTemplateService(original: ts.LanguageService): ts.LanguageService {
+  const allowedGlobals = new Set(globalScope);
+
+  return {
+    ...original,
+
+    getCompletionsAtPosition(fileName, position, options) {
+      const result = original.getCompletionsAtPosition(fileName, position, options);
+      if (!result) {
+        return;
+      }
+
+      if (result.isMemberCompletion) {
+        return result;
+      }
+
+      return {
+        ...result,
+
+        entries: result.entries.filter(entry => {
+          return allowedGlobals.has(entry.name);
+        })
+      };
     }
   };
 }
@@ -430,33 +465,6 @@ function getScriptKind(tsModule: T_TypeScript, langId: string): ts.ScriptKind {
     : langId === 'tsx'
     ? tsModule.ScriptKind.TSX
     : tsModule.ScriptKind.JS;
-}
-
-function inferIsUsingOldVueVersion(tsModule: T_TypeScript, workspacePath: string): boolean {
-  const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
-  try {
-    const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);
-    const vueDependencyVersion = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
-
-    if (vueDependencyVersion) {
-      // use a sloppy method to infer version, to reduce dep on semver or so
-      const vueDep = vueDependencyVersion.match(/\d+\.\d+/)[0];
-      const sloppyVersion = parseFloat(vueDep);
-      return sloppyVersion < 2.5;
-    }
-
-    const nodeModulesVuePackagePath = tsModule.findConfigFile(
-      path.resolve(workspacePath, 'node_modules/vue'),
-      tsModule.sys.fileExists,
-      'package.json'
-    );
-    const nodeModulesVuePackageJSON =
-      nodeModulesVuePackagePath && JSON.parse(tsModule.sys.readFile(nodeModulesVuePackagePath)!);
-    const nodeModulesVueVersion = parseFloat(nodeModulesVuePackageJSON.version.match(/\d+\.\d+/)[0]);
-    return nodeModulesVueVersion < 2.5;
-  } catch (e) {
-    return true;
-  }
 }
 
 function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {

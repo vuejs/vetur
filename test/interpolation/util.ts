@@ -23,7 +23,3 @@ export const getDocPath = (p: string) => {
 export const getDocUri = (p: string) => {
   return vscode.Uri.file(getDocPath(p));
 };
-
-export function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}

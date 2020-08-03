@@ -86,8 +86,7 @@ Then, clone the repository and compile it.
 ```
 git clone https://github.com/vuejs/vetur
 cd vetur
-yarn 
-cd server && yarn && cd ..
+yarn
 yarn compile
 vsce package
 ```

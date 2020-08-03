@@ -2,7 +2,7 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Definition, Location } from 'vscode-languageserver-types';
 import { VueFileInfo } from '../../../services/vueInfoService';
-import URI from 'vscode-uri';
+import { URI } from 'vscode-uri';
 
 const TRIVIAL_TOKEN = [TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace];
 

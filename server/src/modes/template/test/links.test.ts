@@ -32,7 +32,10 @@ suite('HTML Link Detection', () => {
   function testLinkDetection(value: string, expectedLinks: { offset: number; target: string }[]): void {
     const document = TextDocument.create('test://test/test.html', 'html', 0, value);
     const links = findDocumentLinks(document, getDocumentContext(document.uri));
-    assert.deepEqual(links.map(l => ({ offset: l.range.start.character, target: l.target })), expectedLinks);
+    assert.deepEqual(
+      links.map(l => ({ offset: l.range.start.character, target: l.target })),
+      expectedLinks
+    );
   }
 
   test('Link creation', () => {
@@ -78,8 +81,7 @@ suite('HTML Link Detection', () => {
     testLinkCreation('https://www.test.com/path/to/file.txt', '//www.microsoft.com/', 'https://www.microsoft.com/');
     testLinkCreation('https://www.test.com/path/to/file.txt', '//www.microsoft.com/', 'https://www.microsoft.com/');
 
-    // invalid uris are ignored
-    testLinkCreation('https://www.test.com/path/to/file.txt', '%', null);
+    testLinkCreation('https://www.test.com/path/to/file.txt', '%', 'https://www.test.com/path/to/%');
 
     // Bug #18314: Ctrl + Click does not open existing file if folder's name starts with 'c' character
     testLinkCreation(
