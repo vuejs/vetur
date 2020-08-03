@@ -10,7 +10,7 @@
 - 🙌 Fix object property completion when have hyphen. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1804 and #1808.
 - 🙌 SFC without a script tag show an error when trying to import. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1187 and #1806.
 - 🙌 Fix initializationOptions: Cannot read property 'config' of undefined. Thanks to contribution from [Dawid Pakuła](https://github.com/zulus). #1897 and #1341.
-- 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1841 and #2056.
+- 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2049 and #2056.
 - 🙌 When passing incorrect first arg to vti, show help message. Thanks to contribution from [Rafal Tynski](https://github.com/rafalt). #1841.
 - 🙌 Use CodeAction over command. Thanks to contribution from [Matt Bierner](https://github.com/mjbvz). #1704.
 
