@@ -17,7 +17,8 @@ export type ParserOption =
   | 'html'
   | 'angular'
   | 'mdx'
-  | 'yaml';
+  | 'yaml'
+  | 'pug';
 
 type TrailingCommaOption = 'none' | 'es5' | 'all';
 

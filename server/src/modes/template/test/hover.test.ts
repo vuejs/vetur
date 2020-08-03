@@ -19,7 +19,7 @@ const html = hoverDSL({
 });
 
 suite('HTML Hover', () => {
-  test('Attribute', function() {
+  test('Attribute', function () {
     // prettier-ignore
     html`<div a|ria-atomic="true"></div>`
       .hasNothing();
@@ -28,6 +28,6 @@ suite('HTML Hover', () => {
       .hasHoverAt('treat inner content as its template rather than distributed content', 11);
     // prettier-ignore
     html`<div :v|-if="true"></div>`
-      .hasHoverAt('Conditionally renders the element based on the truthy\\-ness of the expression value\\.', 5);
+      .hasHoverAt('Conditionally renders the element based on the truthy-ness of the expression value.', 5);
   });
 });

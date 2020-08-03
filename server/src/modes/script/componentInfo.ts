@@ -81,7 +81,7 @@ export function analyzeDefaultExportExpr(
   };
 }
 
-function getDefaultExportObjectLiteralExpr(
+export function getDefaultExportObjectLiteralExpr(
   tsModule: T_TypeScript,
   sourceFile: ts.SourceFile
 ): ts.Expression | undefined {

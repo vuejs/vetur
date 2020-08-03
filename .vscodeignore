@@ -6,6 +6,7 @@ docs/
 client/
 **/test/
 server/src/
+vti
 
 .**
 
@@ -14,3 +15,4 @@ server/src/
 **/tslint.json
 
 .vsix
+scripts

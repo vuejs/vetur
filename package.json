@@ -4,21 +4,25 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.22.6",
+  "version": "0.25.0",
   "publisher": "octref",
   "scripts": {
+    "postinstall": "run-s install:*",
+    "install:server": "cd server && yarn",
+    "install:vti": "cd vti && yarn",
     "build:grammar": "tsc -p . && node dist/scripts/build_grammar",
     "compile": "run-s compile:source copy:snippets",
     "compile:source": "tsc -b .",
     "watch": "run-s compile copy:snippets watch:build",
     "watch:build": "tsc -b -w .",
-    "copy:snippets": "bash ./build/copy-snippets.sh",
+    "copy:snippets": "node ./build/copy-snippets.js",
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
     "test:server": "npm run compile && cd server && npm test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test:grammar": "node ./dist/test/codeTestRunner.js grammar",
     "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
     "test:int": "node ./dist/test/codeTestRunner.js interpolation",
+    "test:vue3": "node ./dist/test/codeTestRunner.js vue3",
     "test": "run-s compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepare-publish": "./build/release-cleanup.sh"
@@ -31,12 +35,10 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint --fix",
-      "git add"
+      "tslint --fix"
     ],
     "*.{js,ts,yaml}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "repository": {
@@ -53,11 +55,11 @@
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.32.0"
+    "vscode": "^1.47.0"
   },
   "dependencies": {
-    "vscode-languageclient": "^5.3.0-next.3",
-    "vscode-languageserver-types": "^3.15.0-next.9"
+    "vscode-languageclient": "^6.1.3",
+    "vscode-languageserver-types": "^3.15.1"
   },
   "activationEvents": [
     "onLanguage:vue"
@@ -286,6 +288,19 @@
           ],
           "description": "Default formatter for <template> region"
         },
+        "vetur.format.defaultFormatter.pug": {
+          "type": "string",
+          "default": "prettier",
+          "enum": [
+            "none",
+            "prettier"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "prettier"
+          ],
+          "description": "Default formatter for <template lang='pug'> region"
+        },
         "vetur.format.defaultFormatter.css": {
           "type": "string",
           "default": "prettier",
@@ -330,6 +345,19 @@
             "prettier-stylelint"
           ],
           "description": "Default formatter for <style lang='scss'> region"
+        },
+        "vetur.format.defaultFormatter.sass": {
+          "type": "string",
+          "default": "sass-formatter",
+          "enum": [
+            "none",
+            "sass-formatter"
+          ],
+          "enumDescriptions": [
+            "disable formatting",
+            "sass formatter"
+          ],
+          "description": "Default formatter for <style lang='sass'> region"
         },
         "vetur.format.defaultFormatter.less": {
           "type": "string",
@@ -496,23 +524,28 @@
     }
   },
   "devDependencies": {
-    "@types/glob": "^7.1.1",
-    "@types/js-yaml": "^3.12.1",
-    "@types/lodash": "^4.14.149",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.20",
-    "@types/shelljs": "^0.8.6",
-    "@types/vscode": "^1.32.0",
+    "@types/glob": "^7.1.3",
+    "@types/js-yaml": "^3.12.5",
+    "@types/lodash": "^4.14.158",
+    "@types/minimist": "^1.2.0",
+    "@types/mocha": "^8.0.0",
+    "@types/node": "^14.0.27",
+    "@types/shelljs": "^0.8.8",
+    "@types/vscode": "^1.47.0",
+    "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "husky": "^3.1.0",
-    "js-yaml": "^3.13.1",
-    "lint-staged": "^9.5.0",
-    "mocha": "^6.2.2",
+    "js-yaml": "^3.14.0",
+    "lint-staged": "^10.2.11",
+    "minimist": "^1.2.5",
+    "mocha": "^8.1.0",
+    "ncp": "^2.0.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^1.19.1",
-    "shelljs": "^0.8.3",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.4",
-    "vscode": "1.1.29"
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "shelljs": "^0.8.4",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7",
+    "vscode-test": "^1.4.0"
   }
 }

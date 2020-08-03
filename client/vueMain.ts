@@ -39,17 +39,12 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.applyWorkspaceEdits', (args: WorkspaceEdit) => {
-      const edit = client.protocol2CodeConverter.asWorkspaceEdit(args)!;
-      vscode.workspace.applyEdit(edit);
-    })
-  );
-
-  context.subscriptions.push(
     vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
-      client
-        .sendRequest<vscode.Command | undefined>('requestCodeActionEdits', args)
-        .then(command => command && vscode.commands.executeCommand(command.command, ...command.arguments!));
+      client.sendRequest<WorkspaceEdit | undefined>('requestCodeActionEdits', args).then(edits => {
+        if (edits) {
+          vscode.workspace.applyEdit(client.protocol2CodeConverter.asWorkspaceEdit(edits)!);
+        }
+      });
     })
   );
 
@@ -63,7 +58,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const client = initializeLanguageClient(serverModule, globalSnippetDir);
   context.subscriptions.push(client.start());
 
-  client
+  const promise = client
     .onReady()
     .then(() => {
       registerCustomClientNotificationHandlers(client);
@@ -72,6 +67,14 @@ export async function activate(context: vscode.ExtensionContext) {
     .catch(e => {
       console.log('Client initialization failed');
     });
+
+  return vscode.window.withProgress(
+    {
+      title: 'Vetur initialization',
+      location: vscode.ProgressLocation.Window
+    },
+    () => promise
+  );
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient) {
