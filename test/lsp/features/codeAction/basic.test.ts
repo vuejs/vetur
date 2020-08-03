@@ -4,7 +4,10 @@ import { showFile, getDiagnosticsAndTimeout } from '../../helper';
 import { getDocUri, sameLineRange } from '../../util';
 import { CodeAction } from 'vscode-languageclient';
 
-describe('Should do codeAction', () => {
+describe('Should do codeAction', function () {
+  // Retry for flakey tests
+  this.retries(3);
+
   const docUri = getDocUri('codeAction/Basic.vue');
 
   it('finds codeAction for unused import', async () => {
