@@ -526,7 +526,7 @@
     "@types/vscode": "^1.47.0",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
-    "husky": "^3.1.0",
+    "husky": "^4.2.5",
     "js-yaml": "^3.14.0",
     "lint-staged": "^10.2.11",
     "minimist": "^1.2.5",
