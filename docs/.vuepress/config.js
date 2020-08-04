@@ -26,12 +26,7 @@ module.exports = {
           '/interpolation',
           '/vti'
         ]
-      },
-      '/FAQ',
-      '/CONTRIBUTING',
-      '/roadmap',
-      '/CHANGELOG',
-      '/credits'
+      }
     ]
   }
 };

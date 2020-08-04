@@ -24,7 +24,7 @@ Vue tooling for VS Code.
 
 - [vls](./server): Vue Language Server
 - [vti](./vti): Vetur Terminal Interface
-- Docs: https://vuejs.github.io/vetur
+- [Docs](https://vuejs.github.io/vetur)
 
 🎉 VueConf 2017 [Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) & [Video](https://www.youtube.com/watch?v=05tNXJ-Kric) 🎉
 
@@ -36,8 +36,9 @@ Vue tooling for VS Code.
 - Linting / Error Checking
 - Formatting
 - Auto Completion
-- [Component Data](https://vuejs.github.io/vetur/component-data.html)
-- [VTI / CLI](https://vuejs.github.io/vetur/vti.html)
+- [Component Data](https://vuejs.github.io/vetur/component-data.html): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](https://vuejs.github.io/vetur/interpolation.html): auto-completion, hover information and type-checking in Vue template
+- [VTI](https://vuejs.github.io/vetur/vti.html): Surface template type-checking errors on CLI
 
 ## Quick Start
 
