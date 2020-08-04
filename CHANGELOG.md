@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.26.0
+### 0.26.0 | 2020-08-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.0/vspackage)
 
 - Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
 - Remove leading empty line in diagnostic errors. #2067.
