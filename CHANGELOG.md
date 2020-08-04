@@ -5,6 +5,7 @@
 - Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
 - Remove leading empty line in diagnostic errors. #2067.
 - `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053.
+- Allow `xml` in `vetur.grammar.customBlocks`. #2091.
 - 🙌 Listen to JSON file changes for TypeScript resolveJsonModule support. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2095.
 - 🙌 Follow user's config while resolving autoImport path. Thanks to contribution from [@hikerpig](https://github.com/hikerpig). #1177 and #1753.
 - 🙌 Handle different tag casing when doing html definition. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2096.
