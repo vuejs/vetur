@@ -8,6 +8,9 @@ export function isVueFile(path: string) {
 /**
  * If the path ends with `.vue.ts`, it's a `.vue` file pre-processed by Vetur
  * to be used in TS Language Service
+ *
+ * Note: all files outside any node_modules folder are considered,
+ * EXCEPT if they are added to tsconfig via 'files' or 'include' properties
  */
 export function isVirtualVueFile(path: string, projectFiles: Set<string>) {
   return path.endsWith('.vue.ts') && projectFiles.has(path.slice(0, -'.ts'.length));
