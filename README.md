@@ -36,7 +36,7 @@ Vue tooling for VS Code.
 - Linting / Error Checking
 - Formatting
 - Auto Completion
-- Debugging
+- [Component Data](https://vuejs.github.io/vetur/component-data.html)
 - [VTI / CLI](https://vuejs.github.io/vetur/vti.html)
 
 ## Quick Start

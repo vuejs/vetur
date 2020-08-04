@@ -23,7 +23,7 @@ You can [open an issue](https://github.com/vuejs/vetur/issues/new) for bugs or f
 - [Formatting](formatting.md)
 - [IntelliSense](intellisense.md)
 - [Debugging](debugging.md)
-- [Framework Support](framework.md) for [Element UI](http://element.eleme.io), [Onsen UI](https://onsen.io) and [Quasar Framework](https://quasar-framework.org)
+- [Component Data](framework.md) for 9 common frameworks
 - [VTI / CLI](vti.md)
 
 ## Quick Start

@@ -22,7 +22,7 @@ module.exports = {
           '/formatting',
           '/intellisense',
           '/debugging',
-          '/framework',
+          '/component-data',
           '/interpolation',
           '/vti'
         ]
