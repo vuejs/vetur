@@ -13,7 +13,7 @@ export function isVueFile(path: string) {
  * EXCEPT if they are added to tsconfig via 'files' or 'include' properties
  */
 export function isVirtualVueFile(path: string, projectFiles: Set<string>) {
-  return path.endsWith('.vue.ts') && projectFiles.has(path.slice(0, -'.ts'.length));
+  return path.endsWith('.vue.ts') && (!path.includes('node_modules') || projectFiles.has(path.slice(0, -'.ts'.length)));
 }
 
 /**
