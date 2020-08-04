@@ -490,7 +490,6 @@ function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
         // Note: in order for parsed config to include *.vue files, scriptKind must be set to Deferred.
         // tslint:disable-next-line max-line-length
         // See: https://github.com/microsoft/TypeScript/blob/2106b07f22d6d8f2affe34b9869767fa5bc7a4d9/src/compiler/utilities.ts#L6356
-        // (permalink, will reflect issue but may become outdated)
         scriptKind: ts.ScriptKind.Deferred
       }
     ]
