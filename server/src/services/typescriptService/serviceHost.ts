@@ -487,7 +487,9 @@ function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
       {
         extension: 'vue',
         isMixedContent: true,
-        // When not setting this, won't return Vue filepaths
+        // Note: in order for parsed config to include *.vue files, scriptKind must be set to Deferred.
+        // tslint:disable-next-line max-line-length
+        // See: https://github.com/microsoft/TypeScript/blob/2106b07f22d6d8f2affe34b9869767fa5bc7a4d9/src/compiler/utilities.ts#L6356
         scriptKind: ts.ScriptKind.Deferred
       }
     ]
