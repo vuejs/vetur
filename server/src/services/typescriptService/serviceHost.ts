@@ -483,6 +483,13 @@ function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,
-    [{ extension: 'vue', isMixedContent: true, scriptKind: ts.ScriptKind.Deferred }]
+    [
+      {
+        extension: 'vue',
+        isMixedContent: true,
+        // When not setting this, won't return Vue filepaths
+        scriptKind: ts.ScriptKind.Deferred
+      }
+    ]
   );
 }
