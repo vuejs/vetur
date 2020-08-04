@@ -10,7 +10,7 @@ export function isVueFile(path: string) {
  * to be used in TS Language Service
  */
 export function isVirtualVueFile(path: string, projectFiles: Set<string>) {
-  return path.endsWith('.vue.ts') && projectFiles.has(path.slice(0, -'.ts'.length));
+  return path.endsWith('.vue.ts') && (!path.includes('node_modules') || projectFiles.has(path.slice(0, -'.ts'.length)));
 }
 
 /**
