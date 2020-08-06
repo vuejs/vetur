@@ -57,7 +57,7 @@
     "@types/eslint-visitor-keys": "^1.0.0",
     "@types/glob": "^7.1.0",
     "@types/js-beautify": "^1.8.0",
-    "@types/lodash": "^4.14.118",
+    "@types/lodash": "^4.14.159",
     "@types/mocha": "^8.0.1",
     "@types/node": "^14.0.13",
     "@types/prettier": "^2.0.2",
