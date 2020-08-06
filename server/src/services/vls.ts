@@ -71,6 +71,7 @@ export class VLS {
     postcss: true,
     javascript: true
   };
+  private templateInterpolationValidation = false;
 
   private documentFormatterRegistration: Disposable | undefined;
 
@@ -221,6 +222,8 @@ export class VLS {
     this.validation.scss = veturValidationOptions.style;
     this.validation.less = veturValidationOptions.style;
     this.validation.javascript = veturValidationOptions.script;
+
+    this.templateInterpolationValidation = config.vetur.experimental.templateInterpolationService;
 
     this.languageModes.getAllModes().forEach(m => {
       if (m.configure) {
@@ -476,8 +479,14 @@ export class VLS {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
       this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
-        if (lmr.mode.doValidation && this.validation[lmr.mode.getId()]) {
-          pushAll(diagnostics, lmr.mode.doValidation(doc));
+        if (lmr.mode.doValidation) {
+          if (this.validation[lmr.mode.getId()]) {
+            pushAll(diagnostics, lmr.mode.doValidation(doc));
+          }
+          // Special case for template type checking
+          else if (lmr.mode.getId() === 'vue-html' && this.templateInterpolationValidation) {
+            pushAll(diagnostics, lmr.mode.doValidation(doc));
+          }
         }
       });
     }

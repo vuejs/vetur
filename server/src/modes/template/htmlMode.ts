@@ -13,7 +13,12 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
 import { doESLintValidation, createLintEngine } from './services/htmlValidation';
 import { findDefinition } from './services/htmlDefinition';
-import { getTagProviderSettings, IHTMLTagProvider, CompletionConfiguration, getEnabledTagProviders } from './tagProviders';
+import {
+  getTagProviderSettings,
+  IHTMLTagProvider,
+  CompletionConfiguration,
+  getEnabledTagProviders
+} from './tagProviders';
 import { DocumentContext } from '../../types';
 import { VLSFormatConfig, VLSFullConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
@@ -25,7 +30,7 @@ export class HTMLMode implements LanguageMode {
   private enabledTagProviders: IHTMLTagProvider[];
   private embeddedDocuments: LanguageModelCache<TextDocument>;
 
-  private config: any = {};
+  private config: VLSFullConfig;
 
   private lintEngine: any;
 
@@ -54,8 +59,12 @@ export class HTMLMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument) {
-    const embedded = this.embeddedDocuments.refreshAndGet(document);
-    return doESLintValidation(embedded, this.lintEngine);
+    if (this.config.vetur.validation.template) {
+      const embedded = this.embeddedDocuments.refreshAndGet(document);
+      return doESLintValidation(embedded, this.lintEngine);
+    }
+
+    return [];
   }
   doComplete(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);
