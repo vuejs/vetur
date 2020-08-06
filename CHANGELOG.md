@@ -1,5 +1,8 @@
 # Changelog
 
+### 0.26.1
+- 🙌 Fix prettier-eslint error when formatting. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2117.
+
 ### 0.26.0 | 2020-08-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.0/vspackage)
 
 - Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
