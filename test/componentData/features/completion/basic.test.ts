@@ -1,8 +1,20 @@
-import { position } from '../../../util';
+import { position, sameLineRange } from '../../../util';
 import { testCompletion } from '../../../completionHelper';
 import { getDocUri } from '../../path';
 
 describe('Should complete frameworks', () => {
+  describe('Should complete vue-router tags/attributes', () => {
+    const vueRouterUri = getDocUri('completion/VueRouter.vue');
+
+    it('completes vue-router tags', async () => {
+      await testCompletion(vueRouterUri, position(3, 5), ['router-link', 'router-view']);
+    });
+
+    it('completes vue-router attributes', async () => {
+      await testCompletion(vueRouterUri, position(2, 17), ['replace']);
+    });
+  });
+
   describe('Should complete element-ui components (devDependency, loaded from bundled JSON)', () => {
     const elementUri = getDocUri('completion/Element.vue');
 
