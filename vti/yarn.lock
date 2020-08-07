@@ -4582,10 +4582,10 @@ vfile@^4.0.0, vfile@^4.0.1:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
-vls@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/vls/-/vls-0.4.1.tgz#9c59acdf5bf7ce6a5835a7004ba7ea7fb4f89447"
-  integrity sha512-K/bbaMG7Mv5XsLes9bSPOZl3bN4h/OkyVfeN4T9KE7mzseC2yfnRl5Kn/hktTmWc5GylLFWe8rE3xkfx0hzsPg==
+vls@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/vls/-/vls-0.4.2.tgz#0495c5291e00e67567a581394a5283aa5fb3add1"
+  integrity sha512-iH1MUOMaLwv5Lewkt/mYppy/UdBLh8MonL4CSiKh4GNj0GfEJHQfk2s8d0WixVooD++UGCa/dzpGB8CRzGnBtA==
   dependencies:
     "@prettier/plugin-pug" "^1.4.4"
     "@starptech/prettyhtml" "^0.10.0"
