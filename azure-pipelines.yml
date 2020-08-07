@@ -79,32 +79,11 @@ steps:
   condition: eq(variables['Agent.OS'], 'Linux')
   displayName: Start xvfb
 
-- bash: yarn test:server
+- bash: yarn test
+  workingDirectory: server
   displayName: Run Server Tests
-  condition: always()
-  env:
-    DISPLAY: :10
 
-- bash: yarn test:grammar
-  displayName: Run grammar E2E Tests
-  condition: always()
-  env:
-    DISPLAY: :10
-
-- bash: yarn test:lsp
-  displayName: Run LSP E2E Tests
-  condition: always()
-  env:
-    DISPLAY: :10
-
-- bash: yarn test:vue3
-  displayName: Run vue3 E2E Tests
-  condition: always()
-  env:
-    DISPLAY: :10
-
-- bash: yarn test:int
-  displayName: Run template interpolation E2E Tests
-  condition: always()
+- bash: yarn test:e2e
+  displayName: Run E2E Tests
   env:
     DISPLAY: :10

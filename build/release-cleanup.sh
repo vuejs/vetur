@@ -3,7 +3,7 @@ yarn
 
 # Compile / Test
 yarn compile
-yarn test:server
+(cd server && yarn test)
 
 # Remove server devDependencies
 cd server && yarn --prod && cd ..

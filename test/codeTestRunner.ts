@@ -51,7 +51,6 @@ async function runAllTests(execPath: string) {
       await run(execPath, `test/${targetDir}`, mochaArgs);
     } catch (err) {
       console.error(err);
-      process.exit(1);
     }
   } else {
     for (const dir of testDirs) {
@@ -60,7 +59,6 @@ async function runAllTests(execPath: string) {
         await run(execPath, `test/${dir}`, mochaArgs);
       } catch (err) {
         console.error(err);
-        process.exit(1);
       }
     }
   }
