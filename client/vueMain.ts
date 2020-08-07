@@ -79,6 +79,43 @@ export async function activate(context: vscode.ExtensionContext) {
     },
     () => promise
   );
+
+  function onDidOpenTextDocument(document: vscode.TextDocument) {
+    const client = initializeClientForTextDocument(context, serverModule, globalSnippetDir, document);
+    // TODO handle commands properly
+    if (!client || clients.size > 1) {
+      return;
+    }
+    context.subscriptions.push(
+      vscode.commands.registerCommand('vetur.applyWorkspaceEdits', (args: WorkspaceEdit) => {
+        const edit = client.protocol2CodeConverter.asWorkspaceEdit(args)!;
+        vscode.workspace.applyEdit(edit);
+      })
+    );
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
+        client.sendRequest<WorkspaceEdit | undefined>('requestCodeActionEdits', args).then(edits => {
+          if (edits) {
+            vscode.workspace.applyEdit(client.protocol2CodeConverter.asWorkspaceEdit(edits)!);
+          }
+        });
+      })
+    );
+  }
+
+  vscode.workspace.onDidOpenTextDocument(onDidOpenTextDocument);
+  vscode.workspace.textDocuments.forEach(onDidOpenTextDocument);
+
+  vscode.workspace.onDidChangeWorkspaceFolders(event => {
+    for (const folder of event.removed) {
+      const client = clients.get(folder.uri.toString());
+      if (client) {
+        clients.delete(folder.uri.toString());
+        client.stop();
+      }
+    }
+  });
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient) {
@@ -100,4 +137,36 @@ function registerCustomLSPCommands(context: vscode.ExtensionContext, client: Lan
   context.subscriptions.push(
     vscode.commands.registerCommand('vetur.showCorrespondingVirtualFile', generateShowVirtualFileCommand(client))
   );
+}
+
+function initializeClientForTextDocument(
+  context: vscode.ExtensionContext,
+  serverModule: string,
+  globalSnippetDir: string,
+  document: vscode.TextDocument
+): LanguageClient | undefined {
+  const folder = vscode.workspace.getWorkspaceFolder(document.uri);
+
+  if (!folder || document.languageId !== 'vue') {
+    return;
+  }
+
+  if (!clients.has(folder.uri.toString())) {
+    const client = initializeLanguageClient(serverModule, globalSnippetDir, folder);
+
+    client
+      .onReady()
+      .then(() => {
+        registerCustomClientNotificationHandlers(client);
+        registerCustomLSPCommands(context, client);
+      })
+      .catch(e => {
+        console.log(`Client initialization failed for workspace: ${folder.uri.toString()}`);
+      });
+
+    context.subscriptions.push(client.start());
+    clients.set(folder.uri.toString(), client);
+
+    return client;
+  }
 }
