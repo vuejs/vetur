@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { getDocUri, sameLineRange } from '../../util';
-import { testDiagnostics, testNoDiagnostics } from './helper';
+import { sameLineRange } from '../../../util';
+import { testDiagnostics, testNoDiagnostics } from '../../../diagnosticHelper';
+import { getDocUri } from '../../path';
 
 describe('Should find template-diagnostics in <template> region', () => {
   const tests: TemplateDiagnosticTest[] = [
@@ -77,9 +78,7 @@ describe('Should find template-diagnostics in <template> region', () => {
           severity: vscode.DiagnosticSeverity.Error,
           message: "Argument of type 'string' is not assignable"
         }
-      ],
-      // eslint-plugin-vue generates diagnostics too
-      skipSameDiagnosticCountAssert: true
+      ]
     },
     {
       file: 'v-slot.vue',
@@ -99,9 +98,7 @@ describe('Should find template-diagnostics in <template> region', () => {
           severity: vscode.DiagnosticSeverity.Error,
           message: "Property 'a' does not exist on type"
         }
-      ],
-      // eslint-plugin-vue generates diagnostics too
-      skipSameDiagnosticCountAssert: true
+      ]
     },
     {
       file: 'object-literal.vue',
@@ -229,7 +226,7 @@ describe('Should find template-diagnostics in <template> region', () => {
   tests.forEach(t => {
     it(`Shows template diagnostics for ${t.file}`, async () => {
       const docUri = getDocUri(`diagnostics/${t.file}`);
-      await testDiagnostics(docUri, t.diagnostics, !!t.skipSameDiagnosticCountAssert);
+      await testDiagnostics(docUri, t.diagnostics);
     });
   });
 
@@ -253,7 +250,7 @@ describe('Should find template-diagnostics in <template> region', () => {
       // Retry on fail
       this.retries(3);
       const docUri = getDocUri(`diagnostics/${t.file}`);
-      await testDiagnostics(docUri, t.diagnostics, !!t.skipSameDiagnosticCountAssert);
+      await testDiagnostics(docUri, t.diagnostics);
     });
   });
 
@@ -270,5 +267,4 @@ describe('Should find template-diagnostics in <template> region', () => {
 interface TemplateDiagnosticTest {
   file: string;
   diagnostics: vscode.Diagnostic[];
-  skipSameDiagnosticCountAssert?: boolean;
 }

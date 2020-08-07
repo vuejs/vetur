@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { DiagnosticTag } from 'vscode-languageclient';
-import { getDocUri, range, sameLineRange } from '../../util';
-import { testDiagnostics } from './helper';
+import { range, sameLineRange } from '../../../util';
+import { testDiagnostics } from '../../../diagnosticHelper';
+import { getDocUri } from '../../path';
 
 describe('Should find common diagnostics for all regions', () => {
   const docUri = getDocUri('diagnostics/Basic.vue');

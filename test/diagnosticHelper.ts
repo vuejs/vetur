@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDiagnosticsAndTimeout, sleep, showFile } from '../../helper';
 import * as _ from 'lodash';
+import { sleep } from './util';
+import { showFile } from './editorHelper';
+import { performance } from 'perf_hooks';
 
 export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.Diagnostic[]) {
   await showFile(docUri);
@@ -37,7 +39,6 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
 
 export async function testNoDiagnostics(docUri: vscode.Uri) {
   await showFile(docUri);
-
   // For diagnostics to show up
   await sleep(3000);
 
@@ -47,4 +48,18 @@ export async function testNoDiagnostics(docUri: vscode.Uri) {
     result.length === 0,
     `Should find no diagnostics for ${docUri.fsPath} but found:\n` + `${JSON.stringify(result)}`
   );
+}
+
+// Retry to get diagnostics until length > 0 or timeout
+export async function getDiagnosticsAndTimeout(docUri: vscode.Uri, timeout = 5000) {
+  const startTime = performance.now();
+
+  let result = vscode.languages.getDiagnostics(docUri);
+
+  while (result.length <= 0 && startTime + timeout > performance.now()) {
+    result = vscode.languages.getDiagnostics(docUri);
+    await sleep(100);
+  }
+
+  return result;
 }

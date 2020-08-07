@@ -1,8 +1,10 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { showFile, getDiagnosticsAndTimeout } from '../../helper';
-import { getDocUri, sameLineRange } from '../../util';
+import { showFile } from '../../../editorHelper';
+import { sameLineRange } from '../../../util';
 import { CodeAction } from 'vscode-languageclient';
+import { getDocUri } from '../../path';
+import { getDiagnosticsAndTimeout } from '../../../diagnosticHelper';
 
 describe('Should do codeAction', function () {
   // Retry for flakey tests

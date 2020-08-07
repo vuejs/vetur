@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { getDocUri, sameLineRange } from '../../util';
-import { testDiagnostics } from './helper';
+import { sameLineRange } from '../../../util';
+import { testDiagnostics } from '../../../diagnosticHelper';
+import { getDocUri } from '../../path';
 
 describe('Should find diagnostics using eslint-plugin-vue', () => {
   const docUri = getDocUri('diagnostics/ESLint.vue');

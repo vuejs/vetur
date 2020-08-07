@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { showFile } from '../../helper';
 import { CompletionItem, MarkdownString } from 'vscode';
+import { showFile } from './editorHelper';
 
 export interface ExpectedCompletionItem extends CompletionItem {
   documentationStart?: string;
@@ -42,11 +42,15 @@ export async function testCompletion(
             2
           )}`
         );
-        return;
       }
 
-      assert.ok(match.label, ei.label);
-      assert.ok(match.kind, ei.kind as any);
+      assert.equal(match.label, ei.label);
+      if (ei.kind) {
+        assert.equal(match.kind, ei.kind);
+      }
+      if (ei.detail) {
+        assert.equal(match.detail, ei.detail);
+      }
 
       if (ei.documentation) {
         if (typeof match.documentation === 'string') {
