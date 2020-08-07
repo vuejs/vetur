@@ -7,11 +7,39 @@ describe('Should complete frameworks', () => {
     const vueRouterUri = getDocUri('completion/VueRouter.vue');
 
     it('completes vue-router tags', async () => {
-      await testCompletion(vueRouterUri, position(3, 5), ['router-link', 'router-view']);
+      await testCompletion(vueRouterUri, position(4, 5), ['router-link', 'router-view']);
     });
 
     it('completes vue-router attributes', async () => {
       await testCompletion(vueRouterUri, position(2, 17), ['replace']);
+    });
+
+    it('completes vue-router attribute values', async () => {
+      await testCompletion(vueRouterUri, position(3, 37), ['page', 'step']);
+    });
+  });
+
+  describe('Should complete vue/vue-router with documentation', () => {
+    const linkUri = getDocUri('completion/Link.vue');
+
+    it('completes attributes with URI to API docs', async () => {
+      await testCompletion(linkUri, position(3, 5), [
+        {
+          label: 'component',
+          documentationFragment: '[API Reference](https://vuejs.org/v2/api/#component)'
+        }
+      ]);
+
+      await testCompletion(linkUri, position(2, 17), [
+        {
+          label: 'replace',
+          documentationFragment: '[API Reference](https://router.vuejs.org/api/#replace)'
+        },
+        {
+          label: 'v-if',
+          documentationFragment: '[API Reference](https://vuejs.org/v2/api/#v-if)'
+        }
+      ]);
     });
   });
 

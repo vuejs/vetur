@@ -7,53 +7,65 @@ import {
   collectValuesDefault,
   genAttribute,
   AttributeCollector,
-  Priority
+  Priority,
+  Attribute
 } from './common';
 
-const u = undefined;
+function getAttribute(label: string, type: string | undefined, documentation: string) {
+  const linkedDocumentation = documentation + '\n\n' + `[API Reference](https://vuejs.org/v2/api/#${label})`;
+  return genAttribute(label, type, linkedDocumentation);
+}
 
 const vueDirectives = [
-  genAttribute('v-text', u, 'Updates the element’s `textContent`.'),
-  genAttribute('v-html', u, 'Updates the element’s `innerHTML`. XSS prone.'),
-  genAttribute(
+  getAttribute('v-text', undefined, 'Updates the element’s `textContent`.'),
+  getAttribute('v-html', undefined, 'Updates the element’s `innerHTML`. XSS prone.'),
+  getAttribute(
     'v-show',
-    u,
+    undefined,
     'Toggle’s the element’s `display` CSS property based on the truthy-ness of the expression value.'
   ),
-  genAttribute('v-if', u, 'Conditionally renders the element based on the truthy-ness of the expression value.'),
-  genAttribute('v-else', 'v', 'Denotes the “else block” for `v-if` or a `v-if`/`v-else-if` chain.'),
-  genAttribute('v-else-if', u, 'Denotes the “else if block” for `v-if`. Can be chained.'),
-  genAttribute('v-for', u, 'Renders the element or template block multiple times based on the source data.'),
-  genAttribute('v-on', u, 'Attaches an event listener to the element.'),
-  genAttribute('v-bind', u, 'Dynamically binds one or more attributes, or a component prop to an expression.'),
-  genAttribute('v-model', u, 'Creates a two-way binding on a form input element or a component.'),
-  genAttribute('v-pre', 'v', 'Skips compilation for this element and all its children.'),
-  genAttribute('v-cloak', 'v', 'Indicates Vue instance for this element has NOT finished compilation.'),
-  genAttribute('v-once', 'v', 'Render the element and component once only.'),
-  genAttribute('key', u, 'Hint at VNodes identity for VDom diffing, e.g. list rendering'),
-  genAttribute('ref', u, 'Register a reference to an element or a child component.'),
-  genAttribute(
+  getAttribute(
+    'v-if',
+    undefined,
+    'Conditionally renders the element based on the truthy-ness of the expression value.'
+  ),
+  getAttribute('v-else', 'v', 'Denotes the “else block” for `v-if` or a `v-if`/`v-else-if` chain.'),
+  getAttribute('v-else-if', undefined, 'Denotes the “else if block” for `v-if`. Can be chained.'),
+  getAttribute('v-for', undefined, 'Renders the element or template block multiple times based on the source data.'),
+  getAttribute('v-on', undefined, 'Attaches an event listener to the element.'),
+  getAttribute('v-bind', undefined, 'Dynamically binds one or more attributes, or a component prop to an expression.'),
+  getAttribute('v-model', undefined, 'Creates a two-way binding on a form input element or a component.'),
+  getAttribute('v-pre', 'v', 'Skips compilation for this element and all its children.'),
+  getAttribute('v-cloak', 'v', 'Indicates Vue instance for this element has NOT finished compilation.'),
+  getAttribute('v-once', 'v', 'Render the element and component once only.'),
+  getAttribute('key', undefined, 'Hint at VNodes identity for VDom diffing, e.g. list rendering'),
+  getAttribute('ref', undefined, 'Register a reference to an element or a child component.'),
+  getAttribute(
     'slot',
-    u,
+    undefined,
     'Used on content inserted into child components to indicate which named slot the content belongs to.'
   ),
-  genAttribute('slot-scope', u, 'the name of a temporary variable that holds the props object passed from the child')
+  getAttribute(
+    'slot-scope',
+    undefined,
+    'the name of a temporary variable that holds the props object passed from the child'
+  )
 ];
 
 const transitionProps = [
-  genAttribute('name', u, 'Used to automatically generate transition CSS class names. Default: "v"'),
-  genAttribute('appear', 'b', 'Whether to apply transition on initial render. Default: false'),
-  genAttribute(
+  getAttribute('name', undefined, 'Used to automatically generate transition CSS class names. Default: "v"'),
+  getAttribute('appear', 'b', 'Whether to apply transition on initial render. Default: false'),
+  getAttribute(
     'css',
     'b',
     'Whether to apply CSS transition classes. Defaults: true. If set to false, will only trigger JavaScript hooks registered via component events.'
   ),
-  genAttribute(
+  getAttribute(
     'type',
     'transType',
     'The event, "transition" or "animation", to determine end timing. Default: the type that has a longer duration.'
   ),
-  genAttribute(
+  getAttribute(
     'mode',
     'transMode',
     'Controls the timing sequence of leaving/entering transitions. Available modes are "out-in" and "in-out"; Defaults to simultaneous.'
@@ -72,35 +84,48 @@ const transitionProps = [
   ].map(t => genAttribute(t))
 );
 
+function genTag(tag: string, doc: string, attributes: Attribute[]) {
+  return new HTMLTagSpecification(doc + '\n\n' + `[API Reference](https://vuejs.org/v2/api/#${tag})`, attributes);
+}
+
 const vueTags = {
-  component: new HTMLTagSpecification(
+  component: genTag(
+    'component',
     'A meta component for rendering dynamic components. The actual component to render is determined by the `is` prop.',
     [
-      genAttribute('is', u, 'the actual component to render'),
+      genAttribute('is', undefined, 'the actual component to render'),
       genAttribute('inline-template', 'v', 'treat inner content as its template rather than distributed content')
     ]
   ),
-  transition: new HTMLTagSpecification(
+  transition: genTag(
+    'transition',
     '<transition> serves as transition effects for single element/component. It applies the transition behavior to the wrapped content inside.',
     transitionProps
   ),
-  'transition-group': new HTMLTagSpecification(
+  'transition-group': genTag(
+    'transition-group',
     'transition group serves as transition effects for multiple elements/components. It renders a <span> by default and can render user specified element via `tag` attribute.',
     transitionProps.concat(genAttribute('tag'), genAttribute('move-class'))
   ),
-  'keep-alive': new HTMLTagSpecification(
+  'keep-alive': genTag(
+    'keep-alive',
     'When wrapped around a dynamic component, <keep-alive> caches the inactive component instances without destroying them.',
     ['include', 'exclude'].map(t => genAttribute(t))
   ),
-  slot: new HTMLTagSpecification(
+  slot: genTag(
+    'slot',
     '<slot> serve as content distribution outlets in component templates. <slot> itself will be replaced.',
-    [genAttribute('name', u, 'Used for named slot')]
+    [genAttribute('name', undefined, 'Used for named slot')]
   ),
   template: new HTMLTagSpecification(
     'The template element is used to declare fragments of HTML that can be cloned and inserted in the document by script.',
     [
-      genAttribute('scope', u, '(deprecated) a temporary variable that holds the props object passed from the child'),
-      genAttribute('slot', u, 'the name of scoped slot')
+      genAttribute(
+        'scope',
+        undefined,
+        '(deprecated) a temporary variable that holds the props object passed from the child'
+      ),
+      genAttribute('slot', undefined, 'the name of scoped slot')
     ]
   )
 };

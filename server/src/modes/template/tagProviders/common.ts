@@ -44,7 +44,7 @@ export interface ITagSet {
 }
 
 export class HTMLTagSpecification {
-  constructor(public label: string | MarkupContent, public attributes: Attribute[] = []) {}
+  constructor(public documentation: string | MarkupContent, public attributes: Attribute[] = []) {}
 }
 
 export interface IValueSets {
@@ -57,7 +57,7 @@ export function getSameTagInSet<T>(tagSet: Record<string, T>, tag: string): T | 
 
 export function collectTagsDefault(collector: TagCollector, tagSet: ITagSet): void {
   for (const tag in tagSet) {
-    collector(tag, tagSet[tag].label);
+    collector(tag, tagSet[tag].documentation);
   }
 }
 

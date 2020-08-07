@@ -4,7 +4,14 @@ import { CompletionItem, MarkdownString } from 'vscode';
 import { showFile } from './editorHelper';
 
 export interface ExpectedCompletionItem extends CompletionItem {
+  /**
+   * Documentation has to start with this string
+   */
   documentationStart?: string;
+  /**
+   * Documentation has to include this string
+   */
+  documentationFragment?: string;
 }
 
 export async function testCompletion(
@@ -67,9 +74,29 @@ export async function testCompletion(
 
       if (ei.documentationStart) {
         if (typeof match.documentation === 'string') {
-          assert.ok(match.documentation.startsWith(ei.documentationStart));
+          assert.ok(
+            match.documentation.startsWith(ei.documentationStart),
+            `${match.documentation}\ndoes not start with\n${ei.documentationStart}`
+          );
         } else {
-          assert.ok((match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart));
+          assert.ok(
+            (match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart),
+            `${(match.documentation as vscode.MarkdownString).value}\ndoes not start with\n${ei.documentationStart}`
+          );
+        }
+      }
+
+      if (ei.documentationFragment) {
+        if (typeof match.documentation === 'string') {
+          assert.ok(
+            match.documentation.includes(ei.documentationFragment),
+            `${match.documentation}\ndoes not include\n${ei.documentationFragment}`
+          );
+        } else {
+          assert.ok(
+            (match.documentation as vscode.MarkdownString).value.includes(ei.documentationFragment),
+            `${(match.documentation as vscode.MarkdownString).value}\ndoes not include\n${ei.documentationFragment}`
+          );
         }
       }
     }
