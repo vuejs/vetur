@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as $ from 'shelljs';
 import * as minimist from 'minimist';
@@ -52,7 +51,6 @@ async function runAllTests(execPath: string) {
       await run(execPath, `test/${targetDir}`, mochaArgs);
     } catch (err) {
       console.error(err);
-      process.exit(1);
     }
   } else {
     for (const dir of testDirs) {
@@ -61,7 +59,6 @@ async function runAllTests(execPath: string) {
         await run(execPath, `test/${dir}`, mochaArgs);
       } catch (err) {
         console.error(err);
-        process.exit(1);
       }
     }
   }

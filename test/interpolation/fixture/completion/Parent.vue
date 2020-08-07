@@ -2,16 +2,20 @@
   <div>
     <basic :></basic>
     <basic v-if="" @click="" :foo=""></basic>
+    <test-comp  />
+    <TestComp  />
     <
   </div>
 </template>
 
 <script>
 import Basic from './Basic.vue'
+import TestComp from './TestComp.vue'
 
 export default {
   components: {
-    Basic
+    Basic,
+    TestComp
   },
   props: {
     /**

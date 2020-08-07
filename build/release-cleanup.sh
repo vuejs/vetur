@@ -1,10 +1,9 @@
 # Deps
 yarn
-cd server && yarn && cd ..
 
 # Compile / Test
 yarn compile
-yarn test:server
+(cd server && yarn test)
 
 # Remove server devDependencies
 cd server && yarn --prod && cd ..

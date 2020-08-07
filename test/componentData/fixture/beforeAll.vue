@@ -1,0 +1,1 @@
+<!-- Open this file before testing to activate Vetur/VLS -->

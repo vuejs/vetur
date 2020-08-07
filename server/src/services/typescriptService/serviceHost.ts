@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as ts from 'typescript';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
 import * as parseGitIgnore from 'parse-gitignore';
 
@@ -15,6 +15,7 @@ import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { logger } from '../../log';
 import { ModuleResolutionCache } from './moduleResolutionCache';
 import { globalScope } from './transformTemplate';
+import { inferVueVersion, VueVersion } from './vueVersion';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -76,7 +77,6 @@ export function getServiceHost(
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ): IServiceHost {
   patchTS(tsModule);
-  const vueSys = getVueSys(tsModule);
 
   let currentScriptDoc: TextDocument;
 
@@ -96,6 +96,8 @@ export function getServiceHost(
     `Initializing ServiceHost with ${initialProjectFiles.length} files: ${JSON.stringify(initialProjectFiles)}`
   );
   const scriptFileNameSet = new Set(initialProjectFiles);
+
+  const vueSys = getVueSys(tsModule, scriptFileNameSet);
 
   const vueVersion = inferVueVersion(tsModule, workspacePath);
   const compilerOptions = {
@@ -217,7 +219,7 @@ export function getServiceHost(
         }
 
         if (isVueFile(fileName)) {
-          const uri = Uri.file(fileName);
+          const uri = URI.file(fileName);
           const fileFsPath = normalizeFileNameToFsPath(fileName);
           let doc = localScriptRegionDocuments.get(fileFsPath);
           if (!doc) {
@@ -287,7 +289,7 @@ export function getServiceHost(
 
           if (tsResolvedModule.resolvedFileName.endsWith('.vue.ts')) {
             const resolvedFileName = tsResolvedModule.resolvedFileName.slice(0, -'.ts'.length);
-            const uri = Uri.file(resolvedFileName);
+            const uri = URI.file(resolvedFileName);
             const resolvedFileFsPath = normalizeFileNameToFsPath(resolvedFileName);
             let doc = localScriptRegionDocuments.get(resolvedFileFsPath);
             // Vue file not created yet
@@ -509,50 +511,6 @@ function getScriptKind(tsModule: T_TypeScript, langId: string): ts.ScriptKind {
     : tsModule.ScriptKind.JS;
 }
 
-enum VueVersion {
-  VPre25,
-  V25,
-  V30
-}
-
-function floatVersionToEnum(v: number) {
-  if (v < 2.5) {
-    return VueVersion.VPre25;
-  } else if (v < 3.0) {
-    return VueVersion.V25;
-  } else {
-    return VueVersion.V30;
-  }
-}
-
-function inferVueVersion(tsModule: T_TypeScript, workspacePath: string): VueVersion {
-  const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
-  try {
-    const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);
-    const vueDependencyVersion = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
-
-    if (vueDependencyVersion) {
-      // use a sloppy method to infer version, to reduce dep on semver or so
-      const vueDep = vueDependencyVersion.match(/\d+\.\d+/)[0];
-      const sloppyVersion = parseFloat(vueDep);
-      return floatVersionToEnum(sloppyVersion);
-    }
-
-    const nodeModulesVuePackagePath = tsModule.findConfigFile(
-      path.resolve(workspacePath, 'node_modules/vue'),
-      tsModule.sys.fileExists,
-      'package.json'
-    );
-    const nodeModulesVuePackageJSON =
-      nodeModulesVuePackagePath && JSON.parse(tsModule.sys.readFile(nodeModulesVuePackagePath)!);
-    const nodeModulesVueVersion = parseFloat(nodeModulesVuePackageJSON.version.match(/\d+\.\d+/)[0]);
-
-    return floatVersionToEnum(nodeModulesVueVersion);
-  } catch (e) {
-    return VueVersion.VPre25;
-  }
-}
-
 function getParsedConfig(tsModule: T_TypeScript, subWorkspacePath: string, workspacePath: string) {
   const configFilename =
     tsModule.findConfigFile(subWorkspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
@@ -568,6 +526,15 @@ function getParsedConfig(tsModule: T_TypeScript, subWorkspacePath: string, works
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,
-    [{ extension: 'vue', isMixedContent: true }]
+    [
+      {
+        extension: 'vue',
+        isMixedContent: true,
+        // Note: in order for parsed config to include *.vue files, scriptKind must be set to Deferred.
+        // tslint:disable-next-line max-line-length
+        // See: https://github.com/microsoft/TypeScript/blob/2106b07f22d6d8f2affe34b9869767fa5bc7a4d9/src/compiler/utilities.ts#L6356
+        scriptKind: ts.ScriptKind.Deferred
+      }
+    ]
   );
 }

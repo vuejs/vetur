@@ -2,7 +2,7 @@ language: node_js
 os:
   - osx
   - linux
-node_js: 8
+node_js: 10
 
 install:
   - |
@@ -11,8 +11,6 @@ install:
       /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
     fi
   - yarn
-  - cd server && yarn && cd ..
-  - cd vti && yarn && cd ..
 
 script:
   - yarn test

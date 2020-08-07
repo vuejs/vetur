@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import * as path from 'path';
 import { parse } from 'vue-eslint-parser';
 
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
 import { T_TypeScript } from '../../services/dependencyService';
@@ -22,7 +22,7 @@ export function parseVueScript(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getVueDocumentRegions(doc);
   const script = regions.getSingleTypeDocument('script');
-  return script.getText() || 'export default {};';
+  return script.getText();
 }
 
 function parseVueScriptSrc(text: string): string | undefined {
@@ -111,7 +111,7 @@ export function createUpdater(tsModule: T_TypeScript) {
       tsModule.ScriptKind.JS
     );
 
-    const templateFsPath = Uri.file(vueTemplateFileName).fsPath;
+    const templateFsPath = URI.file(vueTemplateFileName).fsPath;
     const sourceMapNodes = generateSourceMap(tsModule, sourceFile, newSourceFile);
     templateSourceMap[templateFsPath] = sourceMapNodes;
     templateSourceMap[templateFsPath.slice(0, -'.template'.length)] = sourceMapNodes;

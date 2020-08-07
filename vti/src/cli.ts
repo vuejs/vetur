@@ -15,7 +15,7 @@ import { Duplex } from 'stream';
 import { VLS } from 'vls';
 import { params } from './initParams';
 import * as fs from 'fs';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import * as glob from 'glob';
 import * as path from 'path';
 import * as chalk from 'chalk';
@@ -36,7 +36,7 @@ class TestStream extends Duplex {
   _read(_size: number) {}
 }
 
-async function prepareClientConnection(workspaceUri: Uri) {
+async function prepareClientConnection(workspaceUri: URI) {
   const up = new TestStream();
   const down = new TestStream();
   const logger = new NullLogger();
@@ -64,6 +64,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
   const init: InitializeParams = {
     rootPath: workspaceUri.fsPath,
     rootUri: workspaceUri.toString(),
+    processId: process.pid,
     ...params
   } as InitializeParams;
 
@@ -72,7 +73,7 @@ async function prepareClientConnection(workspaceUri: Uri) {
   return clientConnection;
 }
 
-async function getDiagnostics(workspaceUri: Uri) {
+async function getDiagnostics(workspaceUri: URI) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
   const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
@@ -85,7 +86,7 @@ async function getDiagnostics(workspaceUri: Uri) {
     await clientConnection.sendNotification(DidOpenTextDocumentNotification.type, {
       textDocument: {
         languageId: 'vue',
-        uri: Uri.file(absFilePath).toString(),
+        uri: URI.file(absFilePath).toString(),
         version: 1,
         text: fs.readFileSync(absFilePath, 'utf-8')
       }
@@ -93,7 +94,7 @@ async function getDiagnostics(workspaceUri: Uri) {
 
     try {
       const res = (await clientConnection.sendRequest('$/getDiagnostics', {
-        uri: Uri.file(absFilePath).toString()
+        uri: URI.file(absFilePath).toString()
       })) as Diagnostic[];
       if (res.length > 0) {
         console.log('');
@@ -124,26 +125,18 @@ async function getDiagnostics(workspaceUri: Uri) {
 
 (async () => {
   const myArgs = process.argv.slice(2);
-  // no args
-  if (myArgs.length === 0) {
-    console.log('Vetur Terminal Interface');
-    console.log('');
-    console.log('Usage:');
-    console.log('');
-    console.log('  vti diagnostics ---- Print all diagnostics');
-    console.log('');
-  }
+
   // vls diagnostics
-  else if (myArgs[0] === 'diagnostics') {
+  if (myArgs.length > 0 && myArgs[0] === 'diagnostics') {
     console.log('Getting Vetur diagnostics');
     let workspaceUri;
 
     if (myArgs[1]) {
       console.log(`Loading Vetur in workspace path: ${myArgs[1]}`);
-      workspaceUri = Uri.file(myArgs[1]);
+      workspaceUri = URI.file(myArgs[1]);
     } else {
       console.log(`Loading Vetur in current directory: ${process.cwd()}`);
-      workspaceUri = Uri.file(process.cwd());
+      workspaceUri = URI.file(process.cwd());
     }
 
     console.log('');
@@ -158,6 +151,14 @@ async function getDiagnostics(workspaceUri: Uri) {
       console.log(chalk.red(`VTI found ${errCount} ${errCount === 1 ? 'error' : 'errors'}`));
       process.exit(1);
     }
+  } else {
+    // no args or wrong first args
+    console.log('Vetur Terminal Interface');
+    console.log('');
+    console.log('Usage:');
+    console.log('');
+    console.log('  vti diagnostics ---- Print all diagnostics');
+    console.log('');
   }
 })().catch(_err => {
   console.error('VTI operation failed');

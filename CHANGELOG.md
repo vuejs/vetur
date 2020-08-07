@@ -1,7 +1,45 @@
 # Changelog
 
-### 0.24.1
+### 0.27.0
 
+- Linkify all vue/vue-router tags to their API doc. #2133.
+- Component Data - `type: 'boolean'` should trigger completion without `=""`. #2127.
+- Component Data doesn't work if it comes from devDependencies. #2132.
+
+### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
+
+- Turning off `vetur.validation.template` will no longer turn off template interpolation validation. #1293.
+- 🙌 Fix prettier-eslint error when formatting. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2117.
+
+### 0.26.0 | 2020-08-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.0/vspackage)
+
+- Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
+- Remove leading empty line in diagnostic errors. #2067.
+- `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053.
+- Allow `xml` in `vetur.grammar.customBlocks`. #2091.
+- Mark `<PascalCase>` components with `support.class.component.html` to have consistent highlighting with JSX/TSX. #1963.
+- 🙌 Listen to JSON file changes for TypeScript resolveJsonModule support. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2095.
+- 🙌 Follow user's config while resolving autoImport path. Thanks to contribution from [@hikerpig](https://github.com/hikerpig). #1177 and #1753.
+- 🙌 Handle different tag casing when doing html definition. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2096.
+- 🙌 Allow analyzing Vue files in `node_modules`. Thanks to contribution from [Tiago Roldão](https://github.com/tiagoroldao). #1127 and #1979.
+- 🙌 Fix markdown rendering for library documentation. Thanks to contribution from [Albert Kaaman](https://github.com/nekosaur). #1775 and #1791.
+- 🙌 Fix no props completion when child component `export default {}` ends with `;`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1775 and #1791.
+- 🙌 Fix object property completion when have hyphen. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1804 and #1808.
+- 🙌 SFC without a script tag show an error when trying to import. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1187 and #1806.
+- 🙌 Fix initializationOptions: Cannot read property 'config' of undefined. Thanks to contribution from [Dawid Pakuła](https://github.com/zulus). #1897 and #1341.
+- 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2049 and #2056.
+- 🙌 When passing incorrect first arg to vti, show help message. Thanks to contribution from [Rafal Tynski](https://github.com/rafalt). #1841.
+- 🙌 Use CodeAction over command. Thanks to contribution from [Matt Bierner](https://github.com/mjbvz). #1704.
+
+### 0.25.0 | 2020-07-22 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.25.0/vspackage)
+
+- Publish `vls@0.3.0` and `vti@0.0.4`.
+- `vls` now only supports Node `>=10`, as Prettier 2.0 drops support for Node 8.
+- Upgrade to prettier 2.0. #1925 and #1794.
+- Add [prettier/plugin-pug](https://github.com/prettier/plugin-pug) as default formatter for `pug`. #527.
+- 🙌 Cusom tags IntelliSense for local `tags.json`/`attributes.json`. [Usage Docs](https://vuejs.github.io/vetur/framework.html#workspace-custom-tags). Thanks to contribution from [Carlos Rodrigues](https://github.com/pikax). #1364 and #2018.
+- 🙌 Detect tags from @nuxt/components. Thanks to contribution from [pooya parsa](https://github.com/pi0). #1921.
+- 🙌 Fix VTI crash by passing correct PID to language server. Thanks to contribution from [Daniil Yastremskiy](https://github.com/TheBeastOfCaerbannog). #1699 and #1805.
 - 🙌 Fix template interpolation hover info of v-for readonly array item. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1788.
 - 🙌 Improve performance while using template interpolation service. Thanks to contribution from [@IWANABETHATGUY](https://github.com/IWANABETHATGUY). #1839.
 
@@ -12,7 +50,7 @@
 - Update to TS 3.7.5 to avoid TypeScript issues with files not stored in C: drives on Windows. #1589.
 - Vetur will now print the prettier configuration it loaded in Output -> Vue Language Server, when `"vetur.dev.logLevel": "DEBUG"` is set. #1407.
 - Enable Windows CI with Azure DevOps. #1266.
-- Upgrade to `vscode-langaugeclient`/`vscode-languageserver` V6. #1719.
+- Upgrade to `vscode-languageclient`/`vscode-languageserver` V6. #1719.
   - Fix a file lock issue on asar files. #1474.
   - MDN links on CSS completion. #1751.
   - Fix an error on VTI not able to load `vscode-css-languageservice/lib/umd/data/browsers`. #1732.

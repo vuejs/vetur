@@ -46,7 +46,12 @@ export class CompletionAsserter {
     return this;
   }
   withDoc(doc: string) {
-    assert.equal(this.lastMatch.documentation, doc);
+    const documentation = this.lastMatch.documentation;
+    if (typeof documentation === 'object' && documentation !== null) {
+      assert.equal(documentation.value, doc);
+    } else {
+      assert.equal(documentation, doc);
+    }
     return this;
   }
   withKind(kind: CompletionItemKind) {

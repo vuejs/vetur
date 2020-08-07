@@ -29,7 +29,6 @@ export function getComponentInfoTagProvider(childComponents: ChildComponent[]): 
       },
       props
     );
-    tagSet[cc.name.toLowerCase()] = tagSet[cc.name];
   }
 
   return {

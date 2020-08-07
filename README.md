@@ -20,11 +20,11 @@
   </a>
 </p>
 
-Vue tooling for VS Code, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
+Vue tooling for VS Code.
 
-Doc: https://vuejs.github.io/vetur
-
-Try it out with [Veturpack](https://github.com/octref/veturpack)!  
+- [vls](./server): Vue Language Server
+- [vti](./vti): Vetur Terminal Interface
+- [Docs](https://vuejs.github.io/vetur)
 
 🎉 VueConf 2017 [Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) & [Video](https://www.youtube.com/watch?v=05tNXJ-Kric) 🎉
 
@@ -36,8 +36,9 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 - Linting / Error Checking
 - Formatting
 - Auto Completion
-- Debugging
-- [VTI / CLI](https://vuejs.github.io/vetur/vti.html)
+- [Component Data](https://vuejs.github.io/vetur/component-data.html): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](https://vuejs.github.io/vetur/interpolation.html): auto-completion, hover information and type-checking in Vue template
+- [VTI](https://vuejs.github.io/vetur/vti.html): Surface template type-checking errors on CLI
 
 ## Quick Start
 
@@ -50,6 +51,11 @@ Try it out with [Veturpack](https://github.com/octref/veturpack)!
 
 [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
 
+## Limitations
+
+- No multi root suppport yet ([#424](https://github.com/vuejs/vetur/issues/424))
+- Cannot handle tsconfig from non-top-level folder ([#815](https://github.com/vuejs/vetur/issues/815))
+
 ## Roadmap
 
 See [#873](https://github.com/vuejs/vetur/issues/873).
@@ -57,6 +63,14 @@ See [#873](https://github.com/vuejs/vetur/issues/873).
 ## Contribution
 
 See [CONTRIBUTING.md](https://github.com/vuejs/vetur/blob/master/.github/CONTRIBUTING.md)
+
+## Sponsorship
+
+I quit my job to travel nomadically, to work on Open Source and to conduct independent study/research.
+
+Vetur is my main focus in Open Source. Your help will alleviate my financial concern and allow me to spend more time working on Vetur. Thank you 🙏 
+
+https://github.com/sponsors/octref
 
 ## License
 

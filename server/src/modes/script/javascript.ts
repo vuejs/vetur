@@ -22,14 +22,17 @@ import {
   Position,
   FormattingOptions,
   DiagnosticTag,
-  MarkupContent
+  MarkupContent,
+  CodeAction,
+  CodeActionKind,
+  WorkspaceEdit
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
 import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import * as ts from 'typescript';
 import * as _ from 'lodash';
 
@@ -160,11 +163,14 @@ export async function getJavascriptMode(
           return {
             uri: doc.uri,
             position,
+            preselect: entry.isRecommended ? true : undefined,
             label,
             detail,
+            filterText: getFilterText(entry.insertText),
             sortText: entry.sortText + index,
             kind: toCompletionItemKind(entry.kind),
             textEdit: range && TextEdit.replace(range, entry.name),
+            insertText: entry.insertText,
             data: {
               // data used for resolving item details (see 'doResolve')
               languageId: scriptDoc.languageId,
@@ -207,17 +213,15 @@ export async function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
+      const userPrefs: ts.UserPreferences =
+        doc.languageId === 'javascript' ? config.javascript.preferences : config.typescript.preferences;
       const details = service.getCompletionEntryDetails(
         fileFsPath,
         item.data.offset,
         item.label,
         getFormatCodeSettings(config),
         item.data.source,
-        {
-          importModuleSpecifierEnding: 'minimal',
-          importModuleSpecifierPreference: 'relative',
-          includeCompletionsWithInsertText: true
-        }
+        userPrefs
       );
       if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
         item.detail = tsModule.displayPartsToString(details.displayParts);
@@ -381,7 +385,7 @@ export async function getJavascriptMode(
       definitions.forEach(d => {
         const definitionTargetDoc = getSourceDoc(d.fileName, program);
         definitionResults.push({
-          uri: Uri.file(d.fileName).toString(),
+          uri: URI.file(d.fileName).toString(),
           range: convertRange(definitionTargetDoc, d.textSpan)
         });
       });
@@ -408,7 +412,7 @@ export async function getJavascriptMode(
         const referenceTargetDoc = getSourceDoc(r.fileName, program);
         if (referenceTargetDoc) {
           referenceResults.push({
-            uri: Uri.file(r.fileName).toString(),
+            uri: URI.file(r.fileName).toString(),
             range: convertRange(referenceTargetDoc, r.textSpan)
           });
         }
@@ -435,7 +439,7 @@ export async function getJavascriptMode(
 
       const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(config);
 
-      const result: Command[] = [];
+      const result: CodeAction[] = [];
       const fixes = service.getCodeFixesAtPosition(
         fileName,
         start,
@@ -452,7 +456,7 @@ export async function getJavascriptMode(
 
       return result;
     },
-    getRefactorEdits(doc: TextDocument, args: RefactorAction) {
+    getRefactorEdits(doc: TextDocument, args: RefactorAction): WorkspaceEdit {
       const { service } = updateCurrentVueTextDocument(doc);
       const response = service.getEditsForRefactor(
         args.fileName,
@@ -464,10 +468,9 @@ export async function getJavascriptMode(
       );
       if (!response) {
         // TODO: What happens when there's no response?
-        return createApplyCodeActionCommand('', {});
+        return {};
       }
-      const uriMapping = createUriMappingForEdits(response.edits, service);
-      return createApplyCodeActionCommand('', uriMapping);
+      return { changes: createUriMappingForEdits(response.edits, service) };
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
@@ -481,7 +484,7 @@ export async function getJavascriptMode(
         return [];
       }
 
-      const parser = scriptDoc.languageId === 'javascript' ? 'babylon' : 'typescript';
+      const parser = scriptDoc.languageId === 'javascript' ? 'babel' : 'typescript';
       const needInitialIndent = config.vetur.format.scriptInitialIndent;
       const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
 
@@ -551,7 +554,7 @@ function collectRefactoringCommands(
   fileName: string,
   formatSettings: any,
   textRange: { pos: number; end: number },
-  result: Command[]
+  result: CodeAction[]
 ) {
   const actions: RefactorAction[] = [];
   for (const refactoring of refactorings) {
@@ -582,9 +585,13 @@ function collectRefactoringCommands(
   }
   for (const action of actions) {
     result.push({
-      command: 'vetur.chooseTypeScriptRefactoring',
       title: action.description,
-      arguments: [action]
+      kind: CodeActionKind.Refactor,
+      command: {
+        title: action.description,
+        command: 'vetur.chooseTypeScriptRefactoring',
+        arguments: [action]
+      }
     });
   }
 }
@@ -592,23 +599,25 @@ function collectRefactoringCommands(
 function collectQuickFixCommands(
   fixes: ReadonlyArray<ts.CodeFixAction>,
   service: ts.LanguageService,
-  result: Command[]
+  result: CodeAction[]
 ) {
   for (const fix of fixes) {
     const uriTextEditMapping = createUriMappingForEdits(fix.changes, service);
-    result.push(createApplyCodeActionCommand(fix.description, uriTextEditMapping));
+    result.push(createApplyCodeAction(CodeActionKind.QuickFix, fix.description, uriTextEditMapping));
   }
 }
 
-function createApplyCodeActionCommand(title: string, uriTextEditMapping: Record<string, TextEdit[]>): Command {
+function createApplyCodeAction(
+  kind: CodeActionKind,
+  title: string,
+  uriTextEditMapping: Record<string, TextEdit[]>
+): CodeAction {
   return {
     title,
-    command: 'vetur.applyWorkspaceEdits',
-    arguments: [
-      {
-        changes: uriTextEditMapping
-      }
-    ]
+    kind,
+    edit: {
+      changes: uriTextEditMapping
+    }
   };
 }
 
@@ -621,7 +630,7 @@ function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.Lan
       newText,
       range: convertRange(targetDoc, span)
     }));
-    const uri = Uri.file(fileName).toString();
+    const uri = URI.file(fileName).toString();
     if (result[uri]) {
       result[uri].push(...edits);
     } else {
@@ -714,4 +723,29 @@ function convertTSDiagnosticCategoryToDiagnosticSeverity(c: ts.DiagnosticCategor
     case ts.DiagnosticCategory.Suggestion:
       return DiagnosticSeverity.Hint;
   }
+}
+
+/* tslint:disable:max-line-length */
+/**
+ * Adapted from https://github.com/microsoft/vscode/blob/2b090abd0fdab7b21a3eb74be13993ad61897f84/extensions/typescript-language-features/src/languageFeatures/completions.ts#L147-L181
+ */
+function getFilterText(insertText: string | undefined): string | undefined {
+  // For `this.` completions, generally don't set the filter text since we don't want them to be overly prioritized. #74164
+  if (insertText?.startsWith('this.')) {
+    return undefined;
+  }
+
+  // Handle the case:
+  // ```
+  // const xyz = { 'ab c': 1 };
+  // xyz.ab|
+  // ```
+  // In which case we want to insert a bracket accessor but should use `.abc` as the filter text instead of
+  // the bracketed insert text.
+  else if (insertText?.startsWith('[')) {
+    return insertText.replace(/^\[['"](.+)[['"]\]$/, '.$1');
+  }
+
+  // In all other cases, fallback to using the insertText
+  return insertText;
 }

@@ -12,10 +12,7 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--disable-extensions"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--disable-extensions"],
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
@@ -43,6 +40,7 @@
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
         "--user-data-dir=${workspaceFolder}/test/lsp/data-dir",
+        "--disable-extensions",
         "${workspaceFolder}/test/lsp/fixture"
       ],
       "stopOnEntry": false,
@@ -60,7 +58,62 @@
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/dist/test/interpolation",
         "--user-data-dir=${workspaceFolder}/test/interpolation/data-dir",
+        "--disable-extensions",
         "${workspaceFolder}/test/interpolation/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "E2E Test (Grammar)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/grammar",
+        "--user-data-dir=${workspaceFolder}/test/grammar/data-dir",
+        "--disable-extensions",
+        "${workspaceFolder}/test/grammar/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "E2E Test (Vue3)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/vue3",
+        "--user-data-dir=${workspaceFolder}/test/vue3/data-dir",
+        "--disable-extensions",
+        "${workspaceFolder}/test/vue3/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "E2E Test (Component Data)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/componentData",
+        "--user-data-dir=${workspaceFolder}/test/componentData/data-dir",
+        "--disable-extensions",
+        "${workspaceFolder}/test/componentData/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
@@ -72,29 +125,12 @@
       "type": "node",
       "request": "launch",
       "name": "Unit Test (LSP)",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "program": "${workspaceFolder}/server/node_modules/mocha/bin/_mocha",
       "args": ["${workspaceFolder}/server/test"],
       "cwd": "${workspaceFolder}/server",
       "internalConsoleOptions": "openOnSessionStart",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/server/dist/**/*.js"]
-    },
-    {
-      "name": "E2E Test (Grammar)",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/dist/test/grammar",
-        "--user-data-dir=${workspaceFolder}/test/grammar/data-dir",
-        "${workspaceFolder}/test/grammar/fixture"
-      ],
-      "stopOnEntry": false,
-      "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
-      "smartStep": true,
-      "skipFiles": ["<node_internals>/**"]
-    },
+    }
   ]
 }

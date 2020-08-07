@@ -2,6 +2,7 @@ import { CLIEngine, Linter } from 'eslint';
 import { configs } from 'eslint-plugin-vue';
 import { TextDocument, Diagnostic, Range, DiagnosticSeverity } from 'vscode-languageserver-types';
 import { resolve } from 'path';
+import { VueVersion } from '../../../services/typescriptService/vueVersion';
 
 function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const line = error.line - 1;
@@ -10,7 +11,7 @@ function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const endColumn = error.endColumn ? error.endColumn - 1 : column;
   return {
     range: Range.create(line, column, endLine, endColumn),
-    message: `\n[${error.ruleId}]\n${error.message}`,
+    message: `[${error.ruleId}]\n${error.message}`,
     source: 'eslint-plugin-vue',
     severity: error.severity === 1 ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error
   };
@@ -28,13 +29,20 @@ export function doESLintValidation(document: TextDocument, engine: CLIEngine): D
   return report.results[0] ? report.results[0].messages.map(toDiagnostic) : [];
 }
 
-export function createLintEngine() {
+export function createLintEngine(vueVersion: VueVersion) {
   const SERVER_ROOT = resolve(__dirname, '../../../../');
-  return new CLIEngine({
+
+  const basicConfig = {
     useEslintrc: false,
     // So ESLint can find the bundled eslint-plugin-vue
     cwd: SERVER_ROOT,
-    ...configs.base,
-    ...configs.essential
+    ...configs.base
+  };
+
+  const versionSpecificConfig = vueVersion === VueVersion.V30 ? configs['vue3-essential'] : configs.essential;
+
+  return new CLIEngine({
+    ...basicConfig,
+    ...versionSpecificConfig
   });
 }

@@ -7,7 +7,8 @@ import {
   onsenTagProvider,
   bootstrapTagProvider,
   gridsomeTagProvider,
-  getRuntimeTagProvider
+  getDependencyTagProvider,
+  getWorkspaceTagProvider
 } from './externalTagProviders';
 export { getComponentInfoTagProvider as getComponentTags } from './componentInfoTagProvider';
 export { IHTMLTagProvider } from './common';
@@ -33,6 +34,7 @@ export interface CompletionConfiguration {
 
 export function getTagProviderSettings(workspacePath: string | null | undefined) {
   const settings: CompletionConfiguration = {
+    '__vetur-workspace': true,
     html5: true,
     vue: true,
     router: false,
@@ -55,20 +57,20 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       return settings;
     }
 
-    const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
-    const dependencies = packageJson.dependencies || {};
-    const devDependencies = packageJson.devDependencies || {};
+    const rootPkgJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+    const dependencies = rootPkgJson.dependencies || {};
+    const devDependencies = rootPkgJson.devDependencies || {};
 
-    if (dependencies['vue-router']) {
-      settings['router'] = true;
+    if (dependencies['vue-router'] || devDependencies['vue-router']) {
+      settings['vue-router'] = true;
     }
-    if (dependencies['element-ui']) {
+    if (dependencies['element-ui'] || devDependencies['element-ui']) {
       settings['element'] = true;
     }
-    if (dependencies['vue-onsenui']) {
+    if (dependencies['vue-onsenui'] || devDependencies['vue-onsenui']) {
       settings['onsen'] = true;
     }
-    if (dependencies['bootstrap-vue']) {
+    if (dependencies['bootstrap-vue'] || devDependencies['bootstrap-vue']) {
       settings['bootstrap'] = true;
     }
     if (dependencies['buefy'] || devDependencies['buefy']) {
@@ -97,13 +99,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       // and enable Quasar later below in the for()
       dependencies['quasar-framework'] = '^0.0.17';
     }
-    if (
-      dependencies['nuxt'] ||
-      dependencies['nuxt-legacy'] ||
-      dependencies['nuxt-edge'] ||
-      dependencies['nuxt-ts'] ||
-      dependencies['nuxt-ts-edge']
-    ) {
+    if (dependencies['nuxt'] || dependencies['nuxt-edge'] || devDependencies['nuxt'] || devDependencies['nuxt-edge']) {
       const nuxtTagProvider = getNuxtTagProvider(workspacePath);
       if (nuxtTagProvider) {
         settings['nuxt'] = true;
@@ -114,28 +110,33 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       settings['gridsome'] = true;
     }
 
-    for (const dep in dependencies) {
-      const runtimePkgPath = ts.findConfigFile(
+    const workspaceTagProvider = getWorkspaceTagProvider(workspacePath, rootPkgJson);
+    if (workspaceTagProvider) {
+      allTagProviders.push(workspaceTagProvider);
+    }
+
+    for (const dep of [...Object.keys(dependencies), ...Object.keys(devDependencies)]) {
+      const runtimePkgJsonPath = ts.findConfigFile(
         workspacePath,
         ts.sys.fileExists,
         join('node_modules', dep, 'package.json')
       );
 
-      if (!runtimePkgPath) {
+      if (!runtimePkgJsonPath) {
         continue;
       }
 
-      const runtimePkg = JSON.parse(fs.readFileSync(runtimePkgPath, 'utf-8'));
-      if (!runtimePkg) {
+      const runtimePkgJson = JSON.parse(fs.readFileSync(runtimePkgJsonPath, 'utf-8'));
+      if (!runtimePkgJson) {
         continue;
       }
 
-      const tagProvider = getRuntimeTagProvider(workspacePath, runtimePkg);
-      if (!tagProvider) {
+      const depTagProvider = getDependencyTagProvider(workspacePath, runtimePkgJson);
+      if (!depTagProvider) {
         continue;
       }
 
-      allTagProviders.push(tagProvider);
+      allTagProviders.push(depTagProvider);
       settings[dep] = true;
     }
   } catch (e) {}

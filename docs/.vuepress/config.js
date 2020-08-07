@@ -22,16 +22,11 @@ module.exports = {
           '/formatting',
           '/intellisense',
           '/debugging',
-          '/framework',
+          '/component-data',
           '/interpolation',
           '/vti'
         ]
-      },
-      '/FAQ',
-      '/CONTRIBUTING',
-      '/roadmap',
-      '/CHANGELOG',
-      '/credits'
+      }
     ]
   }
 };

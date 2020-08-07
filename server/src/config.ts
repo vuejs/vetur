@@ -3,7 +3,6 @@ export interface VLSFormatConfig {
     [lang: string]: string;
   };
   defaultFormatterOptions: {
-    prettier: any;
     [lang: string]: any;
   };
   scriptInitialIndent: boolean;
@@ -74,7 +73,7 @@ export interface VLSFullConfig extends VLSConfig {
   stylusSupremacy?: any;
 }
 
-export function getDefaultVLSConfig(): VLSConfig {
+export function getDefaultVLSConfig(): VLSFullConfig {
   return {
     vetur: {
       useWorkspaceDependencies: false,
@@ -118,6 +117,18 @@ export function getDefaultVLSConfig(): VLSConfig {
       experimental: {
         templateInterpolationService: false
       }
-    }
+    },
+    css: {},
+    html: {
+      suggest: {}
+    },
+    javascript: {
+      format: {}
+    },
+    typescript: {
+      format: {}
+    },
+    emmet: {},
+    stylusSupremacy: {}
   };
 }

@@ -37,7 +37,7 @@ import {
   Range
 } from 'vscode-languageserver-types';
 
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
@@ -71,6 +71,7 @@ export class VLS {
     postcss: true,
     javascript: true
   };
+  private templateInterpolationValidation = false;
 
   private documentFormatterRegistration: Disposable | undefined;
 
@@ -83,7 +84,7 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
-    const config: VLSFullConfig = params.initializationOptions.config
+    const config: VLSFullConfig = params.initializationOptions?.config
       ? _.merge(getDefaultVLSConfig(), params.initializationOptions.config)
       : getDefaultVLSConfig();
 
@@ -106,7 +107,7 @@ export class VLS {
         infoService: this.vueInfoService,
         dependencyService: this.dependencyService
       },
-      params.initializationOptions['globalSnippetDir']
+      params.initializationOptions?.globalSnippetDir
     );
 
     this.setupConfigListeners();
@@ -127,10 +128,12 @@ export class VLS {
 
   private setupConfigListeners() {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
-      this.configure(settings);
+      if (settings) {
+        this.configure(settings);
 
-      // onDidChangeConfiguration will fire for Language Server startup
-      await this.setupDynamicFormatters(settings);
+        // onDidChangeConfiguration will fire for Language Server startup
+        await this.setupDynamicFormatters(settings);
+      }
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
@@ -219,6 +222,8 @@ export class VLS {
     this.validation.scss = veturValidationOptions.style;
     this.validation.less = veturValidationOptions.style;
     this.validation.javascript = veturValidationOptions.script;
+
+    this.templateInterpolationValidation = config.vetur.experimental.templateInterpolationService;
 
     this.languageModes.getAllModes().forEach(m => {
       if (m.configure) {
@@ -362,10 +367,10 @@ export class VLS {
     const documentContext: DocumentContext = {
       resolveReference: ref => {
         if (this.workspacePath && ref[0] === '/') {
-          return Uri.file(path.resolve(this.workspacePath, ref)).toString();
+          return URI.file(path.resolve(this.workspacePath, ref)).toString();
         }
         const fsPath = getFileFsPath(doc.uri);
-        return Uri.file(path.resolve(fsPath, '..', ref)).toString();
+        return URI.file(path.resolve(fsPath, '..', ref)).toString();
       }
     };
 
@@ -439,7 +444,7 @@ export class VLS {
   }
 
   getRefactorEdits(refactorAction: RefactorAction) {
-    const uri = Uri.file(refactorAction.fileName).toString();
+    const uri = URI.file(refactorAction.fileName).toString();
     const doc = this.documentService.getDocument(uri)!;
     const startPos = doc.positionAt(refactorAction.textRange.pos);
     const mode = this.languageModes.getModeAtPosition(doc, startPos);
@@ -474,8 +479,14 @@ export class VLS {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
       this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
-        if (lmr.mode.doValidation && this.validation[lmr.mode.getId()]) {
-          pushAll(diagnostics, lmr.mode.doValidation(doc));
+        if (lmr.mode.doValidation) {
+          if (this.validation[lmr.mode.getId()]) {
+            pushAll(diagnostics, lmr.mode.doValidation(doc));
+          }
+          // Special case for template type checking
+          else if (lmr.mode.getId() === 'vue-html' && this.templateInterpolationValidation) {
+            pushAll(diagnostics, lmr.mode.doValidation(doc));
+          }
         }
       });
     }

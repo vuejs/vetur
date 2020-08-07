@@ -1,4 +1,5 @@
 import { MarkupContent } from 'vscode-languageserver-types';
+import { kebabCase } from 'lodash';
 
 interface TagCollector {
   (tag: string, documentation: string | MarkupContent): void;
@@ -43,16 +44,20 @@ export interface ITagSet {
 }
 
 export class HTMLTagSpecification {
-  constructor(public label: string | MarkupContent, public attributes: Attribute[] = []) {}
+  constructor(public documentation: string | MarkupContent, public attributes: Attribute[] = []) {}
 }
 
 export interface IValueSets {
   [tag: string]: string[];
 }
 
+export function getSameTagInSet<T>(tagSet: Record<string, T>, tag: string): T | undefined {
+  return tagSet[tag] ?? tagSet[tag.toLowerCase()] ?? tagSet[kebabCase(tag)];
+}
+
 export function collectTagsDefault(collector: TagCollector, tagSet: ITagSet): void {
   for (const tag in tagSet) {
-    collector(tag, tagSet[tag].label);
+    collector(tag, tagSet[tag].documentation);
   }
 }
 
@@ -63,7 +68,8 @@ export function collectAttributesDefault(
   globalAttributes: StandaloneAttribute[]
 ): void {
   if (tag) {
-    const tags = tagSet[tag];
+    const tags = getSameTagInSet(tagSet, tag);
+
     if (tags) {
       const attributes = tags.attributes;
       for (const attr of attributes) {
@@ -102,7 +108,7 @@ export function collectValuesDefault(
     }
   }
   if (tag) {
-    const tags = tagSet[tag];
+    const tags = getSameTagInSet(tagSet, tag);
     if (tags) {
       const attributes = tags.attributes;
       if (attributes) {
