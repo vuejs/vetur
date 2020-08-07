@@ -2,8 +2,8 @@ name: Node CI
 
 on:
   push:
-    branches-ignore:
-      - gh-pages
+    branches:
+      - master
     paths-ignore:
       - docs
 
