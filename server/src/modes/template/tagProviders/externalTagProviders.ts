@@ -101,7 +101,11 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
       }
       for (const attr of attrs) {
         const detail = findAttributeDetail(tag, attr);
-        collector(attr, undefined, (detail && detail.description) || '');
+        if (detail?.type === 'boolean') {
+          collector(attr, 'v', (detail && detail.description) || '');
+        } else {
+          collector(attr, undefined, (detail && detail.description) || '');
+        }
       }
     },
     collectValues(tag, attr, collector) {
