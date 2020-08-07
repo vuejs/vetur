@@ -60,42 +60,6 @@ describe('Should autocomplete for <template>', () => {
     });
   });
 
-  describe('Should complete element-ui components', () => {
-    const elementUri = getDocUri('completion/template/Element.vue');
-
-    it('completes <el-button> and <el-card>', async () => {
-      await testCompletion(elementUri, position(2, 5), ['el-button', 'el-card']);
-    });
-
-    it('completes attributes for <el-button>', async () => {
-      await testCompletion(elementUri, position(1, 14), ['size', 'type', 'plain']);
-    });
-  });
-
-  describe('Should complete Quasar components', () => {
-    const quasarUri = getDocUri('completion/template/Quasar.vue');
-
-    it('completes <q-btn>', async () => {
-      await testCompletion(quasarUri, position(2, 5), ['q-btn']);
-    });
-
-    it('completes attributes for <q-btn>', async () => {
-      await testCompletion(quasarUri, position(1, 10), ['label', 'icon']);
-    });
-  });
-
-  describe('Should complete Vuetify components', () => {
-    const vuetifyUri = getDocUri('completion/template/Vuetify.vue');
-
-    it('completes <v-btn>', async () => {
-      await testCompletion(vuetifyUri, position(2, 5), ['v-btn']);
-    });
-
-    it('completes attributes for <v-btn>', async () => {
-      await testCompletion(vuetifyUri, position(1, 10), ['color', 'fab']);
-    });
-  });
-
   describe('Should complete tags defined in workspace', () => {
     const workspaceCustomTagsUri = getDocUri('completion/template/WorkspaceCustomTags.vue');
 

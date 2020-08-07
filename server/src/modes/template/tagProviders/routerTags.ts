@@ -49,7 +49,7 @@ const routerTags = {
 
 export function getRouterTagProvider(): IHTMLTagProvider {
   return {
-    getId: () => 'router',
+    getId: () => 'vue-router',
     priority: Priority.Framework,
     collectTags: collector => collectTagsDefault(collector, routerTags),
     collectAttributes: (tag: string, collector: AttributeCollector) => {

@@ -28,10 +28,10 @@ Vetur reads the `package.json` **in your project root** to determine if it shoul
 
 | `dependency` | `devDependency` | Source |
 |---|---|---|
-| `vue-router` || [Vetur](https://github.com/vuejs/vetur/blob/master/server/src/modes/template/tagProviders/routerTags.ts) |
-| `element-ui` || [element-helper-json](https://github.com/ElementUI/element-helper-json) |
-| `vue-onsenui` || [vue-onsenui-helper-json](https://www.npmjs.com/package/vue-onsenui-helper-json) |
-| `bootstrap-vue` || Bundled in [BootstrapVue v2.1+](https://www.npmjs.com/package/bootstrap-vue). Pre v2.1 uses [bootstrap-vue-helper-json](https://github.com/bootstrap-vue/bootstrap-vue-helper-json) |
+| `vue-router` | `vue-router` | [Vetur](https://github.com/vuejs/vetur/blob/master/server/src/modes/template/tagProviders/routerTags.ts) |
+| `element-ui` | `elment-ui` | [element-helper-json](https://github.com/ElementUI/element-helper-json) |
+| `vue-onsenui` | `vue-onsenui` | [vue-onsenui-helper-json](https://www.npmjs.com/package/vue-onsenui-helper-json) |
+| `bootstrap-vue` | `bootstrap-vue` | Bundled in [BootstrapVue v2.1+](https://www.npmjs.com/package/bootstrap-vue). Pre v2.1 uses [bootstrap-vue-helper-json](https://github.com/bootstrap-vue/bootstrap-vue-helper-json) |
 | `buefy` | `buefy` | Bundled in [buefy](https://www.npmjs.com/package/buefy) |
 | `vuetify` | `vuetify` | Bundled in [vuetify](https://www.npmjs.com/package/vuetify) |
 | `gridsome` || [gridsome-helper-json](https://github.com/gridsome/gridsome-helper-json) |

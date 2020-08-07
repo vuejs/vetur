@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "quasar": "^1.12.13",
+    "vue": "^2.6.11",
+    "vue-router": "^3.3.4"
+  },
+  "devDependencies": {
+    "element-ui": "^2.13.2"
+  },
+  "vetur": {
+    "tags": "./tags.json"
+  }
+}

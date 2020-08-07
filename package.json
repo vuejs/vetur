@@ -23,6 +23,7 @@
     "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
     "test:int": "node ./dist/test/codeTestRunner.js interpolation",
     "test:vue3": "node ./dist/test/codeTestRunner.js vue3",
+    "test:componentData": "node ./dist/test/codeTestRunner.js componentData",
     "test": "run-s compile test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepare-publish": "./build/release-cleanup.sh"
