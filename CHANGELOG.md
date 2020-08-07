@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.26.1 | 2020-08-07
+### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
 
 - Turning off `vetur.validation.template` will no longer turn off template interpolation validation. #1293.
 - 🙌 Fix prettier-eslint error when formatting. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2117.
