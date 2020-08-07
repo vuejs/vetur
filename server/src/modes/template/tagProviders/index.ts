@@ -34,6 +34,7 @@ export interface CompletionConfiguration {
 
 export function getTagProviderSettings(workspacePath: string | null | undefined) {
   const settings: CompletionConfiguration = {
+    '__vetur-workspace': true,
     html5: true,
     vue: true,
     router: false,
@@ -114,7 +115,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       allTagProviders.push(workspaceTagProvider);
     }
 
-    for (const dep in dependencies) {
+    for (const dep of [...Object.keys(dependencies), ...Object.keys(devDependencies)]) {
       const runtimePkgJsonPath = ts.findConfigFile(
         workspacePath,
         ts.sys.fileExists,

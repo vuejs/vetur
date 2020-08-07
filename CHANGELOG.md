@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.27.0
+
+- Component Data doesn't work if it comes from devDependencies. #2132.
+
 ### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
 
 - Turning off `vetur.validation.template` will no longer turn off template interpolation validation. #1293.

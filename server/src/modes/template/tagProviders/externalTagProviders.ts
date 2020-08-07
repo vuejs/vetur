@@ -37,7 +37,7 @@ export function getWorkspaceTagProvider(workspacePath: string, rootPkgJson: any)
     if (tagsPath && attrsPath) {
       const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
       const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
-      return getExternalTagProvider(rootPkgJson.name, tagsJson, attrsJson);
+      return getExternalTagProvider('__vetur-workspace', tagsJson, attrsJson);
     }
     return null;
   } catch (err) {
