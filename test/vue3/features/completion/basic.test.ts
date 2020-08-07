@@ -1,6 +1,7 @@
 import { CompletionItemKind } from 'vscode';
-import { getDocUri, position } from '../../util';
-import { testCompletion } from './helper';
+import { getDocUri } from '../../path';
+import { position } from '../../../util';
+import { testCompletion } from '../../../completionHelper';
 
 describe('Vue 3 integration test', () => {
   const fileUri = getDocUri('completion/Basic.vue');

@@ -1,6 +1,7 @@
-import { position, getDocUri } from '../../util';
-import { testCompletion } from './helper';
+import { position } from '../../../util';
+import { testCompletion } from '../../../completionHelper';
 import { CompletionItemKind } from 'vscode';
+import { getDocUri } from '../../path';
 
 describe('Should do path completion for import', () => {
   const scriptDocUri = getDocUri('completion/script/PathCompletion.vue');

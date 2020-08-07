@@ -1,6 +1,7 @@
 import { ConfigurationTarget, workspace } from 'vscode';
-import { getDocUri, position } from '../../util';
-import { testCompletion } from './helper';
+import { position } from '../../../util';
+import { testCompletion } from '../../../completionHelper';
+import { getDocUri } from '../../path';
 
 describe('Should autocomplete for <template>', () => {
   describe('Should complete <template> section', () => {

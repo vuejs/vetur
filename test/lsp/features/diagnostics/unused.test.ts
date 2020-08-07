@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { DiagnosticTag } from 'vscode-languageclient';
-import { getDocUri, sameLineRange } from '../../util';
-import { testDiagnostics } from './helper';
+import { sameLineRange } from '../../../util';
+import { testDiagnostics } from '../../../diagnosticHelper';
+import { getDocUri } from '../../path';
 
 describe('Should find diagnostics for unused variables', () => {
   const docUri = getDocUri('diagnostics/Unused.vue');

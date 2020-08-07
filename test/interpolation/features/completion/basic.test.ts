@@ -1,6 +1,7 @@
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
-import { getDocUri, position } from '../../util';
-import { testCompletion, testNoSuchCompletion } from './helper';
+import { position } from '../../../util';
+import { testCompletion, testNoSuchCompletion } from '../../../completionHelper';
+import { getDocUri } from '../../path';
 
 describe('Should autocomplete interpolation for <template>', () => {
   const templateDocUri = getDocUri('completion/Basic.vue');

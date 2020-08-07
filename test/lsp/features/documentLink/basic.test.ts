@@ -1,7 +1,8 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { showFile } from '../../helper';
-import { getDocUri, sameLineRange } from '../../util';
+import { showFile } from '../../../editorHelper';
+import { sameLineRange } from '../../../util';
+import { getDocUri } from '../../path';
 
 describe('Should do documentLink', () => {
   const docUri = getDocUri('documentLink/Basic.vue');

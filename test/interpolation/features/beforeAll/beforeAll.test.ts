@@ -1,5 +1,6 @@
-import { getDocUri } from '../../util';
-import { showFile, sleep } from '../../helper';
+import { sleep } from '../../../util';
+import { showFile } from '../../../editorHelper';
+import { getDocUri } from '../../path';
 
 before(async () => {
   const docUri = getDocUri('beforeAll.vue');

@@ -1,5 +1,6 @@
-import { getDocUri, position } from '../../util';
-import { testCompletion } from './helper';
+import { position } from '../../../util';
+import { testCompletion } from '../../../completionHelper';
+import { getDocUri } from '../../path';
 
 describe('Should autocomplete for <style>', () => {
   describe('Should complete <style> region for all languages', () => {
