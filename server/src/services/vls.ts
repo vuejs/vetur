@@ -16,7 +16,9 @@ import {
   DocumentFormattingRequest,
   Disposable,
   DocumentSymbolParams,
-  CodeActionParams
+  CodeActionParams,
+  CompletionParams,
+  CompletionTriggerKind
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -288,10 +290,22 @@ export class VLS {
     };
   }
 
-  onCompletion({ textDocument, position }: TextDocumentPositionParams): CompletionList {
+  onCompletion({ textDocument, position, context }: CompletionParams): CompletionList {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, position);
     if (mode && mode.doComplete) {
+      /**
+       * Only use space as trigger character in `vue-html` mode
+       */
+      if (
+        mode.getId() !== 'vue-html' &&
+        context &&
+        context?.triggerKind === CompletionTriggerKind.TriggerCharacter &&
+        context.triggerCharacter === ' '
+      ) {
+        return NULL_COMPLETION;
+      }
+
       return mode.doComplete(doc, position);
     }
 
@@ -504,7 +518,7 @@ export class VLS {
   get capabilities(): ServerCapabilities {
     return {
       textDocumentSync: TextDocumentSyncKind.Full,
-      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*'] },
+      completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },
       documentFormattingProvider: false,
       hoverProvider: true,
