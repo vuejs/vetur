@@ -74,7 +74,7 @@ describe('Should autocomplete interpolation for <template>', () => {
     it(`completes child component's props`, async () => {
       await testCompletion(parentTemplateDocUri, position(2, 12), [
         {
-          label: 'foo',
+          label: ':foo',
           kind: CompletionItemKind.Value,
           documentation: new MarkdownString('My foo').appendCodeblock(
             `foo: {
@@ -90,7 +90,7 @@ describe('Should autocomplete interpolation for <template>', () => {
     it(`completes child component's props when kebab case component name`, async () => {
       await testCompletion(parentTemplateDocUri, position(4, 15), [
         {
-          label: 'bar',
+          label: ':bar',
           kind: CompletionItemKind.Value,
           documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js')
         }
@@ -100,7 +100,7 @@ describe('Should autocomplete interpolation for <template>', () => {
     it(`completes child component's props when camel case component name`, async () => {
       await testCompletion(parentTemplateDocUri, position(5, 14), [
         {
-          label: 'bar',
+          label: ':bar',
           kind: CompletionItemKind.Value,
           documentation: new MarkdownString('My bar').appendCodeblock(`bar: String`, 'js')
         }

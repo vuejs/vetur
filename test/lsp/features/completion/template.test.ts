@@ -71,16 +71,16 @@ describe('Should autocomplete for <template>', () => {
 
       await testCompletion(parentUri, position(4, 6), ['ChildComp']);
 
-      await testCompletion(parentUri, position(2, 15), ['attr-a']);
-      await testCompletion(parentUri, position(3, 16), ['attr-a']);
+      await testCompletion(parentUri, position(2, 15), [':attr-a']);
+      await testCompletion(parentUri, position(3, 16), [':attr-a']);
 
       // set it back
       await c.update('vetur.completion.tagCasing', undefined, ConfigurationTarget.Global);
     });
 
     const parent1775Uri = getDocUri('completion/template/childComponent/Parent1775.vue');
-    it('AAA completes child when child `export default {}` ends with `;`', async () => {
-      await testCompletion(parent1775Uri, position(1, 13), ['attr']);
+    it('completes child when child `export default {}` ends with `;`', async () => {
+      await testCompletion(parent1775Uri, position(1, 13), [':attr']);
     });
   });
 });
