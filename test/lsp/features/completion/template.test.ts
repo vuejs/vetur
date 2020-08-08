@@ -60,18 +60,6 @@ describe('Should autocomplete for <template>', () => {
     });
   });
 
-  describe('Should complete tags defined in workspace', () => {
-    const workspaceCustomTagsUri = getDocUri('completion/template/WorkspaceCustomTags.vue');
-
-    it('completes <foo-tag>', async () => {
-      await testCompletion(workspaceCustomTagsUri, position(2, 6), ['foo-tag']);
-    });
-
-    it('completes attributes for <foo-bar>', async () => {
-      await testCompletion(workspaceCustomTagsUri, position(1, 12), ['foo-attr']);
-    });
-  });
-
   describe('Parent - Child component completion', () => {
     const parentUri = getDocUri('completion/template/childComponent/Parent.vue');
 
