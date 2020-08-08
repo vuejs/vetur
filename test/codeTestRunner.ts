@@ -33,6 +33,8 @@ async function run(execPath: string, testWorkspaceRelativePath: string, mochaArg
 }
 
 async function runAllTests(execPath: string) {
+  let exitCode = 0;
+
   const testDirs = fs.readdirSync(path.resolve(EXT_ROOT, './test')).filter(p => !p.includes('.'));
 
   const argv = minimist(process.argv.slice(2));
@@ -59,9 +61,12 @@ async function runAllTests(execPath: string) {
         await run(execPath, `test/${dir}`, mochaArgs);
       } catch (err) {
         console.error(err);
+        exitCode = 1;
       }
     }
   }
+
+  process.exit(exitCode);
 }
 
 function installMissingDependencies(fixturePath: string) {

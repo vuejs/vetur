@@ -113,7 +113,10 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       .filter(expr => expr.kind === tsModule.SyntaxKind.StringLiteral)
       .map(expr => {
         return {
-          name: (expr as ts.StringLiteral).text
+          name: (expr as ts.StringLiteral).text,
+          documentation: `\`\`\`js\n${formatJSLikeDocumentation(
+            propsDeclaration.parent.getFullText().trim()
+          )}\n\`\`\`\n`
         };
       });
   }

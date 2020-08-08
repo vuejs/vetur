@@ -60,18 +60,6 @@ describe('Should autocomplete for <template>', () => {
     });
   });
 
-  describe('Should complete tags defined in workspace', () => {
-    const workspaceCustomTagsUri = getDocUri('completion/template/WorkspaceCustomTags.vue');
-
-    it('completes <foo-tag>', async () => {
-      await testCompletion(workspaceCustomTagsUri, position(2, 6), ['foo-tag']);
-    });
-
-    it('completes attributes for <foo-bar>', async () => {
-      await testCompletion(workspaceCustomTagsUri, position(1, 12), ['foo-attr']);
-    });
-  });
-
   describe('Parent - Child component completion', () => {
     const parentUri = getDocUri('completion/template/childComponent/Parent.vue');
 
@@ -83,16 +71,33 @@ describe('Should autocomplete for <template>', () => {
 
       await testCompletion(parentUri, position(4, 6), ['ChildComp']);
 
-      await testCompletion(parentUri, position(2, 15), ['attr-a']);
-      await testCompletion(parentUri, position(3, 16), ['attr-a']);
+      await testCompletion(parentUri, position(2, 15), [':attr-a']);
+      await testCompletion(parentUri, position(3, 16), [':attr-a']);
 
       // set it back
       await c.update('vetur.completion.tagCasing', undefined, ConfigurationTarget.Global);
     });
 
     const parent1775Uri = getDocUri('completion/template/childComponent/Parent1775.vue');
-    it('AAA completes child when child `export default {}` ends with `;`', async () => {
-      await testCompletion(parent1775Uri, position(1, 13), ['attr']);
+    it('completes child when child `export default {}` ends with `;`', async () => {
+      await testCompletion(parent1775Uri, position(1, 13), [':attr']);
+    });
+
+    const parent2143Uri = getDocUri('completion/template/childComponent/Parent2143.vue');
+    it("completes child with some documentation when using simple props declaration `props: ['foo']`", async () => {
+      await testCompletion(parent2143Uri, position(1, 9), [
+        {
+          label: ':foo',
+          documentationFragment: `props: ['foo']`
+        }
+      ]);
+
+      await testCompletion(parent2143Uri, position(1, 9), [
+        {
+          label: ':foo',
+          documentationFragment: `my props documentation`
+        }
+      ]);
     });
   });
 });
