@@ -38,16 +38,6 @@ export async function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
-      client.sendRequest<WorkspaceEdit | undefined>('requestCodeActionEdits', args).then(edits => {
-        if (edits) {
-          vscode.workspace.applyEdit(client.protocol2CodeConverter.asWorkspaceEdit(edits)!);
-        }
-      });
-    })
-  );
-
   registerLanguageConfigurations();
 
   /**

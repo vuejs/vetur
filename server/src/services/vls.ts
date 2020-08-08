@@ -18,7 +18,9 @@ import {
   DocumentSymbolParams,
   CodeActionParams,
   CompletionParams,
-  CompletionTriggerKind
+  CompletionTriggerKind,
+  ExecuteCommandParams,
+  ApplyWorkspaceEditRequest
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -36,7 +38,8 @@ import {
   TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation,
-  Range
+  Range,
+  WorkspaceEdit
 } from 'vscode-languageserver-types';
 
 import { URI } from 'vscode-uri';
@@ -51,6 +54,7 @@ import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
+import { Commands } from '../utils/commands';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -158,7 +162,7 @@ export class VLS {
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
 
-    this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
+    this.lspConnection.onExecuteCommand(this.executeCommand.bind(this));
   }
 
   private setupCustomLSPHandlers() {
@@ -507,6 +511,17 @@ export class VLS {
     return diagnostics;
   }
 
+  async executeCommand(arg: ExecuteCommandParams) {
+    logger.logDebug(`executeCommand: ${JSON.stringify(arg)}`);
+    if (arg.command === Commands.CodeAction && arg.arguments) {
+      const edit = this.getRefactorEdits(arg.arguments[0] as RefactorAction);
+      if (edit) { this.lspConnection.sendRequest(ApplyWorkspaceEditRequest.type, { edit }); }
+      return;
+    }
+
+    logger.logDebug(`Unknown command ${arg.command}.`);
+  }
+
   removeDocument(doc: TextDocument): void {
     this.languageModes.onDocumentRemoved(doc);
   }
@@ -530,7 +545,10 @@ export class VLS {
       definitionProvider: true,
       referencesProvider: true,
       codeActionProvider: true,
-      colorProvider: true
+      colorProvider: true,
+      executeCommandProvider: {
+        commands: [Commands.CodeAction]
+      }
     };
   }
 }
