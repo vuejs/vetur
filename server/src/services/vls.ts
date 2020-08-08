@@ -512,10 +512,11 @@ export class VLS {
   }
 
   async executeCommand(arg: ExecuteCommandParams) {
-    logger.logDebug(`executeCommand: ${JSON.stringify(arg)}`);
     if (arg.command === Commands.CodeAction && arg.arguments) {
       const edit = this.getRefactorEdits(arg.arguments[0] as RefactorAction);
-      if (edit) { this.lspConnection.sendRequest(ApplyWorkspaceEditRequest.type, { edit }); }
+      if (edit) {
+        this.lspConnection.sendRequest(ApplyWorkspaceEditRequest.type, { edit });
+      }
       return;
     }
 
