@@ -2,6 +2,7 @@
 
 ### 0.27.0
 
+- Self-closing `<PascalCase>` component should get highlighted like JSX/TSX. #2136
 - Cross file template type checking - check that components are passed all declared props. #2135.
 - Linkify all vue/vue-router tags to their API doc. #2133.
 - Component Data - `type: 'boolean'` should trigger completion without `=""`. #2127.
