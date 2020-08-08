@@ -58,6 +58,7 @@
     "vscode": "^1.47.0"
   },
   "dependencies": {
+    "@vuedx/typescript-vetur": "^0.2.1",
     "vscode-languageclient": "^6.1.3",
     "vscode-languageserver-types": "^3.15.1"
   },
@@ -511,9 +512,54 @@
           "type": "boolean",
           "default": false,
           "description": "Enable template interpolation service that offers diagnostics / hover / definition / references."
+        },
+        "vetur.typescript.suggest.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enabled/disable autocomplete suggestions.",
+          "scope": "resource"
+        },
+        "vetur.typescript.format.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/disable default TypeScript/JavaScript formatter.",
+          "scope": "window"
+        },
+        "vetur.typescript.implementationsCodeLens.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/disable implementations CodeLens. This CodeLens shows the implementers of an interface.",
+          "scope": "window"
+        },
+        "vetur.typescript.suggest.completeJSDocs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/disable suggestion to complete JSDoc comments.",
+          "scope": "resource"
+        },
+        "vetur.typescript.referencesCodeLens.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/disable references CodeLens in TypeScript/JavaScript files.",
+          "scope": "window"
+        },
+        "vetur.typescript.autoClosingTags": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/disable automatic closing of JSX tags. Requires using TypeScript 3.0 or newer in the workspace."
         }
       }
-    }
+    },
+    "typescriptServerPlugins": [
+      {
+        "name": "@vuedx/typescript-vetur",
+        "enableForWorkspaceTypeScriptVersions": true,
+        "configNamespace": "vetur.typescript",
+        "languages": [
+          "vue"
+        ]
+      }
+    ]
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
