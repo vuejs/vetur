@@ -5,7 +5,7 @@ import { getDocUri } from '../../path';
 import { showFile } from '../../../editorHelper';
 
 describe('Should find correct diagnostics for sub folders with local `tsconfig.json`', () => {
-  const docUri = getDocUri('diagnostics/customConfig/Switch.vue');
+  const docUri = getDocUri('diagnostics/nestedConfig/Switch.vue');
 
   before(async () => {
     await showFile(docUri);
