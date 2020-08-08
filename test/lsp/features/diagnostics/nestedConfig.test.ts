@@ -23,7 +23,7 @@ describe('Should find correct diagnostics for sub folders with local `tsconfig.j
       {
         range: sameLineRange(6, 18, 30),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Cannot find module '@/notFound'."
+        message: "Cannot find module '@/notFound' or its corresponding type declarations."
       }
     ];
 
