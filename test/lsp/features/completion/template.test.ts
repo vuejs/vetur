@@ -79,8 +79,8 @@ describe('Should autocomplete for <template>', () => {
     });
 
     const parent1775Uri = getDocUri('completion/template/childComponent/Parent1775.vue');
-    it('AAA completes child when child `export default {}` ends with `;`', async () => {
-      await testCompletion(parent1775Uri, position(1, 13), ['attr']);
+    it('completes child when child `export default {}` ends with `;`', async () => {
+      await testCompletion(parent1775Uri, position(1, 13), [':attr']);
     });
   });
 });
