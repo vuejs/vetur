@@ -82,5 +82,22 @@ describe('Should autocomplete for <template>', () => {
     it('completes child when child `export default {}` ends with `;`', async () => {
       await testCompletion(parent1775Uri, position(1, 13), [':attr']);
     });
+
+    const parent2143Uri = getDocUri('completion/template/childComponent/Parent2143.vue');
+    it("completes child with some documentation when using simple props declaration `props: ['foo']`", async () => {
+      await testCompletion(parent2143Uri, position(1, 9), [
+        {
+          label: ':foo',
+          documentationFragment: `props: ['foo']`
+        }
+      ]);
+
+      await testCompletion(parent2143Uri, position(1, 9), [
+        {
+          label: ':foo',
+          documentationFragment: `my props documentation`
+        }
+      ]);
+    });
   });
 });
