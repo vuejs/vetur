@@ -543,6 +543,9 @@ export async function getJavascriptMode(
     onDocumentChanged(filePath: string) {
       serviceHost.updateExternalDocument(filePath);
     },
+    onDocumentDeleted(filePath: string) {
+      serviceHost.deleteExternalDocument(filePath);
+    },
     dispose() {
       jsDocuments.dispose();
     }

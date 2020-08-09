@@ -207,6 +207,9 @@ export class VLS {
         if (c.type === FileChangeType.Changed) {
           const fsPath = getFileFsPath(c.uri);
           jsMode.onDocumentChanged!(fsPath);
+        } else if (c.type === FileChangeType.Deleted) {
+          const fsPath = getFileFsPath(c.uri);
+          jsMode.onDocumentDeleted!(fsPath);
         }
       });
 

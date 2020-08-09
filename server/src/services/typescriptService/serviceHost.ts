@@ -60,6 +60,7 @@ export interface IServiceHost {
     scriptDoc: TextDocument;
   };
   updateExternalDocument(filePath: string): void;
+  deleteExternalDocument(filePath: string): void;
   dispose(): void;
 }
 
@@ -215,9 +216,27 @@ export function getServiceHost(
     } else if (fileFsPath.endsWith('/tsconfig.json')) {
       const parentConfigFilename = getNearestConfigFile(tsModule, getDirectoryName(getDirectoryName(fileFsPath)));
       const parentProject = projectsLanguageServices.get(parentConfigFilename);
-      if (parentProject)
+      if (parentProject) {
         // Force refresh project associations
-        for (const directory of parentProject.attachedDirectories) directoryToProjects.delete(directory);
+        for (const directory of parentProject.attachedDirectories) {
+          directoryToProjects.delete(directory);
+        }
+      }
+    }
+  }
+
+  // External Documents: JS/TS, non Vue documents
+  function deleteExternalDocument(fileFsPath: string) {
+    // Remove projects where tsconfig is deleted
+    if (projectsLanguageServices.has(fileFsPath)) {
+      const project = projectsLanguageServices.get(fileFsPath)!;
+      projectsLanguageServices.delete(fileFsPath);
+      for (const directory of project.attachedDirectories) {
+        directoryToProjects.delete(directory);
+      }
+      project.attachedDirectories.clear();
+      project.jsLanguageService.dispose();
+      project.templateLanguageService.dispose();
     }
   }
 
@@ -490,6 +509,7 @@ export function getServiceHost(
     updateCurrentVirtualVueTextDocument,
     updateCurrentVueTextDocument,
     updateExternalDocument,
+    deleteExternalDocument,
     dispose: () => {
       // FIXME Also clear template language services ?
       for (const { jsLanguageService } of projectsLanguageServices.values()) {
