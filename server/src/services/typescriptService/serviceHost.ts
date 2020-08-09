@@ -63,6 +63,13 @@ export interface IServiceHost {
   dispose(): void;
 }
 
+interface IProject {
+  options: ts.CompilerOptions;
+  jsLanguageService: ts.LanguageService;
+  templateLanguageService: ts.LanguageService;
+  attachedDirectories: Set<string>;
+}
+
 /**
  * Manges 4 set of files
  *
@@ -82,12 +89,13 @@ export function getServiceHost(
 
   const versions = new Map<string, number>();
   const localScriptRegionDocuments = new Map<string, TextDocument>();
-  const subWorkspaceLanguageServices = new Map<string, [ts.LanguageService, ts.LanguageService]>();
+  const directoryToProjects = new Map<string, IProject>();
+  const projectsLanguageServices = new Map<string | undefined, IProject>();
   const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
   const projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
   const moduleResolutionCache = new ModuleResolutionCache();
 
-  const parsedConfig = getParsedConfig(tsModule, workspacePath, workspacePath);
+  const parsedConfig = getParsedConfig(tsModule, getNearestConfigFile(tsModule, workspacePath), workspacePath);
   /**
    * Only js/ts files in local project
    */
@@ -110,7 +118,7 @@ export function getServiceHost(
     fileName: string,
     currFileText: string
   ): { source: string; sourceMapNodesString: string } {
-    const program = defaultTemplateLanguageService.getProgram();
+    const program = getTemplateLanguageService(getDirectoryName(fileName)).getProgram();
     if (program) {
       const tsVirtualFile = program.getSourceFile(fileName + '.template');
       if (tsVirtualFile) {
@@ -149,7 +157,7 @@ export function getServiceHost(
     }
 
     return {
-      templateService: getTemplateLanguageServer(dirPath),
+      templateService: getTemplateLanguageService(dirPath),
       templateSourceMap
     };
   }
@@ -165,22 +173,22 @@ export function getServiceHost(
       }
     }
 
-    const languageServices = getSubWorkspaceLanguageServers(dirPath);
+    const project = getProjectFromWorkingDirectory(dirPath);
 
     if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = updatedScriptRegionDocuments.refreshAndGet(doc)!;
       const localLastDoc = localScriptRegionDocuments.get(fileFsPath);
       if (localLastDoc && currentScriptDoc.languageId !== localLastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
-        languageServices[0].dispose();
-        languageServices[0] = tsModule.createLanguageService(jsHost);
+        project.jsLanguageService.dispose();
+        project.jsLanguageService = tsModule.createLanguageService(createLanguageServiceHost(project.options));
       }
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
       scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
-      service: languageServices[0],
+      service: project.jsLanguageService,
       scriptDoc: currentScriptDoc
     };
   }
@@ -402,51 +410,62 @@ export function getServiceHost(
     };
   }
 
-  const jsHost = createLanguageServiceHost(compilerOptions);
-  const templateHost = createLanguageServiceHost({
-    ...compilerOptions,
-    noImplicitAny: false,
-    noUnusedLocals: false,
-    noUnusedParameters: false,
-    allowJs: true,
-    checkJs: true
-  });
-
   const registry = tsModule.createDocumentRegistry(true);
-  const jsLanguageService = tsModule.createLanguageService(jsHost, registry);
-  const defaultTemplateLanguageService = tsModule.createLanguageService(templateHost, registry);
 
-  function getSubWorkspaceLanguageServers(subWorkspacePath: string): [ts.LanguageService, ts.LanguageService] {
-    if (!subWorkspaceLanguageServices.has(subWorkspacePath)) {
-      logger.logDebug(`New sub workspace at "${subWorkspacePath}" (total ${subWorkspaceLanguageServices.size + 1})`);
-
-      // FIXME Cache already parsed config files ?
-      const subWorkspaceParsedConfig = getParsedConfig(tsModule, subWorkspacePath, workspacePath);
-      const compilerOptions = {
-        ...getDefaultCompilerOptions(tsModule),
-        ...parsedConfig.options,
-        ...subWorkspaceParsedConfig.options
-      };
-      const jsHost = createLanguageServiceHost(compilerOptions);
-      const templateHost = createLanguageServiceHost({
-        ...compilerOptions,
-        noImplicitAny: false,
-        noUnusedLocals: false,
-        noUnusedParameters: false,
-        allowJs: true,
-        checkJs: true
-      });
-
-      const jsLanguageService = tsModule.createLanguageService(jsHost, registry);
-      const templateLanguageService = patchTemplateService(tsModule.createLanguageService(templateHost, registry));
-      subWorkspaceLanguageServices.set(subWorkspacePath, [jsLanguageService, templateLanguageService]);
-      return [jsLanguageService, templateLanguageService];
-    }
-    return subWorkspaceLanguageServices.get(subWorkspacePath)!;
+  function createProjectCompilerOption(configFilename: string | undefined): ts.CompilerOptions {
+    const projectParsedConfig = getParsedConfig(tsModule, configFilename, workspacePath);
+    return {
+      ...getDefaultCompilerOptions(tsModule),
+      ...parsedConfig.options,
+      ...projectParsedConfig.options
+    };
   }
 
-  function getTemplateLanguageServer(subWorkspacePath: string) {
-    return getSubWorkspaceLanguageServers(subWorkspacePath)[1];
+  function createJSLanguageService(compilerOptions: ts.CompilerOptions) {
+    const jsHost = createLanguageServiceHost(compilerOptions);
+
+    return tsModule.createLanguageService(jsHost, registry);
+  }
+
+  function createTemplateLanguageService(compilerOptions: ts.CompilerOptions) {
+    const templateHost = createLanguageServiceHost({
+      ...compilerOptions,
+      noImplicitAny: false,
+      noUnusedLocals: false,
+      noUnusedParameters: false,
+      allowJs: true,
+      checkJs: true
+    });
+
+    return patchTemplateService(tsModule.createLanguageService(templateHost, registry));
+  }
+
+  function getProjectFromWorkingDirectory(workingDirectory: string): IProject {
+    let project = directoryToProjects.get(workingDirectory);
+    if (!project) {
+      const configFilename = getNearestConfigFile(tsModule, workingDirectory);
+
+      project = projectsLanguageServices.get(configFilename);
+      if (!project) {
+        const compilerOptions = createProjectCompilerOption(configFilename);
+
+        project = {
+          options: compilerOptions,
+          jsLanguageService: createJSLanguageService(compilerOptions),
+          templateLanguageService: createTemplateLanguageService(compilerOptions),
+          attachedDirectories: new Set<string>()
+        };
+        projectsLanguageServices.set(configFilename, project);
+      }
+
+      project.attachedDirectories.add(workingDirectory);
+      directoryToProjects.set(workingDirectory, project);
+    }
+    return project;
+  }
+
+  function getTemplateLanguageService(workingDirectory: string) {
+    return getProjectFromWorkingDirectory(workingDirectory).templateLanguageService;
   }
 
   return {
@@ -455,12 +474,12 @@ export function getServiceHost(
     updateCurrentVueTextDocument,
     updateExternalDocument,
     dispose: () => {
-      jsLanguageService.dispose();
       // FIXME Also clear template language services ?
-      for (const [jsLanguageService] of subWorkspaceLanguageServices.values()) {
+      for (const { jsLanguageService } of projectsLanguageServices.values()) {
         jsLanguageService.dispose();
       }
-      subWorkspaceLanguageServices.clear();
+      projectsLanguageServices.clear();
+      directoryToProjects.clear();
     }
   };
 }
@@ -511,10 +530,14 @@ function getScriptKind(tsModule: T_TypeScript, langId: string): ts.ScriptKind {
     : tsModule.ScriptKind.JS;
 }
 
-function getParsedConfig(tsModule: T_TypeScript, subWorkspacePath: string, workspacePath: string) {
-  const configFilename =
-    tsModule.findConfigFile(subWorkspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
-    tsModule.findConfigFile(subWorkspacePath, tsModule.sys.fileExists, 'jsconfig.json');
+function getNearestConfigFile(tsModule: T_TypeScript, workingDirectory: string) {
+  return (
+    tsModule.findConfigFile(workingDirectory, tsModule.sys.fileExists, 'tsconfig.json') ||
+    tsModule.findConfigFile(workingDirectory, tsModule.sys.fileExists, 'jsconfig.json')
+  );
+}
+
+function getParsedConfig(tsModule: T_TypeScript, configFilename: string | undefined, workspacePath: string) {
   const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
     exclude: defaultIgnorePatterns(tsModule, workspacePath)
   };
