@@ -202,6 +202,23 @@ export function getServiceHost(
     if (projectFileSnapshots.has(fileFsPath)) {
       projectFileSnapshots.delete(fileFsPath);
     }
+
+    // Reload tsconfig for the project
+    if (projectsLanguageServices.has(fileFsPath)) {
+      const project = projectsLanguageServices.get(fileFsPath)!;
+      const compilerOptions = createProjectCompilerOption(fileFsPath);
+      project.options = compilerOptions;
+      project.jsLanguageService.dispose();
+      project.jsLanguageService = createJSLanguageService(compilerOptions);
+      project.templateLanguageService.dispose();
+      project.templateLanguageService = createTemplateLanguageService(compilerOptions);
+    } else if (fileFsPath.endsWith('/tsconfig.json')) {
+      const parentConfigFilename = getNearestConfigFile(tsModule, getDirectoryName(getDirectoryName(fileFsPath)));
+      const parentProject = projectsLanguageServices.get(parentConfigFilename);
+      if (parentProject)
+        // Force refresh project associations
+        for (const directory of parentProject.attachedDirectories) directoryToProjects.delete(directory);
+    }
   }
 
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
