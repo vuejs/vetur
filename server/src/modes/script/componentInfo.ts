@@ -81,13 +81,9 @@ export function analyzeDefaultExportExpr(
   };
 }
 
-export function getDefaultExportNode(
-  tsModule: T_TypeScript,
-  sourceFile: ts.SourceFile
-): ts.Node | undefined {
-  const exportStmts = sourceFile.statements.filter(st =>
-    st.kind === tsModule.SyntaxKind.ExportAssignment ||
-    st.kind === tsModule.SyntaxKind.ClassDeclaration
+export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.SourceFile): ts.Node | undefined {
+  const exportStmts = sourceFile.statements.filter(
+    st => st.kind === tsModule.SyntaxKind.ExportAssignment || st.kind === tsModule.SyntaxKind.ClassDeclaration
   );
   if (exportStmts.length === 0) {
     return undefined;
@@ -143,7 +139,10 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
         .filter(expr => expr.kind === tsModule.SyntaxKind.StringLiteral)
         .map(expr => {
           return {
-            name: (expr as ts.StringLiteral).text
+            name: (expr as ts.StringLiteral).text,
+            documentation: `\`\`\`js\n${formatJSLikeDocumentation(
+              propsDeclaration.parent.getFullText().trim()
+            )}\n\`\`\`\n`
           };
         });
     }
@@ -380,10 +379,7 @@ function getMethods(
   return result.length === 0 ? undefined : result;
 }
 
-function getNodeFromExportNode(
-  tsModule: T_TypeScript,
-  exportExpr: ts.Node
-): ts.Node | undefined {
+function getNodeFromExportNode(tsModule: T_TypeScript, exportExpr: ts.Node): ts.Node | undefined {
   switch (exportExpr.kind) {
     case tsModule.SyntaxKind.CallExpression:
       // Vue.extend or synthetic __vueEditorBridge
