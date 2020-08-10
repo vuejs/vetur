@@ -1,6 +1,7 @@
-import { position, getDocUri } from '../../util';
-import { testCompletion, testNoSuchCompletion } from './helper';
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
+import { position } from '../../../util';
+import { getDocUri } from '../../path';
+import { testCompletion, testNoSuchCompletion } from '../../../completionHelper';
 
 describe('Should autocomplete interpolation for <template> in class component', () => {
   const templateDocUri = getDocUri('completion/BasicClass.vue');
@@ -9,17 +10,17 @@ describe('Should autocomplete interpolation for <template> in class component', 
   const defaultList: CompletionItem[] = [
     // Typescript can't typing when `@Component({ props: { foo: String } })`.
     // Because decorator cant affect return type.
-    //     {
-    //       label: 'foo',
-    //       documentation: new MarkdownString('My foo').appendCodeblock(
-    //         `foo: {
-    //   type: Boolean,
-    //   default: false
-    // }`,
-    //         'js'
-    //       ),
-    //       kind: CompletionItemKind.Field
-    //     },
+    // {
+    //   label: 'foo',
+    //   documentation: new MarkdownString('My foo').appendCodeblock(
+    //     `foo: {
+    //       type: Boolean,
+    //       default: false
+    //     }`,
+    //     'js'
+    //   ),
+    //   kind: CompletionItemKind.Field
+    // }
     {
       label: 'msg',
       documentation: new MarkdownString('My msg').appendCodeblock(`msg = 'Vetur means "Winter" in icelandic.'`, 'js'),

@@ -1,6 +1,7 @@
-import { position, getDocUri } from '../../util';
-import { testCompletion, testNoSuchCompletion } from './helper';
 import { CompletionItem, CompletionItemKind, MarkdownString } from 'vscode';
+import { getDocUri } from '../../path';
+import { testCompletion, testNoSuchCompletion } from '../../../completionHelper';
+import { position } from '../../../util';
 
 describe('Should autocomplete interpolation for <template> in property class component', () => {
   const templateDocUri = getDocUri('completion/BasicPropertyClass.vue');
