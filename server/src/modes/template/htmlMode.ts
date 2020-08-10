@@ -11,22 +11,27 @@ import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
-import { doESLintValidation, createLintEngine } from './services/htmlValidation';
+import { doESLintValidation, createLintEngine } from './services/htmlEslintValidation';
 import { findDefinition } from './services/htmlDefinition';
-import { getTagProviderSettings, IHTMLTagProvider, CompletionConfiguration } from './tagProviders';
-import { getEnabledTagProviders } from './tagProviders';
+import {
+  getTagProviderSettings,
+  IHTMLTagProvider,
+  CompletionConfiguration,
+  getEnabledTagProviders
+} from './tagProviders';
 import { DocumentContext } from '../../types';
 import { VLSFormatConfig, VLSFullConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
 import { VueVersion } from '../../services/typescriptService/vueVersion';
+import { doPropValidation } from './services/vuePropValidation';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
   private enabledTagProviders: IHTMLTagProvider[];
   private embeddedDocuments: LanguageModelCache<TextDocument>;
 
-  private config: any = {};
+  private config: VLSFullConfig;
 
   private lintEngine: any;
 
@@ -55,8 +60,19 @@ export class HTMLMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument) {
-    const embedded = this.embeddedDocuments.refreshAndGet(document);
-    return doESLintValidation(embedded, this.lintEngine);
+    const diagnostics = [];
+
+    const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
+    if (info && info.componentInfo.childComponents) {
+      diagnostics.push(...doPropValidation(document, this.vueDocuments.refreshAndGet(document), info));
+    }
+
+    if (this.config.vetur.validation.template) {
+      const embedded = this.embeddedDocuments.refreshAndGet(document);
+      diagnostics.push(...doESLintValidation(embedded, this.lintEngine));
+    }
+
+    return diagnostics;
   }
   doComplete(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);

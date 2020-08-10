@@ -3,20 +3,20 @@ import { parseVueScript } from './preprocess';
 import * as ts from 'typescript';
 import { isVirtualVueFile } from './util';
 
-export function getVueSys(tsModule: T_TypeScript) {
+export function getVueSys(tsModule: T_TypeScript, scriptFileNameSet: Set<string>) {
   /**
    * This part is only accessed by TS module resolution
    */
   const vueSys: ts.System = {
     ...tsModule.sys,
     fileExists(path: string) {
-      if (isVirtualVueFile(path)) {
+      if (isVirtualVueFile(path, scriptFileNameSet)) {
         return tsModule.sys.fileExists(path.slice(0, -'.ts'.length));
       }
       return tsModule.sys.fileExists(path);
     },
     readFile(path, encoding) {
-      if (isVirtualVueFile(path)) {
+      if (isVirtualVueFile(path, scriptFileNameSet)) {
         const fileText = tsModule.sys.readFile(path.slice(0, -'.ts'.length), encoding);
         return fileText ? parseVueScript(fileText) : fileText;
       }
@@ -28,7 +28,7 @@ export function getVueSys(tsModule: T_TypeScript) {
   if (tsModule.sys.realpath) {
     const realpath = tsModule.sys.realpath;
     vueSys.realpath = function(path) {
-      if (isVirtualVueFile(path)) {
+      if (isVirtualVueFile(path, scriptFileNameSet)) {
         return realpath(path.slice(0, -'.ts'.length)) + '.ts';
       }
       return realpath(path);

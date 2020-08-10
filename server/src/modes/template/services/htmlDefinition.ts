@@ -3,6 +3,7 @@ import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Definition, Location } from 'vscode-languageserver-types';
 import { VueFileInfo } from '../../../services/vueInfoService';
 import { URI } from 'vscode-uri';
+import { kebabCase } from 'lodash';
 
 const TRIVIAL_TOKEN = [TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace];
 
@@ -19,20 +20,17 @@ export function findDefinition(
   }
 
   function getTagDefinition(tag: string, range: Range, open: boolean): Definition {
-    tag = tag.toLowerCase();
-
     if (vueFileInfo && vueFileInfo.componentInfo.childComponents) {
       for (const cc of vueFileInfo.componentInfo.childComponents) {
-        if (tag === cc.name) {
-          if (cc.definition) {
-            const loc: Location = {
-              uri: URI.file(cc.definition.path).toString(),
-              // Todo: Resolve actual default export range
-              range: Range.create(0, 0, 0, 0)
-            };
-            return loc;
-          }
-        }
+        if (![tag, tag.toLowerCase(), kebabCase(tag)].includes(cc.name)) { continue; }
+        if (!cc.definition) { continue; }
+
+        const loc: Location = {
+          uri: URI.file(cc.definition.path).toString(),
+          // Todo: Resolve actual default export range
+          range: Range.create(0, 0, 0, 0)
+        };
+        return loc;
       }
     }
     return [];

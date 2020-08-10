@@ -104,6 +104,24 @@
       "skipFiles": ["<node_internals>/**"]
     },
     {
+      "name": "E2E Test (Component Data)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test/componentData",
+        "--user-data-dir=${workspaceFolder}/test/componentData/data-dir",
+        "--disable-extensions",
+        "${workspaceFolder}/test/componentData/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Unit Test (LSP)",

@@ -1,7 +1,8 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { showFile } from '../../helper';
-import { getDocUri, position, sameLineRange } from '../../util';
+import { showFile } from '../../../editorHelper';
+import { position, sameLineRange } from '../../../util';
+import { getDocUri } from '../../path';
 
 describe('Should do documentHighlight', () => {
   const docUri = getDocUri('documentHighlight/Basic.vue');

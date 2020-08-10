@@ -1,5 +1,5 @@
-import { getDocUri } from '../../util';
-import { testNoDiagnostics } from './helper';
+import { getDocUri } from '../../path';
+import { testNoDiagnostics } from '../../../diagnosticHelper';
 
 describe('Should find diagnostics using eslint-plugin-vue', () => {
   const docUri = getDocUri('diagnostics/ESLint.vue');

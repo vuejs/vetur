@@ -1,16 +1,39 @@
 # Changelog
 
-### 0.26.0
+### 0.27.0
+
+- `<PascalCase>` component should get highlighted like JSX/TSX when embedding other tags. #2146.
+- Improve cross-file completion when declaring simple props with `props: ['foo']`. #2143.
+- Completing child component should trigger props with `:` by default. #2140.
+- Space should trigger completion only in HTML mode. #2139.
+- Self-closing `<PascalCase>` component should get highlighted like JSX/TSX. #2136
+- Cross file template type checking - check that components are passed all declared props. #2135.
+- Linkify all vue/vue-router tags to their API doc. #2133.
+- Component Data - `type: 'boolean'` should trigger completion without `=""`. #2127.
+- Component Data doesn't work if it comes from devDependencies. #2132.
+
+### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
+
+- Turning off `vetur.validation.template` will no longer turn off template interpolation validation. #1293.
+- 🙌 Fix prettier-eslint error when formatting. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2117.
+
+### 0.26.0 | 2020-08-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.0/vspackage)
 
 - Load different `eslint-plugin-vue` rulesets depending on workspace vue version. #2015.
 - Remove leading empty line in diagnostic errors. #2067.
-- `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053
+- `"vetur.completion.tagCasing": "initial"` causes double tag completion. #2053.
+- Allow `xml` in `vetur.grammar.customBlocks`. #2091.
+- Mark `<PascalCase>` components with `support.class.component.html` to have consistent highlighting with JSX/TSX. #1963.
+- 🙌 Listen to JSON file changes for TypeScript resolveJsonModule support. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2095.
+- 🙌 Follow user's config while resolving autoImport path. Thanks to contribution from [@hikerpig](https://github.com/hikerpig). #1177 and #1753.
+- 🙌 Handle different tag casing when doing html definition. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2096.
+- 🙌 Allow analyzing Vue files in `node_modules`. Thanks to contribution from [Tiago Roldão](https://github.com/tiagoroldao). #1127 and #1979.
 - 🙌 Fix markdown rendering for library documentation. Thanks to contribution from [Albert Kaaman](https://github.com/nekosaur). #1775 and #1791.
 - 🙌 Fix no props completion when child component `export default {}` ends with `;`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1775 and #1791.
 - 🙌 Fix object property completion when have hyphen. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1804 and #1808.
 - 🙌 SFC without a script tag show an error when trying to import. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1187 and #1806.
 - 🙌 Fix initializationOptions: Cannot read property 'config' of undefined. Thanks to contribution from [Dawid Pakuła](https://github.com/zulus). #1897 and #1341.
-- 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1841 and #2056.
+- 🙌 Component props auto-completion doesn't work when using PascalCase. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2049 and #2056.
 - 🙌 When passing incorrect first arg to vti, show help message. Thanks to contribution from [Rafal Tynski](https://github.com/rafalt). #1841.
 - 🙌 Use CodeAction over command. Thanks to contribution from [Matt Bierner](https://github.com/mjbvz). #1704.
 

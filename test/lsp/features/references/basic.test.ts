@@ -1,7 +1,8 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { showFile } from '../../helper';
-import { getDocUri, location, position, sameLineLocation } from '../../util';
+import { showFile } from '../../../editorHelper';
+import { location, position, sameLineLocation } from '../../../util';
+import { getDocUri } from '../../path';
 
 describe('Should find references', () => {
   const docUri = getDocUri('references/Basic.vue');

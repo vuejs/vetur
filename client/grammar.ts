@@ -22,7 +22,8 @@ const SCOPES: { [lang: string]: string } = {
   json: 'source.json',
   php: 'source.php',
   graphql: 'source.graphql',
-  liquid: 'text.html.liquid'
+  liquid: 'text.html.liquid',
+  xml: 'text.xml'
 };
 
 export function getGeneratedGrammar(grammarPath: string, customBlocks: { [k: string]: string }): string {

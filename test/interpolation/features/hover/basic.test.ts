@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { showFile } from '../../helper';
-import { position, sameLineRange, getDocUri } from '../../util';
+import { showFile } from '../../../editorHelper';
+import { position, sameLineRange } from '../../../util';
+import { getDocUri } from '../../path';
 
 describe('Should do hover interpolation for <template>', () => {
   const docUri = getDocUri('hover/Basic.vue');

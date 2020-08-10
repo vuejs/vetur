@@ -1,5 +1,6 @@
-import { position, getDocUri } from '../../util';
-import { testCompletion } from './helper';
+import { position } from '../../../util';
+import { testCompletion } from '../../../completionHelper';
+import { getDocUri } from '../../path';
 
 describe('Should autocomplete scaffold snippets', () => {
   const scriptDocUri = getDocUri('completion/script/Scaffold.vue');

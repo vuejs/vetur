@@ -7,6 +7,7 @@ import {
   isClassType
 } from './componentInfo';
 import { T_TypeScript } from '../../services/dependencyService';
+import { kebabCase } from 'lodash';
 
 interface InternalChildComponent {
   name: string;
@@ -56,7 +57,7 @@ export function getChildComponents(
 
       let componentName = s.name;
       if (tagCasing === 'kebab') {
-        componentName = hyphenate(s.name);
+        componentName = kebabCase(s.name);
       }
 
       let objectLiteralSymbol: ts.Symbol | undefined;
@@ -96,9 +97,4 @@ export function getChildComponents(
 
     return result;
   }
-}
-
-const hyphenateRE = /\B([A-Z])/g;
-function hyphenate(word: string) {
-  return word.replace(hyphenateRE, '-$1').toLowerCase();
 }

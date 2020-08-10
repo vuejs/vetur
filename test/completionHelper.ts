@@ -1,10 +1,17 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { showFile } from '../../helper';
 import { CompletionItem, MarkdownString } from 'vscode';
+import { showFile } from './editorHelper';
 
 export interface ExpectedCompletionItem extends CompletionItem {
+  /**
+   * Documentation has to start with this string
+   */
   documentationStart?: string;
+  /**
+   * Documentation has to include this string
+   */
+  documentationFragment?: string;
 }
 
 export async function testCompletion(
@@ -42,11 +49,15 @@ export async function testCompletion(
             2
           )}`
         );
-        return;
       }
 
-      assert.ok(match.label, ei.label);
-      assert.ok(match.kind, ei.kind as any);
+      assert.equal(match.label, ei.label);
+      if (ei.kind) {
+        assert.equal(match.kind, ei.kind);
+      }
+      if (ei.detail) {
+        assert.equal(match.detail, ei.detail);
+      }
 
       if (ei.documentation) {
         if (typeof match.documentation === 'string') {
@@ -63,9 +74,29 @@ export async function testCompletion(
 
       if (ei.documentationStart) {
         if (typeof match.documentation === 'string') {
-          assert.ok(match.documentation.startsWith(ei.documentationStart));
+          assert.ok(
+            match.documentation.startsWith(ei.documentationStart),
+            `${match.documentation}\ndoes not start with\n${ei.documentationStart}`
+          );
         } else {
-          assert.ok((match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart));
+          assert.ok(
+            (match.documentation as vscode.MarkdownString).value.startsWith(ei.documentationStart),
+            `${(match.documentation as vscode.MarkdownString).value}\ndoes not start with\n${ei.documentationStart}`
+          );
+        }
+      }
+
+      if (ei.documentationFragment) {
+        if (typeof match.documentation === 'string') {
+          assert.ok(
+            match.documentation.includes(ei.documentationFragment),
+            `${match.documentation}\ndoes not include\n${ei.documentationFragment}`
+          );
+        } else {
+          assert.ok(
+            (match.documentation as vscode.MarkdownString).value.includes(ei.documentationFragment),
+            `${(match.documentation as vscode.MarkdownString).value}\ndoes not include\n${ei.documentationFragment}`
+          );
         }
       }
     }

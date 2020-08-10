@@ -4,12 +4,11 @@
 [![](https://vsmarketplacebadge.apphb.com/installs-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 [![](https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 
-Vue tooling for VS Code, powered by [vue-language-server](https://github.com/vuejs/vetur/tree/master/server).
+Vue tooling for VS Code, powered by [vls](https://github.com/vuejs/vetur/tree/master/server).
 
 Try it out with [Veturpack](https://github.com/octref/veturpack)!
 
 🎉 VueConf 2017 [Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) & [Video](https://www.youtube.com/watch?v=05tNXJ-Kric) 🎉
-
 
 This extension is under heavy development.
 You can [open an issue](https://github.com/vuejs/vetur/issues/new) for bugs or feature requests.
@@ -23,8 +22,9 @@ You can [open an issue](https://github.com/vuejs/vetur/issues/new) for bugs or f
 - [Formatting](formatting.md)
 - [IntelliSense](intellisense.md)
 - [Debugging](debugging.md)
-- [Framework Support](framework.md) for [Element UI](http://element.eleme.io), [Onsen UI](https://onsen.io) and [Quasar Framework](https://quasar-framework.org)
-- [VTI / CLI](vti.md)
+- [Component Data](framework.md): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](interpolation.md): auto-completion, hover information and type-checking in Vue template
+- [VTI](vti.md): Surface template type-checking errors on CLI
 
 ## Quick Start
 

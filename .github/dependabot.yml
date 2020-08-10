@@ -2,16 +2,25 @@ version: 2
 updates:
 - package-ecosystem: npm
   directory: "/"
+  versioning-strategy: increase
   schedule:
-    interval: weekly
-  open-pull-requests-limit: 3
+    interval: "weekly"
+    day: "friday"
+    time: "06:00"
+    timezone: "Asia/Shanghai"
 - package-ecosystem: npm
-  directory: "/server"
+  directory: /server
+  versioning-strategy: increase
   schedule:
-    interval: weekly
-  open-pull-requests-limit: 3
+    interval: "weekly"
+    day: "friday"
+    time: "06:00"
+    timezone: "Asia/Shanghai"
 - package-ecosystem: npm
-  directory: "/vti"
+  directory: /vti
+  versioning-strategy: increase
   schedule:
-    interval: weekly
-  open-pull-requests-limit: 3
+    interval: "weekly"
+    day: "friday"
+    time: "06:00"
+    timezone: "Asia/Shanghai"

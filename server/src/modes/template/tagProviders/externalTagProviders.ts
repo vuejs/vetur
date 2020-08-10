@@ -37,7 +37,7 @@ export function getWorkspaceTagProvider(workspacePath: string, rootPkgJson: any)
     if (tagsPath && attrsPath) {
       const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
       const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
-      return getExternalTagProvider(rootPkgJson.name, tagsJson, attrsJson);
+      return getExternalTagProvider('__vetur-workspace', tagsJson, attrsJson);
     }
     return null;
   } catch (err) {
@@ -101,7 +101,11 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
       }
       for (const attr of attrs) {
         const detail = findAttributeDetail(tag, attr);
-        collector(attr, undefined, (detail && detail.description) || '');
+        if (detail?.type === 'boolean') {
+          collector(attr, 'v', (detail && detail.description) || '');
+        } else {
+          collector(attr, undefined, (detail && detail.description) || '');
+        }
       }
     },
     collectValues(tag, attr, collector) {

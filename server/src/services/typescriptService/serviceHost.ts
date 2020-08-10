@@ -77,7 +77,6 @@ export function getServiceHost(
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ): IServiceHost {
   patchTS(tsModule);
-  const vueSys = getVueSys(tsModule);
 
   let currentScriptDoc: TextDocument;
 
@@ -96,6 +95,8 @@ export function getServiceHost(
     `Initializing ServiceHost with ${initialProjectFiles.length} files: ${JSON.stringify(initialProjectFiles)}`
   );
   const scriptFileNameSet = new Set(initialProjectFiles);
+
+  const vueSys = getVueSys(tsModule, scriptFileNameSet);
 
   const vueVersion = inferVueVersion(tsModule, workspacePath);
   const compilerOptions = {
@@ -482,6 +483,15 @@ function getParsedConfig(tsModule: T_TypeScript, workspacePath: string) {
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,
-    [{ extension: 'vue', isMixedContent: true }]
+    [
+      {
+        extension: 'vue',
+        isMixedContent: true,
+        // Note: in order for parsed config to include *.vue files, scriptKind must be set to Deferred.
+        // tslint:disable-next-line max-line-length
+        // See: https://github.com/microsoft/TypeScript/blob/2106b07f22d6d8f2affe34b9869767fa5bc7a4d9/src/compiler/utilities.ts#L6356
+        scriptKind: ts.ScriptKind.Deferred
+      }
+    ]
   );
 }

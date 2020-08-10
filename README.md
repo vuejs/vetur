@@ -3,28 +3,26 @@
 </p>
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadge.apphb.com/version-short/octref.vetur.svg?style=flat-square">
+  <a href="https://github.com/vuejs/vetur/actions?query=workflow%3A%22Node+CI%22">
+    <img src="https://img.shields.io/github/workflow/status/vuejs/vetur/Node%20CI?label=%20&logo=github&style=flat-square&logoColor=black">
   </a>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadge.apphb.com/installs-short/octref.vetur.svg?style=flat-square">
+    <img src="https://vsmarketplacebadge.apphb.com/version-short/octref.vetur.svg?label=%20&style=flat-square">
   </a>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?style=flat-square">
+    <img src="https://vsmarketplacebadge.apphb.com/installs-short/octref.vetur.svg?label=%20&style=flat-square">
   </a>
-  <a href="https://dev.azure.com/octref/vetur/_build?definitionId=1">
-    <img src="https://img.shields.io/azure-devops/build/octref/d2f425a7-816a-4e0c-a9bb-dd51d4d7efba/1.svg?label=Azure%20DevOps&logo=Azure%20Devops&style=flat-square">
+  <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
+    <img src="https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?label=%20&style=flat-square">
   </a>
-  <a href="https://travis-ci.org/vuejs/vetur">
-    <img src="https://img.shields.io/travis/vuejs/vetur.svg?label=Travis&style=flat-square">
-  </a>
+  <br>
 </p>
 
 Vue tooling for VS Code.
 
 - [vls](./server): Vue Language Server
 - [vti](./vti): Vetur Terminal Interface
-- Docs: https://vuejs.github.io/vetur
+- [Docs](https://vuejs.github.io/vetur)
 
 🎉 VueConf 2017 [Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) & [Video](https://www.youtube.com/watch?v=05tNXJ-Kric) 🎉
 
@@ -36,8 +34,9 @@ Vue tooling for VS Code.
 - Linting / Error Checking
 - Formatting
 - Auto Completion
-- Debugging
-- [VTI / CLI](https://vuejs.github.io/vetur/vti.html)
+- [Component Data](https://vuejs.github.io/vetur/component-data.html): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](https://vuejs.github.io/vetur/interpolation.html): auto-completion, hover information and type-checking in Vue template
+- [VTI](https://vuejs.github.io/vetur/vti.html): Surface template type-checking errors on CLI
 
 ## Quick Start
 
@@ -62,6 +61,14 @@ See [#873](https://github.com/vuejs/vetur/issues/873).
 ## Contribution
 
 See [CONTRIBUTING.md](https://github.com/vuejs/vetur/blob/master/.github/CONTRIBUTING.md)
+
+## Sponsorship
+
+I quit my job to travel nomadically, to work on Open Source and to conduct independent study/research.
+
+Vetur is my main focus in Open Source. Your help will alleviate my financial concern and allow me to spend more time working on Vetur. Thank you 🙏 
+
+https://github.com/sponsors/octref
 
 ## License
 

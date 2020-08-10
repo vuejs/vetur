@@ -34,6 +34,7 @@ export interface CompletionConfiguration {
 
 export function getTagProviderSettings(workspacePath: string | null | undefined) {
   const settings: CompletionConfiguration = {
+    '__vetur-workspace': true,
     html5: true,
     vue: true,
     router: false,
@@ -60,16 +61,16 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     const dependencies = rootPkgJson.dependencies || {};
     const devDependencies = rootPkgJson.devDependencies || {};
 
-    if (dependencies['vue-router']) {
-      settings['router'] = true;
+    if (dependencies['vue-router'] || devDependencies['vue-router']) {
+      settings['vue-router'] = true;
     }
-    if (dependencies['element-ui']) {
+    if (dependencies['element-ui'] || devDependencies['element-ui']) {
       settings['element'] = true;
     }
-    if (dependencies['vue-onsenui']) {
+    if (dependencies['vue-onsenui'] || devDependencies['vue-onsenui']) {
       settings['onsen'] = true;
     }
-    if (dependencies['bootstrap-vue']) {
+    if (dependencies['bootstrap-vue'] || devDependencies['bootstrap-vue']) {
       settings['bootstrap'] = true;
     }
     if (dependencies['buefy'] || devDependencies['buefy']) {
@@ -114,7 +115,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
       allTagProviders.push(workspaceTagProvider);
     }
 
-    for (const dep in dependencies) {
+    for (const dep of [...Object.keys(dependencies), ...Object.keys(devDependencies)]) {
       const runtimePkgJsonPath = ts.findConfigFile(
         workspacePath,
         ts.sys.fileExists,

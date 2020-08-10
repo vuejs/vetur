@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import { readFileAsync, setEditorContent, showFile } from '../../helper';
-import { getDocPath, getDocUri } from '../../util';
+import { showFile, setEditorContent } from '../../../editorHelper';
+import { getDocPath, getDocUri } from '../../path';
 
 describe('Should format', () => {
   const fixturePath = getDocPath('formatting');
@@ -36,4 +36,16 @@ async function testFormat(docUri: vscode.Uri, expectedDocUri: vscode.Uri) {
   assert.equal(editor.document.getText(), expected);
 
   await setEditorContent(editor, oldContent);
+}
+
+function readFileAsync(path: string) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf-8', (err, data) => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve(data);
+    });
+  });
 }

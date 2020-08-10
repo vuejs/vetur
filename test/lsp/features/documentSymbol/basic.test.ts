@@ -1,7 +1,8 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { showFile } from '../../helper';
-import { getDocUri, range } from '../../util';
+import { showFile } from '../../../editorHelper';
+import { range } from '../../../util';
+import { getDocUri } from '../../path';
 
 describe('Should do documentSymbol', () => {
   const docUri = getDocUri('documentSymbol/Basic.vue');
