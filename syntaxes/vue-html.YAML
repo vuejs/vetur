@@ -78,7 +78,7 @@ patterns:
     patterns:
       - include: '#tag-stuff'
   - name: meta.tag.block.any.html
-    begin: (</?)([a-zA-Z0-9:-]+\b)
+    begin: (</?)([a-z][a-zA-Z0-9:-]*\b)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
       '2': { name: entity.name.tag.block.any.html }
