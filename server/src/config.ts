@@ -18,7 +18,6 @@ export interface VLSConfig {
     useWorkspaceDependencies: boolean;
     completion: {
       autoImport: boolean;
-      useScaffoldSnippets: boolean;
       tagCasing: 'initial' | 'kebab';
       scaffoldSnippetSources: {
         workspace: string;
@@ -84,7 +83,6 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       },
       completion: {
         autoImport: false,
-        useScaffoldSnippets: false,
         tagCasing: 'initial',
         scaffoldSnippetSources: {
           workspace: '💼',
