@@ -64,11 +64,17 @@ export interface IServiceHost {
   dispose(): void;
 }
 
+// 1 tsconfig/jsconfig = 1 IProject
 interface IProject {
   options: ts.CompilerOptions;
   jsLanguageService: ts.LanguageService;
   templateLanguageService: ts.LanguageService;
   attachedDirectories: Set<string>;
+}
+
+// Represent a directory configuration
+interface IDirectorySettings {
+  project: IProject;
 }
 
 /**
@@ -90,7 +96,7 @@ export function getServiceHost(
 
   const versions = new Map<string, number>();
   const localScriptRegionDocuments = new Map<string, TextDocument>();
-  const directoryToProjects = new Map<string, IProject>();
+  const directoryToProjects = new Map<string, IDirectorySettings>();
   const projectsLanguageServices = new Map<string | undefined, IProject>();
   const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
   const projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
@@ -109,11 +115,6 @@ export function getServiceHost(
   const vueSys = getVueSys(tsModule, scriptFileNameSet);
 
   const vueVersion = inferVueVersion(tsModule, workspacePath);
-  const compilerOptions = {
-    ...getDefaultCompilerOptions(tsModule),
-    ...parsedConfig.options
-  };
-  compilerOptions.allowNonTsExtensions = true;
 
   function queryVirtualFileInfo(
     fileName: string,
@@ -174,22 +175,24 @@ export function getServiceHost(
       }
     }
 
-    const project = getProjectFromWorkingDirectory(dirPath);
+    const directorySettings = getProjectFromWorkingDirectory(dirPath);
 
     if (!currentScriptDoc || doc.uri !== currentScriptDoc.uri || doc.version !== currentScriptDoc.version) {
       currentScriptDoc = updatedScriptRegionDocuments.refreshAndGet(doc)!;
       const localLastDoc = localScriptRegionDocuments.get(fileFsPath);
       if (localLastDoc && currentScriptDoc.languageId !== localLastDoc.languageId) {
         // if languageId changed, restart the language service; it can't handle file type changes
-        project.jsLanguageService.dispose();
-        project.jsLanguageService = tsModule.createLanguageService(createLanguageServiceHost(project.options));
+        directorySettings.project.jsLanguageService.dispose();
+        directorySettings.project.jsLanguageService = tsModule.createLanguageService(
+          createLanguageServiceHost(directorySettings.project.options)
+        );
       }
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
       scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
     }
     return {
-      service: project.jsLanguageService,
+      service: directorySettings.project.jsLanguageService,
       scriptDoc: currentScriptDoc
     };
   }
@@ -204,20 +207,22 @@ export function getServiceHost(
       projectFileSnapshots.delete(fileFsPath);
     }
 
-    // Reload tsconfig for the project
+    // Reload tsconfig for the project if updated
     if (projectsLanguageServices.has(fileFsPath)) {
+      // Loaded and updated
       const project = projectsLanguageServices.get(fileFsPath)!;
-      const compilerOptions = createProjectCompilerOption(fileFsPath);
+      const compilerOptions = createProjectCompilerOption(fileFsPath, workspacePath || getDirectoryName(fileFsPath));
       project.options = compilerOptions;
       project.jsLanguageService.dispose();
       project.jsLanguageService = createJSLanguageService(compilerOptions);
       project.templateLanguageService.dispose();
       project.templateLanguageService = createTemplateLanguageService(compilerOptions);
-    } else if (fileFsPath.endsWith('/tsconfig.json')) {
+    } else if (fileFsPath.endsWith('/tsconfig.json') || fileFsPath.endsWith('/jsconfig.json')) {
+      // Created or unloaded
       const parentConfigFilename = getNearestConfigFile(tsModule, getDirectoryName(getDirectoryName(fileFsPath)));
       const parentProject = projectsLanguageServices.get(parentConfigFilename);
       if (parentProject) {
-        // Force refresh project associations
+        // Force reload attached directories from parent
         for (const directory of parentProject.attachedDirectories) {
           directoryToProjects.delete(directory);
         }
@@ -439,7 +444,7 @@ export function getServiceHost(
           getChangeRange: () => void 0
         };
       },
-      getCurrentDirectory: () => workspacePath,
+      getCurrentDirectory: () => workspacePath || '', // Not used by TypeScript
       getDefaultLibFileName: tsModule.getDefaultLibFilePath,
       getNewLine: () => NEWLINE,
       useCaseSensitiveFileNames: () => true
@@ -448,11 +453,10 @@ export function getServiceHost(
 
   const registry = tsModule.createDocumentRegistry(true);
 
-  function createProjectCompilerOption(configFilename: string | undefined): ts.CompilerOptions {
+  function createProjectCompilerOption(configFilename: string | undefined, workspacePath: string): ts.CompilerOptions {
     const projectParsedConfig = getParsedConfig(tsModule, configFilename, workspacePath);
     return {
       ...getDefaultCompilerOptions(tsModule),
-      ...parsedConfig.options,
       ...projectParsedConfig.options
     };
   }
@@ -476,32 +480,39 @@ export function getServiceHost(
     return patchTemplateService(tsModule.createLanguageService(templateHost, registry));
   }
 
-  function getProjectFromWorkingDirectory(workingDirectory: string): IProject {
-    let project = directoryToProjects.get(workingDirectory);
+  function getOrCreateProject(workingDirectory: string) {
+    const configFilename = getNearestConfigFile(tsModule, workingDirectory);
+
+    let project = projectsLanguageServices.get(configFilename);
     if (!project) {
-      const configFilename = getNearestConfigFile(tsModule, workingDirectory);
+      const compilerOptions = createProjectCompilerOption(configFilename, workspacePath || workingDirectory);
 
-      project = projectsLanguageServices.get(configFilename);
-      if (!project) {
-        const compilerOptions = createProjectCompilerOption(configFilename);
-
-        project = {
-          options: compilerOptions,
-          jsLanguageService: createJSLanguageService(compilerOptions),
-          templateLanguageService: createTemplateLanguageService(compilerOptions),
-          attachedDirectories: new Set<string>()
-        };
-        projectsLanguageServices.set(configFilename, project);
-      }
-
-      project.attachedDirectories.add(workingDirectory);
-      directoryToProjects.set(workingDirectory, project);
+      project = {
+        options: compilerOptions,
+        jsLanguageService: createJSLanguageService(compilerOptions),
+        templateLanguageService: createTemplateLanguageService(compilerOptions),
+        attachedDirectories: new Set<string>()
+      };
+      projectsLanguageServices.set(configFilename, project);
     }
+
     return project;
   }
 
+  function getProjectFromWorkingDirectory(workingDirectory: string): IDirectorySettings {
+    let directorySettings = directoryToProjects.get(workingDirectory);
+    if (!directorySettings) {
+      const project = getOrCreateProject(workingDirectory);
+      project.attachedDirectories.add(workingDirectory);
+
+      directorySettings = { project };
+      directoryToProjects.set(workingDirectory, directorySettings);
+    }
+    return directorySettings;
+  }
+
   function getTemplateLanguageService(workingDirectory: string) {
-    return getProjectFromWorkingDirectory(workingDirectory).templateLanguageService;
+    return getProjectFromWorkingDirectory(workingDirectory).project.templateLanguageService;
   }
 
   return {
@@ -511,9 +522,9 @@ export function getServiceHost(
     updateExternalDocument,
     deleteExternalDocument,
     dispose: () => {
-      // FIXME Also clear template language services ?
-      for (const { jsLanguageService } of projectsLanguageServices.values()) {
+      for (const { jsLanguageService, templateLanguageService } of projectsLanguageServices.values()) {
         jsLanguageService.dispose();
+        templateLanguageService.dispose();
       }
       projectsLanguageServices.clear();
       directoryToProjects.clear();
