@@ -74,7 +74,10 @@ export function getChildComponents(
 
       if (objectLiteralSymbol.flags & tsModule.SymbolFlags.Alias) {
         const definitionSymbol = checker.getAliasedSymbol(objectLiteralSymbol);
-        const sourceFile = definitionSymbol.valueDeclaration.getSourceFile()
+        if (!definitionSymbol.valueDeclaration) {
+          return;
+        }
+        const sourceFile = definitionSymbol.valueDeclaration.getSourceFile();
         const defaultExportNode = getDefaultExportNode(
           tsModule,
           sourceFile
