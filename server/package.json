@@ -30,7 +30,7 @@
     "eslint-plugin-vue": "^7.0.0-beta.0",
     "gridsome-helper-json": "^1.0.3",
     "js-beautify": "^1.11.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.20",
     "nuxt-helper-json": "^1.0.0",
     "parse-gitignore": "^1.0.1",
     "prettier": "^2.0.5",
