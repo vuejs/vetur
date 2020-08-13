@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/vuejs/vetur/tree/master/server",
   "dependencies": {
-    "@prettier/plugin-pug": "^1.4.4",
+    "@prettier/plugin-pug": "^1.5.1",
     "@starptech/prettyhtml": "^0.10.0",
     "bootstrap-vue-helper-json": "^1.1.1",
     "core-js": "^3.6.5",
