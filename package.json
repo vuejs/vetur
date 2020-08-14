@@ -17,7 +17,7 @@
     "watch:build": "tsc -b -w .",
     "copy:snippets": "node ./build/copy-snippets.js",
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
-    "test:server": "npm run compile && cd server && npm test",
+    "test:server": "yarn compile && cd server && yarn test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test:grammar": "node ./dist/test/codeTestRunner.js grammar",
     "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
