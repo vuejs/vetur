@@ -65,30 +65,39 @@ describe('Should autocomplete interpolation for <template> in property class com
       ]);
     });
 
+    const propsList = [
+      {
+        label: ':foo',
+        kind: CompletionItemKind.Value,
+        documentation: new MarkdownString('My foo').appendCodeblock(
+          `@Prop({ type: Boolean, default: false }) foo`,
+          'js'
+        )
+      },
+      {
+        label: ':bar',
+        kind: CompletionItemKind.Value,
+        documentation: new MarkdownString('My bar').appendCodeblock(
+          `@PropSync('bar', { type: String }) syncedBar`,
+          'js'
+        )
+      },
+      {
+        label: ':checked',
+        kind: CompletionItemKind.Value,
+        documentation: new MarkdownString('My checked').appendCodeblock(
+          `@Model('change', { type: Boolean }) checked`,
+          'js'
+        )
+      }
+    ];
+
     it(`completes child component's props`, async () => {
-      await testCompletion(parentTemplateDocUri, position(2, 27), [
-        {
-          label: ':foo',
-          kind: CompletionItemKind.Value,
-          documentation: new MarkdownString('My foo').appendCodeblock(
-            `@Prop({ type: Boolean, default: false }) foo`,
-            'js'
-          )
-        }
-      ]);
+      await testCompletion(parentTemplateDocUri, position(2, 27), propsList);
     });
 
     it(`completes child component's props when camel case component name`, async () => {
-      await testCompletion(parentTemplateDocUri, position(4, 24), [
-        {
-          label: ':foo',
-          kind: CompletionItemKind.Value,
-          documentation: new MarkdownString('My foo').appendCodeblock(
-            `@Prop({ type: Boolean, default: false }) foo`,
-            'js'
-          )
-        }
-      ]);
+      await testCompletion(parentTemplateDocUri, position(4, 24), propsList);
     });
 
     it('completes inside v-if=""', async () => {
