@@ -113,10 +113,24 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       return undefined;
     }
 
-    return propsSymbols.map(prop => {
+    return propsSymbols.map(propSymbol => {
+      const prop = propSymbol.valueDeclaration as ts.PropertyDeclaration;
+      const decoratorExpr = prop.decorators?.find(decorator =>
+        tsModule.isCallExpression(decorator.expression)
+          ? propDecoratorNames.includes(decorator.expression.expression.getText())
+          : false
+      )?.expression as ts.CallExpression;
+      const decoratorName = decoratorExpr.expression.getText();
+      const args = decoratorExpr.arguments;
+
+      const firstNode = args[0];
+      if (decoratorName === 'PropSync' && tsModule.isStringLiteral(firstNode)) {
+        return { name: firstNode.text, documentation: buildDocumentation(tsModule, propSymbol, checker) };
+      }
+
       return {
-        name: prop.name,
-        documentation: buildDocumentation(tsModule, prop, checker)
+        name: propSymbol.name,
+        documentation: buildDocumentation(tsModule, propSymbol, checker)
       };
     });
   }
