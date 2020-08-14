@@ -11,6 +11,7 @@
 - Linkify all vue/vue-router tags to their API doc. #2133.
 - Component Data - `type: 'boolean'` should trigger completion without `=""`. #2127.
 - Component Data doesn't work if it comes from devDependencies. #2132.
+- 🙌 Add support for analyzing vue-class-component and vue-property-decorator. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #864, #1105 and #1323.
 
 ### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
 

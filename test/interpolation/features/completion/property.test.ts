@@ -4,8 +4,8 @@ import { testCompletion, testNoSuchCompletion } from '../../../completionHelper'
 import { position } from '../../../util';
 
 describe('Should autocomplete interpolation for <template> in property class component', () => {
-  const templateDocUri = getDocUri('completion/BasicPropertyClass.vue');
-  const parentTemplateDocUri = getDocUri('completion/ParentPropertyClass.vue');
+  const templateDocUri = getDocUri('completion/propertyDecorator/Child.vue');
+  const parentTemplateDocUri = getDocUri('completion/propertyDecorator/Parent.vue');
 
   const defaultList: CompletionItem[] = [
     {

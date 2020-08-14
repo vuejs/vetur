@@ -1,19 +1,23 @@
 <template>
   <div>
-    {{  }}
-    {{ obj. }}
+    <basic-property-class :foo=""></basic-property-class>
+    <basic-property-class v-if="" @click="" :foo=""></basic-property-class>
+    <BasicPropertyClass  />
+    <
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
+import BasicPropertyClass from './Child.vue'
 import { Prop, Component } from 'vue-property-decorator'
 
-/**
- * My basic tag
- */
-@Component()
-export default class BasicPropertyClass extends Vue {
+@Component({
+  components: {
+    BasicPropertyClass
+  }
+})
+export default class ParentClass extends Vue {
   /**
    * My foo
    */
@@ -23,13 +27,6 @@ export default class BasicPropertyClass extends Vue {
    * My msg
    */
   msg = 'Vetur means "Winter" in icelandic.'
-
-  /**
-   * My obj
-   */
-  obj = {
-    msg: 'Object message.'
-  }
 
   /**
    * My count

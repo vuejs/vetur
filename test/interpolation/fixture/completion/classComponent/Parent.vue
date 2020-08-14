@@ -1,28 +1,32 @@
 <template>
   <div>
-    <basic-property-class :></basic-property-class>
-    <basic-property-class v-if="" @click="" :foo=""></basic-property-class>
-    <BasicPropertyClass  />
+    <basic-class :></basic-class>
+    <basic-class v-if="" @click="" :foo=""></basic-class>
+    <BasicClass  />
     <
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import BasicPropertyClass from './BasicPropertyClass.vue'
-import { Prop, Component } from 'vue-property-decorator'
+import BasicClass from './Child.vue'
+import Component from 'vue-class-component'
 
 @Component({
   components: {
-    BasicPropertyClass
+    BasicClass
+  },
+  props: {
+    /**
+     * My foo
+     */
+    foo: {
+      type: Boolean,
+      default: false
+    },
   }
 })
 export default class ParentClass extends Vue {
-  /**
-   * My foo
-   */
-  @Prop({ type: Boolean, default: false }) foo
-
   /**
    * My msg
    */

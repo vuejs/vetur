@@ -6,7 +6,7 @@ import { sameLineRange } from '../../../util';
 describe('Should find common diagnostics for all regions', () => {
   const parentUri = getDocUri('diagnostics/propsValidation/parent.vue');
 
-  it('ZZ shows errors for passing wrong props to child component', async () => {
+  it('shows errors for passing wrong props to child component', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [
       {
         message: '<child> misses props: foo, bar, b-az',

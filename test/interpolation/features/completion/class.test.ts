@@ -4,12 +4,13 @@ import { getDocUri } from '../../path';
 import { testCompletion, testNoSuchCompletion } from '../../../completionHelper';
 
 describe('Should autocomplete interpolation for <template> in class component', () => {
-  const templateDocUri = getDocUri('completion/BasicClass.vue');
-  const parentTemplateDocUri = getDocUri('completion/ParentClass.vue');
+  const templateDocUri = getDocUri('completion/classComponent/Child.vue');
+  const parentTemplateDocUri = getDocUri('completion/classComponent/Parent.vue');
 
   const defaultList: CompletionItem[] = [
-    // Typescript can't typing when `@Component({ props: { foo: String } })`.
-    // Because decorator cant affect return type.
+    // Typescript can't type the return type with `@Component({ props: { foo: String } })`.
+    // Because decorator can't affect return type.
+    // https://github.com/vuejs/vue-class-component/issues/360#issuecomment-549148795
     // {
     //   label: 'foo',
     //   documentation: new MarkdownString('My foo').appendCodeblock(
