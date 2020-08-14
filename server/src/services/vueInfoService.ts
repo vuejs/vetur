@@ -45,6 +45,8 @@ export interface ChildComponent {
 
 export interface PropInfo {
   name: string;
+  detailed: boolean;
+  required: boolean;
   documentation?: string;
 }
 export interface DataInfo {
