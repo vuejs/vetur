@@ -49,6 +49,8 @@ import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptSer
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
 
+export const APPLY_REFACTOR_COMMAND = 'vetur.applyRefactorCommand';
+
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
@@ -589,7 +591,7 @@ function collectRefactoringCommands(
       kind: CodeActionKind.Refactor,
       command: {
         title: action.description,
-        command: 'vetur.chooseTypeScriptRefactoring',
+        command: APPLY_REFACTOR_COMMAND,
         arguments: [action]
       }
     });
