@@ -26,17 +26,19 @@ export function getChildComponents(
   checker: ts.TypeChecker,
   tagCasing = 'kebab'
 ): InternalChildComponent[] | undefined {
-  let type = defaultExportType;
-  if (isClassType(tsModule, type)) {
+  let componentsSymbol: ts.Symbol | undefined;
+
+  if (!isClassType(tsModule, defaultExportType)) {
+    componentsSymbol = checker.getPropertyOfType(defaultExportType, 'components');
+  } else {
     // get decorator argument type when class
     const classDecoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
     if (!classDecoratorArgumentType) {
       return undefined;
     }
-    type = classDecoratorArgumentType;
+    componentsSymbol = checker.getPropertyOfType(classDecoratorArgumentType, 'components');
   }
 
-  const componentsSymbol = checker.getPropertyOfType(type, 'components');
   if (!componentsSymbol || !componentsSymbol.valueDeclaration) {
     return undefined;
   }
@@ -78,10 +80,7 @@ export function getChildComponents(
           return;
         }
         const sourceFile = definitionSymbol.valueDeclaration.getSourceFile();
-        const defaultExportNode = getDefaultExportNode(
-          tsModule,
-          sourceFile
-        );
+        const defaultExportNode = getDefaultExportNode(tsModule, sourceFile);
         if (!defaultExportNode) {
           return;
         }

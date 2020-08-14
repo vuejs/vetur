@@ -61,10 +61,10 @@ export function getComponentInfo(
 
 export function analyzeDefaultExportExpr(
   tsModule: T_TypeScript,
-  defaultExport: ts.Node,
+  defaultExportNode: ts.Node,
   checker: ts.TypeChecker
 ): VueFileInfo {
-  const defaultExportType = checker.getTypeAtLocation(defaultExport);
+  const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
   const props = getProps(tsModule, defaultExportType, checker);
   const data = getData(tsModule, defaultExportType, checker);
@@ -98,6 +98,7 @@ export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.Sour
 
 function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
   const result: PropInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
+  return result.length === 0 ? undefined : result;
 
   function getClassProps(type: ts.Type) {
     const propDecoratorNames = ['Prop', 'Model', 'PropSync'];
@@ -171,8 +172,6 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
 
     return undefined;
   }
-
-  return result.length === 0 ? undefined : result;
 }
 
 /**
@@ -190,6 +189,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
  */
 function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[] | undefined {
   const result: DataInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassData, getObjectData);
+  return result.length === 0 ? undefined : result;
 
   function getClassData(type: ts.Type) {
     const noDataDecoratorNames = ['Prop', 'Model', 'Provide', 'ProvideReactive', 'Ref'];
@@ -234,8 +234,6 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
       };
     });
   }
-
-  return result.length === 0 ? undefined : result;
 }
 
 function getComputed(
@@ -250,6 +248,7 @@ function getComputed(
     getClassComputed,
     getObjectComputed
   );
+  return result.length === 0 ? undefined : result;
 
   function getClassComputed(type: ts.Type) {
     const getAccessorSymbols = type
@@ -295,8 +294,6 @@ function getComputed(
       });
     }
   }
-
-  return result.length === 0 ? undefined : result;
 }
 
 function isInternalHook(methodName: string) {
@@ -331,6 +328,7 @@ function getMethods(
     getClassMethods,
     getObjectMethods
   );
+  return result.length === 0 ? undefined : result;
 
   function getClassMethods(type: ts.Type) {
     const methodSymbols = type
@@ -375,8 +373,6 @@ function getMethods(
       });
     }
   }
-
-  return result.length === 0 ? undefined : result;
 }
 
 function getNodeFromExportNode(tsModule: T_TypeScript, exportExpr: ts.Node): ts.Node | undefined {
@@ -411,8 +407,12 @@ export function isClassType(tsModule: T_TypeScript, type: ts.Type) {
   }
 }
 
-export function getClassDecoratorArgumentType(tsModule: T_TypeScript, type: ts.Type, checker: ts.TypeChecker) {
-  const decorators = type.symbol.declarations[0].decorators;
+export function getClassDecoratorArgumentType(
+  tsModule: T_TypeScript,
+  defaultExportNode: ts.Type,
+  checker: ts.TypeChecker
+) {
+  const decorators = defaultExportNode.symbol.declarations[0].decorators;
   if (!decorators || decorators.length === 0) {
     return undefined;
   }
