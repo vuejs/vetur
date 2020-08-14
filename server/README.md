@@ -18,6 +18,7 @@ There are two ways to integrate `vls` into editors:
 
   ```bash
   npm install vls -g
+  # or yarn global add vls
   ```
 
   This will provide you the global `vls` command.
@@ -39,6 +40,7 @@ There are two ways to integrate `vls` into editors:
 
   ```bash
   npm install vls --save
+  # or yarn add vls
   ```
 
   Then, require the vls, this would typically look like:
