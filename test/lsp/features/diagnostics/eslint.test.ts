@@ -22,7 +22,7 @@ describe('Should find diagnostics using eslint-plugin-vue', () => {
       },
       {
         severity: vscode.DiagnosticSeverity.Error,
-        message: '[vue/valid-template-root]\nThe template root requires exactly one element.',
+        message: '[vue/no-multiple-template-root]\nThe template root requires exactly one element.',
         range: sameLineRange(6, 2, 13),
         source: 'eslint-plugin-vue'
       }
