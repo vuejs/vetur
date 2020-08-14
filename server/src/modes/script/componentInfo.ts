@@ -412,12 +412,16 @@ export function getClassDecoratorArgumentType(
   defaultExportNode: ts.Type,
   checker: ts.TypeChecker
 ) {
-  const decorators = defaultExportNode.symbol.declarations[0].decorators;
+  const decorators = defaultExportNode.symbol.valueDeclaration.decorators;
   if (!decorators || decorators.length === 0) {
     return undefined;
   }
 
-  const decoratorArguments = (decorators[0].expression as ts.CallExpression).arguments;
+  if (!tsModule.isCallExpression(decorators?.[0].expression)) {
+    return undefined;
+  }
+
+  const decoratorArguments = decorators?.[0].expression?.arguments;
   if (!decoratorArguments || decoratorArguments.length === 0) {
     return undefined;
   }
@@ -450,11 +454,7 @@ function getPropertyDecoratorNames(property: ts.Symbol, checkSyntaxKind: ts.Synt
     return [];
   }
 
-  if (property.declarations.length === 0) {
-    return [];
-  }
-
-  const decorators = property.declarations[0].decorators;
+  const decorators = property?.valueDeclaration?.decorators;
   if (decorators === undefined) {
     return [];
   }
@@ -474,12 +474,9 @@ export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker
   documentation += '\n';
 
   if (s.valueDeclaration) {
-    if (s.valueDeclaration.kind === tsModule.SyntaxKind.PropertyAssignment) {
-      documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
-    } else {
-      documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
-    }
+    documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
   }
+
   return documentation;
 }
 
