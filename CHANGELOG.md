@@ -12,8 +12,8 @@
 - Component Data - `type: 'boolean'` should trigger completion without `=""`. #2127.
 - Component Data doesn't work if it comes from devDependencies. #2132.
 - 🙌 Add support for analyzing vue-class-component and vue-property-decorator. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #864, #1105 and #1323.
-- 🙌 Remove lsp client commands for improve third party lsp client. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2137.
-- 🙌 Fix "Go to definition" for methods/computeds does not work in the template. Thanks to contribution from [@cereschen](https://github.com/cereschen). #1484 and #2161.
+- 🙌 Remove lsp client-side commands to improve integration with third party lsp client. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2137.
+- 🙌 Fix "Go to definition" for methods/computed does not work in the template. Thanks to contribution from [@cereschen](https://github.com/cereschen). #1484 and #2161.
 
 ### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
 
