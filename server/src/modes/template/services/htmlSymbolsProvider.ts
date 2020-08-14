@@ -21,18 +21,20 @@ function provideFileSymbolsInternal(
     return;
   }
   const name = nodeToName(node);
-  const location = Location.create(
-    document.uri,
-    Range.create(document.positionAt(node.start), document.positionAt(node.end))
-  );
-  const symbol: SymbolInformation = {
-    name,
-    location,
-    containerName: container,
-    kind: <SymbolKind>SymbolKind.Field
-  };
+  if (name !== '') {
+    const location = Location.create(
+      document.uri,
+      Range.create(document.positionAt(node.start), document.positionAt(node.end))
+    );
+    const symbol: SymbolInformation = {
+      name,
+      location,
+      containerName: container,
+      kind: <SymbolKind>SymbolKind.Field
+    };
 
-  symbols.push(symbol);
+    symbols.push(symbol);
+  }
 
   node.children.forEach(child => {
     provideFileSymbolsInternal(document, child, name, symbols);
@@ -42,7 +44,7 @@ function provideFileSymbolsInternal(
 function nodeToName(node: Node): string {
   let name = node.tag;
 
-  if(!name) {
+  if (!name) {
     return '';
   }
 
