@@ -27,14 +27,14 @@ Vetur should be able to resolve external modules and provide IntelliSense for th
 
 For example, `vue` packages type definition in its module, so
 
-- `npm i -S vue`
+- `npm i -S vue` or `yarn add vue`
 - `import Vue from 'vue'`
 - `Vue.` should prompt IntelliSense for Vue.
 
 `lodash` doesn't package type definition with it, but there is `@types/lodash` that has type definition for `lodash`, so
 
-- `npm i -S lodash`
-- `npm i -D @types/lodash`
+- `npm i -S lodash` or `yarn add lodash`
+- `npm i -D @types/lodash` or `yarn add -D @types/lodash`
 - `import * as _ from 'lodash'`
 - `_.` should prompt IntelliSense for lodash.
 

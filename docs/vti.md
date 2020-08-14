@@ -11,6 +11,7 @@ VTI (Vetur Terminal Interface) is a CLI that exposes some of Vetur's language fe
 
 ```bash
 npm i -g vti
+# or yarn global add vti
 # run this in the root of a Vue project
 vti
 vti diagnostics
