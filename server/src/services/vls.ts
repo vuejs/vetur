@@ -520,7 +520,7 @@ export class VLS {
       return;
     }
 
-    logger.logDebug(`Unknown command ${arg.command}.`);
+    logger.logInfo(`Unknown command ${arg.command}.`);
   }
 
   removeDocument(doc: TextDocument): void {
