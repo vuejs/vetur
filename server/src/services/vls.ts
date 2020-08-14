@@ -38,8 +38,7 @@ import {
   TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation,
-  Range,
-  WorkspaceEdit
+  Range
 } from 'vscode-languageserver-types';
 
 import { URI } from 'vscode-uri';
@@ -54,7 +53,7 @@ import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
-import { Commands } from '../utils/commands';
+import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -512,7 +511,7 @@ export class VLS {
   }
 
   async executeCommand(arg: ExecuteCommandParams) {
-    if (arg.command === Commands.CodeAction && arg.arguments) {
+    if (arg.command === APPLY_REFACTOR_COMMAND && arg.arguments) {
       const edit = this.getRefactorEdits(arg.arguments[0] as RefactorAction);
       if (edit) {
         this.lspConnection.sendRequest(ApplyWorkspaceEditRequest.type, { edit });
@@ -548,7 +547,7 @@ export class VLS {
       codeActionProvider: true,
       colorProvider: true,
       executeCommandProvider: {
-        commands: [Commands.CodeAction]
+        commands: [APPLY_REFACTOR_COMMAND]
       }
     };
   }

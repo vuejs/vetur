@@ -44,11 +44,12 @@ import { DependencyService, T_TypeScript, State } from '../../services/dependenc
 import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
-import { Commands } from '../../utils/commands';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
+
+export const APPLY_REFACTOR_COMMAND = 'vetur.applyRefactorCommand';
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
@@ -590,7 +591,7 @@ function collectRefactoringCommands(
       kind: CodeActionKind.Refactor,
       command: {
         title: action.description,
-        command: Commands.CodeAction,
+        command: APPLY_REFACTOR_COMMAND,
         arguments: [action]
       }
     });
