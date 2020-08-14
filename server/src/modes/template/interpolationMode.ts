@@ -16,6 +16,7 @@ import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { languageServiceIncludesFile } from '../script/javascript';
 import { getFileFsPath } from '../../utils/paths';
 import { mapBackRange, mapFromPositionToOffset } from '../../services/typescriptService/sourceMap';
+import { URI } from 'vscode-uri';
 import * as ts from 'typescript';
 import { T_TypeScript } from '../../services/dependencyService';
 import * as _ from 'lodash';
@@ -294,7 +295,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(definitionTargetDoc, r.textSpan);
 
         definitionResults.push({
-          uri: definitionTargetDoc.uri.toString(),
+          uri: URI.file(definitionTargetDoc.uri).toString(),
           range
         });
       }
@@ -342,7 +343,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(referenceTargetDoc, r.textSpan);
 
         referenceResults.push({
-          uri: referenceTargetDoc.uri.toString(),
+          uri: URI.file(referenceTargetDoc.uri).toString(),
           range
         });
       }
