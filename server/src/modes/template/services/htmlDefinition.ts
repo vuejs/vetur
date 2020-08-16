@@ -1,7 +1,7 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Definition, Location } from 'vscode-languageserver-types';
-import { VueFileInfo } from '../../../services/vueInfoService';
+import { VueFileInfo, MemberInfo, PositionInfo, ChildComponent } from '../../../services/vueInfoService';
 import { URI } from 'vscode-uri';
 import { kebabCase } from 'lodash';
 
@@ -22,8 +22,12 @@ export function findDefinition(
   function getTagDefinition(tag: string, range: Range, open: boolean): Definition {
     if (vueFileInfo && vueFileInfo.componentInfo.childComponents) {
       for (const cc of vueFileInfo.componentInfo.childComponents) {
-        if (![tag, tag.toLowerCase(), kebabCase(tag)].includes(cc.name)) { continue; }
-        if (!cc.definition) { continue; }
+        if (![tag, tag.toLowerCase(), kebabCase(tag)].includes(cc.name)) {
+          continue;
+        }
+        if (!cc.definition) {
+          continue;
+        }
 
         const loc: Location = {
           uri: URI.file(cc.definition.path).toString(),
@@ -34,6 +38,56 @@ export function findDefinition(
       }
     }
     return [];
+  }
+
+  function getAttributeDefinition(fullAttributeName: string, range: Range): Definition {
+    if (vueFileInfo && vueFileInfo.componentInfo.childComponents) {
+      for (const cc of vueFileInfo.componentInfo.childComponents) {
+        if (!cc.info || !cc.definition || cc.definition === undefined) {
+          continue;
+        }
+
+        // TODO: add support for v-on and v-bind, only : and @ works for now.
+        const attributeName = fullAttributeName.substr(1);
+
+        if (cc.info.componentInfo) {
+          if (fullAttributeName.startsWith(':')) {
+            return buildDefinitions(cc.info.componentInfo.props, attributeName, cc);
+          }
+
+          if (fullAttributeName.startsWith('@')) {
+            return buildDefinitions(cc.info.componentInfo.events, attributeName, cc);
+          }
+        }
+      }
+    }
+
+    return [];
+  }
+
+  function buildDefinitions(
+    collection: (PositionInfo & MemberInfo)[] | undefined,
+    attributeName: string,
+    childComponent: ChildComponent
+  ): Location[] {
+    if (!collection) {
+      return [];
+    }
+
+    return collection
+      .filter(p => p.name === attributeName)
+      .map(p => {
+        if (!childComponent.definition) {
+          return [];
+        }
+
+        const loc: Location = {
+          uri: URI.file(childComponent.definition.path).toString(),
+          range: p.position ? p.position : Range.create(0, 0, 0, 0)
+        };
+        return loc;
+      })
+      .flatMap(x => x);
   }
 
   const inEndTag = node.endTagStart && offset >= node.endTagStart; // <html></ht|ml>
@@ -72,6 +126,8 @@ export function findDefinition(
       return getTagDefinition(node.tag, tagRange, true);
     case TokenType.EndTag:
       return getTagDefinition(node.tag, tagRange, false);
+    case TokenType.AttributeName:
+      return getAttributeDefinition(scanner.getTokenText(), tagRange);
   }
 
   return [];

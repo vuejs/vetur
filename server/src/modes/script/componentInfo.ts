@@ -5,10 +5,12 @@ import {
   ComputedInfo,
   DataInfo,
   MethodInfo,
-  ChildComponent
+  ChildComponent,
+  EventInfo
 } from '../../services/vueInfoService';
 import { getChildComponents } from './childComponents';
 import { T_TypeScript } from '../../services/dependencyService';
+import { TextDocument, Range } from 'vscode-languageserver-types';
 
 export function getComponentInfo(
   tsModule: T_TypeScript,
@@ -33,7 +35,9 @@ export function getComponentInfo(
     return undefined;
   }
 
-  const vueFileInfo = analyzeDefaultExportExpr(tsModule, defaultExportNode, checker);
+  // This virtual source document is needed to calculate positions in the file
+  const sourceDoc = TextDocument.create(sourceFile.fileName, '', 0, sourceFile.getFullText());
+  const vueFileInfo = analyzeDefaultExportExpr(tsModule, defaultExportNode, checker, sourceDoc);
 
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
   const internalChildComponents = getChildComponents(
@@ -50,7 +54,9 @@ export function getComponentInfo(
         name: c.name,
         documentation: c.documentation,
         definition: c.definition,
-        info: c.defaultExportNode ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker) : undefined
+        info: c.defaultExportNode
+          ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker, c.componentDocument)
+          : undefined
       });
     });
     vueFileInfo.componentInfo.childComponents = childComponents;
@@ -62,21 +68,24 @@ export function getComponentInfo(
 export function analyzeDefaultExportExpr(
   tsModule: T_TypeScript,
   defaultExportNode: ts.Node,
-  checker: ts.TypeChecker
+  checker: ts.TypeChecker,
+  doc: TextDocument
 ): VueFileInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
-  const props = getProps(tsModule, defaultExportType, checker);
-  const data = getData(tsModule, defaultExportType, checker);
-  const computed = getComputed(tsModule, defaultExportType, checker);
-  const methods = getMethods(tsModule, defaultExportType, checker);
+  const props = getProps(ts, defaultExportType, checker, doc);
+  const data = getData(ts, defaultExportType, checker, doc);
+  const computed = getComputed(ts, defaultExportType, checker, doc);
+  const methods = getMethods(ts, defaultExportType, checker, doc);
+  const events = getEvents(ts, defaultExportType, checker, doc);
 
   return {
     componentInfo: {
       props,
       data,
       computed,
-      methods
+      methods,
+      events
     }
   };
 }
@@ -96,8 +105,13 @@ export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.Sour
   return getNodeFromExportNode(tsModule, exportNode);
 }
 
-function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
-  const result: PropInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
+function getProps(
+  tsModule: T_TypeScript,
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker,
+  doc: TextDocument
+): PropInfo[] | undefined {
+  const result: PropInfo[] = getClassAndObjectInfo(ts, defaultExportType, checker, doc, getClassProps, getObjectProps);
   return result.length === 0 ? undefined : result;
 
   function getClassProps(type: ts.Type) {
@@ -114,10 +128,17 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
     }
 
     return propsSymbols.map(prop => {
-      return {
+      const identifiers = prop.valueDeclaration.getChildren().filter(x => x.kind === ts.SyntaxKind.Identifier);
+
+      const locationNode = identifiers.length > 0 ? identifiers[0] : prop.valueDeclaration;
+
+      const propInfo: PropInfo = {
         name: prop.name,
-        documentation: buildDocumentation(tsModule, prop, checker)
+        documentation: buildDocumentation(tsModule, prop, checker),
+        position: getRangeFromNode(doc, locationNode)
       };
+
+      return propInfo;
     });
   }
 
@@ -187,8 +208,21 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
  * }
  * ```
  */
-function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[] | undefined {
-  const result: DataInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassData, getObjectData);
+function getData(
+  tsModule: T_TypeScript,
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker,
+  doc: TextDocument
+): DataInfo[] | undefined {
+  const result: DataInfo[] = getClassAndObjectInfo(
+    tsModule,
+    defaultExportType,
+    checker,
+    doc,
+    getClassData,
+    getObjectData
+  );
+
   return result.length === 0 ? undefined : result;
 
   function getClassData(type: ts.Type) {
@@ -239,12 +273,14 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
 function getComputed(
   tsModule: T_TypeScript,
   defaultExportType: ts.Type,
-  checker: ts.TypeChecker
+  checker: ts.TypeChecker,
+  doc: TextDocument
 ): ComputedInfo[] | undefined {
   const result: ComputedInfo[] = getClassAndObjectInfo(
     tsModule,
     defaultExportType,
     checker,
+    doc,
     getClassComputed,
     getObjectComputed
   );
@@ -319,18 +355,20 @@ function isInternalHook(methodName: string) {
 function getMethods(
   tsModule: T_TypeScript,
   defaultExportType: ts.Type,
-  checker: ts.TypeChecker
+  checker: ts.TypeChecker,
+  doc: TextDocument
 ): MethodInfo[] | undefined {
   const result: MethodInfo[] = getClassAndObjectInfo(
     tsModule,
     defaultExportType,
     checker,
+    doc,
     getClassMethods,
     getObjectMethods
   );
   return result.length === 0 ? undefined : result;
 
-  function getClassMethods(type: ts.Type) {
+  function getClassMethods(type: ts.Type, checker: ts.TypeChecker) {
     const methodSymbols = type
       .getProperties()
       .filter(
@@ -344,14 +382,17 @@ function getMethods(
     }
 
     return methodSymbols.map(method => {
-      return {
+      const methodInfo: MethodInfo = {
         name: method.name,
-        documentation: buildDocumentation(tsModule, method, checker)
+        documentation: buildDocumentation(tsModule, method, checker),
+        position: getRangeFromNode(doc, method.valueDeclaration)
       };
+
+      return methodInfo;
     });
   }
 
-  function getObjectMethods(type: ts.Type) {
+  function getObjectMethods(type: ts.Type, checker: ts.TypeChecker) {
     const methodsSymbol = checker.getPropertyOfType(type, 'methods');
     if (!methodsSymbol || !methodsSymbol.valueDeclaration) {
       return undefined;
@@ -372,6 +413,56 @@ function getMethods(
         };
       });
     }
+  }
+}
+
+function getEvents(
+  tsModule: T_TypeScript,
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker,
+  doc: TextDocument
+): EventInfo[] | undefined {
+  const result: EventInfo[] = getClassAndObjectInfo(
+    tsModule,
+    defaultExportType,
+    checker,
+    doc,
+    getClassEvents,
+    () => []
+  );
+
+  return result.length === 0 ? undefined : result;
+
+  function getClassEvents(type: ts.Type, checker: ts.TypeChecker, doc: TextDocument) {
+    const methodSymbols = type
+      .getProperties()
+      .filter(
+        property =>
+          getPropertyDecoratorNames(property, tsModule.SyntaxKind.MethodDeclaration).some(
+            decoratorName => decoratorName === 'Emit'
+          ) && !isInternalHook(property.name)
+      );
+    if (methodSymbols.length === 0) {
+      return undefined;
+    }
+
+    return methodSymbols.flatMap(method => {
+      const decorators = getPropertyDecorators(method, tsModule.SyntaxKind.MethodDeclaration);
+      return decorators.map(d => {
+        const documentationData = buildDocumentationForEvent(tsModule, method, d, checker);
+        const methodInfo: MethodInfo = {
+          name: documentationData.eventName || method.name,
+          documentation: documentationData.documentation,
+          position: getRangeFromNode(doc, d.expression)
+        };
+
+        return methodInfo;
+      });
+    });
+  }
+
+  function getObjectEvents(type: ts.Type, node: ts.Node, checker: ts.TypeChecker) {
+    // TODO: not yet supported, could traverse AST in search for "$emit" calls.
   }
 }
 
@@ -409,10 +500,10 @@ export function isClassType(tsModule: T_TypeScript, type: ts.Type) {
 
 export function getClassDecoratorArgumentType(
   tsModule: T_TypeScript,
-  defaultExportNode: ts.Type,
+  defaultExportType: ts.Type,
   checker: ts.TypeChecker
-) {
-  const decorators = defaultExportNode.symbol.declarations[0].decorators;
+): ts.Type | undefined {
+  const decorators = defaultExportType.symbol.declarations[0].decorators;
   if (!decorators || decorators.length === 0) {
     return undefined;
   }
@@ -429,40 +520,41 @@ function getClassAndObjectInfo<C, O>(
   tsModule: T_TypeScript,
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
-  getClassResult: (type: ts.Type) => C[] | undefined,
-  getObjectResult: (type: ts.Type) => O[] | undefined
+  doc: TextDocument,
+  getClassResult: (type: ts.Type, checker: ts.TypeChecker, doc: TextDocument) => C[] | undefined,
+  getObjectResult: (type: ts.Type, checker: ts.TypeChecker, doc: TextDocument) => O[] | undefined
 ) {
   const result: Array<C | O> = [];
   if (isClassType(tsModule, defaultExportType)) {
-    result.push.apply(result, getClassResult(defaultExportType) || []);
+    result.push.apply(result, getClassResult(defaultExportType, checker, doc) || []);
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
     if (decoratorArgumentType) {
-      result.push.apply(result, getObjectResult(decoratorArgumentType) || []);
+      result.push.apply(result, getObjectResult(decoratorArgumentType, checker, doc) || []);
     }
   } else {
-    result.push.apply(result, getObjectResult(defaultExportType) || []);
+    result.push.apply(result, getObjectResult(defaultExportType, checker, doc) || []);
   }
   return result;
 }
 
 function getPropertyDecoratorNames(property: ts.Symbol, checkSyntaxKind: ts.SyntaxKind): string[] {
-  if (property.valueDeclaration.kind !== checkSyntaxKind) {
-    return [];
-  }
-
-  if (property.declarations.length === 0) {
-    return [];
-  }
-
-  const decorators = property.declarations[0].decorators;
-  if (decorators === undefined) {
-    return [];
-  }
-
-  return decorators
+  return getPropertyDecorators(property, checkSyntaxKind)
     .map(decorator => decorator.expression as ts.CallExpression)
     .filter(decoratorExpression => decoratorExpression.expression !== undefined)
     .map(decoratorExpression => decoratorExpression.expression.getText());
+}
+
+export function getPropertyDecorators(property: ts.Symbol, checkSyntaxKind: ts.SyntaxKind): ts.NodeArray<ts.Decorator> {
+  if (
+    property.valueDeclaration.kind !== checkSyntaxKind ||
+    property.declarations.length === 0 ||
+    property.declarations[0].decorators === undefined
+  ) {
+    const emptyArray: ts.Decorator[] = [];
+    return ts.createNodeArray(emptyArray);
+  }
+
+  return property.declarations[0].decorators;
 }
 
 export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker: ts.TypeChecker) {
@@ -483,6 +575,116 @@ export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker
   return documentation;
 }
 
+export function buildDocumentationForEvent(
+  tsModule: T_TypeScript,
+  s: ts.Symbol,
+  decorator: ts.Decorator,
+  checker: ts.TypeChecker
+): { documentation: string; eventName: string | null } {
+  let documentation = s
+    .getDocumentationComment(checker)
+    .map(d => d.text)
+    .join('\n');
+
+  documentation += '\n';
+
+  let eventName = null;
+  let eventTypeName = 'any';
+  let originalArgumentsDoc: string[] = [];
+
+  if (s.valueDeclaration) {
+    if (s.valueDeclaration.kind === tsModule.SyntaxKind.MethodDeclaration) {
+      const methodDeclaration = s.valueDeclaration as ts.MethodDeclaration;
+      const decoratorExpr = decorator.expression as ts.CallExpression;
+      const hasCustomName = decoratorExpr.arguments && decoratorExpr.arguments.length > 0;
+
+      if (methodDeclaration.parameters.length > 0) {
+        originalArgumentsDoc = methodDeclaration.parameters.map(p => p.getText());
+      }
+
+      // NOTE: following code seems hackish and I'd like somebody with TS compiler experience
+      // to find a better way of getting readable name of ts.Type
+      if (hasCustomName) {
+        const nameNode = decoratorExpr.arguments[0];
+        if (nameNode.kind === tsModule.SyntaxKind.StringLiteral) {
+          // Get name of event from decorator argument, e.g. @Emit('myEvent')
+          eventName = (nameNode as ts.StringLiteral).text;
+
+          // If event method return type is Promise<T> this will try to get readable name of 'T'
+          // (since this is how vue-property-decorator @Emit works)
+          const eventSignature = checker.getSignatureFromDeclaration(methodDeclaration);
+          if (eventSignature) {
+            const eventType = checker.getReturnTypeOfSignature(eventSignature) as ts.TypeReference;
+
+            if (eventType.typeArguments && eventType.symbol.getName() === 'Promise') {
+              // When promise is returned from event method value after resolution is returned to callbacks.
+              const resolvedType = getResolvedPromiseType(eventType, checker);
+              if (resolvedType) {
+                eventTypeName = getNameForType(resolvedType); // Promise<T>
+              }
+            } else {
+              eventTypeName = getNameForType(eventType);
+            }
+          }
+        }
+      }
+    }
+
+    const originalEventArguments = originalArgumentsDoc.join(', ');
+
+    // Event method parameters are passed to the listener func after return value by (vue-property-decorator)
+    documentation +=
+      `\`\`\`js\n(e: ${eventTypeName}${originalEventArguments ? ', ' + originalEventArguments : ''}) ` +
+      `=> void\n\`\`\`\n`;
+  }
+  return {
+    documentation,
+    eventName
+  };
+}
+
+function getResolvedPromiseType(type: ts.TypeReference, checker: ts.TypeChecker): ts.Type | null {
+  try {
+    if (!type.typeArguments || type.typeArguments.length === 0) {
+      return null;
+    }
+
+    return type.typeArguments[0];
+  } catch (e) {
+    return null;
+  }
+}
+
+function getNameForType(type: ts.Type): string {
+  try {
+    if (hasTypeParameters(type)) {
+      let typeParameterNames: string[] = [];
+
+      if (type.typeArguments) {
+        typeParameterNames = type.typeArguments?.map(ta => getNameForType(ta));
+      }
+
+      return `${type.symbol.name}<${typeParameterNames.join(', ')}>`;
+    } else {
+      if (hasIntrinsicName(type)) {
+        return type.intrinsicName;
+      }
+
+      return type.symbol.name;
+    }
+  } catch (e) {
+    return 'unknown'; // TODO: unable to deduce event type, log error?
+  }
+}
+
+function hasTypeParameters(type: ts.Type): type is ts.TypeReference {
+  return (type as any).typeArguments !== undefined;
+}
+
+function hasIntrinsicName(type: ts.Type): type is ts.Type & { intrinsicName: string } {
+  return (type as any).intrinsicName !== undefined;
+}
+
 function formatJSLikeDocumentation(src: string): string {
   const segments = src.split('\n');
   if (segments.length === 1) {
@@ -499,4 +701,8 @@ function formatJSLikeDocumentation(src: string): string {
       .map(s => s.slice(spacesToDeindent))
       .join('\n')
   );
+}
+
+function getRangeFromNode(doc: TextDocument, node: ts.Node) {
+  return Range.create(doc.positionAt(node.pos), doc.positionAt(node.end));
 }

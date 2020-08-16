@@ -90,8 +90,7 @@ export function doHover(
     case TokenType.EndTag:
       return getTagHover(node.tag, tagRange, false);
     case TokenType.AttributeName:
-      // TODO: treat : as special bind
-      const attribute = scanner.getTokenText().replace(/^:/, '');
+      const attribute = scanner.getTokenText();
       return getAttributeHover(node.tag, attribute, tagRange);
   }
 

@@ -89,6 +89,12 @@ export class HTMLMode implements LanguageMode {
     const embedded = this.embeddedDocuments.refreshAndGet(document);
     const tagProviders: IHTMLTagProvider[] = [...this.enabledTagProviders];
 
+    const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
+
+    if (info && info.componentInfo.childComponents) {
+      tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
+    }
+
     return doHover(embedded, position, this.vueDocuments.refreshAndGet(embedded), tagProviders);
   }
   findDocumentHighlight(document: TextDocument, position: Position) {

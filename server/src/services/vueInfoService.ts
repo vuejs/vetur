@@ -2,6 +2,7 @@ import { TextDocument } from 'vscode-languageserver';
 import { getFileFsPath } from '../utils/paths';
 import { Definition } from 'vscode-languageserver-types';
 import { LanguageModes } from '../embeddedSupport/languageModes';
+import { Range } from 'vscode-languageserver-textdocument';
 
 /**
  * State associated with a specific Vue file
@@ -30,6 +31,7 @@ export interface ComponentInfo {
   data?: DataInfo[];
   computed?: ComputedInfo[];
   methods?: MethodInfo[];
+  events?: MethodInfo[];
 }
 
 export interface ChildComponent {
@@ -43,19 +45,17 @@ export interface ChildComponent {
   info?: VueFileInfo;
 }
 
-export interface PropInfo {
-  name: string;
-  documentation?: string;
+export interface PropInfo extends PositionInfo, MemberInfo {}
+export interface DataInfo extends PositionInfo, MemberInfo {}
+export interface ComputedInfo extends PositionInfo, MemberInfo {}
+export interface MethodInfo extends PositionInfo, MemberInfo {}
+export interface EventInfo extends PositionInfo, MemberInfo {}
+
+export interface PositionInfo {
+  position?: Range;
 }
-export interface DataInfo {
-  name: string;
-  documentation?: string;
-}
-export interface ComputedInfo {
-  name: string;
-  documentation?: string;
-}
-export interface MethodInfo {
+
+export interface MemberInfo {
   name: string;
   documentation?: string;
 }

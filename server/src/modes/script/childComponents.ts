@@ -8,6 +8,7 @@ import {
 } from './componentInfo';
 import { T_TypeScript } from '../../services/dependencyService';
 import { kebabCase } from 'lodash';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 interface InternalChildComponent {
   name: string;
@@ -18,6 +19,7 @@ interface InternalChildComponent {
     end: number;
   };
   defaultExportNode?: ts.Node;
+  componentDocument: TextDocument;
 }
 
 export function getChildComponents(
@@ -84,6 +86,9 @@ export function getChildComponents(
         if (!defaultExportNode) {
           return;
         }
+        // This virtual source document is needed to calculate positions in the file
+        const sourceDoc = TextDocument.create(sourceFile.fileName, '', 0, sourceFile.getFullText());
+
         result.push({
           name: componentName,
           documentation: buildDocumentation(tsModule, definitionSymbol, checker),
@@ -92,7 +97,8 @@ export function getChildComponents(
             start: defaultExportNode.getStart(sourceFile, true),
             end: defaultExportNode.getEnd()
           },
-          defaultExportNode
+          defaultExportNode,
+          componentDocument: sourceDoc
         });
       }
     });

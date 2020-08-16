@@ -148,9 +148,6 @@ export function doComplete(
     tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectAttributes(currentTag, (attribute, type, documentation) => {
-        if ((type === 'event' && filterPrefix !== '@') || (type !== 'event' && filterPrefix === '@')) {
-          return;
-        }
         let codeSnippet = attribute;
         if (type !== 'v' && value.length) {
           codeSnippet = codeSnippet + value;
