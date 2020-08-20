@@ -26,7 +26,7 @@
     "bootstrap-vue-helper-json": "^1.1.1",
     "core-js": "^3.6.5",
     "element-helper-json": "^2.0.6",
-    "eslint": "^7.6.0",
+    "eslint": "^7.7.0",
     "eslint-plugin-vue": "^7.0.0-beta.2",
     "gridsome-helper-json": "^1.0.3",
     "js-beautify": "^1.12.0",
