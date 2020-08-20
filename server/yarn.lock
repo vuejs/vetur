@@ -4858,9 +4858,10 @@ vscode-uri@^2.1.1, vscode-uri@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-2.1.2.tgz#c8d40de93eb57af31f3c715dd650e2ca2c096f1c"
 
-vscode-web-custom-data@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/vscode-web-custom-data/-/vscode-web-custom-data-0.3.0.tgz#0f607d23c977a75ddcb0cb315417bd4f87bdf418"
+vscode-web-custom-data@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/vscode-web-custom-data/-/vscode-web-custom-data-0.3.1.tgz#e340b720952bb84d3b9557851eb95cc98ca6f0c6"
+  integrity sha512-pFWfUyoJoROfzk7l8+QK1aHsAcfb8fJP8iaEghMbASbYieaGOOnfovNjPIrJmhNf84RGn36R6r2030i9Eld7vA==
 
 vue-eslint-parser@^7.1.0, vue-eslint-parser@~7.1.0:
   version "7.1.0"
