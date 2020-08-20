@@ -33,7 +33,7 @@ export function doComplete(
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
-  if (!node || node.isInterpolation) {
+  if (!node || (node.isInterpolation && offset <= node.end)) {
     return result;
   }
 
@@ -285,11 +285,15 @@ export function doComplete(
         break;
       case TokenType.AttributeValue:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-          return collectAttributeValueSuggestions(
-            currentAttributeName,
-            scanner.getTokenOffset(),
-            scanner.getTokenEnd()
-          );
+          if (currentAttributeName === 'style') {
+            return emmet.doComplete(document, position, 'css', emmetConfig);
+          } else {
+            return collectAttributeValueSuggestions(
+              currentAttributeName,
+              scanner.getTokenOffset(),
+              scanner.getTokenEnd()
+            );
+          }
         }
         break;
       case TokenType.Whitespace:
