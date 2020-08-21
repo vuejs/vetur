@@ -80,6 +80,5 @@ function getVueSlotAttributes(node: Node) {
   if (node.tag === 'slot' && slotName) {
     vueSlotAttributes.push(`name=${slotName}`);
   }
-
   return vueSlotAttributes;
 }
