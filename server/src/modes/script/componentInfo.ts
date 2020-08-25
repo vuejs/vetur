@@ -128,18 +128,23 @@ function getProps(
       return undefined;
     }
 
-    return propsSymbols.map(prop => {
-      const identifiers = prop.valueDeclaration.getChildren().filter(x => x.kind === ts.SyntaxKind.Identifier);
+    return propsSymbols.map(propSymbol => {
+      const prop = propSymbol.valueDeclaration as ts.PropertyDeclaration;
+      const decoratorExpr = prop.decorators?.find(decorator =>
+        tsModule.isCallExpression(decorator.expression)
+          ? propDecoratorNames.includes(decorator.expression.expression.getText())
+          : false
+      )?.expression as ts.CallExpression;
+      const decoratorName = decoratorExpr.expression.getText();
+      const firstNode = decoratorExpr.arguments[0];
+      if (decoratorName === 'PropSync' && tsModule.isStringLiteral(firstNode)) {
+        return { name: firstNode.text, documentation: buildDocumentation(tsModule, propSymbol, checker) };
+      }
 
-      const locationNode = identifiers.length > 0 ? identifiers[0] : prop.valueDeclaration;
-
-      const propInfo: PropInfo = {
-        name: prop.name,
-        documentation: buildDocumentation(tsModule, prop, checker),
-        position: getRangeFromNode(doc, locationNode)
+      return {
+        name: propSymbol.name,
+        documentation: buildDocumentation(tsModule, propSymbol, checker)
       };
-
-      return propInfo;
     });
   }
 
@@ -566,13 +571,17 @@ export function getClassDecoratorArgumentType(
   tsModule: T_TypeScript,
   defaultExportType: ts.Type,
   checker: ts.TypeChecker
-): ts.Type | undefined {
-  const decorators = defaultExportType.symbol.declarations[0].decorators;
+) {
+  const decorators = defaultExportType.symbol.valueDeclaration.decorators;
   if (!decorators || decorators.length === 0) {
     return undefined;
   }
 
-  const decoratorArguments = (decorators[0].expression as ts.CallExpression).arguments;
+  if (!tsModule.isCallExpression(decorators?.[0].expression)) {
+    return undefined;
+  }
+
+  const decoratorArguments = decorators?.[0].expression?.arguments;
   if (!decoratorArguments || decoratorArguments.length === 0) {
     return undefined;
   }
@@ -630,12 +639,9 @@ export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker
   documentation += '\n';
 
   if (s.valueDeclaration) {
-    if (s.valueDeclaration.kind === tsModule.SyntaxKind.PropertyAssignment) {
-      documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
-    } else {
-      documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
-    }
+    documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
   }
+
   return documentation;
 }
 

@@ -170,7 +170,7 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
   );
   if (exportDefaultObject) {
     // 1. add `import Vue from 'vue'
-    //    (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
+    // (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
     const setZeroPos = getWrapperRangeSetter(tsModule, { pos: 0, end: 0 });
     const vueImport = setZeroPos(
       tsModule.createImportDeclaration(
@@ -191,9 +191,7 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
       pos: objectLiteral.pos,
       end: objectLiteral.pos + 1
     });
-    (exportDefaultObject as ts.ExportAssignment).expression = setObjPos(
-      tsModule.createCall(vue, undefined, [objectLiteral])
-    );
+    (exportDefaultObject as any).expression = setObjPos(tsModule.createCall(vue, undefined, [objectLiteral]));
     setObjPos(((exportDefaultObject as ts.ExportAssignment).expression as ts.CallExpression).arguments!);
   }
 }
@@ -264,7 +262,7 @@ export function injectVueTemplate(
   );
 
   // replace the original statements with wrapped code.
-  sourceFile.statements = tsModule.createNodeArray([componentImport, helperImport, renderElement]);
+  (sourceFile as any).statements = tsModule.createNodeArray([componentImport, helperImport, renderElement]);
 
   // Update external module indicator to the transformed template node,
   // otherwise symbols in this template (e.g. __Component) will be put
