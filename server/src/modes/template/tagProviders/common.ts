@@ -119,6 +119,12 @@ export function collectValuesDefault(
   processAttributes(globalAttributes);
 }
 
-export function genAttribute(label: string, type?: string, documentation?: string | MarkupContent): Attribute {
+export type GenAttributeType = undefined | 'event' | 'ariaCurrentType' | 'v' | 'b' | 'transType' | 'transMode';
+
+export function genAttribute(
+  label: string,
+  type?: GenAttributeType,
+  documentation?: string | MarkupContent
+): Attribute {
   return { label, type, documentation };
 }

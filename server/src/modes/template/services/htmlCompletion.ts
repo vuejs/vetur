@@ -138,10 +138,7 @@ export function doComplete(
   }
 
   function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
-    const execArray = /^[:@]/.exec(scanner.getTokenText());
-    const filterPrefix = execArray ? execArray[0] : '';
-    const start = filterPrefix ? nameStart + 1 : nameStart;
-    const range = getReplaceRange(start, nameEnd);
+    const range = getReplaceRange(nameStart, nameEnd);
     const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)
       ? ''
       : '="$1"';
@@ -152,13 +149,15 @@ export function doComplete(
         if (type !== 'v' && value.length) {
           codeSnippet = codeSnippet + value;
         }
+
         result.items.push({
           label: attribute,
           kind: type === 'event' ? CompletionItemKind.Function : CompletionItemKind.Value,
           textEdit: TextEdit.replace(range, codeSnippet),
           insertTextFormat: InsertTextFormat.Snippet,
           sortText: priority + attribute,
-          documentation: toMarkupContent(documentation)
+          documentation: toMarkupContent(documentation),
+          preselect: true
         });
       });
     });

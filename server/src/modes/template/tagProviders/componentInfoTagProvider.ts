@@ -26,7 +26,7 @@ export function getComponentInfoTagProvider(childComponents: ChildComponent[]): 
 
       if (cc.info.componentInfo.events) {
         cc.info.componentInfo.events.forEach(p => {
-          attributes.push(genAttribute(`@${p.name}`, undefined, { kind: 'markdown', value: p.documentation || '' }));
+          attributes.push(genAttribute(`@${p.name}`, 'event', { kind: 'markdown', value: p.documentation || '' }));
         });
       }
     }

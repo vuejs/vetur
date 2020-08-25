@@ -8,10 +8,11 @@ import {
   genAttribute,
   AttributeCollector,
   Priority,
-  Attribute
+  Attribute,
+  GenAttributeType
 } from './common';
 
-function getAttribute(label: string, type: string | undefined, documentation: string) {
+function getAttribute(label: string, type: GenAttributeType, documentation: string) {
   const linkedDocumentation = documentation + '\n\n' + `[API Reference](https://vuejs.org/v2/api/#${label})`;
   return genAttribute(label, type, linkedDocumentation);
 }
