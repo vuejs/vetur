@@ -96,3 +96,4 @@ Now you'll find `vetur-{version}.vsix`, you can install it by editor command "In
 ## Vetur uses different version of TypeScript in .vue files to what I installed in `node_modules`.
 
 You can enable `Vetur: Use Workspace Dependencies` setting so that it uses the same version of TypeScript in your workspace.
+NB: It will use `typescript.tsdk` setting as the path to look for if defined, defaulting to `node_modules/typescript`. This enables tools like Yarn PnP to set their own custom resolver.
