@@ -429,7 +429,7 @@ function getEvents(
     checker,
     doc,
     getClassEvents,
-    () => []
+    getObjectEvents
   );
 
   return result.length === 0 ? undefined : result;
@@ -462,8 +462,71 @@ function getEvents(
     });
   }
 
-  function getObjectEvents(type: ts.Type, node: ts.Node, checker: ts.TypeChecker) {
-    // TODO: not yet supported, could traverse AST in search for "$emit" calls.
+  function getObjectEvents(type: ts.Type, checker: ts.TypeChecker, doc: TextDocument): MethodInfo[] {
+    // PoC: automatically detect events from this.$emit(...) calls
+    try {
+      const foundEvents: MethodInfo[] = [];
+
+      for (const property of type.getProperties()) {
+        property.valueDeclaration.forEachChild(child => readEventsFromChild(child, foundEvents));
+      }
+
+      return foundEvents;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function readEventsFromChild(child: ts.Node, foundEvents: any[]) {
+    if (child.kind === ts.SyntaxKind.SyntaxList && child.getText().startsWith('this.$emit')) {
+      const eventInfo = parseEmitNode(child);
+      if (eventInfo) {
+        foundEvents.push(eventInfo);
+      }
+    }
+    const children = child.getChildren();
+    if (children.length > 0) {
+      children.forEach(c => readEventsFromChild(c, foundEvents));
+    }
+  }
+
+  function parseEmitNode(node: ts.Node): MethodInfo | null {
+    while (true) {
+      if (node.getChildCount() === 0) {
+        return null;
+      }
+
+      const nodeChildren = node.getChildren();
+      if (nodeChildren[0].getText() !== 'this.$emit') {
+        node = node.getChildAt(0);
+        continue;
+      }
+
+      const emitArguments = nodeChildren[2].getChildren().filter(x => x.kind !== ts.SyntaxKind.CommaToken);
+
+      if (!emitArguments.length) {
+        return null;
+      }
+
+      const eventIdentifier = emitArguments.shift();
+
+      if (!eventIdentifier || eventIdentifier.kind !== ts.SyntaxKind.StringLiteral) {
+        return null;
+      }
+      let argPos = 0;
+      const possibleTypes = emitArguments.map(x => ({
+        typeName: checker.typeToString(checker.getTypeAtLocation(x)),
+        name: x.kind === ts.SyntaxKind.Identifier ? x.getText() : `arg${++argPos}`
+      }));
+
+      const argumentList = possibleTypes.map(t => `${t.name}: ${t.typeName}`).join(', ');
+
+      return {
+        name: (eventIdentifier as ts.StringLiteral).text,
+        position: getRangeFromNode(doc, node),
+        documentation: `\`\`\`js\n(${argumentList}) => void\n\`\`\`\n`
+      };
+    }
   }
 }
 
