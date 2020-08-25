@@ -121,9 +121,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
           : false
       )?.expression as ts.CallExpression;
       const decoratorName = decoratorExpr.expression.getText();
-      const args = decoratorExpr.arguments;
-
-      const firstNode = args[0];
+      const firstNode = decoratorExpr.arguments[0];
       if (decoratorName === 'PropSync' && tsModule.isStringLiteral(firstNode)) {
         return { name: firstNode.text, documentation: buildDocumentation(tsModule, propSymbol, checker) };
       }
