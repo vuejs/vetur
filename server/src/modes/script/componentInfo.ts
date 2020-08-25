@@ -73,11 +73,11 @@ export function analyzeDefaultExportExpr(
 ): VueFileInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
-  const props = getProps(ts, defaultExportType, checker, doc);
-  const data = getData(ts, defaultExportType, checker, doc);
-  const computed = getComputed(ts, defaultExportType, checker, doc);
-  const methods = getMethods(ts, defaultExportType, checker, doc);
-  const events = getEvents(ts, defaultExportType, checker, doc);
+  const props = getProps(tsModule, defaultExportType, checker, doc);
+  const data = getData(tsModule, defaultExportType, checker, doc);
+  const computed = getComputed(tsModule, defaultExportType, checker, doc);
+  const methods = getMethods(tsModule, defaultExportType, checker, doc);
+  const events = getEvents(tsModule, defaultExportType, checker, doc);
 
   return {
     componentInfo: {
@@ -85,7 +85,8 @@ export function analyzeDefaultExportExpr(
       data,
       computed,
       methods,
-      events
+      events,
+      position: getRangeFromNode(doc, defaultExportNode)
     }
   };
 }
@@ -602,28 +603,24 @@ export function buildDocumentationForEvent(
         originalArgumentsDoc = methodDeclaration.parameters.map(p => p.getText());
       }
 
-      // NOTE: following code seems hackish and I'd like somebody with TS compiler experience
-      // to find a better way of getting readable name of ts.Type
       if (hasCustomName) {
         const nameNode = decoratorExpr.arguments[0];
         if (nameNode.kind === tsModule.SyntaxKind.StringLiteral) {
           // Get name of event from decorator argument, e.g. @Emit('myEvent')
           eventName = (nameNode as ts.StringLiteral).text;
 
-          // If event method return type is Promise<T> this will try to get readable name of 'T'
-          // (since this is how vue-property-decorator @Emit works)
           const eventSignature = checker.getSignatureFromDeclaration(methodDeclaration);
           if (eventSignature) {
             const eventType = checker.getReturnTypeOfSignature(eventSignature) as ts.TypeReference;
 
             if (eventType.typeArguments && eventType.symbol.getName() === 'Promise') {
               // When promise is returned from event method value after resolution is returned to callbacks.
-              const resolvedType = getResolvedPromiseType(eventType, checker);
+              const resolvedType = getResolvedPromiseType(eventType);
               if (resolvedType) {
-                eventTypeName = getNameForType(resolvedType); // Promise<T>
+                eventTypeName = getNameForType(resolvedType, checker); // Promise<T>
               }
             } else {
-              eventTypeName = getNameForType(eventType);
+              eventTypeName = getNameForType(eventType, checker);
             }
           }
         }
@@ -643,7 +640,7 @@ export function buildDocumentationForEvent(
   };
 }
 
-function getResolvedPromiseType(type: ts.TypeReference, checker: ts.TypeChecker): ts.Type | null {
+function getResolvedPromiseType(type: ts.TypeReference): ts.Type | null {
   try {
     if (!type.typeArguments || type.typeArguments.length === 0) {
       return null;
@@ -655,34 +652,12 @@ function getResolvedPromiseType(type: ts.TypeReference, checker: ts.TypeChecker)
   }
 }
 
-function getNameForType(type: ts.Type): string {
+function getNameForType(type: ts.Type, checker: ts.TypeChecker): string {
   try {
-    if (hasTypeParameters(type)) {
-      let typeParameterNames: string[] = [];
-
-      if (type.typeArguments) {
-        typeParameterNames = type.typeArguments?.map(ta => getNameForType(ta));
-      }
-
-      return `${type.symbol.name}<${typeParameterNames.join(', ')}>`;
-    } else {
-      if (hasIntrinsicName(type)) {
-        return type.intrinsicName;
-      }
-
-      return type.symbol.name;
-    }
+    return checker.typeToString(type);
   } catch (e) {
     return 'unknown'; // TODO: unable to deduce event type, log error?
   }
-}
-
-function hasTypeParameters(type: ts.Type): type is ts.TypeReference {
-  return (type as any).typeArguments !== undefined;
-}
-
-function hasIntrinsicName(type: ts.Type): type is ts.Type & { intrinsicName: string } {
-  return (type as any).intrinsicName !== undefined;
 }
 
 function formatJSLikeDocumentation(src: string): string {

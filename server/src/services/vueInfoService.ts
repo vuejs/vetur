@@ -15,9 +15,8 @@ export interface VueFileInfo {
   componentInfo: ComponentInfo;
 }
 
-export interface ComponentInfo {
+export interface ComponentInfo extends PositionInfo {
   name?: string;
-  definition?: Definition;
 
   childComponents?: ChildComponent[];
 

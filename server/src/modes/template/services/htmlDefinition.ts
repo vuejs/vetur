@@ -31,8 +31,7 @@ export function findDefinition(
 
         const loc: Location = {
           uri: URI.file(cc.definition.path).toString(),
-          // Todo: Resolve actual default export range
-          range: Range.create(0, 0, 0, 0)
+          range: cc?.info?.componentInfo?.position ? cc.info.componentInfo.position : Range.create(0, 0, 0, 0)
         };
         return loc;
       }
