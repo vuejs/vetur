@@ -20,6 +20,16 @@ export default class BasicPropertyClass extends Vue {
   @Prop({ type: Boolean, default: false }) foo
 
   /**
+   * My bar
+   */
+  @PropSync('bar', { type: String }) syncedBar
+
+  /**
+   * My checked
+   */
+  @Model('change', { type: Boolean }) checked
+
+  /**
    * My msg
    */
   msg = 'Vetur means "Winter" in icelandic.'
