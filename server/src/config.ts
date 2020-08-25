@@ -124,6 +124,7 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       format: {}
     },
     typescript: {
+      tsdk: null,
       format: {}
     },
     emmet: {},
