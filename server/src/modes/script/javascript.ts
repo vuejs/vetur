@@ -44,6 +44,8 @@ import { DependencyService, T_TypeScript, State } from '../../services/dependenc
 import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
+import { provideCompletionItems } from '../style/stylus/completion-item';
+import { getTagDocumentation } from './previewer';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -275,39 +277,56 @@ export async function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), undefined);
-      if (!signHelp) {
+      const signatureHelpItems = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), undefined);
+      if (!signatureHelpItems) {
         return NULL_SIGNATURE;
       }
-      const ret: SignatureHelp = {
-        activeSignature: signHelp.selectedItemIndex,
-        activeParameter: signHelp.argumentIndex,
-        signatures: []
-      };
-      signHelp.items.forEach(item => {
-        const signature: SignatureInformation = {
-          label: '',
-          documentation: undefined,
-          parameters: []
-        };
 
-        signature.label += tsModule.displayPartsToString(item.prefixDisplayParts);
+      const signatures: SignatureInformation[] = [];
+      signatureHelpItems.items.forEach(item => {
+        let sigLabel = '';
+        let sigMarkdownDoc = '';
+        const sigParamemterInfos: ParameterInformation[] = [];
+
+        sigLabel += tsModule.displayPartsToString(item.prefixDisplayParts);
         item.parameters.forEach((p, i, a) => {
           const label = tsModule.displayPartsToString(p.displayParts);
           const parameter: ParameterInformation = {
             label,
             documentation: tsModule.displayPartsToString(p.documentation)
           };
-          signature.label += label;
-          signature.parameters!.push(parameter);
+          sigLabel += label;
+          sigParamemterInfos.push(parameter);
           if (i < a.length - 1) {
-            signature.label += tsModule.displayPartsToString(item.separatorDisplayParts);
+            sigLabel += tsModule.displayPartsToString(item.separatorDisplayParts);
           }
         });
-        signature.label += tsModule.displayPartsToString(item.suffixDisplayParts);
-        ret.signatures.push(signature);
+        sigLabel += tsModule.displayPartsToString(item.suffixDisplayParts);
+
+        item.tags
+          .filter(x => x.name !== 'param')
+          .forEach(x => {
+            const tagDoc = getTagDocumentation(x);
+            if (tagDoc) {
+              sigMarkdownDoc += tagDoc;
+            }
+          });
+
+        signatures.push({
+          label: sigLabel,
+          documentation: {
+            kind: 'markdown',
+            value: sigMarkdownDoc
+          },
+          parameters: sigParamemterInfos
+        });
       });
-      return ret;
+
+      return {
+        activeSignature: signatureHelpItems.selectedItemIndex,
+        activeParameter: signatureHelpItems.argumentIndex,
+        signatures
+      };
     },
     findDocumentHighlight(doc: TextDocument, position: Position): DocumentHighlight[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
