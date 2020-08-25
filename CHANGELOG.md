@@ -2,6 +2,7 @@
 
 ### 0.27.0
 
+- Improve JSDoc presentation in hover/completion/signatureHelp. #2193.
 - `<PascalCase>` component should get highlighted like JSX/TSX when embedding other tags. #2146.
 - Improve cross-file completion when declaring simple props with `props: ['foo']`. #2143.
 - Completing child component should trigger props with `:` by default. #2140.

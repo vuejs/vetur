@@ -49,7 +49,7 @@ async function testHover(docUri: vscode.Uri, position: vscode.Position, expected
   contents.forEach((c, i) => {
     const actualContent = markedStringToSTring(c);
     const expectedContent = markedStringToSTring(expectedHover.contents[i]);
-    assert.ok(actualContent.startsWith(expectedContent));
+    assert.ok(actualContent.startsWith(expectedContent), `Expecting\n${expectedContent}\nGot\n${actualContent}`);
   });
 
   if (result[0] && result[0].range) {

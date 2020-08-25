@@ -97,3 +97,7 @@ export function getTagDocumentation(tag: ts.JSDocTagInfo): string | undefined {
   }
   return label + (text.match(/\r\n|\n/g) ? '  \n' + text : ` — ${text}`);
 }
+
+export function plain(parts: ts.SymbolDisplayPart[] | string): string {
+  return processInlineTags(typeof parts === 'string' ? parts : parts.map(part => part.text).join(''));
+}

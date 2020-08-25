@@ -6,7 +6,6 @@ import {
   SignatureHelp,
   SignatureInformation,
   ParameterInformation,
-  Command,
   Definition,
   TextEdit,
   TextDocument,
@@ -44,8 +43,7 @@ import { DependencyService, T_TypeScript, State } from '../../services/dependenc
 import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
-import { provideCompletionItems } from '../style/stylus/completion-item';
-import { getTagDocumentation } from './previewer';
+import * as Previewer from './previewer';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -164,6 +162,7 @@ export async function getJavascriptMode(
         items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
+
           return {
             uri: doc.uri,
             position,
@@ -219,6 +218,7 @@ export async function getJavascriptMode(
       const fileFsPath = getFileFsPath(doc.uri);
       const userPrefs: ts.UserPreferences =
         doc.languageId === 'javascript' ? config.javascript.preferences : config.typescript.preferences;
+
       const details = service.getCompletionEntryDetails(
         fileFsPath,
         item.data.offset,
@@ -227,12 +227,25 @@ export async function getJavascriptMode(
         item.data.source,
         userPrefs
       );
+
       if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
-        item.detail = tsModule.displayPartsToString(details.displayParts);
+        item.detail = Previewer.plain(tsModule.displayPartsToString(details.displayParts));
         const documentation: MarkupContent = {
           kind: 'markdown',
-          value: tsModule.displayPartsToString(details.documentation)
+          value: tsModule.displayPartsToString(details.documentation) + '\n\n'
         };
+
+        if (details.tags) {
+          if (details.tags) {
+            details.tags.forEach(x => {
+              const tagDoc = Previewer.getTagDocumentation(x);
+              if (tagDoc) {
+                documentation.value += tagDoc;
+              }
+            });
+          }
+        }
+
         if (details.codeActions && config.vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
           item.additionalTextEdits = textEdits;
@@ -258,11 +271,27 @@ export async function getJavascriptMode(
       const info = service.getQuickInfoAtPosition(fileFsPath, scriptDoc.offsetAt(position));
       if (info) {
         const display = tsModule.displayPartsToString(info.displayParts);
-        const doc = tsModule.displayPartsToString(info.documentation);
         const markedContents: MarkedString[] = [{ language: 'ts', value: display }];
+
+        let hoverMdDoc = '';
+        const doc = Previewer.plain(tsModule.displayPartsToString(info.documentation));
         if (doc) {
-          markedContents.unshift(doc, '\n');
+          hoverMdDoc += doc + '\n\n';
         }
+
+        if (info.tags) {
+          info.tags.forEach(x => {
+            const tagDoc = Previewer.getTagDocumentation(x);
+            if (tagDoc) {
+              hoverMdDoc += tagDoc;
+            }
+          });
+        }
+
+        if (hoverMdDoc.trim() !== '') {
+          markedContents.push(hoverMdDoc);
+        }
+
         return {
           range: convertRange(scriptDoc, info.textSpan),
           contents: markedContents
@@ -285,7 +314,7 @@ export async function getJavascriptMode(
       const signatures: SignatureInformation[] = [];
       signatureHelpItems.items.forEach(item => {
         let sigLabel = '';
-        let sigMarkdownDoc = '';
+        let sigMdDoc = '';
         const sigParamemterInfos: ParameterInformation[] = [];
 
         sigLabel += tsModule.displayPartsToString(item.prefixDisplayParts);
@@ -306,9 +335,9 @@ export async function getJavascriptMode(
         item.tags
           .filter(x => x.name !== 'param')
           .forEach(x => {
-            const tagDoc = getTagDocumentation(x);
+            const tagDoc = Previewer.getTagDocumentation(x);
             if (tagDoc) {
-              sigMarkdownDoc += tagDoc;
+              sigMdDoc += tagDoc;
             }
           });
 
@@ -316,7 +345,7 @@ export async function getJavascriptMode(
           label: sigLabel,
           documentation: {
             kind: 'markdown',
-            value: sigMarkdownDoc
+            value: sigMdDoc
           },
           parameters: sigParamemterInfos
         });
