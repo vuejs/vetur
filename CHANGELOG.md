@@ -13,6 +13,7 @@
 - Linkify all vue/vue-router tags to their API doc. #2133.
 - Component Data - `type: 'boolean'` should trigger completion without `=""`. #2127.
 - Component Data doesn't work if it comes from devDependencies. #2132.
+- 🙌 Validate props of `<PascalCase>` components in templates. Thanks to contribution from [Michał Wilski](https://github.com/triforcely). #2168.
 - 🙌 Add yarn@berry support and use `typescript.tsdk` setting for loading TypeScript in VLS. Thanks to contribution from [Alexandre Bonaventure Geissmann](https://github.com/AlexandreBonaventure). #1711, #1737 and #1996.
 - 🙌 Add support for analyzing vue-class-component and vue-property-decorator. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #864, #1105 and #1323.
 - 🙌 Remove lsp client-side commands to improve integration with third party lsp client. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2137.

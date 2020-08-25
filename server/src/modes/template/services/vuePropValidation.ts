@@ -2,6 +2,7 @@ import { VueFileInfo } from '../../../services/vueInfoService';
 import { TextDocument, Diagnostic } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { kebabCase } from 'lodash';
+import { getSameTagInSet } from '../tagProviders/common';
 
 export function doPropValidation(document: TextDocument, htmlDocument: HTMLDocument, info: VueFileInfo): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
@@ -14,10 +15,13 @@ export function doPropValidation(document: TextDocument, htmlDocument: HTMLDocum
   });
 
   traverseNodes(htmlDocument.roots, n => {
-    if (n.tag && Object.keys(childComponentToProps).includes(n.tag)) {
-      const d = generateDiagnostic(n, childComponentToProps[n.tag], document);
-      if (d) {
-        diagnostics.push(d);
+    if (n.tag) {
+      const foundTag = getSameTagInSet(childComponentToProps, n.tag);
+      if (foundTag) {
+        const d = generateDiagnostic(n, foundTag, document);
+        if (d) {
+          diagnostics.push(d);
+        }
       }
     }
   });

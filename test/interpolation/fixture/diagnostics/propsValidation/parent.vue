@@ -1,21 +1,23 @@
 <template>
   <div>
-    <child></child>
-    <child foo="foo"></child>
-    <child :foo="foo"></child>
-    <child :foo="foo" :bar="bar" v-bind:baz="bar"></child>
-    <child :foo="foo" :bar="bar" :bAz="bar"></child>
-    <child :foo="foo" :bar="bar" :b-az="bar"></child>
-    <child :foo="foo" :bar="bar" :baz="bar"></child>
+    <child-comp></child-comp>
+    <child-comp foo="foo"></child-comp>
+    <child-comp :foo="foo"></child-comp>
+    <child-comp :foo="foo" :bar="bar" v-bind:baz="bar"></child-comp>
+    <child-comp :foo="foo" :bar="bar" :bAz="bar"></child-comp>
+    <child-comp :foo="foo" :bar="bar" :b-az="bar"></child-comp>
+    <child-comp :foo="foo" :bar="bar" :baz="bar"></child-comp>
+    <ChildComp />
+    <ChildComp></ChildComp>
   </div>
 </template>
 
 <script>
-import child from './child.vue'
+import ChildComp from './child.vue'
 
 export default {
   components: {
-    child
+    ChildComp
   },
   props: ['foo', 'bar']
 }
