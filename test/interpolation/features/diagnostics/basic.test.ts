@@ -123,11 +123,11 @@ describe('Should find template-diagnostics in <template> region', () => {
           severity: vscode.DiagnosticSeverity.Error,
           message: "Argument of type 'number' is not assignable to parameter of type 'string'"
         },
-        {
-          range: sameLineRange(13, 20, 24),
-          severity: vscode.DiagnosticSeverity.Error,
-          message: `Type '"test"' is not assignable to type 'number'`
-        },
+        // {
+        //   range: sameLineRange(13, 20, 24),
+        //   severity: vscode.DiagnosticSeverity.Error,
+        //   message: `Type '"test"' is not assignable to type 'number'`
+        // },
         {
           range: sameLineRange(14, 20, 28),
           severity: vscode.DiagnosticSeverity.Error,
