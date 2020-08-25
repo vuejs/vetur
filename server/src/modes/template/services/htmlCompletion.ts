@@ -286,7 +286,8 @@ export function doComplete(
       case TokenType.AttributeValue:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
           if (currentAttributeName === 'style') {
-            return emmet.doComplete(document, position, 'css', emmetConfig);
+            const emmetCompletions = emmet.doComplete(document, position, 'css', emmetConfig);
+            return emmetCompletions || NULL_COMPLETION;
           } else {
             return collectAttributeValueSuggestions(
               currentAttributeName,
