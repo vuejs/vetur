@@ -121,7 +121,7 @@ describe('Should find template-diagnostics in <template> region', () => {
         {
           range: sameLineRange(12, 31, 34),
           severity: vscode.DiagnosticSeverity.Error,
-          message: "Argument of type '123' is not assignable to parameter of type 'string'"
+          message: "Argument of type 'number' is not assignable to parameter of type 'string'"
         },
         {
           range: sameLineRange(13, 20, 24),
