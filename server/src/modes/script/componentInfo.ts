@@ -100,15 +100,23 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
   const result: PropInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
   return result.length === 0 ? undefined : result;
 
-  function getPropStatus (propertyValue: ts.Node | undefined): { detailed: boolean, required: boolean } {
-    if (!propertyValue) { return { detailed: false, required: true }; }
-    if (!tsModule.isObjectLiteralExpression(propertyValue)) { return { detailed: false, required: true }; }
+  function getPropStatus(propertyValue: ts.Node | undefined): { detailed: boolean; required: boolean } {
+    if (!propertyValue) {
+      return { detailed: false, required: true };
+    }
+    if (!tsModule.isObjectLiteralExpression(propertyValue)) {
+      return { detailed: false, required: true };
+    }
 
-    function isRequired (propertyValue: ts.ObjectLiteralExpression) {
+    function isRequired(propertyValue: ts.ObjectLiteralExpression) {
       const propertyValueSymbol = checker.getSymbolAtLocation(propertyValue);
       const requiredValue = propertyValueSymbol?.members?.get('required' as ts.__String)?.valueDeclaration;
-      if (!requiredValue || !tsModule.isPropertyAssignment(requiredValue)) { return false; }
-      if (requiredValue?.initializer.kind === tsModule.SyntaxKind.TrueKeyword) { return true; }
+      if (!requiredValue || !tsModule.isPropertyAssignment(requiredValue)) {
+        return false;
+      }
+      if (requiredValue?.initializer.kind === tsModule.SyntaxKind.TrueKeyword) {
+        return true;
+      }
       return false;
     }
 
@@ -140,7 +148,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       if (decoratorName === 'PropSync' && tsModule.isStringLiteral(firstNode)) {
         return {
           name: firstNode.text,
-          ...getPropStatus(args[1]),
+          ...getPropStatus(decoratorExpr.arguments[1]),
           documentation: buildDocumentation(tsModule, propSymbol, checker)
         };
       }
@@ -148,14 +156,14 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       if (decoratorName === 'Model') {
         return {
           name: propSymbol.name,
-          ...getPropStatus(args[1]),
+          ...getPropStatus(decoratorExpr.arguments[1]),
           documentation: buildDocumentation(tsModule, propSymbol, checker)
         };
       }
 
       return {
         name: propSymbol.name,
-        ...getPropStatus(args[0]),
+        ...getPropStatus(decoratorExpr.arguments[0]),
         documentation: buildDocumentation(tsModule, propSymbol, checker)
       };
     });
