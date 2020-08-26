@@ -472,6 +472,10 @@ export class VLS {
   }
 
   private triggerValidation(textDocument: TextDocument): void {
+    if (textDocument.uri.includes('node_modules')) {
+      return;
+    }
+
     this.cleanPendingValidation(textDocument);
     this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
       delete this.pendingValidationRequests[textDocument.uri];

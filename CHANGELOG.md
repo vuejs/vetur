@@ -2,6 +2,7 @@
 
 ### 0.27.0
 
+- Fix VLS crash for *.vue files in node_modules. #2006.
 - Upgrade to TypeScript 4.0.2 and fix symbol outline issue. #1849.
 - Improve JSDoc presentation in hover/completion in interpolation mode. #1337.
 - Improve JSDoc presentation in hover/completion/signatureHelp. #2193.
