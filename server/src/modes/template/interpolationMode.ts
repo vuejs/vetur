@@ -10,7 +10,8 @@ import {
   Definition,
   CompletionList,
   TextEdit,
-  CompletionItem
+  CompletionItem,
+  MarkupContent
 } from 'vscode-languageserver-types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { languageServiceIncludesFile } from '../script/javascript';
@@ -26,6 +27,7 @@ import { toCompletionItemKind } from '../../services/typescriptService/util';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
+import * as Previewer from '../script/previewer';
 
 export class VueInterpolationMode implements LanguageMode {
   private config: any = {};
@@ -203,8 +205,25 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     if (details) {
-      item.detail = ts.displayPartsToString(details.displayParts);
-      item.documentation = ts.displayPartsToString(details.documentation);
+      item.detail = Previewer.plain(ts.displayPartsToString(details.displayParts));
+
+      const documentation: MarkupContent = {
+        kind: 'markdown',
+        value: ts.displayPartsToString(details.documentation) + '\n\n'
+      };
+
+      if (details.tags) {
+        if (details.tags) {
+          details.tags.forEach(x => {
+            const tagDoc = Previewer.getTagDocumentation(x);
+            if (tagDoc) {
+              documentation.value += tagDoc;
+            }
+          });
+        }
+      }
+
+      item.documentation = documentation;
       delete item.data;
     }
     return item;
@@ -242,11 +261,27 @@ export class VueInterpolationMode implements LanguageMode {
     const info = templateService.getQuickInfoAtPosition(templateFileFsPath, mappedPosition);
     if (info) {
       const display = this.tsModule.displayPartsToString(info.displayParts);
-      const doc = this.tsModule.displayPartsToString(info.documentation);
       const markedContents: MarkedString[] = [{ language: 'ts', value: display }];
+
+      let hoverMdDoc = '';
+      const doc = Previewer.plain(this.tsModule.displayPartsToString(info.documentation));
       if (doc) {
-        markedContents.unshift(doc, '\n');
+        hoverMdDoc += doc + '\n\n';
       }
+
+      if (info.tags) {
+        info.tags.forEach(x => {
+          const tagDoc = Previewer.getTagDocumentation(x);
+          if (tagDoc) {
+            hoverMdDoc += tagDoc;
+          }
+        });
+      }
+
+      if (hoverMdDoc.trim() !== '') {
+        markedContents.push(hoverMdDoc);
+      }
+
       return {
         range: mapBackRange(templateDoc, info.textSpan, templateSourceMap),
         contents: markedContents

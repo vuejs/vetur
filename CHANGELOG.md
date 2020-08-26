@@ -3,6 +3,7 @@
 ### 0.27.0
 
 - Upgrade to TypeScript 4.0.2 and fix symbol outline issue. #1849.
+- Improve JSDoc presentation in hover/completion in interpolation mode. #1337.
 - Improve JSDoc presentation in hover/completion/signatureHelp. #2193.
 - `<PascalCase>` component should get highlighted like JSX/TSX when embedding other tags. #2146.
 - Improve cross-file completion when declaring simple props with `props: ['foo']`. #2143.
