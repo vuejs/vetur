@@ -103,6 +103,8 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
         const detail = findAttributeDetail(tag, attr);
         if (detail?.type === 'boolean') {
           collector(attr, 'v', (detail && detail.description) || '');
+        } else if (detail?.type === 'event') {
+          collector(attr, 'event', (detail && detail.description) || '');
         } else {
           collector(attr, undefined, (detail && detail.description) || '');
         }

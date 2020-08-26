@@ -67,8 +67,9 @@ describe('Should complete frameworks', () => {
     });
   });
 
-  describe('Should complete tags defined in workspace', () => {
+  describe('Should complete tags/attributes defined in workspace', () => {
     const workspaceCustomTagsUri = getDocUri('completion/WorkspaceCustomTags.vue');
+    const eventUri = getDocUri('completion/Event.vue');
 
     it('completes <foo-tag>', async () => {
       await testCompletion(workspaceCustomTagsUri, position(2, 6), ['foo-tag']);
@@ -76,6 +77,10 @@ describe('Should complete frameworks', () => {
 
     it('completes attributes for <foo-bar>', async () => {
       await testCompletion(workspaceCustomTagsUri, position(1, 12), ['foo-attr']);
+    });
+
+    it('completes @ custom event for <foo-bar>', async () => {
+      await testCompletion(eventUri, position(1, 13), ['handle-foo']);
     });
   });
 });
