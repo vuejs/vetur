@@ -40,7 +40,7 @@ Thanks to the following companies for supporting Vetur's development:
   <tr>
     <td>
       <a href="https://sponsorlink.codestream.com/?utm_source=vscmarket&amp;utm_campaign=vetur&amp;utm_medium=banner">
-        <img src="https://alt-images.codestream.com/codestream_logo_vetur.png" width="250"/>
+        <img src="https://alt-images.codestream.com/codestream_logo_vetur.png" width="290"/>
       </a>
     </td>
     <td>
