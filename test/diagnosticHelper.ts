@@ -46,7 +46,7 @@ export async function testNoDiagnostics(docUri: vscode.Uri) {
 
   assert.ok(
     result.length === 0,
-    `Should find no diagnostics for ${docUri.fsPath} but found:\n` + `${JSON.stringify(result)}`
+    `Should find no diagnostics for ${docUri.fsPath} but found:\n` + `${JSON.stringify(result, null, 2)}`
   );
 }
 

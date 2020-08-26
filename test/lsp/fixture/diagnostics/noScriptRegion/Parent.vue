@@ -2,7 +2,7 @@
   <div></div>
 </template>
 
-<script lang="ts">
+<script>
 import Child from './Child.vue'
 
 export default {
