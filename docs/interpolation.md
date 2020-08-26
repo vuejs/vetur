@@ -17,7 +17,7 @@ Vetur now offers completion, diagnostics, hover, jump to definition, find refere
 ## Generic Language Features
 
 ::: warning
-These features are experimental and you need to set `vetur.experimental.templateInterpolationService: true` to enable them. You can also only disable template diagnostics with `vetur.validation.template: false`, although that disables the built-in ESLint checking, too.
+These features are experimental and you need to set `vetur.experimental.templateInterpolationService: true` to enable them. You can also only disable template diagnostics with `vetur.validation.interpolation: false`.
 :::
 
 Currently diagnostics, hover, jump to definition and find references are implemented in this way:

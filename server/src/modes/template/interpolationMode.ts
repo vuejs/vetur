@@ -28,9 +28,10 @@ import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
 import * as Previewer from '../script/previewer';
+import { VLSFullConfig } from '../../config';
 
 export class VueInterpolationMode implements LanguageMode {
-  private config: any = {};
+  private config: VLSFullConfig;
 
   constructor(
     private tsModule: T_TypeScript,
@@ -51,7 +52,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument): Diagnostic[] {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.config.vetur.validation.interpolation) {
       return [];
     }
 

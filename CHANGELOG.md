@@ -2,6 +2,7 @@
 
 ### 0.27.0
 
+- Add setting `vetur.validation.interpolation` so interpolation diagnostics and `eslint-plugin-vue` diagnostics can be configed separately. #2131.
 - Fix VLS crash for *.vue files in node_modules. #2006.
 - Upgrade to TypeScript 4.0.2 and fix symbol outline issue. #1849.
 - Improve JSDoc presentation in hover/completion in interpolation mode. #1337.

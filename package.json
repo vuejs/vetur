@@ -246,6 +246,11 @@
           "default": true,
           "description": "Validate vue-html in <template> using eslint-plugin-vue"
         },
+        "vetur.validation.interpolation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate interpolations in <template> region using TypeScript language service"
+        },
         "vetur.validation.style": {
           "type": "boolean",
           "default": true,
@@ -510,7 +515,7 @@
         "vetur.experimental.templateInterpolationService": {
           "type": "boolean",
           "default": false,
-          "description": "Enable template interpolation service that offers diagnostics / hover / definition / references."
+          "description": "Enable template interpolation service that offers hover / definition / references in Vue interpolations."
         }
       }
     }
