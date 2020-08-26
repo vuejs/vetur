@@ -309,6 +309,17 @@ export class VLS {
         return NULL_COMPLETION;
       }
 
+      /**
+       * Do not use `'` and `"` as trigger character in js/ts mode
+       */
+      if (
+        mode.getId() === 'javascript' &&
+        context?.triggerKind === CompletionTriggerKind.TriggerCharacter &&
+        context.triggerCharacter?.match(/['"]/)
+      ) {
+        return NULL_COMPLETION;
+      }
+
       return mode.doComplete(doc, position);
     }
 
