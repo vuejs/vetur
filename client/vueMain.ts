@@ -58,6 +58,11 @@ export async function activate(context: vscode.ExtensionContext) {
       console.log('Client initialization failed');
     });
 
+  const ts = vscode.extensions.getExtension('vscode.typescript-language-features');
+  if (ts) {
+    if (!ts.isActive) { ts.activate(); }
+  }
+
   return vscode.window.withProgress(
     {
       title: 'Vetur initialization',
