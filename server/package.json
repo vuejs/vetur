@@ -42,7 +42,7 @@
     "stylus": "^0.54.8",
     "stylus-supremacy": "^2.14.5",
     "typescript": "^4.0.2",
-    "vscode-css-languageservice": "4.1.0",
+    "vscode-css-languageservice": "4.3.3",
     "vscode-emmet-helper": "^2.0.0",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
