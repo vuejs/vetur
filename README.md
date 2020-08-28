@@ -10,10 +10,10 @@
     <img src="https://vsmarketplacebadge.apphb.com/version-short/octref.vetur.svg?label=%20&style=flat-square&color=42b883">
   </a>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadge.apphb.com/installs-short/octref.vetur.svg?label=%20&style=flat-square&color=42b883">
+    <img src="https://vsmarketplacebadge.apphb.com/installs-short/octref.vetur.svg?label=%20&style=flat-square&color=35495e">
   </a>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?label=%20&style=flat-square&color=42b883">
+    <img src="https://vsmarketplacebadge.apphb.com/rating-short/octref.vetur.svg?label=%20&style=flat-square&color=35495e">
   </a>
   <br>
 </p>
