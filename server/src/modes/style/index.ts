@@ -121,6 +121,10 @@ function getStyleMode(
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.findDocumentColors(embedded, stylesheets.refreshAndGet(embedded));
     },
+    getFoldingRanges(document) {
+      const embedded = embeddedDocuments.refreshAndGet(document);
+      return languageService.getFoldingRanges(embedded);
+    },
     getColorPresentations(document, color, range) {
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.getColorPresentations(embedded, stylesheets.refreshAndGet(embedded), color, range);

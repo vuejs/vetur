@@ -18,9 +18,9 @@ import {
   ColorInformation,
   Color,
   ColorPresentation,
-  Command,
   CodeAction,
-  WorkspaceEdit
+  WorkspaceEdit,
+  FoldingRange
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -69,6 +69,7 @@ export interface LanguageMode {
   format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
   findDocumentColors?(document: TextDocument): ColorInformation[];
   getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
+  getFoldingRanges?(document: TextDocument): FoldingRange[];
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;

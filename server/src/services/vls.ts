@@ -20,7 +20,8 @@ import {
   CompletionParams,
   CompletionTriggerKind,
   ExecuteCommandParams,
-  ApplyWorkspaceEditRequest
+  ApplyWorkspaceEditRequest,
+  FoldingRangeParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -38,7 +39,8 @@ import {
   TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation,
-  Range
+  Range,
+  FoldingRange
 } from 'vscode-languageserver-types';
 
 import { URI } from 'vscode-uri';
@@ -54,6 +56,7 @@ import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
+import { EndOfLine } from 'vscode';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -156,6 +159,7 @@ export class VLS {
     this.lspConnection.onHover(this.onHover.bind(this));
     this.lspConnection.onReferences(this.onReferences.bind(this));
     this.lspConnection.onSignatureHelp(this.onSignatureHelp.bind(this));
+    this.lspConnection.onFoldingRanges(this.onFoldingRanges.bind(this));
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
@@ -459,6 +463,28 @@ export class VLS {
     return NULL_SIGNATURE;
   }
 
+  onFoldingRanges({ textDocument }: FoldingRangeParams): FoldingRange[] {
+    const doc = this.documentService.getDocument(textDocument.uri)!;
+    const lmrs = this.languageModes.getAllLanguageModeRangesInDocument(doc);
+
+    const result: FoldingRange[] = [];
+
+    lmrs.forEach(lmr => {
+      if (lmr.mode.getFoldingRanges) {
+        lmr.mode.getFoldingRanges(doc).forEach(r => result.push(r));
+      }
+
+      result.push({
+        startLine: lmr.start.line,
+        startCharacter: lmr.start.character,
+        endLine: lmr.end.line,
+        endCharacter: lmr.end.character
+      });
+    });
+
+    return result;
+  }
+
   onCodeAction({ textDocument, range, context }: CodeActionParams) {
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, range.start);
@@ -563,7 +589,8 @@ export class VLS {
       colorProvider: true,
       executeCommandProvider: {
         commands: [APPLY_REFACTOR_COMMAND]
-      }
+      },
+      foldingRangeProvider: true
     };
   }
 }

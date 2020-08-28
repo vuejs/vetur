@@ -24,7 +24,8 @@ import {
   MarkupContent,
   CodeAction,
   CodeActionKind,
-  WorkspaceEdit
+  WorkspaceEdit,
+  FoldingRangeKind
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -469,6 +470,28 @@ export async function getJavascriptMode(
       });
       return referenceResults;
     },
+    getFoldingRanges(doc) {
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
+      if (!languageServiceIncludesFile(service, doc.uri)) {
+        return [];
+      }
+
+      const fileFsPath = getFileFsPath(doc.uri);
+      const spans = service.getOutliningSpans(fileFsPath);
+
+      return spans.map(s => {
+        const range = convertRange(scriptDoc, s.textSpan);
+        const kind = getFoldingRangeKind(s);
+
+        return {
+          startLine: range.start.line,
+          startCharacter: range.start.character,
+          endLine: range.end.line,
+          endCharacter: range.end.character,
+          kind
+        };
+      });
+    },
     getCodeActions(doc, range, _formatParams, context) {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       const fileName = getFileFsPath(scriptDoc.uri);
@@ -798,4 +821,18 @@ function getFilterText(insertText: string | undefined): string | undefined {
 
   // In all other cases, fallback to using the insertText
   return insertText;
+}
+
+function getFoldingRangeKind(span: ts.OutliningSpan): FoldingRangeKind | undefined {
+  switch (span.kind) {
+    case 'comment':
+      return FoldingRangeKind.Comment;
+    case 'region':
+      return FoldingRangeKind.Region;
+    case 'imports':
+      return FoldingRangeKind.Imports;
+    case 'code':
+    default:
+      return undefined;
+  }
 }
