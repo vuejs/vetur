@@ -218,7 +218,7 @@ export class VueInterpolationMode implements LanguageMode {
           details.tags.forEach(x => {
             const tagDoc = Previewer.getTagDocumentation(x);
             if (tagDoc) {
-              documentation.value += tagDoc;
+              documentation.value += tagDoc + '\n\n';
             }
           });
         }
@@ -274,7 +274,7 @@ export class VueInterpolationMode implements LanguageMode {
         info.tags.forEach(x => {
           const tagDoc = Previewer.getTagDocumentation(x);
           if (tagDoc) {
-            hoverMdDoc += tagDoc;
+            hoverMdDoc += tagDoc + '\n\n';
           }
         });
       }

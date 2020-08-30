@@ -241,7 +241,7 @@ export async function getJavascriptMode(
             details.tags.forEach(x => {
               const tagDoc = Previewer.getTagDocumentation(x);
               if (tagDoc) {
-                documentation.value += tagDoc;
+                documentation.value += tagDoc + '\n\n';
               }
             });
           }
@@ -284,7 +284,7 @@ export async function getJavascriptMode(
           info.tags.forEach(x => {
             const tagDoc = Previewer.getTagDocumentation(x);
             if (tagDoc) {
-              hoverMdDoc += tagDoc;
+              hoverMdDoc += tagDoc + '\n\n';
             }
           });
         }
@@ -338,7 +338,7 @@ export async function getJavascriptMode(
           .forEach(x => {
             const tagDoc = Previewer.getTagDocumentation(x);
             if (tagDoc) {
-              sigMdDoc += tagDoc;
+              sigMdDoc += tagDoc + '\n\n';
             }
           });
 
