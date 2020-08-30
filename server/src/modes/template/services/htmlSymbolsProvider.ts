@@ -51,7 +51,7 @@ function nodeToName(node: Node): string {
   if (node.attributes) {
     const id = node.attributes['id'];
     const classes = node.attributes['class'];
-    const slot = getVueSlotAttributes(node);
+    const slotRelatedAttrs = getVueSlotAttributes(node);
 
     if (id) {
       name += `#${id.replace(/[\"\']/g, '')}`;
@@ -65,8 +65,8 @@ function nodeToName(node: Node): string {
         .join('');
     }
 
-    if (slot) {
-      name += `[${slot.join(' ')}]`;
+    if (slotRelatedAttrs.length > 0) {
+      name += `[${slotRelatedAttrs.join(' ')}]`;
     }
   }
 
@@ -80,6 +80,6 @@ function getVueSlotAttributes(node: Node) {
   if (node.tag === 'slot' && slotName) {
     vueSlotAttributes.push(`name=${slotName}`);
   }
-  
+
   return vueSlotAttributes;
 }
