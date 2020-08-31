@@ -1,5 +1,5 @@
-import { VueFileInfo } from '../../../services/vueInfoService';
-import { TextDocument, Diagnostic } from 'vscode-languageserver-types';
+import { VueFileInfo, PropInfo } from '../../../services/vueInfoService';
+import { TextDocument, Diagnostic, DiagnosticSeverity } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { kebabCase } from 'lodash';
 import { getSameTagInSet } from '../tagProviders/common';
@@ -7,10 +7,10 @@ import { getSameTagInSet } from '../tagProviders/common';
 export function doPropValidation(document: TextDocument, htmlDocument: HTMLDocument, info: VueFileInfo): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
 
-  const childComponentToProps: { [n: string]: string[] } = {};
+  const childComponentToProps: { [n: string]: PropInfo[] } = {};
   info.componentInfo.childComponents?.forEach(c => {
     if (c.info && c.info.componentInfo.props) {
-      childComponentToProps[c.name] = c.info?.componentInfo.props?.map(p => p.name);
+      childComponentToProps[c.name] = c.info?.componentInfo.props.filter(el => el.required);
     }
   });
 
@@ -40,22 +40,22 @@ function traverseNodes(nodes: Node[], f: (n: Node) => any) {
   }
 }
 
-function generateDiagnostic(n: Node, definedProps: string[], document: TextDocument): Diagnostic | undefined {
+function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDocument): Diagnostic | undefined {
   const seenProps = n.attributeNames.map(attr => {
     return {
-      prop: attr,
+      name: attr,
       normalized: normalizeHtmlAttributeNameToKebabCase(attr)
     };
   });
 
   const requiredProps = definedProps.map(prop => {
     return {
-      prop,
-      normalized: kebabCase(prop)
+      ...prop,
+      normalized: kebabCase(prop.name)
     };
   });
 
-  const missingProps: { prop: string; normalized: string }[] = [];
+  const missingProps: Array<PropInfo & { normalized: string }> = [];
 
   requiredProps.forEach(requiredProp => {
     if (!seenProps.map(s => s.normalized).includes(requiredProp.normalized)) {
@@ -68,6 +68,7 @@ function generateDiagnostic(n: Node, definedProps: string[], document: TextDocum
   }
 
   return {
+    severity: missingProps.some(p => p.detailed) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
     message: `<${n.tag}> misses props: ${missingProps.map(p => p.normalized).join(', ')}\n`,
     range: {
       start: document.positionAt(n.start),
