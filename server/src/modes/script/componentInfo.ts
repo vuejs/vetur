@@ -100,13 +100,13 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
   const result: PropInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
   return result.length === 0 ? undefined : result;
 
-  function getPropStatus(propertyValue: ts.Node | undefined): { hasObjectValidator: boolean; required: boolean } {
-    if (!propertyValue) {
+  function getPropValidatorInfo(
+    propertyValue: ts.Node | undefined
+  ): { hasObjectValidator: boolean; required: boolean } {
+    if (!propertyValue || !tsModule.isObjectLiteralExpression(propertyValue)) {
       return { hasObjectValidator: false, required: true };
     }
-    if (!tsModule.isObjectLiteralExpression(propertyValue)) {
-      return { hasObjectValidator: false, required: true };
-    }
+
     const propertyValueSymbol = checker.getTypeAtLocation(propertyValue).symbol;
     const requiredValue = propertyValueSymbol?.members?.get('required' as ts.__String)?.valueDeclaration;
     const defaultValue = propertyValueSymbol?.members?.get('default' as ts.__String)?.valueDeclaration;
@@ -114,18 +114,13 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       return { hasObjectValidator: false, required: true };
     }
 
-    function isRequired() {
-      if (
-        requiredValue &&
+    const required = Boolean(
+      requiredValue &&
         tsModule.isPropertyAssignment(requiredValue) &&
         requiredValue?.initializer.kind === tsModule.SyntaxKind.TrueKeyword
-      ) {
-        return true;
-      }
-      return false;
-    }
+    );
 
-    return { hasObjectValidator: true, required: isRequired() };
+    return { hasObjectValidator: true, required };
   }
 
   function getClassProps(type: ts.Type) {
@@ -153,14 +148,14 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       if (decoratorName === 'PropSync' && tsModule.isStringLiteral(firstNode)) {
         return {
           name: firstNode.text,
-          ...getPropStatus(secondNode),
+          ...getPropValidatorInfo(secondNode),
           documentation: buildDocumentation(tsModule, propSymbol, checker)
         };
       }
 
       return {
         name: propSymbol.name,
-        ...getPropStatus(decoratorName === 'Model' ? secondNode : firstNode),
+        ...getPropValidatorInfo(decoratorName === 'Model' ? secondNode : firstNode),
         documentation: buildDocumentation(tsModule, propSymbol, checker)
       };
     });
@@ -212,7 +207,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
 
       return checker.getPropertiesOfType(propsType).map(s => {
         const status = tsModule.isPropertyAssignment(s.valueDeclaration)
-          ? getPropStatus(s.valueDeclaration.initializer)
+          ? getPropValidatorInfo(s.valueDeclaration.initializer)
           : { hasObjectValidator: false, required: true };
 
         return {
