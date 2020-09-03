@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.27.0
+### 0.27.0 | 2020-09-03 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.0/vspackage)
 
 - Add `foldingRange` support to support dynamic folding ranges such as `#region`. #899.
 - Add setting `vetur.validation.interpolation` so interpolation diagnostics and `eslint-plugin-vue` diagnostics can be configed separately. #2131.
