@@ -26,6 +26,7 @@
 - 🙌 Fix "Go to definition" for methods/computed does not work in the template. Thanks to contribution from [@cereschen](https://github.com/cereschen). #1484 and #2161.
 - 🙌 Prop with `required: false` or default value should not trigger prop validation error when not provided. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2141.
 - 🙌 Show slot-related tag attributes in symbol search. Thanks to contribution from [@3nuc](https://github.com/3nuc). #2169
+- 🙌 Fix JSDoc presentation had no line breaks. Thanks to contribution from [@sapphi-red](https://github.com/sapphi-red). #2214.
 
 ### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
 
