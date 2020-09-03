@@ -85,3 +85,39 @@ export default {
 }
 </script>
 ```
+
+## Prop Validation
+
+Vetur will now validate HTML templates that uses child components. For example, given two children:
+
+`Simple.vue`:
+
+```vue
+<script>
+export default {
+  props: ['foo']
+}
+</script>
+```
+
+`Complex.vue`:
+
+```vue
+<script>
+export default {
+  props: {
+    foo: {
+      type: String,
+      required: true
+    }
+  }
+}
+</script>
+```
+
+Vetur will show a warming for `<simple>` and an error for `<complex>`.
+
+The rules are:
+
+- When using [array props](https://vuejs.org/v2/guide/components-props.html#Prop-Types), show **warning** for missing props.
+- When using [object prop validation](https://vuejs.org/v2/guide/components-props.html#Prop-Validation), show errors for missing `required` props.

@@ -13,7 +13,7 @@
     <object-validator-child />
     <object-validator-child :foo="foo" />
     <object-validator-child bar="bar" />
-    <class-child />W
+    <class-child />
     <class-child ear="ear" />
     <class-child ear="ear" :checked="true" />
   </div>
