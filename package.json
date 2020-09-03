@@ -526,7 +526,7 @@
     "@types/lodash": "^4.14.160",
     "@types/minimist": "^1.2.0",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^14.6.1",
+    "@types/node": "^14.6.3",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.47.0",
     "fs-extra": "^9.0.1",
