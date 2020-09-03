@@ -45,7 +45,18 @@ export interface ChildComponent {
 
 export interface PropInfo {
   name: string;
-  detailed: boolean;
+  /**
+   * `true` if
+   * props: {
+   *   foo: { ... }
+   * }
+   *
+   * `false` if
+   * - `props: ['foo']`
+   * - `props: { foo: String }`
+   *
+   */
+  hasObjectValidator: boolean;
   required: boolean;
   documentation?: string;
 }

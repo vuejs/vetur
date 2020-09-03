@@ -68,7 +68,7 @@ function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDoc
   }
 
   return {
-    severity: missingProps.some(p => p.detailed) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+    severity: missingProps.some(p => p.hasObjectValidator) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
     message: `<${n.tag}> misses props: ${missingProps.map(p => p.normalized).join(', ')}\n`,
     range: {
       start: document.positionAt(n.start),

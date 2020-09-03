@@ -100,18 +100,18 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
   const result: PropInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
   return result.length === 0 ? undefined : result;
 
-  function getPropStatus(propertyValue: ts.Node | undefined): { detailed: boolean; required: boolean } {
+  function getPropStatus(propertyValue: ts.Node | undefined): { hasObjectValidator: boolean; required: boolean } {
     if (!propertyValue) {
-      return { detailed: false, required: true };
+      return { hasObjectValidator: false, required: true };
     }
     if (!tsModule.isObjectLiteralExpression(propertyValue)) {
-      return { detailed: false, required: true };
+      return { hasObjectValidator: false, required: true };
     }
     const propertyValueSymbol = checker.getTypeAtLocation(propertyValue).symbol;
     const requiredValue = propertyValueSymbol?.members?.get('required' as ts.__String)?.valueDeclaration;
     const defaultValue = propertyValueSymbol?.members?.get('default' as ts.__String)?.valueDeclaration;
     if (!requiredValue && !defaultValue) {
-      return { detailed: false, required: true };
+      return { hasObjectValidator: false, required: true };
     }
 
     function isRequired() {
@@ -125,7 +125,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       return false;
     }
 
-    return { required: isRequired(), detailed: true };
+    return { hasObjectValidator: true, required: isRequired() };
   }
 
   function getClassProps(type: ts.Type) {
@@ -186,7 +186,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
         .map(expr => {
           return {
             name: (expr as ts.StringLiteral).text,
-            detailed: false,
+            hasObjectValidator: false,
             required: true,
             documentation: `\`\`\`js\n${formatJSLikeDocumentation(
               propsDeclaration.parent.getFullText().trim()
@@ -213,7 +213,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       return checker.getPropertiesOfType(propsType).map(s => {
         const status = tsModule.isPropertyAssignment(s.valueDeclaration)
           ? getPropStatus(s.valueDeclaration.initializer)
-          : { detailed: false, required: true };
+          : { hasObjectValidator: false, required: true };
 
         return {
           name: s.name,
