@@ -86,6 +86,9 @@ export class VueHTMLMode implements LanguageMode {
       ? interpolationDefinition
       : this.htmlMode.findDefinition(document, position);
   }
+  getFoldingRanges(document: TextDocument) {
+    return this.htmlMode.getFoldingRanges(document);
+  }
   onDocumentRemoved(document: TextDocument) {
     this.htmlMode.onDocumentRemoved(document);
   }
