@@ -1,5 +1,8 @@
 <script>
 export default {
+  model: {
+    prop: 'foo'
+  },
   props: {
     foo: {
       type: String,
