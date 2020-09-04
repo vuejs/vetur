@@ -1251,7 +1251,7 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
-eslint-plugin-vue@^7.0.0-beta.2:
+eslint-plugin-vue@^7.0.0-beta.3:
   version "7.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-7.0.0-beta.3.tgz#37a4fedf46db74cdb3be268390b4541eb7a810b7"
   integrity sha512-/p23IRPN9gFNN7dzesrctt06Kvs9E3VRB8BGIAPSEaQNk5yhlKUzntPARjUpsTWW+DQg0mqglZptfkUJK4+4EQ==
@@ -4691,10 +4691,10 @@ vfile@^4.0.0, vfile@^4.0.1:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
-vls@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.0.tgz#556fb068a0d5be80f7ddfa1cbb04699599a22939"
-  integrity sha512-2rgsCc7BbsyKdNfukUbTUhOLRaep6fcOr73ComW+H/1uozF9smFtjBZxzargMV6J+WQtQcsOBozjedpA0XO0Jg==
+vls@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.1.tgz#3e0c87ce3bffa9281c30d3ebe58170388b36c0e0"
+  integrity sha512-LyR4LS5z8hYHqEtRZ6oSqfZL8cI8aWXyt9z2WWNh8tKVPnZ0y/zwR+9h07huFMGkJaKvQb6pK7HhylxR8zL3gQ==
   dependencies:
     "@prettier/plugin-pug" "^1.5.1"
     "@starptech/prettyhtml" "^0.10.0"
@@ -4702,7 +4702,7 @@ vls@^0.5.0:
     core-js "^3.6.5"
     element-helper-json "^2.0.6"
     eslint "^7.7.0"
-    eslint-plugin-vue "^7.0.0-beta.2"
+    eslint-plugin-vue "^7.0.0-beta.3"
     gridsome-helper-json "^1.0.3"
     js-beautify "^1.13.0"
     lodash "^4.17.20"
