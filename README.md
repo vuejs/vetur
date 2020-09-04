@@ -30,7 +30,7 @@ Vue tooling for VS Code.
 
 I quit my job to travel nomadically, to work on Open Source and to conduct independent study/research.
 
-Vetur is my main focus in Open Source. Your help will alleviate my financial concern and allow me to spend more time working on Vetur. Thank you 🙏 
+Vetur is my main focus in Open Source. Your help will alleviate my financial burden and allow me to spend more time working on Vetur. Thank you 🙏
 
 https://github.com/sponsors/octref
 
