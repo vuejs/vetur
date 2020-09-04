@@ -66,6 +66,9 @@ For 2, try these methods:
     }
   }
   ```
+## Intellisense and computed properties
+
+There is an upstream issue with TypeScript where TypeScript cannot infer `this` type correctly in computed properties and cannot provide correct auto-completion and type-checking. Read more about the issue and workaround here: https://github.com/vuejs/vetur/issues/1707#issuecomment-686851677
 
 ## Vetur cannot recognize my Vue component import, such as `import Comp from './comp'`
 
