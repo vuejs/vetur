@@ -49,7 +49,10 @@ function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDoc
   const seenProps = n.attributeNames.map(attr => {
     return {
       name: attr,
-      normalized: normalizeHtmlAttributeNameToKebabCase(attr)
+      normalized: normalizeHtmlAttributeNameToKebabCase(
+        attr,
+        definedProps.find(prop => prop.defaultModel)?.name ?? 'value'
+      )
     };
   });
 
@@ -82,8 +85,18 @@ function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDoc
   };
 }
 
-function normalizeHtmlAttributeNameToKebabCase(attr: string) {
+function normalizeHtmlAttributeNameToKebabCase(attr: string, defaultModel: string) {
   let result = attr;
+
+  // v-model.trim
+  if (!result.startsWith('v-model:') && result.startsWith('v-model')) {
+    return kebabCase(defaultModel);
+  }
+
+  // Allow `v-model:prop` in vue 3
+  if (result.startsWith('v-model:')) {
+    result = attr.slice('v-model:'.length);
+  }
 
   if (result.startsWith('v-bind:')) {
     result = attr.slice('v-bind:'.length);
@@ -91,7 +104,7 @@ function normalizeHtmlAttributeNameToKebabCase(attr: string) {
     result = attr.slice(':'.length);
   }
 
-  // Remove prop modifiers
+  // Remove modifiers
   if (result.includes('.')) {
     result = result.slice(0, result.indexOf('.'));
   }

@@ -97,8 +97,40 @@ export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.Sour
 }
 
 function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
-  const result: PropInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
+  const result: PropInfo[] = setDefaultModelForProps(
+    defaultExportType,
+    getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps)
+  );
+
   return result.length === 0 ? undefined : result;
+
+  function setDefaultModelForProps (type: ts.Type, props: PropInfo[]) {
+    function setValuePropToDefaultModel () {
+      return props.map((prop) => {
+        if (prop.name === 'value') { prop.defaultModel = true; }
+        return prop;
+      });
+    }
+
+    const modelSymbol = checker.getPropertyOfType(type, 'model');
+    const modelValue = (modelSymbol?.valueDeclaration as ts.PropertyAssignment)?.initializer;
+    // Set value prop when no model def
+    if (!modelSymbol || !modelValue) {
+      return setValuePropToDefaultModel();
+    }
+
+    const modelType = checker.getTypeOfSymbolAtLocation(modelSymbol, modelValue);
+    const modelPropSymbol = checker.getPropertyOfType(modelType, 'prop');
+    const modelPropValue = (modelPropSymbol?.valueDeclaration as ts.PropertyAssignment)?.initializer;
+    if (!modelPropValue || !tsModule.isStringLiteral(modelPropValue)) {
+      return setValuePropToDefaultModel();
+    }
+
+    return props.map((prop) => {
+      if (prop.name === modelPropValue.text) { prop.defaultModel = true; }
+      return prop;
+    });
+  }
 
   function getPropValidatorInfo(
     propertyValue: ts.Node | undefined
@@ -149,6 +181,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
         return {
           name: firstNode.text,
           ...getPropValidatorInfo(secondNode),
+          defaultModel: false,
           documentation: buildDocumentation(tsModule, propSymbol, checker)
         };
       }
@@ -156,6 +189,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       return {
         name: propSymbol.name,
         ...getPropValidatorInfo(decoratorName === 'Model' ? secondNode : firstNode),
+        defaultModel: decoratorName === 'Model',
         documentation: buildDocumentation(tsModule, propSymbol, checker)
       };
     });
@@ -183,6 +217,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
             name: (expr as ts.StringLiteral).text,
             hasObjectValidator: false,
             required: true,
+            defaultModel: false,
             documentation: `\`\`\`js\n${formatJSLikeDocumentation(
               propsDeclaration.parent.getFullText().trim()
             )}\n\`\`\`\n`
@@ -213,6 +248,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
         return {
           name: s.name,
           ...status,
+          defaultModel: false,
           documentation: buildDocumentation(tsModule, s, checker)
         };
       });
