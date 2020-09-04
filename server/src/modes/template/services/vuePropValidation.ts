@@ -41,6 +41,11 @@ function traverseNodes(nodes: Node[], f: (n: Node) => any) {
 }
 
 function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDocument): Diagnostic | undefined {
+  // Ignore diagnostic when have `v-bind`, `v-bind:[key]`, `:[key]`
+  if (n.attributeNames.some(prop => prop === 'v-bind' || prop.startsWith('v-bind:[') || prop.startsWith(':['))) {
+    return undefined;
+  }
+
   const seenProps = n.attributeNames.map(attr => {
     return {
       name: attr,
