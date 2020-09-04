@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
-import { testDiagnostics } from '../../../diagnosticHelper';
+import { testDiagnostics, testNoDiagnostics } from '../../../diagnosticHelper';
 import { getDocUri } from '../../path';
 import { sameLineRange } from '../../../util';
 
 describe('Should find common diagnostics for all regions', () => {
   const parentUri = getDocUri('diagnostics/propsValidation/parent.vue');
+  const passParentUri = getDocUri('diagnostics/propsValidation/pass-parent.vue');
 
   it('shows warnings for passing wrong props to child component when using array props', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [
@@ -107,5 +108,9 @@ describe('Should find common diagnostics for all regions', () => {
     ];
 
     await testDiagnostics(parentUri, expectedDiagnostics);
+  });
+
+  it('shows no diagnostics error for prop validator', async () => {
+    await testNoDiagnostics(passParentUri);
   });
 });
