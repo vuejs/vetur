@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.27.1 | 2020-09-03
+
+- Only enable interpolation diagnostics when both `vetur.experimental.templateInterpolationService` and `vetur.validation.interpolation` are set to `true`.
+
 ### 0.27.0 | 2020-09-03 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.0/vspackage)
 
 - Add `foldingRange` support to support dynamic folding ranges such as `#region`. #899.

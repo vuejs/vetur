@@ -52,7 +52,10 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doValidation(document: TextDocument): Diagnostic[] {
-    if (!this.config.vetur.validation.interpolation) {
+    if (
+      !_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true) ||
+      !this.config.vetur.validation.interpolation
+    ) {
       return [];
     }
 
