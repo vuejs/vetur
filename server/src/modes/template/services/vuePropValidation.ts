@@ -86,6 +86,11 @@ function normalizeHtmlAttributeNameToKebabCase(attr: string) {
     result = attr.slice(':'.length);
   }
 
+  // Remove prop modifiers
+  if (result.includes('.')) {
+    result = result.slice(0, result.indexOf('.'));
+  }
+
   result = kebabCase(result);
 
   return result;
