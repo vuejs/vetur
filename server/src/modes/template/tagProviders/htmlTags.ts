@@ -33,7 +33,8 @@ import {
 } from './common';
 import { MarkupContent } from 'vscode-languageserver-types';
 
-export const EMPTY_ELEMENTS: string[] = [
+// As defined in https://www.w3.org/TR/html5/syntax.html#void-elements
+export const VOID_ELEMENTS: string[] = [
   'area',
   'base',
   'br',
@@ -52,8 +53,8 @@ export const EMPTY_ELEMENTS: string[] = [
   'wbr'
 ];
 
-export function isEmptyElement(e: string | undefined): boolean {
-  return !!e && binarySearch(EMPTY_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
+export function isVoidElement(e: string | undefined): boolean {
+  return !!e && binarySearch(VOID_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
 }
 
 function genAttr(attrString: string) {

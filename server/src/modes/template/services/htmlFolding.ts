@@ -1,14 +1,13 @@
 import { TextDocument, FoldingRange, FoldingRangeKind } from 'vscode-languageserver-types';
 
 import { TokenType, createScanner } from '../parser/htmlScanner';
-import { isEmptyElement } from '../tagProviders/htmlTags';
-
+import { isVoidElement } from '../tagProviders/htmlTags';
 
 export function getFoldingRanges(document: TextDocument): FoldingRange[] {
   const scanner = createScanner(document.getText());
   let token = scanner.scan();
   const ranges: FoldingRange[] = [];
-  const stack: { startLine: number, tagName: string }[] = [];
+  const stack: { startLine: number; tagName: string }[] = [];
   let lastTagName = null;
   let prevStart = -1;
 
@@ -31,7 +30,7 @@ export function getFoldingRanges(document: TextDocument): FoldingRange[] {
         break;
       }
       case TokenType.StartTagClose:
-        if (!lastTagName || !isEmptyElement(lastTagName)) {
+        if (!lastTagName || !isVoidElement(lastTagName)) {
           break;
         }
       // fallthrough
@@ -58,7 +57,8 @@ export function getFoldingRanges(document: TextDocument): FoldingRange[] {
         const text = scanner.getTokenText();
         const m = text.match(/^\s*#(region\b)|(endregion\b)/);
         if (m) {
-          if (m[1]) { // start pattern match
+          if (m[1]) {
+            // start pattern match
             stack.push({ startLine, tagName: '' }); // empty tagName marks region
           } else {
             let i = stack.length - 1;
