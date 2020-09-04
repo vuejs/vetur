@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.27.2
+
+- 🙌 Add HTML folding. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2234 and #2244.
+
 ### 0.27.1 | 2020-09-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.1/vspackage)
 
 - Only enable interpolation diagnostics when both `vetur.experimental.templateInterpolationService` and `vetur.validation.interpolation` are set to `true`.
