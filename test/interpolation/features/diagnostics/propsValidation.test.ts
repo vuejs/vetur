@@ -98,6 +98,11 @@ describe('Should find common diagnostics for all regions', () => {
         message: '<class-child> misses props: bar, far, name, foo',
         severity: vscode.DiagnosticSeverity.Warning,
         range: sameLineRange(17, 4, 45)
+      },
+      {
+        message: '<class-child> misses props: bar, far, name, foo',
+        severity: vscode.DiagnosticSeverity.Warning,
+        range: sameLineRange(18, 4, 51)
       }
     ];
 
