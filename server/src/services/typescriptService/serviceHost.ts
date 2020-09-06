@@ -400,7 +400,6 @@ export function getServiceHost(
   const jsHost = createLanguageServiceHost(compilerOptions);
   const templateHost = createLanguageServiceHost({
     ...compilerOptions,
-    noImplicitAny: false,
     noUnusedLocals: false,
     noUnusedParameters: false,
     allowJs: true,
