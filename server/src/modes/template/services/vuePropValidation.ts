@@ -51,7 +51,7 @@ function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDoc
       name: attr,
       normalized: normalizeHtmlAttributeNameToKebabCase(
         attr,
-        definedProps.find(prop => prop.defaultModel)?.name ?? 'value'
+        definedProps.find(prop => prop.isBoundToModel)?.name ?? 'value'
       )
     };
   });
@@ -85,12 +85,12 @@ function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDoc
   };
 }
 
-function normalizeHtmlAttributeNameToKebabCase(attr: string, defaultModel: string) {
+function normalizeHtmlAttributeNameToKebabCase(attr: string, modelProp: string) {
   let result = attr;
 
   // v-model.trim
   if (!result.startsWith('v-model:') && result.startsWith('v-model')) {
-    return kebabCase(defaultModel);
+    return kebabCase(modelProp);
   }
 
   // Allow `v-model:prop` in vue 3

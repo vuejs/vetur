@@ -58,7 +58,7 @@ export interface PropInfo {
    */
   hasObjectValidator: boolean;
   required: boolean;
-  defaultModel: boolean;
+  isBoundToModel: boolean;
   documentation?: string;
 }
 export interface DataInfo {
