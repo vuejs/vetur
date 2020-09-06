@@ -67,6 +67,10 @@ For 2, try these methods:
   }
   ```
 
+## Template errors in components written in Javascript
+
+If you have vetur.validation.interpolation enabled and getting seemingly spurious errors in a component, it might be due to Typescript not being able to infer types properly. In Javascript-based code base, Typescript does a lot of guessing to infer types properly but it's not always able to do that automatically. You might have to add type annotations manually in the script section. Read more about the issue here: [#1707 (comment)](https://github.com/vuejs/vetur/issues/1707#issuecomment-686851677). Also, check [how to add JSDoc annotations](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html).
+
 ## Vetur cannot recognize my Vue component import, such as `import Comp from './comp'`
 
 - You need to add `.vue` extension when importing SFC.
