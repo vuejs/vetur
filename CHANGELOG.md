@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.27.2
+### 0.27.2 | 2020-09-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.2/vspackage)
 
 - Add a config `vetur.validation.props` to toggle props validation. Default to false. #2249.
 - 🙌 Add HTML folding. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2234 and #2244.
