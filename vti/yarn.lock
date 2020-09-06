@@ -4691,10 +4691,10 @@ vfile@^4.0.0, vfile@^4.0.1:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
-vls@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.1.tgz#3e0c87ce3bffa9281c30d3ebe58170388b36c0e0"
-  integrity sha512-LyR4LS5z8hYHqEtRZ6oSqfZL8cI8aWXyt9z2WWNh8tKVPnZ0y/zwR+9h07huFMGkJaKvQb6pK7HhylxR8zL3gQ==
+vls@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.2.tgz#4589bc64fa26b9fa84f5acb4c5588cf621e6be89"
+  integrity sha512-MHYOWogdwHCvP3jKZOg+oeLlg8uCEeGvCfE3pTIQ6Mg6q3RiHXU+MJdJRdnjhNPcMSyO1oIamHnrs3Zpm27BHw==
   dependencies:
     "@prettier/plugin-pug" "^1.5.1"
     "@starptech/prettyhtml" "^0.10.0"
