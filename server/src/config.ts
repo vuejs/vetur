@@ -30,6 +30,7 @@ export interface VLSConfig {
     };
     validation: {
       template: boolean;
+      templateProps: boolean;
       interpolation: boolean;
       style: boolean;
       script: boolean;
@@ -79,6 +80,7 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       useWorkspaceDependencies: false,
       validation: {
         template: true,
+        templateProps: false,
         interpolation: true,
         style: true,
         script: true

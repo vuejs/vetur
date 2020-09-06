@@ -246,6 +246,11 @@
           "default": true,
           "description": "Validate vue-html in <template> using eslint-plugin-vue"
         },
+        "vetur.validation.templateProps": {
+          "type": "boolean",
+          "default": false,
+          "description": "Validate props usage in <template> region. Show error/warning for not passing declared props to child components."
+        },
         "vetur.validation.interpolation": {
           "type": "boolean",
           "default": true,

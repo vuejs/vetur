@@ -63,9 +63,11 @@ export class HTMLMode implements LanguageMode {
   doValidation(document: TextDocument) {
     const diagnostics = [];
 
-    const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
-    if (info && info.componentInfo.childComponents) {
-      diagnostics.push(...doPropValidation(document, this.vueDocuments.refreshAndGet(document), info));
+    if (this.config.vetur.validation.templateProps) {
+      const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
+      if (info && info.componentInfo.childComponents) {
+        diagnostics.push(...doPropValidation(document, this.vueDocuments.refreshAndGet(document), info));
+      }
     }
 
     if (this.config.vetur.validation.template) {

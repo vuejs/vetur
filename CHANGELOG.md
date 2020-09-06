@@ -2,6 +2,7 @@
 
 ### 0.27.2
 
+- Add a config `vetur.validation.props` to toggle props validation. Default to false. #2249.
 - 🙌 Add HTML folding. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2234 and #2244.
 - 🙌 Fix array get error type in v-for. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1790 and #2248.
 - 🙌 Fix corner case and add v-model support when prop validation. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2241.
