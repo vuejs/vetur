@@ -16,6 +16,7 @@
     <class-child />
     <class-child ear="ear" />
     <class-child ear="ear" :checked="true" />
+    <class-child :ear.sync="foo" :checked="true" />
   </div>
 </template>
 
