@@ -6,13 +6,18 @@ on:
       - '**'
     paths-ignore:
       - docs
+      - asset
+      - .vscode
+      - .github
 
   pull_request:
     branches:
       - master
     paths-ignore:
       - docs
-
+      - asset
+      - .vscode
+      - .github
 
 jobs:
   test:
