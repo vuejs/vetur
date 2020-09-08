@@ -564,9 +564,9 @@ export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker
 
   documentation += '\n';
 
-  const d = getNodeFromSymbol(s);
-  if (d) {
-    documentation += `\`\`\`js\n${formatJSLikeDocumentation(d.getText())}\n\`\`\`\n`;
+  const node = getNodeFromSymbol(s);
+  if (node) {
+    documentation += `\`\`\`js\n${formatJSLikeDocumentation(node.getText())}\n\`\`\`\n`;
   }
 
   return documentation;
