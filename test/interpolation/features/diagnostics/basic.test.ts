@@ -260,7 +260,8 @@ describe('Should find template-diagnostics in <template> region', () => {
     'hyphen-attrs.vue',
     'template-literal.vue',
     'no-implicit-any-parameters.vue',
-    'no-implicit-any-v-for-array.vue'
+    'no-implicit-any-v-for-array.vue',
+    'issue-2258.vue'
   ];
 
   noErrorTests.forEach(t => {

@@ -49,9 +49,9 @@ export function createTemplateDiagnosticFilter(tsModule: T_TypeScript) {
   };
 
   const ignoreNoImplicitAnyViolationInNativeEvent: DiagnosticFilter = diag => {
-    const noImplicitAnyViolation = 7006;
+    const noImplicitAnyViolation = [7006, 7031];
 
-    if (diag.code !== noImplicitAnyViolation) {
+    if (!noImplicitAnyViolation.includes(diag.code)) {
       return true;
     }
 
@@ -61,7 +61,7 @@ export function createTemplateDiagnosticFilter(tsModule: T_TypeScript) {
     }
 
     const target = findNodeFromDiagnostic(diag, source);
-    if (target && tsModule.isParameter(target.parent)) {
+    if (target && (tsModule.isParameter(target.parent) || tsModule.isBindingElement(target.parent))) {
       return false;
     }
 
