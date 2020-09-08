@@ -1,5 +1,8 @@
 # Changelog
 
+### 0.xx.xx | 2020-xx-xx |
+- 🙌 Ignore no implicitly any error in v-slot with destructuring. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2258 and #2259.
+
 ### 0.27.2 | 2020-09-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.2/vspackage)
 
 - Add a config `vetur.validation.props` to toggle props validation. Default to false. #2249.
