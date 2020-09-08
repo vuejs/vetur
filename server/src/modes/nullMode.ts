@@ -1,4 +1,5 @@
 import { LanguageMode } from '../embeddedSupport/languageModes';
+import { CompletionList } from 'vscode-languageserver-types';
 
 export const NULL_HOVER = {
   contents: []
@@ -6,7 +7,7 @@ export const NULL_HOVER = {
 
 export const NULL_SIGNATURE = null;
 
-export const NULL_COMPLETION = {
+export const NULL_COMPLETION: CompletionList = {
   isIncomplete: false,
   items: []
 };

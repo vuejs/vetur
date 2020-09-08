@@ -20,11 +20,16 @@ describe('Should do hover', () => {
   });
 
   it('shows hover for `width` in <style>', async () => {
+    const hoverText = `
+Specifies the width of the content area, padding area or border area \\(depending on 'box\\-sizing'\\) of certain boxes\\.
+
+Syntax: &lt;viewport\\-length&gt;\\{1,2\\}
+
+[MDN Reference](https://developer.mozilla.org/docs/Web/CSS/width)
+`.trim();
+
     await testHover(docUri, position(47, 3), {
-      contents: [
-        // tslint:disable-next-line
-        `Specifies the width of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.`
-      ],
+      contents: [hoverText],
       range: sameLineRange(47, 2, 14)
     });
   });

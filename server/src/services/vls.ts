@@ -7,6 +7,7 @@ import {
   DocumentFormattingParams,
   DocumentLinkParams,
   FileChangeType,
+  Connection,
   TextDocumentPositionParams,
   ColorPresentationParams,
   InitializeParams,
@@ -20,9 +21,9 @@ import {
   CompletionTriggerKind,
   ExecuteCommandParams,
   ApplyWorkspaceEditRequest,
-  FoldingRangeParams,
-  Connection
+  FoldingRangeParams
 } from 'vscode-languageserver';
+
 import {
   ColorInformation,
   CompletionItem,
@@ -296,7 +297,6 @@ export class VLS {
   }
 
   onCompletion({ textDocument, position, context }: CompletionParams): CompletionList {
-
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, position);
     if (mode && mode.doComplete) {
