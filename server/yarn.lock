@@ -3880,13 +3880,13 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-sass-formatter@^0.4.13:
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.4.13.tgz#050300c8a578df67a71c8b839a86fb693f0485c4"
-  integrity sha512-EhNMkRZSZHcHrg/w0XgBoW96pcY11SBJ69mCI2S3Eo2sce2CSd66AqxAS05eC8yoc4BVg/Fr2KZty5B3gt6xGw==
+sass-formatter@^0.4.14:
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.4.14.tgz#4a4346e24a093c96deb205435b3cc8dba6995e4d"
+  integrity sha512-F8d4v4Gn8rtpICDvoUL7PaHj29713Qssul0aICt6dsHhf4+fjab5qa0p4dM7sJUrTuMDdjUeM6V+MGe9LYM69Q==
   dependencies:
     "@sorg/log" "^2.0.1"
-    suf-regex "^0.0.22"
+    suf-regex "^0.0.23"
     tslib "^1.10.0"
 
 sax@~1.2.4:
@@ -4320,9 +4320,10 @@ suf-node@^1.0.0, suf-node@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/suf-node/-/suf-node-1.1.1.tgz#040327281c0b2d1b70ed49526c2e120c27fe6be4"
 
-suf-regex@^0.0.22:
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.22.tgz#7a2689c16405dbd318abd2b11e327f44ba5da3c3"
+suf-regex@^0.0.23:
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.23.tgz#ebb3fec77c9724a21583917011a3b652cf8e0055"
+  integrity sha512-Rupps+hO04fiskhx5YwBaiB8Bbwsy8fsqDfT8FED6DWkumWClb3em+yukbNgmAvUIbLAm7ibJoN+2Pl4golkQw==
   dependencies:
     del-cli "^3.0.0"
 
@@ -4480,11 +4481,7 @@ ts-doc-gen@^0.2.0:
     suf-node "^1.0.0"
     typescript "^3.6.3"
 
-tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
-
-tslib@^1.9.0:
+tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
