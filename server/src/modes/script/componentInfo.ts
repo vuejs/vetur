@@ -163,10 +163,10 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
     const propDecoratorNames = ['Prop', 'Model', 'PropSync'];
     const propsSymbols = type
       .getProperties()
-      .filter(property =>
-        getPropertyDecoratorNames(property, tsModule.SyntaxKind.PropertyDeclaration).some(decoratorName =>
-          propDecoratorNames.includes(decoratorName)
-        )
+      .filter(
+        property =>
+          validPropertySyntaxKind(property, tsModule.SyntaxKind.PropertyDeclaration) &&
+          getPropertyDecoratorNames(property).some(decoratorName => propDecoratorNames.includes(decoratorName))
       );
     if (propsSymbols.length === 0) {
       return undefined;
@@ -285,9 +285,8 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
       .getProperties()
       .filter(
         property =>
-          !getPropertyDecoratorNames(property, tsModule.SyntaxKind.PropertyDeclaration).some(decoratorName =>
-            noDataDecoratorNames.includes(decoratorName)
-          ) &&
+          validPropertySyntaxKind(property, tsModule.SyntaxKind.PropertyDeclaration) &&
+          !getPropertyDecoratorNames(property).some(decoratorName => noDataDecoratorNames.includes(decoratorName)) &&
           !property.name.startsWith('_') &&
           !property.name.startsWith('$')
       );
@@ -341,10 +340,10 @@ function getComputed(
   function getClassComputed(type: ts.Type) {
     const getAccessorSymbols = type
       .getProperties()
-      .filter(property => property.valueDeclaration.kind === tsModule.SyntaxKind.GetAccessor);
+      .filter(property => property.valueDeclaration?.kind === tsModule.SyntaxKind.GetAccessor);
     const setAccessorSymbols = defaultExportType
       .getProperties()
-      .filter(property => property.valueDeclaration.kind === tsModule.SyntaxKind.SetAccessor);
+      .filter(property => property.valueDeclaration?.kind === tsModule.SyntaxKind.SetAccessor);
     if (getAccessorSymbols.length === 0) {
       return undefined;
     }
@@ -423,9 +422,9 @@ function getMethods(
       .getProperties()
       .filter(
         property =>
-          !getPropertyDecoratorNames(property, tsModule.SyntaxKind.MethodDeclaration).some(
-            decoratorName => decoratorName === 'Watch'
-          ) && !isInternalHook(property.name)
+          validPropertySyntaxKind(property, tsModule.SyntaxKind.MethodDeclaration) &&
+          !getPropertyDecoratorNames(property).some(decoratorName => decoratorName === 'Watch') &&
+          !isInternalHook(property.name)
       );
     if (methodSymbols.length === 0) {
       return undefined;
@@ -537,12 +536,16 @@ function getClassAndObjectInfo<C, O>(
   return result;
 }
 
-function getPropertyDecoratorNames(property: ts.Symbol, checkSyntaxKind: ts.SyntaxKind): string[] {
-  if (property.valueDeclaration.kind !== checkSyntaxKind) {
-    return [];
-  }
+function getNodeFromSymbol(property: ts.Symbol): ts.Declaration | undefined {
+  return property.valueDeclaration ?? property.declarations?.[0];
+}
 
-  const decorators = property?.valueDeclaration?.decorators;
+function validPropertySyntaxKind(property: ts.Symbol, checkSyntaxKind: ts.SyntaxKind): boolean {
+  return getNodeFromSymbol(property)?.kind === checkSyntaxKind;
+}
+
+function getPropertyDecoratorNames(property: ts.Symbol): string[] {
+  const decorators = getNodeFromSymbol(property)?.decorators;
   if (decorators === undefined) {
     return [];
   }
@@ -561,8 +564,9 @@ export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker
 
   documentation += '\n';
 
-  if (s.valueDeclaration) {
-    documentation += `\`\`\`js\n${formatJSLikeDocumentation(s.valueDeclaration.getText())}\n\`\`\`\n`;
+  const node = getNodeFromSymbol(s);
+  if (node) {
+    documentation += `\`\`\`js\n${formatJSLikeDocumentation(node.getText())}\n\`\`\`\n`;
   }
 
   return documentation;
