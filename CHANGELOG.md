@@ -1,6 +1,7 @@
 # Changelog
 
 ### 0.27.3 | 2020-09-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.3/vspackage)
+
 - 🙌 Fix corner case when analyzing class component. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2254 and #2260.
 - 🙌 Ignore no implicitly any error in v-slot with destructuring. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2258 and #2259.
 
