@@ -25,6 +25,8 @@ async function run(execPath: string, testWorkspaceRelativePath: string, mochaArg
 
   return await runTests({
     vscodeExecutablePath: execPath,
+    // https://github.com/microsoft/vscode/issues/106569
+    version: '1.48.2',
     extensionDevelopmentPath: EXT_ROOT,
     extensionTestsPath: extTestPath,
     extensionTestsEnv: mochaArgs,
