@@ -3926,10 +3926,10 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-sass-formatter@^0.4.14:
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.4.14.tgz#4a4346e24a093c96deb205435b3cc8dba6995e4d"
-  integrity sha512-F8d4v4Gn8rtpICDvoUL7PaHj29713Qssul0aICt6dsHhf4+fjab5qa0p4dM7sJUrTuMDdjUeM6V+MGe9LYM69Q==
+sass-formatter@^0.4.15:
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.4.15.tgz#91b45ccd95af240c3154ad3c5f661387a713d444"
+  integrity sha512-EpjwQsya8DmefZawi1sNoCjKw6IGE4z18h9lKd0QPgoGGkis8nqK+mfCMS4B8OaEa0To//71yQyGV1OW1/t60g==
   dependencies:
     "@sorg/log" "^2.0.1"
     suf-regex "^0.0.23"
@@ -4527,11 +4527,7 @@ ts-doc-gen@^0.2.0:
     suf-node "^1.0.0"
     typescript "^3.6.3"
 
-tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
-
-tslib@^1.9.0:
+tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
