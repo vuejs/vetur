@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { getTemplateTransformFunctions } from '../transformTemplate';
 import { injectVueTemplate, parseVueTemplate } from '../preprocess';
 import { generateSourceMap } from '../sourceMap';
+import { trim } from 'lodash';
 
 const printer = ts.createPrinter();
 
@@ -59,6 +60,16 @@ function filePathToTest(filePath: string) {
       return acc;
     }, new Set<number>());
 
+    const fromSrc = templateSrc.slice(node.from.start, node.from.end);
+    const targetSrc = validSourceFile.getFullText().slice(node.to.start, node.to.end);
+
+    /**
+     * For back mapping from `"foo"` to `foo`, the last two
+     */
+    if (fromSrc.length === targetSrc.length - 2 && fromSrc === trim(targetSrc, `'"`)) {
+      return;
+    }
+
     for (const fromIndex in node.offsetMapping) {
       // Only map from [start, end)
       if (!endOffsets.has(parseInt(fromIndex, 10))) {
@@ -68,10 +79,7 @@ function filePathToTest(filePath: string) {
 
         let errorMsg = `Pos ${fromIndex}: "${fromChar}" doesn't map to ${toIndex}: "${toChar}"\n`;
 
-        errorMsg += `${templateSrc.slice(
-          node.from.start,
-          node.from.end
-        )} should map to ${validSourceFile.getFullText().slice(node.to.start, node.to.end)}`;
+        errorMsg += `${fromSrc} should map to ${targetSrc}`;
 
         if (fromChar === `'` || fromChar === `"`) {
           // Single/double quotes are lost during transformation
@@ -165,6 +173,11 @@ suite('Source Map generation', () => {
 
     test('directive value of an empty expression', () => {
       testTemplateMapping(`<template><div :title="" /></template>`, [
+        {
+          fromStart: 16,
+          fromEnd: 21,
+          toCode: '"title"'
+        },
         {
           fromStart: 23,
           fromEnd: 23,
