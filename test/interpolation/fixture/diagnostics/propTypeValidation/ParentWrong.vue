@@ -6,9 +6,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import JSChild from "./JSChild.vue";
-import TSChild from "./TSChild.vue";
+import Vue from 'vue';
+import JSChild from './JSChild.vue';
+import TSChild from './TSChild.vue';
 
 export default Vue.extend({
   components: {
@@ -18,19 +18,19 @@ export default Vue.extend({
   data() {
     return {
       count: 0
-    }
+    };
   },
   computed: {
     isZeroCount(): boolean {
-      return this.count === 0
+      return this.count === 0;
     },
     zeroToCount(): number[] {
-      return [...Array(this.count).keys()]
+      return [...Array(this.count).keys()];
     }
   },
   methods: {
     increment() {
-      this.count++
+      this.count++;
     }
   }
 });

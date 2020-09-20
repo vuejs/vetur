@@ -299,7 +299,11 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
 
     const propTypeStrings: string[] = [];
     c.info?.componentInfo.props?.forEach(p => {
-      propTypeStrings.push(`${p.name}: ${p.typeString}`);
+      if (p.typeString) {
+        propTypeStrings.push(`${p.name}: ${p.typeString}`);
+      } else {
+        propTypeStrings.push(`${p.name}: any`);
+      }
     });
     propTypeStrings.push('[other: string]: any');
 

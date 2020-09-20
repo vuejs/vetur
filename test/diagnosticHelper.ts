@@ -40,7 +40,7 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
 export async function testNoDiagnostics(docUri: vscode.Uri) {
   await showFile(docUri);
   // For diagnostics to show up
-  await sleep(3000);
+  await sleep(5000);
 
   const result = vscode.languages.getDiagnostics(docUri);
 
