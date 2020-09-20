@@ -56,7 +56,6 @@ import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
-import { EndOfLine } from 'vscode';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext

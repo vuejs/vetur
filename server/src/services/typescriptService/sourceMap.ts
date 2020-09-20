@@ -84,12 +84,11 @@ export function generateSourceMap(
       return false;
     });
 
-    if (validNodeChildren.length !== syntheticNodeChildren.length) {
-      return;
-    }
-
     validNodeChildren.forEach((vc, i) => {
       const sc = syntheticNodeChildren[i];
+      if (!sc) {
+        return;
+      }
 
       const scSourceRange = tsModule.getSourceMapRange(sc);
 
@@ -271,6 +270,16 @@ function updateOffsetMapping(node: TemplateSourceMapNode, isThisInjected: boolea
      * Without this back mapping, mapping error from `this.bar` in `f(this.bar)` would fail
      */
     node.offsetBackMapping[nodeToStart] = nodeFromStart + 'this.'.length;
+  } else if (to.length > from.length) {
+    /**
+     * The case when `to` is wider than `from`
+     * For example, in `:foo="num"` to `{ "foo": this.num }`,
+     * need to map `"foo"` back to `foo`
+     */
+    const delta = to.length - from.length;
+    for (let i = 0; i < delta; i++) {
+      node.offsetBackMapping[node.to.start + from.length + i] = node.from.end;
+    }
   }
   const toFiltered = to as number[];
   if (isThisInjected) {

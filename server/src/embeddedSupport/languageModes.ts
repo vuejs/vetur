@@ -119,7 +119,7 @@ export class LanguageModes {
     }
 
     /**
-     * Documents where everything outside `<script>~ is replaced with whitespace
+     * Documents where everything outside `<script>` is replaced with whitespace
      */
     const scriptRegionDocuments = getLanguageModelCache(10, 60, document => {
       const vueDocument = this.documentRegions.refreshAndGet(document);

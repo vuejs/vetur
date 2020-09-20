@@ -138,16 +138,92 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
 
   function getPropValidatorInfo(
     propertyValue: ts.Node | undefined
-  ): { hasObjectValidator: boolean; required: boolean } {
-    if (!propertyValue || !tsModule.isObjectLiteralExpression(propertyValue)) {
+  ): { hasObjectValidator: boolean; required: boolean; typeString?: string } {
+    if (!propertyValue) {
       return { hasObjectValidator: false, required: true };
+    }
+
+    let typeString: string | undefined = undefined;
+    let typeDeclaration: ts.Identifier | ts.AsExpression | undefined = undefined;
+
+    /**
+     * case `foo: { type: String }`
+     * extract type value: `String`
+     */
+    if (tsModule.isObjectLiteralExpression(propertyValue)) {
+      const propertyValueSymbol = checker.getTypeAtLocation(propertyValue).symbol;
+      const typeValue = propertyValueSymbol?.members?.get('type' as ts.__String)?.valueDeclaration;
+      if (typeValue && tsModule.isPropertyAssignment(typeValue)) {
+        if (tsModule.isIdentifier(typeValue.initializer) || tsModule.isAsExpression(typeValue.initializer)) {
+          typeDeclaration = typeValue.initializer;
+        }
+      }
+    } else {
+      /**
+       * case `foo: String`
+       * extract type value: `String`
+       */
+      if (tsModule.isIdentifier(propertyValue) || tsModule.isAsExpression(propertyValue)) {
+        typeDeclaration = propertyValue;
+      }
+    }
+
+    if (typeDeclaration) {
+      /**
+       * `String` case
+       *
+       * Per https://vuejs.org/v2/guide/components-props.html#Type-Checks, handle:
+       *
+       * String
+       * Number
+       * Boolean
+       * Array
+       * Object
+       * Date
+       * Function
+       * Symbol
+       */
+      if (tsModule.isIdentifier(typeDeclaration)) {
+        const vueTypeCheckConstructorToTSType: Record<string, string> = {
+          String: 'string',
+          Number: 'number',
+          Boolean: 'boolean',
+          Array: 'any[]',
+          Object: 'object',
+          Date: 'Date',
+          Function: 'Function',
+          Symbol: 'Symbol'
+        };
+        const vueTypeString = typeDeclaration.getText();
+        if (vueTypeCheckConstructorToTSType[vueTypeString]) {
+          typeString = vueTypeCheckConstructorToTSType[vueTypeString];
+        }
+      } else if (
+        /**
+         * `String as PropType<'a' | 'b'>` case
+         */
+        tsModule.isAsExpression(typeDeclaration) &&
+        tsModule.isTypeReferenceNode(typeDeclaration.type) &&
+        typeDeclaration.type.typeName.getText() === 'PropType' &&
+        typeDeclaration.type.typeArguments &&
+        typeDeclaration.type.typeArguments[0]
+      ) {
+        const extractedPropType = typeDeclaration.type.typeArguments[0];
+        typeString = extractedPropType.getText();
+      }
+    }
+
+    // console.log(`${(propertyValue.parent as ts.PropertyAssignment).name.getText()}: ${typeString}`)
+
+    if (!propertyValue || !tsModule.isObjectLiteralExpression(propertyValue)) {
+      return { hasObjectValidator: false, required: true, typeString };
     }
 
     const propertyValueSymbol = checker.getTypeAtLocation(propertyValue).symbol;
     const requiredValue = propertyValueSymbol?.members?.get('required' as ts.__String)?.valueDeclaration;
     const defaultValue = propertyValueSymbol?.members?.get('default' as ts.__String)?.valueDeclaration;
     if (!requiredValue && !defaultValue) {
-      return { hasObjectValidator: false, required: true };
+      return { hasObjectValidator: false, required: true, typeString };
     }
 
     const required = Boolean(
@@ -156,7 +232,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
         requiredValue?.initializer.kind === tsModule.SyntaxKind.TrueKeyword
     );
 
-    return { hasObjectValidator: true, required };
+    return { hasObjectValidator: true, required, typeString };
   }
 
   function getClassProps(type: ts.Type) {

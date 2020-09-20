@@ -1,3 +1,4 @@
+import { snakeCase } from 'lodash';
 import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
 import { T_TypeScript } from '../dependencyService';
@@ -6,6 +7,7 @@ import { walkExpression } from './walkExpression';
 export const renderHelperName = '__vlsRenderHelper';
 export const componentHelperName = '__vlsComponentHelper';
 export const iterationHelperName = '__vlsIterationHelper';
+export const componentDataName = '__vlsComponentData';
 
 /**
  * Allowed global variables in templates.
@@ -22,7 +24,13 @@ const vOnScope = ['$event', 'arguments'];
 
 type ESLintVChild = AST.VElement | AST.VExpressionContainer | AST.VText;
 
-export function getTemplateTransformFunctions(ts: T_TypeScript) {
+/**
+ * @param ts Loaded TS dependency
+ * @param childComponentNamesInSnakeCase If `VElement`'s name matches one of the child components'
+ * name, generate expression with `${componentHelperName}__${name}`, which will enforce type-check
+ * on props
+ */
+export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNamesInSnakeCase?: string[]) {
   return {
     transformTemplate,
     parseExpression
@@ -54,7 +62,12 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    * __vlsComponentHelper('div', { props: { title: this.foo } }, [ ...children... ]);
    */
   function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
-    return ts.createCall(ts.createIdentifier(componentHelperName), undefined, [
+    const identifier =
+      childComponentNamesInSnakeCase && childComponentNamesInSnakeCase.indexOf(snakeCase(node.rawName)) !== -1
+        ? ts.createIdentifier(componentHelperName + '__' + snakeCase(node.rawName))
+        : ts.createIdentifier(componentHelperName);
+
+    return ts.createCall(identifier, undefined, [
       // Pass this value to propagate ThisType in listener handlers
       ts.createIdentifier('this'),
 
@@ -219,7 +232,11 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       if (name.type === 'VIdentifier') {
         // Attribute name is specified
         // e.g. v-bind:value="foo"
-        return ts.createPropertyAssignment(ts.createStringLiteral(name.name), dirExp);
+        const propNameNode = ts.setSourceMapRange(ts.createStringLiteral(name.name), {
+          pos: name.range[0],
+          end: name.range[1]
+        });
+        return ts.createPropertyAssignment(propNameNode, dirExp);
       } else {
         // Attribute name is dynamic
         // e.g. v-bind:[value]="foo"

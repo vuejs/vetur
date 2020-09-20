@@ -10,11 +10,14 @@ import {
   getTemplateTransformFunctions,
   componentHelperName,
   iterationHelperName,
-  renderHelperName
+  renderHelperName,
+  componentDataName
 } from './transformTemplate';
 import { templateSourceMap } from './serviceHost';
 import { generateSourceMap } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
+import { ChildComponent } from '../vueInfoService';
+import { snakeCase } from 'lodash';
 
 const importedComponentName = '__vlsComponent';
 
@@ -47,7 +50,7 @@ export function parseVueTemplate(text: string): string {
   return rawText.replace(/ {10}/, '<template>') + '</template>';
 }
 
-export function createUpdater(tsModule: T_TypeScript) {
+export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Map<string, ChildComponent[]>) {
   const clssf = tsModule.createLanguageServiceSourceFile;
   const ulssf = tsModule.updateLanguageServiceSourceFile;
   const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
@@ -80,7 +83,7 @@ export function createUpdater(tsModule: T_TypeScript) {
    * The transformed TS AST has synthetic nodes so language features would fail on them
    * Use printer to print the AST as re-parse the source to get a valid SourceFile
    */
-  function recreateVueTempalteSourceFile(
+  function recreateVueTemplateSourceFile(
     vueTemplateFileName: string,
     sourceFile: ts.SourceFile,
     scriptSnapshot: ts.IScriptSnapshot
@@ -92,16 +95,25 @@ export function createUpdater(tsModule: T_TypeScript) {
     const scriptSrc = parseVueScriptSrc(vueText);
     const program = parse(templateCode, { sourceType: 'module' });
 
+    const childComponentNames = allChildComponentsInfo.get(vueTemplateFileName)?.map(c => snakeCase(c.name));
     let expressions: ts.Expression[] = [];
     try {
-      expressions = getTemplateTransformFunctions(tsModule).transformTemplate(program, templateCode);
+      expressions = getTemplateTransformFunctions(tsModule, childComponentNames).transformTemplate(
+        program,
+        templateCode
+      );
       injectVueTemplate(tsModule, sourceFile, expressions, scriptSrc);
     } catch (err) {
       console.log(`Failed to transform template of ${vueTemplateFileName}`);
       console.log(err);
     }
 
-    const newText = printer.printFile(sourceFile);
+    let newText = printer.printFile(sourceFile);
+
+    if (allChildComponentsInfo.has(vueTemplateFileName)) {
+      const childComponents = allChildComponentsInfo.get(vueTemplateFileName)!;
+      newText += convertChildComponentsInfoToSource(childComponents);
+    }
 
     const newSourceFile = tsModule.createSourceFile(
       vueTemplateFileName,
@@ -130,7 +142,7 @@ export function createUpdater(tsModule: T_TypeScript) {
     let sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
     scriptKindTracker.set(sourceFile, scriptKind);
     if (isVirtualVueTemplateFile(fileName)) {
-      sourceFile = recreateVueTempalteSourceFile(fileName, sourceFile, scriptSnapshot);
+      sourceFile = recreateVueTemplateSourceFile(fileName, sourceFile, scriptSnapshot);
       modificationTracker.add(sourceFile);
     } else {
       modifySourceFile(fileName, sourceFile, scriptSnapshot, version, scriptKind);
@@ -148,7 +160,7 @@ export function createUpdater(tsModule: T_TypeScript) {
     const scriptKind = scriptKindTracker.get(sourceFile);
     sourceFile = ulssf(sourceFile, scriptSnapshot, version, textChangeRange, aggressiveChecks);
     if (isVirtualVueTemplateFile(sourceFile.fileName)) {
-      sourceFile = recreateVueTempalteSourceFile(sourceFile.fileName, sourceFile, scriptSnapshot);
+      sourceFile = recreateVueTemplateSourceFile(sourceFile.fileName, sourceFile, scriptSnapshot);
       modificationTracker.add(sourceFile);
     } else {
       modifySourceFile(sourceFile.fileName, sourceFile, scriptSnapshot, version, scriptKind);
@@ -235,7 +247,8 @@ export function injectVueTemplate(
       tsModule.createNamedImports([
         tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(renderHelperName)),
         tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentHelperName)),
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName))
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentDataName))
       ])
     ),
     tsModule.createLiteral('vue-editor-bridge')
@@ -276,4 +289,33 @@ function getWrapperRangeSetter(
   wrapped: ts.TextRange
 ): <T extends ts.TextRange>(wrapperNode: T) => T {
   return wrapperNode => tsModule.setTextRange(wrapperNode, wrapped);
+}
+
+function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
+  let src = '';
+  childComponents.forEach(c => {
+    const componentDataInterfaceName = componentDataName + '__' + snakeCase(c.name);
+    const componentHelperInterfaceName = componentHelperName + '__' + snakeCase(c.name);
+
+    const propTypeStrings: string[] = [];
+    c.info?.componentInfo.props?.forEach(p => {
+      propTypeStrings.push(`${p.name}: ${p.typeString}`);
+    });
+    propTypeStrings.push('[other: string]: any');
+
+    src += `
+interface ${componentDataInterfaceName}<T> extends ${componentDataName}<T> {
+  props: { ${propTypeStrings.join(', ')} }
+}
+declare const ${componentHelperInterfaceName}: {
+  <T>(
+    vm: T,
+    tag: string,
+    data: ${componentDataInterfaceName}<Record<string, any>> & ThisType<T>,
+    children: any[]
+  ): any
+}`;
+  });
+
+  return src;
 }

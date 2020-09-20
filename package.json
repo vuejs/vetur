@@ -249,7 +249,7 @@
         "vetur.validation.templateProps": {
           "type": "boolean",
           "default": false,
-          "description": "Validate props usage in <template> region. Show error/warning for not passing declared props to child components."
+          "description": "Validate props usage in <template> region. Show error/warning for not passing declared props to child components and show error for passing wrongly typed interpolation expressions"
         },
         "vetur.validation.interpolation": {
           "type": "boolean",

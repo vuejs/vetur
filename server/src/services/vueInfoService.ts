@@ -60,6 +60,7 @@ export interface PropInfo {
   required: boolean;
   isBoundToModel: boolean;
   documentation?: string;
+  typeString?: string;
 }
 export interface DataInfo {
   name: string;
