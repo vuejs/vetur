@@ -88,6 +88,8 @@ export default {
 
 ## Prop Validation
 
+*You can turn on/off this feature with `vetur.validation.templateProps`.*
+
 Vetur will now validate HTML templates that uses child components. For example, given two children:
 
 `Simple.vue`:
@@ -121,3 +123,53 @@ The rules are:
 
 - When using [array props](https://vuejs.org/v2/guide/components-props.html#Prop-Types), show **warning** for missing props.
 - When using [object prop validation](https://vuejs.org/v2/guide/components-props.html#Prop-Validation), show errors for missing `required` props.
+
+## Prop Type Validation
+
+*You can turn on/off this feature with `vetur.validation.templateProps`.*
+
+Vetur will now validate that the interpolation expression you pass to child component's props match the props signature. Consider this simple case:
+
+`Child.vue`:
+
+```vue
+<template>
+  <div></div>
+</template>
+
+<script>
+export default {
+  props: { str: String }
+}
+</script>
+```
+
+`Parent.vue`:
+
+```vue
+<template>
+  <test :str="num" />
+</template>
+
+<script>
+import Test from './Test.vue'
+
+export default {
+  components: { Test },
+  data() {
+    return {
+      num: 42
+    }
+  }
+}
+</script>
+```
+
+Vetur will generate a diagnostic error on `str` in `Parent.vue` template `:str="num"`, with a message that `type 'number' is not assignable to type 'string'`.
+
+Supported:
+
+- JS file with `export default {...}`
+- TS file with `defineComponent` in Vue 3 or `Vue.extend` in Vue 2
+- Prop Type: `foo: String`, `foo: { type: String }` or `foo: String as PropType<string>`
+  - This is useful in the case of `foo: Array`. If you are using JS, there's no way to say `foo is a string array`, however with TS you can use `foo: Array as PropType<string[]>`. Vetur will then check that the provided expression matches `string[]`.
