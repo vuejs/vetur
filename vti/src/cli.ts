@@ -77,6 +77,15 @@ async function getDiagnostics(workspaceUri: URI) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
   const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
+
+  if (files.length === 0) {
+    console.log('No input files');
+    return 0;
+  }
+
+  console.log('Getting diagnostics from:');
+  console.log(files);
+
   const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
 
   console.log('');
@@ -132,10 +141,11 @@ async function getDiagnostics(workspaceUri: URI) {
     let workspaceUri;
 
     if (myArgs[1]) {
-      console.log(`Loading Vetur in workspace path: ${myArgs[1]}`);
-      workspaceUri = URI.file(myArgs[1]);
+      const absPath = path.resolve(process.cwd(), myArgs[1]);
+      console.log(`Loading Vetur in workspace path: ${chalk.green(absPath)}`);
+      workspaceUri = URI.file(absPath);
     } else {
-      console.log(`Loading Vetur in current directory: ${process.cwd()}`);
+      console.log(`Loading Vetur in current directory: ${chalk.green(process.cwd())}`);
       workspaceUri = URI.file(process.cwd());
     }
 

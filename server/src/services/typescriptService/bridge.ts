@@ -1,4 +1,4 @@
-import { renderHelperName, componentHelperName, iterationHelperName } from './transformTemplate';
+import { renderHelperName, componentHelperName, iterationHelperName, componentDataName } from './transformTemplate';
 
 // This bridge file will be injected into TypeScript language service
 // it enable type checking and completion, yet still preserve precise option type
@@ -11,7 +11,7 @@ const renderHelpers = `
 type ComponentListeners<T> = {
   [K in keyof T]?: ($event: T[K]) => any;
 };
-interface ComponentData<T> {
+export interface ${componentDataName}<T> {
   props: Record<string, any>;
   on: ComponentListeners<T>;
   directives: any[];
@@ -23,7 +23,7 @@ export declare const ${componentHelperName}: {
   <T>(
     vm: T,
     tag: string,
-    data: ComponentData<Record<string, any>> & ThisType<T>,
+    data: ${componentDataName}<Record<string, any>> & ThisType<T>,
     children: any[]
   ): any;
 };

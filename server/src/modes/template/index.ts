@@ -35,7 +35,7 @@ export class VueHTMLMode implements LanguageMode {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
     const vueVersion = inferVueVersion(tsModule, workspacePath);
     this.htmlMode = new HTMLMode(documentRegions, workspacePath, vueVersion, vueDocuments, vueInfoService);
-    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments);
+    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments, vueInfoService);
   }
   getId() {
     return 'vue-html';
@@ -81,10 +81,9 @@ export class VueHTMLMode implements LanguageMode {
     return this.vueInterpolationMode.findReferences(document, position);
   }
   findDefinition(document: TextDocument, position: Position) {
-    const interpolationDefinition = this.vueInterpolationMode.findDefinition(document, position);
-    return interpolationDefinition.length > 0
-      ? interpolationDefinition
-      : this.htmlMode.findDefinition(document, position);
+    const htmlDefinition = this.htmlMode.findDefinition(document, position);
+
+    return htmlDefinition.length > 0 ? htmlDefinition : this.vueInterpolationMode.findDefinition(document, position);
   }
   getFoldingRanges(document: TextDocument) {
     return this.htmlMode.getFoldingRanges(document);

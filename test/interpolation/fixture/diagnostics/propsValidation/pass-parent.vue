@@ -10,7 +10,6 @@
   </div>
 </template>
 
-
 <script>
 import ArrayChild from './array-props-child.vue'
 import ObjectValidatorChild from './object-validator-props-child.vue'
