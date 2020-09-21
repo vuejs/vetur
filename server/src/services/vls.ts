@@ -82,6 +82,8 @@ export class VLS {
 
   private documentFormatterRegistration: Disposable | undefined;
 
+  private config: VLSConfig;
+
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
     this.vueInfoService = new VueInfoService();
@@ -223,6 +225,8 @@ export class VLS {
   }
 
   configure(config: VLSConfig): void {
+    this.config = config;
+
     const veturValidationOptions = config.vetur.validation;
     this.validation['vue-html'] = veturValidationOptions.template;
     this.validation.css = veturValidationOptions.style;
@@ -485,6 +489,10 @@ export class VLS {
   }
 
   onCodeAction({ textDocument, range, context }: CodeActionParams) {
+    if (!this.config.vetur.languageFeatures.codeActions) {
+      return [];
+    }
+
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, range.start);
     if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {

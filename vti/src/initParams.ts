@@ -62,6 +62,9 @@ function getDefaultVLSConfig() {
         scriptInitialIndent: false,
         styleInitialIndent: false
       },
+      languageFeatures: {
+        codeActions: true
+      },
       trace: {
         server: 'off'
       },

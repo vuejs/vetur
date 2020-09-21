@@ -2,6 +2,7 @@
 
 ### 0.28.0
 
+- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150
 - Let VTI load default VLS config. #2274.
 - Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
 - Load prettier plugin from VLS if not present in workspace folder. #2014.

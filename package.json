@@ -484,6 +484,11 @@
           "default": false,
           "description": "Whether to have initial indent for <script> region"
         },
+        "vetur.languageFeatures.codeActions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to enable codeActions"
+        },
         "vetur.trace.server": {
           "type": "string",
           "enum": [

@@ -50,6 +50,9 @@ export interface VLSConfig {
       scriptInitialIndent: boolean;
       styleInitialIndent: boolean;
     };
+    languageFeatures: {
+      codeActions: boolean;
+    };
     trace: {
       server: 'off' | 'messages' | 'verbose';
     };
@@ -107,6 +110,9 @@ export function getDefaultVLSConfig(): VLSFullConfig {
         defaultFormatterOptions: {},
         scriptInitialIndent: false,
         styleInitialIndent: false
+      },
+      languageFeatures: {
+        codeActions: true
       },
       trace: {
         server: 'off'
