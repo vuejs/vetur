@@ -13,10 +13,10 @@ These formatters are available:
 - [`prettier`](https://github.com/prettier/prettier): For css/scss/less/js/ts.
 - [`prettier`](https://github.com/prettier/prettier) with [@prettier/plugin-pug](https://github.com/prettier/plugin-pug): For pug.
 - [`prettier-eslint`](https://github.com/prettier/prettier-eslint): For js. Run `prettier` and `eslint --fix`.
-- [`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): For html.
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 - [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter): For the .sass section of the files.
+- ~~[`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): 🚧 [DEPREACATED] For html.~~
 
 Vetur bundles all the above formatters. When Vetur observes a local install of the formatter, it'll prefer to use the local version.
 
@@ -27,7 +27,7 @@ Current default:
 
 ```json
 {
-  "vetur.format.defaultFormatter.html": "prettyhtml",
+  "vetur.format.defaultFormatter.html": "prettier",
   "vetur.format.defaultFormatter.pug": "prettier",
   "vetur.format.defaultFormatter.css": "prettier",
   "vetur.format.defaultFormatter.postcss": "prettier",
@@ -89,11 +89,11 @@ Prettier + `eslint --fix`. Settings are read from `.prettierrc` and `.eslintrc` 
 
 Global config: Same as `prettier` global config.
 
-#### [prettyhtml](https://github.com/Prettyhtml/prettyhtml)
+#### ~~[prettyhtml](https://github.com/Prettyhtml/prettyhtml)~~
 
-The default formatter for Vue templates.
+**🚧 DEPREACATED as [no longer in active development](https://github.com/Prettyhtml/prettyhtml).**
 
-Other settings include:
+Settings include:
 
 ```json
 "vetur.format.defaultFormatterOptions": {

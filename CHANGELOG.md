@@ -2,6 +2,7 @@
 
 ### 0.28.0
 
+- Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
 - Load prettier plugin from VLS if not present in workspace folder. #2014.
 - Cross file template type checking - check that components are passed props with the correct types. #1596 and #2294.
 
