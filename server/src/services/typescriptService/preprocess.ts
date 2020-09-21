@@ -17,7 +17,7 @@ import { templateSourceMap } from './serviceHost';
 import { generateSourceMap } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { ChildComponent } from '../vueInfoService';
-import { snakeCase } from 'lodash';
+import { kebabCase, snakeCase } from 'lodash';
 
 const importedComponentName = '__vlsComponent';
 
@@ -299,10 +299,15 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
 
     const propTypeStrings: string[] = [];
     c.info?.componentInfo.props?.forEach(p => {
+      let typeKey = p.required ? kebabCase(p.name) : kebabCase(p.name) + '?';
+      if (typeKey.indexOf('-') !== -1) {
+        typeKey = `'` + typeKey + `'`;
+      }
+
       if (p.typeString) {
-        propTypeStrings.push(`${p.name}: ${p.typeString}`);
+        propTypeStrings.push(`${typeKey}: ${p.typeString}`);
       } else {
-        propTypeStrings.push(`${p.name}: any`);
+        propTypeStrings.push(`${typeKey}: any`);
       }
     });
     propTypeStrings.push('[other: string]: any');

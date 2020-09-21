@@ -1,4 +1,4 @@
-import { snakeCase } from 'lodash';
+import { kebabCase, snakeCase } from 'lodash';
 import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
 import { T_TypeScript } from '../dependencyService';
@@ -62,8 +62,19 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
    * __vlsComponentHelper('div', { props: { title: this.foo } }, [ ...children... ]);
    */
   function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
+    /**
+     * `vModel`      -> need info from other components to do type check
+     * `v-bind`      -> do this later
+     * `v-bind:[foo] -> don't do type-check. do make `[]` an interpolation area
+     */
+    const hasUnhandledAttributes = node.startTag.attributes.some(attr => {
+      return isVModel(attr) || (isVBind(attr) && !isVBindShorthand(attr)) || isVBindWithDynamicAttributeName(attr);
+    });
+
     const identifier =
-      childComponentNamesInSnakeCase && childComponentNamesInSnakeCase.indexOf(snakeCase(node.rawName)) !== -1
+      !hasUnhandledAttributes &&
+      childComponentNamesInSnakeCase &&
+      childComponentNamesInSnakeCase.indexOf(snakeCase(node.rawName)) !== -1
         ? ts.createIdentifier(componentHelperName + '__' + snakeCase(node.rawName))
         : ts.createIdentifier(componentHelperName);
 
@@ -75,7 +86,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
       ts.createLiteral(node.name),
 
       // Attributes / Directives
-      transformAttributes(node.startTag.attributes, code, scope),
+      transformAttributes(node, node.startTag.attributes, code, scope),
 
       // Children
       ts.createArrayLiteral(transformChildren(node.children, code, scope))
@@ -83,6 +94,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
   }
 
   function transformAttributes(
+    node: AST.VElement,
     attrs: (AST.VAttribute | AST.VDirective)[],
     code: string,
     scope: string[]
@@ -146,8 +158,14 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
     //   props: { class: 'title' },
     //   on: { click: __vlsListenerHelper(this, function($event) { this.onClick($event) } }
     // }
+    const propsAssignment = ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props));
+    ts.setSourceMapRange(propsAssignment.name, {
+      pos: node.startTag.range[0] + '<'.length,
+      end: node.startTag.range[0] + '<'.length + node.rawName.length
+    });
+
     return ts.createObjectLiteral([
-      ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props)),
+      propsAssignment,
       ts.createPropertyAssignment('on', ts.createObjectLiteral(data.on)),
       ts.createPropertyAssignment('directives', ts.createArrayLiteral(data.directives))
     ]);
@@ -232,7 +250,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
       if (name.type === 'VIdentifier') {
         // Attribute name is specified
         // e.g. v-bind:value="foo"
-        const propNameNode = ts.setSourceMapRange(ts.createStringLiteral(name.name), {
+        const propNameNode = ts.setSourceMapRange(ts.createStringLiteral(kebabCase(name.rawName)), {
           pos: name.range[0],
           end: name.range[1]
         });
@@ -721,8 +739,20 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
     return !node.directive;
   }
 
+  function isVModel(node: AST.VAttribute | AST.VDirective): node is AST.VAttribute {
+    return node.directive && node.key.name.name === 'model';
+  }
+
   function isVBind(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
     return node.directive && node.key.name.name === 'bind';
+  }
+
+  function isVBindShorthand(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && node.key.name.name === 'bind' && node.key.name.rawName === ':';
+  }
+
+  function isVBindWithDynamicAttributeName(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && node.key.argument?.type === 'VExpressionContainer';
   }
 
   function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {

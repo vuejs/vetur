@@ -1,7 +1,3 @@
-<template>
-  <div></div>
-</template>
-
 <script lang="ts">
 import { PropType, defineComponent, ref, reactive } from "vue";
 

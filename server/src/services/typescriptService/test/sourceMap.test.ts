@@ -54,42 +54,44 @@ function filePathToTest(filePath: string) {
   const templateSrc = parseVueTemplate(vueFileSrc);
   const { sourceMapNodes, validSourceFile } = processVueTemplate(templateSrc);
 
-  sourceMapNodes.forEach(node => {
-    const endOffsets = [...node.mergedNodes, node].reduce((acc, node) => {
-      acc.add(node.from.end);
-      return acc;
-    }, new Set<number>());
+  sourceMapNodes
+    .filter(node => templateSrc.slice(node.from.start, node.from.end) === 'props')
+    .forEach(node => {
+      const endOffsets = [...node.mergedNodes, node].reduce((acc, node) => {
+        acc.add(node.from.end);
+        return acc;
+      }, new Set<number>());
 
-    const fromSrc = templateSrc.slice(node.from.start, node.from.end);
-    const targetSrc = validSourceFile.getFullText().slice(node.to.start, node.to.end);
+      const fromSrc = templateSrc.slice(node.from.start, node.from.end);
+      const targetSrc = validSourceFile.getFullText().slice(node.to.start, node.to.end);
 
-    /**
-     * For back mapping from `"foo"` to `foo`, the last two
-     */
-    if (fromSrc.length === targetSrc.length - 2 && fromSrc === trim(targetSrc, `'"`)) {
-      return;
-    }
+      /**
+       * For back mapping from `"foo"` to `foo`, the last two
+       */
+      if (fromSrc.length === targetSrc.length - 2 && fromSrc === trim(targetSrc, `'"`)) {
+        return;
+      }
 
-    for (const fromIndex in node.offsetMapping) {
-      // Only map from [start, end)
-      if (!endOffsets.has(parseInt(fromIndex, 10))) {
-        const toIndex = node.offsetMapping[fromIndex];
-        const fromChar = templateSrc[fromIndex];
-        const toChar = validSourceFile.getFullText()[toIndex];
+      for (const fromIndex in node.offsetMapping) {
+        // Only map from [start, end)
+        if (!endOffsets.has(parseInt(fromIndex, 10))) {
+          const toIndex = node.offsetMapping[fromIndex];
+          const fromChar = templateSrc[fromIndex];
+          const toChar = validSourceFile.getFullText()[toIndex];
 
-        let errorMsg = `Pos ${fromIndex}: "${fromChar}" doesn't map to ${toIndex}: "${toChar}"\n`;
+          let errorMsg = `Pos ${fromIndex}: "${fromChar}" doesn't map to ${toIndex}: "${toChar}"\n`;
 
-        errorMsg += `${fromSrc} should map to ${targetSrc}`;
+          errorMsg += `${fromSrc} should map to ${targetSrc}`;
 
-        if (fromChar === `'` || fromChar === `"`) {
-          // Single/double quotes are lost during transformation
-          assert.ok([`'`, `"`].includes(toChar), errorMsg);
-        } else {
-          assert.equal(fromChar, toChar, errorMsg);
+          if (fromChar === `'` || fromChar === `"`) {
+            // Single/double quotes are lost during transformation
+            assert.ok([`'`, `"`].includes(toChar), errorMsg);
+          } else {
+            assert.equal(fromChar, toChar, errorMsg);
+          }
         }
       }
-    }
-  });
+    });
 }
 
 interface ExpectedMapping {
@@ -111,6 +113,12 @@ function testTemplateMapping(code: string, expectedList: ExpectedMapping[]) {
     })
     .sort((a, b) => {
       return a.fromStart - b.fromStart;
+    })
+    /**
+     * For now, filter out `props` source node
+     */
+    .filter(node => {
+      return node.toCode !== 'props';
     });
 
   const sortedExpectedList = expectedList.sort((a, b) => {

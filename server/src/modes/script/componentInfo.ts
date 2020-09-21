@@ -213,8 +213,6 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
       }
     }
 
-    // console.log(`${(propertyValue.parent as ts.PropertyAssignment).name.getText()}: ${typeString}`)
-
     if (!propertyValue || !tsModule.isObjectLiteralExpression(propertyValue)) {
       return { hasObjectValidator: false, required: true, typeString };
     }
