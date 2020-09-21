@@ -1,4 +1,4 @@
-import { createConnection, InitializeParams, InitializeResult } from 'vscode-languageserver';
+import { createConnection, InitializeParams, InitializeResult } from 'vscode-languageserver/node';
 import { VLS } from './services/vls';
 
 const connection = process.argv.length <= 2 ? createConnection(process.stdin, process.stdout) : createConnection();

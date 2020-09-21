@@ -7,7 +7,7 @@ import {
   DocumentFormattingParams,
   DocumentLinkParams,
   FileChangeType,
-  IConnection,
+  Connection,
   TextDocumentPositionParams,
   ColorPresentationParams,
   InitializeParams,
@@ -23,6 +23,7 @@ import {
   ApplyWorkspaceEditRequest,
   FoldingRangeParams
 } from 'vscode-languageserver';
+
 import {
   ColorInformation,
   CompletionItem,
@@ -36,7 +37,6 @@ import {
   SignatureHelp,
   SymbolInformation,
   TextDocument,
-  TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation,
   Range,
@@ -82,7 +82,7 @@ export class VLS {
 
   private documentFormatterRegistration: Disposable | undefined;
 
-  constructor(private lspConnection: IConnection) {
+  constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
     this.vueInfoService = new VueInfoService();
     this.dependencyService = new DependencyService();
@@ -196,7 +196,7 @@ export class VLS {
   }
 
   private setupFileChangeListeners() {
-    this.documentService.onDidChangeContent((change: TextDocumentChangeEvent) => {
+    this.documentService.onDidChangeContent(change => {
       this.triggerValidation(change.document);
     });
     this.documentService.onDidClose(e => {
