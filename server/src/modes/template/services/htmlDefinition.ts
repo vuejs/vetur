@@ -12,25 +12,29 @@ export function findDefinition(
   position: Position,
   htmlDocument: HTMLDocument,
   vueFileInfo?: VueFileInfo
-): Definition {
+): Location[] {
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeAt(offset);
   if (!node || !node.tag) {
     return [];
   }
 
-  function getTagDefinition(tag: string, range: Range, open: boolean): Definition {
+  function getTagDefinition(tag: string, range: Range, open: boolean): Location[] {
     if (vueFileInfo && vueFileInfo.componentInfo.childComponents) {
       for (const cc of vueFileInfo.componentInfo.childComponents) {
-        if (![tag, tag.toLowerCase(), kebabCase(tag)].includes(cc.name)) { continue; }
-        if (!cc.definition) { continue; }
+        if (![tag, tag.toLowerCase(), kebabCase(tag)].includes(cc.name)) {
+          continue;
+        }
+        if (!cc.definition) {
+          continue;
+        }
 
         const loc: Location = {
           uri: URI.file(cc.definition.path).toString(),
           // Todo: Resolve actual default export range
           range: Range.create(0, 0, 0, 0)
         };
-        return loc;
+        return [loc];
       }
     }
     return [];

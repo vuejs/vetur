@@ -355,7 +355,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(definitionTargetDoc, r.textSpan);
 
         definitionResults.push({
-          uri: URI.file(definitionTargetDoc.uri).toString(),
+          uri: definitionTargetDoc.uri,
           range
         });
       }
@@ -403,7 +403,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(referenceTargetDoc, r.textSpan);
 
         referenceResults.push({
-          uri: URI.file(referenceTargetDoc.uri).toString(),
+          uri: referenceTargetDoc.uri,
           range
         });
       }
