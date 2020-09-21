@@ -1,6 +1,6 @@
-import * as assert from 'assert';
-import * as fs from 'fs';
-import * as vscode from 'vscode';
+import assert from 'assert';
+import fs from 'fs';
+import vscode from 'vscode';
 import { showFile, setEditorContent } from '../../../editorHelper';
 import { getDocPath, getDocUri } from '../../path';
 

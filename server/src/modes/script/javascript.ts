@@ -33,8 +33,7 @@ import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/p
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
 import { URI } from 'vscode-uri';
-import * as ts from 'typescript';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';

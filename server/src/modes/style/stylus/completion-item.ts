@@ -19,7 +19,7 @@ import {
 
 import { cssData, LoadedCSSData } from './css-browser-data';
 import builtIn from './built-in';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 function prepareName(name: string): string {
   return name.replace(/\{|\}/g, '').trim();

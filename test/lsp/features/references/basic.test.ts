@@ -1,5 +1,5 @@
-import * as assert from 'assert';
-import * as vscode from 'vscode';
+import assert from 'assert';
+import vscode from 'vscode';
 import { showFile } from '../../../editorHelper';
 import { location, position, sameLineLocation } from '../../../util';
 import { getDocUri } from '../../path';

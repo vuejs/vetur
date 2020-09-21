@@ -1,5 +1,5 @@
 import { TextDocument } from 'vscode-languageserver-types';
-import * as assert from 'assert';
+import assert from 'assert';
 import { parseVueDocumentRegions } from '../vueDocumentRegionParser';
 import { getSingleLanguageDocument, getSingleTypeDocument, getLanguageRangesOfType } from '../embeddedSupport';
 

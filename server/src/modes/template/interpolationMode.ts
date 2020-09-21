@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-import * as ts from 'typescript';
 import {
   CompletionItem,
   CompletionList,
@@ -20,6 +18,8 @@ import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { T_TypeScript } from '../../services/dependencyService';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { mapBackRange, mapFromPositionToOffset } from '../../services/typescriptService/sourceMap';
+import * as ts from 'typescript';
+import _ from 'lodash';
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
 import { toCompletionItemKind } from '../../services/typescriptService/util';
 import { VueInfoService } from '../../services/vueInfoService';

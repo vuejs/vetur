@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
 import { IPrettyHtml } from './prettyhtml';

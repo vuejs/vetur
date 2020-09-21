@@ -3,7 +3,7 @@ import { TextDocument, Position, Hover, Range } from 'vscode-languageserver-type
 import { buildAst, findNodeAtPosition } from './parser';
 
 import { cssData } from './css-browser-data';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 export function stylusHover(document: TextDocument, position: Position): Hover {
   const ast = buildAst(document.getText());

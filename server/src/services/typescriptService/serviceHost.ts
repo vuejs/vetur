@@ -1,8 +1,8 @@
-import * as path from 'path';
+import path from 'path';
 import * as ts from 'typescript';
 import { URI } from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-types';
-import * as parseGitIgnore from 'parse-gitignore';
+import parseGitIgnore from 'parse-gitignore';
 
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { createUpdater, parseVueScript } from './preprocess';

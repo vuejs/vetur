@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import * as assert from 'assert';
+import assert from 'assert';
 import { TokenType, ScannerState, createScanner } from '../parser/htmlScanner';
 
 suite('HTML Scanner', () => {
@@ -37,7 +37,10 @@ suite('HTML Scanner', () => {
     assertTokens([
       {
         input: '<abc',
-        tokens: [{ offset: 0, type: TokenType.StartTagOpen }, { offset: 1, type: TokenType.StartTag, content: 'abc' }]
+        tokens: [
+          { offset: 0, type: TokenType.StartTagOpen },
+          { offset: 1, type: TokenType.StartTag, content: 'abc' }
+        ]
       }
     ]);
   });
@@ -46,7 +49,10 @@ suite('HTML Scanner', () => {
     assertTokens([
       {
         input: '<input',
-        tokens: [{ offset: 0, type: TokenType.StartTagOpen }, { offset: 1, type: TokenType.StartTag, content: 'input' }]
+        tokens: [
+          { offset: 0, type: TokenType.StartTagOpen },
+          { offset: 1, type: TokenType.StartTag, content: 'input' }
+        ]
       }
     ]);
   });
@@ -105,7 +111,10 @@ suite('HTML Scanner', () => {
     assertTokens([
       {
         input: '</a',
-        tokens: [{ offset: 0, type: TokenType.EndTagOpen }, { offset: 2, type: TokenType.EndTag, content: 'a' }]
+        tokens: [
+          { offset: 0, type: TokenType.EndTagOpen },
+          { offset: 2, type: TokenType.EndTag, content: 'a' }
+        ]
       }
     ]);
   });
@@ -819,7 +828,10 @@ suite('HTML Scanner', () => {
     assertTokens([
       {
         input: '<!---   ',
-        tokens: [{ offset: 0, type: TokenType.StartCommentTag }, { offset: 4, type: TokenType.Comment }]
+        tokens: [
+          { offset: 0, type: TokenType.StartCommentTag },
+          { offset: 4, type: TokenType.Comment }
+        ]
       }
     ]);
     assertTokens([
@@ -852,7 +864,7 @@ suite('HTML Scanner', () => {
         tokens: [
           { offset: 0, type: TokenType.StartInterpolation },
           { offset: 2, type: TokenType.InterpolationContent },
-          { offset: 15, type: TokenType.EndInterpolation },
+          { offset: 15, type: TokenType.EndInterpolation }
         ]
       },
       {
@@ -861,7 +873,7 @@ suite('HTML Scanner', () => {
           { offset: 0, type: TokenType.Content },
           { offset: 3, type: TokenType.StartInterpolation },
           { offset: 5, type: TokenType.InterpolationContent },
-          { offset: 18, type: TokenType.EndInterpolation },
+          { offset: 18, type: TokenType.EndInterpolation }
         ]
       },
       {
@@ -871,7 +883,7 @@ suite('HTML Scanner', () => {
           { offset: 3, type: TokenType.StartInterpolation },
           { offset: 5, type: TokenType.InterpolationContent },
           { offset: 18, type: TokenType.EndInterpolation },
-          { offset: 20, type: TokenType.Content },
+          { offset: 20, type: TokenType.Content }
         ]
       }
     ]);
@@ -887,7 +899,7 @@ suite('HTML Scanner', () => {
           { offset: 20, type: TokenType.EndInterpolation },
           { offset: 22, type: TokenType.EndTagOpen },
           { offset: 24, type: TokenType.EndTag, content: 'div' },
-          { offset: 27, type: TokenType.EndTagClose },
+          { offset: 27, type: TokenType.EndTagClose }
         ]
       },
       {
@@ -901,7 +913,7 @@ suite('HTML Scanner', () => {
           { offset: 20, type: TokenType.EndInterpolation },
           { offset: 22, type: TokenType.EndTagOpen },
           { offset: 24, type: TokenType.EndTag, content: 'div' },
-          { offset: 27, type: TokenType.EndTagClose },
+          { offset: 27, type: TokenType.EndTagClose }
         ]
       }
     ]);
@@ -910,7 +922,7 @@ suite('HTML Scanner', () => {
         input: '{{interpolation',
         tokens: [
           { offset: 0, type: TokenType.StartInterpolation },
-          { offset: 2, type: TokenType.InterpolationContent },
+          { offset: 2, type: TokenType.InterpolationContent }
         ]
       }
     ]);

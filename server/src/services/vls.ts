@@ -1,4 +1,4 @@
-import * as path from 'path';
+import path from 'path';
 import { getFileFsPath } from '../utils/paths';
 
 import {
@@ -46,8 +46,7 @@ import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
-import { DependencyService } from './dependencyService';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';

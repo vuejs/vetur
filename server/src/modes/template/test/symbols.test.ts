@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import * as assert from 'assert';
+import assert from 'assert';
 
 import { TextDocument, SymbolInformation, SymbolKind, Location, Range } from 'vscode-languageserver-types';
 import { parseHTMLDocument } from '../parser/htmlParser';

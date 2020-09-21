@@ -1,5 +1,4 @@
-import * as path from 'path';
-import { T_TypeScript } from '../dependencyService';
+import path from 'path';
 
 export enum VueVersion {
   VPre25,

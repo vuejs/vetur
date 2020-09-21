@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import * as assert from 'assert';
+import assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-types';
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { findDocumentHighlights } from '../services/htmlHighlighting';
@@ -27,13 +27,7 @@ suite('HTML Highlighting', () => {
       const actualEndOffset = document.offsetAt(highlights[i].range.end);
       assert.equal(actualEndOffset, expectedMatches[i] + elementName!.length);
 
-      assert.equal(
-        document
-          .getText()
-          .substring(actualStartOffset, actualEndOffset)
-          .toLowerCase(),
-        elementName
-      );
+      assert.equal(document.getText().substring(actualStartOffset, actualEndOffset).toLowerCase(), elementName);
     }
   }
 

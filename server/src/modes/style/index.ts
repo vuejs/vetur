@@ -5,7 +5,7 @@ import {
   getLESSLanguageService,
   LanguageService
 } from 'vscode-css-languageservice';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 
 import { Priority } from './emmet';

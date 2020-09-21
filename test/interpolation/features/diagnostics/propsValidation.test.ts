@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 import { testDiagnostics, testNoDiagnostics } from '../../../diagnosticHelper';
 import { getDocUri } from '../../path';
 import { sameLineRange } from '../../../util';

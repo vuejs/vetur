@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 
 export async function showFile(docUri: vscode.Uri) {
   const doc = await vscode.workspace.openTextDocument(docUri);

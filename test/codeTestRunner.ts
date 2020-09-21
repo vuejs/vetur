@@ -1,7 +1,7 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import * as $ from 'shelljs';
-import * as minimist from 'minimist';
+import path from 'path';
+import fs from 'fs';
+import $ from 'shelljs';
+import minimist from 'minimist';
 
 import { downloadAndUnzipVSCode, runTests } from 'vscode-test';
 

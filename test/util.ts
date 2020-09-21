@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 
 export function position(line: number, char: number) {
   return new vscode.Position(line, char);

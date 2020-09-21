@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import * as path from 'path';
+import path from 'path';
 import { parse } from 'vue-eslint-parser';
 
 import { URI } from 'vscode-uri';

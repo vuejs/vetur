@@ -13,7 +13,7 @@ import {
 export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';
-import * as fs from 'fs';
+import fs from 'fs';
 import { join } from 'path';
 import { getNuxtTagProvider } from './nuxtTags';
 

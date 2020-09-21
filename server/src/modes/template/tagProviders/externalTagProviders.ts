@@ -1,21 +1,21 @@
 import * as ts from 'typescript';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import { kebabCase } from 'lodash';
 
 import { IHTMLTagProvider, Priority, getSameTagInSet } from './common';
 
-import * as elementTags from 'element-helper-json/element-tags.json';
-import * as elementAttributes from 'element-helper-json/element-attributes.json';
+import elementTags from 'element-helper-json/element-tags.json';
+import elementAttributes from 'element-helper-json/element-attributes.json';
 
-import * as onsenTags from 'vue-onsenui-helper-json/vue-onsenui-tags.json';
-import * as onsenAttributes from 'vue-onsenui-helper-json/vue-onsenui-attributes.json';
+import onsenTags from 'vue-onsenui-helper-json/vue-onsenui-tags.json';
+import onsenAttributes from 'vue-onsenui-helper-json/vue-onsenui-attributes.json';
 
-import * as bootstrapTags from 'bootstrap-vue-helper-json/tags.json';
-import * as bootstrapAttributes from 'bootstrap-vue-helper-json/attributes.json';
+import bootstrapTags from 'bootstrap-vue-helper-json/tags.json';
+import bootstrapAttributes from 'bootstrap-vue-helper-json/attributes.json';
 
-import * as gridsomeTags from 'gridsome-helper-json/gridsome-tags.json';
-import * as gridsomeAttributes from 'gridsome-helper-json/gridsome-attributes.json';
+import gridsomeTags from 'gridsome-helper-json/gridsome-tags.json';
+import gridsomeAttributes from 'gridsome-helper-json/gridsome-attributes.json';
 
 export const elementTagProvider = getExternalTagProvider('element', elementTags, elementAttributes);
 export const onsenTagProvider = getExternalTagProvider('onsen', onsenTags, onsenAttributes);
