@@ -26,6 +26,7 @@ import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProv
 import { VueVersion } from '../../services/typescriptService/vueVersion';
 import { doPropValidation } from './services/vuePropValidation';
 import { getFoldingRanges } from './services/htmlFolding';
+import { DependencyService } from '../../services/dependencyService';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
@@ -40,6 +41,7 @@ export class HTMLMode implements LanguageMode {
     documentRegions: LanguageModelCache<VueDocumentRegions>,
     private workspacePath: string | undefined,
     vueVersion: VueVersion,
+    private dependencyService: DependencyService,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
     private vueInfoService?: VueInfoService
   ) {
@@ -104,7 +106,7 @@ export class HTMLMode implements LanguageMode {
     return findDocumentSymbols(document, this.vueDocuments.refreshAndGet(document));
   }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-    return htmlFormat(document, range, this.config.vetur.format as VLSFormatConfig, this.workspacePath);
+    return htmlFormat(this.dependencyService, document, range, this.config.vetur.format as VLSFormatConfig);
   }
   findDefinition(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);

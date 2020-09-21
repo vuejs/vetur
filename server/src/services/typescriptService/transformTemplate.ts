@@ -1,7 +1,7 @@
 import { kebabCase, snakeCase } from 'lodash';
-import * as ts from 'typescript';
+import type ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
-import { T_TypeScript } from '../dependencyService';
+import { RuntimeLibrary } from '../dependencyService';
 import { walkExpression } from './walkExpression';
 
 export const renderHelperName = '__vlsRenderHelper';
@@ -30,7 +30,7 @@ type ESLintVChild = AST.VElement | AST.VExpressionContainer | AST.VText;
  * name, generate expression with `${componentHelperName}__${name}`, which will enforce type-check
  * on props
  */
-export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNamesInSnakeCase?: string[]) {
+export function getTemplateTransformFunctions(ts: RuntimeLibrary['typescript'], childComponentNamesInSnakeCase?: string[]) {
   return {
     transformTemplate,
     parseExpression

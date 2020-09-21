@@ -1,11 +1,10 @@
-import * as ts from 'typescript';
+import type ts from 'typescript';
 import path from 'path';
 import { parse } from 'vue-eslint-parser';
 
 import { URI } from 'vscode-uri';
 import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { TextDocument } from 'vscode-languageserver-types';
-import { T_TypeScript } from '../../services/dependencyService';
 import {
   getTemplateTransformFunctions,
   componentHelperName,
@@ -18,6 +17,7 @@ import { generateSourceMap } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { ChildComponent } from '../vueInfoService';
 import { kebabCase, snakeCase } from 'lodash';
+import { RuntimeLibrary } from '../dependencyService';
 
 const importedComponentName = '__vlsComponent';
 
@@ -50,7 +50,7 @@ export function parseVueTemplate(text: string): string {
   return rawText.replace(/ {10}/, '<template>') + '</template>';
 }
 
-export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Map<string, ChildComponent[]>) {
+export function createUpdater(tsModule: RuntimeLibrary['typescript'], allChildComponentsInfo: Map<string, ChildComponent[]>) {
   const clssf = tsModule.createLanguageServiceSourceFile;
   const ulssf = tsModule.updateLanguageServiceSourceFile;
   const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
@@ -174,7 +174,7 @@ export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Ma
   };
 }
 
-function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): void {
+function modifyVueScript(tsModule: RuntimeLibrary['typescript'], sourceFile: ts.SourceFile): void {
   const exportDefaultObject = sourceFile.statements.find(
     st =>
       st.kind === tsModule.SyntaxKind.ExportAssignment &&
@@ -213,7 +213,7 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
  * to validate its types
  */
 export function injectVueTemplate(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   sourceFile: ts.SourceFile,
   renderBlock: ts.Expression[],
   scriptSrc?: string
@@ -285,7 +285,7 @@ export function injectVueTemplate(
 
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */
 function getWrapperRangeSetter(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   wrapped: ts.TextRange
 ): <T extends ts.TextRange>(wrapperNode: T) => T {
   return wrapperNode => tsModule.setTextRange(wrapperNode, wrapped);

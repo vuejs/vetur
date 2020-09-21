@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import type ts from 'typescript';
 
 export class ModuleResolutionCache {
   private _cache: {

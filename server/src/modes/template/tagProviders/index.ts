@@ -12,10 +12,10 @@ import {
 } from './externalTagProviders';
 export { IHTMLTagProvider } from './common';
 
-import * as ts from 'typescript';
 import fs from 'fs';
 import { join } from 'path';
 import { getNuxtTagProvider } from './nuxtTags';
+import { findConfigFile } from '../../../utils/workspace';
 
 export let allTagProviders: IHTMLTagProvider[] = [
   getHTML5TagProvider(),
@@ -51,7 +51,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     return settings;
   }
   try {
-    const packagePath = ts.findConfigFile(workspacePath, ts.sys.fileExists, 'package.json');
+    const packagePath = findConfigFile(workspacePath, 'package.json');
     if (!packagePath) {
       return settings;
     }
@@ -115,11 +115,7 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
 
     for (const dep of [...Object.keys(dependencies), ...Object.keys(devDependencies)]) {
-      const runtimePkgJsonPath = ts.findConfigFile(
-        workspacePath,
-        ts.sys.fileExists,
-        join('node_modules', dep, 'package.json')
-      );
+      const runtimePkgJsonPath = findConfigFile(workspacePath, join('node_modules', dep, 'package.json'));
 
       if (!runtimePkgJsonPath) {
         continue;

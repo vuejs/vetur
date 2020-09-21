@@ -1,5 +1,6 @@
 import cssColors from './css-colors-list';
 import { Position } from 'vscode-languageserver-types';
+import stylus from 'stylus';
 
 type NodeName =
   | 'Ident'
@@ -35,8 +36,6 @@ export interface StylusNode {
   __scope?: number[];
   string?: string;
 }
-
-const stylus = require('stylus');
 
 /**
  * Checks wether node is variable declaration

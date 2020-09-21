@@ -15,9 +15,9 @@ import { DocumentContext } from '../../types';
 import { HTMLMode } from './htmlMode';
 import { VueInterpolationMode } from './interpolationMode';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
-import { T_TypeScript } from '../../services/dependencyService';
 import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
 import { inferVueVersion } from '../../services/typescriptService/vueVersion';
+import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
@@ -26,16 +26,24 @@ export class VueHTMLMode implements LanguageMode {
   private vueInterpolationMode: VueInterpolationMode;
 
   constructor(
-    tsModule: T_TypeScript,
+    tsModule: RuntimeLibrary['typescript'],
     serviceHost: IServiceHost,
     documentRegions: DocumentRegionCache,
     workspacePath: string,
+    dependencyService: DependencyService,
     vueInfoService?: VueInfoService
   ) {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
     const vueVersion = inferVueVersion(tsModule, workspacePath);
-    this.htmlMode = new HTMLMode(documentRegions, workspacePath, vueVersion, vueDocuments, vueInfoService);
-    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments, vueInfoService);
+    this.htmlMode = new HTMLMode(
+      documentRegions,
+      workspacePath,
+      vueVersion,
+      dependencyService,
+      vueDocuments,
+      vueInfoService
+    );
+    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments);
   }
   getId() {
     return 'vue-html';

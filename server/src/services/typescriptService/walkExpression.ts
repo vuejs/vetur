@@ -1,5 +1,5 @@
-import * as ts from 'typescript';
-import { T_TypeScript } from '../dependencyService';
+import type ts from 'typescript';
+import { RuntimeLibrary } from '../dependencyService';
 
 type NodeChanges<T extends ts.Node> = { [K in keyof T]?: T[K] | ts.Node | ts.NodeArray<ts.Node> };
 
@@ -9,7 +9,7 @@ type NodeChanges<T extends ts.Node> = { [K in keyof T]?: T[K] | ts.Node | ts.Nod
  * If some expression node is returned in predicate function, the node will be replaced.
  */
 export function walkExpression(
-  ts: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   root: ts.Expression,
   predicate: (node: ts.Expression, additionalScope: ts.Identifier[]) => ts.Expression | void
 ): ts.Expression {
@@ -22,112 +22,112 @@ export function walkExpression(
     const isUpdated = changedKeys.reduce((acc, key) => {
       return acc || changes[key] !== original[key];
     }, false);
-    return isUpdated ? ts.setTextRange(updated, original) : original;
+    return isUpdated ? tsModule.setTextRange(updated, original) : original;
   }
 
   function loop(node: ts.Expression, scope: ts.Identifier[]): ts.Expression {
-    if (ts.isPropertyAccessExpression(node)) {
+    if (tsModule.isPropertyAccessExpression(node)) {
       const expression = loop(node.expression, scope);
-      return visit(update({ expression }, node, ts.createPropertyAccess(expression, node.name)), scope);
+      return visit(update({ expression }, node, tsModule.createPropertyAccess(expression, node.name)), scope);
     }
 
-    if (ts.isElementAccessExpression(node)) {
+    if (tsModule.isElementAccessExpression(node)) {
       const expression = loop(node.expression, scope);
       const argumentExpression = loop(node.argumentExpression, scope);
       return visit(
-        update({ expression, argumentExpression }, node, ts.createElementAccess(expression, argumentExpression)),
+        update({ expression, argumentExpression }, node, tsModule.createElementAccess(expression, argumentExpression)),
         scope
       );
     }
 
-    if (ts.isPrefixUnaryExpression(node)) {
+    if (tsModule.isPrefixUnaryExpression(node)) {
       const operand = loop(node.operand, scope);
-      return visit(update({ operand }, node, ts.createPrefix(node.operator, operand)), scope);
+      return visit(update({ operand }, node, tsModule.createPrefix(node.operator, operand)), scope);
     }
 
-    if (ts.isPostfixUnaryExpression(node)) {
+    if (tsModule.isPostfixUnaryExpression(node)) {
       const operand = loop(node.operand, scope);
-      return visit(update({ operand }, node, ts.createPostfix(operand, node.operator)), scope);
+      return visit(update({ operand }, node, tsModule.createPostfix(operand, node.operator)), scope);
     }
 
     // Manually check `kind` for typeof expression
     // since ts.isTypeOfExpression is not working.
-    if (node.kind === ts.SyntaxKind.TypeOfExpression) {
+    if (node.kind === tsModule.SyntaxKind.TypeOfExpression) {
       const n = node as ts.TypeOfExpression;
       const expression = loop(n.expression, scope);
-      return visit(update({ expression }, n, ts.createTypeOf(expression)), scope);
+      return visit(update({ expression }, n, tsModule.createTypeOf(expression)), scope);
     }
 
-    if (ts.isDeleteExpression(node)) {
+    if (tsModule.isDeleteExpression(node)) {
       const expression = loop(node.expression, scope);
-      return visit(update({ expression }, node, ts.createDelete(expression)), scope);
+      return visit(update({ expression }, node, tsModule.createDelete(expression)), scope);
     }
 
-    if (ts.isVoidExpression(node)) {
+    if (tsModule.isVoidExpression(node)) {
       const expression = loop(node.expression, scope);
-      return visit(update({ expression }, node, ts.createVoid(expression)), scope);
+      return visit(update({ expression }, node, tsModule.createVoid(expression)), scope);
     }
 
-    if (ts.isBinaryExpression(node)) {
+    if (tsModule.isBinaryExpression(node)) {
       const left = loop(node.left, scope);
       const right = loop(node.right, scope);
-      return visit(update({ left, right }, node, ts.createBinary(left, node.operatorToken, right)), scope);
+      return visit(update({ left, right }, node, tsModule.createBinary(left, node.operatorToken, right)), scope);
     }
 
-    if (ts.isConditionalExpression(node)) {
+    if (tsModule.isConditionalExpression(node)) {
       const condition = loop(node.condition, scope);
       const whenTrue = loop(node.whenTrue, scope);
       const whenFalse = loop(node.whenFalse, scope);
       return visit(
-        update({ condition, whenTrue, whenFalse }, node, ts.createConditional(condition, whenTrue, whenFalse)),
+        update({ condition, whenTrue, whenFalse }, node, tsModule.createConditional(condition, whenTrue, whenFalse)),
         scope
       );
     }
 
-    if (ts.isCallExpression(node)) {
+    if (tsModule.isCallExpression(node)) {
       const expression = loop(node.expression, scope);
-      const args = mapNodeArray(node.arguments, arg => loop(arg, scope));
+      const args = mapNodeArray(tsModule, node.arguments, arg => loop(arg, scope));
       return visit(
-        update({ expression, arguments: args }, node, ts.createCall(expression, node.typeArguments, args)),
+        update({ expression, arguments: args }, node, tsModule.createCall(expression, node.typeArguments, args)),
         scope
       );
     }
 
-    if (ts.isParenthesizedExpression(node)) {
+    if (tsModule.isParenthesizedExpression(node)) {
       const expression = loop(node.expression, scope);
-      return visit(update({ expression }, node, ts.createParen(expression)), scope);
+      return visit(update({ expression }, node, tsModule.createParen(expression)), scope);
     }
 
-    if (ts.isObjectLiteralExpression(node)) {
-      const properties = mapNodeArray(node.properties, p => {
+    if (tsModule.isObjectLiteralExpression(node)) {
+      const properties = mapNodeArray(tsModule, node.properties, p => {
         return walkObjectLiteralElementLike(p, scope);
       });
-      return visit(update({ properties }, node, ts.createObjectLiteral(properties)), scope);
+      return visit(update({ properties }, node, tsModule.createObjectLiteral(properties)), scope);
     }
 
-    if (ts.isArrayLiteralExpression(node)) {
-      const elements = mapNodeArray(node.elements, el => loop(el, scope));
-      return visit(update({ elements }, node, ts.createArrayLiteral(elements)), scope);
+    if (tsModule.isArrayLiteralExpression(node)) {
+      const elements = mapNodeArray(tsModule, node.elements, el => loop(el, scope));
+      return visit(update({ elements }, node, tsModule.createArrayLiteral(elements)), scope);
     }
 
-    if (ts.isSpreadElement(node)) {
+    if (tsModule.isSpreadElement(node)) {
       const expression = loop(node.expression, scope);
-      return visit(update({ expression }, node, ts.createSpread(expression)), scope);
+      return visit(update({ expression }, node, tsModule.createSpread(expression)), scope);
     }
 
-    if (ts.isArrowFunction(node)) {
-      const fnScope = scope.concat(flatMap(node.parameters, collectScope));
+    if (tsModule.isArrowFunction(node)) {
+      const fnScope = scope.concat(flatMap(node.parameters, value => collectScope(tsModule, value)));
       let body: ts.ConciseBody;
-      if (ts.isBlock(node.body)) {
-        const statements = mapNodeArray(node.body.statements, st => {
-          if (ts.isExpressionStatement(st)) {
+      if (tsModule.isBlock(node.body)) {
+        const statements = mapNodeArray(tsModule, node.body.statements, st => {
+          if (tsModule.isExpressionStatement(st)) {
             const expression = loop(st.expression, fnScope);
-            return update({ expression }, st, ts.createExpressionStatement(expression));
+            return update({ expression }, st, tsModule.createExpressionStatement(expression));
           } else {
             return st;
           }
         });
-        body = update({ statements }, node.body, ts.createBlock(statements));
+        body = update({ statements }, node.body, tsModule.createBlock(statements));
       } else {
         body = loop(node.body, fnScope);
       }
@@ -136,7 +136,7 @@ export function walkExpression(
         update(
           { body },
           node,
-          ts.createArrowFunction(
+          tsModule.createArrowFunction(
             node.modifiers,
             node.typeParameters,
             node.parameters,
@@ -149,24 +149,24 @@ export function walkExpression(
       );
     }
 
-    if (ts.isTemplateExpression(node)) {
-      const templateSpans = mapNodeArray(node.templateSpans, span => {
+    if (tsModule.isTemplateExpression(node)) {
+      const templateSpans = mapNodeArray(tsModule, node.templateSpans, span => {
         const expression = loop(span.expression, scope);
-        return update({ expression }, span, ts.createTemplateSpan(expression, span.literal));
+        return update({ expression }, span, tsModule.createTemplateSpan(expression, span.literal));
       });
-      return visit(update({ templateSpans }, node, ts.createTemplateExpression(node.head, templateSpans)), scope);
+      return visit(update({ templateSpans }, node, tsModule.createTemplateExpression(node.head, templateSpans)), scope);
     }
 
-    if (ts.isNewExpression(node)) {
+    if (tsModule.isNewExpression(node)) {
       const expression = loop(node.expression, scope);
-      const args = node.arguments && mapNodeArray(node.arguments, arg => loop(arg, scope));
+      const args = node.arguments && mapNodeArray(tsModule, node.arguments, arg => loop(arg, scope));
       return update(
         {
           expression,
           arguments: args
         },
         node,
-        ts.createNew(expression, node.typeArguments, args)
+        tsModule.createNew(expression, node.typeArguments, args)
       );
     }
 
@@ -177,21 +177,21 @@ export function walkExpression(
     node: ts.ObjectLiteralElementLike,
     scope: ts.Identifier[]
   ): ts.ObjectLiteralElementLike {
-    if (ts.isPropertyAssignment(node)) {
+    if (tsModule.isPropertyAssignment(node)) {
       let name: ts.PropertyName;
-      if (ts.isComputedPropertyName(node.name)) {
+      if (tsModule.isComputedPropertyName(node.name)) {
         const expression = loop(node.name.expression, scope);
-        name = update({ expression }, node.name, ts.createComputedPropertyName(expression));
+        name = update({ expression }, node.name, tsModule.createComputedPropertyName(expression));
       } else {
         name = node.name;
       }
       const initializer = loop(node.initializer, scope);
-      return update({ name, initializer }, node, ts.createPropertyAssignment(name, initializer));
+      return update({ name, initializer }, node, tsModule.createPropertyAssignment(name, initializer));
     }
 
-    if (ts.isSpreadAssignment(node)) {
+    if (tsModule.isSpreadAssignment(node)) {
       const expression = loop(node.expression, scope);
-      return update({ expression }, node, ts.createSpreadAssignment(expression));
+      return update({ expression }, node, tsModule.createSpreadAssignment(expression));
     }
 
     return node;
@@ -208,15 +208,18 @@ export function walkExpression(
  * The output should be:
  *   ['foo', 'bar', 'qux']
  */
-function collectScope(param: ts.ParameterDeclaration | ts.BindingElement): ts.Identifier[] {
+function collectScope(
+  tsModule: RuntimeLibrary['typescript'],
+  param: ts.ParameterDeclaration | ts.BindingElement
+): ts.Identifier[] {
   const binding = param.name;
-  if (ts.isIdentifier(binding)) {
+  if (tsModule.isIdentifier(binding)) {
     return [binding];
-  } else if (ts.isObjectBindingPattern(binding)) {
-    return flatMap(binding.elements, collectScope);
-  } else if (ts.isArrayBindingPattern(binding)) {
-    const filtered = binding.elements.filter(ts.isBindingElement);
-    return flatMap(filtered, collectScope);
+  } else if (tsModule.isObjectBindingPattern(binding)) {
+    return flatMap(binding.elements, value => collectScope(tsModule, value));
+  } else if (tsModule.isArrayBindingPattern(binding)) {
+    const filtered = binding.elements.filter(tsModule.isBindingElement);
+    return flatMap(filtered, value => collectScope(tsModule, value));
   } else {
     return [];
   }
@@ -225,13 +228,17 @@ function collectScope(param: ts.ParameterDeclaration | ts.BindingElement): ts.Id
 /**
  * Map node array to the same item type. If all item references are not changed, it returns the input list.
  */
-function mapNodeArray<T extends ts.Node>(list: ts.NodeArray<T>, fn: (value: T) => T): ts.NodeArray<T> {
+function mapNodeArray<T extends ts.Node>(
+  tsModule: RuntimeLibrary['typescript'],
+  list: ts.NodeArray<T>,
+  fn: (value: T) => T
+): ts.NodeArray<T> {
   const mapped = list.map(fn);
   const isUpdated = mapped.some((v, i) => {
     const old = list[i];
     return v !== old;
   });
-  return isUpdated ? ts.createNodeArray(mapped) : list;
+  return isUpdated ? tsModule.createNodeArray(mapped) : list;
 }
 
 function flatMap<T extends ts.Node, R>(list: ReadonlyArray<T>, fn: (value: T) => R[]): R[] {

@@ -32,7 +32,7 @@ import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
-import { DependencyService, State } from '../services/dependencyService';
+import { DependencyService } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
 import { VLSFullConfig } from '../config';
@@ -40,8 +40,8 @@ import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 import { getPugMode } from '../modes/pug';
 
 export interface VLSServices {
+  dependencyService: DependencyService;
   infoService?: VueInfoService;
-  dependencyService?: DependencyService;
 }
 
 export interface LanguageMode {
@@ -110,13 +110,7 @@ export class LanguageModes {
   }
 
   async init(workspacePath: string, services: VLSServices, globalSnippetDir?: string) {
-    let tsModule = await import('typescript');
-    if (services.dependencyService) {
-      const ts = services.dependencyService.getDependency('typescript');
-      if (ts && ts.state === State.Loaded) {
-        tsModule = ts.module;
-      }
-    }
+    const tsModule = services.dependencyService.get('typescript').module;
 
     /**
      * Documents where everything outside `<script>` is replaced with whitespace
@@ -132,6 +126,7 @@ export class LanguageModes {
       this.serviceHost,
       this.documentRegions,
       workspacePath,
+      services.dependencyService,
       services.infoService
     );
 
@@ -139,19 +134,19 @@ export class LanguageModes {
       this.serviceHost,
       this.documentRegions,
       workspacePath,
-      services.infoService,
-      services.dependencyService
+      services.dependencyService,
+      services.infoService
     );
 
     this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
-    this.modes['pug'] = getPugMode(workspacePath);
-    this.modes['css'] = getCSSMode(workspacePath, this.documentRegions);
-    this.modes['postcss'] = getPostCSSMode(workspacePath, this.documentRegions);
-    this.modes['scss'] = getSCSSMode(workspacePath, this.documentRegions);
+    this.modes['pug'] = getPugMode(services.dependencyService);
+    this.modes['css'] = getCSSMode(this.documentRegions, services.dependencyService);
+    this.modes['postcss'] = getPostCSSMode(this.documentRegions, services.dependencyService);
+    this.modes['scss'] = getSCSSMode(this.documentRegions, services.dependencyService);
     this.modes['sass'] = new SassLanguageMode();
-    this.modes['less'] = getLESSMode(workspacePath, this.documentRegions);
-    this.modes['stylus'] = getStylusMode(this.documentRegions);
+    this.modes['less'] = getLESSMode(this.documentRegions, services.dependencyService);
+    this.modes['stylus'] = getStylusMode(this.documentRegions, services.dependencyService);
     this.modes['javascript'] = jsMode;
     this.modes['typescript'] = jsMode;
     this.modes['tsx'] = jsMode;

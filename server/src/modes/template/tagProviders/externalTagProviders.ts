@@ -1,4 +1,3 @@
-import * as ts from 'typescript';
 import fs from 'fs';
 import path from 'path';
 import { kebabCase } from 'lodash';
@@ -16,6 +15,7 @@ import bootstrapAttributes from 'bootstrap-vue-helper-json/attributes.json';
 
 import gridsomeTags from 'gridsome-helper-json/gridsome-tags.json';
 import gridsomeAttributes from 'gridsome-helper-json/gridsome-attributes.json';
+import { findConfigFile } from '../../../utils/workspace';
 
 export const elementTagProvider = getExternalTagProvider('element', elementTags, elementAttributes);
 export const onsenTagProvider = getExternalTagProvider('onsen', onsenTags, onsenAttributes);
@@ -29,9 +29,8 @@ export function getWorkspaceTagProvider(workspacePath: string, rootPkgJson: any)
   if (!rootPkgJson.vetur) {
     return null;
   }
-
-  const tagsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, rootPkgJson.vetur.tags);
-  const attrsPath = ts.findConfigFile(workspacePath, ts.sys.fileExists, rootPkgJson.vetur.attributes);
+  const tagsPath = findConfigFile(workspacePath, rootPkgJson.vetur.tags);
+  const attrsPath = findConfigFile(workspacePath, rootPkgJson.vetur.attributes);
 
   try {
     if (tagsPath && attrsPath) {
@@ -53,14 +52,9 @@ export function getDependencyTagProvider(workspacePath: string, depPkgJson: any)
     return null;
   }
 
-  const tagsPath = ts.findConfigFile(
+  const tagsPath = findConfigFile(workspacePath, path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.tags));
+  const attrsPath = findConfigFile(
     workspacePath,
-    ts.sys.fileExists,
-    path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.tags)
-  );
-  const attrsPath = ts.findConfigFile(
-    workspacePath,
-    ts.sys.fileExists,
     path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.attributes)
   );
 

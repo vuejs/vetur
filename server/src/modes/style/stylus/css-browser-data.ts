@@ -10,6 +10,7 @@ import {
   IPseudoClassData,
   IPseudoElementData
 } from 'vscode-css-languageservice';
+import CssData from 'vscode-web-custom-data/data/browsers.css-data.json';
 
 export interface LoadedCSSData {
   properties: IPropertyData[];
@@ -18,7 +19,7 @@ export interface LoadedCSSData {
   pseudoElements: IPseudoElementData[];
 }
 
-const rawData: CSSDataV1 = require('vscode-web-custom-data/data/browsers.css-data.json');
+const rawData = CssData as CSSDataV1;
 
 export const cssData: LoadedCSSData = {
   properties: rawData.properties || [],

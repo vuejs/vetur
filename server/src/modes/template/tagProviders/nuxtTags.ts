@@ -28,7 +28,7 @@ export function getNuxtTagProvider(workspacePath: string) {
 function tryRequire(modulePath: string, workspacePath: string) {
   try {
     const resolved = tryResolve(modulePath, workspacePath);
-    return resolved ? require(resolved) : undefined;
+    return resolved ? eval('require')(resolved) : undefined;
   } catch (_err) {}
 }
 

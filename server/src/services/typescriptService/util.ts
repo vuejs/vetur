@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import type ts from 'typescript';
 import { CompletionItemKind, SymbolKind } from 'vscode-languageserver';
 
 export function isVueFile(path: string) {

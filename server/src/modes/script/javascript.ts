@@ -33,13 +33,14 @@ import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/p
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
 import { URI } from 'vscode-uri';
+import type ts from 'typescript';
 import _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
-import { DependencyService, T_TypeScript, State } from '../../services/dependencyService';
+import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
@@ -55,8 +56,8 @@ export async function getJavascriptMode(
   serviceHost: IServiceHost,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   workspacePath: string | undefined,
-  vueInfoService?: VueInfoService,
-  dependencyService?: DependencyService
+  dependencyService: DependencyService,
+  vueInfoService?: VueInfoService
 ): Promise<LanguageMode> {
   if (!workspacePath) {
     return {
@@ -74,13 +75,7 @@ export async function getJavascriptMode(
     return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
 
-  let tsModule: T_TypeScript = ts;
-  if (dependencyService) {
-    const tsDependency = dependencyService.getDependency('typescript');
-    if (tsDependency && tsDependency.state === State.Loaded) {
-      tsModule = tsDependency.module;
-    }
-  }
+  const tsModule: RuntimeLibrary['typescript'] = dependencyService.get('typescript').module;
 
   const { updateCurrentVueTextDocument } = serviceHost;
   let config: any = {};
@@ -129,7 +124,7 @@ export async function getJavascriptMode(
         // so we can safely cast diag to TextSpan
         return <Diagnostic>{
           range: convertRange(scriptDoc, diag as ts.TextSpan),
-          severity: convertTSDiagnosticCategoryToDiagnosticSeverity(diag.category),
+          severity: convertTSDiagnosticCategoryToDiagnosticSeverity(tsModule, diag.category),
           message: tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
           tags,
           code: diag.code,
@@ -187,7 +182,7 @@ export async function getJavascriptMode(
 
       function calculateLabelAndDetailTextForPathImport(entry: ts.CompletionEntry) {
         // Is import path completion
-        if (entry.kind === ts.ScriptElementKind.scriptElement) {
+        if (entry.kind === tsModule.ScriptElementKind.scriptElement) {
           if (entry.kindModifiers) {
             return {
               label: entry.name,
@@ -498,7 +493,7 @@ export async function getJavascriptMode(
       const end = scriptDoc.offsetAt(range.end);
       if (!supportedCodeFixCodes) {
         supportedCodeFixCodes = new Set(
-          ts
+          tsModule
             .getSupportedCodeFixes()
             .map(Number)
             .filter(x => !isNaN(x))
@@ -575,7 +570,7 @@ export async function getJavascriptMode(
         } else {
           doFormat = prettierify;
         }
-        return doFormat(code, filePath, workspacePath, range, vlsFormatConfig, parser, needInitialIndent);
+        return doFormat(dependencyService, code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
       } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
@@ -784,15 +779,18 @@ function convertCodeAction(
   return textEdits;
 }
 
-function convertTSDiagnosticCategoryToDiagnosticSeverity(c: ts.DiagnosticCategory) {
+function convertTSDiagnosticCategoryToDiagnosticSeverity(
+  tsModule: RuntimeLibrary['typescript'],
+  c: ts.DiagnosticCategory
+) {
   switch (c) {
-    case ts.DiagnosticCategory.Error:
+    case tsModule.DiagnosticCategory.Error:
       return DiagnosticSeverity.Error;
-    case ts.DiagnosticCategory.Warning:
+    case tsModule.DiagnosticCategory.Warning:
       return DiagnosticSeverity.Warning;
-    case ts.DiagnosticCategory.Message:
+    case tsModule.DiagnosticCategory.Message:
       return DiagnosticSeverity.Information;
-    case ts.DiagnosticCategory.Suggestion:
+    case tsModule.DiagnosticCategory.Suggestion:
       return DiagnosticSeverity.Hint;
   }
 }

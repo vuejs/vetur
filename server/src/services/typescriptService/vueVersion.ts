@@ -1,4 +1,5 @@
 import path from 'path';
+import { RuntimeLibrary } from '../dependencyService';
 
 export enum VueVersion {
   VPre25,
@@ -16,7 +17,7 @@ function floatVersionToEnum(v: number) {
   }
 }
 
-export function inferVueVersion(tsModule: T_TypeScript, workspacePath: string): VueVersion {
+export function inferVueVersion(tsModule: RuntimeLibrary['typescript'], workspacePath: string): VueVersion {
   const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
   try {
     const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);

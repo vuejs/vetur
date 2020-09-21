@@ -1,27 +1,30 @@
 import { TextEdit, Range } from 'vscode-languageserver-types';
 
-import { ParserOption, Prettier, PrettierEslintFormat, PrettierTslintFormat } from './prettier';
+import type { BuiltInParserName, CustomParser } from 'prettier';
 import { indentSection } from '../strings';
 
-import { requireLocalPkg } from './requirePkg';
 import { VLSFormatConfig } from '../../config';
 import { logger } from '../../log';
-import * as path from 'path';
+import path from 'path';
+import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 
 const VLS_PATH = path.resolve(__dirname, '../../../');
 
+
+type PrettierParserOption = BuiltInParserName | CustomParser;
+
 export function prettierify(
+  dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
-  workspacePath: string | undefined,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
-  parser: ParserOption,
+  parser: PrettierParserOption,
   initialIndent: boolean
 ): TextEdit[] {
   try {
-    const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
-    const prettierOptions = getPrettierOptions(prettier, fileFsPath, workspacePath, parser, vlsFormatConfig);
+    const prettier = dependencyService.get('prettier', fileFsPath).module;
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
     logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
@@ -34,19 +37,19 @@ export function prettierify(
 }
 
 export function prettierEslintify(
+  dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
-  workspacePath: string | undefined,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
-  parser: ParserOption,
+  parser: PrettierParserOption,
   initialIndent: boolean
 ): TextEdit[] {
   try {
-    const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
-    const prettierEslint = requireLocalPkg(fileFsPath, 'prettier-eslint') as PrettierEslintFormat;
+    const prettier = dependencyService.get('prettier', fileFsPath).module;
+    const prettierEslint = dependencyService.get('prettier-eslint', fileFsPath).module;
 
-    const prettierOptions = getPrettierOptions(prettier, fileFsPath, workspacePath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
     logger.logDebug(`Using prettier-eslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierEslint({
@@ -63,19 +66,19 @@ export function prettierEslintify(
   }
 }
 export function prettierTslintify(
+  dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
-  workspacePath: string,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
-  parser: ParserOption,
+  parser: PrettierParserOption,
   initialIndent: boolean
 ): TextEdit[] {
   try {
-    const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
-    const prettierTslint = requireLocalPkg(fileFsPath, 'prettier-tslint').format as PrettierTslintFormat;
+    const prettier = dependencyService.get('prettier', fileFsPath).module;
+    const prettierTslint = dependencyService.get('prettier-tslint', fileFsPath).module.format;
 
-    const prettierOptions = getPrettierOptions(prettier, fileFsPath, workspacePath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
     logger.logDebug(`Using prettier-tslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierTslint({
@@ -92,11 +95,37 @@ export function prettierTslintify(
     return [];
   }
 }
-function getPrettierOptions(
-  prettierModule: Prettier,
+
+export function prettierPluginPugify(
+  dependencyService: DependencyService,
+  code: string,
   fileFsPath: string,
-  workspacePath: string | undefined,
-  parser: ParserOption,
+  range: Range,
+  vlsFormatConfig: VLSFormatConfig,
+  parser: PrettierParserOption,
+  initialIndent: boolean
+): TextEdit[] {
+  try {
+    const prettier = dependencyService.get('prettier', fileFsPath).module;
+    const prettierPluginPug = dependencyService.get('@prettier/plugin-pug', fileFsPath).module;
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
+    prettierOptions.plugins = [...prettierOptions.plugins, prettierPluginPug];
+    logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
+
+    const prettierifiedCode = prettier.format(code, prettierOptions);
+    return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
+  } catch (e) {
+    console.log('Prettier format failed');
+    console.error(e.message);
+    return [];
+  }
+}
+
+function getPrettierOptions(
+  dependencyService: DependencyService,
+  prettierModule: RuntimeLibrary['prettier'],
+  fileFsPath: string,
+  parser: PrettierParserOption,
   vlsFormatConfig: VLSFormatConfig
 ) {
   const prettierrcOptions = prettierModule.resolveConfig.sync(fileFsPath, { useCache: false });
@@ -106,7 +135,7 @@ function getPrettierOptions(
     prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
     prettierrcOptions.parser = parser;
     // For loading plugins such as @prettier/plugin-pug
-    prettierrcOptions.pluginSearchDirs = workspacePath ? [workspacePath, VLS_PATH] : [VLS_PATH];
+    (prettierrcOptions as { pluginSearchDirs: string[] }).pluginSearchDirs = [dependencyService.rootPath]
 
     return prettierrcOptions;
   } else {
@@ -115,7 +144,7 @@ function getPrettierOptions(
     vscodePrettierOptions.useTabs = vscodePrettierOptions.useTabs || vlsFormatConfig.options.useTabs;
     vscodePrettierOptions.parser = parser;
     // For loading plugins such as @prettier/plugin-pug
-    vscodePrettierOptions.pluginSearchDirs = workspacePath ? [workspacePath, VLS_PATH] : [VLS_PATH];
+    vscodePrettierOptions.pluginSearchDirs = [dependencyService.rootPath]
 
     return vscodePrettierOptions;
   }

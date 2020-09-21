@@ -1,23 +1,24 @@
 import _ from 'lodash';
 import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
 import { html as htmlBeautify } from 'js-beautify';
-import { IPrettyHtml } from './prettyhtml';
-import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
-import { Prettier, PrettierConfig } from '../../../utils/prettier/prettier';
 import { prettierify } from '../../../utils/prettier';
-
-type PrettyHtmlConfig = IPrettyHtml extends (input: string, options: infer R) => any ? NonNullable<R> : never;
+import { DependencyService, RuntimeLibrary } from '../../../services/dependencyService';
+import { ParserOptions as PrettierParserOptions } from 'prettier';
 
 const TEMPLATE_HEAD = '<template>';
 const TEMPLATE_TAIL = '</template>';
 
+type PrettyHtmlConfig = RuntimeLibrary['@starptech/prettyhtml'] extends (input: string, options: infer R) => any
+  ? NonNullable<R>
+  : never;
+
 export function htmlFormat(
+  dependencyService: DependencyService,
   document: TextDocument,
   currRange: Range,
-  vlsFormatConfig: VLSFormatConfig,
-  workspacePath?: string
+  vlsFormatConfig: VLSFormatConfig
 ): TextEdit[] {
   if (vlsFormatConfig.defaultFormatter.html === 'none') {
     return [];
@@ -29,12 +30,17 @@ export function htmlFormat(
   let beautifiedHtml: string;
 
   if (vlsFormatConfig.defaultFormatter.html === 'prettyhtml') {
-    beautifiedHtml = formatWithPrettyHtml(getFileFsPath(document.uri), originalSource, vlsFormatConfig);
+    beautifiedHtml = formatWithPrettyHtml(
+      dependencyService,
+      getFileFsPath(document.uri),
+      originalSource,
+      vlsFormatConfig
+    );
   } else if (vlsFormatConfig.defaultFormatter.html === 'prettier') {
     const prettierResult = formatWithPrettier(
+      dependencyService,
       originalSource,
       getFileFsPath(document.uri),
-      workspacePath,
       currRange,
       vlsFormatConfig,
       false
@@ -57,11 +63,16 @@ export function htmlFormat(
   ];
 }
 
-function formatWithPrettyHtml(fileFsPath: string, input: string, vlsFormatConfig: VLSFormatConfig): string {
-  const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
+function formatWithPrettyHtml(
+  dependencyService: DependencyService,
+  fileFsPath: string,
+  input: string,
+  vlsFormatConfig: VLSFormatConfig
+): string {
+  const prettier = dependencyService.get('prettier', fileFsPath).module;
   const prettierrcOptions = prettier.resolveConfig.sync(fileFsPath, { useCache: false }) || null;
 
-  const prettyhtml: IPrettyHtml = requireLocalPkg(fileFsPath, '@starptech/prettyhtml');
+  const prettyhtml = dependencyService.get('@starptech/prettyhtml', fileFsPath).module;
 
   const result = prettyhtml(input, getPrettyHtmlOptions(prettierrcOptions, vlsFormatConfig));
   return result.contents.trim();
@@ -82,17 +93,20 @@ function formatWithJsBeautify(input: string, vlsFormatConfig: VLSFormatConfig): 
 }
 
 function formatWithPrettier(
+  dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
-  workspacePath: string | undefined,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
   initialIndent: boolean
 ) {
-  return prettierify(code, fileFsPath, workspacePath, range, vlsFormatConfig, 'vue', initialIndent);
+  return prettierify(dependencyService, code, fileFsPath, range, vlsFormatConfig, 'vue', initialIndent);
 }
 
-function getPrettyHtmlOptions(prettierrcOptions: Partial<PrettierConfig> | null, vlsFormatConfig: VLSFormatConfig) {
+function getPrettyHtmlOptions(
+  prettierrcOptions: Partial<PrettierParserOptions> | null,
+  vlsFormatConfig: VLSFormatConfig
+) {
   const fromVls = {
     useTabs: vlsFormatConfig.options.useTabs,
     tabWidth: vlsFormatConfig.options.tabSize

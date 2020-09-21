@@ -15,10 +15,9 @@ import {
 import { VLSFullConfig } from '../../config';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
-import { T_TypeScript } from '../../services/dependencyService';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { mapBackRange, mapFromPositionToOffset } from '../../services/typescriptService/sourceMap';
-import * as ts from 'typescript';
+import type ts from 'typescript';
 import _ from 'lodash';
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
 import { toCompletionItemKind } from '../../services/typescriptService/util';
@@ -29,12 +28,13 @@ import { languageServiceIncludesFile } from '../script/javascript';
 import * as Previewer from '../script/previewer';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
+import { RuntimeLibrary } from '../../services/dependencyService';
 
 export class VueInterpolationMode implements LanguageMode {
   private config: VLSFullConfig;
 
   constructor(
-    private tsModule: T_TypeScript,
+    private tsModule: RuntimeLibrary['typescript'],
     private serviceHost: IServiceHost,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
     private vueInfoService?: VueInfoService
@@ -93,7 +93,7 @@ export class VueInterpolationMode implements LanguageMode {
       return {
         range: mapBackRange(templateDoc, diag as ts.TextSpan, templateSourceMap),
         severity: DiagnosticSeverity.Error,
-        message: ts.flattenDiagnosticMessageText(diag.messageText, '\n'),
+        message: this.tsModule.flattenDiagnosticMessageText(diag.messageText, '\n'),
         code: diag.code,
         source: 'Vetur'
       };
@@ -229,11 +229,11 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     if (details) {
-      item.detail = Previewer.plain(ts.displayPartsToString(details.displayParts));
+      item.detail = Previewer.plain(this.tsModule.displayPartsToString(details.displayParts));
 
       const documentation: MarkupContent = {
         kind: 'markdown',
-        value: ts.displayPartsToString(details.documentation) + '\n\n'
+        value: this.tsModule.displayPartsToString(details.documentation) + '\n\n'
       };
 
       if (details.tags) {

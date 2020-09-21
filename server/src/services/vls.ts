@@ -46,6 +46,7 @@ import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
+import { createDependencyService, DependencyService } from './dependencyService';
 import _ from 'lodash';
 import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
@@ -85,7 +86,7 @@ export class VLS {
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
     this.vueInfoService = new VueInfoService();
-    this.dependencyService = new DependencyService();
+    this.dependencyService = createDependencyService();
 
     this.languageModes = new LanguageModes();
   }

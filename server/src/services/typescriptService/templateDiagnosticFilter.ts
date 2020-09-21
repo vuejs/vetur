@@ -1,9 +1,9 @@
-import * as ts from 'typescript';
-import { T_TypeScript } from '../dependencyService';
+import type ts from 'typescript';
+import { RuntimeLibrary } from '../dependencyService';
 
 type DiagnosticFilter = (diagnostic: ts.Diagnostic) => boolean;
 
-export function createTemplateDiagnosticFilter(tsModule: T_TypeScript) {
+export function createTemplateDiagnosticFilter(tsModule: RuntimeLibrary['typescript']) {
   /**
    * Ignores errors when accessing `private` or `protected` members on component.
    *
