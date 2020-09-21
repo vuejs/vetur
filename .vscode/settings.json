@@ -1,5 +1,6 @@
 {
   "files.exclude": {
     "docs/_book": true
-  }
+  },
+  "typescript.tsdk": "/Users/yoyo930021/git/vetur/node_modules/typescript/lib"
 }

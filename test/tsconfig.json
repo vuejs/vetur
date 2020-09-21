@@ -3,7 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "rootDir": "../",
-    "outDir": "../dist",
+    "outDir": "../dist-test",
 
     "noImplicitAny": false,
     "lib": ["es2015"]

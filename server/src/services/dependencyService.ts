@@ -83,7 +83,7 @@ export const createDependencyService = () => {
           const dir = path.isAbsolute(tsSDKPath)
             ? path.resolve(tsSDKPath, '..')
             : path.resolve(workspacePath, tsSDKPath, '..');
-          const tsModule = await import(dir);
+          const tsModule = eval('require')(dir);
           console.log(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
 
           return [

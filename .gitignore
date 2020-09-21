@@ -12,6 +12,8 @@ test/**/data-dir/User/**
 dist
 server/dist
 docs/.vuepress/dist
+dist-test/
+server/dist-test/
 
 *.zip
 *.vsix

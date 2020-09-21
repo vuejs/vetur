@@ -30,7 +30,7 @@ export function doESLintValidation(document: TextDocument, engine: CLIEngine): D
 }
 
 export function createLintEngine(vueVersion: VueVersion) {
-  const SERVER_ROOT = resolve(__dirname, '../../../../');
+  const SERVER_ROOT = __dirname;
 
   const basicConfig = {
     useEslintrc: false,
