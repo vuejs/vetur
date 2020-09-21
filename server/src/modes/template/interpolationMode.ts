@@ -14,7 +14,6 @@ import {
   TextDocument,
   TextEdit
 } from 'vscode-languageserver-types';
-import { URI } from 'vscode-uri';
 import { VLSFullConfig } from '../../config';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
