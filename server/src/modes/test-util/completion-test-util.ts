@@ -106,10 +106,10 @@ function applyInsertReplaceEdits(document: TextDocument, text: string, edits: In
   return text;
 }
 
-function isTextEdit(value: TextEdit | any): value is TextEdit {
-  return value !== null && value !== undefined && (value as TextEdit).range !== undefined;
+function isTextEdit(value: TextEdit | InsertReplaceEdit | undefined): value is TextEdit {
+  return !!value && 'range' in value;
 }
 
-function isInsertReplaceEdit(value: InsertReplaceEdit | any): value is InsertReplaceEdit {
-  return value !== null && value !== undefined && (value as InsertReplaceEdit).replace !== undefined;
+function isInsertReplaceEdit(value: TextEdit | InsertReplaceEdit | undefined): value is InsertReplaceEdit {
+  return !!value && ('insert' in value || 'replace' in value);
 }
