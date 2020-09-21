@@ -78,7 +78,7 @@ export class VueInterpolationMode implements LanguageMode {
       childComponents
     );
 
-    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+    if (!languageServiceIncludesFile(templateDoc.uri)) {
       return [];
     }
 
@@ -123,7 +123,7 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
-    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+    if (!languageServiceIncludesFile(templateDoc.uri)) {
       return NULL_COMPLETION;
     }
 
@@ -213,7 +213,7 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
-    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+    if (!languageServiceIncludesFile(templateDoc.uri)) {
       return item;
     }
 
@@ -274,7 +274,7 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
-    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+    if (!languageServiceIncludesFile(templateDoc.uri)) {
       return {
         contents: []
       };
@@ -329,7 +329,7 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
-    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+    if (!languageServiceIncludesFile(templateDoc.uri)) {
       return [];
     }
 
@@ -377,7 +377,7 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
-    if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+    if (!languageServiceIncludesFile(templateDoc.uri)) {
       return [];
     }
 

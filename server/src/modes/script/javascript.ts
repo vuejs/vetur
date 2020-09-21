@@ -45,6 +45,7 @@ import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
+import { sourceFileNameSet } from '../../services/typescriptService/preprocess';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -109,7 +110,7 @@ export async function getJavascriptMode(
 
     doValidation(doc: TextDocument): Diagnostic[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return [];
       }
 
@@ -140,7 +141,7 @@ export async function getJavascriptMode(
     },
     doComplete(doc: TextDocument, position: Position): CompletionList {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return { isIncomplete: false, items: [] };
       }
 
@@ -212,7 +213,7 @@ export async function getJavascriptMode(
     },
     doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
       const { service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return item;
       }
 
@@ -264,7 +265,7 @@ export async function getJavascriptMode(
     },
     doHover(doc: TextDocument, position: Position): Hover {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return { contents: [] };
       }
 
@@ -302,7 +303,7 @@ export async function getJavascriptMode(
     },
     doSignatureHelp(doc: TextDocument, position: Position): SignatureHelp | null {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return NULL_SIGNATURE;
       }
 
@@ -360,7 +361,7 @@ export async function getJavascriptMode(
     },
     findDocumentHighlight(doc: TextDocument, position: Position): DocumentHighlight[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return [];
       }
 
@@ -378,7 +379,7 @@ export async function getJavascriptMode(
     },
     findDocumentSymbols(doc: TextDocument): SymbolInformation[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return [];
       }
 
@@ -418,7 +419,7 @@ export async function getJavascriptMode(
     },
     findDefinition(doc: TextDocument, position: Position): Definition {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return [];
       }
 
@@ -444,7 +445,7 @@ export async function getJavascriptMode(
     },
     findReferences(doc: TextDocument, position: Position): Location[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return [];
       }
 
@@ -472,7 +473,7 @@ export async function getJavascriptMode(
     },
     getFoldingRanges(doc) {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
-      if (!languageServiceIncludesFile(service, doc.uri)) {
+      if (!languageServiceIncludesFile(doc.uri)) {
         return [];
       }
 
@@ -718,10 +719,8 @@ function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
   return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
 }
 
-export function languageServiceIncludesFile(ls: ts.LanguageService, documentUri: string): boolean {
-  const filePaths = ls.getProgram()!.getRootFileNames();
-  const filePath = getFilePath(documentUri);
-  return filePaths.includes(filePath);
+export function languageServiceIncludesFile(documentUri: string): boolean {
+  return sourceFileNameSet.has(getFilePath(documentUri));
 }
 
 function convertRange(document: TextDocument, span: ts.TextSpan): Range {

@@ -420,8 +420,8 @@ export function getServiceHost(
   });
 
   const registry = tsModule.createDocumentRegistry(true);
-  let jsLanguageService = tsModule.createLanguageService(jsHost, registry);
-  const templateLanguageService = patchTemplateService(tsModule.createLanguageService(templateHost, registry));
+  let jsLanguageService = patchTemplateService(tsModule.createLanguageService(jsHost, registry));
+  const templateLanguageService = jsLanguageService;
 
   return {
     queryVirtualFileInfo,
@@ -442,6 +442,11 @@ function patchTemplateService(original: ts.LanguageService): ts.LanguageService 
 
     getCompletionsAtPosition(fileName, position, options) {
       const result = original.getCompletionsAtPosition(fileName, position, options);
+
+      if (!fileName.endsWith('template')) {
+        return result;
+      }
+
       if (!result) {
         return;
       }

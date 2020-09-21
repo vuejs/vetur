@@ -537,11 +537,7 @@ export class VLS {
     if (doc.languageId === 'vue') {
       this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
         if (lmr.mode.doValidation) {
-          if (this.validation[lmr.mode.getId()]) {
-            pushAll(diagnostics, lmr.mode.doValidation(doc));
-          }
-          // Special case for template type checking
-          else if (lmr.mode.getId() === 'vue-html' && this.templateInterpolationValidation) {
+          if (this.validation[lmr.mode.getId()] && lmr.mode.getId() !== 'vue-html') {
             pushAll(diagnostics, lmr.mode.doValidation(doc));
           }
         }

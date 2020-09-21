@@ -21,6 +21,8 @@ import { kebabCase, snakeCase } from 'lodash';
 
 const importedComponentName = '__vlsComponent';
 
+export const sourceFileNameSet = new Set();
+
 export function parseVueScript(text: string): string {
   const doc = TextDocument.create('test://test/test.vue', 'vue', 0, text);
   const regions = getVueDocumentRegions(doc);
@@ -140,6 +142,7 @@ export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Ma
     scriptKind?: ts.ScriptKind
   ): ts.SourceFile {
     let sourceFile = clssf(fileName, scriptSnapshot, scriptTarget, version, setNodeParents, scriptKind);
+    sourceFileNameSet.add(fileName);
     scriptKindTracker.set(sourceFile, scriptKind);
     if (isVirtualVueTemplateFile(fileName)) {
       sourceFile = recreateVueTemplateSourceFile(fileName, sourceFile, scriptSnapshot);
