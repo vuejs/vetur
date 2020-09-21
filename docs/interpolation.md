@@ -171,5 +171,5 @@ Supported:
 
 - JS file with `export default {...}`
 - TS file with `defineComponent` in Vue 3 or `Vue.extend` in Vue 2
-- Prop Type: `foo: String`, `foo: { type: String }` or `foo: String as PropType<string>`
+- Prop Type: `foo: String`, `foo: { type: String }` or `foo: String as PropType<string>` or `foo: String as Vue.PropType<string>`
   - This is useful in the case of `foo: Array`. If you are using JS, there's no way to say `foo is a string array`, however with TS you can use `foo: Array as PropType<string[]>`. Vetur will then check that the provided expression matches `string[]`.

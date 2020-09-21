@@ -204,7 +204,7 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
          */
         tsModule.isAsExpression(typeDeclaration) &&
         tsModule.isTypeReferenceNode(typeDeclaration.type) &&
-        typeDeclaration.type.typeName.getText() === 'PropType' &&
+        ['PropType', 'Vue.PropType'].includes(typeDeclaration.type.typeName.getText()) &&
         typeDeclaration.type.typeArguments &&
         typeDeclaration.type.typeArguments[0]
       ) {
