@@ -43,6 +43,7 @@ export interface PrettierConfig {
   jsxSingleQuote: boolean;
   htmlWhitespaceSensitivity: 'css' | 'strict' | 'ignore';
   endOfLine: 'auto' | 'lf' | 'crlf' | 'cr';
+  pluginSearchDirs: string[];
 }
 
 export interface Prettier {

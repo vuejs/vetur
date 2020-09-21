@@ -6,10 +6,14 @@ import { indentSection } from '../strings';
 import { requireLocalPkg } from './requirePkg';
 import { VLSFormatConfig } from '../../config';
 import { logger } from '../../log';
+import * as path from 'path';
+
+const VLS_PATH = path.resolve(__dirname, '../../../');
 
 export function prettierify(
   code: string,
   fileFsPath: string,
+  workspacePath: string | undefined,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
   parser: ParserOption,
@@ -17,7 +21,7 @@ export function prettierify(
 ): TextEdit[] {
   try {
     const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
-    const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(prettier, fileFsPath, workspacePath, parser, vlsFormatConfig);
     logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
@@ -32,6 +36,7 @@ export function prettierify(
 export function prettierEslintify(
   code: string,
   fileFsPath: string,
+  workspacePath: string | undefined,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
   parser: ParserOption,
@@ -41,7 +46,7 @@ export function prettierEslintify(
     const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
     const prettierEslint = requireLocalPkg(fileFsPath, 'prettier-eslint') as PrettierEslintFormat;
 
-    const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(prettier, fileFsPath, workspacePath, parser, vlsFormatConfig);
     logger.logDebug(`Using prettier-eslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierEslint({
@@ -60,6 +65,7 @@ export function prettierEslintify(
 export function prettierTslintify(
   code: string,
   fileFsPath: string,
+  workspacePath: string,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
   parser: ParserOption,
@@ -69,7 +75,7 @@ export function prettierTslintify(
     const prettier = requireLocalPkg(fileFsPath, 'prettier') as Prettier;
     const prettierTslint = requireLocalPkg(fileFsPath, 'prettier-tslint').format as PrettierTslintFormat;
 
-    const prettierOptions = getPrettierOptions(prettier, fileFsPath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(prettier, fileFsPath, workspacePath, parser, vlsFormatConfig);
     logger.logDebug(`Using prettier-tslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierTslint({
@@ -89,6 +95,7 @@ export function prettierTslintify(
 function getPrettierOptions(
   prettierModule: Prettier,
   fileFsPath: string,
+  workspacePath: string | undefined,
   parser: ParserOption,
   vlsFormatConfig: VLSFormatConfig
 ) {
@@ -98,6 +105,8 @@ function getPrettierOptions(
     prettierrcOptions.tabWidth = prettierrcOptions.tabWidth || vlsFormatConfig.options.tabSize;
     prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
     prettierrcOptions.parser = parser;
+    // For loading plugins such as @prettier/plugin-pug
+    prettierrcOptions.pluginSearchDirs = workspacePath ? [workspacePath, VLS_PATH] : [VLS_PATH];
 
     return prettierrcOptions;
   } else {
@@ -105,6 +114,8 @@ function getPrettierOptions(
     vscodePrettierOptions.tabWidth = vscodePrettierOptions.tabWidth || vlsFormatConfig.options.tabSize;
     vscodePrettierOptions.useTabs = vscodePrettierOptions.useTabs || vlsFormatConfig.options.useTabs;
     vscodePrettierOptions.parser = parser;
+    // For loading plugins such as @prettier/plugin-pug
+    vscodePrettierOptions.pluginSearchDirs = workspacePath ? [workspacePath, VLS_PATH] : [VLS_PATH];
 
     return vscodePrettierOptions;
   }

@@ -18,27 +18,40 @@ import { ParserOption } from '../../utils/prettier/prettier.d';
 import { NULL_HOVER } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 
-export function getCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getCSSMode(
+  workspacePath: string,
+  documentRegions: LanguageModelCache<VueDocumentRegions>
+): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('css', languageService, documentRegions);
+  return getStyleMode('css', workspacePath, languageService, documentRegions);
 }
 
-export function getPostCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getPostCSSMode(
+  workspacePath: string,
+  documentRegions: LanguageModelCache<VueDocumentRegions>
+): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('postcss', languageService, documentRegions);
+  return getStyleMode('postcss', workspacePath, languageService, documentRegions);
 }
 
-export function getSCSSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getSCSSMode(
+  workspacePath: string,
+  documentRegions: LanguageModelCache<VueDocumentRegions>
+): LanguageMode {
   const languageService = getSCSSLanguageService();
-  return getStyleMode('scss', languageService, documentRegions);
+  return getStyleMode('scss', workspacePath, languageService, documentRegions);
 }
-export function getLESSMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getLESSMode(
+  workspacePath: string,
+  documentRegions: LanguageModelCache<VueDocumentRegions>
+): LanguageMode {
   const languageService = getLESSLanguageService();
-  return getStyleMode('less', languageService, documentRegions);
+  return getStyleMode('less', workspacePath, languageService, documentRegions);
 }
 
 function getStyleMode(
   languageId: LanguageId,
+  workspacePath: string,
   languageService: LanguageService,
   documentRegions: LanguageModelCache<VueDocumentRegions>
 ): LanguageMode {
@@ -145,6 +158,7 @@ function getStyleMode(
       return prettierify(
         value,
         getFileFsPath(document.uri),
+        workspacePath,
         range,
         config.vetur.format as VLSFormatConfig,
         parserMap[languageId],

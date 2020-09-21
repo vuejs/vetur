@@ -4,7 +4,7 @@ import { prettierify } from '../../utils/prettier';
 import { VLSFormatConfig } from '../../config';
 import { getFileFsPath } from '../../utils/paths';
 
-export function getPugMode(): LanguageMode {
+export function getPugMode(workspacePath: string): LanguageMode {
   let config: any = {};
 
   return {
@@ -24,6 +24,7 @@ export function getPugMode(): LanguageMode {
       const foo = prettierify(
         value,
         getFileFsPath(document.uri),
+        workspacePath,
         range,
         config.vetur.format as VLSFormatConfig,
         'pug',

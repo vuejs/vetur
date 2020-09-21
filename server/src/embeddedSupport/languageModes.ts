@@ -145,12 +145,12 @@ export class LanguageModes {
 
     this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
-    this.modes['pug'] = getPugMode();
-    this.modes['css'] = getCSSMode(this.documentRegions);
-    this.modes['postcss'] = getPostCSSMode(this.documentRegions);
-    this.modes['scss'] = getSCSSMode(this.documentRegions);
+    this.modes['pug'] = getPugMode(workspacePath);
+    this.modes['css'] = getCSSMode(workspacePath, this.documentRegions);
+    this.modes['postcss'] = getPostCSSMode(workspacePath, this.documentRegions);
+    this.modes['scss'] = getSCSSMode(workspacePath, this.documentRegions);
     this.modes['sass'] = new SassLanguageMode();
-    this.modes['less'] = getLESSMode(this.documentRegions);
+    this.modes['less'] = getLESSMode(workspacePath, this.documentRegions);
     this.modes['stylus'] = getStylusMode(this.documentRegions);
     this.modes['javascript'] = jsMode;
     this.modes['typescript'] = jsMode;

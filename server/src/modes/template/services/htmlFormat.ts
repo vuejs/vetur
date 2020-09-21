@@ -13,7 +13,12 @@ type PrettyHtmlConfig = IPrettyHtml extends (input: string, options: infer R) =>
 const TEMPLATE_HEAD = '<template>';
 const TEMPLATE_TAIL = '</template>';
 
-export function htmlFormat(document: TextDocument, currRange: Range, vlsFormatConfig: VLSFormatConfig): TextEdit[] {
+export function htmlFormat(
+  document: TextDocument,
+  currRange: Range,
+  vlsFormatConfig: VLSFormatConfig,
+  workspacePath?: string
+): TextEdit[] {
   if (vlsFormatConfig.defaultFormatter.html === 'none') {
     return [];
   }
@@ -29,6 +34,7 @@ export function htmlFormat(document: TextDocument, currRange: Range, vlsFormatCo
     const prettierResult = formatWithPrettier(
       originalSource,
       getFileFsPath(document.uri),
+      workspacePath,
       currRange,
       vlsFormatConfig,
       false
@@ -78,11 +84,12 @@ function formatWithJsBeautify(input: string, vlsFormatConfig: VLSFormatConfig): 
 function formatWithPrettier(
   code: string,
   fileFsPath: string,
+  workspacePath: string | undefined,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
   initialIndent: boolean
 ) {
-  return prettierify(code, fileFsPath, range, vlsFormatConfig, 'vue', initialIndent);
+  return prettierify(code, fileFsPath, workspacePath, range, vlsFormatConfig, 'vue', initialIndent);
 }
 
 function getPrettyHtmlOptions(prettierrcOptions: Partial<PrettierConfig> | null, vlsFormatConfig: VLSFormatConfig) {

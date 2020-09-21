@@ -576,7 +576,7 @@ export async function getJavascriptMode(
         } else {
           doFormat = prettierify;
         }
-        return doFormat(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
+        return doFormat(code, filePath, workspacePath, range, vlsFormatConfig, parser, needInitialIndent);
       } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
