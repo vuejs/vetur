@@ -13,7 +13,7 @@ import {
 import { createConnection } from 'vscode-languageserver';
 import { Duplex } from 'stream';
 import { VLS } from 'vls';
-import { params } from './initParams';
+import { getInitParams } from './initParams';
 import * as fs from 'fs';
 import { URI } from 'vscode-uri';
 import * as glob from 'glob';
@@ -51,6 +51,7 @@ async function prepareClientConnection(workspaceUri: URI) {
       await vls.init(params);
 
       console.log('Vetur initialized');
+      console.log('====================================');
 
       return {
         capabilities: vls.capabilities
@@ -61,12 +62,7 @@ async function prepareClientConnection(workspaceUri: URI) {
   vls.listen();
   clientConnection.listen();
 
-  const init: InitializeParams = {
-    rootPath: workspaceUri.fsPath,
-    rootUri: workspaceUri.toString(),
-    processId: process.pid,
-    ...params
-  } as InitializeParams;
+  const init = getInitParams(workspaceUri);
 
   await clientConnection.sendRequest(InitializeRequest.type, init);
 
@@ -83,12 +79,11 @@ async function getDiagnostics(workspaceUri: URI) {
     return 0;
   }
 
-  console.log('Getting diagnostics from:');
-  console.log(files);
+  console.log('');
+  console.log('Getting diagnostics from: ', files, '\n');
 
   const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
 
-  console.log('');
   let errCount = 0;
 
   for (const absFilePath of absFilePaths) {
@@ -106,7 +101,6 @@ async function getDiagnostics(workspaceUri: URI) {
         uri: URI.file(absFilePath).toString()
       })) as Diagnostic[];
       if (res.length > 0) {
-        console.log('');
         console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
         res.forEach(d => {
           /**
@@ -116,10 +110,10 @@ async function getDiagnostics(workspaceUri: URI) {
             return;
           }
           if (d.severity === DiagnosticSeverity.Error) {
-            console.log(`${chalk.red('Error')}: ${d.message}`);
+            console.log(`${chalk.red('Error')}: ${d.message.trim()}`);
             errCount++;
           } else {
-            console.log(`${chalk.yellow('Warn')} : ${d.message}`);
+            console.log(`${chalk.yellow('Warn')} : ${d.message.trim()}`);
           }
         });
         console.log('');
@@ -137,6 +131,7 @@ async function getDiagnostics(workspaceUri: URI) {
 
   // vls diagnostics
   if (myArgs.length > 0 && myArgs[0] === 'diagnostics') {
+    console.log('====================================');
     console.log('Getting Vetur diagnostics');
     let workspaceUri;
 
@@ -149,8 +144,6 @@ async function getDiagnostics(workspaceUri: URI) {
       workspaceUri = URI.file(process.cwd());
     }
 
-    console.log('');
-    console.log('====================================');
     const errCount = await getDiagnostics(workspaceUri);
     console.log('====================================');
 
