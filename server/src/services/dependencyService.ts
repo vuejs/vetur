@@ -10,10 +10,13 @@ import prettierEslint from 'prettier-eslint';
 import prettierTslint from 'prettier-tslint';
 import stylusSupremacy from 'stylus-supremacy';
 import prettierPluginPug from '@prettier/plugin-pug';
+import { performance } from 'perf_hooks';
+import { logger } from '../log';
 
 const readFileAsync = util.promisify(fs.readFile);
 
 async function findAllPackages(workspacePath: string, moduleName: string) {
+  const startTime = performance.now();
   const packages = await fg(`**/node_modules/${moduleName}/package.json`, {
     cwd: workspacePath,
     absolute: true,
@@ -34,6 +37,7 @@ async function findAllPackages(workspacePath: string, moduleName: string) {
       )
     )
   );
+  logger.logInfo(`Try to find ${moduleName} in ${workspacePath}. - ${Math.round(performance.now() - startTime)}ms`);
 
   return packages;
 }
@@ -84,7 +88,7 @@ export const createDependencyService = () => {
             ? path.resolve(tsSDKPath, '..')
             : path.resolve(workspacePath, tsSDKPath, '..');
           const tsModule = eval('require')(dir);
-          console.log(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
+          logger.logInfo(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
 
           return [
             {
@@ -104,7 +108,7 @@ export const createDependencyService = () => {
 
           return packages
             .map(pkg => {
-              console.log(`Loaded typescript@${pkg.version} from ${pkg.dir}.`);
+              logger.logInfo(`Loaded typescript@${pkg.version} from ${pkg.dir}.`);
 
               return {
                 dir: pkg.dir,
@@ -117,8 +121,9 @@ export const createDependencyService = () => {
         }
 
         throw new Error('No useWorkspaceDependencies.');
-      } catch {
-        console.log(`Loaded bundled typescript@${ts.version}.`);
+      } catch (e) {
+        logger.logDebug(e.message);
+        logger.logInfo(`Loaded bundled typescript@${ts.version}.`);
         return [
           {
             dir: '',
@@ -140,7 +145,7 @@ export const createDependencyService = () => {
 
           return packages
             .map(pkg => {
-              console.log(`Loaded ${name}@${pkg.version} from ${pkg.dir}.`);
+              logger.logInfo(`Loaded ${name}@${pkg.version} from ${pkg.dir}.`);
 
               return {
                 dir: pkg.dir,
@@ -153,8 +158,9 @@ export const createDependencyService = () => {
         }
         throw new Error('No useWorkspaceDependencies.');
       } catch (e) {
+        logger.logDebug(e.message);
         // TODO: Get bundle package version
-        console.log(`Loaded bundled ${name}.`);
+        logger.logInfo(`Loaded bundled ${name}.`);
         return [
           {
             dir: '',

@@ -49,6 +49,7 @@ export const external = [
   'buffer',
   'stream',
   'string_decoder',
+  'perf_hooks',
   // vscode
   'vscode',
   // eslint config extends use fs path.
