@@ -13,8 +13,6 @@ export default [
     output: { file: getVlsURL(vlsPkg.main), name: vlsPkg.name, format: 'cjs', sourcemap: true, interop: 'auto' },
     external,
     onwarn,
-    // Close treeshake, because bundle size is same and reduce build time.
-    treeshake: false,
     watch: {
       include: getVlsURL('**')
     },
