@@ -52,6 +52,7 @@ export const external = [
   'string_decoder',
   // vscode
   'vscode',
+  // eslint config extends use fs path.
   'eslint-plugin-vue',
   // rollup can't handle dependency correctly.
   'stylus'
