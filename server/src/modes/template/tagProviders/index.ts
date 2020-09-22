@@ -10,7 +10,6 @@ import {
   getDependencyTagProvider,
   getWorkspaceTagProvider
 } from './externalTagProviders';
-export { getComponentInfoTagProvider as getComponentTags } from './componentInfoTagProvider';
 export { IHTMLTagProvider } from './common';
 
 import * as ts from 'typescript';
