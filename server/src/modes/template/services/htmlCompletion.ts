@@ -154,6 +154,9 @@ export function doComplete(
         if (type !== 'v' && value.length) {
           codeSnippet = codeSnippet + value;
         }
+        if ((filterPrefix === ':' && codeSnippet[0] === ':') || (filterPrefix === '@' && codeSnippet[0] === '@')) {
+          codeSnippet = codeSnippet.slice(1);
+        }
         result.items.push({
           label: attribute,
           kind: type === 'event' ? CompletionItemKind.Function : CompletionItemKind.Value,
