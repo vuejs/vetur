@@ -69,6 +69,8 @@ jobs:
         run: |
           yarn --frozen-lockfile
           yarn compile
+        env:
+          MINIFY: false
 
       - name: Start xvfb
         if: matrix.os == 'ubuntu-latest'

@@ -7,8 +7,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import replace from '@rollup/plugin-replace';
 
-const production = !process.env.ROLLUP_WATCH;
-// const production = false;
+export const production = process.env.MINIFY === 'false' ? false : !process.env.ROLLUP_WATCH;
 
 export const getRootURL = root => relative => path.join(root, relative);
 
