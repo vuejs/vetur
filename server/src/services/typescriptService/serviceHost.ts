@@ -97,7 +97,6 @@ export function getServiceHost(
   const moduleResolutionCache = new ModuleResolutionCache();
 
   const parsedConfig = getParsedConfig(tsModule, workspacePath);
-  console.log('parsedConfig', parsedConfig);
   /**
    * Only js/ts files in local project
    */
@@ -482,11 +481,9 @@ function getScriptKind(tsModule: RuntimeLibrary['typescript'], langId: string): 
 }
 
 function getParsedConfig(tsModule: RuntimeLibrary['typescript'], workspacePath: string) {
-  console.log('cc', tsModule.version, workspacePath);
   const configFilename =
     tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
     tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'jsconfig.json');
-  console.log('configFilename', configFilename);
   const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
     exclude: defaultIgnorePatterns(tsModule, workspacePath)
   };
