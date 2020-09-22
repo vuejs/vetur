@@ -103,7 +103,9 @@ async function getDiagnostics(workspaceUri: URI) {
         uri: URI.file(absFilePath).toString()
       })) as Diagnostic[];
       if (res.length > 0) {
-        console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
+        if (res.filter(r => r.source !== 'eslint-plugin-vue').length > 0) {
+          console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
+        }
         res.forEach(d => {
           /**
            * Ignore eslint errors for now
