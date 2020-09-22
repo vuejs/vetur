@@ -8,9 +8,11 @@ import {
   Logger,
   DidOpenTextDocumentNotification,
   Diagnostic,
-  DiagnosticSeverity
-} from 'vscode-languageserver-protocol';
-import { createConnection } from 'vscode-languageserver';
+  DiagnosticSeverity,
+  createConnection,
+  ServerCapabilities
+} from 'vscode-languageserver';
+
 import { Duplex } from 'stream';
 import { VLS } from 'vls';
 import { getInitParams } from './initParams';
@@ -54,7 +56,7 @@ async function prepareClientConnection(workspaceUri: URI) {
       console.log('====================================');
 
       return {
-        capabilities: vls.capabilities
+        capabilities: vls.capabilities as ServerCapabilities
       };
     }
   );

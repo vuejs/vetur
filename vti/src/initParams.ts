@@ -92,20 +92,3 @@ function getDefaultVLSConfig() {
     stylusSupremacy: {}
   };
 }
-
-function getExtraConfig() {
-  return {
-    vetur: {
-      validation: {
-        template: true,
-        templateProps: true,
-        interpolation: true,
-        style: false,
-        script: false
-      },
-      experimental: {
-        templateInterpolationService: false
-      }
-    }
-  };
-}

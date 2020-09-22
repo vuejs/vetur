@@ -6,8 +6,7 @@ import {
   Range,
   TextEdit,
   InsertTextFormat,
-  CompletionItem,
-  MarkupKind
+  CompletionItem
 } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';

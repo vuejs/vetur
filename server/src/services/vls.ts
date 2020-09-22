@@ -23,7 +23,6 @@ import {
   ApplyWorkspaceEditRequest,
   FoldingRangeParams
 } from 'vscode-languageserver';
-
 import {
   ColorInformation,
   CompletionItem,

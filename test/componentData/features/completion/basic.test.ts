@@ -1,4 +1,4 @@
-import { position, sameLineRange } from '../../../util';
+import { position } from '../../../util';
 import { testCompletion } from '../../../completionHelper';
 import { getDocUri } from '../../path';
 

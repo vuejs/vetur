@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { LanguageClient, WorkspaceEdit } from 'vscode-languageclient';
+import { LanguageClient } from 'vscode-languageclient';
 import { generateGrammarCommandHandler } from './commands/generateGrammarCommand';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
