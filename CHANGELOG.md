@@ -2,6 +2,7 @@
 
 ### 0.28.0
 
+- Fix completing prop name completes with extra `:`. #2304.
 - Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150
 - Let VTI load default VLS config. #2274.
 - Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
