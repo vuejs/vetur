@@ -65,7 +65,7 @@ Thanks to the following companies for supporting Vetur's development:
 ## Quick Start
 
 - Install [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur).
-- Try it with [Veturpack](https://github.com/octref/veturpack), a pre-configured Vue boilerplate based on [Vuepack](https://github.com/egoist/vuepack).
+- Try it with [Veturpack](https://github.com/octref/veturpack).
 - Refer to [setup](https://vuejs.github.io/vetur/setup.html) page for setting up.
 - Refer to each feature's own page for setting up specific features.
 
