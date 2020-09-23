@@ -7,12 +7,15 @@ client/
 **/test/
 server/src/
 vti
+dist-test/
+server/dist-test/
 
 .**
 
-**/*.map
 **/tsconfig.json
+**/tsconfig.**.json
 **/tslint.json
+**/yarn.lock
 
 .vsix
 scripts
