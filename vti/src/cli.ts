@@ -107,9 +107,7 @@ async function getDiagnostics(workspaceUri: URI) {
        */
       res = res.filter(r => r.source !== 'eslint-plugin-vue');
       if (res.length > 0) {
-        if (res.filter(r => r.source !== 'eslint-plugin-vue').length > 0) {
-          console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
-        }
+        console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
         res.forEach(d => {
           if (d.severity === DiagnosticSeverity.Error) {
             console.log(`${chalk.red('Error')}: ${d.message.trim()}`);
