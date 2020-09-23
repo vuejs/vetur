@@ -1,23 +1,23 @@
-import path from 'path';
-import fs from 'fs';
-import json from '@rollup/plugin-json';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
-import resolve from '@rollup/plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
-import replace from '@rollup/plugin-replace';
+const path = require('path');
+const fs = require('fs');
+const json = require('@rollup/plugin-json');
+const commonjs = require('@rollup/plugin-commonjs');
+const typescript = require('rollup-plugin-typescript2');
+const resolve = require('@rollup/plugin-node-resolve').default;
+const { terser } = require('rollup-plugin-terser');
+const replace = require('@rollup/plugin-replace');
 
-export const production = process.env.MINIFY === 'false' ? false : !process.env.ROLLUP_WATCH;
+const production = process.env.MINIFY === 'false' ? false : !process.env.ROLLUP_WATCH;
 
-export const getRootURL = root => relative => path.join(root, relative);
+const getRootURL = root => relative => path.resolve(__dirname, '../', root, relative);
 
-export const clearDist = dist => {
+const clearDist = dist => {
   if (fs.existsSync(dist)) {
     fs.rmdirSync(dist, { recursive: true });
   }
 };
 
-export const onwarn = (warning, warn) => {
+const onwarn = (warning, warn) => {
   // typescript tslib
   if (warning.code === 'THIS_IS_UNDEFINED') return;
   // ignorePartSourcemap
@@ -31,7 +31,7 @@ export const onwarn = (warning, warn) => {
   // console.log(warning)
 };
 
-export const external = [
+const external = [
   // node built-in
   'path',
   'fs',
@@ -58,7 +58,7 @@ export const external = [
   'stylus'
 ];
 
-export const createPlugins = tsconfig => [
+const createPlugins = tsconfig => [
   json(),
   resolve({ dedupe: ['typescript', 'debug'], preferBuiltins: true }),
   commonjs({
@@ -89,3 +89,11 @@ export const createPlugins = tsconfig => [
   typescript({ tsconfig, tsconfigOverride: { compilerOptions: { module: 'esnext' } } }),
   production && terser()
 ];
+
+module.exports = {
+  getRootURL,
+  clearDist,
+  onwarn,
+  external,
+  createPlugins
+};

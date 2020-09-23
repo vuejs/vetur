@@ -1,9 +1,9 @@
-import fs from 'fs-extra';
-import path from 'path';
-import fg from 'fast-glob';
-import { getRootURL, clearDist, external, onwarn, createPlugins } from '../build/rollup-common-config';
-import { linkVlsInCLI, ignorePartSourcemap } from '../build/rollup-plugins.js';
-import vlsPkg from './package.json';
+const fs = require('fs-extra');
+const path = require('path');
+const fg = require('fast-glob');
+const { getRootURL, clearDist, external, onwarn, createPlugins } = require('../build/rollup-common-config');
+const { linkVlsInCLI, ignorePartSourcemap } = require('../build/rollup-plugins.js');
+const vlsPkg = require('./package.json');
 
 const getVlsURL = getRootURL('server');
 
@@ -13,11 +13,10 @@ function copySnippets() {
   return {
     name: 'copy-snippets',
     buildEnd() {
-      fs.copySync(
-        path.resolve(__dirname, '../', getVlsURL('src/modes/vue/veturSnippets')),
-        path.resolve(__dirname, '../', getVlsURL('dist/veturSnippets')),
-        { overwrite: true }
-      );
+      fs.copySync(getVlsURL('src/modes/vue/veturSnippets'), getVlsURL('dist/veturSnippets'), {
+        overwrite: true,
+        recursive: true
+      });
     }
   };
 }
@@ -27,14 +26,12 @@ function copyTSDefaultLibs() {
     name: 'copy-ts-default-libs',
     buildEnd() {
       const files = fg.sync(getVlsURL('node_modules/typescript/lib/lib*.d.ts'), { unique: true, absolute: true });
-      files.forEach(file =>
-        fs.copySync(file, path.resolve(__dirname, '../', getVlsURL('dist/'), path.basename(file)), { overwrite: true })
-      );
+      files.forEach(file => fs.copySync(file, getVlsURL('dist/' + path.basename(file)), { overwrite: true }));
     }
   };
 }
 
-export default [
+module.exports = [
   // vls
   {
     input: getVlsURL('src/main.ts'),

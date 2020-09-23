@@ -1,4 +1,4 @@
-export function linkVlsInCLI() {
+function linkVlsInCLI() {
   return {
     name: 'link-vls-in-cli',
     resolveId(source, importer) {
@@ -10,7 +10,7 @@ export function linkVlsInCLI() {
   };
 }
 
-export function ignorePartSourcemap() {
+function ignorePartSourcemap() {
   return {
     name: 'ignore-part-sourcemap',
     transform(code, id) {
@@ -26,3 +26,5 @@ export function ignorePartSourcemap() {
     }
   };
 }
+
+module.exports = { linkVlsInCLI, ignorePartSourcemap };
