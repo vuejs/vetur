@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.28.0
+### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
 - Fix completing prop name completes with extra `:`. #2304.
 - Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150
