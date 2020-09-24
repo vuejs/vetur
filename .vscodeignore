@@ -19,3 +19,5 @@ server/dist-test/
 
 .vsix
 scripts
+
+node_modules/.cache/
