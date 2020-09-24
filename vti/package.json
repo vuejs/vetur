@@ -7,7 +7,7 @@
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "vls": "^0.5.3"
+    "vls": "^0.5.4"
   },
   "scripts": {
     "compile": "rollup -c rollup.config.js",

@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/vuejs/vetur/tree/master/server",
   "dependencies": {
-    "@prettier/plugin-pug": "^1.5.1",
+    "@prettier/plugin-pug": "^1.6.1",
     "eslint-plugin-vue": "^7.0.0-beta.3",
     "stylus": "^0.54.8"
   },
