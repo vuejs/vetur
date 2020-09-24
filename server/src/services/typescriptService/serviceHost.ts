@@ -108,7 +108,7 @@ export function getServiceHost(
 
   const vueSys = getVueSys(tsModule, scriptFileNameSet);
 
-  const vueVersion = inferVueVersion(tsModule, workspacePath);
+  const vueVersion = inferVueVersion(workspacePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
