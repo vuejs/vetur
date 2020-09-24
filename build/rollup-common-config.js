@@ -55,7 +55,8 @@ const external = [
   // eslint config extends use fs path.
   'eslint-plugin-vue',
   // rollup can't handle dependency correctly.
-  'stylus'
+  'stylus',
+  '@prettier/plugin-pug'
 ];
 
 const createPlugins = tsconfig => [
