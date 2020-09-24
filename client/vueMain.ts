@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
 import { generateGrammarCommandHandler } from './commands/generateGrammarCommand';
 import { registerLanguageConfigurations } from './languages';

@@ -16,11 +16,11 @@ import {
 import { Duplex } from 'stream';
 import { VLS } from 'vls';
 import { getInitParams } from './initParams';
-import * as fs from 'fs';
+import fs from 'fs';
 import { URI } from 'vscode-uri';
-import * as glob from 'glob';
-import * as path from 'path';
-import * as chalk from 'chalk';
+import glob from 'glob';
+import path from 'path';
+import chalk from 'chalk';
 
 class NullLogger implements Logger {
   error(_message: string): void {}

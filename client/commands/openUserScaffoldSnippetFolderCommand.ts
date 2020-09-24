@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 import * as fs from 'fs';
 
 export function generateOpenUserScaffoldSnippetFolderCommand(globalSnippetDir: string) {
