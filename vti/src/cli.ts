@@ -167,4 +167,5 @@ async function getDiagnostics(workspaceUri: URI) {
   }
 })().catch(err => {
   console.error(`VTI operation failed with error: ${err}`);
+  process.exit(1);
 });
