@@ -24,11 +24,10 @@ const onwarn = (warning, warn) => {
   if (warning.code === 'SOURCEMAP_ERROR') return;
   // prettier 1.x eval
   if (warning.code === 'EVAL' && warning.loc && warning.loc.file.includes('prettier')) return;
-  // This is daily in ESModule
-  if (warning.code === 'CIRCULAR_DEPENDENCY') return;
+  // // This is daily in ESModule
+  // if (warning.code === 'CIRCULAR_DEPENDENCY') return;
 
   warn(warning);
-  // console.log(warning)
 };
 
 const external = [
