@@ -9,6 +9,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "glob": "^7.1.2",
+    "jest-worker": "^26.3.0",
     "vls": "^0.5.4",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-protocol": "^3.15.3",

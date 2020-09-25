@@ -1,132 +1,20 @@
-import {
-  InitializeParams,
-  InitializeRequest,
-  InitializeResult,
-  createProtocolConnection,
-  StreamMessageReader,
-  StreamMessageWriter,
-  Logger,
-  DidOpenTextDocumentNotification,
-  Diagnostic,
-  DiagnosticSeverity,
-  createConnection,
-  ServerCapabilities
-} from 'vscode-languageserver';
-
-import { Duplex } from 'stream';
-import { VLS } from 'vls';
-import { getInitParams } from './initParams';
-import * as fs from 'fs';
-import { URI } from 'vscode-uri';
-import * as glob from 'glob';
 import * as path from 'path';
+import { URI } from 'vscode-uri';
 import * as chalk from 'chalk';
+import Worker from 'jest-worker';
+import { glob } from 'glob';
+import * as os from 'os';
+import { chunk } from 'lodash';
 
-class NullLogger implements Logger {
-  error(_message: string): void {}
-  warn(_message: string): void {}
-  info(_message: string): void {}
-  log(_message: string): void {}
-}
+interface VTIProcess { getDiagnostics(workspaceUri: URI, files: string[]): Promise<number>; }
+type VTIWorker = Worker & VTIProcess;
 
-class TestStream extends Duplex {
-  _write(chunk: string, _encoding: string, done: () => void) {
-    this.emit('data', chunk);
-    done();
-  }
+const SMALL_PROJECT_SIZE = 20;
 
-  _read(_size: number) {}
-}
-
-async function prepareClientConnection(workspaceUri: URI) {
-  const up = new TestStream();
-  const down = new TestStream();
-  const logger = new NullLogger();
-
-  const clientConnection = createProtocolConnection(new StreamMessageReader(down), new StreamMessageWriter(up), logger);
-
-  const serverConnection = createConnection(new StreamMessageReader(up), new StreamMessageWriter(down));
-  const vls = new VLS(serverConnection as any);
-
-  serverConnection.onInitialize(
-    async (params: InitializeParams): Promise<InitializeResult> => {
-      await vls.init(params);
-
-      console.log('Vetur initialized');
-      console.log('====================================');
-
-      return {
-        capabilities: vls.capabilities as ServerCapabilities
-      };
-    }
-  );
-
-  vls.listen();
-  clientConnection.listen();
-
-  const init = getInitParams(workspaceUri);
-
-  await clientConnection.sendRequest(InitializeRequest.type, init);
-
-  return clientConnection;
-}
-
-async function getDiagnostics(workspaceUri: URI) {
-  const clientConnection = await prepareClientConnection(workspaceUri);
-
-  const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
-
-  if (files.length === 0) {
-    console.log('No input files');
-    return 0;
-  }
-
-  console.log('');
-  console.log('Getting diagnostics from: ', files, '\n');
-
-  const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
-
-  let errCount = 0;
-
-  for (const absFilePath of absFilePaths) {
-    await clientConnection.sendNotification(DidOpenTextDocumentNotification.type, {
-      textDocument: {
-        languageId: 'vue',
-        uri: URI.file(absFilePath).toString(),
-        version: 1,
-        text: fs.readFileSync(absFilePath, 'utf-8')
-      }
-    });
-
-    try {
-      const res = (await clientConnection.sendRequest('$/getDiagnostics', {
-        uri: URI.file(absFilePath).toString()
-      })) as Diagnostic[];
-      if (res.length > 0) {
-        console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
-        res.forEach(d => {
-          /**
-           * Ignore eslint errors for now
-           */
-          if (d.source === 'eslint-plugin-vue') {
-            return;
-          }
-          if (d.severity === DiagnosticSeverity.Error) {
-            console.log(`${chalk.red('Error')}: ${d.message.trim()}`);
-            errCount++;
-          } else {
-            console.log(`${chalk.yellow('Warn')} : ${d.message.trim()}`);
-          }
-        });
-        console.log('');
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  return errCount;
-}
+const getInputGroups = (arr: string[], cpus: number) => {
+  const size = Math.ceil(arr.length / cpus);
+  return chunk(arr, size);
+};
 
 (async () => {
   const myArgs = process.argv.slice(2);
@@ -135,7 +23,7 @@ async function getDiagnostics(workspaceUri: URI) {
   if (myArgs.length > 0 && myArgs[0] === 'diagnostics') {
     console.log('====================================');
     console.log('Getting Vetur diagnostics');
-    let workspaceUri;
+    let workspaceUri: URI;
 
     if (myArgs[1]) {
       const absPath = path.resolve(process.cwd(), myArgs[1]);
@@ -146,7 +34,40 @@ async function getDiagnostics(workspaceUri: URI) {
       workspaceUri = URI.file(process.cwd());
     }
 
-    const errCount = await getDiagnostics(workspaceUri);
+    const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
+
+    if (files.length === 0) {
+      console.log('No input files');
+      return 0;
+    }
+
+    console.log('');
+    console.log(`Have ${files.length} files.`);
+    console.log('Getting diagnostics from: ', files, '\n');
+
+    const cpus = os.cpus().length - 1;
+
+    const errCount = await (async () => {
+      if (files.length > SMALL_PROJECT_SIZE) {
+        const worker = new Worker(require.resolve('./process'), {
+          numWorkers: cpus,
+          exposedMethods: ['getDiagnostics']
+        }) as VTIWorker;
+
+        worker.getStdout().on('data', data => {
+          process.stdout.write(data.toString('utf-8'));
+        });
+
+        return (
+          await Promise.all(getInputGroups(files, cpus).map(el => worker.getDiagnostics(workspaceUri, el)))
+        ).reduce((sum, el) => sum + el, 0);
+      } else {
+        const process = require('./process') as VTIProcess;
+
+        return process.getDiagnostics(workspaceUri, files);
+      }
+    })();
+
     console.log('====================================');
 
     if (errCount === 0) {
