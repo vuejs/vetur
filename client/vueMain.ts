@@ -53,17 +53,31 @@ export async function activate(context: vscode.ExtensionContext) {
     .then(() => {
       registerCustomClientNotificationHandlers(client);
       registerCustomLSPCommands(context, client);
+      registerRestartServerCommand(context, client);
     })
     .catch(e => {
       console.log('Client initialization failed');
     });
 
+  return displayInitProgress(promise);
+}
+
+async function displayInitProgress (promise: Promise<void>) {
   return vscode.window.withProgress(
     {
       title: 'Vetur initialization',
       location: vscode.ProgressLocation.Window
     },
     () => promise
+  );
+}
+
+function registerRestartServerCommand (context: vscode.ExtensionContext, client: LanguageClient) {
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'vetur.restartVLSServer',
+      () => displayInitProgress(client.stop().then(() => client.start()).then(() => client.onReady()))
+    )
   );
 }
 
