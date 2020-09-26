@@ -23,6 +23,7 @@ import { mapBackRange, mapFromPositionToOffset } from '../../services/typescript
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
 import { toCompletionItemKind } from '../../services/typescriptService/util';
 import { VueInfoService } from '../../services/vueInfoService';
+import { isVCancellationTokenCancel, VCancellationToken } from '../../utils/cancellationToken';
 import { getFileFsPath } from '../../utils/paths';
 import { NULL_COMPLETION } from '../nullMode';
 import { languageServiceIncludesFile } from '../script/javascript';
@@ -52,11 +53,15 @@ export class VueInterpolationMode implements LanguageMode {
     return this.serviceHost.queryVirtualFileInfo(fileName, currFileText);
   }
 
-  doValidation(document: TextDocument): Diagnostic[] {
+  async doValidation(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
     if (
       !_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true) ||
       !this.config.vetur.validation.interpolation
     ) {
+      return [];
+    }
+
+    if (await isVCancellationTokenCancel(cancellationToken)) {
       return [];
     }
 
@@ -78,6 +83,10 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return [];
+    }
+
+    if (await isVCancellationTokenCancel(cancellationToken)) {
       return [];
     }
 

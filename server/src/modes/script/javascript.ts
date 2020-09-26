@@ -46,6 +46,7 @@ import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
+import { isVCancellationTokenCancel, VCancellationToken } from '../../utils/cancellationToken';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -145,17 +146,37 @@ export async function getJavascriptMode(
       }
     },
 
-    doValidation(doc: TextDocument): Diagnostic[] {
+    async doValidation(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
+      if (await isVCancellationTokenCancel(cancellationToken)) {
+        return [];
+      }
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
 
+      if (await isVCancellationTokenCancel(cancellationToken)) {
+        return [];
+      }
       const fileFsPath = getFileFsPath(doc.uri);
-      const rawScriptDiagnostics = [
-        ...service.getSyntacticDiagnostics(fileFsPath),
-        ...service.getSemanticDiagnostics(fileFsPath)
+      const program = service.getProgram();
+      const sourceFile = program?.getSourceFile(fileFsPath);
+      if (!program || !sourceFile) {
+        return [];
+      }
+
+      let rawScriptDiagnostics = [
+        ...program.getSyntacticDiagnostics(sourceFile, cancellationToken?.tsToken),
+        ...program.getSemanticDiagnostics(sourceFile, cancellationToken?.tsToken)
       ];
+
+      const compilerOptions = program.getCompilerOptions();
+      if (!!(compilerOptions.declaration || compilerOptions.composite)) {
+        rawScriptDiagnostics = [
+          ...rawScriptDiagnostics,
+          ...program.getDeclarationDiagnostics(sourceFile, cancellationToken?.tsToken)
+        ];
+      }
 
       return rawScriptDiagnostics.map(diag => {
         const tags: DiagnosticTag[] = [];
