@@ -179,7 +179,7 @@ export class VLS {
     this.lspConnection.onRequest('$/getDiagnostics', params => {
       const doc = this.documentService.getDocument(params.uri);
       if (doc) {
-        return this.doValidate(doc);
+        return this.doValidate(doc).then(result => result ?? []);
       }
       return [];
     });
@@ -541,8 +541,10 @@ export class VLS {
   }
 
   async validateTextDocument(textDocument: TextDocument, cancellationToken?: VCancellationToken) {
-    const diagnostics: Diagnostic[] = await this.doValidate(textDocument, cancellationToken);
-    this.lspConnection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+    const diagnostics = await this.doValidate(textDocument, cancellationToken);
+    if (diagnostics) {
+      this.lspConnection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+    }
   }
 
   async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
@@ -559,6 +561,9 @@ export class VLS {
           }
         }
       }
+    }
+    if (cancellationToken?.isCancellationRequested) {
+      return null;
     }
     return diagnostics;
   }
