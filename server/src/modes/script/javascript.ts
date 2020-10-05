@@ -483,10 +483,19 @@ export async function getJavascriptMode(
         const range = convertRange(scriptDoc, s.textSpan);
         const kind = getFoldingRangeKind(s);
 
+        // https://github.com/vuejs/vetur/issues/2303
+        const endLine =
+          range.end.character > 0 &&
+          ['}', ']'].includes(
+            scriptDoc.getText(Range.create(Position.create(range.end.line, range.end.character - 1), range.end))
+          )
+            ? Math.max(range.end.line - 1, range.start.line)
+            : range.end.line;
+
         return {
           startLine: range.start.line,
           startCharacter: range.start.character,
-          endLine: range.end.line,
+          endLine,
           endCharacter: range.end.character,
           kind
         };
