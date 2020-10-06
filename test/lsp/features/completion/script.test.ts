@@ -1,5 +1,5 @@
 import { position } from '../../../util';
-import { testCompletion, testNoAnyCompletion } from '../../../completionHelper';
+import { testCompletion } from '../../../completionHelper';
 import { getDocUri } from '../../path';
 
 describe.only('Should autocomplete for <script>', () => {
