@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.29.0
+
+- Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347
+
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
 - Fix completing prop name completes with extra `:`. #2304.
