@@ -151,6 +151,7 @@ export async function getJavascriptMode(
         return { isIncomplete: false, items: [] };
       }
       const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        triggerCharacter: getTsTriggerCharacter(triggerChar),
         includeCompletionsWithInsertText: true,
         includeCompletionsForModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
       });
@@ -758,6 +759,13 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
     indentSize: config.vetur.format.options.tabSize,
     convertTabsToSpaces: !config.vetur.format.options.useTabs
   };
+}
+
+function getTsTriggerCharacter(triggerChar: string) {
+  const legalChars = ['@', '#', '.', '"', "'", '`', '/', '<'] as const;
+  type LegalChars = typeof legalChars[number];
+  if (legalChars.includes(triggerChar as LegalChars)) return triggerChar as LegalChars;
+  return undefined;
 }
 
 function convertCodeAction(
