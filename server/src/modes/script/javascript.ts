@@ -25,7 +25,8 @@ import {
   CodeAction,
   CodeActionKind,
   WorkspaceEdit,
-  FoldingRangeKind
+  FoldingRangeKind,
+  CompletionItemTag
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -164,17 +165,19 @@ export async function getJavascriptMode(
         items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
+          const kinds = parseKindModifier(entry.kindModifiers ?? '');
 
           return {
             uri: doc.uri,
             position,
             preselect: entry.isRecommended ? true : undefined,
-            label,
+            label: label + (kinds.optional ? '?' : ''),
+            tags: kinds.deprecated ? [CompletionItemTag.Deprecated] : undefined,
             detail,
             filterText: getFilterText(entry.insertText),
             sortText: entry.sortText + index,
-            kind: toCompletionItemKind(entry.kind),
-            textEdit: range && TextEdit.replace(range, entry.name),
+            kind: kinds.color ? CompletionItemKind.Color : toCompletionItemKind(entry.kind),
+            textEdit: range && TextEdit.replace(range, entry.insertText || entry.name),
             insertText: entry.insertText,
             data: {
               // data used for resolving item details (see 'doResolve')
@@ -802,6 +805,16 @@ function convertCodeAction(
     }
   }
   return textEdits;
+}
+
+function parseKindModifier(kindModifiers: string) {
+  const kinds = new Set(kindModifiers.split(/,|\s+/g));
+
+  return {
+    optional: kinds.has('optional'),
+    deprecated: kinds.has('deprecated'),
+    color: kinds.has('color')
+  };
 }
 
 function convertTSDiagnosticCategoryToDiagnosticSeverity(c: ts.DiagnosticCategory) {
