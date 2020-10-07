@@ -1,3 +1,3 @@
 <template>
-	<span @click="egg">Test</span>
+  <span @click="egg">Test</span>
 </template>
