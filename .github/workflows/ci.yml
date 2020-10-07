@@ -30,6 +30,8 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'vuejs/vetur'
 
     strategy:
+      # always run both platform
+      fail-fast: false
       matrix:
         # Don't test mac as it's expensive, and Linux tests should cover it
         os: [ubuntu-latest, windows-latest]
