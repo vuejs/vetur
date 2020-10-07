@@ -10,8 +10,7 @@ export const getData = () => {
     d: 2
   }
 
-  res.a?.b
-  res.
+  res.a.
 }
 
 getData()
