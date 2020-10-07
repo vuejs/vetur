@@ -25,6 +25,10 @@ export function prettierify(
     logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
+    if (prettierifiedCode === '' && code.trim() !== '') {
+      throw Error('Empty result from prettier');
+    }
+
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier format failed');
@@ -54,6 +58,9 @@ export function prettierEslintify(
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
+    if (prettierifiedCode === '' && code.trim() !== '') {
+      throw Error('Empty result from prettier');
+    }
 
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {

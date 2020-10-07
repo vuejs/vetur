@@ -10,11 +10,11 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@prettier/plugin-pug": "^1.4.4",
+    "@prettier/plugin-pug": "^1.8.1",
     "@types/lodash": "^4.14.77",
     "eslint": "^7.5.0",
     "eslint-plugin-vue": "^6.2.2",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.2",
     "typescript": "^3.9.7"
   },
   "vetur": {
