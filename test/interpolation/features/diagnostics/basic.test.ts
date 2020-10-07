@@ -262,7 +262,8 @@ describe('Should find template-diagnostics in <template> region', () => {
     'no-implicit-any-parameters.vue',
     'no-implicit-any-v-for-array.vue',
     'issue-2254.vue',
-    'issue-2258.vue'
+    'issue-2258.vue',
+    'crlf.vue'
   ];
 
   noErrorTests.forEach(t => {
