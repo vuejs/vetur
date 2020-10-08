@@ -4,6 +4,7 @@
     "composite": true,
     "rootDir": "../",
     "outDir": "../dist-test",
+    "tsBuildInfoFile": "../dist-test/tsconfig.tsbuildinfo",
 
     "noImplicitAny": false,
     "lib": ["es2015"]
