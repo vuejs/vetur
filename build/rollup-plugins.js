@@ -43,6 +43,11 @@ function bundleVlsWithEsbuild() {
         tsconfig: getServerURL('tsconfig.json')
       });
       console.log(`✨ success with esbuild`);
+    },
+    async buildEnd() {
+      if (!process.env.ROLLUP_WATCH) {
+        service.stop();
+      }
     }
   };
 }
