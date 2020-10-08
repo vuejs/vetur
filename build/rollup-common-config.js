@@ -44,12 +44,7 @@ const external = [
   'string_decoder',
   'perf_hooks',
   // vscode
-  'vscode',
-  // eslint config extends use fs path.
-  'eslint-plugin-vue',
-  // rollup can't handle dependency correctly.
-  'stylus',
-  '@prettier/plugin-pug'
+  'vscode'
 ];
 
 const createPlugins = tsconfig => [
