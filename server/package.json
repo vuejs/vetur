@@ -60,7 +60,7 @@
     "@types/js-beautify": "^1.11.0",
     "@types/lodash": "^4.14.161",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^14.11.2",
+    "@types/node": "^14.11.7",
     "@types/prettier": "^2.1.1",
     "@types/read-pkg-up": "^6.0.0",
     "@types/resolve": "1.17.1",
