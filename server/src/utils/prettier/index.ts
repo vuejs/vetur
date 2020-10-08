@@ -10,7 +10,6 @@ import { DependencyService, RuntimeLibrary } from '../../services/dependencyServ
 
 const VLS_PATH = path.resolve(__dirname, '../../../');
 
-
 type PrettierParserOption = BuiltInParserName | CustomParser;
 
 export function prettierify(
@@ -28,6 +27,10 @@ export function prettierify(
     logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
+    if (prettierifiedCode === '' && code.trim() !== '') {
+      throw Error('Empty result from prettier');
+    }
+
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier format failed');
@@ -57,6 +60,9 @@ export function prettierEslintify(
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
+    if (prettierifiedCode === '' && code.trim() !== '') {
+      throw Error('Empty result from prettier');
+    }
 
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
@@ -135,7 +141,7 @@ function getPrettierOptions(
     prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
     prettierrcOptions.parser = parser;
     // For loading plugins such as @prettier/plugin-pug
-    (prettierrcOptions as { pluginSearchDirs: string[] }).pluginSearchDirs = [dependencyService.rootPath]
+    (prettierrcOptions as { pluginSearchDirs: string[] }).pluginSearchDirs = [dependencyService.rootPath];
 
     return prettierrcOptions;
   } else {
@@ -144,7 +150,7 @@ function getPrettierOptions(
     vscodePrettierOptions.useTabs = vscodePrettierOptions.useTabs || vlsFormatConfig.options.useTabs;
     vscodePrettierOptions.parser = parser;
     // For loading plugins such as @prettier/plugin-pug
-    vscodePrettierOptions.pluginSearchDirs = [dependencyService.rootPath]
+    vscodePrettierOptions.pluginSearchDirs = [dependencyService.rootPath];
 
     return vscodePrettierOptions;
   }

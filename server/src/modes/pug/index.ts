@@ -22,7 +22,7 @@ export function getPugMode(dependencyService: DependencyService): LanguageMode {
 
       const { value, range } = getValueAndRange(document, currRange);
 
-      const foo = prettierPluginPugify(
+      return prettierPluginPugify(
         dependencyService,
         value,
         getFileFsPath(document.uri),
@@ -32,8 +32,6 @@ export function getPugMode(dependencyService: DependencyService): LanguageMode {
         'pug',
         false
       );
-
-      return foo;
     },
     onDocumentRemoved() {},
     dispose() {}
