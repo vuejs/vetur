@@ -115,7 +115,9 @@ export function prettierPluginPugify(
     const prettier = dependencyService.get('prettier', fileFsPath).module;
     const prettierPluginPug = dependencyService.get('@prettier/plugin-pug', fileFsPath).module;
     const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
-    prettierOptions.plugins = [...prettierOptions.plugins, prettierPluginPug];
+    prettierOptions.plugins = Array.isArray(prettierOptions.plugins)
+      ? [...prettierOptions.plugins, prettierPluginPug]
+      : [prettierPluginPug];
     logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
