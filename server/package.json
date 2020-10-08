@@ -41,7 +41,6 @@
     "bootstrap-vue-helper-json": "^1.1.1",
     "codecov": "^3.7.2",
     "core-js": "^3.6.5",
-    "cross-env": "^7.0.2",
     "element-helper-json": "^2.0.6",
     "eslint": "^7.9.0",
     "fast-glob": "^3.2.4",
@@ -72,8 +71,8 @@
     "vue-onsenui-helper-json": "^1.0.2"
   },
   "scripts": {
-    "compile": "cross-env NODE_OPTIONS=--max_old_space_size=8192 rollup -c rollup.config.js",
-    "watch": "cross-env NODE_OPTIONS=--max_old_space_size=8192 rollup -c rollup.config.js -w",
+    "compile": "rollup -c rollup.config.js",
+    "watch": "rollup -c rollup.config.js -w",
     "test": "tsc -p tsconfig.test.json && mocha",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "newVersion": "yarn version --new-version patch -m \"vls %s\"",
