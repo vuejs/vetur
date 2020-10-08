@@ -688,9 +688,9 @@ es6-promisify@^5.0.0:
     es6-promise "^4.0.3"
 
 esbuild@^0.7.9:
-  version "0.7.12"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.7.12.tgz#942d268c090e5b24bc1f006eefaee8cebd5289c7"
-  integrity sha512-e7cXv/5aTNY1d4nLri5tQ0ZeA1j90YjF2ZU6lGFOYMW+3H30GG+bMcR8HWfZH/SzHr2Meb6mqPdyn19IpKpO9g==
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.7.13.tgz#ca614002e70814d548dd3243eb3ccc5d93833112"
+  integrity sha512-IHBqE0blYhBw3fSgaQOHI1hdxq5OJgzdU/Tg0FPIZyag6eHCB5I8wirz1Oyse7W+TwCcFeCxMNLhdyjzdFACcw==
 
 escape-string-regexp@4.0.0:
   version "4.0.0"

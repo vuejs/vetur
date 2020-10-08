@@ -35,8 +35,7 @@ function bundleVlsWithEsbuild() {
         bundle: true,
         sourcemap: true,
         platform: 'node',
-        // Pending https://github.com/evanw/esbuild/issues/440 release
-        // mainFields: ['module,main'],
+        mainFields: ['module,main'],
         target: 'es2018',
         external: ['vscode', 'eslint-plugin-vue', 'stylus', 'eslint'],
         format: 'cjs',
