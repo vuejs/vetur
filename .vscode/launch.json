@@ -25,7 +25,7 @@
       "request": "attach",
       "port": 6005,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/server/dist/vls.js", "${workspaceFolder}/server/dist/vueServerMain.js"],
       "protocol": "inspector",
       "restart": true,
       "smartStep": true,
