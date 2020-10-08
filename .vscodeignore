@@ -16,6 +16,7 @@ server/dist-test/
 **/tsconfig.**.json
 **/tslint.json
 **/yarn.lock
+*.map
 
 .vsix
 scripts
