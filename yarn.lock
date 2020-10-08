@@ -687,6 +687,11 @@ es6-promisify@^5.0.0:
   dependencies:
     es6-promise "^4.0.3"
 
+esbuild@^0.7.9:
+  version "0.7.12"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.7.12.tgz#942d268c090e5b24bc1f006eefaee8cebd5289c7"
+  integrity sha512-e7cXv/5aTNY1d4nLri5tQ0ZeA1j90YjF2ZU6lGFOYMW+3H30GG+bMcR8HWfZH/SzHr2Meb6mqPdyn19IpKpO9g==
+
 escape-string-regexp@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"

@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const fg = require('fast-glob');
 const { getRootURL, clearDist, external, onwarn, createPlugins } = require('../build/rollup-common-config');
-const { linkVlsInCLI, ignorePartSourcemap } = require('../build/rollup-plugins.js');
+const { linkVlsInCLI, bundleVlsWithEsbuild } = require('../build/rollup-plugins.js');
 const vlsPkg = require('./package.json');
 
 const getVlsURL = getRootURL('server');
@@ -36,17 +36,6 @@ function copyTSDefaultLibs() {
 }
 
 module.exports = [
-  // vls
-  {
-    input: getVlsURL('src/main.ts'),
-    output: { file: getVlsURL(vlsPkg.main), name: vlsPkg.name, format: 'cjs', sourcemap: true, interop: 'auto' },
-    external,
-    onwarn,
-    watch: {
-      include: getVlsURL('**')
-    },
-    plugins: [ignorePartSourcemap(), ...createPlugins(getVlsURL('tsconfig.json')), copySnippets(), copyTSDefaultLibs()]
-  },
   // vueServerMain
   {
     input: getVlsURL('src/vueServerMain.ts'),
@@ -56,6 +45,12 @@ module.exports = [
     watch: {
       include: getVlsURL('**')
     },
-    plugins: [linkVlsInCLI(), ignorePartSourcemap(), ...createPlugins(getVlsURL('tsconfig.json'))]
+    plugins: [
+      bundleVlsWithEsbuild(),
+      copySnippets(),
+      copyTSDefaultLibs(),
+      linkVlsInCLI(),
+      ...createPlugins(getVlsURL('tsconfig.json'))
+    ]
   }
 ];
