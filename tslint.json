@@ -9,6 +9,7 @@
     "max-line-length": [true, 120],
     "no-arg": true,
     "no-duplicate-variable": true,
+    "no-eval": true,
     "no-inferrable-types": true,
     "no-unused-expression": true,
     "no-var-keyword": true,

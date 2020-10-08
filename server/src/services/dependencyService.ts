@@ -31,7 +31,7 @@ async function findAllPackages(workspacePath: string, moduleName: string) {
             name: info.name,
             dir: path.dirname(filePath),
             version: info.version,
-            module: eval('require')(path.resolve(path.dirname(filePath), info.main))
+            module: require(path.resolve(path.dirname(filePath), info.main))
           };
         })
       )
@@ -71,7 +71,7 @@ export interface RuntimeLibrary {
 }
 
 export interface DependencyService {
-  rootPath: string
+  rootPath: string;
   init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath?: string): Promise<void>;
   get<L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]>;
 }
@@ -87,7 +87,7 @@ export const createDependencyService = () => {
           const dir = path.isAbsolute(tsSDKPath)
             ? path.resolve(tsSDKPath, '..')
             : path.resolve(workspacePath, tsSDKPath, '..');
-          const tsModule = eval('require')(dir);
+          const tsModule = require(dir);
           logger.logInfo(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
 
           return [
@@ -211,8 +211,8 @@ export const createDependencyService = () => {
   };
 
   return {
-    get rootPath () {
-      return rootPath
+    get rootPath() {
+      return rootPath;
     },
     init,
     get
