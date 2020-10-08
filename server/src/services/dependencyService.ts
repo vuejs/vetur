@@ -174,7 +174,6 @@ export const createDependencyService = () => {
       }
     };
 
-    debugger;
     useWorkspaceDeps = useWorkspaceDependencies;
     rootPath = workspacePath;
     loaded = {
@@ -215,7 +214,7 @@ export const createDependencyService = () => {
   };
 
   return {
-    get useWorkspaceDependencies () {
+    get useWorkspaceDependencies() {
       return useWorkspaceDeps;
     },
     get workspacePath() {
