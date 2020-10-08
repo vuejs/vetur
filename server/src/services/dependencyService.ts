@@ -7,9 +7,9 @@ import ts from 'typescript';
 import prettier from 'prettier';
 import prettyHTML from '@starptech/prettyhtml';
 import prettierEslint from 'prettier-eslint';
-import prettierTslint from 'prettier-tslint';
+import * as prettierTslint from 'prettier-tslint';
 import stylusSupremacy from 'stylus-supremacy';
-import prettierPluginPug from '@prettier/plugin-pug';
+import * as prettierPluginPug from '@prettier/plugin-pug';
 import { performance } from 'perf_hooks';
 import { logger } from '../log';
 
@@ -71,12 +71,14 @@ export interface RuntimeLibrary {
 }
 
 export interface DependencyService {
-  rootPath: string;
+  useWorkspaceDependencies: boolean;
+  workspacePath: string;
   init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath?: string): Promise<void>;
   get<L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]>;
 }
 
 export const createDependencyService = () => {
+  let useWorkspaceDeps: boolean;
   let rootPath: string;
   let loaded: { [K in keyof RuntimeLibrary]: Dependency<RuntimeLibrary[K]>[] };
 
@@ -172,6 +174,8 @@ export const createDependencyService = () => {
       }
     };
 
+    debugger;
+    useWorkspaceDeps = useWorkspaceDependencies;
     rootPath = workspacePath;
     loaded = {
       typescript: await loadTypeScript(),
@@ -211,7 +215,10 @@ export const createDependencyService = () => {
   };
 
   return {
-    get rootPath() {
+    get useWorkspaceDependencies () {
+      return useWorkspaceDeps;
+    },
+    get workspacePath() {
       return rootPath;
     },
     init,

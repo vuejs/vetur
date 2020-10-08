@@ -56,5 +56,5 @@ declare module 'prettier-tslint' {
 
   const prettierTslint: { format: PrettierTslintFormat };
 
-  export default prettierTslint;
+  export = prettierTslint;
 }
