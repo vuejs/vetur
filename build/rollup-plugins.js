@@ -4,7 +4,7 @@ const path = require('path');
 function linkVlsInCLI() {
   return {
     name: 'link-vls-in-cli',
-    resolveId(source, importer) {
+    resolveId(source) {
       if (source === './services/vls') {
         return { id: './vls.js', external: true };
       }

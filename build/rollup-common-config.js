@@ -5,9 +5,6 @@ const commonjs = require('@rollup/plugin-commonjs');
 const typescript = require('rollup-plugin-typescript2');
 const resolve = require('@rollup/plugin-node-resolve').default;
 const { terser } = require('rollup-plugin-terser');
-const replace = require('@rollup/plugin-replace');
-
-const production = process.env.MINIFY === 'false' ? false : !process.env.ROLLUP_WATCH;
 
 const getRootURL = root => relative => path.resolve(__dirname, '../', root, relative);
 
@@ -52,7 +49,7 @@ const createPlugins = tsconfig => [
   resolve(),
   commonjs(),
   typescript({ tsconfig, tsconfigOverride: { compilerOptions: { module: 'esnext' } } }),
-  production && terser()
+  terser()
 ];
 
 module.exports = {
