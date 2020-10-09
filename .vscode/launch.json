@@ -29,6 +29,9 @@
       "protocol": "inspector",
       "restart": true,
       "smartStep": true,
+      "sourceMapPathOverrides": {
+        "server/*": "${workspaceRoot}/server/*",
+      },
       "skipFiles": ["<node_internals>/**"]
     },
     {

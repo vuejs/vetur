@@ -26,7 +26,13 @@ function bundleVlsWithEsbuild() {
       // watch src changed
       this.addWatchFile(getServerURL('src/'));
 
-      if (!service) service = await startService();
+      if (!service) {
+        // hack with esbuild and vscode debugger
+        const oldCwd = process.cwd;
+        process.cwd = () => getServerURL('../');
+        service = await startService();
+        process.cwd = oldCwd;
+      }
       console.log(`bundles ${getServerURL('src/main.ts')} with esbuild`);
       await service.build({
         entryPoints: [getServerURL('src/main.ts')],
