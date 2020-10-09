@@ -592,7 +592,7 @@ export class VLS {
 
   get capabilities(): ServerCapabilities {
     return {
-      textDocumentSync: TextDocumentSyncKind.Full,
+      textDocumentSync: TextDocumentSyncKind.Incremental,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },
       documentFormattingProvider: false,
