@@ -4,6 +4,7 @@
 
 - Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347
 - 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
+- 🙌 Fix undefined valueDeclaration in props crashing vls. Thanks to contribution from [@javiertury](https://github.com/javiertury). #2367.
 
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
