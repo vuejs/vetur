@@ -28,9 +28,12 @@ function watchVlsChange() {
 function typeCheckVls() {
   return {
     name: 'type-check-vls',
-    async buildStart() {
+    buildStart() {
       return new Promise((resolve, reject) => {
-        const tsc = spawn(getServerURL('node_modules/.bin/tsc'), ['--noEmit', '--pretty'], { cwd: getServerURL('./') });
+        const tsc = spawn(getServerURL('node_modules/.bin/tsc'), ['--noEmit', '--pretty'], {
+          cwd: getServerURL('./'),
+          shell: true
+        });
         tsc.stdout.on('data', data => {
           process.stdout.write(data);
         });
