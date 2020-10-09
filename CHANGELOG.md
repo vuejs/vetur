@@ -4,6 +4,10 @@
 
 - Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347
 - 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
+- 🙌 Reduce release size by bundling client/browser/vti. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2233 and #2301.
+  > ⚠️ Breaking change: ⚠️   
+  > The vetur.useWorkspaceDependencies is effect all runtime dependencies now.   
+  > Like `prettier`, `@prettier/plugin-pug`.
 
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
