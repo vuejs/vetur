@@ -1,5 +1,6 @@
 const { startService } = require('esbuild');
 const path = require('path');
+const { spawn } = require('child_process');
 
 function linkVlsInCLI() {
   return {
@@ -13,19 +14,51 @@ function linkVlsInCLI() {
   };
 }
 
+const getServerURL = url => path.resolve(__dirname, '../server', url);
+
+function watchVlsChange() {
+  return {
+    buildStart() {
+      // watch src changed
+      this.addWatchFile(getServerURL('src/'));
+    }
+  };
+}
+
+function typeCheckVls() {
+  return {
+    name: 'type-check-vls',
+    async buildStart() {
+      return new Promise((resolve, reject) => {
+        const tsc = spawn(getServerURL('node_modules/.bin/tsc'), ['--noEmit', '--pretty'], { cwd: getServerURL('./') });
+        tsc.stdout.on('data', data => {
+          process.stdout.write(data);
+        });
+        tsc.stderr.on('data', data => {
+          process.stderr.write(data);
+        });
+
+        tsc.on('close', code => {
+          if (code !== 0) {
+            reject('type-check error.');
+            return;
+          }
+          resolve();
+        });
+      });
+    }
+  };
+}
+
 function bundleVlsWithEsbuild() {
   /**
    * @type {import('esbuild').Service | null}
    */
   let service = null;
-  const getServerURL = url => path.resolve(__dirname, '../server', url);
 
   return {
     name: 'bundle-vls-with-esbuild',
     async buildStart() {
-      // watch src changed
-      this.addWatchFile(getServerURL('src/'));
-
       if (!service) {
         // hack with esbuild and vscode debugger
         const oldCwd = process.cwd;
@@ -57,4 +90,4 @@ function bundleVlsWithEsbuild() {
   };
 }
 
-module.exports = { linkVlsInCLI, bundleVlsWithEsbuild };
+module.exports = { linkVlsInCLI, bundleVlsWithEsbuild, typeCheckVls, watchVlsChange };

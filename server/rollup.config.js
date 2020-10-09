@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const fg = require('fast-glob');
 const { getRootURL, clearDist, external, onwarn, createPlugins } = require('../build/rollup-common-config');
-const { linkVlsInCLI, bundleVlsWithEsbuild } = require('../build/rollup-plugins.js');
+const { linkVlsInCLI, bundleVlsWithEsbuild, watchVlsChange, typeCheckVls } = require('../build/rollup-plugins.js');
 const vlsPkg = require('./package.json');
 
 const getVlsURL = getRootURL('server');
@@ -46,6 +46,8 @@ module.exports = [
       include: getVlsURL('**')
     },
     plugins: [
+      watchVlsChange(),
+      typeCheckVls(),
       bundleVlsWithEsbuild(),
       copySnippets(),
       copyTSDefaultLibs(),
