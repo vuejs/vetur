@@ -122,6 +122,15 @@ export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Ma
       true /* setParentNodes: Need this to walk the AST */,
       tsModule.ScriptKind.JS
     );
+    // Pass version in new template sourceFile
+    // Don't update program and file every time
+    // *internal* property
+    (newSourceFile as any).version = (sourceFile as any).version;
+    (newSourceFile as any).scriptSnapshot = {
+      getText: (start: number, end: number) => newText.substring(start, end),
+      getLength: () => newText.length,
+      getChangeRange: () => void 0
+    };
 
     const templateFsPath = URI.file(vueTemplateFileName).fsPath;
     const sourceMapNodes = generateSourceMap(tsModule, sourceFile, newSourceFile);
@@ -179,7 +188,7 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
     st =>
       st.kind === tsModule.SyntaxKind.ExportAssignment &&
       (st as ts.ExportAssignment).expression.kind === tsModule.SyntaxKind.ObjectLiteralExpression
-  );
+  ) as ts.ExportAssignment;
   if (exportDefaultObject) {
     // 1. add `import Vue from 'vue'
     // (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
@@ -204,7 +213,7 @@ function modifyVueScript(tsModule: T_TypeScript, sourceFile: ts.SourceFile): voi
       end: objectLiteral.pos + 1
     });
     (exportDefaultObject as any).expression = setObjPos(tsModule.createCall(vue, undefined, [objectLiteral]));
-    setObjPos(((exportDefaultObject as ts.ExportAssignment).expression as ts.CallExpression).arguments!);
+    setObjPos((exportDefaultObject.expression as ts.CallExpression).arguments!);
   }
 }
 
