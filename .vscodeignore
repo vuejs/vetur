@@ -6,6 +6,7 @@ docs/
 client/
 **/test/
 server/src/
+server/dist/types/
 vti
 dist-test/
 server/dist-test/
