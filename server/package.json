@@ -5,6 +5,7 @@
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "main": "dist/vls.js",
+  "typings": "dist/types/main.d.ts",
   "bin": {
     "vls": "./bin/vls"
   },

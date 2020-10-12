@@ -25,15 +25,16 @@ function watchVlsChange() {
   };
 }
 
-function typeCheckVls() {
+function generateTypingsVls() {
   return {
-    name: 'type-check-vls',
+    name: 'generate-typings-vls',
     buildStart() {
       return new Promise((resolve, reject) => {
-        const tsc = spawn(getServerURL('node_modules/.bin/tsc'), ['--noEmit', '--pretty'], {
-          cwd: getServerURL('./'),
-          shell: true
-        });
+        const tsc = spawn(
+          getServerURL('node_modules/.bin/tsc'),
+          ['--declaration', '--declarationDir', './dist/types', '--emitDeclarationOnly', '--pretty'],
+          { cwd: getServerURL('./'), shell: true }
+        );
         tsc.stdout.on('data', data => {
           process.stdout.write(data);
         });
@@ -95,4 +96,4 @@ function bundleVlsWithEsbuild() {
   };
 }
 
-module.exports = { linkVlsInCLI, bundleVlsWithEsbuild, typeCheckVls, watchVlsChange };
+module.exports = { linkVlsInCLI, bundleVlsWithEsbuild, generateTypingsVls, watchVlsChange };
