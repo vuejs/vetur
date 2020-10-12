@@ -73,7 +73,9 @@ function bundleVlsWithEsbuild() {
       await service.build({
         entryPoints: [getServerURL('src/main.ts')],
         outfile: getServerURL('dist/vls.js'),
-        minify: true,
+        // No minify when watch
+        // reason: https://github.com/microsoft/vscode/issues/12066
+        minify: !process.env.ROLLUP_WATCH,
         bundle: true,
         sourcemap: true,
         platform: 'node',
