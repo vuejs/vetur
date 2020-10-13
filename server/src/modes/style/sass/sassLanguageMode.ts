@@ -48,7 +48,8 @@ export class SassLanguageMode implements LanguageMode {
       debug: false,
       insertSpaces: formattingOptions.insertSpaces,
       tabSize: formattingOptions.tabSize,
-      setPropertySpace: true
+      setPropertySpace: true,
+      lineEnding: 'LF'
     };
 
     Object.assign(sassConfig, this.config.sass.format);
