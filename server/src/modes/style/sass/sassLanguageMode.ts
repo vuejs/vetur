@@ -41,21 +41,13 @@ export class SassLanguageMode implements LanguageMode {
   }
 
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-    const sassConfig: SassFormatterConfig = {
-      convert: true,
-      deleteEmptyRows: true,
-      deleteWhitespace: true,
-      debug: false,
-      insertSpaces: formattingOptions.insertSpaces,
-      tabSize: formattingOptions.tabSize,
-      setPropertySpace: true,
-      lineEnding: 'LF'
-    };
-
-    Object.assign(sassConfig, this.config.sass.format);
-
     if (this.config.vetur.format.defaultFormatter.sass === 'sass-formatter') {
-      return [TextEdit.replace(range, SassFormatter.Format(document.getText(range), sassConfig))];
+      return [
+        TextEdit.replace(
+          range,
+          SassFormatter.Format(document.getText(range), { ...formattingOptions, ...this.config.sass.format })
+        )
+      ];
     }
     return [];
   }
