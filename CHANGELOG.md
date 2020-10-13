@@ -2,7 +2,8 @@
 
 ### 0.29.0
 
-- Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347
+- Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
+- Fix files with CRLF having errors with wrong range. #1319.
 - 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
 - 🙌 Reduce release size by bundling client/browser/vti. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2233 and #2301.
   > ⚠️ Breaking change: ⚠️   
@@ -12,7 +13,7 @@
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
 - Fix completing prop name completes with extra `:`. #2304.
-- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150
+- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150.
 - Let VTI load default VLS config. #2274.
 - Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
 - Load prettier plugin from VLS if not present in workspace folder. #2014.

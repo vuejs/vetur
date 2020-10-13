@@ -535,7 +535,7 @@
     "@types/lodash": "^4.14.161",
     "@types/minimist": "^1.2.0",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^14.11.2",
+    "@types/node": "^14.11.8",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.47.0",
     "esbuild": "^0.7.9",
