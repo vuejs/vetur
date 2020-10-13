@@ -64,11 +64,7 @@ function bundleVlsWithEsbuild() {
     name: 'bundle-vls-with-esbuild',
     async buildStart() {
       if (!service) {
-        // hack with esbuild and vscode debugger
-        const oldCwd = process.cwd;
-        process.cwd = () => getServerURL('../');
         service = await startService();
-        process.cwd = oldCwd;
       }
       console.log(`bundles ${getServerURL('src/main.ts')} with esbuild`);
       await service.build({
