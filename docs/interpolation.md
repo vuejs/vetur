@@ -117,7 +117,7 @@ export default {
 </script>
 ```
 
-Vetur will show a warming for `<simple>` and an error for `<complex>`.
+Vetur will show a warning for `<simple>` and an error for `<complex>`.
 
 The rules are:
 
