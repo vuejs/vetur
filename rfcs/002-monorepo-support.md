@@ -98,4 +98,5 @@ Not yet decided
 # Unresolved questions
 - How does VLS and TS plugin communicate? ss there any way other than `TS plugin->Vetur->LSP client->VLS` and `VLS->LSP client->Vetur->TS plugin`?
 - Have any multiple `tsconfig.json` case for a Vue project?
+- What to base a project on? Use `tsconfig.json`, `package.json`, or config in [RFC](https://github.com/vuejs/vetur/pull/2378)?
 - Which plan to use?
