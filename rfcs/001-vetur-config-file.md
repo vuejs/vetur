@@ -74,6 +74,9 @@ module.exports = {
 - UTF-8 charset
 
 ## How to use
+Only useful for `vetur.config.js` file in root.
+Ignore all `vetur.config.js` except root directory.
+The only exception is when the VSCode Multi root, Vetur will read all roots vetur.config.js acting on the respective root.
 
 ### VTI
 You can use it to override VTI default settings.
