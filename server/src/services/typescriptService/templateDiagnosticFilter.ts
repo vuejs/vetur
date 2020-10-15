@@ -48,7 +48,27 @@ export function createTemplateDiagnosticFilter(tsModule: T_TypeScript) {
     return true;
   };
 
-  return mergeFilter([ignorePrivateProtectedViolation]);
+  const ignoreNoImplicitAnyViolationInNativeEvent: DiagnosticFilter = diag => {
+    const noImplicitAnyViolation = [7006, 7031];
+
+    if (!noImplicitAnyViolation.includes(diag.code)) {
+      return true;
+    }
+
+    const source = diag.file;
+    if (!source) {
+      return true;
+    }
+
+    const target = findNodeFromDiagnostic(diag, source);
+    if (target && (tsModule.isParameter(target.parent) || tsModule.isBindingElement(target.parent))) {
+      return false;
+    }
+
+    return true;
+  };
+
+  return mergeFilter([ignorePrivateProtectedViolation, ignoreNoImplicitAnyViolationInNativeEvent]);
 }
 
 /**

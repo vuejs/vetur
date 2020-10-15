@@ -121,13 +121,13 @@ describe('Should find template-diagnostics in <template> region', () => {
         {
           range: sameLineRange(12, 31, 34),
           severity: vscode.DiagnosticSeverity.Error,
-          message: "Argument of type '123' is not assignable to parameter of type 'string'"
+          message: "Argument of type 'number' is not assignable to parameter of type 'string'"
         },
-        {
-          range: sameLineRange(13, 20, 24),
-          severity: vscode.DiagnosticSeverity.Error,
-          message: `Type '"test"' is not assignable to type 'number'`
-        },
+        // {
+        //   range: sameLineRange(13, 20, 24),
+        //   severity: vscode.DiagnosticSeverity.Error,
+        //   message: `Type '"test"' is not assignable to type 'number'`
+        // },
         {
           range: sameLineRange(14, 20, 28),
           severity: vscode.DiagnosticSeverity.Error,
@@ -246,7 +246,7 @@ describe('Should find template-diagnostics in <template> region', () => {
     }
   ];
   flakeyTests.forEach(t => {
-    it(`Shows template diagnostics for ${t.file}`, async function() {
+    it(`Shows template diagnostics for ${t.file}`, async function () {
       // Retry on fail
       this.retries(3);
       const docUri = getDocUri(`diagnostics/${t.file}`);
@@ -254,7 +254,16 @@ describe('Should find template-diagnostics in <template> region', () => {
     });
   });
 
-  const noErrorTests: string[] = ['class.vue', 'style.vue', 'hyphen-attrs.vue', 'template-literal.vue'];
+  const noErrorTests: string[] = [
+    'class.vue',
+    'style.vue',
+    'hyphen-attrs.vue',
+    'template-literal.vue',
+    'no-implicit-any-parameters.vue',
+    'no-implicit-any-v-for-array.vue',
+    'issue-2254.vue',
+    'issue-2258.vue'
+  ];
 
   noErrorTests.forEach(t => {
     it(`Shows no template diagnostics error for ${t}`, async () => {

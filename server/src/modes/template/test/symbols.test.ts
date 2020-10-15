@@ -140,4 +140,31 @@ suite('HTML Symbols', () => {
       }
     ]);
   });
+
+  test('Slot-related attributes', () => {
+    const content =
+      '<slot name="someslot"></slot>' +
+      '<template #withhash="scopedProp"></template>' +
+      '<template v-slot:withvslot="scopedProp"></template>';
+    testSymbolsFor(content, [
+      {
+        containerName: '',
+        name: 'slot[name="someslot"]',
+        kind: SymbolKind.Field,
+        location: Location.create(TEST_URI, Range.create(0, 0, 0, 29))
+      },
+      {
+        containerName: '',
+        name: 'template[#withhash]',
+        kind: SymbolKind.Field,
+        location: Location.create(TEST_URI, Range.create(0, 29, 0, 73))
+      },
+      {
+        containerName: '',
+        name: 'template[v-slot:withvslot]',
+        kind: SymbolKind.Field,
+        location: Location.create(TEST_URI, Range.create(0, 73, 0, 124))
+      }
+    ]);
+  });
 });

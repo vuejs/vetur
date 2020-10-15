@@ -1,6 +1,4 @@
-import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { showFile } from '../../../editorHelper';
+import { testHover } from '../../../hoverHelper';
 import { position, sameLineRange } from '../../../util';
 import { getDocUri } from '../../path';
 
@@ -22,41 +20,17 @@ describe('Should do hover', () => {
   });
 
   it('shows hover for `width` in <style>', async () => {
+    const hoverText = `
+Specifies the width of the content area, padding area or border area \\(depending on 'box\\-sizing'\\) of certain boxes\\.
+
+Syntax: &lt;viewport\\-length&gt;\\{1,2\\}
+
+[MDN Reference](https://developer.mozilla.org/docs/Web/CSS/width)
+`.trim();
+
     await testHover(docUri, position(47, 3), {
-      contents: [
-        // tslint:disable-next-line
-        `Specifies the width of the content area, padding area or border area (depending on 'box-sizing') of certain boxes.`
-      ],
+      contents: [hoverText],
       range: sameLineRange(47, 2, 14)
     });
   });
 });
-
-async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedHover: vscode.Hover) {
-  await showFile(docUri);
-
-  const result = (await vscode.commands.executeCommand(
-    'vscode.executeHoverProvider',
-    docUri,
-    position
-  )) as vscode.Hover[];
-
-  if (!result[0]) {
-    throw Error('Hover failed');
-  }
-
-  const contents = result[0].contents;
-  contents.forEach((c, i) => {
-    const actualContent = markedStringToSTring(c);
-    const expectedContent = markedStringToSTring(expectedHover.contents[i]);
-    assert.ok(actualContent.startsWith(expectedContent));
-  });
-
-  if (result[0] && result[0].range) {
-    assert.ok(result[0].range!.isEqual(expectedHover.range!));
-  }
-}
-
-function markedStringToSTring(s: vscode.MarkedString) {
-  return typeof s === 'string' ? s : s.value;
-}

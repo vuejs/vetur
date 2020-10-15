@@ -6,8 +6,7 @@ import {
   Range,
   TextEdit,
   InsertTextFormat,
-  CompletionItem,
-  MarkupKind
+  CompletionItem
 } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
@@ -33,7 +32,7 @@ export function doComplete(
 
   const offset = document.offsetAt(position);
   const node = htmlDocument.findNodeBefore(offset);
-  if (!node || node.isInterpolation) {
+  if (!node || (node.isInterpolation && offset <= node.end)) {
     return result;
   }
 
@@ -154,6 +153,9 @@ export function doComplete(
         let codeSnippet = attribute;
         if (type !== 'v' && value.length) {
           codeSnippet = codeSnippet + value;
+        }
+        if ((filterPrefix === ':' && codeSnippet[0] === ':') || (filterPrefix === '@' && codeSnippet[0] === '@')) {
+          codeSnippet = codeSnippet.slice(1);
         }
         result.items.push({
           label: attribute,
@@ -285,11 +287,16 @@ export function doComplete(
         break;
       case TokenType.AttributeValue:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-          return collectAttributeValueSuggestions(
-            currentAttributeName,
-            scanner.getTokenOffset(),
-            scanner.getTokenEnd()
-          );
+          if (currentAttributeName === 'style') {
+            const emmetCompletions = emmet.doComplete(document, position, 'css', emmetConfig);
+            return emmetCompletions || NULL_COMPLETION;
+          } else {
+            return collectAttributeValueSuggestions(
+              currentAttributeName,
+              scanner.getTokenOffset(),
+              scanner.getTokenEnd()
+            );
+          }
         }
         break;
       case TokenType.Whitespace:

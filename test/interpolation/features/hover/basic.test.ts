@@ -1,6 +1,4 @@
-import * as vscode from 'vscode';
-import * as assert from 'assert';
-import { showFile } from '../../../editorHelper';
+import { testHover } from '../../../hoverHelper';
 import { position, sameLineRange } from '../../../util';
 import { getDocUri } from '../../path';
 
@@ -28,32 +26,3 @@ describe('Should do hover interpolation for <template>', () => {
     });
   });
 });
-
-async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedHover: vscode.Hover) {
-  await showFile(docUri);
-
-  const result = (await vscode.commands.executeCommand(
-    'vscode.executeHoverProvider',
-    docUri,
-    position
-  )) as vscode.Hover[];
-
-  if (!result[0]) {
-    throw Error('Hover failed');
-  }
-
-  const contents = result[0].contents;
-  contents.forEach((c, i) => {
-    const actualContent = markedStringToSTring(c);
-    const expectedContent = markedStringToSTring(expectedHover.contents[i]);
-    assert.ok(actualContent.startsWith(expectedContent));
-  });
-
-  if (result[0] && result[0].range) {
-    assert.ok(result[0].range!.isEqual(expectedHover.range!));
-  }
-}
-
-function markedStringToSTring(s: vscode.MarkedString) {
-  return typeof s === 'string' ? s : s.value;
-}

@@ -1,6 +1,6 @@
 ## Vue Language Server
 
-Vue Language Server (`vls`) is a language server implementation compatible with [`language-server-protocol`](https://github.com/Microsoft/language-server-protocol).
+[VLS](https://www.npmjs.com/package/vls) (Vue Language Server) is a language server implementation compatible with [Language Server Protocol](https://github.com/microsoft/language-server-protocol).
 
 Vetur is the VS Code client consuming `vls`.
 
@@ -18,6 +18,7 @@ There are two ways to integrate `vls` into editors:
 
   ```bash
   npm install vls -g
+  # or yarn global add vls
   ```
 
   This will provide you the global `vls` command.
@@ -39,6 +40,7 @@ There are two ways to integrate `vls` into editors:
 
   ```bash
   npm install vls --save
+  # or yarn add vls
   ```
 
   Then, require the vls, this would typically look like:

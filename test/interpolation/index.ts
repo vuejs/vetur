@@ -11,12 +11,10 @@ export function run(): Promise<void> {
       args[k.slice('MOCHA_'.length)] = process.env[k];
     });
 
-  // Create the mocha test
   const mocha = new Mocha({
     ui: 'bdd',
     timeout: 100000,
     color: true,
-
     ...args
   });
 

@@ -67,6 +67,10 @@ For 2, try these methods:
   }
   ```
 
+## Template errors in components written in Javascript
+
+If you have `vetur.validation.interpolation` enabled and are getting a lot of "Property 'xxx' does not exist on type 'CombinedVueInstance'" errors, it might be due to Typescript not being able to infer types properly. In Javascript-based code base, Typescript does a lot of guessing to infer types properly but it's not always able to do that automatically. You might have to add type annotations manually in the script section. Read more about the issue here: [#1707 (comment)](https://github.com/vuejs/vetur/issues/1707#issuecomment-686851677). Also, check [how to add JSDoc annotations](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html).
+
 ## Vetur cannot recognize my Vue component import, such as `import Comp from './comp'`
 
 - You need to add `.vue` extension when importing SFC.
@@ -96,3 +100,4 @@ Now you'll find `vetur-{version}.vsix`, you can install it by editor command "In
 ## Vetur uses different version of TypeScript in .vue files to what I installed in `node_modules`.
 
 You can enable `Vetur: Use Workspace Dependencies` setting so that it uses the same version of TypeScript in your workspace.
+NB: It will use `typescript.tsdk` setting as the path to look for if defined, defaulting to `node_modules/typescript`. This enables tools like Yarn PnP to set their own custom resolver.

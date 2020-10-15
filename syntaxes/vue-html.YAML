@@ -1,5 +1,5 @@
 # [PackageDev] target_format: plist, ext: tmLanguage
-name: Vue Template
+name: Vue HTML
 scopeName: text.html.vue-html
 fileTypes: []
 uuid: ca2e4260-5d62-45bf-8cf1-d8b5cc19c8f8
@@ -78,7 +78,7 @@ patterns:
     patterns:
       - include: '#tag-stuff'
   - name: meta.tag.block.any.html
-    begin: (</?)([a-zA-Z0-9:-]+\b)
+    begin: (</?)([a-z][a-zA-Z0-9:-]*\b)
     beginCaptures:
       '1': { name: punctuation.definition.tag.begin.html }
       '2': { name: entity.name.tag.block.any.html }

@@ -4,7 +4,7 @@
   "description": "Vue tooling for VS Code",
   "author": "Pine Wu <octref@gmail.com>",
   "icon": "asset/vue.png",
-  "version": "0.26.1",
+  "version": "0.28.0",
   "publisher": "octref",
   "scripts": {
     "postinstall": "run-s install:*",
@@ -17,7 +17,7 @@
     "watch:build": "tsc -b -w .",
     "copy:snippets": "node ./build/copy-snippets.js",
     "lint": "tslint -c tslint.json client/**/*.ts server/**/*.ts scripts/**/*.ts",
-    "test:server": "npm run compile && cd server && npm test",
+    "test:server": "yarn compile && cd server && yarn test",
     "test:e2e": "node ./dist/test/codeTestRunner.js",
     "test:grammar": "node ./dist/test/codeTestRunner.js grammar",
     "test:lsp": "node ./dist/test/codeTestRunner.js lsp",
@@ -246,6 +246,16 @@
           "default": true,
           "description": "Validate vue-html in <template> using eslint-plugin-vue"
         },
+        "vetur.validation.templateProps": {
+          "type": "boolean",
+          "default": false,
+          "description": "Validate props usage in <template> region. Show error/warning for not passing declared props to child components and show error for passing wrongly typed interpolation expressions"
+        },
+        "vetur.validation.interpolation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate interpolations in <template> region using TypeScript language service"
+        },
         "vetur.validation.style": {
           "type": "boolean",
           "default": true,
@@ -273,7 +283,7 @@
         },
         "vetur.format.defaultFormatter.html": {
           "type": "string",
-          "default": "prettyhtml",
+          "default": "prettier",
           "enum": [
             "none",
             "prettyhtml",
@@ -282,7 +292,7 @@
           ],
           "enumDescriptions": [
             "disable formatting",
-            "prettyhtml",
+            "🚧 [DEPRECATED] prettyhtml",
             "html formatter of js-beautify",
             "prettier"
           ],
@@ -474,6 +484,11 @@
           "default": false,
           "description": "Whether to have initial indent for <script> region"
         },
+        "vetur.languageFeatures.codeActions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to enable codeActions"
+        },
         "vetur.trace.server": {
           "type": "string",
           "enum": [
@@ -510,7 +525,7 @@
         "vetur.experimental.templateInterpolationService": {
           "type": "boolean",
           "default": false,
-          "description": "Enable template interpolation service that offers diagnostics / hover / definition / references."
+          "description": "Enable template interpolation service that offers hover / definition / references in Vue interpolations."
         }
       }
     }
@@ -518,26 +533,26 @@
   "devDependencies": {
     "@types/glob": "^7.1.3",
     "@types/js-yaml": "^3.12.5",
-    "@types/lodash": "^4.14.159",
+    "@types/lodash": "^4.14.161",
     "@types/minimist": "^1.2.0",
-    "@types/mocha": "^8.0.1",
-    "@types/node": "^14.0.27",
+    "@types/mocha": "^8.0.3",
+    "@types/node": "^14.11.8",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.47.0",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
-    "husky": "^4.2.5",
+    "husky": "^4.3.0",
     "js-yaml": "^3.14.0",
-    "lint-staged": "^10.2.11",
+    "lint-staged": "^10.4.0",
     "minimist": "^1.2.5",
-    "mocha": "^8.1.1",
+    "mocha": "^8.1.3",
     "ncp": "^2.0.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.2",
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.4",
     "tslint": "^6.1.3",
-    "typescript": "^3.9.7",
+    "typescript": "^4.0.3",
     "vscode-test": "^1.4.0"
   }
 }

@@ -12,6 +12,10 @@ export interface ExpectedCompletionItem extends CompletionItem {
    * Documentation has to include this string
    */
   documentationFragment?: string;
+  /**
+   * Insertion text edit's string
+   */
+  insertTextValue?: string;
 }
 
 export async function testCompletion(
@@ -97,6 +101,14 @@ export async function testCompletion(
             (match.documentation as vscode.MarkdownString).value.includes(ei.documentationFragment),
             `${(match.documentation as vscode.MarkdownString).value}\ndoes not include\n${ei.documentationFragment}`
           );
+        }
+      }
+
+      if (ei.insertTextValue) {
+        if (match.insertText instanceof vscode.SnippetString) {
+          assert.strictEqual(match.insertText.value, ei.insertTextValue);
+        } else {
+          assert.strictEqual(match.insertText, ei.insertTextValue);
         }
       }
     }

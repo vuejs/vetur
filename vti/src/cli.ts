@@ -8,12 +8,14 @@ import {
   Logger,
   DidOpenTextDocumentNotification,
   Diagnostic,
-  DiagnosticSeverity
-} from 'vscode-languageserver-protocol';
-import { createConnection } from 'vscode-languageserver';
+  DiagnosticSeverity,
+  createConnection,
+  ServerCapabilities
+} from 'vscode-languageserver';
+
 import { Duplex } from 'stream';
 import { VLS } from 'vls';
-import { params } from './initParams';
+import { getInitParams } from './initParams';
 import * as fs from 'fs';
 import { URI } from 'vscode-uri';
 import * as glob from 'glob';
@@ -51,9 +53,10 @@ async function prepareClientConnection(workspaceUri: URI) {
       await vls.init(params);
 
       console.log('Vetur initialized');
+      console.log('====================================');
 
       return {
-        capabilities: vls.capabilities
+        capabilities: vls.capabilities as ServerCapabilities
       };
     }
   );
@@ -61,12 +64,7 @@ async function prepareClientConnection(workspaceUri: URI) {
   vls.listen();
   clientConnection.listen();
 
-  const init: InitializeParams = {
-    rootPath: workspaceUri.fsPath,
-    rootUri: workspaceUri.toString(),
-    processId: process.pid,
-    ...params
-  } as InitializeParams;
+  const init = getInitParams(workspaceUri);
 
   await clientConnection.sendRequest(InitializeRequest.type, init);
 
@@ -77,9 +75,17 @@ async function getDiagnostics(workspaceUri: URI) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
   const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
-  const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
+
+  if (files.length === 0) {
+    console.log('No input files');
+    return 0;
+  }
 
   console.log('');
+  console.log('Getting diagnostics from: ', files, '\n');
+
+  const absFilePaths = files.map(f => path.resolve(workspaceUri.fsPath, f));
+
   let errCount = 0;
 
   for (const absFilePath of absFilePaths) {
@@ -97,7 +103,6 @@ async function getDiagnostics(workspaceUri: URI) {
         uri: URI.file(absFilePath).toString()
       })) as Diagnostic[];
       if (res.length > 0) {
-        console.log('');
         console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
         res.forEach(d => {
           /**
@@ -107,10 +112,10 @@ async function getDiagnostics(workspaceUri: URI) {
             return;
           }
           if (d.severity === DiagnosticSeverity.Error) {
-            console.log(`${chalk.red('Error')}: ${d.message}`);
+            console.log(`${chalk.red('Error')}: ${d.message.trim()}`);
             errCount++;
           } else {
-            console.log(`${chalk.yellow('Warn')} : ${d.message}`);
+            console.log(`${chalk.yellow('Warn')} : ${d.message.trim()}`);
           }
         });
         console.log('');
@@ -128,19 +133,19 @@ async function getDiagnostics(workspaceUri: URI) {
 
   // vls diagnostics
   if (myArgs.length > 0 && myArgs[0] === 'diagnostics') {
+    console.log('====================================');
     console.log('Getting Vetur diagnostics');
     let workspaceUri;
 
     if (myArgs[1]) {
-      console.log(`Loading Vetur in workspace path: ${myArgs[1]}`);
-      workspaceUri = URI.file(myArgs[1]);
+      const absPath = path.resolve(process.cwd(), myArgs[1]);
+      console.log(`Loading Vetur in workspace path: ${chalk.green(absPath)}`);
+      workspaceUri = URI.file(absPath);
     } else {
-      console.log(`Loading Vetur in current directory: ${process.cwd()}`);
+      console.log(`Loading Vetur in current directory: ${chalk.green(process.cwd())}`);
       workspaceUri = URI.file(process.cwd());
     }
 
-    console.log('');
-    console.log('====================================');
     const errCount = await getDiagnostics(workspaceUri);
     console.log('====================================');
 

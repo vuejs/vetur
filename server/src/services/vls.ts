@@ -7,7 +7,7 @@ import {
   DocumentFormattingParams,
   DocumentLinkParams,
   FileChangeType,
-  IConnection,
+  Connection,
   TextDocumentPositionParams,
   ColorPresentationParams,
   InitializeParams,
@@ -18,7 +18,10 @@ import {
   DocumentSymbolParams,
   CodeActionParams,
   CompletionParams,
-  CompletionTriggerKind
+  CompletionTriggerKind,
+  ExecuteCommandParams,
+  ApplyWorkspaceEditRequest,
+  FoldingRangeParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -33,10 +36,10 @@ import {
   SignatureHelp,
   SymbolInformation,
   TextDocument,
-  TextDocumentChangeEvent,
   TextEdit,
   ColorPresentation,
-  Range
+  Range,
+  FoldingRange
 } from 'vscode-languageserver-types';
 
 import { URI } from 'vscode-uri';
@@ -51,6 +54,7 @@ import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
+import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -77,7 +81,9 @@ export class VLS {
 
   private documentFormatterRegistration: Disposable | undefined;
 
-  constructor(private lspConnection: IConnection) {
+  private config: VLSConfig;
+
+  constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
     this.vueInfoService = new VueInfoService();
     this.dependencyService = new DependencyService();
@@ -101,7 +107,7 @@ export class VLS {
     this.workspacePath = workspacePath;
 
     await this.vueInfoService.init(this.languageModes);
-    await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies);
+    await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies, config.typescript.tsdk);
 
     await this.languageModes.init(
       workspacePath,
@@ -153,12 +159,13 @@ export class VLS {
     this.lspConnection.onHover(this.onHover.bind(this));
     this.lspConnection.onReferences(this.onReferences.bind(this));
     this.lspConnection.onSignatureHelp(this.onSignatureHelp.bind(this));
+    this.lspConnection.onFoldingRanges(this.onFoldingRanges.bind(this));
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
 
-    this.lspConnection.onRequest('requestCodeActionEdits', this.getRefactorEdits.bind(this));
+    this.lspConnection.onExecuteCommand(this.executeCommand.bind(this));
   }
 
   private setupCustomLSPHandlers() {
@@ -190,7 +197,7 @@ export class VLS {
   }
 
   private setupFileChangeListeners() {
-    this.documentService.onDidChangeContent((change: TextDocumentChangeEvent) => {
+    this.documentService.onDidChangeContent(change => {
       this.triggerValidation(change.document);
     });
     this.documentService.onDidClose(e => {
@@ -220,6 +227,8 @@ export class VLS {
   }
 
   configure(config: VLSConfig): void {
+    this.config = config;
+
     const veturValidationOptions = config.vetur.validation;
     this.validation['vue-html'] = veturValidationOptions.template;
     this.validation.css = veturValidationOptions.style;
@@ -305,6 +314,17 @@ export class VLS {
         context &&
         context?.triggerKind === CompletionTriggerKind.TriggerCharacter &&
         context.triggerCharacter === ' '
+      ) {
+        return NULL_COMPLETION;
+      }
+
+      /**
+       * Do not use `'` and `"` as trigger character in js/ts mode
+       */
+      if (
+        mode.getId() === 'javascript' &&
+        context?.triggerKind === CompletionTriggerKind.TriggerCharacter &&
+        context.triggerCharacter?.match(/['"]/)
       ) {
         return NULL_COMPLETION;
       }
@@ -448,7 +468,33 @@ export class VLS {
     return NULL_SIGNATURE;
   }
 
+  onFoldingRanges({ textDocument }: FoldingRangeParams): FoldingRange[] {
+    const doc = this.documentService.getDocument(textDocument.uri)!;
+    const lmrs = this.languageModes.getAllLanguageModeRangesInDocument(doc);
+
+    const result: FoldingRange[] = [];
+
+    lmrs.forEach(lmr => {
+      if (lmr.mode.getFoldingRanges) {
+        lmr.mode.getFoldingRanges(doc).forEach(r => result.push(r));
+      }
+
+      result.push({
+        startLine: lmr.start.line,
+        startCharacter: lmr.start.character,
+        endLine: lmr.end.line,
+        endCharacter: lmr.end.character
+      });
+    });
+
+    return result;
+  }
+
   onCodeAction({ textDocument, range, context }: CodeActionParams) {
+    if (!this.config.vetur.languageFeatures.codeActions) {
+      return [];
+    }
+
     const doc = this.documentService.getDocument(textDocument.uri)!;
     const mode = this.languageModes.getModeAtPosition(doc, range.start);
     if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
@@ -472,6 +518,10 @@ export class VLS {
   }
 
   private triggerValidation(textDocument: TextDocument): void {
+    if (textDocument.uri.includes('node_modules')) {
+      return;
+    }
+
     this.cleanPendingValidation(textDocument);
     this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
       delete this.pendingValidationRequests[textDocument.uri];
@@ -510,6 +560,18 @@ export class VLS {
     return diagnostics;
   }
 
+  async executeCommand(arg: ExecuteCommandParams) {
+    if (arg.command === APPLY_REFACTOR_COMMAND && arg.arguments) {
+      const edit = this.getRefactorEdits(arg.arguments[0] as RefactorAction);
+      if (edit) {
+        this.lspConnection.sendRequest(ApplyWorkspaceEditRequest.type, { edit });
+      }
+      return;
+    }
+
+    logger.logInfo(`Unknown command ${arg.command}.`);
+  }
+
   removeDocument(doc: TextDocument): void {
     this.languageModes.onDocumentRemoved(doc);
   }
@@ -533,7 +595,11 @@ export class VLS {
       definitionProvider: true,
       referencesProvider: true,
       codeActionProvider: true,
-      colorProvider: true
+      colorProvider: true,
+      executeCommandProvider: {
+        commands: [APPLY_REFACTOR_COMMAND]
+      },
+      foldingRangeProvider: true
     };
   }
 }

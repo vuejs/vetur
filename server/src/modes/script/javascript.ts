@@ -6,7 +6,6 @@ import {
   SignatureHelp,
   SignatureInformation,
   ParameterInformation,
-  Command,
   Definition,
   TextEdit,
   TextDocument,
@@ -25,7 +24,8 @@ import {
   MarkupContent,
   CodeAction,
   CodeActionKind,
-  WorkspaceEdit
+  WorkspaceEdit,
+  FoldingRangeKind
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -44,10 +44,13 @@ import { DependencyService, T_TypeScript, State } from '../../services/dependenc
 import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
+import * as Previewer from './previewer';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
+
+export const APPLY_REFACTOR_COMMAND = 'vetur.applyRefactorCommand';
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
@@ -160,6 +163,7 @@ export async function getJavascriptMode(
         items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
+
           return {
             uri: doc.uri,
             position,
@@ -215,6 +219,7 @@ export async function getJavascriptMode(
       const fileFsPath = getFileFsPath(doc.uri);
       const userPrefs: ts.UserPreferences =
         doc.languageId === 'javascript' ? config.javascript.preferences : config.typescript.preferences;
+
       const details = service.getCompletionEntryDetails(
         fileFsPath,
         item.data.offset,
@@ -223,12 +228,25 @@ export async function getJavascriptMode(
         item.data.source,
         userPrefs
       );
+
       if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
-        item.detail = tsModule.displayPartsToString(details.displayParts);
+        item.detail = Previewer.plain(tsModule.displayPartsToString(details.displayParts));
         const documentation: MarkupContent = {
           kind: 'markdown',
-          value: tsModule.displayPartsToString(details.documentation)
+          value: tsModule.displayPartsToString(details.documentation) + '\n\n'
         };
+
+        if (details.tags) {
+          if (details.tags) {
+            details.tags.forEach(x => {
+              const tagDoc = Previewer.getTagDocumentation(x);
+              if (tagDoc) {
+                documentation.value += tagDoc + '\n\n';
+              }
+            });
+          }
+        }
+
         if (details.codeActions && config.vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
           item.additionalTextEdits = textEdits;
@@ -254,11 +272,27 @@ export async function getJavascriptMode(
       const info = service.getQuickInfoAtPosition(fileFsPath, scriptDoc.offsetAt(position));
       if (info) {
         const display = tsModule.displayPartsToString(info.displayParts);
-        const doc = tsModule.displayPartsToString(info.documentation);
         const markedContents: MarkedString[] = [{ language: 'ts', value: display }];
+
+        let hoverMdDoc = '';
+        const doc = Previewer.plain(tsModule.displayPartsToString(info.documentation));
         if (doc) {
-          markedContents.unshift(doc, '\n');
+          hoverMdDoc += doc + '\n\n';
         }
+
+        if (info.tags) {
+          info.tags.forEach(x => {
+            const tagDoc = Previewer.getTagDocumentation(x);
+            if (tagDoc) {
+              hoverMdDoc += tagDoc + '\n\n';
+            }
+          });
+        }
+
+        if (hoverMdDoc.trim() !== '') {
+          markedContents.push(hoverMdDoc);
+        }
+
         return {
           range: convertRange(scriptDoc, info.textSpan),
           contents: markedContents
@@ -273,39 +307,56 @@ export async function getJavascriptMode(
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const signHelp = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), undefined);
-      if (!signHelp) {
+      const signatureHelpItems = service.getSignatureHelpItems(fileFsPath, scriptDoc.offsetAt(position), undefined);
+      if (!signatureHelpItems) {
         return NULL_SIGNATURE;
       }
-      const ret: SignatureHelp = {
-        activeSignature: signHelp.selectedItemIndex,
-        activeParameter: signHelp.argumentIndex,
-        signatures: []
-      };
-      signHelp.items.forEach(item => {
-        const signature: SignatureInformation = {
-          label: '',
-          documentation: undefined,
-          parameters: []
-        };
 
-        signature.label += tsModule.displayPartsToString(item.prefixDisplayParts);
+      const signatures: SignatureInformation[] = [];
+      signatureHelpItems.items.forEach(item => {
+        let sigLabel = '';
+        let sigMdDoc = '';
+        const sigParamemterInfos: ParameterInformation[] = [];
+
+        sigLabel += tsModule.displayPartsToString(item.prefixDisplayParts);
         item.parameters.forEach((p, i, a) => {
           const label = tsModule.displayPartsToString(p.displayParts);
           const parameter: ParameterInformation = {
             label,
             documentation: tsModule.displayPartsToString(p.documentation)
           };
-          signature.label += label;
-          signature.parameters!.push(parameter);
+          sigLabel += label;
+          sigParamemterInfos.push(parameter);
           if (i < a.length - 1) {
-            signature.label += tsModule.displayPartsToString(item.separatorDisplayParts);
+            sigLabel += tsModule.displayPartsToString(item.separatorDisplayParts);
           }
         });
-        signature.label += tsModule.displayPartsToString(item.suffixDisplayParts);
-        ret.signatures.push(signature);
+        sigLabel += tsModule.displayPartsToString(item.suffixDisplayParts);
+
+        item.tags
+          .filter(x => x.name !== 'param')
+          .forEach(x => {
+            const tagDoc = Previewer.getTagDocumentation(x);
+            if (tagDoc) {
+              sigMdDoc += tagDoc + '\n\n';
+            }
+          });
+
+        signatures.push({
+          label: sigLabel,
+          documentation: {
+            kind: 'markdown',
+            value: sigMdDoc
+          },
+          parameters: sigParamemterInfos
+        });
       });
-      return ret;
+
+      return {
+        activeSignature: signatureHelpItems.selectedItemIndex,
+        activeParameter: signatureHelpItems.argumentIndex,
+        signatures
+      };
     },
     findDocumentHighlight(doc: TextDocument, position: Position): DocumentHighlight[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
@@ -419,6 +470,37 @@ export async function getJavascriptMode(
       });
       return referenceResults;
     },
+    getFoldingRanges(doc) {
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
+      if (!languageServiceIncludesFile(service, doc.uri)) {
+        return [];
+      }
+
+      const fileFsPath = getFileFsPath(doc.uri);
+      const spans = service.getOutliningSpans(fileFsPath);
+
+      return spans.map(s => {
+        const range = convertRange(scriptDoc, s.textSpan);
+        const kind = getFoldingRangeKind(s);
+
+        // https://github.com/vuejs/vetur/issues/2303
+        const endLine =
+          range.end.character > 0 &&
+          ['}', ']'].includes(
+            scriptDoc.getText(Range.create(Position.create(range.end.line, range.end.character - 1), range.end))
+          )
+            ? Math.max(range.end.line - 1, range.start.line)
+            : range.end.line;
+
+        return {
+          startLine: range.start.line,
+          startCharacter: range.start.character,
+          endLine,
+          endCharacter: range.end.character,
+          kind
+        };
+      });
+    },
     getCodeActions(doc, range, _formatParams, context) {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       const fileName = getFileFsPath(scriptDoc.uri);
@@ -503,7 +585,7 @@ export async function getJavascriptMode(
         } else {
           doFormat = prettierify;
         }
-        return doFormat(code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
+        return doFormat(code, filePath, workspacePath, range, vlsFormatConfig, parser, needInitialIndent);
       } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
@@ -592,7 +674,7 @@ function collectRefactoringCommands(
       kind: CodeActionKind.Refactor,
       command: {
         title: action.description,
-        command: 'vetur.chooseTypeScriptRefactoring',
+        command: APPLY_REFACTOR_COMMAND,
         arguments: [action]
       }
     });
@@ -751,4 +833,18 @@ function getFilterText(insertText: string | undefined): string | undefined {
 
   // In all other cases, fallback to using the insertText
   return insertText;
+}
+
+function getFoldingRangeKind(span: ts.OutliningSpan): FoldingRangeKind | undefined {
+  switch (span.kind) {
+    case 'comment':
+      return FoldingRangeKind.Comment;
+    case 'region':
+      return FoldingRangeKind.Region;
+    case 'imports':
+      return FoldingRangeKind.Imports;
+    case 'code':
+    default:
+      return undefined;
+  }
 }

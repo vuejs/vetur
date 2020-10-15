@@ -25,6 +25,7 @@ import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
 import { VueVersion } from '../../services/typescriptService/vueVersion';
 import { doPropValidation } from './services/vuePropValidation';
+import { getFoldingRanges } from './services/htmlFolding';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
@@ -37,7 +38,7 @@ export class HTMLMode implements LanguageMode {
 
   constructor(
     documentRegions: LanguageModelCache<VueDocumentRegions>,
-    workspacePath: string | undefined,
+    private workspacePath: string | undefined,
     vueVersion: VueVersion,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
     private vueInfoService?: VueInfoService
@@ -62,9 +63,11 @@ export class HTMLMode implements LanguageMode {
   doValidation(document: TextDocument) {
     const diagnostics = [];
 
-    const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
-    if (info && info.componentInfo.childComponents) {
-      diagnostics.push(...doPropValidation(document, this.vueDocuments.refreshAndGet(document), info));
+    if (this.config.vetur.validation.templateProps) {
+      const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
+      if (info && info.componentInfo.childComponents) {
+        diagnostics.push(...doPropValidation(document, this.vueDocuments.refreshAndGet(document), info));
+      }
     }
 
     if (this.config.vetur.validation.template) {
@@ -101,12 +104,16 @@ export class HTMLMode implements LanguageMode {
     return findDocumentSymbols(document, this.vueDocuments.refreshAndGet(document));
   }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-    return htmlFormat(document, range, this.config.vetur.format as VLSFormatConfig);
+    return htmlFormat(document, range, this.config.vetur.format as VLSFormatConfig, this.workspacePath);
   }
   findDefinition(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);
     const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
     return findDefinition(embedded, position, this.vueDocuments.refreshAndGet(embedded), info);
+  }
+  getFoldingRanges(document: TextDocument) {
+    const embedded = this.embeddedDocuments.refreshAndGet(document);
+    return getFoldingRanges(embedded);
   }
   onDocumentRemoved(document: TextDocument) {
     this.vueDocuments.onDocumentRemoved(document);

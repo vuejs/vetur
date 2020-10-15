@@ -15,7 +15,7 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
       result.some(d => {
         return isEqualDiagnostic(ed, d);
       }),
-      `Cannot find matching diagnostics for ${ed.message}\n${JSON.stringify(ed)}\n` +
+      `Cannot find matching diagnostics for\n${ed.message}\n\n${JSON.stringify(ed, null, 2)}\n\n` +
         `Seen diagnostics are:\n${JSON.stringify(result, null, 2)}`
     );
   });
@@ -40,13 +40,13 @@ export async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: v
 export async function testNoDiagnostics(docUri: vscode.Uri) {
   await showFile(docUri);
   // For diagnostics to show up
-  await sleep(3000);
+  await sleep(5000);
 
   const result = vscode.languages.getDiagnostics(docUri);
 
   assert.ok(
     result.length === 0,
-    `Should find no diagnostics for ${docUri.fsPath} but found:\n` + `${JSON.stringify(result)}`
+    `Should find no diagnostics for ${docUri.fsPath} but found:\n` + `${JSON.stringify(result, null, 2)}`
   );
 }
 

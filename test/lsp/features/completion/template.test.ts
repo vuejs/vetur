@@ -71,8 +71,18 @@ describe('Should autocomplete for <template>', () => {
 
       await testCompletion(parentUri, position(4, 6), ['ChildComp']);
 
-      await testCompletion(parentUri, position(2, 15), [':attr-a']);
-      await testCompletion(parentUri, position(3, 16), [':attr-a']);
+      await testCompletion(parentUri, position(2, 15), [
+        {
+          label: ':attr-a',
+          insertTextValue: ':attr-a="$1"'
+        }
+      ]);
+      await testCompletion(parentUri, position(3, 16), [
+        {
+          label: ':attr-a',
+          insertTextValue: 'attr-a="$1"'
+        }
+      ]);
 
       // set it back
       await c.update('vetur.completion.tagCasing', undefined, ConfigurationTarget.Global);

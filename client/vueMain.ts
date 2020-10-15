@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { LanguageClient, WorkspaceEdit } from 'vscode-languageclient';
+import { LanguageClient } from 'vscode-languageclient';
 import { generateGrammarCommandHandler } from './commands/generateGrammarCommand';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
@@ -36,16 +36,6 @@ export async function activate(context: vscode.ExtensionContext) {
       'vetur.openUserScaffoldSnippetFolder',
       generateOpenUserScaffoldSnippetFolderCommand(globalSnippetDir)
     )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.chooseTypeScriptRefactoring', (args: any) => {
-      client.sendRequest<WorkspaceEdit | undefined>('requestCodeActionEdits', args).then(edits => {
-        if (edits) {
-          vscode.workspace.applyEdit(client.protocol2CodeConverter.asWorkspaceEdit(edits)!);
-        }
-      });
-    })
   );
 
   registerLanguageConfigurations();

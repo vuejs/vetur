@@ -1,3 +1,4 @@
+import { kebabCase, snakeCase } from 'lodash';
 import * as ts from 'typescript';
 import { AST } from 'vue-eslint-parser';
 import { T_TypeScript } from '../dependencyService';
@@ -6,6 +7,7 @@ import { walkExpression } from './walkExpression';
 export const renderHelperName = '__vlsRenderHelper';
 export const componentHelperName = '__vlsComponentHelper';
 export const iterationHelperName = '__vlsIterationHelper';
+export const componentDataName = '__vlsComponentData';
 
 /**
  * Allowed global variables in templates.
@@ -22,7 +24,13 @@ const vOnScope = ['$event', 'arguments'];
 
 type ESLintVChild = AST.VElement | AST.VExpressionContainer | AST.VText;
 
-export function getTemplateTransformFunctions(ts: T_TypeScript) {
+/**
+ * @param ts Loaded TS dependency
+ * @param childComponentNamesInSnakeCase If `VElement`'s name matches one of the child components'
+ * name, generate expression with `${componentHelperName}__${name}`, which will enforce type-check
+ * on props
+ */
+export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNamesInSnakeCase?: string[]) {
   return {
     transformTemplate,
     parseExpression
@@ -54,7 +62,23 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
    * __vlsComponentHelper('div', { props: { title: this.foo } }, [ ...children... ]);
    */
   function transformElement(node: AST.VElement, code: string, scope: string[]): ts.Expression {
-    return ts.createCall(ts.createIdentifier(componentHelperName), undefined, [
+    /**
+     * `vModel`      -> need info from other components to do type check
+     * `v-bind`      -> do this later
+     * `v-bind:[foo] -> don't do type-check. do make `[]` an interpolation area
+     */
+    const hasUnhandledAttributes = node.startTag.attributes.some(attr => {
+      return isVModel(attr) || (isVBind(attr) && !isVBindShorthand(attr)) || isVBindWithDynamicAttributeName(attr);
+    });
+
+    const identifier =
+      !hasUnhandledAttributes &&
+      childComponentNamesInSnakeCase &&
+      childComponentNamesInSnakeCase.indexOf(snakeCase(node.rawName)) !== -1
+        ? ts.createIdentifier(componentHelperName + '__' + snakeCase(node.rawName))
+        : ts.createIdentifier(componentHelperName);
+
+    return ts.createCall(identifier, undefined, [
       // Pass this value to propagate ThisType in listener handlers
       ts.createIdentifier('this'),
 
@@ -62,7 +86,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       ts.createLiteral(node.name),
 
       // Attributes / Directives
-      transformAttributes(node.startTag.attributes, code, scope),
+      transformAttributes(node, node.startTag.attributes, code, scope),
 
       // Children
       ts.createArrayLiteral(transformChildren(node.children, code, scope))
@@ -70,6 +94,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
   }
 
   function transformAttributes(
+    node: AST.VElement,
     attrs: (AST.VAttribute | AST.VDirective)[],
     code: string,
     scope: string[]
@@ -133,8 +158,14 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     //   props: { class: 'title' },
     //   on: { click: __vlsListenerHelper(this, function($event) { this.onClick($event) } }
     // }
+    const propsAssignment = ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props));
+    ts.setSourceMapRange(propsAssignment.name, {
+      pos: node.startTag.range[0] + '<'.length,
+      end: node.startTag.range[0] + '<'.length + node.rawName.length
+    });
+
     return ts.createObjectLiteral([
-      ts.createPropertyAssignment('props', ts.createObjectLiteral(data.props)),
+      propsAssignment,
       ts.createPropertyAssignment('on', ts.createObjectLiteral(data.on)),
       ts.createPropertyAssignment('directives', ts.createArrayLiteral(data.directives))
     ]);
@@ -219,7 +250,11 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
       if (name.type === 'VIdentifier') {
         // Attribute name is specified
         // e.g. v-bind:value="foo"
-        return ts.createPropertyAssignment(ts.createStringLiteral(name.name), dirExp);
+        const propNameNode = ts.setSourceMapRange(ts.createStringLiteral(kebabCase(name.rawName)), {
+          pos: name.range[0],
+          end: name.range[1]
+        });
+        return ts.createPropertyAssignment(propNameNode, dirExp);
       } else {
         // Attribute name is dynamic
         // e.g. v-bind:[value]="foo"
@@ -704,8 +739,20 @@ export function getTemplateTransformFunctions(ts: T_TypeScript) {
     return !node.directive;
   }
 
+  function isVModel(node: AST.VAttribute | AST.VDirective): node is AST.VAttribute {
+    return node.directive && node.key.name.name === 'model';
+  }
+
   function isVBind(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
     return node.directive && node.key.name.name === 'bind';
+  }
+
+  function isVBindShorthand(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && node.key.name.name === 'bind' && node.key.name.rawName === ':';
+  }
+
+  function isVBindWithDynamicAttributeName(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive && node.key.argument?.type === 'VExpressionContainer';
   }
 
   function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {

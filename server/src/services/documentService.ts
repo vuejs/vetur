@@ -1,4 +1,4 @@
-import { IConnection, TextDocuments } from 'vscode-languageserver';
+import { Connection, TextDocuments } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 /**
@@ -8,7 +8,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 export class DocumentService {
   private documents: TextDocuments<TextDocument>;
 
-  constructor(conn: IConnection) {
+  constructor(conn: Connection) {
     this.documents = new TextDocuments(TextDocument);
     this.documents.listen(conn);
   }

@@ -1,0 +1,6 @@
+{
+  "handle-foo": {
+    "type": "event",
+    "documentation": "You gotta handle foo"
+  }
+}

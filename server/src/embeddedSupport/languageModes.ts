@@ -18,9 +18,9 @@ import {
   ColorInformation,
   Color,
   ColorPresentation,
-  Command,
   CodeAction,
-  WorkspaceEdit
+  WorkspaceEdit,
+  FoldingRange
 } from 'vscode-languageserver-types';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
@@ -69,6 +69,7 @@ export interface LanguageMode {
   format?(document: TextDocument, range: Range, options: FormattingOptions): TextEdit[];
   findDocumentColors?(document: TextDocument): ColorInformation[];
   getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
+  getFoldingRanges?(document: TextDocument): FoldingRange[];
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;
@@ -119,7 +120,7 @@ export class LanguageModes {
     }
 
     /**
-     * Documents where everything outside `<script>~ is replaced with whitespace
+     * Documents where everything outside `<script>` is replaced with whitespace
      */
     const scriptRegionDocuments = getLanguageModelCache(10, 60, document => {
       const vueDocument = this.documentRegions.refreshAndGet(document);
@@ -145,12 +146,12 @@ export class LanguageModes {
 
     this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
-    this.modes['pug'] = getPugMode();
-    this.modes['css'] = getCSSMode(this.documentRegions);
-    this.modes['postcss'] = getPostCSSMode(this.documentRegions);
-    this.modes['scss'] = getSCSSMode(this.documentRegions);
+    this.modes['pug'] = getPugMode(workspacePath);
+    this.modes['css'] = getCSSMode(workspacePath, this.documentRegions);
+    this.modes['postcss'] = getPostCSSMode(workspacePath, this.documentRegions);
+    this.modes['scss'] = getSCSSMode(workspacePath, this.documentRegions);
     this.modes['sass'] = new SassLanguageMode();
-    this.modes['less'] = getLESSMode(this.documentRegions);
+    this.modes['less'] = getLESSMode(workspacePath, this.documentRegions);
     this.modes['stylus'] = getStylusMode(this.documentRegions);
     this.modes['javascript'] = jsMode;
     this.modes['typescript'] = jsMode;
@@ -208,7 +209,6 @@ export class LanguageModes {
     for (const mode in this.modes) {
       this.modes[<LanguageId>mode].dispose();
     }
-    delete this.modes;
     this.serviceHost.dispose();
   }
 }

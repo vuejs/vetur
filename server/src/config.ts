@@ -18,7 +18,6 @@ export interface VLSConfig {
     useWorkspaceDependencies: boolean;
     completion: {
       autoImport: boolean;
-      useScaffoldSnippets: boolean;
       tagCasing: 'initial' | 'kebab';
       scaffoldSnippetSources: {
         workspace: string;
@@ -31,6 +30,8 @@ export interface VLSConfig {
     };
     validation: {
       template: boolean;
+      templateProps: boolean;
+      interpolation: boolean;
       style: boolean;
       script: boolean;
     };
@@ -48,6 +49,9 @@ export interface VLSConfig {
       };
       scriptInitialIndent: boolean;
       styleInitialIndent: boolean;
+    };
+    languageFeatures: {
+      codeActions: boolean;
     };
     trace: {
       server: 'off' | 'messages' | 'verbose';
@@ -79,12 +83,13 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       useWorkspaceDependencies: false,
       validation: {
         template: true,
+        templateProps: false,
+        interpolation: true,
         style: true,
         script: true
       },
       completion: {
         autoImport: false,
-        useScaffoldSnippets: false,
         tagCasing: 'initial',
         scaffoldSnippetSources: {
           workspace: '💼',
@@ -106,6 +111,9 @@ export function getDefaultVLSConfig(): VLSFullConfig {
         scriptInitialIndent: false,
         styleInitialIndent: false
       },
+      languageFeatures: {
+        codeActions: true
+      },
       trace: {
         server: 'off'
       },
@@ -126,6 +134,7 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       format: {}
     },
     typescript: {
+      tsdk: null,
       format: {}
     },
     emmet: {},

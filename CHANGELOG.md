@@ -1,15 +1,63 @@
 # Changelog
 
-### 0.27.0
+### 0.29.0
 
+- Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
+- Fix files with CRLF having errors with wrong range. #1319.
+- 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
+
+### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
+
+- Fix completing prop name completes with extra `:`. #2304.
+- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150.
+- Let VTI load default VLS config. #2274.
+- Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
+- Load prettier plugin from VLS if not present in workspace folder. #2014.
+- Cross file template type checking - check that components are passed props with the correct types. #1596 and #2294.
+
+### 0.27.3 | 2020-09-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.3/vspackage)
+
+- 🙌 Fix corner case when analyzing class component. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2254 and #2260.
+- 🙌 Ignore no implicitly any error in v-slot with destructuring. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2258 and #2259.
+
+### 0.27.2 | 2020-09-06 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.2/vspackage)
+
+- Add a config `vetur.validation.props` to toggle props validation. Default to false. #2249.
+- 🙌 Add HTML folding. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2234 and #2244.
+- 🙌 Fix array get error type in v-for. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1790 and #2248.
+- 🙌 Fix corner case and add v-model support when prop validation. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2241.
+
+### 0.27.1 | 2020-09-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.1/vspackage)
+
+- Only enable interpolation diagnostics when both `vetur.experimental.templateInterpolationService` and `vetur.validation.interpolation` are set to `true`.
+
+### 0.27.0 | 2020-09-03 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.0/vspackage)
+
+- Add `foldingRange` support to support dynamic folding ranges such as `#region`. #899.
+- Add setting `vetur.validation.interpolation` so interpolation diagnostics and `eslint-plugin-vue` diagnostics can be configed separately. #2131.
+- Fix VLS crash for *.vue files in node_modules. #2006.
+- Upgrade to TypeScript 4.0.2 and fix symbol outline issue. #1849.
+- Improve JSDoc presentation in hover/completion in interpolation mode. #1337.
+- Improve JSDoc presentation in hover/completion/signatureHelp. #2193.
+- `<PascalCase>` component should get highlighted like JSX/TSX when embedding other tags. #2146.
 - Improve cross-file completion when declaring simple props with `props: ['foo']`. #2143.
 - Completing child component should trigger props with `:` by default. #2140.
 - Space should trigger completion only in HTML mode. #2139.
 - Self-closing `<PascalCase>` component should get highlighted like JSX/TSX. #2136
-- Cross file template type checking - check that components are passed all declared props. #2135.
+- [Cross file template type checking](https://vuejs.github.io/vetur/interpolation.html#prop-validation) - check that components are passed all declared props. #2135.
 - Linkify all vue/vue-router tags to their API doc. #2133.
 - Component Data - `type: 'boolean'` should trigger completion without `=""`. #2127.
 - Component Data doesn't work if it comes from devDependencies. #2132.
+- 🙌 Fix Emmet didn't work after curly parentheses. Thanks to contribution from [@cereschen](https://github.com/cereschen). #2173.
+- 🙌 Fix no CSS completions in `style` attribute inside `<template>` region. Thanks to contribution from [@cereschen](https://github.com/cereschen). #1678.
+- 🙌 Validate props of `<PascalCase>` components in templates. Thanks to contribution from [Michał Wilski](https://github.com/triforcely). #2168.
+- 🙌 Add yarn@berry support and use `typescript.tsdk` setting for loading TypeScript in VLS. Thanks to contribution from [Alexandre Bonaventure Geissmann](https://github.com/AlexandreBonaventure). #1711, #1737 and #1996.
+- 🙌 Add support for analyzing vue-class-component and vue-property-decorator. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #864, #1105 and #1323.
+- 🙌 Remove lsp client-side commands to improve integration with third party lsp client. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2137.
+- 🙌 Fix "Go to definition" for methods/computed does not work in the template. Thanks to contribution from [@cereschen](https://github.com/cereschen). #1484 and #2161.
+- 🙌 Prop with `required: false` or default value should not trigger prop validation error when not provided. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2141.
+- 🙌 Show slot-related tag attributes in symbol search. Thanks to contribution from [@3nuc](https://github.com/3nuc). #2169
+- 🙌 Fix JSDoc presentation had no line breaks. Thanks to contribution from [@sapphi-red](https://github.com/sapphi-red). #2214.
 
 ### 0.26.1 | 2020-08-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.26.1/vspackage)
 
