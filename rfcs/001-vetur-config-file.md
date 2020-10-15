@@ -91,7 +91,7 @@ This will ensure consistency with past behavior.
 
 ### How to find `vetur.config.js`
 - Same as finding `tsconfig.json` logic in TypeScript.
-- Start from the root and work your way up until you find it.
+- Start from the root and work your way up until the file is found.
 - The root is set `process.cwd()` value in VTI and you can set file path in CLI params.
 
 PS. Each root can have its own vetur.config.js in VSCode Multi root feature.
