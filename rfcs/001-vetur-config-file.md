@@ -104,7 +104,7 @@ type Glob = string
 
 export interface VeturConfig {
   settings?: { [key: string]: boolean | string | Enum },
-  monorepos?: Array<{
+  repos?: Array<{
     root: string,
     package?: string,
     tsconfig?: string,
