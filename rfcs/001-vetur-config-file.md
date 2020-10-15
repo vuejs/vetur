@@ -74,9 +74,6 @@ module.exports = {
 - UTF-8 charset
 
 ## How to use
-Only useful for `vetur.config.js` file in root.
-Ignore all `vetur.config.js` except root directory.
-The only exception is when the VSCode Multi root, Vetur will read all roots vetur.config.js acting on the respective root.
 
 ### VTI
 You can use it to override VTI default settings.
@@ -91,6 +88,11 @@ This profile takes precedence over vscode setting.
 It will find it when Vetur initialization.
 If it isn't exist, It will use `{ settings: {}, monorepos: [{ root: './' }] }`.
 This will ensure consistency with past behavior.
+
+### How to find `vetur.config.js`
+- Same as finding `tsconfig.json` logic in TypeScript.
+- Start from the root and work your way up until you find it.
+- The root is set `process.cwd()` value in VTI and you can set file path in CLI params.
 
 PS. Each root can have its own vetur.config.js in VSCode Multi root feature.
 
