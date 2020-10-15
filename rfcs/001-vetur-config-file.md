@@ -108,7 +108,7 @@ export interface VeturConfig {
     root: string,
     package?: string,
     tsconfig?: string,
-    globallyComponents?: Glob[]
+    globallyComponents?: Array<Glob | { name: string, path: string }>
   }>
 }
 ```
@@ -190,7 +190,16 @@ export default {
 With this property available, we will parse vue component files that match the glob on vls startup.
 You can support `template interpolation` for that components anywhere in the project.
 
-Notice: It won't actually do it. You need to use `require.context` or `Vue.component` in your project.
+This property allow two type values in array.
+- Glob (`string`) [format](https://github.com/mrmlnc/fast-glob#pattern-syntax)
+  Vetur will call glob lib with `repos[].root` for loading component when value is string.
+  It use `path.basename(fileName, path.extname(fileName))` as component name.
+- Object (`{ name: string, path: string }`)
+  Vetur use this data directly.
+  It's the most flexible way.
+  If this is a relative path, It is based on `repos[].root`.
+
+Notice: It won't actually do it. You need to use `require.context` and `Vue.component` in your project. [more](https://vuejs.org/v2/guide/components-registration.html#Automatic-Global-Registration-of-Base-Components)
 
 # Drawbacks
 - We need to guide the user through the new settings.
