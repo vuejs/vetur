@@ -483,7 +483,6 @@ export function getServiceHost(
   function createTemplateLanguageService(compilerOptions: ts.CompilerOptions) {
     const templateHost = createLanguageServiceHost({
       ...compilerOptions,
-      noImplicitAny: false,
       noUnusedLocals: false,
       noUnusedParameters: false,
       allowJs: true,
