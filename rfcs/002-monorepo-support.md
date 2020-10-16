@@ -4,7 +4,7 @@
 - Implementation PR: (leave this empty)
 
 # Summery
-How to achieve monorepo, subfolder, mulit repos support?
+How to achieve monorepo, sub-folders, multi-repos support?
 
 # Basic example
 a configuration in `vetur.config.js`.
