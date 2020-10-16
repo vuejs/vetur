@@ -17,6 +17,7 @@
 - 🙌 Slim syntax highlighting. Thanks to contribution from [@Antti](https://github.com/Antti).
 - 🙌 Stop computing outdated diagnostics with CancellationToken. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1263 and #2332.
 - 🙌 Fix error when optional camel-cased props are missing. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2314 and #2342.
+- 🙌 Fix Vetur formatting not working. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2388 and #2389.
 
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
