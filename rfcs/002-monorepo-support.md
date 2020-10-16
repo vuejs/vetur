@@ -25,8 +25,7 @@ Ref: https://github.com/vuejs/vetur/pull/2378
 - LSP: [language server protocol](https://microsoft.github.io/language-server-protocol/)
 - LSP server: In this rfcs, It means VLS.
 - LSP client: Connect to the client for the LSP server.
-- TLS: TypeScript language service, **It isn't base on LSP**. We call function like lib to used it.
-- TypeScript program: A program that implements the language functionality provided on a project in TLS. Like: hover, completion.
+- TLS: TypeScript language service, **It isn't base on LSP**. We call function like lib to used it. It provide language functionality on a project. Like: hover, completion.
 - TS plugin: TypeScript Language Service Plugin. We can use it for rename, refactor features. [ref](https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin)
 
 ## How it achieve ?
@@ -53,9 +52,9 @@ One project scope per VLS dedicated service.
 - Because the TS plugin has a different runtime unit, VLS and TS plugin communication is a problem, May need to deal with unexpected situations.
 - Information could not be shared before the project.
 
-### Base on TypeScript program in LSP server
-The TLS is support multile project in one server.
-It will make one Project to one TypeScript program.
+### Base on TLS in LSP server
+The TypeScript is support multile project in one server.
+It will make one Project to one TLS.
 It is based on `tsconfig.json` location.
 Because only TS feature needs this feature at the moment,
 
@@ -69,7 +68,7 @@ Similar PR: https://github.com/vuejs/vetur/pull/1734
 - Consistent with the implementation of TS plugin, VLS and TS plugin communication is not a problem.
 
 #### Drawbacks
-- It may create something completely unnecessary TS program when having project no Vue, maybe need a lazy logic?
+- It may create something completely unnecessary TLS when having project no Vue, maybe need a lazy logic?
 - In the vue ecosystem, it isn't support multiple `tsconfig.json`, It's a little redundant. [more info](https://github.com/vuejs/vetur/blob/vetur-config-file-rfc/rfcs/001-vetur-config-file.md#why-isnt-array)
 - Performance is affected by the interplay between projects. unless the separation process is implemented with node `worker_threads`.
 - The template interpolation need to refactor and design.
