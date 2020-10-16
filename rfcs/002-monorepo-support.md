@@ -71,7 +71,7 @@ Similar PR: https://github.com/vuejs/vetur/pull/1734
 - It may create something completely unnecessary TLS when having project no Vue, maybe need a lazy logic?
 - In the vue ecosystem, it isn't support multiple `tsconfig.json`, It's a little redundant. [more info](https://github.com/vuejs/vetur/blob/vetur-config-file-rfc/rfcs/001-vetur-config-file.md#why-isnt-array)
 - Performance is affected by the interplay between projects. unless the separation process is implemented with node `worker_threads`.
-- The template interpolation need to refactor and design.
+- ~~The template interpolation need to refactor and design~~, At least it's not a problem now. But I'm not sure if we'll break anything if we let Template interpolation have multiple files importing from each other.
 - Because there is no defined project in VLS, register globally components could be inaccurate.
 
 
@@ -99,3 +99,4 @@ Not yet decided
 - Have any multiple `tsconfig.json` case for a Vue project?
 - What to base a project on? Use `tsconfig.json`, `package.json`, or config in [RFC](https://github.com/vuejs/vetur/pull/2378)?
 - Which plan to use?
+- Have any multiple `tsconfig.json` case for a other framework project? React? Angular?
