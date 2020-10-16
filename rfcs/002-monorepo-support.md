@@ -56,10 +56,10 @@ One project scope per VLS dedicated service.
 The TypeScript is support multile project in one server.
 It will make one Project to one TLS.
 It is based on `tsconfig.json` location.
-Because only TS feature needs this feature at the moment,
+Because only TypeScript/JavaScript feature needs this feature at the moment,
 
 Example: https://github.com/angular/vscode-ng-language-service
-PS. Slightly different is that the project relies entirely on TS plugins.
+PS. In this example from angular, Slightly different is that the project relies entirely on TS plugins.
 Similar PR: https://github.com/vuejs/vetur/pull/1734
 
 #### Benefits
