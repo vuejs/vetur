@@ -119,7 +119,7 @@ export class VLS {
       params.initializationOptions?.globalSnippetDir
     );
 
-    await this.setupConfigure(config);
+    this.setupConfigure(config);
     this.setupConfigListeners();
     this.setupLSPHandlers();
     this.setupCustomLSPHandlers();
@@ -138,10 +138,9 @@ export class VLS {
     return original ? _.merge(getDefaultVLSConfig(), original) : getDefaultVLSConfig();
   }
 
-  public async setupConfigure(config: VLSFullConfig) {
+  public setupConfigure(config: VLSFullConfig) {
     this.configure(config);
-
-    await this.setupDynamicFormatters(config);
+    this.setupDynamicFormatters(config);
   }
 
   private setupConfigListeners() {
