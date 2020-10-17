@@ -33,10 +33,9 @@ export class VCancellationTokenSource extends CancellationTokenSource {
 export function isVCancellationTokenCancel(token?: VCancellationToken) {
   return new Promise(resolve => {
     if (!token) {
-      return false;
+      resolve(false)
+    } else {
+      setImmediate(() => resolve(token.isCancellationRequested));
     }
-    setImmediate(() => {
-      resolve(token.isCancellationRequested);
-    });
   });
 }
