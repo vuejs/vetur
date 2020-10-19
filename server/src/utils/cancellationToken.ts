@@ -1,6 +1,5 @@
-import { Runtime } from 'inspector';
 import type { T_TypeScript } from '../services/dependencyService';
-import { CancellationToken as TSCancellationToken, OperationCanceledException } from 'typescript';
+import { CancellationToken as TSCancellationToken } from 'typescript';
 import { CancellationTokenSource, CancellationToken as LSPCancellationToken } from 'vscode-languageserver';
 
 export interface VCancellationToken extends LSPCancellationToken {
@@ -33,7 +32,7 @@ export class VCancellationTokenSource extends CancellationTokenSource {
 export function isVCancellationTokenCancel(token?: VCancellationToken) {
   return new Promise(resolve => {
     if (!token) {
-      resolve(false)
+      resolve(false);
     } else {
       setImmediate(() => resolve(token.isCancellationRequested));
     }
