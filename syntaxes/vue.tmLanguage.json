@@ -170,6 +170,49 @@
       ]
     },
     {
+      "begin": "(<)(template)\\b(?=[^>]*lang=('slim'|\"slim\"))(?![^/>]*/>\\s*$)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
+        }
+      },
+      "end": "(</)(template)(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.html"
+        },
+        "2": {
+          "name": "entity.name.tag.template.html"
+        },
+        "3": {
+          "name": "punctuation.definition.tag.end.html"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#tag-stuff"
+        },
+        {
+          "contentName": "text.slim",
+          "begin": "(>)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          },
+          "end": "(?=</template>)",
+          "patterns": [
+            {
+              "include": "text.slim"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "begin": "(<)(template)\\b(?=[^>]*lang=('slm'|\"slm\"))(?![^/>]*/>\\s*$)",
       "beginCaptures": {
         "1": {

@@ -129,6 +129,7 @@
           "text.jade.slm": "slm",
           "text.pug": "jade",
           "text.haml": "haml",
+          "text.slim": "slim",
           "text.html.liquid": "liquid",
           "source.css": "css",
           "source.css.scss": "scss",
