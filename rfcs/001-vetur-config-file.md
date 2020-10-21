@@ -41,7 +41,7 @@ module.exports = {
       // If you set it, you can get completion by that components.
       // It is relative to root property.
       // Notice: It won't actually do it. You need to use `require.context` or `Vue.component`
-      globallyComponents: [
+      globalComponents: [
         './src/components/**/*.vue'
       ]
     }
@@ -108,7 +108,7 @@ export interface VeturConfig {
     root: string,
     package?: string,
     tsconfig?: string,
-    globallyComponents?: Array<Glob | { name: string, path: string }>
+    globalComponents?: Array<Glob | { name: string, path: string }>
   }>
 }
 ```
@@ -173,7 +173,7 @@ It can reduce development and maintenance costs.
 
 PS. `jsconfig.json` is also support it.
 
-### `repos[].globallyComponents`
+### `repos[].globalComponents`
 We have some amazing features, Like `template interpolation`.
 But it only work when register component in component.
 For example:
