@@ -14,6 +14,7 @@
 - Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
 - Load prettier plugin from VLS if not present in workspace folder. #2014.
 - Cross file template type checking - check that components are passed props with the correct types. #1596 and #2294.
+- 🙌 Fix VTI printing filenames without errors or warnings due to eslint-plugin-vue being igored. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2305.
 
 ### 0.27.3 | 2020-09-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.3/vspackage)
 

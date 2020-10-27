@@ -99,18 +99,16 @@ async function getDiagnostics(workspaceUri: URI) {
     });
 
     try {
-      const res = (await clientConnection.sendRequest('$/getDiagnostics', {
+      let res = (await clientConnection.sendRequest('$/getDiagnostics', {
         uri: URI.file(absFilePath).toString()
       })) as Diagnostic[];
+      /**
+       * Ignore eslint errors for now
+       */
+      res = res.filter(r => r.source !== 'eslint-plugin-vue');
       if (res.length > 0) {
         console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
         res.forEach(d => {
-          /**
-           * Ignore eslint errors for now
-           */
-          if (d.source === 'eslint-plugin-vue') {
-            return;
-          }
           if (d.severity === DiagnosticSeverity.Error) {
             console.log(`${chalk.red('Error')}: ${d.message.trim()}`);
             errCount++;
