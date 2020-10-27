@@ -163,6 +163,7 @@ async function getDiagnostics(workspaceUri: URI) {
     console.log('  vti diagnostics ---- Print all diagnostics');
     console.log('');
   }
-})().catch(_err => {
-  console.error('VTI operation failed');
+})().catch(err => {
+  console.error(`VTI operation failed with error: ${err}`);
+  process.exit(1);
 });
