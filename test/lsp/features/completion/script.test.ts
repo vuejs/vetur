@@ -2,9 +2,10 @@ import { position } from '../../../util';
 import { testCompletion } from '../../../completionHelper';
 import { getDocUri } from '../../path';
 
-describe('Should autocomplete for <script>', () => {
+describe.only('Should autocomplete for <script>', () => {
   const basicUri = getDocUri('completion/script/Basic.vue');
   const hyphenUri = getDocUri('completion/script/Hyphen.vue');
+  const literalUri = getDocUri('completion/script/issue-2300.vue');
 
   it('completes module names when importing', async () => {
     await testCompletion(basicUri, position(5, 8), ['lodash', 'vue', 'vuex']);
@@ -24,5 +25,9 @@ describe('Should autocomplete for <script>', () => {
 
   it('completes hyphen properties in object', async () => {
     await testCompletion(hyphenUri, position(6, 4), ['a', 'a-2']);
+  });
+
+  it('completes literal string', async () => {
+    await testCompletion(literalUri, position(3, 6), ['black', 'blue']);
   });
 });
