@@ -25,7 +25,8 @@ import {
   CodeAction,
   CodeActionKind,
   WorkspaceEdit,
-  FoldingRangeKind
+  FoldingRangeKind,
+  CompletionItemTag
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -151,6 +152,7 @@ export async function getJavascriptMode(
         return { isIncomplete: false, items: [] };
       }
       const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        triggerCharacter: getTsTriggerCharacter(triggerChar),
         includeCompletionsWithInsertText: true,
         includeCompletionsForModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
       });
@@ -164,7 +166,7 @@ export async function getJavascriptMode(
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
 
-          return {
+          const item: CompletionItem = {
             uri: doc.uri,
             position,
             preselect: entry.isRecommended ? true : undefined,
@@ -173,7 +175,7 @@ export async function getJavascriptMode(
             filterText: getFilterText(entry.insertText),
             sortText: entry.sortText + index,
             kind: toCompletionItemKind(entry.kind),
-            textEdit: range && TextEdit.replace(range, entry.name),
+            textEdit: range && TextEdit.replace(range, entry.insertText || entry.name),
             insertText: entry.insertText,
             data: {
               // data used for resolving item details (see 'doResolve')
@@ -182,7 +184,22 @@ export async function getJavascriptMode(
               offset,
               source: entry.source
             }
-          };
+          } as CompletionItem;
+
+          if (entry.kindModifiers) {
+            const kindModifiers = parseKindModifier(entry.kindModifiers ?? '');
+            if (kindModifiers.optional) {
+              item.label += '?';
+            }
+            if (kindModifiers.deprecated) {
+              item.tags = [CompletionItemTag.Deprecated];
+            }
+            if (kindModifiers.color) {
+              item.kind = CompletionItemKind.Color;
+            }
+          }
+
+          return item;
         })
       };
 
@@ -760,6 +777,15 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   };
 }
 
+function getTsTriggerCharacter(triggerChar: string) {
+  const legalChars = ['@', '#', '.', '"', "'", '`', '/', '<'] as const;
+  type LegalChars = typeof legalChars[number];
+  if (legalChars.includes(triggerChar as LegalChars)) {
+    return triggerChar as LegalChars;
+  }
+  return undefined;
+}
+
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
@@ -792,6 +818,16 @@ function convertCodeAction(
     }
   }
   return textEdits;
+}
+
+function parseKindModifier(kindModifiers: string) {
+  const kinds = new Set(kindModifiers.split(/,|\s+/g));
+
+  return {
+    optional: kinds.has('optional'),
+    deprecated: kinds.has('deprecated'),
+    color: kinds.has('color')
+  };
 }
 
 function convertTSDiagnosticCategoryToDiagnosticSeverity(c: ts.DiagnosticCategory) {
