@@ -126,6 +126,11 @@ async function getDiagnostics(workspaceUri: URI) {
   return errCount;
 }
 
+function getVersion(): string {
+  const { version }: { version: string } = require('../package.json');
+  return `v${version}`;
+}
+
 (async () => {
   const myArgs = process.argv.slice(2);
 
@@ -154,6 +159,8 @@ async function getDiagnostics(workspaceUri: URI) {
       console.log(chalk.red(`VTI found ${errCount} ${errCount === 1 ? 'error' : 'errors'}`));
       process.exit(1);
     }
+  } else if (myArgs.length > 0 && myArgs[0] === 'version') {
+    console.log(getVersion());
   } else {
     // no args or wrong first args
     console.log('Vetur Terminal Interface');
@@ -161,6 +168,7 @@ async function getDiagnostics(workspaceUri: URI) {
     console.log('Usage:');
     console.log('');
     console.log('  vti diagnostics ---- Print all diagnostics');
+    console.log('  vti version     ---- Show VTI version');
     console.log('');
   }
 })().catch(err => {
