@@ -90,7 +90,7 @@ export async function getJavascriptMode(
 
   function getUserPreferences(scriptDoc: TextDocument): ts.UserPreferences {
     const baseConfig = config[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'];
-    const preferencesConfig = config[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'].preferences;
+    const preferencesConfig = baseConfig?.preferences;
 
     if (!baseConfig || !preferencesConfig) {
       return {};
