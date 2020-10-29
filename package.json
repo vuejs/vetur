@@ -68,8 +68,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "vetur.restartVLSServer",
-        "title": "Vetur: Restart vue language server"
+        "command": "vetur.restartVLS",
+        "title": "Vetur: Restart VLS (Vue Language Server)"
       },
       {
         "command": "vetur.generateGrammar",

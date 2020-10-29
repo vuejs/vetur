@@ -53,7 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
     .then(() => {
       registerCustomClientNotificationHandlers(client);
       registerCustomLSPCommands(context, client);
-      registerRestartServerCommand(context, client);
+      registerRestartVLSCommand(context, client);
     })
     .catch(e => {
       console.log('Client initialization failed');
@@ -62,7 +62,7 @@ export async function activate(context: vscode.ExtensionContext) {
   return displayInitProgress(promise);
 }
 
-async function displayInitProgress (promise: Promise<void>) {
+async function displayInitProgress(promise: Promise<void>) {
   return vscode.window.withProgress(
     {
       title: 'Vetur initialization',
@@ -72,11 +72,15 @@ async function displayInitProgress (promise: Promise<void>) {
   );
 }
 
-function registerRestartServerCommand (context: vscode.ExtensionContext, client: LanguageClient) {
+function registerRestartVLSCommand(context: vscode.ExtensionContext, client: LanguageClient) {
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'vetur.restartVLSServer',
-      () => displayInitProgress(client.stop().then(() => client.start()).then(() => client.onReady()))
+    vscode.commands.registerCommand('vetur.restartVLS', () =>
+      displayInitProgress(
+        client
+          .stop()
+          .then(() => client.start())
+          .then(() => client.onReady())
+      )
     )
   );
 }

@@ -1,6 +1,8 @@
 # Performance Issue Reporting
 
-Performance issues are hard to track down, and a good report is necessary for fixing them.
+Performance issues are hard to track down, and a good report is crucial for fixing them.
+
+Although you can use the command `Vetur: Restart VLS (Vue Language Server)` to restart VLS and temporarily avoid performance issues, we would appreciate it if you can file a report to help us fix the issue.
 
 In addition to the normal issues, please include a profile in performance-related issues and below information:
 
