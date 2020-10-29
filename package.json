@@ -68,6 +68,10 @@
   "contributes": {
     "commands": [
       {
+        "command": "vetur.restartVLS",
+        "title": "Vetur: Restart VLS (Vue Language Server)"
+      },
+      {
         "command": "vetur.generateGrammar",
         "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
       },

@@ -77,6 +77,7 @@ Thanks to the following companies for supporting Vetur's development:
 
 - No multi root suppport yet ([#424](https://github.com/vuejs/vetur/issues/424))
 - Cannot handle tsconfig from non-top-level folder ([#815](https://github.com/vuejs/vetur/issues/815))
+- You can restart Vue language service when Vetur slow ([#2192](https://github.com/vuejs/vetur/issues/2192))
 
 ## Roadmap
 
