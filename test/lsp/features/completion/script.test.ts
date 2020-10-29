@@ -30,7 +30,7 @@ describe.only('Should autocomplete for <script>', () => {
 
   it('completes literal string', async () => {
     await testCompletion(literalUri, position(3, 6), ['black', 'blue']);
-  })
+  });
 
   it('completes optional properties in object', async () => {
     await testCompletion(kindModifiersUri, position(12, 8), [{ label: 'b?', insertTextValue: '?.b' }]);

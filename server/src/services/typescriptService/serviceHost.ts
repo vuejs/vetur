@@ -198,6 +198,19 @@ export function getServiceHost(
 
   // External Documents: JS/TS, non Vue documents
   function updateExternalDocument(fileFsPath: string) {
+    // respect tsconfig
+    // use *internal* function
+    const configFileSpecs = (parsedConfig as any).configFileSpecs;
+    const isExcludedFile = (tsModule as any).isExcludedFile;
+    if (
+      isExcludedFile &&
+      configFileSpecs &&
+      isExcludedFile(fileFsPath, configFileSpecs, workspacePath, true, workspacePath)
+    ) {
+      return;
+    }
+    logger.logInfo(`update ${fileFsPath} in ts language service.`);
+
     const ver = versions.get(fileFsPath) || 0;
     versions.set(fileFsPath, ver + 1);
     projectVersion++;
