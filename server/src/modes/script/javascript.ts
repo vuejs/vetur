@@ -88,6 +88,43 @@ export async function getJavascriptMode(
   let config: any = {};
   let supportedCodeFixCodes: Set<number>;
 
+  function getUserPreferences(scriptDoc: TextDocument): ts.UserPreferences {
+    const baseConfig = config[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'];
+    const preferencesConfig = baseConfig?.preferences;
+
+    if (!baseConfig || !preferencesConfig) {
+      return {};
+    }
+
+    function safeGetConfigValue<V extends string | boolean, A extends Array<V>, D = undefined>(
+      configValue: any,
+      allowValues: A,
+      defaultValue?: D
+    ) {
+      return allowValues.includes(configValue) ? (configValue as A[number]) : (defaultValue as D);
+    }
+
+    return {
+      quotePreference: safeGetConfigValue(preferencesConfig.quoteStyle, ['single', 'double', 'auto']),
+      importModuleSpecifierPreference: safeGetConfigValue(preferencesConfig.importModuleSpecifier, [
+        'relative',
+        'non-relative'
+      ]),
+      importModuleSpecifierEnding: safeGetConfigValue(
+        preferencesConfig.importModuleSpecifierEnding,
+        ['minimal', 'index', 'js'],
+        'auto'
+      ),
+      allowTextChangesInNewFiles: true,
+      providePrefixAndSuffixTextForRename:
+        preferencesConfig.renameShorthandProperties === false ? false : preferencesConfig.useAliasesForRenames,
+      // @ts-expect-error
+      allowRenameOfImportPath: true,
+      includeAutomaticOptionalChainCompletions: baseConfig.suggest.includeAutomaticOptionalChainCompletions ?? true,
+      provideRefactorNotApplicableReason: true
+    };
+  }
+
   return {
     getId() {
       return 'javascript';
@@ -152,9 +189,10 @@ export async function getJavascriptMode(
         return { isIncomplete: false, items: [] };
       }
       const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        ...getUserPreferences(scriptDoc),
         triggerCharacter: getTsTriggerCharacter(triggerChar),
         includeCompletionsWithInsertText: true,
-        includeCompletionsForModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
+        includeCompletionsForModuleExports: config.vetur.completion.autoImport
       });
       if (!completions) {
         return { isIncomplete: false, items: [] };
@@ -228,14 +266,12 @@ export async function getJavascriptMode(
       }
     },
     doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
-      const { service } = updateCurrentVueTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return item;
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const userPrefs: ts.UserPreferences =
-        doc.languageId === 'javascript' ? config.javascript.preferences : config.typescript.preferences;
 
       const details = service.getCompletionEntryDetails(
         fileFsPath,
@@ -243,7 +279,7 @@ export async function getJavascriptMode(
         item.label,
         getFormatCodeSettings(config),
         item.data.source,
-        userPrefs
+        getUserPreferences(scriptDoc)
       );
 
       if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
@@ -545,12 +581,12 @@ export async function getJavascriptMode(
         end,
         fixableDiagnosticCodes,
         formatSettings,
-        /*preferences*/ {}
+        getUserPreferences(scriptDoc)
       );
       collectQuickFixCommands(fixes, service, result);
 
       const textRange = { pos: start, end };
-      const refactorings = service.getApplicableRefactors(fileName, textRange, /*preferences*/ {});
+      const refactorings = service.getApplicableRefactors(fileName, textRange, getUserPreferences(scriptDoc));
       collectRefactoringCommands(refactorings, fileName, formatSettings, textRange, result);
 
       return result;
