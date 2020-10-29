@@ -165,18 +165,16 @@ export async function getJavascriptMode(
         items: entries.map((entry, index) => {
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
-          const kinds = parseKindModifier(entry.kindModifiers ?? '');
 
-          return {
+          const item: CompletionItem = {
             uri: doc.uri,
             position,
             preselect: entry.isRecommended ? true : undefined,
-            label: label + (kinds.optional ? '?' : ''),
-            tags: kinds.deprecated ? [CompletionItemTag.Deprecated] : undefined,
+            label,
             detail,
             filterText: getFilterText(entry.insertText),
             sortText: entry.sortText + index,
-            kind: kinds.color ? CompletionItemKind.Color : toCompletionItemKind(entry.kind),
+            kind: toCompletionItemKind(entry.kind),
             textEdit: range && TextEdit.replace(range, entry.insertText || entry.name),
             insertText: entry.insertText,
             data: {
@@ -186,7 +184,22 @@ export async function getJavascriptMode(
               offset,
               source: entry.source
             }
-          };
+          } as CompletionItem;
+
+          if (entry.kindModifiers) {
+            const kindModifiers = parseKindModifier(entry.kindModifiers ?? '');
+            if (kindModifiers.optional) {
+              item.label += '?';
+            }
+            if (kindModifiers.deprecated) {
+              item.tags = [CompletionItemTag.Deprecated];
+            }
+            if (kindModifiers.color) {
+              item.kind = CompletionItemKind.Color;
+            }
+          }
+
+          return item;
         })
       };
 
