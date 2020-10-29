@@ -764,7 +764,9 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
 function getTsTriggerCharacter(triggerChar: string) {
   const legalChars = ['@', '#', '.', '"', "'", '`', '/', '<'] as const;
   type LegalChars = typeof legalChars[number];
-  if (legalChars.includes(triggerChar as LegalChars)) return triggerChar as LegalChars;
+  if (legalChars.includes(triggerChar as LegalChars)) {
+    return triggerChar as LegalChars;
+  }
   return undefined;
 }
 
