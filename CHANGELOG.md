@@ -2,18 +2,23 @@
 
 ### 0.29.0
 
-- Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347
+- Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
+- Fix files with CRLF having errors with wrong range. #1319.
 - 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
 - 🙌 Fix undefined valueDeclaration in props crashing vls. Thanks to contribution from [@javiertury](https://github.com/javiertury). #2367.
+- 🙌 Reduce recreate ts program when no need for ts perf. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2192 and #2328.
+- 🙌 Display VTI errors. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2324 and #2330.
+- 🙌 Add command `Vetur: Restart VLS (Vue Language Server)`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2331.
 
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
 - Fix completing prop name completes with extra `:`. #2304.
-- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150
+- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150.
 - Let VTI load default VLS config. #2274.
 - Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
 - Load prettier plugin from VLS if not present in workspace folder. #2014.
 - Cross file template type checking - check that components are passed props with the correct types. #1596 and #2294.
+- 🙌 Fix VTI printing filenames without errors or warnings due to eslint-plugin-vue being igored. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2305.
 
 ### 0.27.3 | 2020-09-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.3/vspackage)
 
