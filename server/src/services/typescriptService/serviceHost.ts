@@ -90,6 +90,7 @@ export function getServiceHost(
 
   let currentScriptDoc: TextDocument;
 
+  let projectVersion = 1;
   const versions = new Map<string, number>();
   const localScriptRegionDocuments = new Map<string, TextDocument>();
   const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
@@ -157,6 +158,7 @@ export function getServiceHost(
         allChildComponentsInfo.set(filePath, childComponents);
       }
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+      projectVersion++;
     }
 
     return {
@@ -186,6 +188,7 @@ export function getServiceHost(
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
       scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+      projectVersion++;
     }
     return {
       service: jsLanguageService,
@@ -197,6 +200,7 @@ export function getServiceHost(
   function updateExternalDocument(fileFsPath: string) {
     const ver = versions.get(fileFsPath) || 0;
     versions.set(fileFsPath, ver + 1);
+    projectVersion++;
 
     // Clear cache so we read the js/ts file from file system again
     if (projectFileSnapshots.has(fileFsPath)) {
@@ -206,6 +210,7 @@ export function getServiceHost(
 
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
     return {
+      getProjectVersion: () => projectVersion.toString(),
       getCompilationSettings: () => options,
       getScriptFileNames: () => Array.from(scriptFileNameSet),
       getScriptVersion(fileName) {
