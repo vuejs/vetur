@@ -5,7 +5,7 @@
 - Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
 - Fix files with CRLF having errors with wrong range. #1319.
 - 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
-- 🙌 Respect include exclude files options in tsconfig for ts js external files. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2339 and #2371.
+- 🙌 Respect include/exclude files options in `tsconfig` for external ts/js files. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2339 and #2371.
 - 🙌 Fix undefined valueDeclaration in props crashing vls. Thanks to contribution from [@javiertury](https://github.com/javiertury). #2367.
 - 🙌 Reduce recreate ts program when no need for ts perf. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2192 and #2328.
 - 🙌 Display VTI errors. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2324 and #2330.
