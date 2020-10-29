@@ -813,11 +813,11 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   };
 }
 
+// Parameter must to be string, Otherwise I don't like it semantically.
 function getTsTriggerCharacter(triggerChar: string) {
-  const legalChars = ['@', '#', '.', '"', "'", '`', '/', '<'] as const;
-  type LegalChars = typeof legalChars[number];
-  if (legalChars.includes(triggerChar as LegalChars)) {
-    return triggerChar as LegalChars;
+  const legalChars = ['@', '#', '.', '"', "'", '`', '/', '<'];
+  if (legalChars.includes(triggerChar)) {
+    return triggerChar as ts.CompletionsTriggerCharacter;
   }
   return undefined;
 }

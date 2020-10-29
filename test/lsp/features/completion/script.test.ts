@@ -2,7 +2,7 @@ import { position } from '../../../util';
 import { testCompletion } from '../../../completionHelper';
 import { getDocUri } from '../../path';
 
-describe.only('Should autocomplete for <script>', () => {
+describe('Should autocomplete for <script>', () => {
   const basicUri = getDocUri('completion/script/Basic.vue');
   const hyphenUri = getDocUri('completion/script/Hyphen.vue');
   const literalUri = getDocUri('completion/script/issue-2300.vue');
