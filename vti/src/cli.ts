@@ -159,7 +159,7 @@ function getVersion(): string {
       console.log(chalk.red(`VTI found ${errCount} ${errCount === 1 ? 'error' : 'errors'}`));
       process.exit(1);
     }
-  } else if (myArgs.length > 0 && (myArgs[0] === '--version' || myArgs[0] === '-v')) {
+  } else if (myArgs.length > 0 && myArgs[0] === 'version') {
     console.log(getVersion());
   } else {
     // no args or wrong first args
@@ -168,8 +168,7 @@ function getVersion(): string {
     console.log('Usage:');
     console.log('');
     console.log('  vti diagnostics ---- Print all diagnostics');
-    console.log('');
-    console.log('  vti --version (-v) ---- Show version');
+    console.log('  vti version     ---- Show VTI version');
     console.log('');
   }
 })().catch(err => {
