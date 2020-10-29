@@ -7,7 +7,7 @@
 - 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
 - 🙌 Reduce recreate ts program when no need for ts perf. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2192 and #2328.
 - 🙌 Display VTI errors. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2324 and #2330.
-- 🙌 Add restart vue language service command. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2331.
+- 🙌 Add command `Vetur: Restart VLS (Vue Language Server)`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2331.
 
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
