@@ -9,6 +9,7 @@ Vetur supports syntax highlighting for the following languages:
 | `<template lang="jade">` | `pug`     |
 | `<template lang="haml">` | `haml`    | [Better Haml](https://marketplace.visualstudio.com/items?itemName=karunamurti.haml) or [Ruby Haml](https://marketplace.visualstudio.com/items?itemName=vayan.haml) |
 | `<template lang="slm">`  | `slm`     | [Slm Syntax](https://marketplace.visualstudio.com/items?itemName=mrmlnc.vscode-slm)                                                                                |
+| `<template lang="slim">` | `slim`    | [Slim](https://marketplace.visualstudio.com/items?itemName=sianglim.slim)                                                                                          |
 | `<style>`                | `css`     |
 | `<style lang="postcss">` | `postcss` |
 | `<style lang="scss">`    | `scss`    |
