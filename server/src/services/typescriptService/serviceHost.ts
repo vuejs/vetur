@@ -290,6 +290,8 @@ export function getServiceHost(
             return {
               resolvedFileName: bridge.fileName,
               extension: tsModule.Extension.Ts,
+              /* tslint:disable:max-line-length */
+              // https://github.com/microsoft/TypeScript/blob/bcbe1d763823eacd4b252c904e77761a6b8636a1/src/compiler/types.ts#L6216
               isExternalLibraryImport: true
             };
           }
