@@ -134,8 +134,8 @@ export class VLS {
     this.lspConnection.listen();
   }
 
-  private getFullConfig(original: unknown): VLSFullConfig {
-    return original ? _.merge(getDefaultVLSConfig(), original) : getDefaultVLSConfig();
+  private getFullConfig(config: any | undefined): VLSFullConfig {
+    return config ? _.merge(getDefaultVLSConfig(), config) : getDefaultVLSConfig();
   }
 
   public setupConfigure(config: VLSFullConfig) {
