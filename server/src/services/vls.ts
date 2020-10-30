@@ -176,10 +176,11 @@ export class VLS {
       return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
     });
 
-    this.lspConnection.onRequest('$/getDiagnostics', params => {
+    this.lspConnection.onRequest('$/getDiagnostics', async params => {
       const doc = this.documentService.getDocument(params.uri);
       if (doc) {
-        return this.doValidate(doc).then(result => result ?? []);
+        const diagnostics = await this.doValidate(doc);
+        return diagnostics ?? [];
       }
       return [];
     });
