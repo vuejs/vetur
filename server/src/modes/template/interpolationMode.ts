@@ -14,6 +14,7 @@ import {
   TextDocument,
   TextEdit
 } from 'vscode-languageserver-types';
+import { URI } from 'vscode-uri';
 import { VLSFullConfig } from '../../config';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -363,7 +364,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(definitionTargetDoc, r.textSpan);
 
         definitionResults.push({
-          uri: definitionTargetDoc.uri,
+          uri: URI.file(definitionTargetDoc.uri).toString(),
           range
         });
       }
@@ -411,7 +412,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(referenceTargetDoc, r.textSpan);
 
         referenceResults.push({
-          uri: referenceTargetDoc.uri,
+          uri: URI.file(referenceTargetDoc.uri).toString(),
           range
         });
       }
