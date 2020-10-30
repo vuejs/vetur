@@ -21,7 +21,8 @@ import {
   CompletionTriggerKind,
   ExecuteCommandParams,
   ApplyWorkspaceEditRequest,
-  FoldingRangeParams
+  FoldingRangeParams,
+  CancellationTokenSource
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -46,7 +47,7 @@ import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
-import { DependencyService } from './dependencyService';
+import { DependencyService, State } from './dependencyService';
 import * as _ from 'lodash';
 import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
@@ -55,6 +56,7 @@ import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
+import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
@@ -67,6 +69,7 @@ export class VLS {
   private languageModes: LanguageModes;
 
   private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
+  private cancellationTokenValidationRequests: { [uri: string]: VCancellationTokenSource } = {};
   private validationDelayMs = 200;
   private validation: { [k: string]: boolean } = {
     'vue-html': true,
@@ -173,10 +176,11 @@ export class VLS {
       return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
     });
 
-    this.lspConnection.onRequest('$/getDiagnostics', params => {
+    this.lspConnection.onRequest('$/getDiagnostics', async params => {
       const doc = this.documentService.getDocument(params.uri);
       if (doc) {
-        return this.doValidate(doc);
+        const diagnostics = await this.doValidate(doc);
+        return diagnostics ?? [];
       }
       return [];
     });
@@ -509,10 +513,24 @@ export class VLS {
     }
 
     this.cleanPendingValidation(textDocument);
+    this.cancelPastValidation(textDocument);
     this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
       delete this.pendingValidationRequests[textDocument.uri];
-      this.validateTextDocument(textDocument);
+      const tsDep = this.dependencyService.getDependency('typescript');
+      if (tsDep?.state === State.Loaded) {
+        this.cancellationTokenValidationRequests[textDocument.uri] = new VCancellationTokenSource(tsDep.module);
+        this.validateTextDocument(textDocument, this.cancellationTokenValidationRequests[textDocument.uri].token);
+      }
     }, this.validationDelayMs);
+  }
+
+  cancelPastValidation(textDocument: TextDocument): void {
+    const source = this.cancellationTokenValidationRequests[textDocument.uri];
+    if (source) {
+      source.cancel();
+      source.dispose();
+      delete this.cancellationTokenValidationRequests[textDocument.uri];
+    }
   }
 
   cleanPendingValidation(textDocument: TextDocument): void {
@@ -523,25 +541,30 @@ export class VLS {
     }
   }
 
-  validateTextDocument(textDocument: TextDocument): void {
-    const diagnostics: Diagnostic[] = this.doValidate(textDocument);
-    this.lspConnection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+  async validateTextDocument(textDocument: TextDocument, cancellationToken?: VCancellationToken) {
+    const diagnostics = await this.doValidate(textDocument, cancellationToken);
+    if (diagnostics) {
+      this.lspConnection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+    }
   }
 
-  doValidate(doc: TextDocument): Diagnostic[] {
+  async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
     const diagnostics: Diagnostic[] = [];
     if (doc.languageId === 'vue') {
-      this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(lmr => {
+      for (const lmr of this.languageModes.getAllLanguageModeRangesInDocument(doc)) {
         if (lmr.mode.doValidation) {
           if (this.validation[lmr.mode.getId()]) {
-            pushAll(diagnostics, lmr.mode.doValidation(doc));
+            pushAll(diagnostics, await lmr.mode.doValidation(doc, cancellationToken));
           }
           // Special case for template type checking
           else if (lmr.mode.getId() === 'vue-html' && this.templateInterpolationValidation) {
-            pushAll(diagnostics, lmr.mode.doValidation(doc));
+            pushAll(diagnostics, await lmr.mode.doValidation(doc, cancellationToken));
           }
         }
-      });
+      }
+    }
+    if (cancellationToken?.isCancellationRequested) {
+      return null;
     }
     return diagnostics;
   }

@@ -38,6 +38,7 @@ import { getServiceHost, IServiceHost } from '../services/typescriptService/serv
 import { VLSFullConfig } from '../config';
 import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 import { getPugMode } from '../modes/pug';
+import { VCancellationToken } from '../utils/cancellationToken';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -49,7 +50,7 @@ export interface LanguageMode {
   configure?(options: VLSFullConfig): void;
   updateFileInfo?(doc: TextDocument): void;
 
-  doValidation?(document: TextDocument): Diagnostic[];
+  doValidation?(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]>;
   getCodeActions?(
     document: TextDocument,
     range: Range,
