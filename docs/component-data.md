@@ -66,11 +66,17 @@ You can define custom tags/attributes for your workspace by specifying a `vetur`
   { "foo-bar": { "description": "A foo tag", "attributes": ["foo-attr"] } }
   ```
 
+- Create a file `attributes.json` with:
+
+  ```json
+  { "foo-bar/foo-attr": { "description": "description of foo-attr" } }
+  ```
+
 - Add this line to `package.json`:
 
   ```json
   {
-    "vetur": { "tags": "./tags.json" }
+    "vetur": { "tags": "./tags.json", "attributes": "./attributes.json" }
   }
   ```
 
