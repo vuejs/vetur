@@ -122,8 +122,7 @@ export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Ma
       true /* setParentNodes: Need this to walk the AST */,
       tsModule.ScriptKind.JS
     );
-    // Pass version in new template sourceFile
-    // Don't update program and file every time
+    // Assign version to the new template sourceFile to avoid re-processing
     // *internal* property
     (newSourceFile as any).version = (sourceFile as any).version;
     (newSourceFile as any).scriptSnapshot = {
