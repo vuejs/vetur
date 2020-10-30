@@ -557,6 +557,6 @@
     "shelljs": "^0.8.4",
     "tslint": "^6.1.3",
     "typescript": "^4.0.3",
-    "vscode-test": "^1.4.0"
+    "vscode-test": "^1.4.1"
   }
 }
