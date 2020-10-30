@@ -289,7 +289,8 @@ export function getServiceHost(
           if (name === bridge.moduleName) {
             return {
               resolvedFileName: bridge.fileName,
-              extension: tsModule.Extension.Ts
+              extension: tsModule.Extension.Ts,
+              isExternalLibraryImport: true
             };
           }
           const cachedResolvedModule = moduleResolutionCache.getCache(name, containingFile);
