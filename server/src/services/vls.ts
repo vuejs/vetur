@@ -95,9 +95,7 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
-    const config: VLSFullConfig = params.initializationOptions?.config
-      ? _.merge(getDefaultVLSConfig(), params.initializationOptions.config)
-      : getDefaultVLSConfig();
+    const config: VLSFullConfig = this.getFullConfig(params.initializationOptions?.config);
 
     const workspacePath = params.rootPath;
     if (!workspacePath) {
@@ -121,6 +119,7 @@ export class VLS {
       params.initializationOptions?.globalSnippetDir
     );
 
+    this.setupConfigure(config);
     this.setupConfigListeners();
     this.setupLSPHandlers();
     this.setupCustomLSPHandlers();
@@ -129,22 +128,24 @@ export class VLS {
     this.lspConnection.onShutdown(() => {
       this.dispose();
     });
-
-    this.configure(config);
   }
 
   listen() {
     this.lspConnection.listen();
   }
 
+  private getFullConfig(config: any | undefined): VLSFullConfig {
+    return config ? _.merge(getDefaultVLSConfig(), config) : getDefaultVLSConfig();
+  }
+
+  public setupConfigure(config: VLSFullConfig) {
+    this.configure(config);
+    this.setupDynamicFormatters(config);
+  }
+
   private setupConfigListeners() {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
-      if (settings) {
-        this.configure(settings);
-
-        // onDidChangeConfiguration will fire for Language Server startup
-        await this.setupDynamicFormatters(settings);
-      }
+      await this.setupConfigure(this.getFullConfig(settings));
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
@@ -186,8 +187,8 @@ export class VLS {
     });
   }
 
-  private async setupDynamicFormatters(settings: any) {
-    if (settings.vetur.format.enable === true) {
+  private async setupDynamicFormatters(settings: VLSFullConfig) {
+    if (settings.vetur.format.enable) {
       if (!this.documentFormatterRegistration) {
         this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
           documentSelector: ['vue']
