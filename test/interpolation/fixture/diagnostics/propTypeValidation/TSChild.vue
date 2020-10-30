@@ -9,7 +9,7 @@ export default Vue.extend({
       type: Function as PropType<() => void>
     },
     arr: Array as PropType<string[]>,
-    darkMode: { type: Boolean, default: false }
+    camelCase: { type: Boolean, default: false }
   }
 });
 </script>
