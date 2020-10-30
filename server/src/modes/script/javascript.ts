@@ -46,7 +46,7 @@ import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
-import { isVCancellationTokenCancel, VCancellationToken } from '../../utils/cancellationToken';
+import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -147,7 +147,7 @@ export async function getJavascriptMode(
     },
 
     async doValidation(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
-      if (await isVCancellationTokenCancel(cancellationToken)) {
+      if (await isVCancellationRequested(cancellationToken)) {
         return [];
       }
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
@@ -155,7 +155,7 @@ export async function getJavascriptMode(
         return [];
       }
 
-      if (await isVCancellationTokenCancel(cancellationToken)) {
+      if (await isVCancellationRequested(cancellationToken)) {
         return [];
       }
       const fileFsPath = getFileFsPath(doc.uri);
@@ -171,7 +171,7 @@ export async function getJavascriptMode(
       ];
 
       const compilerOptions = program.getCompilerOptions();
-      if (!!(compilerOptions.declaration || compilerOptions.composite)) {
+      if (compilerOptions.declaration || compilerOptions.composite) {
         rawScriptDiagnostics = [
           ...rawScriptDiagnostics,
           ...program.getDeclarationDiagnostics(sourceFile, cancellationToken?.tsToken)

@@ -23,7 +23,7 @@ import { mapBackRange, mapFromPositionToOffset } from '../../services/typescript
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
 import { toCompletionItemKind } from '../../services/typescriptService/util';
 import { VueInfoService } from '../../services/vueInfoService';
-import { isVCancellationTokenCancel, VCancellationToken } from '../../utils/cancellationToken';
+import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { getFileFsPath } from '../../utils/paths';
 import { NULL_COMPLETION } from '../nullMode';
 import { languageServiceIncludesFile } from '../script/javascript';
@@ -61,7 +61,7 @@ export class VueInterpolationMode implements LanguageMode {
       return [];
     }
 
-    if (await isVCancellationTokenCancel(cancellationToken)) {
+    if (await isVCancellationRequested(cancellationToken)) {
       return [];
     }
 
@@ -86,7 +86,7 @@ export class VueInterpolationMode implements LanguageMode {
       return [];
     }
 
-    if (await isVCancellationTokenCancel(cancellationToken)) {
+    if (await isVCancellationRequested(cancellationToken)) {
       return [];
     }
 

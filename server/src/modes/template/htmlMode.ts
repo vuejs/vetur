@@ -26,7 +26,7 @@ import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProv
 import { VueVersion } from '../../services/typescriptService/vueVersion';
 import { doPropValidation } from './services/vuePropValidation';
 import { getFoldingRanges } from './services/htmlFolding';
-import { isVCancellationTokenCancel, VCancellationToken } from '../../utils/cancellationToken';
+import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
@@ -64,7 +64,7 @@ export class HTMLMode implements LanguageMode {
   async doValidation(document: TextDocument, cancellationToken?: VCancellationToken) {
     const diagnostics = [];
 
-    if (await isVCancellationTokenCancel(cancellationToken)) {
+    if (await isVCancellationRequested(cancellationToken)) {
       return [];
     }
     if (this.config.vetur.validation.templateProps) {
@@ -74,7 +74,7 @@ export class HTMLMode implements LanguageMode {
       }
     }
 
-    if (await isVCancellationTokenCancel(cancellationToken)) {
+    if (await isVCancellationRequested(cancellationToken)) {
       return diagnostics;
     }
     if (this.config.vetur.validation.template) {

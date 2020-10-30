@@ -12,16 +12,15 @@ export class VCancellationTokenSource extends CancellationTokenSource {
   }
 
   get token(): VCancellationToken {
+    const operationCancelException = this.tsModule.OperationCanceledException;
     const token = super.token as VCancellationToken;
-    // tslint:disable-next-line variable-name
-    const Exception = this.tsModule.OperationCanceledException;
     token.tsToken = {
       isCancellationRequested() {
         return token.isCancellationRequested;
       },
       throwIfCancellationRequested() {
         if (token.isCancellationRequested) {
-          throw new Exception();
+          throw new operationCancelException();
         }
       }
     };
@@ -29,7 +28,7 @@ export class VCancellationTokenSource extends CancellationTokenSource {
   }
 }
 
-export function isVCancellationTokenCancel(token?: VCancellationToken) {
+export function isVCancellationRequested(token?: VCancellationToken) {
   return new Promise(resolve => {
     if (!token) {
       resolve(false);
