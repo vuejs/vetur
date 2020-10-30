@@ -299,9 +299,12 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
 
     const propTypeStrings: string[] = [];
     c.info?.componentInfo.props?.forEach(p => {
-      let typeKey = p.required ? kebabCase(p.name) : kebabCase(p.name) + '?';
-      if (typeKey.indexOf('-') !== -1) {
+      let typeKey = kebabCase(p.name);
+      if (typeKey.includes('-')) {
         typeKey = `'` + typeKey + `'`;
+      }
+      if (!p.required) {
+        typeKey += '?';
       }
 
       if (p.typeString) {

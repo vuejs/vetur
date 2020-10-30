@@ -25,7 +25,8 @@ import {
   CodeAction,
   CodeActionKind,
   WorkspaceEdit,
-  FoldingRangeKind
+  FoldingRangeKind,
+  CompletionItemTag
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
@@ -45,6 +46,7 @@ import { RefactorAction } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
+import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -87,6 +89,43 @@ export async function getJavascriptMode(
   let config: any = {};
   let supportedCodeFixCodes: Set<number>;
 
+  function getUserPreferences(scriptDoc: TextDocument): ts.UserPreferences {
+    const baseConfig = config[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'];
+    const preferencesConfig = baseConfig?.preferences;
+
+    if (!baseConfig || !preferencesConfig) {
+      return {};
+    }
+
+    function safeGetConfigValue<V extends string | boolean, A extends Array<V>, D = undefined>(
+      configValue: any,
+      allowValues: A,
+      defaultValue?: D
+    ) {
+      return allowValues.includes(configValue) ? (configValue as A[number]) : (defaultValue as D);
+    }
+
+    return {
+      quotePreference: safeGetConfigValue(preferencesConfig.quoteStyle, ['single', 'double', 'auto']),
+      importModuleSpecifierPreference: safeGetConfigValue(preferencesConfig.importModuleSpecifier, [
+        'relative',
+        'non-relative'
+      ]),
+      importModuleSpecifierEnding: safeGetConfigValue(
+        preferencesConfig.importModuleSpecifierEnding,
+        ['minimal', 'index', 'js'],
+        'auto'
+      ),
+      allowTextChangesInNewFiles: true,
+      providePrefixAndSuffixTextForRename:
+        preferencesConfig.renameShorthandProperties === false ? false : preferencesConfig.useAliasesForRenames,
+      // @ts-expect-error
+      allowRenameOfImportPath: true,
+      includeAutomaticOptionalChainCompletions: baseConfig.suggest.includeAutomaticOptionalChainCompletions ?? true,
+      provideRefactorNotApplicableReason: true
+    };
+  }
+
   return {
     getId() {
       return 'javascript';
@@ -107,17 +146,37 @@ export async function getJavascriptMode(
       }
     },
 
-    doValidation(doc: TextDocument): Diagnostic[] {
+    async doValidation(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
+      if (await isVCancellationRequested(cancellationToken)) {
+        return [];
+      }
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return [];
       }
 
+      if (await isVCancellationRequested(cancellationToken)) {
+        return [];
+      }
       const fileFsPath = getFileFsPath(doc.uri);
-      const rawScriptDiagnostics = [
-        ...service.getSyntacticDiagnostics(fileFsPath),
-        ...service.getSemanticDiagnostics(fileFsPath)
+      const program = service.getProgram();
+      const sourceFile = program?.getSourceFile(fileFsPath);
+      if (!program || !sourceFile) {
+        return [];
+      }
+
+      let rawScriptDiagnostics = [
+        ...program.getSyntacticDiagnostics(sourceFile, cancellationToken?.tsToken),
+        ...program.getSemanticDiagnostics(sourceFile, cancellationToken?.tsToken)
       ];
+
+      const compilerOptions = program.getCompilerOptions();
+      if (compilerOptions.declaration || compilerOptions.composite) {
+        rawScriptDiagnostics = [
+          ...rawScriptDiagnostics,
+          ...program.getDeclarationDiagnostics(sourceFile, cancellationToken?.tsToken)
+        ];
+      }
 
       return rawScriptDiagnostics.map(diag => {
         const tags: DiagnosticTag[] = [];
@@ -151,8 +210,10 @@ export async function getJavascriptMode(
         return { isIncomplete: false, items: [] };
       }
       const completions = service.getCompletionsAtPosition(fileFsPath, offset, {
+        ...getUserPreferences(scriptDoc),
+        triggerCharacter: getTsTriggerCharacter(triggerChar),
         includeCompletionsWithInsertText: true,
-        includeCompletionsForModuleExports: _.get(config, ['vetur', 'completion', 'autoImport'])
+        includeCompletionsForModuleExports: config.vetur.completion.autoImport
       });
       if (!completions) {
         return { isIncomplete: false, items: [] };
@@ -164,7 +225,7 @@ export async function getJavascriptMode(
           const range = entry.replacementSpan && convertRange(scriptDoc, entry.replacementSpan);
           const { label, detail } = calculateLabelAndDetailTextForPathImport(entry);
 
-          return {
+          const item: CompletionItem = {
             uri: doc.uri,
             position,
             preselect: entry.isRecommended ? true : undefined,
@@ -173,7 +234,7 @@ export async function getJavascriptMode(
             filterText: getFilterText(entry.insertText),
             sortText: entry.sortText + index,
             kind: toCompletionItemKind(entry.kind),
-            textEdit: range && TextEdit.replace(range, entry.name),
+            textEdit: range && TextEdit.replace(range, entry.insertText || entry.name),
             insertText: entry.insertText,
             data: {
               // data used for resolving item details (see 'doResolve')
@@ -182,7 +243,22 @@ export async function getJavascriptMode(
               offset,
               source: entry.source
             }
-          };
+          } as CompletionItem;
+
+          if (entry.kindModifiers) {
+            const kindModifiers = parseKindModifier(entry.kindModifiers ?? '');
+            if (kindModifiers.optional) {
+              item.label += '?';
+            }
+            if (kindModifiers.deprecated) {
+              item.tags = [CompletionItemTag.Deprecated];
+            }
+            if (kindModifiers.color) {
+              item.kind = CompletionItemKind.Color;
+            }
+          }
+
+          return item;
         })
       };
 
@@ -211,14 +287,12 @@ export async function getJavascriptMode(
       }
     },
     doResolve(doc: TextDocument, item: CompletionItem): CompletionItem {
-      const { service } = updateCurrentVueTextDocument(doc);
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       if (!languageServiceIncludesFile(service, doc.uri)) {
         return item;
       }
 
       const fileFsPath = getFileFsPath(doc.uri);
-      const userPrefs: ts.UserPreferences =
-        doc.languageId === 'javascript' ? config.javascript.preferences : config.typescript.preferences;
 
       const details = service.getCompletionEntryDetails(
         fileFsPath,
@@ -226,7 +300,7 @@ export async function getJavascriptMode(
         item.label,
         getFormatCodeSettings(config),
         item.data.source,
-        userPrefs
+        getUserPreferences(scriptDoc)
       );
 
       if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
@@ -528,12 +602,12 @@ export async function getJavascriptMode(
         end,
         fixableDiagnosticCodes,
         formatSettings,
-        /*preferences*/ {}
+        getUserPreferences(scriptDoc)
       );
       collectQuickFixCommands(fixes, service, result);
 
       const textRange = { pos: start, end };
-      const refactorings = service.getApplicableRefactors(fileName, textRange, /*preferences*/ {});
+      const refactorings = service.getApplicableRefactors(fileName, textRange, getUserPreferences(scriptDoc));
       collectRefactoringCommands(refactorings, fileName, formatSettings, textRange, result);
 
       return result;
@@ -760,6 +834,15 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   };
 }
 
+// Parameter must to be string, Otherwise I don't like it semantically.
+function getTsTriggerCharacter(triggerChar: string) {
+  const legalChars = ['@', '#', '.', '"', "'", '`', '/', '<'];
+  if (legalChars.includes(triggerChar)) {
+    return triggerChar as ts.CompletionsTriggerCharacter;
+  }
+  return undefined;
+}
+
 function convertCodeAction(
   doc: TextDocument,
   codeActions: ts.CodeAction[],
@@ -792,6 +875,16 @@ function convertCodeAction(
     }
   }
   return textEdits;
+}
+
+function parseKindModifier(kindModifiers: string) {
+  const kinds = new Set(kindModifiers.split(/,|\s+/g));
+
+  return {
+    optional: kinds.has('optional'),
+    deprecated: kinds.has('deprecated'),
+    color: kinds.has('color')
+  };
 }
 
 function convertTSDiagnosticCategoryToDiagnosticSeverity(c: ts.DiagnosticCategory) {

@@ -8,7 +8,8 @@ export default defineComponent({
     callback: {
       type: Function as PropType<() => void>
     },
-    arr: Array as PropType<string[]>
+    arr: Array as PropType<string[]>,
+    camelCase: { type: Boolean, default: false }
   }
 });
 </script>
