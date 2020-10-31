@@ -2,6 +2,7 @@
 
 ### 0.29.0
 
+- Fix "Duplicate identifier" errors when using multiple keydown events with modifiers. #1745.
 - Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
 - Fix files with CRLF having errors with wrong range. #1319.
 - 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
