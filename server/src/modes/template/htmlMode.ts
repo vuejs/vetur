@@ -80,7 +80,7 @@ export class HTMLMode implements LanguageMode {
     }
     if (this.config.vetur.validation.template) {
       const embedded = this.embeddedDocuments.refreshAndGet(document);
-      diagnostics.push(...doESLintValidation(embedded, this.lintEngine));
+      diagnostics.push(...(await doESLintValidation(embedded, this.lintEngine)));
     }
 
     return diagnostics;
