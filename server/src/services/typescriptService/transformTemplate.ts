@@ -253,7 +253,11 @@ export function getTemplateTransformFunctions(
       if (name.type === 'VIdentifier') {
         // Attribute name is specified
         // e.g. v-bind:value="foo"
-        const propNameNode = tsModule.setSourceMapRange(tsModule.createStringLiteral(kebabCase(name.rawName)), {
+        const fullName =
+          dir.key.modifiers.length === 0
+            ? kebabCase(name.rawName)
+            : [kebabCase(name.rawName), ...dir.key.modifiers.map(m => m.rawName)].join('.');
+        const propNameNode = tsModule.setSourceMapRange(tsModule.createStringLiteral(fullName), {
           pos: name.range[0],
           end: name.range[1]
         });

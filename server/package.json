@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/vuejs/vetur/tree/master/server",
   "dependencies": {
-    "eslint": "^7.9.0",
-    "eslint-plugin-vue": "^7.0.0-beta.3",
+    "eslint": "^7.11.0",
+    "eslint-plugin-vue": "^7.1.0",
     "stylus": "^0.54.8"
   },
   "devDependencies": {
-    "@prettier/plugin-pug": "^1.8.1",
+    "@prettier/plugin-pug": "^1.10.0",
     "@starptech/prettyhtml": "^0.10.0",
     "@types/eslint": "7.2.2",
     "@types/eslint-scope": "^3.7.0",
@@ -61,8 +61,8 @@
     "source-map-support": "^0.5.19",
     "stylus-supremacy": "^2.14.5",
     "typescript": "^4.0.3",
-    "vscode-css-languageservice": "4.3.3",
-    "vscode-emmet-helper": "^2.0.0",
+    "vscode-css-languageservice": "4.3.5",
+    "vscode-emmet-helper": "^2.0.8",
     "vscode-languageserver": "7.0.0-next.7",
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-languageserver-types": "3.16.0-next.3",

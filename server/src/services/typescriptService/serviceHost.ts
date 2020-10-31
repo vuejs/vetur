@@ -90,6 +90,7 @@ export function getServiceHost(
 
   let currentScriptDoc: TextDocument;
 
+  let projectVersion = 1;
   const versions = new Map<string, number>();
   const localScriptRegionDocuments = new Map<string, TextDocument>();
   const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
@@ -157,6 +158,7 @@ export function getServiceHost(
         allChildComponentsInfo.set(filePath, childComponents);
       }
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+      projectVersion++;
     }
 
     return {
@@ -186,6 +188,7 @@ export function getServiceHost(
       localScriptRegionDocuments.set(fileFsPath, currentScriptDoc);
       scriptFileNameSet.add(filePath);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+      projectVersion++;
     }
     return {
       service: jsLanguageService,
@@ -195,8 +198,22 @@ export function getServiceHost(
 
   // External Documents: JS/TS, non Vue documents
   function updateExternalDocument(fileFsPath: string) {
+    // respect tsconfig
+    // use *internal* function
+    const configFileSpecs = (parsedConfig as any).configFileSpecs;
+    const isExcludedFile = (tsModule as any).isExcludedFile;
+    if (
+      isExcludedFile &&
+      configFileSpecs &&
+      isExcludedFile(fileFsPath, configFileSpecs, workspacePath, true, workspacePath)
+    ) {
+      return;
+    }
+    logger.logInfo(`update ${fileFsPath} in ts language service.`);
+
     const ver = versions.get(fileFsPath) || 0;
     versions.set(fileFsPath, ver + 1);
+    projectVersion++;
 
     // Clear cache so we read the js/ts file from file system again
     if (projectFileSnapshots.has(fileFsPath)) {
@@ -206,6 +223,7 @@ export function getServiceHost(
 
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
     return {
+      getProjectVersion: () => projectVersion.toString(),
       getCompilationSettings: () => options,
       getScriptFileNames: () => Array.from(scriptFileNameSet),
       getScriptVersion(fileName) {
@@ -271,7 +289,10 @@ export function getServiceHost(
           if (name === bridge.moduleName) {
             return {
               resolvedFileName: bridge.fileName,
-              extension: tsModule.Extension.Ts
+              extension: tsModule.Extension.Ts,
+              /* tslint:disable:max-line-length */
+              // https://github.com/microsoft/TypeScript/blob/bcbe1d763823eacd4b252c904e77761a6b8636a1/src/compiler/types.ts#L6216
+              isExternalLibraryImport: true
             };
           }
           const cachedResolvedModule = moduleResolutionCache.getCache(name, containingFile);

@@ -18,6 +18,7 @@ import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
 import { inferVueVersion } from '../../services/typescriptService/vueVersion';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
+import { VCancellationToken } from '../../utils/cancellationToken';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
@@ -55,8 +56,11 @@ export class VueHTMLMode implements LanguageMode {
   queryVirtualFileInfo(fileName: string, currFileText: string) {
     return this.vueInterpolationMode.queryVirtualFileInfo(fileName, currFileText);
   }
-  doValidation(document: TextDocument) {
-    return this.htmlMode.doValidation(document).concat(this.vueInterpolationMode.doValidation(document));
+  async doValidation(document: TextDocument, cancellationToken?: VCancellationToken) {
+    return Promise.all([
+      this.vueInterpolationMode.doValidation(document, cancellationToken),
+      this.htmlMode.doValidation(document, cancellationToken)
+    ]).then(result => [...result[0], ...result[1]]);
   }
   doComplete(document: TextDocument, position: Position) {
     const htmlList = this.htmlMode.doComplete(document, position);

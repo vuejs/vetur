@@ -261,6 +261,7 @@ describe('Should find template-diagnostics in <template> region', () => {
     'template-literal.vue',
     'no-implicit-any-parameters.vue',
     'no-implicit-any-v-for-array.vue',
+    'issue-1745-duplicate-event-with-modifiers.vue',
     'issue-2254.vue',
     'issue-2258.vue'
   ];

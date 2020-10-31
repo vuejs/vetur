@@ -70,7 +70,7 @@ function getStyleMode(
       languageService.configure(c && c.css);
       config = c;
     },
-    doValidation(document) {
+    async doValidation(document) {
       if (languageId === 'postcss') {
         return [];
       } else {

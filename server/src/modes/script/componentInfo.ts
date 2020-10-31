@@ -326,9 +326,11 @@ function getProps(
       const propsType = checker.getTypeOfSymbolAtLocation(propsSymbol, propsDeclaration);
 
       return checker.getPropertiesOfType(propsType).map(s => {
-        const status = tsModule.isPropertyAssignment(s.valueDeclaration)
-          ? getPropValidatorInfo(s.valueDeclaration.initializer)
-          : { hasObjectValidator: false, required: true };
+        const node = getNodeFromSymbol(s);
+        const status =
+          node !== undefined && tsModule.isPropertyAssignment(node)
+            ? getPropValidatorInfo(node.initializer)
+            : { hasObjectValidator: false, required: true };
 
         return {
           name: s.name,

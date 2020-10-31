@@ -63,6 +63,10 @@
   "contributes": {
     "commands": [
       {
+        "command": "vetur.restartVLS",
+        "title": "Vetur: Restart VLS (Vue Language Server)"
+      },
+      {
         "command": "vetur.generateGrammar",
         "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
       },
@@ -120,6 +124,7 @@
           "text.jade.slm": "slm",
           "text.pug": "jade",
           "text.haml": "haml",
+          "text.slim": "slim",
           "text.html.liquid": "liquid",
           "source.css": "css",
           "source.css.scss": "scss",
@@ -532,10 +537,10 @@
     "@rollup/plugin-replace": "^2.3.3",
     "@types/glob": "^7.1.3",
     "@types/js-yaml": "^3.12.5",
-    "@types/lodash": "^4.14.161",
+    "@types/lodash": "^4.14.163",
     "@types/minimist": "^1.2.0",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^14.11.8",
+    "@types/node": "^14.14.6",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.47.0",
     "esbuild": "^0.7.9",
@@ -543,9 +548,9 @@
     "glob": "^7.1.6",
     "husky": "^4.3.0",
     "js-yaml": "^3.14.0",
-    "lint-staged": "^10.4.0",
+    "lint-staged": "^10.5.0",
     "minimist": "^1.2.5",
-    "mocha": "^8.1.3",
+    "mocha": "^8.2.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "rollup": "^2.26.11",
@@ -555,9 +560,9 @@
     "shelljs": "^0.8.4",
     "ts-node": "^9.0.0",
     "tslint": "^6.1.3",
-    "typescript": "^4.0.3",
+    "typescript": "^4.0.5",
     "vscode-languageclient": "^6.1.3",
     "vscode-languageserver-types": "^3.15.1",
-    "vscode-test": "^1.4.0"
+    "vscode-test": "^1.4.1"
   }
 }

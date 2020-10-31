@@ -27,6 +27,7 @@ import { VueVersion } from '../../services/typescriptService/vueVersion';
 import { doPropValidation } from './services/vuePropValidation';
 import { getFoldingRanges } from './services/htmlFolding';
 import { DependencyService } from '../../services/dependencyService';
+import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
@@ -62,9 +63,12 @@ export class HTMLMode implements LanguageMode {
     this.config = c;
   }
 
-  doValidation(document: TextDocument) {
+  async doValidation(document: TextDocument, cancellationToken?: VCancellationToken) {
     const diagnostics = [];
 
+    if (await isVCancellationRequested(cancellationToken)) {
+      return [];
+    }
     if (this.config.vetur.validation.templateProps) {
       const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
       if (info && info.componentInfo.childComponents) {
@@ -72,6 +76,9 @@ export class HTMLMode implements LanguageMode {
       }
     }
 
+    if (await isVCancellationRequested(cancellationToken)) {
+      return diagnostics;
+    }
     if (this.config.vetur.validation.template) {
       const embedded = this.embeddedDocuments.refreshAndGet(document);
       diagnostics.push(...doESLintValidation(embedded, this.lintEngine));

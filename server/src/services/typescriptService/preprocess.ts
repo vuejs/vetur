@@ -50,7 +50,10 @@ export function parseVueTemplate(text: string): string {
   return rawText.replace(/ {10}/, '<template>') + '</template>';
 }
 
-export function createUpdater(tsModule: RuntimeLibrary['typescript'], allChildComponentsInfo: Map<string, ChildComponent[]>) {
+export function createUpdater(
+  tsModule: RuntimeLibrary['typescript'],
+  allChildComponentsInfo: Map<string, ChildComponent[]>
+) {
   const clssf = tsModule.createLanguageServiceSourceFile;
   const ulssf = tsModule.updateLanguageServiceSourceFile;
   const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
@@ -122,6 +125,14 @@ export function createUpdater(tsModule: RuntimeLibrary['typescript'], allChildCo
       true /* setParentNodes: Need this to walk the AST */,
       tsModule.ScriptKind.JS
     );
+    // Assign version to the new template sourceFile to avoid re-processing
+    // *internal* property
+    (newSourceFile as any).version = (sourceFile as any).version;
+    (newSourceFile as any).scriptSnapshot = {
+      getText: (start: number, end: number) => newText.substring(start, end),
+      getLength: () => newText.length,
+      getChangeRange: () => void 0
+    };
 
     const templateFsPath = URI.file(vueTemplateFileName).fsPath;
     const sourceMapNodes = generateSourceMap(tsModule, sourceFile, newSourceFile);
@@ -179,7 +190,7 @@ function modifyVueScript(tsModule: RuntimeLibrary['typescript'], sourceFile: ts.
     st =>
       st.kind === tsModule.SyntaxKind.ExportAssignment &&
       (st as ts.ExportAssignment).expression.kind === tsModule.SyntaxKind.ObjectLiteralExpression
-  );
+  ) as ts.ExportAssignment;
   if (exportDefaultObject) {
     // 1. add `import Vue from 'vue'
     // (the span of the inserted statement must be (0,0) to avoid overlapping existing statements)
@@ -204,7 +215,7 @@ function modifyVueScript(tsModule: RuntimeLibrary['typescript'], sourceFile: ts.
       end: objectLiteral.pos + 1
     });
     (exportDefaultObject as any).expression = setObjPos(tsModule.createCall(vue, undefined, [objectLiteral]));
-    setObjPos(((exportDefaultObject as ts.ExportAssignment).expression as ts.CallExpression).arguments!);
+    setObjPos((exportDefaultObject.expression as ts.CallExpression).arguments!);
   }
 }
 
@@ -299,9 +310,12 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
 
     const propTypeStrings: string[] = [];
     c.info?.componentInfo.props?.forEach(p => {
-      let typeKey = p.required ? kebabCase(p.name) : kebabCase(p.name) + '?';
-      if (typeKey.indexOf('-') !== -1) {
+      let typeKey = kebabCase(p.name);
+      if (typeKey.includes('-')) {
         typeKey = `'` + typeKey + `'`;
+      }
+      if (!p.required) {
+        typeKey += '?';
       }
 
       if (p.typeString) {
