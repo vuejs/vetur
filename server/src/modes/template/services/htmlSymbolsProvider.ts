@@ -1,4 +1,5 @@
-import { TextDocument, Location, Range, SymbolInformation, SymbolKind } from 'vscode-languageserver-types';
+import { Location, Range, SymbolInformation, SymbolKind } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 
 export function findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[] {

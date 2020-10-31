@@ -1,4 +1,5 @@
-import { TextDocument, Position, Hover, Range } from 'vscode-languageserver-types';
+import { Position, Hover, Range } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { buildAst, findNodeAtPosition } from './parser';
 

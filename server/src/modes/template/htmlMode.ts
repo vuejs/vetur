@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 
 import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
-import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
+import { Position, Range, FormattingOptions } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { HTMLDocument } from './parser/htmlParser';

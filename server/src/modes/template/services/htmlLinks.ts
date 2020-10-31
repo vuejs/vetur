@@ -1,5 +1,6 @@
 import { TokenType, createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, DocumentLink } from 'vscode-languageserver-types';
+import { Range, DocumentLink } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 import { DocumentContext } from '../../../types';
 

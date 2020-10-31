@@ -1,4 +1,4 @@
-import { TextDocument } from 'vscode-languageserver';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { getFileFsPath } from '../utils/paths';
 import { Definition } from 'vscode-languageserver-types';
 import { LanguageModes } from '../embeddedSupport/languageModes';

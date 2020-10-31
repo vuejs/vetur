@@ -1,5 +1,6 @@
 import { VueFileInfo, PropInfo } from '../../../services/vueInfoService';
-import { TextDocument, Diagnostic, DiagnosticSeverity } from 'vscode-languageserver-types';
+import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { kebabCase } from 'lodash';
 import { getSameTagInSet } from '../tagProviders/common';

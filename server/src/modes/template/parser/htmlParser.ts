@@ -1,6 +1,6 @@
 import { TokenType, createScanner } from './htmlScanner';
 import { isVoidElement } from '../tagProviders/htmlTags';
-import { TextDocument } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 export class Node {
   public tag?: string;

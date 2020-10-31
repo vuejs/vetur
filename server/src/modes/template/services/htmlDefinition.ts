@@ -1,6 +1,7 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, Position, Location } from 'vscode-languageserver-types';
+import { Range, Position, Location } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { VueFileInfo } from '../../../services/vueInfoService';
 import { URI } from 'vscode-uri';
 import { kebabCase } from 'lodash';

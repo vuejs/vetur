@@ -35,12 +35,12 @@ import {
   Location,
   SignatureHelp,
   SymbolInformation,
-  TextDocument,
   TextEdit,
   ColorPresentation,
   Range,
   FoldingRange
 } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';

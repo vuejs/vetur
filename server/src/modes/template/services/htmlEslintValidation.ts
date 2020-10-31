@@ -1,6 +1,7 @@
 import { CLIEngine, Linter } from 'eslint';
 import { configs } from 'eslint-plugin-vue';
-import { TextDocument, Diagnostic, Range, DiagnosticSeverity } from 'vscode-languageserver-types';
+import { Diagnostic, Range, DiagnosticSeverity } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { resolve } from 'path';
 import { VueVersion } from '../../../services/typescriptService/vueVersion';
 

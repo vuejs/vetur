@@ -3,7 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, FoldingRange, FoldingRangeKind } from 'vscode-languageserver-types';
+import { FoldingRange, FoldingRangeKind } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { TokenType, createScanner } from '../parser/htmlScanner';
 import { isVoidElement } from '../tagProviders/htmlTags';

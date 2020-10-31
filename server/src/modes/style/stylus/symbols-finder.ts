@@ -1,4 +1,5 @@
-import { TextDocument, SymbolInformation, SymbolKind, Range, Position } from 'vscode-languageserver-types';
+import { SymbolInformation, SymbolKind, Range, Position } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import {
   StylusNode,

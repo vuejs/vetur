@@ -1,4 +1,5 @@
-import { TextDocument, Position, Range } from 'vscode-languageserver-types';
+import { Position, Range } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { parseVueDocumentRegions, EmbeddedRegion } from './vueDocumentRegionParser';
 
 export type LanguageId =

@@ -1,4 +1,4 @@
-import { TextDocument } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { createScanner, TokenType, Scanner } from '../modes/template/parser/htmlScanner';
 import { removeQuotes } from '../utils/strings';
 import { LanguageId } from './embeddedSupport';

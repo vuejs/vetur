@@ -1,4 +1,4 @@
-import { TextDocument } from 'vscode-languageserver';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 export interface LanguageModelCache<T> {
   /**
