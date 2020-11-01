@@ -74,13 +74,9 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const childComponents = this.config.vetur.validation.templateProps
-      ? this.vueInfoService && this.vueInfoService.getInfo(document)?.componentInfo.childComponents
-      : [];
-
     const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(
       templateDoc,
-      childComponents
+      this.vueInfoService && this.vueInfoService.getInfo(document)
     );
 
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {

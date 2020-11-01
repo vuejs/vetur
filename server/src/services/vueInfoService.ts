@@ -9,9 +9,14 @@ import { LanguageModes } from '../embeddedSupport/languageModes';
  */
 export interface VueFileInfo {
   /**
-   * The defualt export component info from script section
+   * The default export component info from script section
    */
   componentInfo: ComponentInfo;
+
+  /**
+   * All imports in `<script>`
+   */
+  importStatementSrcs?: string[];
 }
 
 export interface ComponentInfo {
@@ -33,6 +38,7 @@ export interface ComponentInfo {
 }
 
 export interface ChildComponent {
+  rawName: string;
   name: string;
   documentation?: string;
   definition?: {

@@ -5,7 +5,8 @@ import {
   ComputedInfo,
   DataInfo,
   MethodInfo,
-  ChildComponent
+  ChildComponent,
+  ComponentInfo
 } from '../../services/vueInfoService';
 import { getChildComponents } from './childComponents';
 import { T_TypeScript } from '../../services/dependencyService';
@@ -33,7 +34,10 @@ export function getComponentInfo(
     return undefined;
   }
 
-  const vueFileInfo = analyzeDefaultExportExpr(tsModule, defaultExportNode, checker);
+  const componentInfo = analyzeDefaultExportExpr(tsModule, defaultExportNode, checker);
+  const vueFileInfo: VueFileInfo = {
+    componentInfo
+  };
 
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
   const internalChildComponents = getChildComponents(
@@ -47,14 +51,25 @@ export function getComponentInfo(
     const childComponents: ChildComponent[] = [];
     internalChildComponents.forEach(c => {
       childComponents.push({
+        rawName: c.rawName,
         name: c.name,
         documentation: c.documentation,
         definition: c.definition,
-        info: c.defaultExportNode ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker) : undefined
+        info: c.defaultExportNode
+          ? { componentInfo: analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker) }
+          : undefined
       });
     });
     vueFileInfo.componentInfo.childComponents = childComponents;
   }
+
+  const importStatements = sourceFile.statements.filter(s => {
+    return tsModule.isImportDeclaration(s);
+  });
+
+  vueFileInfo.importStatementSrcs = importStatements.map(s => {
+    return s.getText();
+  });
 
   return vueFileInfo;
 }
@@ -63,7 +78,7 @@ export function analyzeDefaultExportExpr(
   tsModule: T_TypeScript,
   defaultExportNode: ts.Node,
   checker: ts.TypeChecker
-): VueFileInfo {
+): ComponentInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
   const props = getProps(tsModule, defaultExportType, checker);
@@ -72,12 +87,10 @@ export function analyzeDefaultExportExpr(
   const methods = getMethods(tsModule, defaultExportType, checker);
 
   return {
-    componentInfo: {
-      props,
-      data,
-      computed,
-      methods
-    }
+    props,
+    data,
+    computed,
+    methods
   };
 }
 

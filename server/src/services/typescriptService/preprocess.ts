@@ -11,13 +11,14 @@ import {
   componentHelperName,
   iterationHelperName,
   renderHelperName,
-  componentDataName
+  componentDataName,
+  injectComponentDataName
 } from './transformTemplate';
 import { templateSourceMap } from './serviceHost';
 import { generateSourceMap } from './sourceMap';
 import { isVirtualVueTemplateFile, isVueFile } from './util';
-import { ChildComponent } from '../vueInfoService';
-import { kebabCase, snakeCase } from 'lodash';
+import { ChildComponent, VueFileInfo } from '../vueInfoService';
+import { snakeCase } from 'lodash';
 
 const importedComponentName = '__vlsComponent';
 
@@ -50,7 +51,7 @@ export function parseVueTemplate(text: string): string {
   return rawText.replace(/ {10}/, '<template>') + '</template>';
 }
 
-export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Map<string, ChildComponent[]>) {
+export function createUpdater(tsModule: T_TypeScript, allFileInfo: Map<string, VueFileInfo>) {
   const clssf = tsModule.createLanguageServiceSourceFile;
   const ulssf = tsModule.updateLanguageServiceSourceFile;
   const scriptKindTracker = new WeakMap<ts.SourceFile, ts.ScriptKind | undefined>();
@@ -95,7 +96,10 @@ export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Ma
     const scriptSrc = parseVueScriptSrc(vueText);
     const program = parse(templateCode, { sourceType: 'module' });
 
-    const childComponentNames = allChildComponentsInfo.get(vueTemplateFileName)?.map(c => snakeCase(c.name));
+    const fileInfo = allFileInfo.get(vueTemplateFileName);
+
+    const childComponentNames = fileInfo?.componentInfo?.childComponents?.map(c => snakeCase(c.name)) ?? [];
+
     let expressions: ts.Expression[] = [];
     try {
       expressions = getTemplateTransformFunctions(tsModule, childComponentNames).transformTemplate(
@@ -110,8 +114,12 @@ export function createUpdater(tsModule: T_TypeScript, allChildComponentsInfo: Ma
 
     let newText = printer.printFile(sourceFile);
 
-    if (allChildComponentsInfo.has(vueTemplateFileName)) {
-      const childComponents = allChildComponentsInfo.get(vueTemplateFileName)!;
+    if (fileInfo?.importStatementSrcs) {
+      newText += fileInfo.importStatementSrcs.join('\n');
+    }
+
+    if (allFileInfo.has(vueTemplateFileName)) {
+      const childComponents = allFileInfo.get(vueTemplateFileName)?.componentInfo?.childComponents ?? [];
       newText += convertChildComponentsInfoToSource(childComponents);
     }
 
@@ -256,7 +264,8 @@ export function injectVueTemplate(
         tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(renderHelperName)),
         tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentHelperName)),
         tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName)),
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentDataName))
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentDataName)),
+        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(injectComponentDataName))
       ])
     ),
     tsModule.createLiteral('vue-editor-bridge')
@@ -302,39 +311,22 @@ function getWrapperRangeSetter(
 function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
   let src = '';
   childComponents.forEach(c => {
-    const componentDataInterfaceName = componentDataName + '__' + snakeCase(c.name);
-    const componentHelperInterfaceName = componentHelperName + '__' + snakeCase(c.name);
-
-    const propTypeStrings: string[] = [];
-    c.info?.componentInfo.props?.forEach(p => {
-      let typeKey = kebabCase(p.name);
-      if (typeKey.includes('-')) {
-        typeKey = `'` + typeKey + `'`;
-      }
-      if (!p.required) {
-        typeKey += '?';
-      }
-
-      if (p.typeString) {
-        propTypeStrings.push(`${typeKey}: ${p.typeString}`);
-      } else {
-        propTypeStrings.push(`${typeKey}: any`);
-      }
-    });
-    propTypeStrings.push('[other: string]: any');
+    const snakeRawName = snakeCase(c.rawName);
 
     src += `
-interface ${componentDataInterfaceName}<T> extends ${componentDataName}<T> {
-  props: { ${propTypeStrings.join(', ')} }
-}
-declare const ${componentHelperInterfaceName}: {
+const __wrapeedComponent__${snakeRawName} = __vlsInjectComponentData(${c.rawName})
+type __wrappedComponentDataType__${snakeRawName} = typeof __wrapeedComponent__${snakeRawName}.__vlsComponentData
+
+declare const ${componentHelperName}__${snakeRawName}: {
   <T>(
     vm: T,
     tag: string,
-    data: ${componentDataInterfaceName}<Record<string, any>> & ThisType<T>,
+    data: __wrappedComponentDataType__${snakeRawName} & ThisType<T>,
     children: any[]
   ): any
-}`;
+}
+
+`;
   });
 
   return src;
