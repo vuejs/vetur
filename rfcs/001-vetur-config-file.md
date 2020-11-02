@@ -36,7 +36,7 @@ module.exports = {
       // Where is TypeScript config file in the project?
       // It is relative to root property.
       tsconfig: './tsconfig.json',
-      // **required** default: `[]`
+      // **optional** default: `[]`
       // Register globally Vue component glob.
       // If you set it, you can get completion by that components.
       // It is relative to root property.
