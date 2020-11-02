@@ -21,7 +21,7 @@ module.exports = {
   },
   // **optional** default: `[{ root: './' }]`
   // support monorepos
-  repos: [
+  projects: [
     './packages/repo2', // shorthand for only root.
     {
       // **required**
@@ -87,7 +87,7 @@ vti --config vetur.config.js `action`
 ### Vetur
 This profile takes precedence over vscode setting.
 It will find it when Vetur initialization.
-If it isn't exist, It will use `{ settings: {}, monorepos: [{ root: './' }] }`.
+If it isn't exist, It will use `{ settings: {}, projects: ['./'] }`.
 This will ensure consistency with past behavior.
 
 ### How to find `vetur.config.js`
@@ -104,7 +104,7 @@ type Glob = string
 
 export interface VeturConfig {
   settings?: { [key: string]: boolean | string | Enum },
-  repos?: Array<string | {
+  projects?: Array<string | {
     root: string,
     package?: string,
     tsconfig?: string,
@@ -137,7 +137,7 @@ Notice: It only affects the settings used by Vetur.
 For example, we use `typescript.preferences.quoteStyle` in Vetur. so you can set it.
 But it don't affect original TypeScript support in VSCode.
 
-### `repos`
+### `projects`
 The monorepo need a baseline or logic.
 Possible options are `package.json` or `tsconfig.js`.
 But both are used for node and typescript projects.
@@ -146,19 +146,19 @@ So I figured the best way to do it was through the setup.
 
 For detailed discussion, see this [RFC](https://github.com/vuejs/vetur/pull/2377).
 
-if `repos[]` is only a string, It is a shorthand when you only need to define `root`.
+if `projects[]` is only a string, It is a shorthand when you only need to define `root`.
 
-### `repos[].root`
+### `projects[].root`
 All runtime dependencies is base on value of this property.
 Like `typescript`, `prettier`, `@prettier/pug`.
 Also Vetur find `./package.json` and `./tsconfig.js` by default.
 
-### `repos[].package`
+### `projects[].package`
 We can get the project name or dependency info from here.
 But We only use it to determine the version of vue now.
 But it doesn't rule out the use of more.
 
-### `repos[].tsconfig`
+### `projects[].tsconfig`
 Typescript project profile.
 It's the key to helping us support JavaScript and TypeScript.
 We also use it for support template interpolation.
@@ -175,7 +175,7 @@ It can reduce development and maintenance costs.
 
 PS. `jsconfig.json` is also support it.
 
-### `repos[].globalComponents`
+### `projects[].globalComponents`
 We have some amazing features, Like `template interpolation`.
 But it only work when register component in component.
 For example:
@@ -194,12 +194,12 @@ You can support `template interpolation` for that components anywhere in the pro
 
 This property allow two type values in array.
 - Glob (`string`) [format](https://github.com/mrmlnc/fast-glob#pattern-syntax)
-  Vetur will call glob lib with `repos[].root` for loading component when value is string.
+  Vetur will call glob lib with `projects[].root` for loading component when value is string.
   It use `path.basename(fileName, path.extname(fileName))` as component name.
 - Object (`{ name: string, path: string }`)
   Vetur use this data directly.
   It's the most flexible way.
-  If this is a relative path, It is based on `repos[].root`.
+  If this is a relative path, It is based on `projects[].root`.
 
 Notice: It won't actually do it. You need to use `require.context` and `Vue.component` in your project. [more](https://vuejs.org/v2/guide/components-registration.html#Automatic-Global-Registration-of-Base-Components)
 
