@@ -21,6 +21,7 @@
 - 🙌 Fix error when optional camel-cased props are missing. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2314 and #2342.
 - 🙌 Fix Vetur formatting not working. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2388 and #2389.
 - 🙌 Improve ts perf when `vetur.experimental.templateInterpolationService: true`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2192 and #2374.
+- 🙌 Fix optional chaining in template. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2423 and #2426.
 
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
