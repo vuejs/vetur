@@ -26,6 +26,14 @@ export function walkExpression(
   }
 
   function loop(node: ts.Expression, scope: ts.Identifier[]): ts.Expression {
+    if (ts.isPropertyAccessChain(node)) {
+      const expression = loop(node.expression, scope);
+      return visit(
+        update({ expression }, node, ts.createPropertyAccessChain(expression, node.questionDotToken, node.name)),
+        scope
+      );
+    }
+
     if (ts.isPropertyAccessExpression(node)) {
       const expression = loop(node.expression, scope);
       return visit(update({ expression }, node, ts.createPropertyAccess(expression, node.name)), scope);
