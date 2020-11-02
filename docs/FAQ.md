@@ -116,3 +116,7 @@ NB: It will use `typescript.tsdk` setting as the path to look for if defined, de
 You can run the command `Vetur: Restart VLS (Vue Language Server)` to restart VLS.
 
 However, we'd appreciate it if you can file a [performance issue report with a profile](https://github.com/vuejs/vetur/blob/master/.github/PERF_ISSUE.md) to help us fix the issue.
+
+## Vetur doesn't work in nativescript-vue
+
+Make sure that Vue is installed, nativescript-vue !== vue. Vetur still need regular Vue package to get intellisense data from. A project made from nativescript-vue template doesn't vue package by default.
