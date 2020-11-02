@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.29.0
+### 0.29.0 | 2020-11-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.0/vspackage)
 
 - Fix "Duplicate identifier" errors when using multiple keydown events with modifiers. #1745.
 - Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
