@@ -22,6 +22,7 @@ module.exports = {
   // **optional** default: `[{ root: './' }]`
   // support monorepos
   repos: [
+    './packages/repo2', // shorthand for only root.
     {
       // **required**
       // Where is your project?
@@ -103,7 +104,7 @@ type Glob = string
 
 export interface VeturConfig {
   settings?: { [key: string]: boolean | string | Enum },
-  repos?: Array<{
+  repos?: Array<string | {
     root: string,
     package?: string,
     tsconfig?: string,
@@ -144,6 +145,8 @@ We're likely to waste unnecessary resources on things we don't need.
 So I figured the best way to do it was through the setup.
 
 For detailed discussion, see this [RFC](https://github.com/vuejs/vetur/pull/2377).
+
+if `repos[]` is only a string, It is a shorthand when you only need to define `root`.
 
 ### `repos[].root`
 All runtime dependencies is base on value of this property.
