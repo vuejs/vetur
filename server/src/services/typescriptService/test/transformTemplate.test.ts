@@ -120,5 +120,11 @@ suite('transformTemplate', () => {
       check('new Date(test)', 'new Date(this.test)', ['Date']);
       check('new Test()', 'new this.Test()');
     });
+
+    test('Optional Chaining and Nullish coalescing', () => {
+      check('a?.b', 'this.a?.b', []);
+      check('a ?? b', 'this.a ?? this.b', []);
+      check('a?.b ?? c', 'this.a?.b ?? this.c', []);
+    });
   });
 });
