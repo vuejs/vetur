@@ -10,8 +10,9 @@ describe('Vue 3 integration test', () => {
     it('complete `setup`', async () => {
       await testCompletion(fileUri, position(6, 2), [
         {
-          label: 'setup',
-          kind: CompletionItemKind.Field
+          label: 'setup?',
+          kind: CompletionItemKind.Field,
+          insertText: 'setup'
         }
       ]);
     });

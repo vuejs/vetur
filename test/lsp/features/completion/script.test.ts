@@ -5,6 +5,8 @@ import { getDocUri } from '../../path';
 describe('Should autocomplete for <script>', () => {
   const basicUri = getDocUri('completion/script/Basic.vue');
   const hyphenUri = getDocUri('completion/script/Hyphen.vue');
+  const literalUri = getDocUri('completion/script/issue-2300.vue');
+  const kindModifiersUri = getDocUri('completion/script/kindModifiers.vue');
 
   it('completes module names when importing', async () => {
     await testCompletion(basicUri, position(5, 8), ['lodash', 'vue', 'vuex']);
@@ -19,10 +21,18 @@ describe('Should autocomplete for <script>', () => {
   });
 
   it('completes Vue default export methods', async () => {
-    await testCompletion(basicUri, position(20, 4), ['data', 'props', 'mounted']);
+    await testCompletion(basicUri, position(20, 4), ['data?', 'props?', 'mounted?']);
   });
 
   it('completes hyphen properties in object', async () => {
     await testCompletion(hyphenUri, position(6, 4), ['a', 'a-2']);
+  });
+
+  it('completes literal string', async () => {
+    await testCompletion(literalUri, position(3, 6), ['black', 'blue']);
+  });
+
+  it('completes optional properties in object', async () => {
+    await testCompletion(kindModifiersUri, position(12, 8), [{ label: 'b?', insertTextValue: '?.b' }]);
   });
 });

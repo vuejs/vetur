@@ -14,6 +14,7 @@ import {
   TextDocument,
   TextEdit
 } from 'vscode-languageserver-types';
+import { URI } from 'vscode-uri';
 import { VLSFullConfig } from '../../config';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -23,6 +24,7 @@ import { mapBackRange, mapFromPositionToOffset } from '../../services/typescript
 import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
 import { toCompletionItemKind } from '../../services/typescriptService/util';
 import { VueInfoService } from '../../services/vueInfoService';
+import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { getFileFsPath } from '../../utils/paths';
 import { NULL_COMPLETION } from '../nullMode';
 import { languageServiceIncludesFile } from '../script/javascript';
@@ -52,11 +54,15 @@ export class VueInterpolationMode implements LanguageMode {
     return this.serviceHost.queryVirtualFileInfo(fileName, currFileText);
   }
 
-  doValidation(document: TextDocument): Diagnostic[] {
+  async doValidation(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
     if (
       !_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true) ||
       !this.config.vetur.validation.interpolation
     ) {
+      return [];
+    }
+
+    if (await isVCancellationRequested(cancellationToken)) {
       return [];
     }
 
@@ -78,6 +84,10 @@ export class VueInterpolationMode implements LanguageMode {
     );
 
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
+      return [];
+    }
+
+    if (await isVCancellationRequested(cancellationToken)) {
       return [];
     }
 
@@ -354,7 +364,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(definitionTargetDoc, r.textSpan);
 
         definitionResults.push({
-          uri: definitionTargetDoc.uri,
+          uri: URI.file(definitionTargetDoc.uri).toString(),
           range
         });
       }
@@ -402,7 +412,7 @@ export class VueInterpolationMode implements LanguageMode {
             : convertRange(referenceTargetDoc, r.textSpan);
 
         referenceResults.push({
-          uri: referenceTargetDoc.uri,
+          uri: URI.file(referenceTargetDoc.uri).toString(),
           range
         });
       }

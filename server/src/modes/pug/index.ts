@@ -20,8 +20,7 @@ export function getPugMode(workspacePath: string): LanguageMode {
       }
 
       const { value, range } = getValueAndRange(document, currRange);
-
-      const foo = prettierify(
+      return prettierify(
         value,
         getFileFsPath(document.uri),
         workspacePath,
@@ -30,8 +29,6 @@ export function getPugMode(workspacePath: string): LanguageMode {
         'pug',
         false
       );
-
-      return foo;
     },
     onDocumentRemoved() {},
     dispose() {}

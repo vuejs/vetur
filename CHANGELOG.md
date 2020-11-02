@@ -1,13 +1,37 @@
 # Changelog
 
+### 0.29.0 | 2020-11-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.0/vspackage)
+
+- Fix "Duplicate identifier" errors when using multiple keydown events with modifiers. #1745.
+- Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
+- Fix files with CRLF having errors with wrong range. #1319.
+- 🙌 Fix collapse code missing end mark. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2303 and #2352.
+- 🙌 Fix crash when no or wrong tsconfig. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2403.
+- 🙌 Respect include/exclude files options in `tsconfig` for external ts/js files. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2339 and #2371.
+- 🙌 Fix undefined valueDeclaration in props crashing vls. Thanks to contribution from [@javiertury](https://github.com/javiertury). #2367.
+- 🙌 Reduce recreate ts program when no need for ts perf. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2192 and #2328.
+- 🙌 Display VTI errors. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2324 and #2330.
+- 🙌 Add command `Vetur: Restart VLS (Vue Language Server)`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2331.
+- 🙌 Fix no complete literal string union. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2300 and #2353.
+- 🙌 Add `vti version` command. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2337.
+- 🙌 Complete with `?.` for optional properies in completion. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2326 and #2357.
+- 🙌 Respect typescript language settings. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2109 and #2375.
+- 🙌 Slim syntax highlighting. Thanks to contribution from [@Antti](https://github.com/Antti).
+- 🙌 Stop computing outdated diagnostics with CancellationToken. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #1263 and #2332.
+- 🙌 Fix error when optional camel-cased props are missing. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2314 and #2342.
+- 🙌 Fix Vetur formatting not working. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2388 and #2389.
+- 🙌 Improve ts perf when `vetur.experimental.templateInterpolationService: true`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2192 and #2374.
+- 🙌 Fix optional chaining in template. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2423 and #2426.
+
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 
 - Fix completing prop name completes with extra `:`. #2304.
-- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150
+- Add `vetur.languageFeatures.codeActions` option to disable codeAction. #2150.
 - Let VTI load default VLS config. #2274.
 - Make `prettier` default formatter for HTML as prettyhtml is no longer actively maintained. #2291.
 - Load prettier plugin from VLS if not present in workspace folder. #2014.
 - Cross file template type checking - check that components are passed props with the correct types. #1596 and #2294.
+- 🙌 Fix VTI printing filenames without errors or warnings due to eslint-plugin-vue being igored. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2305.
 
 ### 0.27.3 | 2020-09-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.27.3/vspackage)
 
