@@ -251,7 +251,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
         // Attribute name is specified
         // e.g. v-bind:value="foo"
         const fullName =
-          dir.key.modifiers.length === 0
+          dir.key.modifiers.length === 0 || !isVOn(dir)
             ? kebabCase(name.rawName)
             : [kebabCase(name.rawName), ...dir.key.modifiers.map(m => m.rawName)].join('.');
         const propNameNode = ts.setSourceMapRange(ts.createStringLiteral(fullName), {
