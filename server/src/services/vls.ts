@@ -191,7 +191,7 @@ export class VLS {
     if (settings.vetur.format.enable) {
       if (!this.documentFormatterRegistration) {
         this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
-          documentSelector: ['vue']
+          documentSelector: [{ language: 'vue' }]
         });
       }
     } else {
