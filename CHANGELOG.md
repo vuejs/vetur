@@ -2,7 +2,7 @@
 
 ### 0.29.1
 
-- Fix invalid `client/registerCapability` request. Thanks to contribution from [@rchl](https://github.com/rchl) #2388
+- 🙌 Fix invalid `client/registerCapability` request. Thanks to contribution from [@rchl](https://github.com/rchl). #2388.
 
 ### 0.29.0 | 2020-11-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.0/vspackage)
 
