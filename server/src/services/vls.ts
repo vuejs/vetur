@@ -21,8 +21,7 @@ import {
   CompletionTriggerKind,
   ExecuteCommandParams,
   ApplyWorkspaceEditRequest,
-  FoldingRangeParams,
-  CancellationTokenSource
+  FoldingRangeParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -84,7 +83,7 @@ export class VLS {
 
   private documentFormatterRegistration: Disposable | undefined;
 
-  private config: VLSConfig;
+  private config: VLSFullConfig;
 
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
@@ -95,7 +94,7 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
-    const config: VLSFullConfig = this.getFullConfig(params.initializationOptions?.config);
+    const config = this.getFullConfig(params.initializationOptions?.config);
 
     const workspacePath = params.rootPath;
     if (!workspacePath) {
@@ -107,7 +106,7 @@ export class VLS {
 
     this.workspacePath = workspacePath;
 
-    await this.vueInfoService.init(this.languageModes);
+    this.vueInfoService.init(this.languageModes);
     await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies, config.typescript.tsdk);
 
     await this.languageModes.init(
@@ -119,7 +118,7 @@ export class VLS {
       params.initializationOptions?.globalSnippetDir
     );
 
-    this.setupConfigure(config);
+    this.configure(config);
     this.setupConfigListeners();
     this.setupLSPHandlers();
     this.setupCustomLSPHandlers();
@@ -138,14 +137,11 @@ export class VLS {
     return config ? _.merge(getDefaultVLSConfig(), config) : getDefaultVLSConfig();
   }
 
-  public setupConfigure(config: VLSFullConfig) {
-    this.configure(config);
-    this.setupDynamicFormatters(config);
-  }
-
   private setupConfigListeners() {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
-      await this.setupConfigure(this.getFullConfig(settings));
+      const config = this.getFullConfig(settings);
+      this.configure(config);
+      this.setupDynamicFormatters(config);
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
