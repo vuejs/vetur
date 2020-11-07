@@ -39,6 +39,7 @@ import { VLSFullConfig } from '../config';
 import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 import { getPugMode } from '../modes/pug';
 import { VCancellationToken } from '../utils/cancellationToken';
+import { createAutoImportVueService } from '../services/autoImportVueService';
 
 export interface VLSServices {
   infoService?: VueInfoService;
@@ -127,15 +128,20 @@ export class LanguageModes {
       return vueDocument.getSingleTypeDocument('script');
     });
     this.serviceHost = getServiceHost(tsModule, workspacePath, scriptRegionDocuments);
+    const autoImportVueService = createAutoImportVueService(services.infoService);
 
     const vueHtmlMode = new VueHTMLMode(
       tsModule,
       this.serviceHost,
       this.documentRegions,
       workspacePath,
+      autoImportVueService,
       services.infoService
     );
 
+    autoImportVueService.setGetFilesFn(() =>
+      this.serviceHost.getFileNames().filter(fileName => fileName.endsWith('.vue'))
+    );
     const jsMode = await getJavascriptMode(
       this.serviceHost,
       this.documentRegions,
@@ -143,6 +149,7 @@ export class LanguageModes {
       services.infoService,
       services.dependencyService
     );
+    autoImportVueService.setGetJSResolve(jsMode.doResolve!);
 
     this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;

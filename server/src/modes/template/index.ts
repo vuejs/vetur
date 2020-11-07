@@ -12,24 +12,35 @@ import { T_TypeScript } from '../../services/dependencyService';
 import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
 import { inferVueVersion } from '../../services/typescriptService/vueVersion';
 import { VCancellationToken } from '../../utils/cancellationToken';
+import { AutoImportVueService } from '../../services/autoImportVueService';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export class VueHTMLMode implements LanguageMode {
   private htmlMode: HTMLMode;
   private vueInterpolationMode: VueInterpolationMode;
+  private autoImportVueService: AutoImportVueService;
 
   constructor(
     tsModule: T_TypeScript,
     serviceHost: IServiceHost,
     documentRegions: DocumentRegionCache,
     workspacePath: string,
+    autoImportVueService: AutoImportVueService,
     vueInfoService?: VueInfoService
   ) {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
     const vueVersion = inferVueVersion(tsModule, workspacePath);
-    this.htmlMode = new HTMLMode(documentRegions, workspacePath, vueVersion, vueDocuments, vueInfoService);
+    this.htmlMode = new HTMLMode(
+      documentRegions,
+      workspacePath,
+      vueVersion,
+      vueDocuments,
+      autoImportVueService,
+      vueInfoService
+    );
     this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments, vueInfoService);
+    this.autoImportVueService = autoImportVueService;
   }
   getId() {
     return 'vue-html';
@@ -56,6 +67,9 @@ export class VueHTMLMode implements LanguageMode {
     };
   }
   doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
+    if (this.autoImportVueService.isMyResolve(item)) {
+      return this.autoImportVueService.doResolve(document, item);
+    }
     return this.vueInterpolationMode.doResolve(document, item);
   }
   doHover(document: TextDocument, position: Position): Hover {

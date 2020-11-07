@@ -70,6 +70,7 @@ export interface IServiceHost {
     scriptDoc: TextDocument;
   };
   updateExternalDocument(filePath: string): void;
+  getFileNames(): string[];
   dispose(): void;
 }
 
@@ -219,6 +220,10 @@ export function getServiceHost(
     if (projectFileSnapshots.has(fileFsPath)) {
       projectFileSnapshots.delete(fileFsPath);
     }
+  }
+
+  function getFileNames() {
+    return Array.from(scriptFileNameSet);
   }
 
   function createLanguageServiceHost(options: ts.CompilerOptions): ts.LanguageServiceHost {
@@ -449,6 +454,7 @@ export function getServiceHost(
     updateCurrentVirtualVueTextDocument,
     updateCurrentVueTextDocument,
     updateExternalDocument,
+    getFileNames,
     dispose: () => {
       jsLanguageService.dispose();
     }
