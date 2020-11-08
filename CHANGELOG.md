@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.29.1
+### 0.29.1 | 2020-11-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.1/vspackage)
 
 - 🙌 Fix invalid `client/registerCapability` request. Thanks to contribution from [@rchl](https://github.com/rchl). #2388.
 
