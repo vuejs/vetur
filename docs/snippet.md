@@ -45,11 +45,11 @@ Three sources supplement Vetur with scaffold snippets:
 The workspace/user Vetur snippet folders share the same structure:
 
 ```
-vetur/snippets
-├── docs
+vetur/snippets/
+├── docs/
 │   │   // Completed as `<docs>`. Will have default completion icon.
 │   └── docs.vue
-├── style
+├── style/
 │   │   // Completed as `<style>`. Will have CSS completion icon.
 │   │   // `template` and `script` folder will have HTML/JS icons.
 │   └── scss-module.vue 

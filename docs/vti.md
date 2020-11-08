@@ -7,6 +7,15 @@ VTI (Vetur Terminal Interface) is a CLI that exposes some of Vetur's language fe
 - [x] Diagnostic errors
 - [ ] Formatting
 
+## Why
+
+VTI catches type-errors in Vue templates that's not catchable by either Vue or TypeScript alone.
+
+- Vue compiler: do not understand types.
+- TypeScript compiler: do not understand Vue templates.
+- VLS: Understand both to do [TS type-checking on Vue templates](https://vuejs.github.io/vetur/interpolation.html).
+- VTI: Surfaces VLS's errors on CLI for CI.
+
 ## Usage
 
 ```bash

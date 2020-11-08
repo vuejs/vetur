@@ -1,6 +1,12 @@
 # Changelog
 
+###
+
 - 🙌 Fix v-bind modifiers causing TypeScript to not find type-checked template props correctly. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2430.
+
+### 0.29.1 | 2020-11-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.1/vspackage)
+
+- 🙌 Fix invalid `client/registerCapability` request. Thanks to contribution from [@rchl](https://github.com/rchl). #2388.
 
 ### 0.29.0 | 2020-11-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.0/vspackage)
 
