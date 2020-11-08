@@ -68,7 +68,7 @@ export function analyzeDefaultExportExpr(
 ): VueFileInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
-  const newOptionPos = getNewOptionPos(tsModule, defaultExportType, checker);
+  const insertInOptionAPIPos = getInsertInOptionAPIPos(tsModule, defaultExportType, checker);
   const props = getProps(tsModule, defaultExportType, checker);
   const data = getData(tsModule, defaultExportType, checker);
   const computed = getComputed(tsModule, defaultExportType, checker);
@@ -76,7 +76,7 @@ export function analyzeDefaultExportExpr(
 
   return {
     componentInfo: {
-      insertInOptionAPIPos: newOptionPos,
+      insertInOptionAPIPos,
       props,
       data,
       computed,
@@ -100,22 +100,14 @@ export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.Sour
   return getNodeFromExportNode(tsModule, exportNode);
 }
 
-function getNewOptionPos(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker) {
+function getInsertInOptionAPIPos(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker) {
   if (isClassType(tsModule, defaultExportType)) {
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
     if (decoratorArgumentType && decoratorArgumentType.symbol.valueDeclaration) {
-      return (
-        decoratorArgumentType.symbol.valueDeclaration.pos +
-        decoratorArgumentType.symbol.valueDeclaration.getFullText().search('{') +
-        1
-      );
+      return decoratorArgumentType.symbol.valueDeclaration.getStart() + 1;
     }
   } else {
-    return (
-      defaultExportType.symbol?.valueDeclaration?.pos +
-      defaultExportType.symbol?.valueDeclaration?.getFullText().search('{') +
-      1
-    );
+    return defaultExportType.symbol?.valueDeclaration?.getStart() + 1;
   }
   return undefined;
 }
