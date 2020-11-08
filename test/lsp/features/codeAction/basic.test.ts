@@ -6,7 +6,7 @@ import { CodeAction } from 'vscode-languageclient';
 import { getDocUri } from '../../path';
 import { getDiagnosticsAndTimeout } from '../../../diagnosticHelper';
 
-describe('Should do codeAction', function () {
+describe('Should do codeAction', function() {
   // Retry for flakey tests
   this.retries(3);
 

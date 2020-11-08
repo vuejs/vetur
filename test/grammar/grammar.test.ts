@@ -77,7 +77,7 @@ describe('colorization', () => {
     const fixturesFiles = readdirSync(extensionColorizeFixturePath);
     fixturesFiles.forEach(fixturesFile => {
       // define a test for each fixture
-      it('should colorize ' + fixturesFile + ' right', function (done) {
+      it('should colorize ' + fixturesFile + ' right', function(done) {
         // tslint:disable-next-line
         assertUnchangedTokens(join(extensionColorizeFixturePath, fixturesFile), done);
       });

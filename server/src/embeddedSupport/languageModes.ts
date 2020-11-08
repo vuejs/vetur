@@ -74,6 +74,7 @@ export interface LanguageMode {
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;
+  onDocumentDeleted?(filePath: string): void;
   dispose(): void;
 }
 

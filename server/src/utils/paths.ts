@@ -59,6 +59,15 @@ export function getFilePath(documentUri: string): string {
   }
 }
 
+export function getDirectoryName(fsPath: string) {
+  const lastSlashIndex = fsPath.lastIndexOf('/');
+  if (lastSlashIndex < 1) {
+    // Impossible or root
+    return fsPath;
+  }
+  return fsPath.slice(0, lastSlashIndex);
+}
+
 export function normalizeFileNameToFsPath(fileName: string) {
   return URI.file(fileName).fsPath;
 }
