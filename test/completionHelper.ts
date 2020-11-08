@@ -115,6 +115,82 @@ export async function testCompletion(
   });
 }
 
+export async function testCompletionResolve(
+  docUri: vscode.Uri,
+  position: vscode.Position,
+  expectedItems: CompletionItem[],
+  itemResolveCount: number
+) {
+  await showFile(docUri);
+
+  const result = (await vscode.commands.executeCommand(
+    'vscode.executeCompletionItemProvider',
+    docUri,
+    position,
+    undefined,
+    itemResolveCount
+  )) as vscode.CompletionList;
+
+  expectedItems.forEach(ei => {
+    if (typeof ei === 'string') {
+      assert.ok(
+        result.items.some(i => {
+          return i.label === ei;
+        }),
+        `Can't find matching item for\n${JSON.stringify(ei, null, 2)}\nSeen items:\n${JSON.stringify(
+          result.items,
+          null,
+          2
+        )}`
+      );
+    } else {
+      const match = result.items.find(i => i.label === ei.label);
+      if (!match) {
+        assert.fail(
+          `Can't find matching item for\n${JSON.stringify(ei, null, 2)}\nSeen items:\n${JSON.stringify(
+            result.items,
+            null,
+            2
+          )}`
+        );
+      }
+
+      assert.equal(match.label, ei.label);
+      if (ei.kind) {
+        assert.equal(match.kind, ei.kind);
+      }
+      if (ei.detail) {
+        assert.equal(match.detail, ei.detail);
+      }
+
+      if (ei.documentation) {
+        if (typeof match.documentation === 'string') {
+          assert.equal(normalizeNewline(match.documentation), normalizeNewline(ei.documentation as string));
+        } else {
+          if (ei.documentation && (ei.documentation as MarkdownString).value && match.documentation) {
+            assert.equal(
+              normalizeNewline((match.documentation as vscode.MarkdownString).value),
+              normalizeNewline((ei.documentation as MarkdownString).value)
+            );
+          }
+        }
+      }
+
+      if (ei.additionalTextEdits) {
+        assert.deepStrictEqual(
+          match.additionalTextEdits,
+          ei.additionalTextEdits,
+          `Can't match additionalTextEdits for\n${
+            JSON.stringify(ei.additionalTextEdits, null, 2)
+          }\nSeen items:\n${
+            JSON.stringify(match.additionalTextEdits, null, 2)
+          }`
+        );
+      }
+    }
+  });
+}
+
 export async function testNoSuchCompletion(
   docUri: vscode.Uri,
   position: vscode.Position,
