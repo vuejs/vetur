@@ -8,6 +8,7 @@ export const renderHelperName = '__vlsRenderHelper';
 export const componentHelperName = '__vlsComponentHelper';
 export const iterationHelperName = '__vlsIterationHelper';
 export const componentDataName = '__vlsComponentData';
+export const injectComponentDataName = '__vlsInjectComponentData';
 
 /**
  * Allowed global variables in templates.
@@ -75,7 +76,7 @@ export function getTemplateTransformFunctions(ts: T_TypeScript, childComponentNa
       !hasUnhandledAttributes &&
       childComponentNamesInSnakeCase &&
       childComponentNamesInSnakeCase.indexOf(snakeCase(node.rawName)) !== -1
-        ? ts.createIdentifier(componentHelperName + '__' + snakeCase(node.rawName))
+        ? ts.createIdentifier(`${componentHelperName}__${snakeCase(node.rawName)}`)
         : ts.createIdentifier(componentHelperName);
 
     return ts.createCall(identifier, undefined, [

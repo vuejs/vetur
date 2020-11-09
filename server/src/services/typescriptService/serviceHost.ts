@@ -16,22 +16,19 @@ import { logger } from '../../log';
 import { ModuleResolutionCache } from './moduleResolutionCache';
 import { globalScope } from './transformTemplate';
 import { inferVueVersion, VueVersion } from './vueVersion';
-import { ChildComponent } from '../vueInfoService';
+import { VueFileInfo } from '../vueInfoService';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
 /**
  * For prop validation
  */
-const allChildComponentsInfo = new Map<string, ChildComponent[]>();
+const allFileInfo = new Map<string, VueFileInfo>();
 
 function patchTS(tsModule: T_TypeScript) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: this is a global hack that all ts instances after is changed
-  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(
-    tsModule,
-    allChildComponentsInfo
-  );
+  const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(tsModule, allFileInfo);
   (tsModule as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (tsModule as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
 }
@@ -58,7 +55,7 @@ export interface IServiceHost {
   queryVirtualFileInfo(fileName: string, currFileText: string): { source: string; sourceMapNodesString: string };
   updateCurrentVirtualVueTextDocument(
     doc: TextDocument,
-    childComponents?: ChildComponent[]
+    fileInfo?: VueFileInfo
   ): {
     templateService: ts.LanguageService;
     templateSourceMap: TemplateSourceMap;
@@ -141,7 +138,7 @@ export function getServiceHost(
     };
   }
 
-  function updateCurrentVirtualVueTextDocument(doc: TextDocument, childComponents?: ChildComponent[]) {
+  function updateCurrentVirtualVueTextDocument(doc: TextDocument, fileInfo?: VueFileInfo) {
     const fileFsPath = getFileFsPath(doc.uri);
     const filePath = getFilePath(doc.uri);
     // When file is not in language service, add it
@@ -154,8 +151,8 @@ export function getServiceHost(
     if (isVirtualVueTemplateFile(fileFsPath)) {
       localScriptRegionDocuments.set(fileFsPath, doc);
       scriptFileNameSet.add(filePath);
-      if (childComponents) {
-        allChildComponentsInfo.set(filePath, childComponents);
+      if (fileInfo) {
+        allFileInfo.set(filePath, fileInfo);
       }
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
       projectVersion++;

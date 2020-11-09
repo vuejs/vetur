@@ -10,6 +10,7 @@ import { T_TypeScript } from '../../services/dependencyService';
 import { kebabCase } from 'lodash';
 
 interface InternalChildComponent {
+  rawName: string;
   name: string;
   documentation?: string;
   definition?: {
@@ -57,11 +58,6 @@ export function getChildComponents(
         return;
       }
 
-      let componentName = s.name;
-      if (tagCasing === 'kebab') {
-        componentName = kebabCase(s.name);
-      }
-
       let objectLiteralSymbol: ts.Symbol | undefined;
       if (s.valueDeclaration.kind === tsModule.SyntaxKind.PropertyAssignment) {
         objectLiteralSymbol =
@@ -85,7 +81,8 @@ export function getChildComponents(
           return;
         }
         result.push({
-          name: componentName,
+          rawName: s.name,
+          name: tagCasing === 'kebab' ? kebabCase(s.name) : s.name,
           documentation: buildDocumentation(tsModule, definitionSymbol, checker),
           definition: {
             path: sourceFile.fileName,
