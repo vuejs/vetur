@@ -1,6 +1,7 @@
 import { testCompletion, testCompletionResolve } from '../../../completionHelper';
 import { position, sameLineRange, textEdit } from '../../../util';
 import { getDocUri } from '../../path';
+import { EOL as NEW_LINE } from 'os';
 
 describe('Should import vue component to script in template', () => {
   it('completes components', async () => {
@@ -49,7 +50,7 @@ describe('Should import vue component to script in template', () => {
         {
           label: 'two-stylus',
           additionalTextEdits: [
-            textEdit(sameLineRange(9, 0, 0), "import TwoStylus from '../../formatting/TwoStylus.vue'\n"),
+            textEdit(sameLineRange(9, 0, 0), `import TwoStylus from '../../formatting/TwoStylus.vue'${NEW_LINE}`),
             textEdit(sameLineRange(10, 20, 20), ', TwoStylus')
           ]
         },
@@ -58,7 +59,7 @@ describe('Should import vue component to script in template', () => {
           additionalTextEdits: [
             textEdit(
               sameLineRange(9, 0, 0),
-              "import TwoStylusExpected from '../../formatting/TwoStylus.Expected.vue'\n"
+              `import TwoStylusExpected from '../../formatting/TwoStylus.Expected.vue'${NEW_LINE}`
             ),
             textEdit(sameLineRange(10, 20, 20), ', TwoStylusExpected')
           ]
@@ -76,8 +77,8 @@ describe('Should import vue component to script in template', () => {
         {
           label: 'child',
           additionalTextEdits: [
-            textEdit(sameLineRange(7, 0, 0), "import Child from '../template/childComponent/Child.vue'\n"),
-            textEdit(sameLineRange(7, 16, 16), '\n  components: { Child },')
+            textEdit(sameLineRange(7, 0, 0), `import Child from '../template/childComponent/Child.vue'${NEW_LINE}`),
+            textEdit(sameLineRange(7, 16, 16), `${NEW_LINE}  components: { Child },`)
           ]
         }
       ],
@@ -93,8 +94,11 @@ describe('Should import vue component to script in template', () => {
         {
           label: 'child',
           additionalTextEdits: [
-            textEdit(sameLineRange(9, 0, 0), "import Child1 from '../../diagnostics/noScriptRegion/Child.vue'\n"),
-            textEdit(sameLineRange(12, 9, 9), ',\n    Child1')
+            textEdit(
+              sameLineRange(9, 0, 0),
+              `import Child1 from '../../diagnostics/noScriptRegion/Child.vue'${NEW_LINE}`
+            ),
+            textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    Child1`)
           ]
         }
       ],

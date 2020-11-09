@@ -1,4 +1,5 @@
 import { camelCase, kebabCase, upperFirst } from 'lodash';
+import { EOL as NEW_LINE } from 'os';
 import { basename } from 'path';
 import { CompletionItem } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -166,7 +167,7 @@ import ${upperFirst(camelCase(tagName))} from '${fileName}'
             newInsertTexts.push(',');
           }
           if (currentComponentText.includes('\n')) {
-            newInsertTexts.push('\n');
+            newInsertTexts.push(NEW_LINE);
             const textInLine = document
               .getText()
               .slice(
@@ -202,7 +203,7 @@ import ${upperFirst(camelCase(tagName))} from '${fileName}'
           componentName
         );
         if (textEdits) {
-          const newInsertTexts = ['\n'];
+          const newInsertTexts = [NEW_LINE];
           if (config.vetur.format.options.useTabs) {
             newInsertTexts.push('\t');
           } else {
