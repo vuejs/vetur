@@ -21,7 +21,8 @@ export function doComplete(
   position: Position,
   htmlDocument: HTMLDocument,
   tagProviders: IHTMLTagProvider[],
-  emmetConfig: emmet.EmmetConfiguration
+  emmetConfig: emmet.EmmetConfiguration,
+  autoImportCompletions?: CompletionItem[]
 ): CompletionList {
   const modifierProvider = getModifierProvider();
 
@@ -62,6 +63,9 @@ export function doComplete(
           insertTextFormat: InsertTextFormat.PlainText
         });
       });
+    });
+    autoImportCompletions?.forEach(item => {
+      result.items.push(item);
     });
     return result;
   }

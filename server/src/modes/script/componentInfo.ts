@@ -7,7 +7,7 @@ import {
   MethodInfo,
   ChildComponent
 } from '../../services/vueInfoService';
-import { getChildComponents } from './childComponents';
+import { analyzeComponentsDefine } from './childComponents';
 import { T_TypeScript } from '../../services/dependencyService';
 
 export function getComponentInfo(
@@ -36,14 +36,15 @@ export function getComponentInfo(
   const vueFileInfo = analyzeDefaultExportExpr(tsModule, defaultExportNode, checker);
 
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
-  const internalChildComponents = getChildComponents(
+  const componentsDefineInfo = analyzeComponentsDefine(
     tsModule,
     defaultExportType,
     checker,
     config.vetur.completion.tagCasing
   );
 
-  if (internalChildComponents) {
+  if (componentsDefineInfo) {
+    const { list: internalChildComponents, ...defineInfo } = componentsDefineInfo;
     const childComponents: ChildComponent[] = [];
     internalChildComponents.forEach(c => {
       childComponents.push({
@@ -54,6 +55,7 @@ export function getComponentInfo(
       });
     });
     vueFileInfo.componentInfo.childComponents = childComponents;
+    vueFileInfo.componentInfo.componentsDefine = defineInfo;
   }
 
   return vueFileInfo;
@@ -66,6 +68,7 @@ export function analyzeDefaultExportExpr(
 ): VueFileInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
+  const insertInOptionAPIPos = getInsertInOptionAPIPos(tsModule, defaultExportType, checker);
   const props = getProps(tsModule, defaultExportType, checker);
   const data = getData(tsModule, defaultExportType, checker);
   const computed = getComputed(tsModule, defaultExportType, checker);
@@ -73,6 +76,7 @@ export function analyzeDefaultExportExpr(
 
   return {
     componentInfo: {
+      insertInOptionAPIPos,
       props,
       data,
       computed,
@@ -94,6 +98,18 @@ export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.Sour
       : (exportStmts[0] as ts.ClassDeclaration);
 
   return getNodeFromExportNode(tsModule, exportNode);
+}
+
+function getInsertInOptionAPIPos(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker) {
+  if (isClassType(tsModule, defaultExportType)) {
+    const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
+    if (decoratorArgumentType && decoratorArgumentType.symbol.valueDeclaration) {
+      return decoratorArgumentType.symbol.valueDeclaration.getStart() + 1;
+    }
+  } else {
+    return defaultExportType.symbol?.valueDeclaration?.getStart() + 1;
+  }
+  return undefined;
 }
 
 function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {

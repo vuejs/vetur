@@ -18,6 +18,12 @@ export interface ComponentInfo {
   name?: string;
   definition?: Definition;
 
+  insertInOptionAPIPos?: number;
+  componentsDefine?: {
+    start: number;
+    end: number;
+    insertPos: number;
+  };
   childComponents?: ChildComponent[];
 
   /**
