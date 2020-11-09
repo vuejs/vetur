@@ -21,7 +21,8 @@ export interface ExpectedCompletionItem extends CompletionItem {
 export async function testCompletion(
   docUri: vscode.Uri,
   position: vscode.Position,
-  expectedItems: (string | ExpectedCompletionItem)[]
+  expectedItems: (string | ExpectedCompletionItem)[],
+  matchFn?: (ei: string | ExpectedCompletionItem) => (result: CompletionItem) => boolean
 ) {
   await showFile(docUri);
 
@@ -44,7 +45,7 @@ export async function testCompletion(
         )}`
       );
     } else {
-      const match = result.items.find(i => i.label === ei.label);
+      const match = matchFn ? result.items.find(matchFn(ei)) : result.items.find(i => i.label === ei.label);
       if (!match) {
         assert.fail(
           `Can't find matching item for\n${JSON.stringify(ei, null, 2)}\nSeen items:\n${JSON.stringify(
@@ -119,7 +120,8 @@ export async function testCompletionResolve(
   docUri: vscode.Uri,
   position: vscode.Position,
   expectedItems: CompletionItem[],
-  itemResolveCount: number
+  itemResolveCount: number,
+  matchFn?: (ei: CompletionItem) => (result: CompletionItem) => boolean
 ) {
   await showFile(docUri);
 
@@ -144,7 +146,7 @@ export async function testCompletionResolve(
         )}`
       );
     } else {
-      const match = result.items.find(i => i.label === ei.label);
+      const match = matchFn ? result.items.find(matchFn(ei)) : result.items.find(i => i.label === ei.label);
       if (!match) {
         assert.fail(
           `Can't find matching item for\n${JSON.stringify(ei, null, 2)}\nSeen items:\n${JSON.stringify(
@@ -177,15 +179,15 @@ export async function testCompletionResolve(
       }
 
       if (ei.additionalTextEdits) {
-        assert.deepStrictEqual(
-          match.additionalTextEdits,
-          ei.additionalTextEdits,
-          `Can't match additionalTextEdits for\n${
-            JSON.stringify(ei.additionalTextEdits, null, 2)
-          }\nSeen items:\n${
-            JSON.stringify(match.additionalTextEdits, null, 2)
-          }`
-        );
+        assert.strictEqual(match.additionalTextEdits?.length, ei.additionalTextEdits.length);
+
+        ei.additionalTextEdits.forEach((textEdit, i) => {
+          assert.strictEqual(match.additionalTextEdits?.[i].newText, textEdit.newText);
+          assert.strictEqual(match.additionalTextEdits?.[i].range.start.line, textEdit.range.start.line);
+          assert.strictEqual(match.additionalTextEdits?.[i].range.start.character, textEdit.range.start.character);
+          assert.strictEqual(match.additionalTextEdits?.[i].range.end.line, textEdit.range.end.line);
+          assert.strictEqual(match.additionalTextEdits?.[i].range.end.character, textEdit.range.end.character);
+        });
       }
     }
   });
