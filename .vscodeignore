@@ -13,11 +13,11 @@ server/dist-test/
 
 .**
 
+**/*.map
 **/tsconfig.json
 **/tsconfig.**.json
 **/tslint.json
 **/yarn.lock
-*.map
 
 .vsix
 scripts
