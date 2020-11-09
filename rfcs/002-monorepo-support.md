@@ -86,17 +86,21 @@ We implement this feature in the VLS.
 - Development costs are unknown, Maybe `vetur.config.js` rfcs can reduce it.
 - Need longer time.
 
-PS. It doesn't have to be a single solution, maybe can mix.
+## Final implementation
+We don't want to put the blame on all the clients. so remove `Multiple LSP client` option.
+Consider package.json and tsconfig.json issues, we will try to use `Add multiple project support in LSP server`.
+Also works with `vetur.config.js` configuration file.
 
 # Alternatives
-Not yet decided
+Same as https://github.com/vuejs/vetur/blob/monorepo-rfc/rfcs/002-monorepo-support.md#how-it-achieve-
 
 # Adoption strategy
-Not yet decided
+- No breaking change
+- Add a docker command for provide information when have problem
+- Add monorepo and sub-folder docs
+- Try to provide humane tips
 
 # Unresolved questions
-- How does VLS and TS plugin communicate? ss there any way other than `TS plugin->Vetur->LSP client->VLS` and `VLS->LSP client->Vetur->TS plugin`?
 - Have any multiple `tsconfig.json` case for a Vue project?
 - What to base a project on? Use `tsconfig.json`, `package.json`, or config in [RFC](https://github.com/vuejs/vetur/pull/2378)?
-- Which plan to use?
 - Have any multiple `tsconfig.json` case for a other framework project? React? Angular?
