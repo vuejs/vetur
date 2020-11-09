@@ -1,12 +1,5 @@
-import {
-  FormattingOptions,
-  Position,
-  Range,
-  TextDocument,
-  Hover,
-  Location,
-  CompletionItem
-} from 'vscode-languageserver-types';
+import { FormattingOptions, Position, Range, Hover, Location, CompletionItem } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';

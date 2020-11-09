@@ -4,7 +4,6 @@ import {
   SignatureHelp,
   Definition,
   TextEdit,
-  TextDocument,
   Diagnostic,
   DocumentLink,
   Range,
@@ -22,6 +21,7 @@ import {
   WorkspaceEdit,
   FoldingRange
 } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getVueDocumentRegions, VueDocumentRegions, LanguageId, LanguageRange } from './embeddedSupport';

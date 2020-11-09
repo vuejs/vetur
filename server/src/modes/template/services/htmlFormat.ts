@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
-import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
+import { Range, TextEdit, Position } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { html as htmlBeautify } from 'js-beautify';
 import { IPrettyHtml } from './prettyhtml';
 import { requireLocalPkg } from '../../../utils/prettier/requirePkg';

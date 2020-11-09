@@ -4,6 +4,7 @@
 
 - 🙌 Fix v-bind modifiers causing TypeScript to not find type-checked template props correctly. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2430.
 - 🙌 Fix "File name X differs from already included file name Y only in casing" on Windows. Thanks to contribution from [@rchl](https://github.com/rchl). #2433 and #2444.
+- 🙌 Remove deprecated code and incremental text document. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2366.
 
 ### 0.29.1 | 2020-11-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.1/vspackage)
 

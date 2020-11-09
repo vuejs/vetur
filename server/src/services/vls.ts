@@ -35,12 +35,12 @@ import {
   Location,
   SignatureHelp,
   SymbolInformation,
-  TextDocument,
   TextEdit,
   ColorPresentation,
   Range,
   FoldingRange
 } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
@@ -592,7 +592,7 @@ export class VLS {
 
   get capabilities(): ServerCapabilities {
     return {
-      textDocumentSync: TextDocumentSyncKind.Full,
+      textDocumentSync: TextDocumentSyncKind.Incremental,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },
       documentFormattingProvider: false,
