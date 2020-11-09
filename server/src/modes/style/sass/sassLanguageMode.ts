@@ -1,6 +1,7 @@
 import { LanguageMode } from '../../../embeddedSupport/languageModes';
 
-import { TextDocument, Range, FormattingOptions, CompletionList } from 'vscode-languageserver-types/lib/umd/main';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
+import { Range, FormattingOptions, CompletionList } from 'vscode-languageserver-types';
 
 import { TextEdit, Position } from 'vscode-css-languageservice';
 

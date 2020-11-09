@@ -20,12 +20,12 @@ interface InternalChildComponent {
   defaultExportNode?: ts.Node;
 }
 
-export function getChildComponents(
+export function analyzeComponentsDefine(
   tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
   tagCasing = 'kebab'
-): InternalChildComponent[] | undefined {
+): { start: number; end: number; insertPos: number; list: InternalChildComponent[] } | undefined {
   let componentsSymbol: ts.Symbol | undefined;
 
   if (!isClassType(tsModule, defaultExportType)) {
@@ -51,8 +51,9 @@ export function getChildComponents(
   if (componentsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const componentsType = checker.getTypeOfSymbolAtLocation(componentsSymbol, componentsDeclaration);
 
+    let insertPos = componentsDeclaration.getStart() + 1;
     const result: InternalChildComponent[] = [];
-    checker.getPropertiesOfType(componentsType).forEach(s => {
+    checker.getPropertiesOfType(componentsType).forEach((s, i, arr) => {
       if (!s.valueDeclaration) {
         return;
       }
@@ -60,6 +61,10 @@ export function getChildComponents(
       let componentName = s.name;
       if (tagCasing === 'kebab') {
         componentName = kebabCase(s.name);
+      }
+
+      if (i === arr.length - 1) {
+        insertPos = s.valueDeclaration.getEnd();
       }
 
       let objectLiteralSymbol: ts.Symbol | undefined;
@@ -79,11 +84,13 @@ export function getChildComponents(
         if (!definitionSymbol.valueDeclaration) {
           return;
         }
+
         const sourceFile = definitionSymbol.valueDeclaration.getSourceFile();
         const defaultExportNode = getDefaultExportNode(tsModule, sourceFile);
         if (!defaultExportNode) {
           return;
         }
+
         result.push({
           name: componentName,
           documentation: buildDocumentation(tsModule, definitionSymbol, checker),
@@ -97,6 +104,11 @@ export function getChildComponents(
       }
     });
 
-    return result;
+    return {
+      start: componentsDeclaration.getStart(),
+      end: componentsDeclaration.getEnd(),
+      insertPos,
+      list: result
+    };
   }
 }

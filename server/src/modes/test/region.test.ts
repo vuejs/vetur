@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { TextDocument } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 
 const defaultTemplate = `

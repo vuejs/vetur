@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
-import { TextDocument, Position, Range, FormattingOptions } from 'vscode-languageserver-types';
+import { Position, Range, FormattingOptions, CompletionItem } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 import { HTMLDocument } from './parser/htmlParser';
@@ -28,6 +29,7 @@ import { doPropValidation } from './services/vuePropValidation';
 import { getFoldingRanges } from './services/htmlFolding';
 import { DependencyService } from '../../services/dependencyService';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
+import { AutoImportVueService } from '../../services/autoImportVueService';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
@@ -40,10 +42,11 @@ export class HTMLMode implements LanguageMode {
 
   constructor(
     documentRegions: LanguageModelCache<VueDocumentRegions>,
-    private workspacePath: string | undefined,
+    workspacePath: string | undefined,
     vueVersion: VueVersion,
     private dependencyService: DependencyService,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
+    private autoImportVueService: AutoImportVueService,
     private vueInfoService?: VueInfoService
   ) {
     this.tagProviderSettings = getTagProviderSettings(workspacePath);
@@ -61,6 +64,7 @@ export class HTMLMode implements LanguageMode {
   configure(c: VLSFullConfig) {
     this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
     this.config = c;
+    this.autoImportVueService.setGetConfigure(() => c);
   }
 
   async doValidation(document: TextDocument, cancellationToken?: VCancellationToken) {
@@ -81,7 +85,7 @@ export class HTMLMode implements LanguageMode {
     }
     if (this.config.vetur.validation.template) {
       const embedded = this.embeddedDocuments.refreshAndGet(document);
-      diagnostics.push(...doESLintValidation(embedded, this.lintEngine));
+      diagnostics.push(...(await doESLintValidation(embedded, this.lintEngine)));
     }
 
     return diagnostics;
@@ -95,7 +99,14 @@ export class HTMLMode implements LanguageMode {
       tagProviders.push(getComponentInfoTagProvider(info.componentInfo.childComponents));
     }
 
-    return doComplete(embedded, position, this.vueDocuments.refreshAndGet(embedded), tagProviders, this.config.emmet);
+    return doComplete(
+      embedded,
+      position,
+      this.vueDocuments.refreshAndGet(embedded),
+      tagProviders,
+      this.config.emmet,
+      this.autoImportVueService.doComplete(document)
+    );
   }
   doHover(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);

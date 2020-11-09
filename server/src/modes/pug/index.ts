@@ -1,4 +1,5 @@
-import { TextDocument, Position, Range } from 'vscode-languageserver-types';
+import { Position, Range } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { prettierPluginPugify } from '../../utils/prettier';
 import { VLSFormatConfig } from '../../config';

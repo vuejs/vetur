@@ -1,10 +1,5 @@
-import {
-  CompletionItem,
-  CompletionItemKind,
-  TextDocument,
-  Position,
-  CompletionList
-} from 'vscode-languageserver-types';
+import { CompletionItem, CompletionItemKind, Position, CompletionList } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import {
   StylusNode,

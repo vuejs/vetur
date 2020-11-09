@@ -254,7 +254,7 @@ export function getTemplateTransformFunctions(
         // Attribute name is specified
         // e.g. v-bind:value="foo"
         const fullName =
-          dir.key.modifiers.length === 0
+          dir.key.modifiers.length === 0 || isVBind(dir)
             ? kebabCase(name.rawName)
             : [kebabCase(name.rawName), ...dir.key.modifiers.map(m => m.rawName)].join('.');
         const propNameNode = tsModule.setSourceMapRange(tsModule.createStringLiteral(fullName), {
@@ -330,7 +330,7 @@ export function getTemplateTransformFunctions(
 
       function element(el: AST.VElement, attrs: (AST.VAttribute | AST.VDirective)[]): ChildData {
         const vSlot = attrs.find(isVSlot);
-        if (vSlot) {
+        if (vSlot && isVDirective(vSlot)) {
           const index = attrs.indexOf(vSlot);
           const scope = el.variables.filter(v => v.kind === 'scope').map(v => v.id.name);
 
@@ -345,7 +345,7 @@ export function getTemplateTransformFunctions(
         // v-for has higher priority than v-if
         // https://vuejs.org/v2/guide/list.html#v-for-with-v-if
         const vFor = attrs.find(isVFor);
-        if (vFor) {
+        if (vFor && isVDirective(vFor)) {
           const index = attrs.indexOf(vFor);
           const scope = el.variables.filter(v => v.kind === 'v-for').map(v => v.id.name);
 
@@ -358,7 +358,7 @@ export function getTemplateTransformFunctions(
         }
 
         const vIf = attrs.find(isVIf);
-        if (vIf) {
+        if (vIf && isVDirective(vIf)) {
           const index = attrs.indexOf(vIf);
           return {
             type: 'v-if-family',
@@ -383,7 +383,7 @@ export function getTemplateTransformFunctions(
         const attrs = el.startTag.attributes;
         const directive = attrs.find(isVElseIf) || attrs.find(isVElse);
 
-        if (!directive) {
+        if (!directive || !isVDirective(directive)) {
           return undefined;
         }
 
@@ -748,43 +748,47 @@ export function getTemplateTransformFunctions(
     return !node.directive;
   }
 
-  function isVModel(node: AST.VAttribute | AST.VDirective): node is AST.VAttribute {
+  function isVDirective(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+    return node.directive;
+  }
+
+  function isVModel(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'model';
   }
 
-  function isVBind(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVBind(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'bind';
   }
 
-  function isVBindShorthand(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVBindShorthand(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'bind' && node.key.name.rawName === ':';
   }
 
-  function isVBindWithDynamicAttributeName(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVBindWithDynamicAttributeName(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.argument?.type === 'VExpressionContainer';
   }
 
-  function isVOn(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVOn(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'on';
   }
 
-  function isVIf(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVIf(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'if';
   }
 
-  function isVElseIf(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVElseIf(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'else-if';
   }
 
-  function isVElse(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVElse(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'else';
   }
 
-  function isVFor(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVFor(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && node.key.name.name === 'for';
   }
 
-  function isVSlot(node: AST.VAttribute | AST.VDirective): node is AST.VDirective {
+  function isVSlot(node: AST.VAttribute | AST.VDirective): boolean {
     return node.directive && (node.key.name.name === 'slot' || node.key.name.name === 'slot-scope');
   }
 }

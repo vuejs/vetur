@@ -242,6 +242,12 @@ export async function getJavascriptMode(
           if (entry.kindModifiers) {
             const kindModifiers = parseKindModifier(entry.kindModifiers ?? '');
             if (kindModifiers.optional) {
+              if (!item.insertText) {
+                item.insertText = item.label;
+              }
+              if (!item.filterText) {
+                item.filterText = item.label;
+              }
               item.label += '?';
             }
             if (kindModifiers.deprecated) {

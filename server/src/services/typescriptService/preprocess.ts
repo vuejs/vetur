@@ -4,7 +4,7 @@ import { parse } from 'vue-eslint-parser';
 
 import { URI } from 'vscode-uri';
 import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
-import { TextDocument } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import {
   getTemplateTransformFunctions,
   componentHelperName,

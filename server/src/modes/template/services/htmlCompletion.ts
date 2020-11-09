@@ -1,5 +1,4 @@
 import {
-  TextDocument,
   Position,
   CompletionList,
   CompletionItemKind,
@@ -8,6 +7,7 @@ import {
   InsertTextFormat,
   CompletionItem
 } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
@@ -21,7 +21,8 @@ export function doComplete(
   position: Position,
   htmlDocument: HTMLDocument,
   tagProviders: IHTMLTagProvider[],
-  emmetConfig: emmet.EmmetConfiguration
+  emmetConfig: emmet.EmmetConfiguration,
+  autoImportCompletions?: CompletionItem[]
 ): CompletionList {
   const modifierProvider = getModifierProvider();
 
@@ -62,6 +63,9 @@ export function doComplete(
           insertTextFormat: InsertTextFormat.PlainText
         });
       });
+    });
+    autoImportCompletions?.forEach(item => {
+      result.items.push(item);
     });
     return result;
   }

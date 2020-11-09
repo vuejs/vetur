@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { TextDocument, Position, Hover } from 'vscode-languageserver-types';
+import { Position, Hover } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 export interface HoverTestSetup {
   docUri: string;

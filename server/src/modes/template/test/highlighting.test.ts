@@ -5,7 +5,7 @@
 'use strict';
 
 import assert from 'assert';
-import { TextDocument } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { parseHTMLDocument } from '../parser/htmlParser';
 import { findDocumentHighlights } from '../services/htmlHighlighting';
 

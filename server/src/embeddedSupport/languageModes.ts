@@ -4,7 +4,6 @@ import {
   SignatureHelp,
   Definition,
   TextEdit,
-  TextDocument,
   Diagnostic,
   DocumentLink,
   Range,
@@ -22,6 +21,7 @@ import {
   WorkspaceEdit,
   FoldingRange
 } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getVueDocumentRegions, VueDocumentRegions, LanguageId, LanguageRange } from './embeddedSupport';
@@ -39,6 +39,7 @@ import { VLSFullConfig } from '../config';
 import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 import { getPugMode } from '../modes/pug';
 import { VCancellationToken } from '../utils/cancellationToken';
+import { createAutoImportVueService } from '../services/autoImportVueService';
 
 export interface VLSServices {
   dependencyService: DependencyService;
@@ -121,16 +122,21 @@ export class LanguageModes {
       return vueDocument.getSingleTypeDocument('script');
     });
     this.serviceHost = getServiceHost(tsModule, workspacePath, scriptRegionDocuments);
+    const autoImportVueService = createAutoImportVueService(services.infoService);
 
     const vueHtmlMode = new VueHTMLMode(
       tsModule,
       this.serviceHost,
       this.documentRegions,
       workspacePath,
+      autoImportVueService,
       services.dependencyService,
       services.infoService
     );
 
+    autoImportVueService.setGetFilesFn(() =>
+      this.serviceHost.getFileNames().filter(fileName => fileName.endsWith('.vue'))
+    );
     const jsMode = await getJavascriptMode(
       this.serviceHost,
       this.documentRegions,
@@ -138,6 +144,7 @@ export class LanguageModes {
       services.dependencyService,
       services.infoService
     );
+    autoImportVueService.setGetJSResolve(jsMode.doResolve!);
 
     this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;

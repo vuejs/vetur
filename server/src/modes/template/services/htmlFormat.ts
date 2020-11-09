@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
+import { Range, TextEdit, Position } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { html as htmlBeautify } from 'js-beautify';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';

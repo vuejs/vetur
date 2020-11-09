@@ -1,6 +1,7 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, Position, Hover } from 'vscode-languageserver-types';
+import { Range, Position, Hover } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { IHTMLTagProvider } from '../tagProviders';
 import { NULL_HOVER } from '../../nullMode';
 import { toMarkupContent } from '../../../utils/strings';

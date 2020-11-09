@@ -1,5 +1,5 @@
 import path from 'path';
-import { getFileFsPath } from '../utils/paths';
+import { getFileFsPath, normalizeFileNameToFsPath } from '../utils/paths';
 
 import {
   DidChangeConfigurationParams,
@@ -21,8 +21,7 @@ import {
   CompletionTriggerKind,
   ExecuteCommandParams,
   ApplyWorkspaceEditRequest,
-  FoldingRangeParams,
-  CancellationTokenSource
+  FoldingRangeParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -36,12 +35,12 @@ import {
   Location,
   SignatureHelp,
   SymbolInformation,
-  TextDocument,
   TextEdit,
   ColorPresentation,
   Range,
   FoldingRange
 } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
@@ -84,7 +83,7 @@ export class VLS {
 
   private documentFormatterRegistration: Disposable | undefined;
 
-  private config: VLSConfig;
+  private config: VLSFullConfig;
 
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
@@ -95,7 +94,7 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
-    const config: VLSFullConfig = this.getFullConfig(params.initializationOptions?.config);
+    const config = this.getFullConfig(params.initializationOptions?.config);
 
     const workspacePath = params.rootPath;
     if (!workspacePath) {
@@ -105,13 +104,17 @@ export class VLS {
       };
     }
 
-    this.workspacePath = workspacePath;
+    this.workspacePath = normalizeFileNameToFsPath(workspacePath);
 
-    await this.vueInfoService.init(this.languageModes);
-    await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies, config.typescript.tsdk);
+    this.vueInfoService.init(this.languageModes);
+    await this.dependencyService.init(
+      this.workspacePath,
+      config.vetur.useWorkspaceDependencies,
+      config.typescript.tsdk
+    );
 
     await this.languageModes.init(
-      workspacePath,
+      this.workspacePath,
       {
         infoService: this.vueInfoService,
         dependencyService: this.dependencyService
@@ -119,7 +122,7 @@ export class VLS {
       params.initializationOptions?.globalSnippetDir
     );
 
-    this.setupConfigure(config);
+    this.configure(config);
     this.setupConfigListeners();
     this.setupLSPHandlers();
     this.setupCustomLSPHandlers();
@@ -138,14 +141,11 @@ export class VLS {
     return config ? _.merge(getDefaultVLSConfig(), config) : getDefaultVLSConfig();
   }
 
-  public setupConfigure(config: VLSFullConfig) {
-    this.configure(config);
-    this.setupDynamicFormatters(config);
-  }
-
   private setupConfigListeners() {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
-      await this.setupConfigure(this.getFullConfig(settings));
+      const config = this.getFullConfig(settings);
+      this.configure(config);
+      this.setupDynamicFormatters(config);
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
@@ -191,7 +191,7 @@ export class VLS {
     if (settings.vetur.format.enable) {
       if (!this.documentFormatterRegistration) {
         this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
-          documentSelector: ['vue']
+          documentSelector: [{ language: 'vue' }]
         });
       }
     } else {
@@ -590,7 +590,7 @@ export class VLS {
 
   get capabilities(): ServerCapabilities {
     return {
-      textDocumentSync: TextDocumentSyncKind.Full,
+      textDocumentSync: TextDocumentSyncKind.Incremental,
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },
       documentFormattingProvider: false,

@@ -2,6 +2,7 @@
   <div>
     <js-child :str="`count: ${count}`" :bool="isZeroCount" :callback="increment" :arr="['a', 'b']" />
     <ts-child :str="`count: ${count}`" :bool="isZeroCount" :callback="increment" :arr="zeroToCountAsStrings" />
+    <ts-child :str="`count: ${count}`" :bool.sync="isZeroCount" :callback="increment" :arr="zeroToCountAsStrings" />
     <array-props-child :foo="42" />
   </div>
 </template>

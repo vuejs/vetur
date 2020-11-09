@@ -1,13 +1,13 @@
 import assert from 'assert';
 import {
   CompletionList,
-  TextDocument,
   CompletionItemKind,
   Position,
   CompletionItem,
   TextEdit,
   InsertReplaceEdit
 } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 export interface CompletionTestSetup {
   doComplete(doc: TextDocument, pos: Position): CompletionList;

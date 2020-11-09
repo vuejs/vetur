@@ -1,6 +1,17 @@
 # Changelog
 
-### 0.29.0
+###
+
+- 🙌 Fix v-bind modifiers causing TypeScript to not find type-checked template props correctly. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2430.
+- 🙌 Fix "File name X differs from already included file name Y only in casing" on Windows. Thanks to contribution from [@rchl](https://github.com/rchl). #2433 and #2444.
+- 🙌 Remove deprecated code and incremental text document. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2366.
+- 🙌 Auto import component in script when completion in template. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #684 and #2445.
+
+### 0.29.1 | 2020-11-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.1/vspackage)
+
+- 🙌 Fix invalid `client/registerCapability` request. Thanks to contribution from [@rchl](https://github.com/rchl). #2388 and #2388.
+
+### 0.29.0 | 2020-11-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.0/vspackage)
 
 - Fix "Duplicate identifier" errors when using multiple keydown events with modifiers. #1745.
 - Upgrade `@prettier/plugin-pug` to fix formatter issues. #2347.
@@ -25,6 +36,7 @@
 - 🙌 Fix error when optional camel-cased props are missing. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2314 and #2342.
 - 🙌 Fix Vetur formatting not working. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2388 and #2389.
 - 🙌 Improve ts perf when `vetur.experimental.templateInterpolationService: true`. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2192 and #2374.
+- 🙌 Fix optional chaining in template. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2423 and #2426.
 
 ### 0.28.0 | 2020-09-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.28.0/vspackage)
 

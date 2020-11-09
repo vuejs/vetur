@@ -1,4 +1,5 @@
-import { TextDocument, Range, Position } from 'vscode-languageserver-types';
+import { Range, Position } from 'vscode-languageserver-types';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { getFileFsPath } from '../../utils/paths';
 import type ts from 'typescript';
 import { RuntimeLibrary } from '../dependencyService';
