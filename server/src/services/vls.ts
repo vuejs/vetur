@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { getFileFsPath } from '../utils/paths';
+import { getFileFsPath, normalizeFileNameToFsPath } from '../utils/paths';
 
 import {
   DidChangeConfigurationParams,
@@ -104,13 +104,17 @@ export class VLS {
       };
     }
 
-    this.workspacePath = workspacePath;
+    this.workspacePath = normalizeFileNameToFsPath(workspacePath);
 
     this.vueInfoService.init(this.languageModes);
-    await this.dependencyService.init(workspacePath, config.vetur.useWorkspaceDependencies, config.typescript.tsdk);
+    await this.dependencyService.init(
+      this.workspacePath,
+      config.vetur.useWorkspaceDependencies,
+      config.typescript.tsdk
+    );
 
     await this.languageModes.init(
-      workspacePath,
+      this.workspacePath,
       {
         infoService: this.vueInfoService,
         dependencyService: this.dependencyService
