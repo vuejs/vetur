@@ -9,6 +9,7 @@ const {
   generateTypingsVls
 } = require('../build/rollup-plugins.js');
 const vlsPkg = require('./package.json');
+const dts = require('rollup-plugin-dts').default;
 
 const getVLSPath = getRootPath('server');
 
@@ -59,5 +60,15 @@ module.exports = [
       linkVlsInCLI(),
       ...createPlugins(getVLSPath('tsconfig.json'))
     ]
+  },
+  // bundle typings
+  {
+    input: getVLSPath('typings/main.d.ts'),
+    output: {
+      file: getVLSPath('dist/vls.d.ts'),
+      format: 'es'
+    },
+    onwarn,
+    plugins: [dts()]
   }
 ];
