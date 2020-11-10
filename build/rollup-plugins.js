@@ -70,17 +70,37 @@ function bundleVlsWithEsbuild() {
       await service.build({
         entryPoints: [getServerURL('src/main.ts')],
         outfile: getServerURL('dist/vls.js'),
-        // No minify when watch
-        // reason: https://github.com/microsoft/vscode/issues/12066
+        /**
+         * No minify when watch
+         * reason: https://github.com/microsoft/vscode/issues/12066
+         */
         minify: !process.env.ROLLUP_WATCH,
         bundle: true,
         sourcemap: true,
         platform: 'node',
-        mainFields: ['module,main'],
-        target: 'es2018',
-        external: ['vscode', 'eslint-plugin-vue', 'stylus', 'eslint'],
+        // UMD module isn't support in esbuild.
+        mainFields: ['module', 'main'],
+        // vscode 1.47.0 node version
+        target: ['node12.8.1'],
+        define: {
+          /**
+           * `process.env.STYLUS_COV ? require('./lib-cov/stylus') : require('./lib/stylus');`
+           */
+          'process.env.STYLUS_COV': 'false'
+        },
+        external: [
+          /**
+           * The `require.resolve` function is used in eslint config.
+           */
+          'eslint-plugin-vue',
+          /**
+           * The VLS is crash when bundle it.
+           */
+          'eslint'
+        ],
         format: 'cjs',
-        tsconfig: getServerURL('tsconfig.json')
+        tsconfig: getServerURL('tsconfig.json'),
+        color: true
       });
       console.log(`✨ success with esbuild`);
     },
