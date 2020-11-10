@@ -1,4 +1,4 @@
-import * as glob from 'glob';
+import glob from 'glob';
 import { safeLoad } from 'js-yaml';
 import { writeFileSync, readFileSync } from 'fs';
 import { parse } from 'path';

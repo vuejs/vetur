@@ -1,4 +1,5 @@
-import * as ts from 'typescript';
+import type ts from 'typescript';
+import { RuntimeLibrary } from '../../services/dependencyService';
 import {
   VueFileInfo,
   PropInfo,
@@ -8,10 +9,9 @@ import {
   ChildComponent
 } from '../../services/vueInfoService';
 import { analyzeComponentsDefine } from './childComponents';
-import { T_TypeScript } from '../../services/dependencyService';
 
 export function getComponentInfo(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   service: ts.LanguageService,
   fileFsPath: string,
   config: any
@@ -62,7 +62,7 @@ export function getComponentInfo(
 }
 
 export function analyzeDefaultExportExpr(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   defaultExportNode: ts.Node,
   checker: ts.TypeChecker
 ): VueFileInfo {
@@ -85,7 +85,10 @@ export function analyzeDefaultExportExpr(
   };
 }
 
-export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.SourceFile): ts.Node | undefined {
+export function getDefaultExportNode(
+  tsModule: RuntimeLibrary['typescript'],
+  sourceFile: ts.SourceFile
+): ts.Node | undefined {
   const exportStmts = sourceFile.statements.filter(
     st => st.kind === tsModule.SyntaxKind.ExportAssignment || st.kind === tsModule.SyntaxKind.ClassDeclaration
   );
@@ -100,7 +103,11 @@ export function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.Sour
   return getNodeFromExportNode(tsModule, exportNode);
 }
 
-function getInsertInOptionAPIPos(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker) {
+function getInsertInOptionAPIPos(
+  tsModule: RuntimeLibrary['typescript'],
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker
+) {
   if (isClassType(tsModule, defaultExportType)) {
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
     if (decoratorArgumentType && decoratorArgumentType.symbol.valueDeclaration) {
@@ -112,7 +119,11 @@ function getInsertInOptionAPIPos(tsModule: T_TypeScript, defaultExportType: ts.T
   return undefined;
 }
 
-function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): PropInfo[] | undefined {
+function getProps(
+  tsModule: RuntimeLibrary['typescript'],
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker
+): PropInfo[] | undefined {
   const result: PropInfo[] = markPropBoundToModel(
     defaultExportType,
     getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps)
@@ -367,7 +378,11 @@ function getProps(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: t
  * }
  * ```
  */
-function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts.TypeChecker): DataInfo[] | undefined {
+function getData(
+  tsModule: RuntimeLibrary['typescript'],
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker
+): DataInfo[] | undefined {
   const result: DataInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassData, getObjectData);
   return result.length === 0 ? undefined : result;
 
@@ -416,7 +431,7 @@ function getData(tsModule: T_TypeScript, defaultExportType: ts.Type, checker: ts
 }
 
 function getComputed(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
   checker: ts.TypeChecker
 ): ComputedInfo[] | undefined {
@@ -496,7 +511,7 @@ function isInternalHook(methodName: string) {
 }
 
 function getMethods(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
   checker: ts.TypeChecker
 ): MethodInfo[] | undefined {
@@ -554,7 +569,7 @@ function getMethods(
   }
 }
 
-function getNodeFromExportNode(tsModule: T_TypeScript, exportExpr: ts.Node): ts.Node | undefined {
+function getNodeFromExportNode(tsModule: RuntimeLibrary['typescript'], exportExpr: ts.Node): ts.Node | undefined {
   switch (exportExpr.kind) {
     case tsModule.SyntaxKind.CallExpression:
       // Vue.extend or synthetic __vueEditorBridge
@@ -576,7 +591,7 @@ export function getLastChild(d: ts.Declaration) {
   return children[children.length - 1];
 }
 
-export function isClassType(tsModule: T_TypeScript, type: ts.Type) {
+export function isClassType(tsModule: RuntimeLibrary['typescript'], type: ts.Type) {
   if (type.isClass === undefined) {
     return !!(
       (type.flags & tsModule.TypeFlags.Object ? (type as ts.ObjectType).objectFlags : 0) & tsModule.ObjectFlags.Class
@@ -587,7 +602,7 @@ export function isClassType(tsModule: T_TypeScript, type: ts.Type) {
 }
 
 export function getClassDecoratorArgumentType(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   defaultExportNode: ts.Type,
   checker: ts.TypeChecker
 ) {
@@ -609,7 +624,7 @@ export function getClassDecoratorArgumentType(
 }
 
 function getClassAndObjectInfo<C, O>(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
   getClassResult: (type: ts.Type) => C[] | undefined,
@@ -648,7 +663,7 @@ function getPropertyDecoratorNames(property: ts.Symbol): string[] {
     .map(decoratorExpression => decoratorExpression.expression.getText());
 }
 
-export function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker: ts.TypeChecker) {
+export function buildDocumentation(tsModule: RuntimeLibrary['typescript'], s: ts.Symbol, checker: ts.TypeChecker) {
   let documentation = s
     .getDocumentationComment(checker)
     .map(d => d.text)

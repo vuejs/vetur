@@ -6,7 +6,7 @@ import {
   getLESSLanguageService,
   LanguageService
 } from 'vscode-css-languageservice';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 
 import { Priority } from './emmet';
@@ -15,46 +15,47 @@ import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageId } from '../../embeddedSupport/embeddedSupport';
 import { getFileFsPath } from '../../utils/paths';
 import { prettierify } from '../../utils/prettier';
-import { ParserOption } from '../../utils/prettier/prettier.d';
 import { NULL_HOVER } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
+import { DependencyService } from '../../services/dependencyService';
+import { BuiltInParserName } from 'prettier';
 
 export function getCSSMode(
-  workspacePath: string,
-  documentRegions: LanguageModelCache<VueDocumentRegions>
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('css', workspacePath, languageService, documentRegions);
+  return getStyleMode('css', languageService, documentRegions, dependencyService);
 }
 
 export function getPostCSSMode(
-  workspacePath: string,
-  documentRegions: LanguageModelCache<VueDocumentRegions>
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('postcss', workspacePath, languageService, documentRegions);
+  return getStyleMode('postcss', languageService, documentRegions, dependencyService);
 }
 
 export function getSCSSMode(
-  workspacePath: string,
-  documentRegions: LanguageModelCache<VueDocumentRegions>
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getSCSSLanguageService();
-  return getStyleMode('scss', workspacePath, languageService, documentRegions);
+  return getStyleMode('scss', languageService, documentRegions, dependencyService);
 }
 export function getLESSMode(
-  workspacePath: string,
-  documentRegions: LanguageModelCache<VueDocumentRegions>
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getLESSLanguageService();
-  return getStyleMode('less', workspacePath, languageService, documentRegions);
+  return getStyleMode('less', languageService, documentRegions, dependencyService);
 }
 
 function getStyleMode(
   languageId: LanguageId,
-  workspacePath: string,
   languageService: LanguageService,
-  documentRegions: LanguageModelCache<VueDocumentRegions>
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
     documentRegions.refreshAndGet(document).getSingleLanguageDocument(languageId)
@@ -150,16 +151,16 @@ function getStyleMode(
 
       const { value, range } = getValueAndRange(document, currRange);
       const needIndent = config.vetur.format.styleInitialIndent;
-      const parserMap: { [k: string]: ParserOption } = {
+      const parserMap: { [k: string]: BuiltInParserName } = {
         css: 'css',
         postcss: 'css',
         scss: 'scss',
         less: 'less'
       };
       return prettierify(
+        dependencyService,
         value,
         getFileFsPath(document.uri),
-        workspacePath,
         range,
         config.vetur.format as VLSFormatConfig,
         parserMap[languageId],

@@ -1,6 +1,6 @@
 import { isInsideInterpolation } from '../services/isInsideInterpolation';
 import { Node } from '../parser/htmlParser';
-import * as assert from 'assert';
+import assert from 'assert';
 
 suite('isInsideInterpolation', () => {
   test('{{ }}', () => {
@@ -38,7 +38,7 @@ suite('isInsideInterpolation', () => {
     assert.ok(isInsideInterpolation({ isInterpolation: false } as Node, nodeText, 11));
 
     for (const i of arr) {
-      if(i !== 11) {
+      if (i !== 11) {
         assert.ok(!isInsideInterpolation({ isInterpolation: false } as Node, nodeText, i));
       }
     }
@@ -52,7 +52,7 @@ suite('isInsideInterpolation', () => {
     assert.ok(isInsideInterpolation({ isInterpolation: false } as Node, nodeText, 12));
 
     for (const i of arr) {
-      if(i !== 11 && i !== 12) {
+      if (i !== 11 && i !== 12) {
         assert.ok(!isInsideInterpolation({ isInterpolation: false } as Node, nodeText, i));
       }
     }
@@ -65,7 +65,7 @@ suite('isInsideInterpolation', () => {
     assert.ok(isInsideInterpolation({ isInterpolation: false } as Node, nodeText, 11));
 
     for (const i of arr) {
-      if(i !== 11) {
+      if (i !== 11) {
         assert.ok(!isInsideInterpolation({ isInterpolation: false } as Node, nodeText, i));
       }
     }
@@ -79,7 +79,7 @@ suite('isInsideInterpolation', () => {
     assert.ok(isInsideInterpolation({ isInterpolation: false } as Node, nodeText, 12));
 
     for (const i of arr) {
-      if(i !== 11 && i !== 12) {
+      if (i !== 11 && i !== 12) {
         assert.ok(!isInsideInterpolation({ isInterpolation: false } as Node, nodeText, i));
       }
     }
@@ -92,7 +92,7 @@ suite('isInsideInterpolation', () => {
     assert.ok(isInsideInterpolation({ isInterpolation: false } as Node, nodeText, 11));
 
     for (const i of arr) {
-      if(i !== 11) {
+      if (i !== 11) {
         assert.ok(!isInsideInterpolation({ isInterpolation: false } as Node, nodeText, i));
       }
     }
@@ -106,10 +106,9 @@ suite('isInsideInterpolation', () => {
     assert.ok(isInsideInterpolation({ isInterpolation: false } as Node, nodeText, 12));
 
     for (const i of arr) {
-      if(i !== 11 && i !== 12) {
+      if (i !== 11 && i !== 12) {
         assert.ok(!isInsideInterpolation({ isInterpolation: false } as Node, nodeText, i));
       }
     }
   });
-
 });

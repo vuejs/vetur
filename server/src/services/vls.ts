@@ -1,4 +1,4 @@
-import * as path from 'path';
+import path from 'path';
 import { getFileFsPath, normalizeFileNameToFsPath } from '../utils/paths';
 
 import {
@@ -46,8 +46,8 @@ import { URI } from 'vscode-uri';
 import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { VueInfoService } from './vueInfoService';
-import { DependencyService, State } from './dependencyService';
-import * as _ from 'lodash';
+import { createDependencyService, DependencyService } from './dependencyService';
+import _ from 'lodash';
 import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
@@ -88,7 +88,7 @@ export class VLS {
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
     this.vueInfoService = new VueInfoService();
-    this.dependencyService = new DependencyService();
+    this.dependencyService = createDependencyService();
 
     this.languageModes = new LanguageModes();
   }
@@ -517,11 +517,9 @@ export class VLS {
     this.cancelPastValidation(textDocument);
     this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
       delete this.pendingValidationRequests[textDocument.uri];
-      const tsDep = this.dependencyService.getDependency('typescript');
-      if (tsDep?.state === State.Loaded) {
-        this.cancellationTokenValidationRequests[textDocument.uri] = new VCancellationTokenSource(tsDep.module);
-        this.validateTextDocument(textDocument, this.cancellationTokenValidationRequests[textDocument.uri].token);
-      }
+      const tsDep = this.dependencyService.get('typescript');
+      this.cancellationTokenValidationRequests[textDocument.uri] = new VCancellationTokenSource(tsDep.module);
+      this.validateTextDocument(textDocument, this.cancellationTokenValidationRequests[textDocument.uri].token);
     }, this.validationDelayMs);
   }
 

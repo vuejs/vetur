@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
-import * as assert from 'assert';
+import vscode from 'vscode';
+import assert from 'assert';
 import { showFile } from './editorHelper';
 
 export async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedHover: vscode.Hover) {

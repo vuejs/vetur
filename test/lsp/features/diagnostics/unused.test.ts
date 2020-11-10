@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 import { DiagnosticTag } from 'vscode-languageclient';
 import { sameLineRange } from '../../../util';
 import { testDiagnostics } from '../../../diagnosticHelper';

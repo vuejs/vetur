@@ -12,7 +12,7 @@ import {
   isVariableNode
 } from './parser';
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 /**
  * Generates hash for symbol for comparison with other symbols

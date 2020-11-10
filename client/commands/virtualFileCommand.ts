@@ -1,13 +1,11 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
 
 let fileName = '';
 let virtualFileSource = '';
 let prettySourceMap = '';
 
-const separator = Array(20)
-  .fill('=')
-  .join('');
+const separator = Array(20).fill('=').join('');
 
 const onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
 

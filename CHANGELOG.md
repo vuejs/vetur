@@ -2,11 +2,23 @@
 
 ###
 
+----
+
+⚠️  Breaking change: ⚠️
+The vetur.useWorkspaceDependencies is effect all runtime dependencies now.
+Like `prettier`, `@prettier/plugin-pug`.
+
+In this version, we try to bundle extension and reduce size. (70MB -> 9MB)
+But it's a very big change, so please open an issue if you find any problems.
+
+----
+
 - 🙌 Fix v-bind modifiers causing TypeScript to not find type-checked template props correctly. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2430.
 - 🙌 Fix "File name X differs from already included file name Y only in casing" on Windows. Thanks to contribution from [@rchl](https://github.com/rchl). #2433 and #2444.
 - 🙌 Remove deprecated code and incremental text document. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2366.
 - 🙌 Auto import component in script when completion in template. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #684 and #2445.
 - 🙌 Add code frame in VTI diagnostics. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2449 and #2450.
+- 🙌 Reduce release size by bundling client/browser/vti. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2233 and #2301.
 
 ### 0.29.1 | 2020-11-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.1/vspackage)
 

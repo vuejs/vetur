@@ -78,11 +78,7 @@ jobs:
           disown -ar
           echo "Started xvfb"
 
-      - name: Server test
+      - name: Server and E2E test
         run: yarn test
-        working-directory: server
-
-      - name: E2E test
-        run: yarn test:e2e
         env:
           DISPLAY: :10

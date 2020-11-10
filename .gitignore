@@ -11,7 +11,10 @@ test/**/data-dir/User/**
 
 dist
 server/dist
+server/typings
 docs/.vuepress/dist
+dist-test/
+server/dist-test/
 
 *.zip
 *.vsix

@@ -6,13 +6,20 @@ docs/
 client/
 **/test/
 server/src/
+server/typings
 vti
+dist-test/
+server/dist-test/
 
 .**
 
 **/*.map
 **/tsconfig.json
+**/tsconfig.**.json
 **/tslint.json
+**/yarn.lock
 
 .vsix
 scripts
+
+node_modules/.cache/

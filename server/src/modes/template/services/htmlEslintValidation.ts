@@ -31,7 +31,7 @@ export async function doESLintValidation(document: TextDocument, engine: ESLint)
 }
 
 export function createLintEngine(vueVersion: VueVersion) {
-  const SERVER_ROOT = resolve(__dirname, '../../../../');
+  const SERVER_ROOT = __dirname;
 
   const versionSpecificConfig = vueVersion === VueVersion.V30 ? configs['vue3-essential'] : configs.essential;
 

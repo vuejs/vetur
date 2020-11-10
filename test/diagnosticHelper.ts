@@ -1,6 +1,6 @@
-import * as vscode from 'vscode';
-import * as assert from 'assert';
-import * as _ from 'lodash';
+import vscode from 'vscode';
+import assert from 'assert';
+import _ from 'lodash';
 import { sleep } from './util';
 import { showFile } from './editorHelper';
 import { performance } from 'perf_hooks';

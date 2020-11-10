@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import type ts from 'typescript';
 import {
   getLastChild,
   buildDocumentation,
@@ -6,8 +6,8 @@ import {
   getClassDecoratorArgumentType,
   isClassType
 } from './componentInfo';
-import { T_TypeScript } from '../../services/dependencyService';
 import { kebabCase } from 'lodash';
+import { RuntimeLibrary } from '../../services/dependencyService';
 
 interface InternalChildComponent {
   name: string;
@@ -21,7 +21,7 @@ interface InternalChildComponent {
 }
 
 export function analyzeComponentsDefine(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
   tagCasing = 'kebab'

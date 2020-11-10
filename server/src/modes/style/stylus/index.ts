@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 import { CompletionList, TextEdit } from 'vscode-languageserver-types';
 import { IStylusSupremacy } from './stylus-supremacy';
@@ -11,11 +11,14 @@ import { VueDocumentRegions } from '../../../embeddedSupport/embeddedSupport';
 import { provideCompletionItems } from './completion-item';
 import { provideDocumentSymbols } from './symbols-finder';
 import { stylusHover } from './stylus-hover';
-import { requireLocalPkg } from '../../../utils/prettier/requirePkg';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
+import { DependencyService } from '../../../services/dependencyService';
 
-export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentRegions>): LanguageMode {
+export function getStylusMode(
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
+): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
     documentRegions.refreshAndGet(document).getSingleLanguageDocument('stylus')
   );
@@ -69,7 +72,8 @@ export function getStylusMode(documentRegions: LanguageModelCache<VueDocumentReg
         return [];
       }
 
-      const stylusSupremacy: IStylusSupremacy = requireLocalPkg(getFileFsPath(document.uri), 'stylus-supremacy');
+      const stylusSupremacy: IStylusSupremacy = dependencyService.get('stylus-supremacy', getFileFsPath(document.uri))
+        .module;
 
       const inputText = document.getText(range);
 

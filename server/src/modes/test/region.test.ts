@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { getVueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 

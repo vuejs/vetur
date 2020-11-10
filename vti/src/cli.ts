@@ -16,11 +16,11 @@ import {
 import { Duplex } from 'stream';
 import { VLS } from 'vls';
 import { getInitParams } from './initParams';
-import * as fs from 'fs';
+import fs from 'fs';
 import { URI } from 'vscode-uri';
-import * as glob from 'glob';
-import * as path from 'path';
-import * as chalk from 'chalk';
+import glob from 'glob';
+import path from 'path';
+import chalk from 'chalk';
 import { codeFrameColumns, SourceLocation } from '@babel/code-frame';
 import { Range } from 'vscode-languageclient';
 
@@ -73,7 +73,7 @@ async function prepareClientConnection(workspaceUri: URI) {
   return clientConnection;
 }
 
-function range2Location (range: Range): SourceLocation {
+function range2Location(range: Range): SourceLocation {
   return {
     start: {
       line: range.start.line + 1,
@@ -125,8 +125,9 @@ async function getDiagnostics(workspaceUri: URI) {
       if (res.length > 0) {
         res.forEach(d => {
           const location = range2Location(d.range);
-          console.log(`${chalk.green('File')} : ${
-            chalk.green(absFilePath)}:${location.start.line}:${location.start.column}`);
+          console.log(
+            `${chalk.green('File')} : ${chalk.green(absFilePath)}:${location.start.line}:${location.start.column}`
+          );
           if (d.severity === DiagnosticSeverity.Error) {
             console.log(`${chalk.red('Error')}: ${d.message.trim()}`);
             errCount++;

@@ -1,7 +1,7 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import * as $ from 'shelljs';
-import * as minimist from 'minimist';
+import path from 'path';
+import fs from 'fs';
+import $ from 'shelljs';
+import minimist from 'minimist';
 
 import { downloadAndUnzipVSCode, runTests } from 'vscode-test';
 
@@ -12,12 +12,12 @@ const EXT_ROOT = path.resolve(__dirname, '../../');
 
 async function run(execPath: string, testWorkspaceRelativePath: string, mochaArgs: any): Promise<number> {
   const testWorkspace = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'fixture');
-  const extTestPath = path.resolve(EXT_ROOT, 'dist', testWorkspaceRelativePath);
+  const extTestPath = path.resolve(EXT_ROOT, 'dist-test', testWorkspaceRelativePath);
   const userDataDir = path.resolve(EXT_ROOT, testWorkspaceRelativePath, 'data-dir');
 
   const args = [testWorkspace, '--locale=en', '--disable-extensions', `--user-data-dir=${userDataDir}`];
 
-  console.log(`Test folder: ${path.join('dist', testWorkspaceRelativePath)}`);
+  console.log(`Test folder: ${path.join('dist-test', testWorkspaceRelativePath)}`);
   console.log(`Workspace:   ${testWorkspaceRelativePath}`);
   if (fs.existsSync(userDataDir)) {
     console.log(`Data dir:    ${userDataDir}`);

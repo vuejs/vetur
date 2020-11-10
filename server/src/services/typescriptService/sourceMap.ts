@@ -1,8 +1,8 @@
 import { Range, Position } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { getFileFsPath } from '../../utils/paths';
-import * as ts from 'typescript';
-import { T_TypeScript } from '../dependencyService';
+import type ts from 'typescript';
+import { RuntimeLibrary } from '../dependencyService';
 
 interface TemplateSourceMapRange {
   start: number;
@@ -65,7 +65,7 @@ export interface TemplateSourceMap {
  * }
  */
 export function generateSourceMap(
-  tsModule: T_TypeScript,
+  tsModule: RuntimeLibrary['typescript'],
   syntheticSourceFile: ts.SourceFile,
   validSourceFile: ts.SourceFile
 ): TemplateSourceMapNode[] {
@@ -165,7 +165,7 @@ function foldSourceMapNodes(nodes: TemplateSourceMapNode[]): TemplateSourceMapNo
   }, []);
 }
 
-function canIncludeTrivia(tsModule: T_TypeScript, node: ts.Node): boolean {
+function canIncludeTrivia(tsModule: RuntimeLibrary['typescript'], node: ts.Node): boolean {
   return !(
     tsModule.isIdentifier(node) ||
     tsModule.isStringLiteral(node) ||

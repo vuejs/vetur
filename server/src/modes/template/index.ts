@@ -8,9 +8,9 @@ import { DocumentContext } from '../../types';
 import { HTMLMode } from './htmlMode';
 import { VueInterpolationMode } from './interpolationMode';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
-import { T_TypeScript } from '../../services/dependencyService';
 import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
 import { inferVueVersion } from '../../services/typescriptService/vueVersion';
+import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { VCancellationToken } from '../../utils/cancellationToken';
 import { AutoImportVueService } from '../../services/autoImportVueService';
 
@@ -22,19 +22,21 @@ export class VueHTMLMode implements LanguageMode {
   private autoImportVueService: AutoImportVueService;
 
   constructor(
-    tsModule: T_TypeScript,
+    tsModule: RuntimeLibrary['typescript'],
     serviceHost: IServiceHost,
     documentRegions: DocumentRegionCache,
     workspacePath: string,
     autoImportVueService: AutoImportVueService,
+    dependencyService: DependencyService,
     vueInfoService?: VueInfoService
   ) {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
-    const vueVersion = inferVueVersion(tsModule, workspacePath);
+    const vueVersion = inferVueVersion(workspacePath);
     this.htmlMode = new HTMLMode(
       documentRegions,
       workspacePath,
       vueVersion,
+      dependencyService,
       vueDocuments,
       autoImportVueService,
       vueInfoService

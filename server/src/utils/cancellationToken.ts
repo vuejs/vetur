@@ -1,4 +1,4 @@
-import type { T_TypeScript } from '../services/dependencyService';
+import { RuntimeLibrary } from '../services/dependencyService';
 import { CancellationToken as TSCancellationToken } from 'typescript';
 import { CancellationTokenSource, CancellationToken as LSPCancellationToken } from 'vscode-languageserver';
 
@@ -7,7 +7,7 @@ export interface VCancellationToken extends LSPCancellationToken {
 }
 
 export class VCancellationTokenSource extends CancellationTokenSource {
-  constructor(private tsModule: T_TypeScript) {
+  constructor(private tsModule: RuntimeLibrary['typescript']) {
     super();
   }
 

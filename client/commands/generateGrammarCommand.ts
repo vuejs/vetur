@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getGeneratedGrammar } from '../grammar';

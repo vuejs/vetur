@@ -1,8 +1,8 @@
 import { parse } from 'vue-eslint-parser';
-import * as ts from 'typescript';
-import * as assert from 'assert';
-import * as path from 'path';
-import * as fs from 'fs';
+import ts from 'typescript';
+import assert from 'assert';
+import path from 'path';
+import fs from 'fs';
 import { getTemplateTransformFunctions } from '../transformTemplate';
 import { injectVueTemplate, parseVueTemplate } from '../preprocess';
 import { generateSourceMap } from '../sourceMap';

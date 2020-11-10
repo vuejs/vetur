@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
-import * as assert from 'assert';
+import vscode from 'vscode';
+import assert from 'assert';
 import { showFile } from '../../../editorHelper';
 import { sameLineRange } from '../../../util';
 import { CodeAction } from 'vscode-languageclient';

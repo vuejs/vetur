@@ -1,5 +1,6 @@
-import * as path from 'path';
-import { T_TypeScript } from '../dependencyService';
+import { readFileSync } from 'fs';
+import path from 'path';
+import { findConfigFile } from '../../utils/workspace';
 
 export enum VueVersion {
   VPre25,
@@ -17,10 +18,10 @@ function floatVersionToEnum(v: number) {
   }
 }
 
-export function inferVueVersion(tsModule: T_TypeScript, workspacePath: string): VueVersion {
-  const packageJSONPath = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'package.json');
+export function inferVueVersion(workspacePath: string): VueVersion {
+  const packageJSONPath = findConfigFile(workspacePath, 'package.json');
   try {
-    const packageJSON = packageJSONPath && JSON.parse(tsModule.sys.readFile(packageJSONPath)!);
+    const packageJSON = packageJSONPath && JSON.parse(readFileSync(packageJSONPath, { encoding: 'utf-8' }));
     const vueDependencyVersion = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
 
     if (vueDependencyVersion) {
@@ -30,13 +31,9 @@ export function inferVueVersion(tsModule: T_TypeScript, workspacePath: string): 
       return floatVersionToEnum(sloppyVersion);
     }
 
-    const nodeModulesVuePackagePath = tsModule.findConfigFile(
-      path.resolve(workspacePath, 'node_modules/vue'),
-      tsModule.sys.fileExists,
-      'package.json'
-    );
+    const nodeModulesVuePackagePath = findConfigFile(path.resolve(workspacePath, 'node_modules/vue'), 'package.json');
     const nodeModulesVuePackageJSON =
-      nodeModulesVuePackagePath && JSON.parse(tsModule.sys.readFile(nodeModulesVuePackagePath)!);
+      nodeModulesVuePackagePath && JSON.parse(readFileSync(nodeModulesVuePackagePath, { encoding: 'utf-8' })!);
     const nodeModulesVueVersion = parseFloat(nodeModulesVuePackageJSON.version.match(/\d+\.\d+/)[0]);
 
     return floatVersionToEnum(nodeModulesVueVersion);

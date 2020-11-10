@@ -25,7 +25,7 @@
       "request": "attach",
       "port": 6005,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/server/dist/vls.js", "${workspaceFolder}/server/dist/vueServerMain.js"],
       "protocol": "inspector",
       "restart": true,
       "smartStep": true,
@@ -38,14 +38,14 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/dist/test/lsp",
+        "--extensionTestsPath=${workspaceFolder}/dist-test/test/lsp",
         "--user-data-dir=${workspaceFolder}/test/lsp/data-dir",
         "--disable-extensions",
         "${workspaceFolder}/test/lsp/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist-test/test/**/*.js"],
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
     },
@@ -56,14 +56,14 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/dist/test/interpolation",
+        "--extensionTestsPath=${workspaceFolder}/dist-test/test/interpolation",
         "--user-data-dir=${workspaceFolder}/test/interpolation/data-dir",
         "--disable-extensions",
         "${workspaceFolder}/test/interpolation/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist-test/test/**/*.js"],
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
     },
@@ -74,14 +74,14 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/dist/test/grammar",
+        "--extensionTestsPath=${workspaceFolder}/dist-test/test/grammar",
         "--user-data-dir=${workspaceFolder}/test/grammar/data-dir",
         "--disable-extensions",
         "${workspaceFolder}/test/grammar/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist-test/test/**/*.js"],
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
     },
@@ -92,14 +92,14 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/dist/test/vue3",
+        "--extensionTestsPath=${workspaceFolder}/dist-test/test/vue3",
         "--user-data-dir=${workspaceFolder}/test/vue3/data-dir",
         "--disable-extensions",
         "${workspaceFolder}/test/vue3/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist-test/test/**/*.js"],
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
     },
@@ -110,14 +110,14 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/dist/test/componentData",
+        "--extensionTestsPath=${workspaceFolder}/dist-test/test/componentData",
         "--user-data-dir=${workspaceFolder}/test/componentData/data-dir",
         "--disable-extensions",
         "${workspaceFolder}/test/componentData/fixture"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/test/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist-test/test/**/*.js"],
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"]
     },

@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import * as assert from 'assert';
+import assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import * as url from 'url';
+import url from 'url';
 
 import { findDocumentLinks } from '../services/htmlLinks';
 import { DocumentContext } from '../../../types';
