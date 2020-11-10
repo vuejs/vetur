@@ -7,6 +7,7 @@
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@babel/code-frame": "^7.10.4",
     "chalk": "^4.1.0",
     "glob": "^7.1.2",
     "vls": "^0.5.5",
@@ -20,6 +21,7 @@
     "watch": "tsc --watch"
   },
   "devDependencies": {
+    "@types/babel__code-frame": "^7.0.2",
     "@types/glob": "^7.1.3",
     "typescript": "^4.0.5"
   }
