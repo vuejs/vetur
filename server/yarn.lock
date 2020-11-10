@@ -415,10 +415,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/js-beautify@^1.13.0":
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.13.0.tgz#1bf31ea8661387d6b4e672c6dce6de409cacfe8d"
-  integrity sha512-IVdM5SsoNRwMAr3kdj9vkTry9qs1hrATWGvjkeQBJifcCAOECq+xahNM3pplV2Qmnw0DYKZnFFfr5Dd7qaW4vQ==
+"@types/js-beautify@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.11.0.tgz#f1311fe280a5f83b1e6517cab1116aad63465cd0"
+  integrity sha512-RqTqKEenGBSa/vS3qHQuhudWE1d1NbollRDoArx85k1vUg4rugc+odFQW13c6O5re7hjf6zaRnWz9St/j8h15w==
 
 "@types/json-schema@*", "@types/json-schema@^7.0.3":
   version "7.0.5"
