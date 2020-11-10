@@ -4,7 +4,7 @@
     "composite": true,
     "incremental": true,
     "outDir": "./dist",
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "tsBuildInfoFile": "./typings/tsconfig.tsbuildinfo",
     "rootDir": "src",
 
     "lib": ["es2015", "es2016.array.include"],
