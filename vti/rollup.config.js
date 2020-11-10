@@ -1,16 +1,16 @@
-const { getRootURL, clearDist, external, onwarn, createPlugins } = require('../build/rollup-common-config');
+const { getRootPath, clearDist, external, onwarn, createPlugins } = require('../build/rollup-common-config');
 const vtiPkg = require('./package.json');
 
-const getVtiURL = getRootURL('vti');
+const getVTIPath = getRootPath('vti');
 
-clearDist(getVtiURL('dist'));
+clearDist(getVTIPath('dist'));
 module.exports = {
-  input: getVtiURL('src/cli.ts'),
-  output: { file: getVtiURL(vtiPkg.main), name: vtiPkg.name, format: 'cjs', sourcemap: true },
+  input: getVTIPath('src/cli.ts'),
+  output: { file: getVTIPath(vtiPkg.main), name: vtiPkg.name, format: 'cjs', sourcemap: true },
   external: [...external, 'vls'],
   onwarn,
   watch: {
-    include: getVtiURL('**')
+    include: getVTIPath('**')
   },
-  plugins: createPlugins(getVtiURL('tsconfig.json'))
+  plugins: createPlugins(getVTIPath('tsconfig.json'))
 };

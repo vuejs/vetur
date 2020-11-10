@@ -1,15 +1,15 @@
-const { getRootURL, clearDist, external, createPlugins } = require('../build/rollup-common-config');
+const { getRootPath, clearDist, external, createPlugins } = require('../build/rollup-common-config');
 const clientPkg = require('../package.json');
 
-const getClientURL = getRootURL('client');
+const getClientPath = getRootPath('client');
 
-clearDist(getClientURL('../dist'));
+clearDist(getClientPath('../dist'));
 module.exports = {
-  input: getClientURL('vueMain.ts'),
+  input: getClientPath('vueMain.ts'),
   output: { file: clientPkg.main, name: clientPkg.name, format: 'cjs', sourcemap: true },
   external,
   watch: {
-    include: getClientURL('**')
+    include: getClientPath('**')
   },
-  plugins: createPlugins(getClientURL('tsconfig.json'))
+  plugins: createPlugins(getClientPath('tsconfig.json'))
 };

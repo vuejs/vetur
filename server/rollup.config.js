@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const fg = require('fast-glob');
-const { getRootURL, clearDist, external, onwarn, createPlugins } = require('../build/rollup-common-config');
+const { getRootPath, clearDist, external, onwarn, createPlugins } = require('../build/rollup-common-config');
 const {
   linkVlsInCLI,
   bundleVlsWithEsbuild,
@@ -10,15 +10,15 @@ const {
 } = require('../build/rollup-plugins.js');
 const vlsPkg = require('./package.json');
 
-const getVlsURL = getRootURL('server');
+const getVLSPath = getRootPath('server');
 
-clearDist(getVlsURL('dist'));
+clearDist(getVLSPath('dist'));
 
 function copySnippets() {
   return {
     name: 'copy-snippets',
     buildEnd() {
-      fs.copySync(getVlsURL('src/modes/vue/veturSnippets'), getVlsURL('dist/veturSnippets'), {
+      fs.copySync(getVLSPath('src/modes/vue/veturSnippets'), getVLSPath('dist/veturSnippets'), {
         overwrite: true,
         recursive: true
       });
@@ -31,11 +31,11 @@ function copyTSDefaultLibs() {
     name: 'copy-ts-default-libs',
     buildEnd() {
       const files = fg.sync('node_modules/typescript/lib/lib*.d.ts', {
-        cwd: getVlsURL(''),
+        cwd: getVLSPath(''),
         unique: true,
         absolute: true
       });
-      files.forEach(file => fs.copySync(file, getVlsURL('dist/' + path.basename(file)), { overwrite: true }));
+      files.forEach(file => fs.copySync(file, getVLSPath('dist/' + path.basename(file)), { overwrite: true }));
     }
   };
 }
@@ -43,12 +43,12 @@ function copyTSDefaultLibs() {
 module.exports = [
   // vueServerMain
   {
-    input: getVlsURL('src/vueServerMain.ts'),
-    output: { file: getVlsURL('dist/vueServerMain.js'), name: vlsPkg.name, format: 'cjs', sourcemap: true },
+    input: getVLSPath('src/vueServerMain.ts'),
+    output: { file: getVLSPath('dist/vueServerMain.js'), name: vlsPkg.name, format: 'cjs', sourcemap: true },
     external,
     onwarn,
     watch: {
-      include: getVlsURL('**')
+      include: getVLSPath('**')
     },
     plugins: [
       watchVlsChange(),
@@ -57,7 +57,7 @@ module.exports = [
       copySnippets(),
       copyTSDefaultLibs(),
       linkVlsInCLI(),
-      ...createPlugins(getVlsURL('tsconfig.json'))
+      ...createPlugins(getVLSPath('tsconfig.json'))
     ]
   }
 ];

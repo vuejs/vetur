@@ -14,13 +14,13 @@ function linkVlsInCLI() {
   };
 }
 
-const getServerURL = url => path.resolve(__dirname, '../server', url);
+const getServerPath = url => path.resolve(__dirname, '../server', url);
 
 function watchVlsChange() {
   return {
     buildStart() {
       // watch src changed
-      this.addWatchFile(getServerURL('src/'));
+      this.addWatchFile(getServerPath('src/'));
     }
   };
 }
@@ -31,9 +31,9 @@ function generateTypingsVls() {
     buildStart() {
       return new Promise((resolve, reject) => {
         const tsc = spawn(
-          getServerURL('node_modules/.bin/tsc'),
+          getServerPath('node_modules/.bin/tsc'),
           ['--declaration', '--declarationDir', './dist/types', '--emitDeclarationOnly', '--pretty'],
-          { cwd: getServerURL('./'), shell: true }
+          { cwd: getServerPath('./'), shell: true }
         );
         tsc.stdout.on('data', data => {
           process.stdout.write(data);
@@ -66,10 +66,10 @@ function bundleVlsWithEsbuild() {
       if (!service) {
         service = await startService();
       }
-      console.log(`bundles ${getServerURL('src/main.ts')} with esbuild`);
+      console.log(`bundles ${getServerPath('src/main.ts')} with esbuild`);
       await service.build({
-        entryPoints: [getServerURL('src/main.ts')],
-        outfile: getServerURL('dist/vls.js'),
+        entryPoints: [getServerPath('src/main.ts')],
+        outfile: getServerPath('dist/vls.js'),
         /**
          * No minify when watch
          * reason: https://github.com/microsoft/vscode/issues/12066
@@ -99,7 +99,7 @@ function bundleVlsWithEsbuild() {
           'eslint'
         ],
         format: 'cjs',
-        tsconfig: getServerURL('tsconfig.json'),
+        tsconfig: getServerPath('tsconfig.json'),
         color: true
       });
       console.log(`✨ success with esbuild`);

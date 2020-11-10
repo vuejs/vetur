@@ -6,7 +6,7 @@ const typescript = require('rollup-plugin-typescript2');
 const resolve = require('@rollup/plugin-node-resolve').default;
 const { terser } = require('rollup-plugin-terser');
 
-const getRootURL = root => relative => path.resolve(__dirname, '../', root, relative);
+const getRootPath = root => relative => path.resolve(__dirname, '../', root, relative);
 
 const clearDist = dist => {
   if (fs.existsSync(dist)) {
@@ -53,7 +53,7 @@ const createPlugins = tsconfig => [
 ];
 
 module.exports = {
-  getRootURL,
+  getRootPath,
   clearDist,
   onwarn,
   external,
