@@ -14,6 +14,7 @@ Like `prettier`, `@prettier/plugin-pug`.
 - 🙌 Fix "File name X differs from already included file name Y only in casing" on Windows. Thanks to contribution from [@rchl](https://github.com/rchl). #2433 and #2444.
 - 🙌 Remove deprecated code and incremental text document. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2366.
 - 🙌 Auto import component in script when completion in template. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #684 and #2445.
+- 🙌 Add code frame in VTI diagnostics. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2449 and #2450.
 - 🙌 Reduce release size by bundling client/browser/vti. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2233 and #2301.
 
 ### 0.29.1 | 2020-11-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.29.1/vspackage)

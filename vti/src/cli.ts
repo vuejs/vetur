@@ -21,6 +21,8 @@ import { URI } from 'vscode-uri';
 import glob from 'glob';
 import path from 'path';
 import chalk from 'chalk';
+import { codeFrameColumns, SourceLocation } from '@babel/code-frame';
+import { Range } from 'vscode-languageclient';
 
 class NullLogger implements Logger {
   error(_message: string): void {}
@@ -71,6 +73,19 @@ async function prepareClientConnection(workspaceUri: URI) {
   return clientConnection;
 }
 
+function range2Location(range: Range): SourceLocation {
+  return {
+    start: {
+      line: range.start.line + 1,
+      column: range.start.character + 1
+    },
+    end: {
+      line: range.end.line + 1,
+      column: range.end.character + 1
+    }
+  };
+}
+
 async function getDiagnostics(workspaceUri: URI) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
@@ -89,12 +104,13 @@ async function getDiagnostics(workspaceUri: URI) {
   let errCount = 0;
 
   for (const absFilePath of absFilePaths) {
+    const fileText = fs.readFileSync(absFilePath, 'utf-8');
     await clientConnection.sendNotification(DidOpenTextDocumentNotification.type, {
       textDocument: {
         languageId: 'vue',
         uri: URI.file(absFilePath).toString(),
         version: 1,
-        text: fs.readFileSync(absFilePath, 'utf-8')
+        text: fileText
       }
     });
 
@@ -107,14 +123,18 @@ async function getDiagnostics(workspaceUri: URI) {
        */
       res = res.filter(r => r.source !== 'eslint-plugin-vue');
       if (res.length > 0) {
-        console.log(`${chalk.green('File')} : ${chalk.green(absFilePath)}`);
         res.forEach(d => {
+          const location = range2Location(d.range);
+          console.log(
+            `${chalk.green('File')} : ${chalk.green(absFilePath)}:${location.start.line}:${location.start.column}`
+          );
           if (d.severity === DiagnosticSeverity.Error) {
             console.log(`${chalk.red('Error')}: ${d.message.trim()}`);
             errCount++;
           } else {
             console.log(`${chalk.yellow('Warn')} : ${d.message.trim()}`);
           }
+          console.log(codeFrameColumns(fileText, location));
         });
         console.log('');
       }
