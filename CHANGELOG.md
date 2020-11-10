@@ -8,6 +8,9 @@
 The vetur.useWorkspaceDependencies is effect all runtime dependencies now.
 Like `prettier`, `@prettier/plugin-pug`.
 
+In this version, we try to bundle extension and reduce size. (70MB -> 9MB)
+But it's a very big change, so please open an issue if you find any problems.
+
 ----
 
 - 🙌 Fix v-bind modifiers causing TypeScript to not find type-checked template props correctly. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2430.
