@@ -415,10 +415,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/js-beautify@^1.11.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.11.0.tgz#f1311fe280a5f83b1e6517cab1116aad63465cd0"
-  integrity sha512-RqTqKEenGBSa/vS3qHQuhudWE1d1NbollRDoArx85k1vUg4rugc+odFQW13c6O5re7hjf6zaRnWz9St/j8h15w==
+"@types/js-beautify@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-1.13.0.tgz#1bf31ea8661387d6b4e672c6dce6de409cacfe8d"
+  integrity sha512-IVdM5SsoNRwMAr3kdj9vkTry9qs1hrATWGvjkeQBJifcCAOECq+xahNM3pplV2Qmnw0DYKZnFFfr5Dd7qaW4vQ==
 
 "@types/json-schema@*", "@types/json-schema@^7.0.3":
   version "7.0.5"
@@ -448,10 +448,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
   integrity sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
 
-"@types/node@^14.11.8":
-  version "14.14.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.6.tgz#146d3da57b3c636cc0d1769396ce1cfa8991147f"
-  integrity sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
+"@types/node@^14.14.7":
+  version "14.14.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.7.tgz#8ea1e8f8eae2430cf440564b98c6dfce1ec5945d"
+  integrity sha512-Zw1vhUSQZYw+7u5dAwNbIA9TuTotpzY/OF7sJM9FqPOF3SPjKnxrjoTktXDZgUjybf4cWVBP7O8wvKdSaGHweg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4817,15 +4817,16 @@ vscode-css-languageservice@4.3.5:
     vscode-nls "^5.0.0"
     vscode-uri "^2.1.2"
 
-vscode-emmet-helper@^2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-2.0.8.tgz#7c3cf8027d1a75d29625e029d516da7bc56c1fdb"
-  integrity sha512-Wyf+b5pua+13eZSHCpmob1x915x/od4z6lIia9T2N4v7+CUYNxDisBu3/ShIM3qg3YiYvTCOm+Yx/CLd2khcVw==
+vscode-emmet-helper@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-2.0.9.tgz#16244c087cba4e379116f268384bb644649db6ad"
+  integrity sha512-S6RjnR9gUicl8LsYnQAMNqqOxolud9gcj+NpPyEnxfxp1YIBuC9oetj6l6N9VMZBWu6tL77wmf+/EJsRx1PDPA==
   dependencies:
     emmet "^2.1.5"
     jsonc-parser "^2.3.0"
     vscode-languageserver-textdocument "^1.0.1"
     vscode-languageserver-types "^3.15.1"
+    vscode-nls "^5.0.0"
     vscode-uri "^2.1.2"
 
 vscode-jsonrpc@6.0.0-next.5:
