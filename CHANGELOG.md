@@ -2,6 +2,8 @@
 
 ###
 
+### 0.30.0 | 2020-11-11 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.0/vspackage)
+
 ----
 
 #### ⚠️  Breaking change: ⚠️
