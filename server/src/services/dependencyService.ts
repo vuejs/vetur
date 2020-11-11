@@ -14,30 +14,49 @@ import { performance } from 'perf_hooks';
 import { logger } from '../log';
 
 const readFileAsync = util.promisify(fs.readFile);
+const accessFileAsync = util.promisify(fs.access);
 
-async function findAllPackages(workspacePath: string, moduleName: string) {
+async function createNodeModulesPaths(workspacePath: string) {
   const startTime = performance.now();
-  const packages = await fg(`**/node_modules/${moduleName}/package.json`, {
-    cwd: workspacePath,
-    absolute: true,
-    unique: true
-  }).then(filePaths =>
-    Promise.all(
-      filePaths.map(filePath =>
-        readFileAsync(filePath, { encoding: 'utf8' }).then(content => {
-          const info = JSON.parse(content) as { name: string; version: string; main: string };
+  const nodeModules = (
+    await fg('**/node_modules', {
+      cwd: workspacePath,
+      absolute: true,
+      unique: true,
+      onlyDirectories: true,
+      onlyFiles: false
+    })
+  ).filter(el => el.match(/node_modules/g)?.length === 1);
 
-          return {
-            name: info.name,
-            dir: path.dirname(filePath),
-            version: info.version,
-            module: require(path.resolve(path.dirname(filePath), info.main))
-          };
-        })
-      )
-    )
-  );
-  logger.logInfo(`Try to find ${moduleName} in ${workspacePath}. - ${Math.round(performance.now() - startTime)}ms`);
+  logger.logInfo(`Find node_modules paths in ${workspacePath} - ${Math.round(performance.now() - startTime)}ms`);
+  return nodeModules;
+}
+
+async function findAllPackages(nodeModulesPaths: string[], moduleName: string) {
+  async function getPackage(nodeModulesPath: string) {
+    const packageJSONPath = path.resolve(nodeModulesPath, moduleName, 'package.json');
+    try {
+      await accessFileAsync(packageJSONPath, fs.constants.R_OK);
+      const info: { name: string; version: string; main: string } = JSON.parse(
+        await readFileAsync(packageJSONPath, { encoding: 'utf8' })
+      );
+      return {
+        name: info.name,
+        dir: path.dirname(packageJSONPath),
+        version: info.version,
+        module: require(path.resolve(path.dirname(packageJSONPath), info.main))
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  const packages = (await Promise.all(nodeModulesPaths.map(path => getPackage(path)))).filter(info => info) as Array<{
+    name: string;
+    dir: string;
+    version: string;
+    module: unknown;
+  }>;
 
   return packages;
 }
@@ -83,6 +102,8 @@ export const createDependencyService = () => {
   let loaded: { [K in keyof RuntimeLibrary]: Dependency<RuntimeLibrary[K]>[] };
 
   async function init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath?: string) {
+    const nodeModulesPaths = useWorkspaceDependencies ? await createNodeModulesPaths(workspacePath) : [];
+
     const loadTypeScript = async (): Promise<Dependency<typeof ts>[]> => {
       try {
         if (useWorkspaceDependencies && tsSDKPath) {
@@ -103,7 +124,7 @@ export const createDependencyService = () => {
         }
 
         if (useWorkspaceDependencies) {
-          const packages = await findAllPackages(workspacePath, 'typescript');
+          const packages = await findAllPackages(nodeModulesPaths, 'typescript');
           if (packages.length === 0) {
             throw new Error(`No find any packages in ${workspacePath}.`);
           }
@@ -140,7 +161,7 @@ export const createDependencyService = () => {
     const loadCommonDep = async <N extends string, BM>(name: N, bundleModule: BM): Promise<Dependency<BM>[]> => {
       try {
         if (useWorkspaceDependencies) {
-          const packages = await findAllPackages(workspacePath, name);
+          const packages = await findAllPackages(nodeModulesPaths, name);
           if (packages.length === 0) {
             throw new Error(`No find ${name} packages in ${workspacePath}.`);
           }
