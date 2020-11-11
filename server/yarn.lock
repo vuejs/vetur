@@ -4856,6 +4856,11 @@ vscode-languageserver-types@3.16.0-next.3:
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.16.0-next.3.tgz#28bc8539bf647ae82597943e0b345a05f3ec807f"
   integrity sha512-s/z5ZqSe7VpoXJ6JQcvwRiPPA3nG0nAcJ/HH03zoU6QaFfnkcgPK+HshC3WKPPnC2G08xA0iRB6h7kmyBB5Adg==
 
+vscode-languageserver-types@3.16.0-next.4:
+  version "3.16.0-next.4"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.16.0-next.4.tgz#c7e53e18364d681ae7912afc2482e5246c792ad4"
+  integrity sha512-NlKJyGcET/ZBCCLBYIPaGo2c37R03bPYeWXozUtnjyye7+9dhlbMSODyoG2INcQf8zFmB4qhm2UOJjgYEgPCNA==
+
 vscode-languageserver-types@^3.15.1:
   version "3.15.1"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.1.tgz#17be71d78d2f6236d414f0001ce1ef4d23e6b6de"
