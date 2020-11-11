@@ -4,11 +4,11 @@
 
 ----
 
-⚠️  Breaking change: ⚠️
-The vetur.useWorkspaceDependencies is effect all runtime dependencies now.
+#### ⚠️  Breaking change: ⚠️
+The vetur.useWorkspaceDependencies is effect all runtime dependencies now.   
 Like `prettier`, `@prettier/plugin-pug`.
 
-In this version, we try to bundle extension and reduce size. (70MB -> 9MB)
+In this version, we try to bundle extension and reduce size. (70MB -> 9MB)   
 But it's a very big change, so please open an issue if you find any problems.
 
 ----
