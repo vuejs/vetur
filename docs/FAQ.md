@@ -1,5 +1,17 @@
 # FAQ
 
+- [Install an old version of Vetur](#install-an-old-version-of-vetur)
+- [No Syntax Highlighting & No Language Features working](#no-syntax-highlighting--no-language-features-working)
+- [Vetur Crash](#vetur-crash)
+- [Vetur can't recognize components imported using webpack's alias](#vetur-cant-recognize-components-imported-using-webpacks-alias)
+- [Property 'xxx' does not exist on type 'CombinedVueInstance'](#property-xxx-does-not-exist-on-type-combinedvueinstance)
+- [Vetur cannot recognize my Vue component import, such as `import Comp from './comp'`](#vetur-cannot-recognize-my-vue-component-import-such-as-import-comp-from-comp)
+- [Template Interpolation auto completion does not work](#template-interpolation-auto-completion-does-not-work)
+- [.vue file cannot be imported in TS file](#vue-file-cannot-be-imported-in-ts-file)
+- [How to build and install from source](#how-to-build-and-install-from-source)
+- [Vetur uses different version of TypeScript in .vue files to what I installed in `node_modules`.](#vetur-uses-different-version-of-typescript-in-vue-files-to-what-i-installed-in-node_modules)
+- [Vetur is slow](#vetur-is-slow)
+
 ## Install an old version of Vetur
 
 Sometimes new releases have bugs that you want to avoid. Here's an easy way to downgrade Vetur to a working version:
@@ -80,17 +92,21 @@ You can work around it by:
 - Downgrading TS to a version before 3.4 and enabling `vetur.useWorkspaceDependencies`. You'll not get support for new TS syntaxes, such as optional chaining.
 - Use [Composition API](https://composition-api.vuejs.org).
 
+## Template Interpolation auto completion does not work
+
+You are running into the same issue as above — not typing return type of `computed`. Please add [JSDoc](https://github.com/vuejs/vetur/issues/1707#issuecomment-686851677) or [TS types](https://vuejs.org/v2/guide/typescript.html#Annotating-Return-Types) for computed properties.
+
 ## Vetur cannot recognize my Vue component import, such as `import Comp from './comp'`
 
 - You need to add `.vue` extension when importing SFC.
 
 More details at: https://github.com/vuejs/vetur/issues/423#issuecomment-340235722
 
-## .vue file cannot be imported in TS file.
+## .vue file cannot be imported in TS file
 
 You need to add `declare module '*.vue'` in your dts files: https://github.com/Microsoft/TypeScript-Vue-Starter#single-file-components.
 
-## Install from source.
+## How to build and install from source
 
 To build and install the extension from source, you need to install [`vsce`](https://code.visualstudio.com/docs/extensions/publish-extension).
 
@@ -115,4 +131,4 @@ NB: It will use `typescript.tsdk` setting as the path to look for if defined, de
 
 You can run the command `Vetur: Restart VLS (Vue Language Server)` to restart VLS.
 
-However, we'd appreciate it if you can file a [performance issue report with a profile](https://github.com/vuejs/vetur/blob/master/.github/PERF_ISSUE.md) to help us fix the issue.
+However, we'd appreciate it if you can file a [performance issue report with a profile](https://github.com/vuejs/vetur/blob/master/.github/PERF_ISSUE.md) to help us find the cause of the issue.
