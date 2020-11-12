@@ -108,4 +108,44 @@ describe('Should import vue component to script in template', () => {
       }
     );
   });
+
+  it('Should do auto import when special name', async () => {
+    await testCompletionResolve(
+      getDocUri('completion/autoImport/sameComponentName.vue'),
+      position(3, 5),
+      [
+        {
+          label: 'es-lint',
+          additionalTextEdits: [
+            textEdit(sameLineRange(9, 0, 0), `import ESLint from '../../diagnostics/ESLint.vue'${NEW_LINE}`),
+            textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    ESLint`)
+          ]
+        }
+      ],
+      Number.MAX_VALUE,
+      ei => result => {
+        return ei.label === result.label && !!result.additionalTextEdits;
+      }
+    );
+  });
+
+  it('Should do auto import when kebab case name', async () => {
+    await testCompletionResolve(
+      getDocUri('completion/autoImport/sameComponentName.vue'),
+      position(3, 5),
+      [
+        {
+          label: 'kebab-case',
+          additionalTextEdits: [
+            textEdit(sameLineRange(9, 0, 0), `import KebabCase from './kebab-case.vue'${NEW_LINE}`),
+            textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    KebabCase`)
+          ]
+        }
+      ],
+      Number.MAX_VALUE,
+      ei => result => {
+        return ei.label === result.label && !!result.additionalTextEdits;
+      }
+    );
+  });
 });

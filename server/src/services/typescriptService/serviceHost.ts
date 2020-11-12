@@ -71,6 +71,7 @@ export interface IServiceHost {
   };
   updateExternalDocument(filePath: string): void;
   getFileNames(): string[];
+  getComplierOptions(): ts.CompilerOptions;
   dispose(): void;
 }
 
@@ -455,6 +456,7 @@ export function getServiceHost(
     updateCurrentVueTextDocument,
     updateExternalDocument,
     getFileNames,
+    getComplierOptions: () => compilerOptions,
     dispose: () => {
       jsLanguageService.dispose();
     }

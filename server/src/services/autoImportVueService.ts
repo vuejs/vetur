@@ -1,17 +1,20 @@
 import { camelCase, kebabCase, upperFirst } from 'lodash';
 import { EOL as NEW_LINE } from 'os';
 import { basename } from 'path';
+import type ts from 'typescript';
 import { CompletionItem } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { TextEdit } from 'vscode-languageserver-types';
 import { VLSFullConfig } from '../config';
-import { toMarkupContent } from '../utils/strings';
+import { modulePathToValidIdentifier, toMarkupContent } from '../utils/strings';
+import { RuntimeLibrary } from './dependencyService';
 import { ChildComponent, VueInfoService } from './vueInfoService';
 
 export interface AutoImportVueService {
   setGetConfigure(fn: () => VLSFullConfig): void;
   setGetFilesFn(fn: () => string[]): void;
   setGetJSResolve(fn: (doc: TextDocument, item: CompletionItem) => CompletionItem): void;
+  setGetTSScriptTarget (fn: () => ts.ScriptTarget | undefined): void;
   doComplete(document: TextDocument): CompletionItem[];
   isMyResolve(item: CompletionItem): boolean;
   doResolve(document: TextDocument, item: CompletionItem): CompletionItem;
@@ -38,10 +41,14 @@ export interface AutoImportVueService {
  * }
  * ```
  */
-export function createAutoImportVueService(vueInfoService?: VueInfoService): AutoImportVueService {
+export function createAutoImportVueService(
+  tsModule: RuntimeLibrary['typescript'],
+  vueInfoService?: VueInfoService
+): AutoImportVueService {
   let getConfigure: () => VLSFullConfig;
   let getVueFiles: () => string[];
   let getJSResolve: (doc: TextDocument, item: CompletionItem) => CompletionItem;
+  let getTSScriptTarget: () => ts.ScriptTarget | undefined = () => undefined;
 
   function createMockDoc(document: TextDocument, componentInsertPos: number, mockPartContent: string) {
     const mockDocContent =
@@ -78,7 +85,7 @@ export function createAutoImportVueService(vueInfoService?: VueInfoService): Aut
     while (childComponents.some(el => el.name.toLowerCase() === componentCompletionName.toLowerCase())) {
       componentCompletionName = `${componentCompletionName}${index++}`;
     }
-    return componentCompletionName;
+    return upperFirst(componentCompletionName);
   }
 
   return {
@@ -90,6 +97,9 @@ export function createAutoImportVueService(vueInfoService?: VueInfoService): Aut
     },
     setGetJSResolve(fn) {
       getJSResolve = fn;
+    },
+    setGetTSScriptTarget (fn) {
+      getTSScriptTarget = fn;
     },
     doComplete(document): CompletionItem[] {
       const config = getConfigure();
@@ -140,7 +150,11 @@ import ${upperFirst(camelCase(tagName))} from '${fileName}'
 
       const componentDefine = componentInfo?.componentsDefine;
       const childComponents = componentInfo?.childComponents;
-      const nameForTriggerResolveInTs = upperFirst(camelCase(item.insertText));
+      const nameForTriggerResolveInTs = modulePathToValidIdentifier(
+        tsModule,
+        item.data.path,
+        getTSScriptTarget() ?? tsModule.ScriptTarget.ESNext
+      );
       /**
        * have `components` property case
        */

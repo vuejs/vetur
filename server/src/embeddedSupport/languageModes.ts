@@ -122,7 +122,11 @@ export class LanguageModes {
       return vueDocument.getSingleTypeDocument('script');
     });
     this.serviceHost = getServiceHost(tsModule, workspacePath, scriptRegionDocuments);
-    const autoImportVueService = createAutoImportVueService(services.infoService);
+    const autoImportVueService = createAutoImportVueService(tsModule, services.infoService);
+    autoImportVueService.setGetTSScriptTarget(() => this.serviceHost.getComplierOptions().target);
+    autoImportVueService.setGetFilesFn(() =>
+      this.serviceHost.getFileNames().filter(fileName => fileName.endsWith('.vue'))
+    );
 
     const vueHtmlMode = new VueHTMLMode(
       tsModule,
@@ -134,9 +138,6 @@ export class LanguageModes {
       services.infoService
     );
 
-    autoImportVueService.setGetFilesFn(() =>
-      this.serviceHost.getFileNames().filter(fileName => fileName.endsWith('.vue'))
-    );
     const jsMode = await getJavascriptMode(
       this.serviceHost,
       this.documentRegions,

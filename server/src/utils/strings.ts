@@ -1,5 +1,8 @@
 import { VLSFormatConfig } from '../config';
 import { MarkupContent, MarkupKind } from 'vscode-languageserver';
+import { basename } from 'path';
+import { RuntimeLibrary } from '../services/dependencyService';
+import type ts from 'typescript';
 
 export function getWordAtText(text: string, offset: number, wordDefinition: RegExp): { start: number; length: number } {
   let lineStart = offset;
@@ -58,4 +61,36 @@ export function toMarkupContent(value: string | MarkupContent | undefined) {
   }
 
   return typeof value === 'string' ? { kind: MarkupKind.Markdown, value } : value;
+}
+
+// Convert module path to valid typescript identifier
+// https://github.com/microsoft/TypeScript/blob/master/src/services/codefixes/importFixes.ts#L951
+export function modulePathToValidIdentifier(
+  tsModule: RuntimeLibrary['typescript'],
+  modulePath: string,
+  target: ts.ScriptTarget | undefined
+): string {
+  const baseName = basename(modulePath, '.vue');
+  let res = '';
+  let lastCharWasValid = true;
+  const firstCharCode = baseName.charCodeAt(0);
+  if (tsModule.isIdentifierStart(firstCharCode, target)) {
+    res += String.fromCharCode(firstCharCode);
+  } else {
+    lastCharWasValid = false;
+  }
+  for (let i = 1; i < baseName.length; i++) {
+    const ch = baseName.charCodeAt(i);
+    const isValid = tsModule.isIdentifierPart(ch, target);
+    if (isValid) {
+      let char = String.fromCharCode(ch);
+      if (!lastCharWasValid) {
+        char = char.toUpperCase();
+      }
+      res += char;
+    }
+    lastCharWasValid = isValid;
+  }
+
+  return res;
 }
