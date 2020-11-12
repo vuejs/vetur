@@ -1,6 +1,10 @@
 # Changelog
 
-###
+### 0.30.1
+
+- Fix corner case when auto import component failed. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2461.
+- Fix the `template lang='pug'` node will be cleared when formatting the vue file. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2460.
+
 
 ### 0.30.0 | 2020-11-11 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.0/vspackage)
 
