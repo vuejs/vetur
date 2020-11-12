@@ -21,9 +21,9 @@ export interface AutoImportVueService {
  * Auto import component in script when completion in template.
  * ## Implementation:
  * 1. Get all vue files path from ts language service host.
- * 2. Record more date in VueInfoService. Like: componentsDefine position.
+ * 2. Record more data in VueInfoService. Like: componentsDefine position.
  * 3. Provide completion list in template from vue files path
- * 4. Mock code to trigger auto import in TS for make import component TextEdit.
+ * 4. Mock code to trigger auto import in TS for make importing component TextEdit.
  * 5. Add component define TextEdit from second step.
  * 6. Provide completion/resolve from fourth and fifth steps.
  *
