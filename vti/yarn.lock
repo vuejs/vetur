@@ -759,7 +759,7 @@ v8-compile-cache@^2.0.3:
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.2.0.tgz#9471efa3ef9128d2f7c6a7ca39c4dd6b5055b132"
   integrity sha512-gTpR5XQNKFwOd4clxfnhaqvfqMpqEwr4tOtCyz4MtYZX2JYhfr1JvBFKdS+7K/9rfpZR3VLX+YWBbKoxCgS43Q==
 
-vls@^0.5.7:
+vls@^0.5.8:
   version "0.5.8"
   resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.8.tgz#7c0f4962dcf925501a8d0a6673df9f21649ab81a"
   integrity sha512-MDaDgXcuS5qzaZoruCxFcCNZrntD2+RjlO9b1HvUyW5XJdEDPtodciRh6u3+8NYQLaFi/Dag/C+MFqzYHUNPnQ==
