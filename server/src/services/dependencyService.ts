@@ -24,7 +24,8 @@ async function createNodeModulesPaths(workspacePath: string) {
       absolute: true,
       unique: true,
       onlyDirectories: true,
-      onlyFiles: false
+      onlyFiles: false,
+      deep: 10
     })
   ).filter(el => el.match(/node_modules/g)?.length === 1);
 
