@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.30.2
+
+- Fix high CPU usage when corner case. #2468
+- Fix formatting css problem. #2467
+
+
 ### 0.30.1 | 2020-11-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.1/vspackage)
 
 - Fix corner case when auto import component failed. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2461.
