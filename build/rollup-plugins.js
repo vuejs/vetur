@@ -75,6 +75,7 @@ function bundleVlsWithEsbuild() {
          * reason: https://github.com/microsoft/vscode/issues/12066
          */
         minify: !process.env.ROLLUP_WATCH,
+        keepNames: true,
         bundle: true,
         sourcemap: true,
         platform: 'node',
