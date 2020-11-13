@@ -4,7 +4,8 @@ import {
   RevealOutputChannelOn,
   ServerOptions,
   TransportKind,
-  LanguageClientOptions
+  LanguageClientOptions,
+  DocumentFilter
 } from 'vscode-languageclient';
 import { resolve } from 'path';
 import { existsSync } from 'fs';
@@ -12,7 +13,7 @@ import { existsSync } from 'fs';
 export function initializeLanguageClient(vlsModulePath: string, globalSnippetDir: string): LanguageClient {
   const debugOptions = { execArgv: ['--nolazy', '--inspect=6005'] };
 
-  const documentSelector = [{ language: 'vue' }];
+  const documentSelector: DocumentFilter[] = [{ language: 'vue', scheme: 'file' }];
   const config = vscode.workspace.getConfiguration();
 
   let serverPath;
