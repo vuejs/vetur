@@ -18,16 +18,16 @@ const accessFileAsync = util.promisify(fs.access);
 
 async function createNodeModulesPaths(workspacePath: string) {
   const startTime = performance.now();
-  const nodeModules = (
-    await fg('**/node_modules', {
-      cwd: workspacePath,
-      absolute: true,
-      unique: true,
-      onlyDirectories: true,
-      onlyFiles: false,
-      deep: 10
-    })
-  ).filter(el => el.match(/node_modules/g)?.length === 1);
+  const nodeModules = await fg('**/node_modules', {
+    cwd: workspacePath.replace(/\\/g, '/'),
+    absolute: true,
+    unique: true,
+    onlyFiles: false,
+    onlyDirectories: true,
+    deep: 6,
+    followSymbolicLinks: false,
+    ignore: ['**/node_modules/**/node_modules']
+  });
 
   logger.logInfo(`Find node_modules paths in ${workspacePath} - ${Math.round(performance.now() - startTime)}ms`);
   return nodeModules;
