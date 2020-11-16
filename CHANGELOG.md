@@ -2,8 +2,9 @@
 
 ### 0.30.2
 
-- Fix high CPU usage when corner case. #2468
-- Fix formatting css problem. #2467
+- Fix high CPU usage when huge project. #2468
+- Fix high CPU usage when template tag self closed. Thanks to help from [@Shinigami92](https://github.com/Shinigami92). #2468
+- Fix formatting css problem with prettier. #2467
 
 
 ### 0.30.1 | 2020-11-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.1/vspackage)
