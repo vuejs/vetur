@@ -103,7 +103,7 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
   while (unClosedTemplate !== 0) {
     // skip parsing on non html syntax, just search terminator
     if (token === TokenType.AttributeValue && languageId !== 'vue-html') {
-      while (token !== TokenType.StartTagClose) {
+      while (![TokenType.StartTagClose, TokenType.StartTagSelfClose].includes(token)) {
         token = scanner.scan();
       }
       start = scanner.getTokenEnd();
