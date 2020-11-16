@@ -760,9 +760,9 @@ v8-compile-cache@^2.0.3:
   integrity sha512-gTpR5XQNKFwOd4clxfnhaqvfqMpqEwr4tOtCyz4MtYZX2JYhfr1JvBFKdS+7K/9rfpZR3VLX+YWBbKoxCgS43Q==
 
 vls@^0.5.8:
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.8.tgz#7c0f4962dcf925501a8d0a6673df9f21649ab81a"
-  integrity sha512-MDaDgXcuS5qzaZoruCxFcCNZrntD2+RjlO9b1HvUyW5XJdEDPtodciRh6u3+8NYQLaFi/Dag/C+MFqzYHUNPnQ==
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.9.tgz#19f15ebc0c27e7b5e4de3ab30b1999b66764c53a"
+  integrity sha512-9IGH1YFto0XvLHRKzdOQmkzqnIQOO/yTe77ieaOTJM4Zrr5dDqZKEBwboJyEpx5jy4R1TNUh7HTI+DwhWUtiLQ==
   dependencies:
     eslint "^7.13.0"
     eslint-plugin-vue "^7.1.0"
