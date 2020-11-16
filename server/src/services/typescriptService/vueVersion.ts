@@ -31,7 +31,10 @@ export function inferVueVersion(workspacePath: string): VueVersion {
       return floatVersionToEnum(sloppyVersion);
     }
 
-    const nodeModulesVuePackagePath = findConfigFile(path.resolve(workspacePath, 'node_modules/vue'), 'package.json');
+    const nodeModulesVuePackagePath = findConfigFile(
+      workspacePath,
+      require.resolve('vue/package.json', { paths: [workspacePath] })
+    );
     const nodeModulesVuePackageJSON =
       nodeModulesVuePackagePath && JSON.parse(readFileSync(nodeModulesVuePackagePath, { encoding: 'utf-8' })!);
     const nodeModulesVueVersion = parseFloat(nodeModulesVuePackageJSON.version.match(/\d+\.\d+/)[0]);
