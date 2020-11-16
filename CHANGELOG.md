@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.30.2
+### 0.30.2 | 2020-11-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.2/vspackage)
 
 - Fix high CPU usage when huge project. #2468
 - Fix high CPU usage when template tag self closed. Thanks to help from [@Shinigami92](https://github.com/Shinigami92). #2468
