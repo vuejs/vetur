@@ -115,7 +115,10 @@ export function getTagProviderSettings(workspacePath: string | null | undefined)
     }
 
     for (const dep of [...Object.keys(dependencies), ...Object.keys(devDependencies)]) {
-      const runtimePkgJsonPath = findConfigFile(workspacePath, join('node_modules', dep, 'package.json'));
+      const runtimePkgJsonPath = findConfigFile(
+        workspacePath,
+        require.resolve(join(dep, 'package.json'), { paths: [workspacePath] })
+      );
 
       if (!runtimePkgJsonPath) {
         continue;

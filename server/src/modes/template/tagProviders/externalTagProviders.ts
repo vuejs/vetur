@@ -52,10 +52,13 @@ export function getDependencyTagProvider(workspacePath: string, depPkgJson: any)
     return null;
   }
 
-  const tagsPath = findConfigFile(workspacePath, path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.tags));
+  const tagsPath = findConfigFile(
+    workspacePath,
+    require.resolve(path.join(depPkgJson.name, depPkgJson.vetur.tags), { paths: [workspacePath] })
+  );
   const attrsPath = findConfigFile(
     workspacePath,
-    path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.attributes)
+    require.resolve(path.join(depPkgJson.name, depPkgJson.vetur.attributes), { paths: [workspacePath] })
   );
 
   try {
