@@ -15,6 +15,7 @@ import * as emmet from 'vscode-emmet-helper';
 import { NULL_COMPLETION } from '../../nullMode';
 import { getModifierProvider, Modifier } from '../modifierProvider';
 import { toMarkupContent } from '../../../utils/strings';
+import { Priority } from '../tagProviders/common';
 
 export function doComplete(
   document: TextDocument,
@@ -65,7 +66,13 @@ export function doComplete(
       });
     });
     autoImportCompletions?.forEach(item => {
-      result.items.push(item);
+      result.items.push({
+        ...item,
+        kind: CompletionItemKind.Property,
+        textEdit: TextEdit.replace(range, item.label),
+        sortText: Priority.UserCode + item.label,
+        insertTextFormat: InsertTextFormat.PlainText
+      });
     });
     return result;
   }
