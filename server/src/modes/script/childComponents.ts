@@ -51,7 +51,7 @@ export function analyzeComponentsDefine(
   if (componentsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
     const componentsType = checker.getTypeOfSymbolAtLocation(componentsSymbol, componentsDeclaration);
 
-    let insertPos = componentsDeclaration.getStart() + 1;
+    let insertPos = componentsDeclaration.getStart(componentsDeclaration.getSourceFile(), true) + 1;
     const result: InternalChildComponent[] = [];
     checker.getPropertiesOfType(componentsType).forEach((s, i, arr) => {
       if (!s.valueDeclaration) {
@@ -105,7 +105,7 @@ export function analyzeComponentsDefine(
     });
 
     return {
-      start: componentsDeclaration.getStart(),
+      start: componentsDeclaration.getStart(componentsDeclaration.getSourceFile(), true),
       end: componentsDeclaration.getEnd(),
       insertPos,
       list: result
