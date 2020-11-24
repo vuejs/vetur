@@ -1,6 +1,5 @@
 import path from 'path';
-import fs from 'fs';
-import { getFileFsPath, normalizeFileNameToFsPath } from '../utils/paths';
+import { getFileFsPath, getPathDepth, normalizeFileNameToFsPath, normalizeResolve } from '../utils/paths';
 
 import {
   DidChangeConfigurationParams,
@@ -19,7 +18,6 @@ import {
   DocumentSymbolParams,
   CodeActionParams,
   CompletionParams,
-  CompletionTriggerKind,
   ExecuteCommandParams,
   ApplyWorkspaceEditRequest,
   FoldingRangeParams
@@ -38,8 +36,8 @@ import {
   SymbolInformation,
   TextEdit,
   ColorPresentation,
-  Range,
-  FoldingRange
+  FoldingRange,
+  DocumentUri
 } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -53,20 +51,25 @@ import { DocumentContext, RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
-import { getDefaultVLSConfig, VLSFullConfig, VLSConfig } from '../config';
+import { getDefaultVLSConfig, VLSFullConfig, VLSConfig, getVeturFullConfig, VeturFullConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
+import { findConfigFile } from '../utils/workspace';
+import { createProjectService, ProjectService } from './projectService';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
   private workspacePath: string | undefined;
-
+  private veturConfig: VeturFullConfig;
   private documentService: DocumentService;
-  private vueInfoService: VueInfoService;
+  private rootPathForConfig: string;
+  private globalSnippetDir: string;
+  private projects: Map<string, ProjectService>;
+  // private vueInfoService: VueInfoService;
   private dependencyService: DependencyService;
 
-  private languageModes: LanguageModes;
+  // private languageModes: LanguageModes;
 
   private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
   private cancellationTokenValidationRequests: { [uri: string]: VCancellationTokenSource } = {};
@@ -88,15 +91,13 @@ export class VLS {
 
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
-    this.vueInfoService = new VueInfoService();
+    // this.vueInfoService = new VueInfoService();
     this.dependencyService = createDependencyService();
 
-    this.languageModes = new LanguageModes();
+    // this.languageModes = new LanguageModes();
   }
 
   async init(params: InitializeParams) {
-    const config = this.getFullConfig(params.initializationOptions?.config);
-
     const workspacePath = params.rootPath;
     if (!workspacePath) {
       console.error('No workspace path found. Vetur initialization failed.');
@@ -107,30 +108,23 @@ export class VLS {
 
     this.workspacePath = normalizeFileNameToFsPath(workspacePath);
 
-    // Enable Yarn PnP support https://yarnpkg.com/features/pnp
-    if (!process.versions.pnp) {
-      if (fs.existsSync(path.join(this.workspacePath, '.pnp.js'))) {
-        require(path.join(workspacePath, '.pnp.js')).setup();
-      } else if (fs.existsSync(path.join(this.workspacePath, '.pnp.cjs'))) {
-        require(path.join(workspacePath, '.pnp.cjs')).setup();
-      }
-    }
+    this.globalSnippetDir = params.initializationOptions?.globalSnippetDir;
+    const veturConfigPath = findConfigFile(this.workspacePath, 'vetur.config.js');
+    this.rootPathForConfig = normalizeFileNameToFsPath(veturConfigPath ? path.dirname(veturConfigPath) : workspacePath);
+    this.veturConfig = await getVeturFullConfig(
+      this.rootPathForConfig,
+      this.workspacePath,
+      veturConfigPath ? require(veturConfigPath) : {}
+    );
+    const config = this.getFullConfig(params.initializationOptions?.config);
 
-    this.vueInfoService.init(this.languageModes);
     await this.dependencyService.init(
+      this.rootPathForConfig,
       this.workspacePath,
       config.vetur.useWorkspaceDependencies,
       config.typescript.tsdk
     );
-
-    await this.languageModes.init(
-      this.workspacePath,
-      {
-        infoService: this.vueInfoService,
-        dependencyService: this.dependencyService
-      },
-      params.initializationOptions?.globalSnippetDir
-    );
+    this.projects = new Map();
 
     this.configure(config);
     this.setupConfigListeners();
@@ -148,7 +142,11 @@ export class VLS {
   }
 
   private getFullConfig(config: any | undefined): VLSFullConfig {
-    return config ? _.merge(getDefaultVLSConfig(), config) : getDefaultVLSConfig();
+    const result = config ? _.merge(getDefaultVLSConfig(), config) : getDefaultVLSConfig();
+    Object.keys(this.veturConfig.settings).forEach(key => {
+      _.set(result, key, this.veturConfig.settings[key]);
+    });
+    return result;
   }
 
   private setupConfigListeners() {
@@ -158,7 +156,39 @@ export class VLS {
       this.setupDynamicFormatters(config);
     });
 
-    this.documentService.getAllDocuments().forEach(this.triggerValidation);
+    // this.documentService.getAllDocuments().forEach(this.triggerValidation);
+  }
+
+  private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
+    const projectRootPaths = this.veturConfig.projects
+      .map(project => ({
+        rootFsPath: normalizeResolve(this.rootPathForConfig, project.root),
+        tsconfigPath: project.tsconfig,
+        packagePath: project.package
+      }))
+      .sort((a, b) => getPathDepth(b.rootFsPath, '/') - getPathDepth(a.rootFsPath, '/'));
+    const docFsPath = getFileFsPath(uri);
+    const projectConfig = projectRootPaths.find(projectConfig => docFsPath.startsWith(projectConfig.rootFsPath));
+    if (!projectConfig) {
+      return undefined;
+    }
+    if (this.projects.has(projectConfig.rootFsPath)) {
+      return this.projects.get(projectConfig.rootFsPath);
+    }
+
+    const project = await createProjectService(
+      this.rootPathForConfig,
+      this.workspacePath ?? this.rootPathForConfig,
+      projectConfig.rootFsPath,
+      projectConfig.tsconfigPath,
+      projectConfig.packagePath,
+      this.documentService,
+      this.config,
+      this.globalSnippetDir,
+      this.dependencyService
+    );
+    this.projects.set(projectConfig.rootFsPath, project);
+    return project;
   }
 
   private setupLSPHandlers() {
@@ -183,9 +213,9 @@ export class VLS {
   }
 
   private setupCustomLSPHandlers() {
-    this.lspConnection.onRequest('$/queryVirtualFileInfo', ({ fileName, currFileText }) => {
-      return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
-    });
+    // this.lspConnection.onRequest('$/queryVirtualFileInfo', ({ fileName, currFileText }) => {
+    //   return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
+    // });
 
     this.lspConnection.onRequest('$/getDiagnostics', async params => {
       const doc = this.documentService.getDocument(params.uri);
@@ -220,17 +250,18 @@ export class VLS {
       this.lspConnection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
     });
     this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
-      const jsMode = this.languageModes.getMode('javascript');
-      if (!jsMode) {
-        throw Error(`Can't find JS mode.`);
-      }
+      // const jsMode = this.languageModes.getMode('javascript');
+      // if (!jsMode) {
+      //   throw Error(`Can't find JS mode.`);
+      // }
 
-      changes.forEach(c => {
-        if (c.type === FileChangeType.Changed) {
-          const fsPath = getFileFsPath(c.uri);
-          jsMode.onDocumentChanged!(fsPath);
-        }
-      });
+      // changes.forEach(async c => {
+      //   if (c.type === FileChangeType.Changed) {
+      //     const project = await this.getProjectService(c.uri)
+      //     const fsPath = getFileFsPath(c.uri);
+      //     jsMode.onDocumentChanged!(fsPath);
+      //   }
+      // });
 
       this.documentService.getAllDocuments().forEach(d => {
         this.triggerValidation(d);
@@ -251,10 +282,8 @@ export class VLS {
 
     this.templateInterpolationValidation = config.vetur.experimental.templateInterpolationService;
 
-    this.languageModes.getAllModes().forEach(m => {
-      if (m.configure) {
-        m.configure(config);
-      }
+    this.projects.forEach(project => {
+      project.configure(config);
     });
 
     logger.setLevel(config.vetur.dev.logLevel);
@@ -278,244 +307,94 @@ export class VLS {
    * Language Features
    */
 
-  onDocumentFormatting({ textDocument, options }: DocumentFormattingParams): TextEdit[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
+  async onDocumentFormatting(params: DocumentFormattingParams): Promise<TextEdit[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
 
-    const modeRanges = this.languageModes.getAllLanguageModeRangesInDocument(doc);
-    const allEdits: TextEdit[] = [];
-
-    const errMessages: string[] = [];
-
-    modeRanges.forEach(modeRange => {
-      if (modeRange.mode && modeRange.mode.format) {
-        try {
-          const edits = modeRange.mode.format(doc, this.toSimpleRange(modeRange), options);
-          for (const edit of edits) {
-            allEdits.push(edit);
-          }
-        } catch (err) {
-          errMessages.push(err.toString());
-        }
-      }
-    });
-
-    if (errMessages.length !== 0) {
-      this.displayErrorMessage('Formatting failed: "' + errMessages.join('\n') + '"');
-      return [];
-    }
-
-    return allEdits;
+    return project?.onDocumentFormatting(params) ?? [];
   }
 
-  private toSimpleRange(modeRange: LanguageModeRange): Range {
-    return {
-      start: modeRange.start,
-      end: modeRange.end
-    };
+  async onCompletion(params: CompletionParams): Promise<CompletionList> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onCompletion(params) ?? NULL_COMPLETION;
   }
 
-  onCompletion({ textDocument, position, context }: CompletionParams): CompletionList {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, position);
-    if (mode && mode.doComplete) {
-      /**
-       * Only use space as trigger character in `vue-html` mode
-       */
-      if (
-        mode.getId() !== 'vue-html' &&
-        context &&
-        context?.triggerKind === CompletionTriggerKind.TriggerCharacter &&
-        context.triggerCharacter === ' '
-      ) {
-        return NULL_COMPLETION;
-      }
+  async onCompletionResolve(item: CompletionItem): Promise<CompletionItem> {
+    const project = await this.getProjectService(item.data.uri);
 
-      return mode.doComplete(doc, position);
-    }
-
-    return NULL_COMPLETION;
+    return project?.onCompletionResolve(item) ?? item;
   }
 
-  onCompletionResolve(item: CompletionItem): CompletionItem {
-    if (item.data) {
-      const uri: string = item.data.uri;
-      const languageId: LanguageId = item.data.languageId;
+  async onHover(params: TextDocumentPositionParams): Promise<Hover> {
+    const project = await this.getProjectService(params.textDocument.uri);
 
-      /**
-       * Template files need to go through HTML-template service
-       */
-      if (uri.endsWith('.template')) {
-        const doc = this.documentService.getDocument(uri.slice(0, -'.template'.length));
-        const mode = this.languageModes.getMode(languageId);
-        if (doc && mode && mode.doResolve) {
-          return mode.doResolve(doc, item);
-        }
-      }
-
-      if (uri && languageId) {
-        const doc = this.documentService.getDocument(uri);
-        const mode = this.languageModes.getMode(languageId);
-        if (doc && mode && mode.doResolve) {
-          return mode.doResolve(doc, item);
-        }
-      }
-    }
-
-    return item;
+    return project?.onHover(params) ?? NULL_HOVER;
   }
 
-  onHover({ textDocument, position }: TextDocumentPositionParams): Hover {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, position);
-    if (mode && mode.doHover) {
-      return mode.doHover(doc, position);
-    }
-    return NULL_HOVER;
+  async onDocumentHighlight(params: TextDocumentPositionParams): Promise<DocumentHighlight[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onDocumentHighlight(params) ?? [];
   }
 
-  onDocumentHighlight({ textDocument, position }: TextDocumentPositionParams): DocumentHighlight[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, position);
-    if (mode && mode.findDocumentHighlight) {
-      return mode.findDocumentHighlight(doc, position);
-    }
-    return [];
+  async onDefinition(params: TextDocumentPositionParams): Promise<Definition> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onDefinition(params) ?? [];
   }
 
-  onDefinition({ textDocument, position }: TextDocumentPositionParams): Definition {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, position);
-    if (mode && mode.findDefinition) {
-      return mode.findDefinition(doc, position);
-    }
-    return [];
+  async onReferences(params: TextDocumentPositionParams): Promise<Location[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onReferences(params) ?? [];
   }
 
-  onReferences({ textDocument, position }: TextDocumentPositionParams): Location[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, position);
-    if (mode && mode.findReferences) {
-      return mode.findReferences(doc, position);
-    }
-    return [];
+  async onDocumentLinks(params: DocumentLinkParams): Promise<DocumentLink[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onDocumentLinks(params) ?? [];
   }
 
-  onDocumentLinks({ textDocument }: DocumentLinkParams): DocumentLink[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const documentContext: DocumentContext = {
-      resolveReference: ref => {
-        if (this.workspacePath && ref[0] === '/') {
-          return URI.file(path.resolve(this.workspacePath, ref)).toString();
-        }
-        const fsPath = getFileFsPath(doc.uri);
-        return URI.file(path.resolve(fsPath, '..', ref)).toString();
-      }
-    };
+  async onDocumentSymbol(params: DocumentSymbolParams): Promise<SymbolInformation[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
 
-    const links: DocumentLink[] = [];
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
-      if (m.mode.findDocumentLinks) {
-        pushAll(links, m.mode.findDocumentLinks(doc, documentContext));
-      }
-    });
-    return links;
+    return project?.onDocumentSymbol(params) ?? [];
   }
 
-  onDocumentSymbol({ textDocument }: DocumentSymbolParams): SymbolInformation[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const symbols: SymbolInformation[] = [];
+  async onDocumentColors(params: DocumentColorParams): Promise<ColorInformation[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
 
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
-      if (m.mode.findDocumentSymbols) {
-        pushAll(symbols, m.mode.findDocumentSymbols(doc));
-      }
-    });
-    return symbols;
+    return project?.onDocumentColors(params) ?? [];
   }
 
-  onDocumentColors({ textDocument }: DocumentColorParams): ColorInformation[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const colors: ColorInformation[] = [];
+  async onColorPresentations(params: ColorPresentationParams): Promise<ColorPresentation[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
 
-    const distinctModes: Set<LanguageMode> = new Set();
-    this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
-      distinctModes.add(m.mode);
-    });
-
-    for (const mode of distinctModes) {
-      if (mode.findDocumentColors) {
-        pushAll(colors, mode.findDocumentColors(doc));
-      }
-    }
-
-    return colors;
+    return project?.onColorPresentations(params) ?? [];
   }
 
-  onColorPresentations({ textDocument, color, range }: ColorPresentationParams): ColorPresentation[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, range.start);
-    if (mode && mode.getColorPresentations) {
-      return mode.getColorPresentations(doc, color, range);
-    }
-    return [];
+  async onSignatureHelp(params: TextDocumentPositionParams): Promise<SignatureHelp | null> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onSignatureHelp(params) ?? NULL_SIGNATURE;
   }
 
-  onSignatureHelp({ textDocument, position }: TextDocumentPositionParams): SignatureHelp | null {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, position);
-    if (mode && mode.doSignatureHelp) {
-      return mode.doSignatureHelp(doc, position);
-    }
-    return NULL_SIGNATURE;
+  async onFoldingRanges(params: FoldingRangeParams): Promise<FoldingRange[]> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onFoldingRanges(params) ?? [];
   }
 
-  onFoldingRanges({ textDocument }: FoldingRangeParams): FoldingRange[] {
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const lmrs = this.languageModes.getAllLanguageModeRangesInDocument(doc);
+  async onCodeAction(params: CodeActionParams) {
+    const project = await this.getProjectService(params.textDocument.uri);
 
-    const result: FoldingRange[] = [];
-
-    lmrs.forEach(lmr => {
-      if (lmr.mode.getFoldingRanges) {
-        lmr.mode.getFoldingRanges(doc).forEach(r => result.push(r));
-      }
-
-      result.push({
-        startLine: lmr.start.line,
-        startCharacter: lmr.start.character,
-        endLine: lmr.end.line,
-        endCharacter: lmr.end.character
-      });
-    });
-
-    return result;
+    return project?.onCodeAction(params) ?? [];
   }
 
-  onCodeAction({ textDocument, range, context }: CodeActionParams) {
-    if (!this.config.vetur.languageFeatures.codeActions) {
-      return [];
-    }
+  async getRefactorEdits(refactorAction: RefactorAction) {
+    const project = await this.getProjectService(URI.file(refactorAction.fileName).toString());
 
-    const doc = this.documentService.getDocument(textDocument.uri)!;
-    const mode = this.languageModes.getModeAtPosition(doc, range.start);
-    if (this.languageModes.getModeAtPosition(doc, range.end) !== mode) {
-      return [];
-    }
-    if (mode && mode.getCodeActions) {
-      return mode.getCodeActions(doc, range, /*formatParams*/ {} as any, context);
-    }
-    return [];
-  }
-
-  getRefactorEdits(refactorAction: RefactorAction) {
-    const uri = URI.file(refactorAction.fileName).toString();
-    const doc = this.documentService.getDocument(uri)!;
-    const startPos = doc.positionAt(refactorAction.textRange.pos);
-    const mode = this.languageModes.getModeAtPosition(doc, startPos);
-    if (mode && mode.getRefactorEdits) {
-      return mode.getRefactorEdits(doc, refactorAction);
-    }
-    return undefined;
+    return project?.getRefactorEdits(refactorAction) ?? undefined;
   }
 
   private triggerValidation(textDocument: TextDocument): void {
@@ -558,30 +437,16 @@ export class VLS {
   }
 
   async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
-    const diagnostics: Diagnostic[] = [];
-    if (doc.languageId === 'vue') {
-      for (const lmr of this.languageModes.getAllLanguageModeRangesInDocument(doc)) {
-        if (lmr.mode.doValidation) {
-          if (this.validation[lmr.mode.getId()]) {
-            pushAll(diagnostics, await lmr.mode.doValidation(doc, cancellationToken));
-          }
-          // Special case for template type checking
-          else if (lmr.mode.getId() === 'vue-html' && this.templateInterpolationValidation) {
-            pushAll(diagnostics, await lmr.mode.doValidation(doc, cancellationToken));
-          }
-        }
-      }
-    }
-    if (cancellationToken?.isCancellationRequested) {
-      return null;
-    }
-    return diagnostics;
+    const project = await this.getProjectService(doc.uri);
+
+    return project?.doValidate(doc, cancellationToken) ?? null;
   }
 
   async executeCommand(arg: ExecuteCommandParams) {
     if (arg.command === APPLY_REFACTOR_COMMAND && arg.arguments) {
       const edit = this.getRefactorEdits(arg.arguments[0] as RefactorAction);
       if (edit) {
+        // @ts-expect-error
         this.lspConnection.sendRequest(ApplyWorkspaceEditRequest.type, { edit });
       }
       return;
@@ -591,11 +456,13 @@ export class VLS {
   }
 
   removeDocument(doc: TextDocument): void {
-    this.languageModes.onDocumentRemoved(doc);
+    // this.languageModes.onDocumentRemoved(doc);
   }
 
   dispose(): void {
-    this.languageModes.dispose();
+    this.projects.forEach(project => {
+      project.dispose();
+    });
   }
 
   get capabilities(): ServerCapabilities {
@@ -619,13 +486,5 @@ export class VLS {
       },
       foldingRangeProvider: true
     };
-  }
-}
-
-function pushAll<T>(to: T[], from: T[]) {
-  if (from) {
-    for (let i = 0; i < from.length; i++) {
-      to.push(from[i]);
-    }
   }
 }

@@ -17,8 +17,8 @@ function floatVersionToEnum(v: number) {
   }
 }
 
-export function inferVueVersion(workspacePath: string): VueVersion {
-  const packageJSONPath = findConfigFile(workspacePath, 'package.json');
+export function inferVueVersion(workspacePath: string, packagePath: string | undefined): VueVersion {
+  const packageJSONPath = packagePath ?? findConfigFile(workspacePath, 'package.json');
   try {
     const packageJSON = packageJSONPath && JSON.parse(readFileSync(packageJSONPath, { encoding: 'utf-8' }));
     const vueDependencyVersion = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;

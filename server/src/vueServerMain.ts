@@ -3,8 +3,8 @@ import { VLS } from './services/vls';
 
 const connection = process.argv.length <= 2 ? createConnection(process.stdin, process.stdout) : createConnection();
 
-console.log = connection.console.log.bind(connection.console);
-console.error = connection.console.error.bind(connection.console);
+console.log = (...args: any[]) => connection.console.log(args.join(' '));
+console.error = (...args: any[]) => connection.console.error(args.join(' '));
 
 const vls = new VLS(connection);
 connection.onInitialize(

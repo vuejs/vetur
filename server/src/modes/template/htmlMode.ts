@@ -42,14 +42,15 @@ export class HTMLMode implements LanguageMode {
 
   constructor(
     documentRegions: LanguageModelCache<VueDocumentRegions>,
-    workspacePath: string | undefined,
+    projectPath: string | undefined,
+    packagePath: string | undefined,
     vueVersion: VueVersion,
     private dependencyService: DependencyService,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
     private autoImportVueService: AutoImportVueService,
     private vueInfoService?: VueInfoService
   ) {
-    this.tagProviderSettings = getTagProviderSettings(workspacePath);
+    this.tagProviderSettings = getTagProviderSettings(projectPath, packagePath);
     this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
     this.embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
       documentRegions.refreshAndGet(document).getSingleLanguageDocument('vue-html')

@@ -25,16 +25,18 @@ export class VueHTMLMode implements LanguageMode {
     tsModule: RuntimeLibrary['typescript'],
     serviceHost: IServiceHost,
     documentRegions: DocumentRegionCache,
-    workspacePath: string,
+    projectPath: string,
+    packagePath: string | undefined,
     autoImportVueService: AutoImportVueService,
     dependencyService: DependencyService,
     vueInfoService?: VueInfoService
   ) {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
-    const vueVersion = inferVueVersion(workspacePath);
+    const vueVersion = inferVueVersion(projectPath, packagePath);
     this.htmlMode = new HTMLMode(
       documentRegions,
-      workspacePath,
+      projectPath,
+      packagePath,
       vueVersion,
       dependencyService,
       vueDocuments,

@@ -85,7 +85,9 @@ export interface IServiceHost {
  */
 export function getServiceHost(
   tsModule: RuntimeLibrary['typescript'],
-  workspacePath: string,
+  projectPath: string,
+  tsconfigPath: string | undefined,
+  packagePath: string | undefined,
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ): IServiceHost {
   patchTS(tsModule);
@@ -99,7 +101,7 @@ export function getServiceHost(
   const projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
   const moduleResolutionCache = new ModuleResolutionCache();
 
-  const parsedConfig = getParsedConfig(tsModule, workspacePath);
+  const parsedConfig = getParsedConfig(tsModule, projectPath, tsconfigPath);
   /**
    * Only js/ts files in local project
    */
@@ -111,7 +113,7 @@ export function getServiceHost(
 
   const vueSys = getVueSys(tsModule, scriptFileNameSet);
 
-  const vueVersion = inferVueVersion(workspacePath);
+  const vueVersion = inferVueVersion(projectPath, packagePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
@@ -207,7 +209,7 @@ export function getServiceHost(
     if (
       isExcludedFile &&
       configFileSpecs &&
-      isExcludedFile(fileFsPath, configFileSpecs, workspacePath, true, workspacePath)
+      isExcludedFile(fileFsPath, configFileSpecs, projectPath, true, projectPath)
     ) {
       return;
     }
@@ -430,7 +432,7 @@ export function getServiceHost(
           getChangeRange: () => void 0
         };
       },
-      getCurrentDirectory: () => workspacePath,
+      getCurrentDirectory: () => projectPath,
       getDefaultLibFileName: tsModule.getDefaultLibFilePath,
       getNewLine: () => NEWLINE,
       useCaseSensitiveFileNames: () => true
@@ -509,18 +511,20 @@ function getScriptKind(tsModule: RuntimeLibrary['typescript'], langId: string): 
     : tsModule.ScriptKind.JS;
 }
 
-function getParsedConfig(tsModule: RuntimeLibrary['typescript'], workspacePath: string) {
-  const configFilename =
-    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
-    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'jsconfig.json');
+function getParsedConfig(
+  tsModule: RuntimeLibrary['typescript'],
+  projectPath: string,
+  tsconfigPath: string | undefined
+) {
+  const configFilename = tsconfigPath;
   const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
-    exclude: defaultIgnorePatterns(tsModule, workspacePath)
+    exclude: defaultIgnorePatterns(tsModule, projectPath)
   };
   // existingOptions should be empty since it always takes priority
   return tsModule.parseJsonConfigFileContent(
     configJson,
     tsModule.sys,
-    workspacePath,
+    projectPath,
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,

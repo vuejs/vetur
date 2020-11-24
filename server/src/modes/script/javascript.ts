@@ -57,15 +57,9 @@ export const APPLY_REFACTOR_COMMAND = 'vetur.applyRefactorCommand';
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
-  workspacePath: string | undefined,
   dependencyService: DependencyService,
   vueInfoService?: VueInfoService
 ): Promise<LanguageMode> {
-  if (!workspacePath) {
-    return {
-      ...nullMode
-    };
-  }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.refreshAndGet(document);
     return vueDocument.getSingleTypeDocument('script');

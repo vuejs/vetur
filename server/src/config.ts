@@ -1,3 +1,8 @@
+import path from 'path';
+import { getPathDepth, normalizeFileNameToFsPath, normalizeResolve } from './utils/paths';
+import fg from 'fast-glob';
+import { findConfigFile } from './utils/workspace';
+
 export interface VLSFormatConfig {
   defaultFormatter: {
     [lang: string]: string;
@@ -140,4 +145,76 @@ export function getDefaultVLSConfig(): VLSFullConfig {
     emmet: {},
     stylusSupremacy: {}
   };
+}
+
+export interface Component {
+  name: string;
+  path: string;
+}
+
+export type Glob = string;
+
+export interface VeturProject<C = Component | Glob> {
+  root: string;
+  package?: string;
+  tsconfig?: string;
+  globalComponents: C[];
+}
+
+export interface VeturFullConfig {
+  settings: Record<string, boolean | string | number>;
+  projects: VeturProject<Component>[];
+}
+
+export type VeturConfig = Partial<Pick<VeturFullConfig, 'settings'>> & {
+  projects?: Array<string | (Pick<VeturProject, 'root'> & Partial<VeturProject>)>
+};
+
+export async function getVeturFullConfig (
+  rootPathForConfig: string,
+  workspacePath: string,
+  veturConfig: VeturConfig
+): Promise<VeturFullConfig> {
+  const oldProjects = veturConfig.projects ?? [workspacePath];
+  const projects = oldProjects.map((project) => {
+    const getFallbackPackagePath = (projectRoot: string) => {
+      const fallbackPackage = findConfigFile(projectRoot, 'package.json');
+      return (fallbackPackage ? normalizeFileNameToFsPath(fallbackPackage) : undefined);
+    };
+
+    if (typeof project === 'string') {
+      const projectRoot = normalizeResolve(rootPathForConfig, project);
+      const tsconfigPath = findConfigFile(projectRoot, 'tsconfig.json') ?? findConfigFile(projectRoot, 'jsconfig.json');
+
+      return {
+        root: projectRoot,
+        package: getFallbackPackagePath(projectRoot),
+        tsconfig: tsconfigPath ? normalizeFileNameToFsPath(tsconfigPath) : undefined,
+        globalComponents: []
+      } as VeturProject;
+    }
+
+    const projectRoot = normalizeResolve(rootPathForConfig, project.root);
+    return {
+      root: projectRoot,
+      package: project.package ?? getFallbackPackagePath(projectRoot),
+      tsconfig: project.tsconfig ?? undefined,
+      globalComponents: project.globalComponents
+        ?.map(comp => {
+          if (typeof comp === 'string') {
+            return fg.sync(comp, { cwd: normalizeResolve(rootPathForConfig, projectRoot) })
+              .map(fileName => ({
+                name: path.basename(fileName, path.extname(fileName)),
+                path: normalizeFileNameToFsPath(fileName)
+              }));
+          }
+          return comp;
+        }) ?? []
+    } as VeturProject<Component>;
+  }).sort((a, b) => getPathDepth(b.root, '/') - getPathDepth(a.root, '/'));
+
+  return {
+    settings: veturConfig.settings ?? {},
+    projects
+  } as VeturFullConfig;
 }

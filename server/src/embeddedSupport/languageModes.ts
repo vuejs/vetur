@@ -111,7 +111,14 @@ export class LanguageModes {
     this.modelCaches.push(this.documentRegions);
   }
 
-  async init(workspacePath: string, services: VLSServices, globalSnippetDir?: string) {
+  async init(
+    workspacePath: string,
+    projectPath: string,
+    tsconfigPath: string | undefined,
+    packagePath: string | undefined,
+    services: VLSServices,
+    globalSnippetDir?: string
+  ) {
     const tsModule = services.dependencyService.get('typescript').module;
 
     /**
@@ -121,7 +128,7 @@ export class LanguageModes {
       const vueDocument = this.documentRegions.refreshAndGet(document);
       return vueDocument.getSingleTypeDocument('script');
     });
-    this.serviceHost = getServiceHost(tsModule, workspacePath, scriptRegionDocuments);
+    this.serviceHost = getServiceHost(tsModule, projectPath, tsconfigPath, packagePath, scriptRegionDocuments);
     const autoImportVueService = createAutoImportVueService(tsModule, services.infoService);
     autoImportVueService.setGetTSScriptTarget(() => this.serviceHost.getComplierOptions().target);
     autoImportVueService.setGetFilesFn(() =>
@@ -132,7 +139,8 @@ export class LanguageModes {
       tsModule,
       this.serviceHost,
       this.documentRegions,
-      workspacePath,
+      projectPath,
+      packagePath,
       autoImportVueService,
       services.dependencyService,
       services.infoService
@@ -141,7 +149,6 @@ export class LanguageModes {
     const jsMode = await getJavascriptMode(
       this.serviceHost,
       this.documentRegions,
-      workspacePath,
       services.dependencyService,
       services.infoService
     );

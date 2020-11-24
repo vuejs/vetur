@@ -147,10 +147,6 @@ function getPrettierOptions(
     prettierrcOptions.tabWidth = prettierrcOptions.tabWidth || vlsFormatConfig.options.tabSize;
     prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
     prettierrcOptions.parser = parser;
-    if (dependencyService.useWorkspaceDependencies) {
-      // For loading plugins such as @prettier/plugin-pug
-      (prettierrcOptions as { pluginSearchDirs: string[] }).pluginSearchDirs = [dependencyService.workspacePath];
-    }
 
     return prettierrcOptions;
   } else {
@@ -158,10 +154,6 @@ function getPrettierOptions(
     vscodePrettierOptions.tabWidth = vscodePrettierOptions.tabWidth || vlsFormatConfig.options.tabSize;
     vscodePrettierOptions.useTabs = vscodePrettierOptions.useTabs || vlsFormatConfig.options.useTabs;
     vscodePrettierOptions.parser = parser;
-    if (dependencyService.useWorkspaceDependencies) {
-      // For loading plugins such as @prettier/plugin-pug
-      vscodePrettierOptions.pluginSearchDirs = [dependencyService.workspacePath];
-    }
 
     return vscodePrettierOptions;
   }

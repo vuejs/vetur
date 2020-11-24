@@ -12,14 +12,15 @@ import stylusSupremacy from 'stylus-supremacy';
 import * as prettierPluginPug from '@prettier/plugin-pug';
 import { performance } from 'perf_hooks';
 import { logger } from '../log';
+import { getPathDepth } from '../utils/paths';
 
 const readFileAsync = util.promisify(fs.readFile);
 const accessFileAsync = util.promisify(fs.access);
 
-async function createNodeModulesPaths(workspacePath: string) {
+async function createNodeModulesPaths(rootPath: string) {
   const startTime = performance.now();
   const nodeModules = await fg('**/node_modules', {
-    cwd: workspacePath.replace(/\\/g, '/'),
+    cwd: rootPath.replace(/\\/g, '/'),
     absolute: true,
     unique: true,
     onlyFiles: false,
@@ -29,7 +30,7 @@ async function createNodeModulesPaths(workspacePath: string) {
     ignore: ['**/node_modules/**/node_modules']
   });
 
-  logger.logInfo(`Find node_modules paths in ${workspacePath} - ${Math.round(performance.now() - startTime)}ms`);
+  logger.logInfo(`Find node_modules paths in ${rootPath} - ${Math.round(performance.now() - startTime)}ms`);
   return nodeModules;
 }
 
@@ -62,13 +63,9 @@ async function findAllPackages(nodeModulesPaths: string[], moduleName: string) {
   return packages;
 }
 
-function getPathDepth(filePath: string) {
-  return filePath.split(path.sep).length;
-}
-
 function compareDependency<M>(a: Dependency<M>, b: Dependency<M>) {
-  const aDepth = getPathDepth(a.dir);
-  const bDepth = getPathDepth(b.dir);
+  const aDepth = getPathDepth(a.dir, path.sep);
+  const bDepth = getPathDepth(b.dir, path.sep);
 
   return bDepth - aDepth;
 }
@@ -92,15 +89,20 @@ export interface RuntimeLibrary {
 
 export interface DependencyService {
   useWorkspaceDependencies: boolean;
-  workspacePath: string;
-  init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath?: string): Promise<void>;
+  init(
+    rootPathForConfig: string,
+    workspacePath: string,
+    useWorkspaceDependencies: boolean,
+    tsSDKPath?: string
+  ): Promise<void>;
   get<L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]>;
   getBundled<L extends keyof RuntimeLibrary>(lib: L): Dependency<RuntimeLibrary[L]>;
 }
 
-export const createDependencyService = () => {
-  let useWorkspaceDeps: boolean;
-  let rootPath: string;
+export const createDependencyService = (): DependencyService => {
+  let $useWorkspaceDependencies: boolean;
+  let $rootPathForConfig: string;
+  let $workspacePath: string;
   let loaded: { [K in keyof RuntimeLibrary]: Dependency<RuntimeLibrary[K]>[] };
 
   const bundledModules = {
@@ -113,8 +115,13 @@ export const createDependencyService = () => {
     '@prettier/plugin-pug': prettierPluginPug
   };
 
-  async function init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath?: string) {
-    const nodeModulesPaths = useWorkspaceDependencies ? await createNodeModulesPaths(workspacePath) : [];
+  async function init(
+    rootPathForConfig: string,
+    workspacePath: string,
+    useWorkspaceDependencies: boolean,
+    tsSDKPath?: string
+  ) {
+    const nodeModulesPaths = useWorkspaceDependencies ? await createNodeModulesPaths(rootPathForConfig) : [];
 
     const loadTypeScript = async (): Promise<Dependency<typeof ts>[]> => {
       try {
@@ -138,7 +145,7 @@ export const createDependencyService = () => {
         if (useWorkspaceDependencies) {
           const packages = await findAllPackages(nodeModulesPaths, 'typescript');
           if (packages.length === 0) {
-            throw new Error(`No find any packages in ${workspacePath}.`);
+            throw new Error(`No find any packages in ${rootPathForConfig}.`);
           }
 
           return packages
@@ -175,7 +182,7 @@ export const createDependencyService = () => {
         if (useWorkspaceDependencies) {
           const packages = await findAllPackages(nodeModulesPaths, name);
           if (packages.length === 0) {
-            throw new Error(`No find ${name} packages in ${workspacePath}.`);
+            throw new Error(`No find ${name} packages in ${rootPathForConfig}.`);
           }
 
           return packages
@@ -207,8 +214,9 @@ export const createDependencyService = () => {
       }
     };
 
-    useWorkspaceDeps = useWorkspaceDependencies;
-    rootPath = workspacePath;
+    $useWorkspaceDependencies = useWorkspaceDependencies;
+    $workspacePath = workspacePath;
+    $rootPathForConfig = rootPathForConfig;
     loaded = {
       typescript: await loadTypeScript(),
       prettier: await loadCommonDep('prettier', bundledModules['prettier']),
@@ -237,7 +245,10 @@ export const createDependencyService = () => {
 
     const possiblePaths: string[] = [];
     let tempPath = path.dirname(filePath);
-    while (rootPath === tempPath || getPathDepth(rootPath) > getPathDepth(tempPath)) {
+    while (
+      $rootPathForConfig === tempPath ||
+      getPathDepth($rootPathForConfig, path.sep) > getPathDepth(tempPath, path.sep)
+    ) {
       possiblePaths.push(path.resolve(tempPath, `node_modules/${lib}`));
       tempPath = path.resolve(tempPath, '../');
     }
@@ -257,10 +268,7 @@ export const createDependencyService = () => {
 
   return {
     get useWorkspaceDependencies() {
-      return useWorkspaceDeps;
-    },
-    get workspacePath() {
-      return rootPath;
+      return $useWorkspaceDependencies;
     },
     init,
     get,
