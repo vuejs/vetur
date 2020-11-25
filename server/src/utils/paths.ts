@@ -64,7 +64,7 @@ export function normalizeFileNameToFsPath(fileName: string) {
   return URI.file(fileName).fsPath;
 }
 
-export function normalizeResolve(...paths: string[]) {
+export function normalizeFileNameResolve(...paths: string[]) {
   return normalizeFileNameToFsPath(resolve(...paths));
 }
 

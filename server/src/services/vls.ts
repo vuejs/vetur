@@ -4,7 +4,7 @@ import {
   getFsPathToUri,
   getPathDepth,
   normalizeFileNameToFsPath,
-  normalizeResolve
+  normalizeFileNameResolve
 } from '../utils/paths';
 
 import {
@@ -162,7 +162,7 @@ export class VLS {
   private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
     const projectRootPaths = this.veturConfig.projects
       .map(project => ({
-        rootFsPath: normalizeResolve(this.rootPathForConfig, project.root),
+        rootFsPath: normalizeFileNameResolve(this.rootPathForConfig, project.root),
         tsconfigPath: project.tsconfig,
         packagePath: project.package,
         globalComponents: project.globalComponents

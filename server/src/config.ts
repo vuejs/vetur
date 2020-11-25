@@ -1,5 +1,5 @@
 import path from 'path';
-import { getPathDepth, normalizeFileNameToFsPath, normalizeResolve } from './utils/paths';
+import { getPathDepth, normalizeFileNameToFsPath, normalizeFileNameResolve } from './utils/paths';
 import fg from 'fast-glob';
 import { findConfigFile } from './utils/workspace';
 import { flatten } from 'lodash';
@@ -185,7 +185,7 @@ export async function getVeturFullConfig(
       };
 
       if (typeof project === 'string') {
-        const projectRoot = normalizeResolve(rootPathForConfig, project);
+        const projectRoot = normalizeFileNameResolve(rootPathForConfig, project);
         const tsconfigPath =
           findConfigFile(projectRoot, 'tsconfig.json') ?? findConfigFile(projectRoot, 'jsconfig.json');
 
@@ -197,7 +197,7 @@ export async function getVeturFullConfig(
         } as VeturProject;
       }
 
-      const projectRoot = normalizeResolve(rootPathForConfig, project.root);
+      const projectRoot = normalizeFileNameResolve(rootPathForConfig, project.root);
       return {
         root: projectRoot,
         package: project.package ?? getFallbackPackagePath(projectRoot),
@@ -206,7 +206,7 @@ export async function getVeturFullConfig(
           project.globalComponents?.map(comp => {
             if (typeof comp === 'string') {
               return fg
-                .sync(comp, { cwd: normalizeResolve(rootPathForConfig, projectRoot), absolute: true })
+                .sync(comp, { cwd: normalizeFileNameResolve(rootPathForConfig, projectRoot), absolute: true })
                 .map(fileName => ({
                   name: path.basename(fileName, path.extname(fileName)),
                   path: normalizeFileNameToFsPath(fileName)
