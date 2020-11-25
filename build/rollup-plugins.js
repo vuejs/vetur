@@ -97,7 +97,15 @@ function bundleVlsWithEsbuild() {
           /**
            * The VLS is crash when bundle it.
            */
-          'eslint'
+          'eslint',
+          /**
+           * prettier-eslint and prettier-tslint need it.
+           */
+          'prettier',
+          /**
+           * prettier-tslint need it.
+           */
+          'tslint'
         ],
         format: 'cjs',
         tsconfig: getServerPath('tsconfig.json'),
