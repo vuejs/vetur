@@ -1,5 +1,11 @@
 import path from 'path';
-import { getFileFsPath, getPathDepth, normalizeFileNameToFsPath, normalizeResolve } from '../utils/paths';
+import {
+  getFileFsPath,
+  getFsPathToUri,
+  getPathDepth,
+  normalizeFileNameToFsPath,
+  normalizeResolve
+} from '../utils/paths';
 
 import {
   DidChangeConfigurationParams,
@@ -66,10 +72,7 @@ export class VLS {
   private rootPathForConfig: string;
   private globalSnippetDir: string;
   private projects: Map<string, ProjectService>;
-  // private vueInfoService: VueInfoService;
   private dependencyService: DependencyService;
-
-  // private languageModes: LanguageModes;
 
   private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
   private cancellationTokenValidationRequests: { [uri: string]: VCancellationTokenSource } = {};
@@ -91,10 +94,7 @@ export class VLS {
 
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
-    // this.vueInfoService = new VueInfoService();
     this.dependencyService = createDependencyService();
-
-    // this.languageModes = new LanguageModes();
   }
 
   async init(params: InitializeParams) {
@@ -156,7 +156,7 @@ export class VLS {
       this.setupDynamicFormatters(config);
     });
 
-    // this.documentService.getAllDocuments().forEach(this.triggerValidation);
+    this.documentService.getAllDocuments().forEach(this.triggerValidation);
   }
 
   private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
@@ -164,7 +164,8 @@ export class VLS {
       .map(project => ({
         rootFsPath: normalizeResolve(this.rootPathForConfig, project.root),
         tsconfigPath: project.tsconfig,
-        packagePath: project.package
+        packagePath: project.package,
+        globalComponents: project.globalComponents
       }))
       .sort((a, b) => getPathDepth(b.rootFsPath, '/') - getPathDepth(a.rootFsPath, '/'));
     const docFsPath = getFileFsPath(uri);
@@ -182,6 +183,7 @@ export class VLS {
       projectConfig.rootFsPath,
       projectConfig.tsconfigPath,
       projectConfig.packagePath,
+      projectConfig.globalComponents,
       this.documentService,
       this.config,
       this.globalSnippetDir,
@@ -213,9 +215,10 @@ export class VLS {
   }
 
   private setupCustomLSPHandlers() {
-    // this.lspConnection.onRequest('$/queryVirtualFileInfo', ({ fileName, currFileText }) => {
-    //   return (this.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
-    // });
+    this.lspConnection.onRequest('$/queryVirtualFileInfo', async ({ fileName, currFileText }) => {
+      const project = await this.getProjectService(getFsPathToUri(fileName));
+      return (project?.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);
+    });
 
     this.lspConnection.onRequest('$/getDiagnostics', async params => {
       const doc = this.documentService.getDocument(params.uri);
@@ -250,18 +253,14 @@ export class VLS {
       this.lspConnection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
     });
     this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
-      // const jsMode = this.languageModes.getMode('javascript');
-      // if (!jsMode) {
-      //   throw Error(`Can't find JS mode.`);
-      // }
-
-      // changes.forEach(async c => {
-      //   if (c.type === FileChangeType.Changed) {
-      //     const project = await this.getProjectService(c.uri)
-      //     const fsPath = getFileFsPath(c.uri);
-      //     jsMode.onDocumentChanged!(fsPath);
-      //   }
-      // });
+      changes.forEach(async c => {
+        if (c.type === FileChangeType.Changed) {
+          const project = await this.getProjectService(c.uri);
+          const jsMode = project?.languageModes.getMode('javascript');
+          const fsPath = getFileFsPath(c.uri);
+          jsMode?.onDocumentChanged!(fsPath);
+        }
+      });
 
       this.documentService.getAllDocuments().forEach(d => {
         this.triggerValidation(d);
@@ -455,8 +454,9 @@ export class VLS {
     logger.logInfo(`Unknown command ${arg.command}.`);
   }
 
-  removeDocument(doc: TextDocument): void {
-    // this.languageModes.onDocumentRemoved(doc);
+  async removeDocument(doc: TextDocument): Promise<void> {
+    const project = await this.getProjectService(doc.uri);
+    project?.languageModes.onDocumentRemoved(doc);
   }
 
   dispose(): void {

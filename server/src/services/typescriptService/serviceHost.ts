@@ -518,6 +518,7 @@ function getParsedConfig(
 ) {
   const configFilename = tsconfigPath;
   const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
+    include: ['**/*.vue'],
     exclude: defaultIgnorePatterns(tsModule, projectPath)
   };
   // existingOptions should be empty since it always takes priority

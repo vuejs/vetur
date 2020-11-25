@@ -38,7 +38,7 @@ import type ts from 'typescript';
 import _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
-import { VLSFormatConfig } from '../../config';
+import { BasicComponentInfo, VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
@@ -58,6 +58,7 @@ export async function getJavascriptMode(
   serviceHost: IServiceHost,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   dependencyService: DependencyService,
+  globalComponentInfos: BasicComponentInfo[],
   vueInfoService?: VueInfoService
 ): Promise<LanguageMode> {
   const jsDocuments = getLanguageModelCache(10, 60, document => {
@@ -128,7 +129,7 @@ export async function getJavascriptMode(
 
       const { service } = updateCurrentVueTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(tsModule, service, fileFsPath, config);
+      const info = getComponentInfo(tsModule, service, fileFsPath, globalComponentInfos, config);
       if (info) {
         vueInfoService.updateInfo(doc, info);
       }

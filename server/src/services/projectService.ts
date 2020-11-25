@@ -29,19 +29,20 @@ import {
 } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
-import { VLSConfig, VLSFullConfig } from '../config';
+import { BasicComponentInfo, VLSConfig, VLSFullConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { LanguageMode, LanguageModes } from '../embeddedSupport/languageModes';
 import { logger } from '../log';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { DocumentContext, RefactorAction } from '../types';
 import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
-import { getFileFsPath } from '../utils/paths';
+import { getFileFsPath, getFsPathToUri } from '../utils/paths';
 import { DependencyService } from './dependencyService';
 import { DocumentService } from './documentService';
 import { VueInfoService } from './vueInfoService';
 
 export interface ProjectService {
+  languageModes: LanguageModes;
   configure(config: VLSFullConfig): void;
   onDocumentFormatting(params: DocumentFormattingParams): Promise<TextEdit[]>;
   onCompletion(params: CompletionParams): Promise<CompletionList>;
@@ -68,6 +69,7 @@ export async function createProjectService(
   projectPath: string,
   tsconfigPath: string | undefined,
   packagePath: string | undefined,
+  globalComponentInfos: BasicComponentInfo[],
   documentService: DocumentService,
   initialConfig: VLSConfig,
   globalSnippetDir: string | undefined,
@@ -97,6 +99,7 @@ export async function createProjectService(
     projectPath,
     tsconfigPath,
     packagePath,
+    globalComponentInfos,
     {
       infoService: vueInfoService,
       dependencyService
@@ -116,6 +119,7 @@ export async function createProjectService(
 
   return {
     configure,
+    languageModes,
     async onDocumentFormatting({ textDocument, options }) {
       const doc = documentService.getDocument(textDocument.uri)!;
 

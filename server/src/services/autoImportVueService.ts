@@ -14,7 +14,7 @@ export interface AutoImportVueService {
   setGetConfigure(fn: () => VLSFullConfig): void;
   setGetFilesFn(fn: () => string[]): void;
   setGetJSResolve(fn: (doc: TextDocument, item: CompletionItem) => CompletionItem): void;
-  setGetTSScriptTarget (fn: () => ts.ScriptTarget | undefined): void;
+  setGetTSScriptTarget(fn: () => ts.ScriptTarget | undefined): void;
   doComplete(document: TextDocument): CompletionItem[];
   isMyResolve(item: CompletionItem): boolean;
   doResolve(document: TextDocument, item: CompletionItem): CompletionItem;
@@ -98,7 +98,7 @@ export function createAutoImportVueService(
     setGetJSResolve(fn) {
       getJSResolve = fn;
     },
-    setGetTSScriptTarget (fn) {
+    setGetTSScriptTarget(fn) {
       getTSScriptTarget = fn;
     },
     doComplete(document): CompletionItem[] {
@@ -149,7 +149,7 @@ import ${upperFirst(camelCase(tagName))} from '${fileName}'
       }
 
       const componentDefine = componentInfo?.componentsDefine;
-      const childComponents = componentInfo?.childComponents;
+      const childComponents = componentInfo?.childComponents?.filter(c => !c.global);
       const nameForTriggerResolveInTs = modulePathToValidIdentifier(
         tsModule,
         item.data.path,

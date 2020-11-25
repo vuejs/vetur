@@ -1,4 +1,5 @@
 import type ts from 'typescript';
+import { BasicComponentInfo } from '../../config';
 import { RuntimeLibrary } from '../../services/dependencyService';
 import {
   VueFileInfo,
@@ -9,11 +10,13 @@ import {
   ChildComponent
 } from '../../services/vueInfoService';
 import { analyzeComponentsDefine } from './childComponents';
+import { getGlobalComponents } from './globalComponents';
 
 export function getComponentInfo(
   tsModule: RuntimeLibrary['typescript'],
   service: ts.LanguageService,
   fileFsPath: string,
+  globalComponentInfos: BasicComponentInfo[],
   config: any
 ): VueFileInfo | undefined {
   const program = service.getProgram();
@@ -51,11 +54,26 @@ export function getComponentInfo(
         name: c.name,
         documentation: c.documentation,
         definition: c.definition,
+        global: false,
         info: c.defaultExportNode ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker) : undefined
       });
     });
     vueFileInfo.componentInfo.childComponents = childComponents;
     vueFileInfo.componentInfo.componentsDefine = defineInfo;
+  }
+
+  const globalComponents = getGlobalComponents(tsModule, service, globalComponentInfos);
+  if (globalComponents.length > 0) {
+    vueFileInfo.componentInfo.childComponents = [
+      ...(vueFileInfo.componentInfo.childComponents ?? []),
+      ...globalComponents.map(c => ({
+        name: c.name,
+        documentation: c.documentation,
+        definition: c.definition,
+        global: true,
+        info: c.defaultExportNode ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker) : undefined
+      }))
+    ];
   }
 
   return vueFileInfo;

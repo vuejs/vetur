@@ -46,6 +46,7 @@ export interface ChildComponent {
     start: number;
     end: number;
   };
+  global: boolean;
   info?: VueFileInfo;
 }
 

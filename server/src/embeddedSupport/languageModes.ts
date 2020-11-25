@@ -35,7 +35,7 @@ import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
-import { VLSFullConfig } from '../config';
+import { BasicComponentInfo, VLSFullConfig } from '../config';
 import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 import { getPugMode } from '../modes/pug';
 import { VCancellationToken } from '../utils/cancellationToken';
@@ -116,6 +116,7 @@ export class LanguageModes {
     projectPath: string,
     tsconfigPath: string | undefined,
     packagePath: string | undefined,
+    globalComponentInfos: BasicComponentInfo[],
     services: VLSServices,
     globalSnippetDir?: string
   ) {
@@ -150,6 +151,7 @@ export class LanguageModes {
       this.serviceHost,
       this.documentRegions,
       services.dependencyService,
+      globalComponentInfos,
       services.infoService
     );
     autoImportVueService.setGetJSResolve(jsMode.doResolve!);

@@ -71,3 +71,7 @@ export function normalizeResolve(...paths: string[]) {
 export function getPathDepth(filePath: string, sep: string) {
   return filePath.split(sep).length;
 }
+
+export function getFsPathToUri(fsPath: string) {
+  return URI.file(fsPath).toString();
+}
