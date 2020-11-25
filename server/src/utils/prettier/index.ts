@@ -56,6 +56,7 @@ export function prettierEslintify(
     logger.logDebug(`Using prettier-eslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierEslint({
+      filePath: fileFsPath,
       prettierOptions: { parser },
       text: code,
       fallbackPrettierOptions: prettierOptions
