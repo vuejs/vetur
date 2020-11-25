@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.30.3
+
+- Fix prettier-eslint and prettier-tslint
+- Fix prettier-eslint not read eslint config.
+- Fix auto import component completion.
+
 ### 0.30.2 | 2020-11-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.2/vspackage)
 
 - Fix high CPU usage when huge project. #2468
