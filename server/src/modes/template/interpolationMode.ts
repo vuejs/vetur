@@ -54,6 +54,12 @@ export class VueInterpolationMode implements LanguageMode {
     return this.serviceHost.queryVirtualFileInfo(fileName, currFileText);
   }
 
+  private getChildComponents(document: TextDocument) {
+    return this.config.vetur.validation.templateProps
+      ? this.vueInfoService && this.vueInfoService.getInfo(document)?.componentInfo.childComponents
+      : [];
+  }
+
   async doValidation(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
     if (
       !_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true) ||
@@ -74,13 +80,9 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const childComponents = this.config.vetur.validation.templateProps
-      ? this.vueInfoService && this.vueInfoService.getInfo(document)?.componentInfo.childComponents
-      : [];
-
     const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(
       templateDoc,
-      childComponents
+      this.getChildComponents(document)
     );
 
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
@@ -131,7 +133,10 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(
+      templateDoc,
+      this.getChildComponents(document)
+    );
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return NULL_COMPLETION;
     }
@@ -221,7 +226,10 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(
+      templateDoc,
+      this.getChildComponents(document)
+    );
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return item;
     }
@@ -282,7 +290,10 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(
+      templateDoc,
+      this.getChildComponents(document)
+    );
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return {
         contents: []
@@ -337,7 +348,10 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(
+      templateDoc,
+      this.getChildComponents(document)
+    );
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return [];
     }
@@ -385,7 +399,10 @@ export class VueInterpolationMode implements LanguageMode {
       document.getText()
     );
 
-    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(templateDoc);
+    const { templateService, templateSourceMap } = this.serviceHost.updateCurrentVirtualVueTextDocument(
+      templateDoc,
+      this.getChildComponents(document)
+    );
     if (!languageServiceIncludesFile(templateService, templateDoc.uri)) {
       return [];
     }
