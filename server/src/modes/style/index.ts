@@ -1,4 +1,4 @@
-import { Position, Range } from 'vscode-languageserver-types';
+import { Diagnostic, Position, Range } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import {
   getCSSLanguageService,
@@ -76,7 +76,7 @@ function getStyleMode(
         return [];
       } else {
         const embedded = embeddedDocuments.refreshAndGet(document);
-        return languageService.doValidation(embedded, stylesheets.refreshAndGet(embedded));
+        return languageService.doValidation(embedded, stylesheets.refreshAndGet(embedded)) as Diagnostic[];
       }
     },
     doComplete(document, position) {
