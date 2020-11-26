@@ -113,7 +113,7 @@ export function getServiceHost(
 
   const vueSys = getVueSys(tsModule, scriptFileNameSet);
 
-  const vueVersion = inferVueVersion(projectPath, packagePath);
+  const vueVersion = inferVueVersion(packagePath);
   const compilerOptions = {
     ...getDefaultCompilerOptions(tsModule),
     ...parsedConfig.options
@@ -492,9 +492,9 @@ function patchTemplateService(original: ts.LanguageService): ts.LanguageService 
   };
 }
 
-function defaultIgnorePatterns(tsModule: RuntimeLibrary['typescript'], workspacePath: string) {
+function defaultIgnorePatterns(tsModule: RuntimeLibrary['typescript'], projectPath: string) {
   const nodeModules = ['node_modules', '**/node_modules/*'];
-  const gitignore = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, '.gitignore');
+  const gitignore = tsModule.findConfigFile(projectPath, tsModule.sys.fileExists, '.gitignore');
   if (!gitignore) {
     return nodeModules;
   }

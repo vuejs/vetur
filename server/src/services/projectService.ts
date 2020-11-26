@@ -69,6 +69,7 @@ export async function createProjectService(
   projectPath: string,
   tsconfigPath: string | undefined,
   packagePath: string | undefined,
+  snippetFolder: string,
   globalComponentInfos: BasicComponentInfo[],
   documentService: DocumentService,
   initialConfig: VLSConfig,
@@ -95,10 +96,10 @@ export async function createProjectService(
 
   vueInfoService.init(languageModes);
   await languageModes.init(
-    workspacePath,
     projectPath,
     tsconfigPath,
     packagePath,
+    snippetFolder,
     globalComponentInfos,
     {
       infoService: vueInfoService,

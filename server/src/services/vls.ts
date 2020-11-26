@@ -165,6 +165,7 @@ export class VLS {
         rootFsPath: normalizeFileNameResolve(this.rootPathForConfig, project.root),
         tsconfigPath: project.tsconfig,
         packagePath: project.package,
+        snippetFolder: project.snippetFolder,
         globalComponents: project.globalComponents
       }))
       .sort((a, b) => getPathDepth(b.rootFsPath, '/') - getPathDepth(a.rootFsPath, '/'));
@@ -183,6 +184,7 @@ export class VLS {
       projectConfig.rootFsPath,
       projectConfig.tsconfigPath,
       projectConfig.packagePath,
+      projectConfig.snippetFolder,
       projectConfig.globalComponents,
       this.documentService,
       this.config,

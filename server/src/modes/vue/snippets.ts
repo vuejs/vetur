@@ -21,8 +21,8 @@ export interface ScaffoldSnippetSources {
 export class SnippetManager {
   private _snippets: Snippet[] = [];
 
-  constructor(workspacePath: string, globalSnippetDir?: string) {
-    const workspaceSnippets = loadAllSnippets(path.resolve(workspacePath, '.vscode/vetur/snippets'), 'workspace');
+  constructor(snippetFolder: string, globalSnippetDir?: string) {
+    const workspaceSnippets = loadAllSnippets(snippetFolder, 'workspace');
     const userSnippets = globalSnippetDir ? loadAllSnippets(globalSnippetDir, 'user') : [];
     const veturSnippets = loadAllSnippets(path.resolve(__dirname, './veturSnippets'), 'vetur');
 

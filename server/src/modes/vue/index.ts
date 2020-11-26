@@ -2,10 +2,10 @@ import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { SnippetManager, ScaffoldSnippetSources } from './snippets';
 import { Range } from 'vscode-css-languageservice';
 
-export function getVueMode(workspacePath: string, globalSnippetDir?: string): LanguageMode {
+export function getVueMode(snippetFolder: string, globalSnippetDir?: string): LanguageMode {
   let config: any = {};
 
-  const snippetManager = new SnippetManager(workspacePath, globalSnippetDir);
+  const snippetManager = new SnippetManager(snippetFolder, globalSnippetDir);
   let scaffoldSnippetSources: ScaffoldSnippetSources = {
     workspace: '💼',
     user: '🗒️',
@@ -32,10 +32,7 @@ export function getVueMode(workspacePath: string, globalSnippetDir?: string): La
       }
 
       const offset = document.offsetAt(position);
-      const lines = document
-        .getText()
-        .slice(0, offset)
-        .split('\n');
+      const lines = document.getText().slice(0, offset).split('\n');
       const currentLine = lines[position.line];
 
       const items = snippetManager ? snippetManager.completeSnippets(scaffoldSnippetSources) : [];

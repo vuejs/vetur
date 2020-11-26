@@ -159,6 +159,7 @@ export interface VeturProject<C = BasicComponentInfo | Glob> {
   root: string;
   package?: string;
   tsconfig?: string;
+  snippetFolder: string;
   globalComponents: C[];
 }
 
@@ -193,6 +194,7 @@ export async function getVeturFullConfig(
           root: projectRoot,
           package: getFallbackPackagePath(projectRoot),
           tsconfig: tsconfigPath ? normalizeFileNameToFsPath(tsconfigPath) : undefined,
+          snippetFolder: normalizeFileNameResolve(projectRoot, '.vscode/vetur/snippets'),
           globalComponents: []
         } as VeturProject;
       }
@@ -202,6 +204,7 @@ export async function getVeturFullConfig(
         root: projectRoot,
         package: project.package ?? getFallbackPackagePath(projectRoot),
         tsconfig: project.tsconfig ?? undefined,
+        snippetFolder: normalizeFileNameResolve(projectRoot, '.vscode/vetur/snippets'),
         globalComponents: flatten(
           project.globalComponents?.map(comp => {
             if (typeof comp === 'string') {

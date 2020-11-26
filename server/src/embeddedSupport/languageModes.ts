@@ -112,10 +112,10 @@ export class LanguageModes {
   }
 
   async init(
-    workspacePath: string,
     projectPath: string,
     tsconfigPath: string | undefined,
     packagePath: string | undefined,
+    snippetFolder: string,
     globalComponentInfos: BasicComponentInfo[],
     services: VLSServices,
     globalSnippetDir?: string
@@ -156,7 +156,7 @@ export class LanguageModes {
     );
     autoImportVueService.setGetJSResolve(jsMode.doResolve!);
 
-    this.modes['vue'] = getVueMode(workspacePath, globalSnippetDir);
+    this.modes['vue'] = getVueMode(snippetFolder, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
     this.modes['pug'] = getPugMode(services.dependencyService);
     this.modes['css'] = getCSSMode(this.documentRegions, services.dependencyService);
