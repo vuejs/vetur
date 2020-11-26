@@ -23,6 +23,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
   let lastAttributeName = '';
   let languageIdFromType: LanguageId | '' = '';
   const importedScripts: string[] = [];
+  let stakes = 0;
 
   let token = scanner.scan();
   while (token !== TokenType.EOS) {
@@ -48,8 +49,9 @@ export function parseVueDocumentRegions(document: TextDocument) {
         languageIdFromType = '';
         break;
       case TokenType.StartTag:
+        stakes++;
         const tagName = scanner.getTokenText();
-        if (tagName === 'template') {
+        if (tagName === 'template' && stakes === 1) {
           const templateRegion = scanTemplateRegion(scanner, text);
           if (templateRegion) {
             regions.push(templateRegion);
@@ -75,7 +77,9 @@ export function parseVueDocumentRegions(document: TextDocument) {
         }
         lastAttributeName = '';
         break;
+      case TokenType.StartTagSelfClose:
       case TokenType.EndTagClose:
+        stakes--;
         lastAttributeName = '';
         languageIdFromType = '';
         break;
