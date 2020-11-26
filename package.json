@@ -539,7 +539,7 @@
     "@types/js-yaml": "^3.12.5",
     "@types/lodash": "^4.14.163",
     "@types/minimist": "^1.2.1",
-    "@types/mocha": "^8.0.3",
+    "@types/mocha": "^8.0.4",
     "@types/node": "^14.14.9",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.47.0",
