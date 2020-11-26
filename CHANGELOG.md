@@ -5,6 +5,7 @@
 - Fix prettier-eslint and prettier-tslint
 - Fix prettier-eslint not read eslint config.
 - Fix auto import component completion.
+- Upgrade to TypeScript 4.1.
 
 ### 0.30.2 | 2020-11-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.2/vspackage)
 
