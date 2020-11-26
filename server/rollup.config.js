@@ -56,7 +56,7 @@ module.exports = [
       generateTypingsVls(),
       bundleVlsWithEsbuild(),
       copySnippets(),
-      copyTSDefaultLibs(),
+      // copyTSDefaultLibs(),
       linkVlsInCLI(),
       ...createPlugins(getVLSPath('tsconfig.json'))
     ]

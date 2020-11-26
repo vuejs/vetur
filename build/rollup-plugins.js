@@ -105,7 +105,11 @@ function bundleVlsWithEsbuild() {
           /**
            * prettier-tslint need it.
            */
-          'tslint'
+          'tslint',
+          /**
+           * tslint need it.
+           */
+          'typescript'
         ],
         format: 'cjs',
         tsconfig: getServerPath('tsconfig.json'),
