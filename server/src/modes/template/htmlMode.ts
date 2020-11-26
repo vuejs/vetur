@@ -29,7 +29,7 @@ import { doPropValidation } from './services/vuePropValidation';
 import { getFoldingRanges } from './services/htmlFolding';
 import { DependencyService } from '../../services/dependencyService';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
-import { AutoImportVueService } from '../../services/autoImportVueService';
+import { AutoImportSfcPlugin } from '../plugins/autoImportSfcPlugin';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
@@ -47,7 +47,7 @@ export class HTMLMode implements LanguageMode {
     vueVersion: VueVersion,
     private dependencyService: DependencyService,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
-    private autoImportVueService: AutoImportVueService,
+    private autoImportSfcPlugin: AutoImportSfcPlugin,
     private vueInfoService?: VueInfoService
   ) {
     this.tagProviderSettings = getTagProviderSettings(projectPath, packagePath);
@@ -65,7 +65,7 @@ export class HTMLMode implements LanguageMode {
   configure(c: VLSFullConfig) {
     this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
     this.config = c;
-    this.autoImportVueService.setGetConfigure(() => c);
+    this.autoImportSfcPlugin.setGetConfigure(() => c);
   }
 
   async doValidation(document: TextDocument, cancellationToken?: VCancellationToken) {
@@ -106,7 +106,7 @@ export class HTMLMode implements LanguageMode {
       this.vueDocuments.refreshAndGet(embedded),
       tagProviders,
       this.config.emmet,
-      this.autoImportVueService.doComplete(document)
+      this.autoImportSfcPlugin.doComplete(document)
     );
   }
   doHover(document: TextDocument, position: Position) {

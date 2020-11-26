@@ -39,7 +39,7 @@ import { BasicComponentInfo, VLSFullConfig } from '../config';
 import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 import { getPugMode } from '../modes/pug';
 import { VCancellationToken } from '../utils/cancellationToken';
-import { createAutoImportVueService } from '../services/autoImportVueService';
+import { createAutoImportSfcPlugin } from '../modes/plugins/autoImportSfcPlugin';
 
 export interface VLSServices {
   dependencyService: DependencyService;
@@ -130,9 +130,9 @@ export class LanguageModes {
       return vueDocument.getSingleTypeDocument('script');
     });
     this.serviceHost = getServiceHost(tsModule, projectPath, tsconfigPath, packagePath, scriptRegionDocuments);
-    const autoImportVueService = createAutoImportVueService(tsModule, services.infoService);
-    autoImportVueService.setGetTSScriptTarget(() => this.serviceHost.getComplierOptions().target);
-    autoImportVueService.setGetFilesFn(() =>
+    const autoImportSfcPlugin = createAutoImportSfcPlugin(tsModule, services.infoService);
+    autoImportSfcPlugin.setGetTSScriptTarget(() => this.serviceHost.getComplierOptions().target);
+    autoImportSfcPlugin.setGetFilesFn(() =>
       this.serviceHost.getFileNames().filter(fileName => fileName.endsWith('.vue'))
     );
 
@@ -142,7 +142,7 @@ export class LanguageModes {
       this.documentRegions,
       projectPath,
       packagePath,
-      autoImportVueService,
+      autoImportSfcPlugin,
       services.dependencyService,
       services.infoService
     );
@@ -154,7 +154,7 @@ export class LanguageModes {
       globalComponentInfos,
       services.infoService
     );
-    autoImportVueService.setGetJSResolve(jsMode.doResolve!);
+    autoImportSfcPlugin.setGetJSResolve(jsMode.doResolve!);
 
     this.modes['vue'] = getVueMode(snippetFolder, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;

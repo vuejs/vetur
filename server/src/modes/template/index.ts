@@ -12,14 +12,14 @@ import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
 import { inferVueVersion } from '../../services/typescriptService/vueVersion';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { VCancellationToken } from '../../utils/cancellationToken';
-import { AutoImportVueService } from '../../services/autoImportVueService';
+import { AutoImportSfcPlugin } from '../plugins/autoImportSfcPlugin';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export class VueHTMLMode implements LanguageMode {
   private htmlMode: HTMLMode;
   private vueInterpolationMode: VueInterpolationMode;
-  private autoImportVueService: AutoImportVueService;
+  private autoImportSfcPlugin: AutoImportSfcPlugin;
 
   constructor(
     tsModule: RuntimeLibrary['typescript'],
@@ -27,7 +27,7 @@ export class VueHTMLMode implements LanguageMode {
     documentRegions: DocumentRegionCache,
     projectPath: string,
     packagePath: string | undefined,
-    autoImportVueService: AutoImportVueService,
+    autoImportSfcPlugin: AutoImportSfcPlugin,
     dependencyService: DependencyService,
     vueInfoService?: VueInfoService
   ) {
@@ -40,11 +40,11 @@ export class VueHTMLMode implements LanguageMode {
       vueVersion,
       dependencyService,
       vueDocuments,
-      autoImportVueService,
+      autoImportSfcPlugin,
       vueInfoService
     );
     this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments, vueInfoService);
-    this.autoImportVueService = autoImportVueService;
+    this.autoImportSfcPlugin = autoImportSfcPlugin;
   }
   getId() {
     return 'vue-html';
@@ -71,8 +71,8 @@ export class VueHTMLMode implements LanguageMode {
     };
   }
   doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
-    if (this.autoImportVueService.isMyResolve(item)) {
-      return this.autoImportVueService.doResolve(document, item);
+    if (this.autoImportSfcPlugin.isMyResolve(item)) {
+      return this.autoImportSfcPlugin.doResolve(document, item);
     }
     return this.vueInterpolationMode.doResolve(document, item);
   }

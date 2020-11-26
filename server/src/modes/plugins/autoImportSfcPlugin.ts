@@ -5,12 +5,12 @@ import type ts from 'typescript';
 import { CompletionItem } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { TextEdit } from 'vscode-languageserver-types';
-import { VLSFullConfig } from '../config';
-import { modulePathToValidIdentifier, toMarkupContent } from '../utils/strings';
-import { RuntimeLibrary } from './dependencyService';
-import { ChildComponent, VueInfoService } from './vueInfoService';
+import { VLSFullConfig } from '../../config';
+import { modulePathToValidIdentifier, toMarkupContent } from '../../utils/strings';
+import { RuntimeLibrary } from '../../services/dependencyService';
+import { ChildComponent, VueInfoService } from '../../services/vueInfoService';
 
-export interface AutoImportVueService {
+export interface AutoImportSfcPlugin {
   setGetConfigure(fn: () => VLSFullConfig): void;
   setGetFilesFn(fn: () => string[]): void;
   setGetJSResolve(fn: (doc: TextDocument, item: CompletionItem) => CompletionItem): void;
@@ -41,10 +41,10 @@ export interface AutoImportVueService {
  * }
  * ```
  */
-export function createAutoImportVueService(
+export function createAutoImportSfcPlugin(
   tsModule: RuntimeLibrary['typescript'],
   vueInfoService?: VueInfoService
-): AutoImportVueService {
+): AutoImportSfcPlugin {
   let getConfigure: () => VLSFullConfig;
   let getVueFiles: () => string[];
   let getJSResolve: (doc: TextDocument, item: CompletionItem) => CompletionItem;
