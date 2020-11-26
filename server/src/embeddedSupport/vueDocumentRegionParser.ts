@@ -58,15 +58,6 @@ export function parseVueDocumentRegions(document: TextDocument) {
         lastTagName = tagName;
         lastAttributeName = '';
         break;
-      // case TokenType.StartTagClose:
-      //   if (!['script', 'style'].includes(lastTagName)) {
-      //     let skipTokens = 0
-      //     while(token !== TokenType.EndTag || skipTokens > 20) {
-      //       token = scanner.scan()
-      //       skipTokens++
-      //     }
-      //   }
-      //   break;
       case TokenType.AttributeName:
         lastAttributeName = scanner.getTokenText();
         break;
@@ -84,7 +75,6 @@ export function parseVueDocumentRegions(document: TextDocument) {
         }
         lastAttributeName = '';
         break;
-      // case TokenType.StartTagSelfClose:
       case TokenType.EndTagClose:
         lastAttributeName = '';
         languageIdFromType = '';
