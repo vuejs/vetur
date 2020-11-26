@@ -542,7 +542,7 @@
     "@types/mocha": "^8.0.4",
     "@types/node": "^14.14.10",
     "@types/shelljs": "^0.8.8",
-    "@types/vscode": "^1.51.0",
+    "@types/vscode": "^1.47.0",
     "esbuild": "^0.8.15",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
