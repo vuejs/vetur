@@ -543,7 +543,7 @@
     "@types/node": "^14.14.10",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.47.0",
-    "esbuild": "^0.8.15",
+    "esbuild": "^0.8.16",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "husky": "^4.3.0",
