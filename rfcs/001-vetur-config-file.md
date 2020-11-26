@@ -37,6 +37,9 @@ module.exports = {
       // Where is TypeScript config file in the project?
       // It is relative to root property.
       tsconfig: './tsconfig.json',
+      // **optional** default: `'./.vscode/vetur/snippets'`
+      // Where is vetur custom snippets folders?
+      snippetFolder: './.vscode/vetur/snippets'
       // **optional** default: `[]`
       // Register globally Vue component glob.
       // If you set it, you can get completion by that components.
@@ -108,6 +111,7 @@ export interface VeturConfig {
     root: string,
     package?: string,
     tsconfig?: string,
+    snippetFolder?: string,
     globalComponents?: Array<Glob | { name: string, path: string }>
   }>
 }
@@ -174,6 +178,9 @@ For these reasons, we also don't support it.
 It can reduce development and maintenance costs.
 
 PS. `jsconfig.json` is also support it.
+
+### `projects[].snippetFolder`
+Vetur Custom snippets folder path
 
 ### `projects[].globalComponents`
 We have some amazing features, Like `template interpolation`.
