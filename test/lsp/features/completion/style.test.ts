@@ -38,7 +38,7 @@ describe('Should autocomplete for <style>', () => {
     const sassEmmetUri = getDocUri('completion/style/SassEmmet.vue');
 
     it('completes CSS properties for second <style lang="scss">', async () => {
-      await testCompletion(sassEmmetUri, position(2, 4), ['left: 0']);
+      await testCompletion(sassEmmetUri, position(2, 4), ['left: 0;']);
     });
   });
 });
