@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.30.3
+### 0.30.3 | 2020-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.3/vspackage)
 
 - Fix prettier-eslint and prettier-tslint
 - Fix prettier-eslint not read eslint config.
