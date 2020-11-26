@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Range, TextEdit, Position } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import { html as htmlBeautify } from 'js-beautify';
+import { html as htmlBeautify, HTMLBeautifyOptions } from 'js-beautify';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
 import { prettierify } from '../../../utils/prettier';
