@@ -26,14 +26,14 @@ import {
   CompletionParams,
   ExecuteCommandParams,
   ApplyWorkspaceEditRequest,
-  FoldingRangeParams
+  FoldingRangeParams,
+  DidChangeWorkspaceFoldersNotification
 } from 'vscode-languageserver';
 import {
   ColorInformation,
   CompletionItem,
   CompletionList,
   Definition,
-  Diagnostic,
   DocumentHighlight,
   DocumentLink,
   Hover,
@@ -48,17 +48,14 @@ import {
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { URI } from 'vscode-uri';
-import { LanguageModes, LanguageModeRange, LanguageMode } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
-import { VueInfoService } from './vueInfoService';
-import { createDependencyService, DependencyService } from './dependencyService';
+import { createDependencyService, createNodeModulesPaths } from './dependencyService';
 import _ from 'lodash';
-import { DocumentContext, RefactorAction } from '../types';
+import { RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
-import { getDefaultVLSConfig, VLSFullConfig, VLSConfig, getVeturFullConfig, VeturFullConfig } from '../config';
-import { LanguageId } from '../embeddedSupport/embeddedSupport';
+import { getDefaultVLSConfig, VLSFullConfig, getVeturFullConfig, VeturFullConfig } from '../config';
 import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
 import { findConfigFile } from '../utils/workspace';
@@ -66,67 +63,53 @@ import { createProjectService, ProjectService } from './projectService';
 
 export class VLS {
   // @Todo: Remove this and DocumentContext
-  private workspacePath: string | undefined;
-  private veturConfig: VeturFullConfig;
+  // private workspacePath: string | undefined;
+  private workspaces: Map<string, VeturFullConfig & { workspaceFsPath: string }>;
+  private nodeModulesMap: Map<string, string[]>;
+  // private veturConfig: VeturFullConfig;
   private documentService: DocumentService;
-  private rootPathForConfig: string;
+  // private rootPathForConfig: string;
   private globalSnippetDir: string;
   private projects: Map<string, ProjectService>;
-  private dependencyService: DependencyService;
+  // private dependencyService: DependencyService;
 
   private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
   private cancellationTokenValidationRequests: { [uri: string]: VCancellationTokenSource } = {};
   private validationDelayMs = 200;
-  private validation: { [k: string]: boolean } = {
-    'vue-html': true,
-    html: true,
-    css: true,
-    scss: true,
-    less: true,
-    postcss: true,
-    javascript: true
-  };
-  private templateInterpolationValidation = false;
 
   private documentFormatterRegistration: Disposable | undefined;
 
-  private config: VLSFullConfig;
+  private workspaceConfig: VLSFullConfig;
 
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
-    this.dependencyService = createDependencyService();
+    this.projects = new Map();
+    this.nodeModulesMap = new Map();
   }
 
   async init(params: InitializeParams) {
-    const workspacePath = params.rootPath;
-    if (!workspacePath) {
+    let workspaceFolders =
+      !Array.isArray(params.workspaceFolders) && params.rootPath
+        ? [{ name: '', fsPath: normalizeFileNameToFsPath(params.rootPath) }]
+        : params.workspaceFolders?.map(el => ({ name: el.name, fsPath: getFileFsPath(el.uri) })) ?? [];
+
+    if (workspaceFolders.length === 0) {
       console.error('No workspace path found. Vetur initialization failed.');
       return {
         capabilities: {}
       };
     }
 
-    this.workspacePath = normalizeFileNameToFsPath(workspacePath);
-
+    this.workspaces = new Map();
     this.globalSnippetDir = params.initializationOptions?.globalSnippetDir;
-    const veturConfigPath = findConfigFile(this.workspacePath, 'vetur.config.js');
-    this.rootPathForConfig = normalizeFileNameToFsPath(veturConfigPath ? path.dirname(veturConfigPath) : workspacePath);
-    this.veturConfig = await getVeturFullConfig(
-      this.rootPathForConfig,
-      this.workspacePath,
-      veturConfigPath ? require(veturConfigPath) : {}
-    );
-    const config = this.getFullConfig(params.initializationOptions?.config);
 
-    await this.dependencyService.init(
-      this.rootPathForConfig,
-      this.workspacePath,
-      config.vetur.useWorkspaceDependencies,
-      config.typescript.tsdk
-    );
-    this.projects = new Map();
+    await Promise.all(workspaceFolders.map(workspace => this.addWorkspace(workspace)));
 
-    this.configure(config);
+    this.workspaceConfig = this.getVLSFullConfig({}, params.initializationOptions?.config);
+
+    if (params.capabilities.workspace?.workspaceFolders) {
+      this.setupWorkspaceListeners();
+    }
     this.setupConfigListeners();
     this.setupLSPHandlers();
     this.setupCustomLSPHandlers();
@@ -141,28 +124,70 @@ export class VLS {
     this.lspConnection.listen();
   }
 
-  private getFullConfig(config: any | undefined): VLSFullConfig {
+  private getVLSFullConfig(settings: VeturFullConfig['settings'], config: any | undefined): VLSFullConfig {
     const result = config ? _.merge(getDefaultVLSConfig(), config) : getDefaultVLSConfig();
-    Object.keys(this.veturConfig.settings).forEach(key => {
-      _.set(result, key, this.veturConfig.settings[key]);
+    Object.keys(settings).forEach(key => {
+      _.set(result, key, settings[key]);
     });
     return result;
   }
 
+  private async addWorkspace(workspace: { name: string; fsPath: string }) {
+    const veturConfigPath = findConfigFile(workspace.fsPath, 'vetur.config.js');
+    const rootPathForConfig = normalizeFileNameToFsPath(
+      veturConfigPath ? path.dirname(veturConfigPath) : workspace.fsPath
+    );
+    if (!this.workspaces.has(rootPathForConfig)) {
+      this.workspaces.set(rootPathForConfig, {
+        ...(await getVeturFullConfig(
+          rootPathForConfig,
+          workspace.fsPath,
+          veturConfigPath ? require(veturConfigPath) : {}
+        )),
+        workspaceFsPath: workspace.fsPath
+      });
+    }
+  }
+
+  private setupWorkspaceListeners() {
+    this.lspConnection.client.register(DidChangeWorkspaceFoldersNotification.type);
+    this.lspConnection.workspace.onDidChangeWorkspaceFolders(async e => {
+      await Promise.all(e.added.map(el => this.addWorkspace({ name: el.name, fsPath: getFileFsPath(el.uri) })));
+    });
+  }
+
   private setupConfigListeners() {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
-      const config = this.getFullConfig(settings);
-      this.configure(config);
-      this.setupDynamicFormatters(config);
+      let isFormatEnable = false;
+      this.projects.forEach(project => {
+        const veturConfig = this.workspaces.get(project.rootPathForConfig);
+        if (!veturConfig) return;
+        const fullConfig = this.getVLSFullConfig(veturConfig.settings, settings);
+        project.configure(fullConfig);
+        isFormatEnable = isFormatEnable || fullConfig.vetur.format.enable;
+      });
+      this.setupDynamicFormatters(isFormatEnable);
     });
 
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
   }
 
   private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
-    const projectRootPaths = this.veturConfig.projects
+    const projectRootPaths = _.flatten(
+      Array.from(this.workspaces.entries()).map(([rootPathForConfig, veturConfig]) =>
+        veturConfig.projects.map(project => ({
+          ...project,
+          rootPathForConfig,
+          vlsFullConfig: this.getVLSFullConfig(veturConfig.settings, this.workspaceConfig),
+          workspaceFsPath: veturConfig.workspaceFsPath
+        }))
+      )
+    )
       .map(project => ({
-        rootFsPath: normalizeFileNameResolve(this.rootPathForConfig, project.root),
+        vlsFullConfig: project.vlsFullConfig,
+        rootPathForConfig: project.rootPathForConfig,
+        workspaceFsPath: project.workspaceFsPath,
+        rootFsPath: normalizeFileNameResolve(project.rootPathForConfig, project.root),
         tsconfigPath: project.tsconfig,
         packagePath: project.package,
         snippetFolder: project.snippetFolder,
@@ -178,18 +203,31 @@ export class VLS {
       return this.projects.get(projectConfig.rootFsPath);
     }
 
+    const dependencyService = createDependencyService();
+    const nodeModulePaths =
+      this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
+      createNodeModulesPaths(projectConfig.rootPathForConfig);
+    if (this.nodeModulesMap.has(projectConfig.rootPathForConfig)) {
+      this.nodeModulesMap.set(projectConfig.rootPathForConfig, nodeModulePaths);
+    }
+    await dependencyService.init(
+      projectConfig.rootPathForConfig,
+      projectConfig.workspaceFsPath,
+      projectConfig.vlsFullConfig.vetur.useWorkspaceDependencies,
+      nodeModulePaths,
+      projectConfig.vlsFullConfig.typescript.tsdk
+    );
     const project = await createProjectService(
-      this.rootPathForConfig,
-      this.workspacePath ?? this.rootPathForConfig,
+      projectConfig.rootPathForConfig,
       projectConfig.rootFsPath,
       projectConfig.tsconfigPath,
       projectConfig.packagePath,
       projectConfig.snippetFolder,
       projectConfig.globalComponents,
       this.documentService,
-      this.config,
+      this.workspaceConfig,
       this.globalSnippetDir,
-      this.dependencyService
+      dependencyService
     );
     this.projects.set(projectConfig.rootFsPath, project);
     return project;
@@ -232,8 +270,8 @@ export class VLS {
     });
   }
 
-  private async setupDynamicFormatters(settings: VLSFullConfig) {
-    if (settings.vetur.format.enable) {
+  private async setupDynamicFormatters(enable: boolean) {
+    if (enable) {
       if (!this.documentFormatterRegistration) {
         this.documentFormatterRegistration = await this.lspConnection.client.register(DocumentFormattingRequest.type, {
           documentSelector: [{ language: 'vue' }]
@@ -268,26 +306,6 @@ export class VLS {
         this.triggerValidation(d);
       });
     });
-  }
-
-  configure(config: VLSConfig): void {
-    this.config = config;
-
-    const veturValidationOptions = config.vetur.validation;
-    this.validation['vue-html'] = veturValidationOptions.template;
-    this.validation.css = veturValidationOptions.style;
-    this.validation.postcss = veturValidationOptions.style;
-    this.validation.scss = veturValidationOptions.style;
-    this.validation.less = veturValidationOptions.style;
-    this.validation.javascript = veturValidationOptions.script;
-
-    this.templateInterpolationValidation = config.vetur.experimental.templateInterpolationService;
-
-    this.projects.forEach(project => {
-      project.configure(config);
-    });
-
-    logger.setLevel(config.vetur.dev.logLevel);
   }
 
   /**
@@ -407,8 +425,7 @@ export class VLS {
     this.cancelPastValidation(textDocument);
     this.pendingValidationRequests[textDocument.uri] = setTimeout(() => {
       delete this.pendingValidationRequests[textDocument.uri];
-      const tsDep = this.dependencyService.get('typescript');
-      this.cancellationTokenValidationRequests[textDocument.uri] = new VCancellationTokenSource(tsDep.module);
+      this.cancellationTokenValidationRequests[textDocument.uri] = new VCancellationTokenSource();
       this.validateTextDocument(textDocument, this.cancellationTokenValidationRequests[textDocument.uri].token);
     }, this.validationDelayMs);
   }
@@ -470,6 +487,7 @@ export class VLS {
   get capabilities(): ServerCapabilities {
     return {
       textDocumentSync: TextDocumentSyncKind.Incremental,
+      workspace: { workspaceFolders: { supported: true, changeNotifications: true } },
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },
       documentFormattingProvider: false,

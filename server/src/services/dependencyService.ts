@@ -17,9 +17,9 @@ import { getPathDepth } from '../utils/paths';
 const readFileAsync = util.promisify(fs.readFile);
 const accessFileAsync = util.promisify(fs.access);
 
-async function createNodeModulesPaths(rootPath: string) {
+export function createNodeModulesPaths(rootPath: string) {
   const startTime = performance.now();
-  const nodeModules = await fg('**/node_modules', {
+  const nodeModules = fg.sync('**/node_modules', {
     cwd: rootPath.replace(/\\/g, '/'),
     absolute: true,
     unique: true,
@@ -93,6 +93,7 @@ export interface DependencyService {
     rootPathForConfig: string,
     workspacePath: string,
     useWorkspaceDependencies: boolean,
+    nodeModulesPaths: string[],
     tsSDKPath?: string
   ): Promise<void>;
   get<L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]>;
@@ -119,10 +120,9 @@ export const createDependencyService = (): DependencyService => {
     rootPathForConfig: string,
     workspacePath: string,
     useWorkspaceDependencies: boolean,
+    nodeModulesPaths: string[],
     tsSDKPath?: string
   ) {
-    const nodeModulesPaths = useWorkspaceDependencies ? await createNodeModulesPaths(rootPathForConfig) : [];
-
     const loadTypeScript = async (): Promise<Dependency<typeof ts>[]> => {
       try {
         if (useWorkspaceDependencies && tsSDKPath) {

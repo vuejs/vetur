@@ -42,6 +42,7 @@ import { DocumentService } from './documentService';
 import { VueInfoService } from './vueInfoService';
 
 export interface ProjectService {
+  readonly rootPathForConfig: string;
   languageModes: LanguageModes;
   configure(config: VLSFullConfig): void;
   onDocumentFormatting(params: DocumentFormattingParams): Promise<TextEdit[]>;
@@ -65,7 +66,6 @@ export interface ProjectService {
 
 export async function createProjectService(
   rootPathForConfig: string,
-  workspacePath: string,
   projectPath: string,
   tsconfigPath: string | undefined,
   packagePath: string | undefined,
@@ -119,9 +119,14 @@ export async function createProjectService(
   configure(initialConfig);
 
   return {
+    rootPathForConfig,
     configure,
     languageModes,
     async onDocumentFormatting({ textDocument, options }) {
+      if (!$config.vetur.format.enable) {
+        return [];
+      }
+
       const doc = documentService.getDocument(textDocument.uri)!;
 
       const modeRanges = languageModes.getAllLanguageModeRangesInDocument(doc);

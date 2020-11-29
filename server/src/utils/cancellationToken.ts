@@ -7,12 +7,7 @@ export interface VCancellationToken extends LSPCancellationToken {
 }
 
 export class VCancellationTokenSource extends CancellationTokenSource {
-  constructor(private tsModule: RuntimeLibrary['typescript']) {
-    super();
-  }
-
   get token(): VCancellationToken {
-    const operationCancelException = this.tsModule.OperationCanceledException;
     const token = super.token as VCancellationToken;
     token.tsToken = {
       isCancellationRequested() {
@@ -20,7 +15,7 @@ export class VCancellationTokenSource extends CancellationTokenSource {
       },
       throwIfCancellationRequested() {
         if (token.isCancellationRequested) {
-          throw new operationCancelException();
+          throw new Error('OperationCanceledException');
         }
       }
     };
