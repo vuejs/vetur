@@ -58,11 +58,11 @@ import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, getVeturFullConfig, VeturFullConfig } from '../config';
 import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
-import { findConfigFile } from '../utils/workspace';
+import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 
 export class VLS {
-  private workspaces: Map<string, VeturFullConfig & { workspaceFsPath: string }>;
+  private workspaces: Map<string, VeturFullConfig & { name: string; workspaceFsPath: string }>;
   private nodeModulesMap: Map<string, string[]>;
   private documentService: DocumentService;
   private globalSnippetDir: string;
@@ -133,10 +133,11 @@ export class VLS {
     );
     if (!this.workspaces.has(rootPathForConfig)) {
       this.workspaces.set(rootPathForConfig, {
+        name: workspace.name,
         ...(await getVeturFullConfig(
           rootPathForConfig,
           workspace.fsPath,
-          veturConfigPath ? require(veturConfigPath) : {}
+          veturConfigPath ? requireUncached(veturConfigPath) : {}
         )),
         workspaceFsPath: workspace.fsPath
       });
@@ -292,9 +293,22 @@ export class VLS {
     this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
       changes.forEach(async c => {
         if (c.type === FileChangeType.Changed) {
+          const fsPath = getFileFsPath(c.uri);
+          if (this.workspaces.has(fsPath)) {
+            const name = this.workspaces.get(fsPath)?.name ?? '';
+            this.workspaces.delete(fsPath);
+            await this.addWorkspace({ name, fsPath });
+            this.projects.forEach((project, projectPath) => {
+              if (project.rootPathForConfig === fsPath) {
+                project.dispose();
+                this.projects.delete(projectPath);
+              }
+            });
+            return;
+          }
+
           const project = await this.getProjectService(c.uri);
           const jsMode = project?.languageModes.getMode('javascript');
-          const fsPath = getFileFsPath(c.uri);
           jsMode?.onDocumentChanged!(fsPath);
         }
       });
