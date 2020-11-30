@@ -77,6 +77,7 @@ export class VLS {
 
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
+    this.workspaces = new Map();
     this.projects = new Map();
     this.nodeModulesMap = new Map();
   }
@@ -94,7 +95,6 @@ export class VLS {
       };
     }
 
-    this.workspaces = new Map();
     this.globalSnippetDir = params.initializationOptions?.globalSnippetDir;
 
     await Promise.all(workspaceFolders.map(workspace => this.addWorkspace(workspace)));
@@ -144,9 +144,10 @@ export class VLS {
   }
 
   private setupWorkspaceListeners() {
-    this.lspConnection.client.register(DidChangeWorkspaceFoldersNotification.type);
-    this.lspConnection.workspace.onDidChangeWorkspaceFolders(async e => {
-      await Promise.all(e.added.map(el => this.addWorkspace({ name: el.name, fsPath: getFileFsPath(el.uri) })));
+    this.lspConnection.onInitialized(() => {
+      this.lspConnection.workspace.onDidChangeWorkspaceFolders(async e => {
+        await Promise.all(e.added.map(el => this.addWorkspace({ name: el.name, fsPath: getFileFsPath(el.uri) })));
+      });
     });
   }
 
@@ -155,7 +156,9 @@ export class VLS {
       let isFormatEnable = false;
       this.projects.forEach(project => {
         const veturConfig = this.workspaces.get(project.rootPathForConfig);
-        if (!veturConfig) { return; }
+        if (!veturConfig) {
+          return;
+        }
         const fullConfig = this.getVLSFullConfig(veturConfig.settings, settings);
         project.configure(fullConfig);
         isFormatEnable = isFormatEnable || fullConfig.vetur.format.enable;
