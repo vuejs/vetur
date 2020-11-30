@@ -2,6 +2,9 @@ import path from 'path';
 import fg from 'fast-glob';
 import fs from 'fs';
 import util from 'util';
+import { performance } from 'perf_hooks';
+import { logger } from '../log';
+import { getPathDepth } from '../utils/paths';
 // dependencies
 import ts from 'typescript';
 import prettier from 'prettier';
@@ -10,9 +13,6 @@ import prettierEslint from 'prettier-eslint';
 import * as prettierTslint from 'prettier-tslint';
 import stylusSupremacy from 'stylus-supremacy';
 import * as prettierPluginPug from '@prettier/plugin-pug';
-import { performance } from 'perf_hooks';
-import { logger } from '../log';
-import { getPathDepth } from '../utils/paths';
 
 const readFileAsync = util.promisify(fs.readFile);
 const accessFileAsync = util.promisify(fs.access);

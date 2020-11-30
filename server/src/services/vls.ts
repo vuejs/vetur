@@ -62,17 +62,11 @@ import { findConfigFile } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 
 export class VLS {
-  // @Todo: Remove this and DocumentContext
-  // private workspacePath: string | undefined;
   private workspaces: Map<string, VeturFullConfig & { workspaceFsPath: string }>;
   private nodeModulesMap: Map<string, string[]>;
-  // private veturConfig: VeturFullConfig;
   private documentService: DocumentService;
-  // private rootPathForConfig: string;
   private globalSnippetDir: string;
   private projects: Map<string, ProjectService>;
-  // private dependencyService: DependencyService;
-
   private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
   private cancellationTokenValidationRequests: { [uri: string]: VCancellationTokenSource } = {};
   private validationDelayMs = 200;
@@ -88,7 +82,7 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
-    let workspaceFolders =
+    const workspaceFolders =
       !Array.isArray(params.workspaceFolders) && params.rootPath
         ? [{ name: '', fsPath: normalizeFileNameToFsPath(params.rootPath) }]
         : params.workspaceFolders?.map(el => ({ name: el.name, fsPath: getFileFsPath(el.uri) })) ?? [];
@@ -161,7 +155,7 @@ export class VLS {
       let isFormatEnable = false;
       this.projects.forEach(project => {
         const veturConfig = this.workspaces.get(project.rootPathForConfig);
-        if (!veturConfig) return;
+        if (!veturConfig) { return; }
         const fullConfig = this.getVLSFullConfig(veturConfig.settings, settings);
         project.configure(fullConfig);
         isFormatEnable = isFormatEnable || fullConfig.vetur.format.enable;
