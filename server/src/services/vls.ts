@@ -73,7 +73,7 @@ export class VLS {
 
   private documentFormatterRegistration: Disposable | undefined;
 
-  private workspaceConfig: VLSFullConfig;
+  private workspaceConfig: unknown;
 
   constructor(private lspConnection: Connection) {
     this.documentService = new DocumentService(this.lspConnection);
@@ -223,7 +223,7 @@ export class VLS {
       projectConfig.snippetFolder,
       projectConfig.globalComponents,
       this.documentService,
-      this.workspaceConfig,
+      projectConfig.vlsFullConfig,
       this.globalSnippetDir,
       dependencyService
     );
