@@ -184,16 +184,27 @@ export async function getVeturFullConfig(
         const fallbackPackage = findConfigFile(projectRoot, 'package.json');
         return fallbackPackage ? normalizeFileNameToFsPath(fallbackPackage) : undefined;
       };
+      const getFallbackTsconfigPath = (projectRoot: string) => {
+        const jsconfigPath = findConfigFile(projectRoot, 'jsconfig.json');
+        const tsconfigPath = findConfigFile(projectRoot, 'tsconfig.json');
+        if (jsconfigPath && tsconfigPath) {
+          const tsconfigFsPath = normalizeFileNameToFsPath(tsconfigPath);
+          const jsconfigFsPath = normalizeFileNameToFsPath(jsconfigPath);
+          return getPathDepth(tsconfigPath, '/') >= getPathDepth(jsconfigFsPath, '/')
+            ? tsconfigFsPath
+            : jsconfigFsPath;
+        }
+        const configPath = tsconfigPath || jsconfigPath;
+        return configPath ? normalizeFileNameToFsPath(configPath) : undefined;
+      };
 
       if (typeof project === 'string') {
         const projectRoot = normalizeFileNameResolve(rootPathForConfig, project);
-        const tsconfigPath =
-          findConfigFile(projectRoot, 'tsconfig.json') ?? findConfigFile(projectRoot, 'jsconfig.json');
 
         return {
           root: projectRoot,
           package: getFallbackPackagePath(projectRoot),
-          tsconfig: tsconfigPath ? normalizeFileNameToFsPath(tsconfigPath) : undefined,
+          tsconfig: getFallbackTsconfigPath(projectRoot),
           snippetFolder: normalizeFileNameResolve(projectRoot, '.vscode/vetur/snippets'),
           globalComponents: []
         } as VeturProject;
@@ -203,7 +214,7 @@ export async function getVeturFullConfig(
       return {
         root: projectRoot,
         package: project.package ?? getFallbackPackagePath(projectRoot),
-        tsconfig: project.tsconfig ?? undefined,
+        tsconfig: project.tsconfig ?? getFallbackTsconfigPath(projectRoot),
         snippetFolder: normalizeFileNameResolve(projectRoot, '.vscode/vetur/snippets'),
         globalComponents: flatten(
           project.globalComponents?.map(comp => {
