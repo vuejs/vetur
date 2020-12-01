@@ -60,10 +60,6 @@ export function createUpdater(
   const modificationTracker = new WeakSet<ts.SourceFile>();
   const printer = tsModule.createPrinter();
 
-  function isTSLike(scriptKind: ts.ScriptKind | undefined) {
-    return scriptKind === tsModule.ScriptKind.TS || scriptKind === tsModule.ScriptKind.TSX;
-  }
-
   function modifySourceFile(
     fileName: string,
     sourceFile: ts.SourceFile,
@@ -75,7 +71,7 @@ export function createUpdater(
       return;
     }
 
-    if (isVueFile(fileName) && !isTSLike(scriptKind)) {
+    if (isVueFile(fileName)) {
       modifyVueScript(tsModule, sourceFile);
       modificationTracker.add(sourceFile);
       return;
