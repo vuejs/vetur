@@ -23,6 +23,7 @@
     "test:int": "node ./dist-test/test/codeTestRunner.js interpolation",
     "test:vue3": "node ./dist-test/test/codeTestRunner.js vue3",
     "test:componentData": "node ./dist-test/test/codeTestRunner.js componentData",
+    "test:monorepo": "node ./dist-test/test/codeTestRunner.js monorepo",
     "test": "run-s test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepare-publish": "./build/release-cleanup.sh"

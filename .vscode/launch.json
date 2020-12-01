@@ -122,6 +122,24 @@
       "skipFiles": ["<node_internals>/**"]
     },
     {
+      "name": "E2E Test (Monorepo)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist-test/test/monorepo",
+        "--user-data-dir=${workspaceFolder}/test/monorepo/data-dir",
+        "--disable-extensions",
+        "${workspaceFolder}/test/monorepo/fixture"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist-test/test/**/*.js"],
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Unit Test (LSP)",
