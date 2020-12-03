@@ -213,8 +213,8 @@ export class VLS {
   }
 
   private warnProjectIfNeed(projectConfig: ProjectConfig) {
-    if (projectConfig.vlsFullConfig.vetur.ignoreProjectWarning) return;
-    if (projectConfig.isExistVeturConfig) return;
+    if (projectConfig.vlsFullConfig.vetur.ignoreProjectWarning) { return; }
+    if (projectConfig.isExistVeturConfig) { return; }
 
     const showWarningAndLearnMore = (message: string, url: string) => {
       this.lspConnection.window.showWarningMessage(message, { title: 'Learn More' }).then(() => {
@@ -386,16 +386,6 @@ export class VLS {
   /**
    * Custom Notifications
    */
-
-  displayInfoMessage(msg: string): void {
-    this.lspConnection.sendNotification('$/displayInfo', msg);
-  }
-  displayWarningMessage(msg: string): void {
-    this.lspConnection.sendNotification('$/displayWarning', msg);
-  }
-  displayErrorMessage(msg: string): void {
-    this.lspConnection.sendNotification('$/displayError', msg);
-  }
   openWebsite(url: string): void {
     this.lspConnection.sendNotification('$/openWebsite', url);
   }
