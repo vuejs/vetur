@@ -240,7 +240,9 @@ export function getServiceHost(
   // External Documents: JS/TS, non Vue documents
   function updateExternalDocument(fileFsPath: string) {
     if (fileFsPath === tsconfigPath) {
+      logger.logInfo(`refresh ts language service when ${fileFsPath} changed.`);
       init();
+      return;
     }
 
     // respect tsconfig

@@ -295,6 +295,7 @@ export class VLS {
         if (c.type === FileChangeType.Changed) {
           const fsPath = getFileFsPath(c.uri);
           if (this.workspaces.has(fsPath)) {
+            logger.logInfo(`refresh vetur config when ${fsPath} changed.`);
             const name = this.workspaces.get(fsPath)?.name ?? '';
             this.workspaces.delete(fsPath);
             await this.addWorkspace({ name, fsPath });
