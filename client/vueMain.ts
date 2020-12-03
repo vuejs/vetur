@@ -95,6 +95,9 @@ function registerCustomClientNotificationHandlers(client: LanguageClient) {
   client.onNotification('$/displayError', (msg: string) => {
     vscode.window.showErrorMessage(msg);
   });
+  client.onNotification('$/openWebsite', (url: string) => {
+    vscode.env.openExternal(vscode.Uri.parse(url));
+  });
   client.onNotification('$/showVirtualFile', (virtualFileSource: string, prettySourceMap: string) => {
     setVirtualContents(virtualFileSource, prettySourceMap);
   });

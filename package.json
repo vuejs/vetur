@@ -184,6 +184,12 @@
     "configuration": {
       "title": "Vetur",
       "properties": {
+        "vetur.ignoreProjectWarning": {
+          "type": "boolean",
+          "default": false,
+          "description": "Vetur will warn about not setup correctly for the project. You can disable it.",
+          "scope": "application"
+        },
         "vetur.useWorkspaceDependencies": {
           "type": "boolean",
           "default": false,

@@ -55,14 +55,29 @@ import { RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
-import { getDefaultVLSConfig, VLSFullConfig, getVeturFullConfig, VeturFullConfig } from '../config';
+import { getDefaultVLSConfig, VLSFullConfig, getVeturFullConfig, VeturFullConfig, BasicComponentInfo } from '../config';
 import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
 import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 
+interface ProjectConfig {
+  vlsFullConfig: VLSFullConfig;
+  isExistVeturConfig: boolean;
+  rootPathForConfig: string;
+  workspaceFsPath: string;
+  rootFsPath: string;
+  tsconfigPath: string | undefined;
+  packagePath: string | undefined;
+  snippetFolder: string;
+  globalComponents: BasicComponentInfo[];
+}
+
 export class VLS {
-  private workspaces: Map<string, VeturFullConfig & { name: string; workspaceFsPath: string }>;
+  private workspaces: Map<
+    string,
+    VeturFullConfig & { name: string; workspaceFsPath: string; isExistVeturConfig: boolean }
+  >;
   private nodeModulesMap: Map<string, string[]>;
   private documentService: DocumentService;
   private globalSnippetDir: string;
@@ -139,6 +154,7 @@ export class VLS {
           workspace.fsPath,
           veturConfigPath ? requireUncached(veturConfigPath) : {}
         )),
+        isExistVeturConfig: !!veturConfigPath,
         workspaceFsPath: workspace.fsPath
       });
     }
@@ -170,19 +186,21 @@ export class VLS {
     this.documentService.getAllDocuments().forEach(this.triggerValidation);
   }
 
-  private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
-    const projectRootPaths = _.flatten(
+  private getAllProjectConfigs(): ProjectConfig[] {
+    return _.flatten(
       Array.from(this.workspaces.entries()).map(([rootPathForConfig, veturConfig]) =>
         veturConfig.projects.map(project => ({
           ...project,
           rootPathForConfig,
           vlsFullConfig: this.getVLSFullConfig(veturConfig.settings, this.workspaceConfig),
-          workspaceFsPath: veturConfig.workspaceFsPath
+          workspaceFsPath: veturConfig.workspaceFsPath,
+          isExistVeturConfig: veturConfig.isExistVeturConfig
         }))
       )
     )
       .map(project => ({
         vlsFullConfig: project.vlsFullConfig,
+        isExistVeturConfig: project.isExistVeturConfig,
         rootPathForConfig: project.rootPathForConfig,
         workspaceFsPath: project.workspaceFsPath,
         rootFsPath: normalizeFileNameResolve(project.rootPathForConfig, project.root),
@@ -192,8 +210,51 @@ export class VLS {
         globalComponents: project.globalComponents
       }))
       .sort((a, b) => getPathDepth(b.rootFsPath, '/') - getPathDepth(a.rootFsPath, '/'));
+  }
+
+  private warnProjectIfNeed(projectConfig: ProjectConfig) {
+    if (projectConfig.vlsFullConfig.vetur.ignoreProjectWarning) return;
+    if (projectConfig.isExistVeturConfig) return;
+
+    const showWarningAndLearnMore = (message: string, url: string) => {
+      this.lspConnection.window.showWarningMessage(message, { title: 'Learn More' }).then(() => {
+        this.openWebsite(url);
+      });
+    };
+
+    const getCantFindMessage = (fileNames: string[]) =>
+      `Vetur can't find ${fileNames.map(el => `\`${el}\``).join(' or ')} in ${projectConfig.rootPathForConfig}.`;
+    if (!projectConfig.tsconfigPath) {
+      showWarningAndLearnMore(
+        getCantFindMessage(['tsconfig.json', 'jsconfig.json']),
+        'https://vuejs.github.io/vetur/setup.html#project-setup'
+      );
+    }
+    if (!projectConfig.packagePath) {
+      showWarningAndLearnMore(getCantFindMessage(['package.json']), '');
+    }
+
+    if (
+      ![
+        normalizeFileNameResolve(projectConfig.rootPathForConfig, 'tsconfig.json'),
+        normalizeFileNameResolve(projectConfig.rootPathForConfig, 'jsconfig.json')
+      ].includes(projectConfig.tsconfigPath ?? '')
+    ) {
+      showWarningAndLearnMore(
+        `Vetur find \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
+        'https://vuejs.github.io/vetur/setup.html#project-setup'
+      );
+    }
+
+    if (normalizeFileNameResolve(projectConfig.rootPathForConfig, 'package.json') !== projectConfig.packagePath) {
+      showWarningAndLearnMore(`Vetur find \`package.json\`/, but they aren\'t in the project root.`, '');
+    }
+  }
+
+  private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
+    const projectConfigs = this.getAllProjectConfigs();
     const docFsPath = getFileFsPath(uri);
-    const projectConfig = projectRootPaths.find(projectConfig => docFsPath.startsWith(projectConfig.rootFsPath));
+    const projectConfig = projectConfigs.find(projectConfig => docFsPath.startsWith(projectConfig.rootFsPath));
     if (!projectConfig) {
       return undefined;
     }
@@ -201,6 +262,7 @@ export class VLS {
       return this.projects.get(projectConfig.rootFsPath);
     }
 
+    // init project
     const dependencyService = createDependencyService();
     const nodeModulePaths =
       this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
@@ -215,6 +277,7 @@ export class VLS {
       nodeModulePaths,
       projectConfig.vlsFullConfig.typescript.tsdk
     );
+    this.warnProjectIfNeed(projectConfig);
     const project = await createProjectService(
       projectConfig.rootPathForConfig,
       projectConfig.rootFsPath,
@@ -332,6 +395,9 @@ export class VLS {
   }
   displayErrorMessage(msg: string): void {
     this.lspConnection.sendNotification('$/displayError', msg);
+  }
+  openWebsite(url: string): void {
+    this.lspConnection.sendNotification('$/openWebsite', url);
   }
 
   /**

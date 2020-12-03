@@ -21,6 +21,7 @@ export interface VLSFormatConfig {
 
 export interface VLSConfig {
   vetur: {
+    ignoreProjectWarning: boolean;
     useWorkspaceDependencies: boolean;
     completion: {
       autoImport: boolean;
@@ -86,6 +87,7 @@ export interface VLSFullConfig extends VLSConfig {
 export function getDefaultVLSConfig(): VLSFullConfig {
   return {
     vetur: {
+      ignoreProjectWarning: false,
       useWorkspaceDependencies: false,
       validation: {
         template: true,
@@ -190,9 +192,7 @@ export async function getVeturFullConfig(
         if (jsconfigPath && tsconfigPath) {
           const tsconfigFsPath = normalizeFileNameToFsPath(tsconfigPath);
           const jsconfigFsPath = normalizeFileNameToFsPath(jsconfigPath);
-          return getPathDepth(tsconfigPath, '/') >= getPathDepth(jsconfigFsPath, '/')
-            ? tsconfigFsPath
-            : jsconfigFsPath;
+          return getPathDepth(tsconfigPath, '/') >= getPathDepth(jsconfigFsPath, '/') ? tsconfigFsPath : jsconfigFsPath;
         }
         const configPath = tsconfigPath || jsconfigPath;
         return configPath ? normalizeFileNameToFsPath(configPath) : undefined;
