@@ -107,8 +107,8 @@ export class VLS {
 
     this.workspacePath = normalizeFileNameToFsPath(workspacePath);
 
-    // Enable PnP API
-    if (this.workspacePath && !process.versions.pnp && config.vetur.useWorkspaceDependencies) {
+    // Enable Yarn PnP support https://yarnpkg.com/features/pnp
+    if (!process.versions.pnp) {
       if (fs.existsSync(path.join(this.workspacePath, '.pnp.js'))) {
         require(path.join(workspacePath, '.pnp.js')).setup();
       } else if (fs.existsSync(path.join(this.workspacePath, '.pnp.cjs'))) {
