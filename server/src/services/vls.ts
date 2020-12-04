@@ -213,12 +213,16 @@ export class VLS {
   }
 
   private warnProjectIfNeed(projectConfig: ProjectConfig) {
-    if (projectConfig.vlsFullConfig.vetur.ignoreProjectWarning) { return; }
-    if (projectConfig.isExistVeturConfig) { return; }
+    if (projectConfig.vlsFullConfig.vetur.ignoreProjectWarning) {
+      return;
+    }
+    if (projectConfig.isExistVeturConfig) {
+      return;
+    }
 
     const showWarningAndLearnMore = (message: string, url: string) => {
-      this.lspConnection.window.showWarningMessage(message, { title: 'Learn More' }).then(() => {
-        this.openWebsite(url);
+      this.lspConnection.window.showWarningMessage(message, { title: 'Learn More' }).then(action => {
+        if (action) this.openWebsite(url);
       });
     };
 
@@ -316,6 +320,24 @@ export class VLS {
   }
 
   private setupCustomLSPHandlers() {
+    this.lspConnection.onRequest('$/doctor', async ({ fileName }) => {
+      const uri = getFsPathToUri(fileName);
+      const projectConfigs = this.getAllProjectConfigs();
+      const project = await this.getProjectService(uri);
+
+      return JSON.stringify(
+        {
+          name: 'Vetur doctor info',
+          fileName,
+          currentProject: { rootPathForConfig: project?.rootPathForConfig, projectRootFsPath: project?.projectPath },
+          activeProjects: Array.from(this.projects.keys()),
+          projectConfigs
+        },
+        null,
+        2
+      );
+    });
+
     this.lspConnection.onRequest('$/queryVirtualFileInfo', async ({ fileName, currFileText }) => {
       const project = await this.getProjectService(getFsPathToUri(fileName));
       return (project?.languageModes.getMode('vue-html') as VueHTMLMode).queryVirtualFileInfo(fileName, currFileText);

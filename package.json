@@ -65,19 +65,33 @@
     "commands": [
       {
         "command": "vetur.restartVLS",
-        "title": "Vetur: Restart VLS (Vue Language Server)"
+        "category": "Vetur",
+        "title": "Restart VLS (Vue Language Server)"
       },
       {
         "command": "vetur.generateGrammar",
-        "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
+        "category": "Vetur",
+        "title": "Generate grammar from `vetur.grammar.customBlocks`"
       },
       {
         "command": "vetur.showCorrespondingVirtualFile",
-        "title": "Vetur: Show corresponding virtual file and sourcemap"
+        "category": "Vetur",
+        "title": "Show corresponding virtual file and sourcemap"
       },
       {
         "command": "vetur.openUserScaffoldSnippetFolder",
-        "title": "Vetur: Open user scaffold snippet folder"
+        "category": "Vetur",
+        "title": "Open user scaffold snippet folder"
+      },
+      {
+        "command": "vetur.showOutputChannel",
+        "category": "Vetur",
+        "title": "Show Output Channel"
+      },
+      {
+        "command": "vetur.showDoctorInfo",
+        "category": "Vetur",
+        "title": "Show Doctor info"
       }
     ],
     "breakpoints": [

@@ -42,6 +42,7 @@ import { VueInfoService } from './vueInfoService';
 
 export interface ProjectService {
   readonly rootPathForConfig: string;
+  readonly projectPath: string | undefined;
   languageModes: LanguageModes;
   configure(config: VLSFullConfig): void;
   onDocumentFormatting(params: DocumentFormattingParams): Promise<TextEdit[]>;
@@ -119,6 +120,7 @@ export async function createProjectService(
 
   return {
     rootPathForConfig,
+    projectPath,
     configure,
     languageModes,
     async onDocumentFormatting({ textDocument, options }) {

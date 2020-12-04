@@ -11,6 +11,7 @@ import {
 } from './commands/virtualFileCommand';
 import { getGlobalSnippetDir } from './userSnippetDir';
 import { generateOpenUserScaffoldSnippetFolderCommand } from './commands/openUserScaffoldSnippetFolderCommand';
+import { generateDoctorCommand } from './commands/doctorCommand';
 
 export async function activate(context: vscode.ExtensionContext) {
   const isInsiders = vscode.env.appName.includes('Insiders');
@@ -96,6 +97,8 @@ function registerCustomClientNotificationHandlers(client: LanguageClient) {
 
 function registerCustomLSPCommands(context: vscode.ExtensionContext, client: LanguageClient) {
   context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.showCorrespondingVirtualFile', generateShowVirtualFileCommand(client))
+    vscode.commands.registerCommand('vetur.showCorrespondingVirtualFile', generateShowVirtualFileCommand(client)),
+    vscode.commands.registerCommand('vetur.showOutputChannel', () => client.outputChannel.show()),
+    vscode.commands.registerCommand('vetur.showDoctorInfo', generateDoctorCommand(client))
   );
 }
