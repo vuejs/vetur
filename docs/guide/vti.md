@@ -28,6 +28,8 @@ vti diagnostics
 
 ![VTI demo](https://user-images.githubusercontent.com/4033249/72225084-911ef580-3581-11ea-9943-e7165126ace9.gif).
 
+You also can use [`vetur.config.js`](/reference/) for setting VTI.
+
 Currently, this is only used for generating interpolation type-checking errors on CLI, which
 neither Vue's compiler nor Webpack would catch.
 
