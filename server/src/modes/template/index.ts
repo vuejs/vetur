@@ -9,10 +9,11 @@ import { HTMLMode } from './htmlMode';
 import { VueInterpolationMode } from './interpolationMode';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
-import { inferVueVersion } from '../../services/typescriptService/vueVersion';
+import { inferVueVersion } from '../../utils/vueVersion';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { VCancellationToken } from '../../utils/cancellationToken';
 import { AutoImportSfcPlugin } from '../plugins/autoImportSfcPlugin';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
@@ -24,34 +25,26 @@ export class VueHTMLMode implements LanguageMode {
   constructor(
     tsModule: RuntimeLibrary['typescript'],
     serviceHost: IServiceHost,
+    env: EnvironmentService,
     documentRegions: DocumentRegionCache,
-    projectPath: string,
-    packagePath: string | undefined,
     autoImportSfcPlugin: AutoImportSfcPlugin,
     dependencyService: DependencyService,
     vueInfoService?: VueInfoService
   ) {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
-    const vueVersion = inferVueVersion(packagePath);
     this.htmlMode = new HTMLMode(
       documentRegions,
-      projectPath,
-      packagePath,
-      vueVersion,
+      env,
       dependencyService,
       vueDocuments,
       autoImportSfcPlugin,
       vueInfoService
     );
-    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments, vueInfoService);
+    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, env, vueDocuments, vueInfoService);
     this.autoImportSfcPlugin = autoImportSfcPlugin;
   }
   getId() {
     return 'vue-html';
-  }
-  configure(c: any) {
-    this.htmlMode.configure(c);
-    this.vueInterpolationMode.configure(c);
   }
   queryVirtualFileInfo(fileName: string, currFileText: string) {
     return this.vueInterpolationMode.queryVirtualFileInfo(fileName, currFileText);

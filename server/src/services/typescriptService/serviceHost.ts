@@ -14,9 +14,10 @@ import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { logger } from '../../log';
 import { ModuleResolutionCache } from './moduleResolutionCache';
 import { globalScope } from './transformTemplate';
-import { inferVueVersion, VueVersion } from './vueVersion';
 import { ChildComponent } from '../vueInfoService';
 import { RuntimeLibrary } from '../dependencyService';
+import { EnvironmentService } from '../EnvironmentService';
+import { VueVersion } from '../../utils/vueVersion';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -85,18 +86,15 @@ export interface IServiceHost {
  */
 export function getServiceHost(
   tsModule: RuntimeLibrary['typescript'],
-  projectPath: string,
-  tsconfigPath: string | undefined,
-  packagePath: string | undefined,
+  env: EnvironmentService,
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ): IServiceHost {
   patchTS(tsModule);
 
   let currentScriptDoc: TextDocument;
 
-  const vueVersion = inferVueVersion(packagePath);
-
   // host variable
+  let vueVersion = env.getVueVersion();
   let projectVersion = 1;
   let versions = new Map<string, number>();
   let localScriptRegionDocuments = new Map<string, TextDocument>();
@@ -118,7 +116,7 @@ export function getServiceHost(
   let templateLanguageService: ts.LanguageService;
   init();
 
-  function getCompilerOptions () {
+  function getCompilerOptions() {
     const compilerOptions = {
       ...getDefaultCompilerOptions(tsModule),
       ...parsedConfig.options
@@ -127,7 +125,8 @@ export function getServiceHost(
     return compilerOptions;
   }
 
-  function init () {
+  function init() {
+    vueVersion = env.getVueVersion();
     projectVersion = 1;
     versions = new Map<string, number>();
     localScriptRegionDocuments = new Map<string, TextDocument>();
@@ -135,7 +134,7 @@ export function getServiceHost(
     projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
     moduleResolutionCache = new ModuleResolutionCache();
 
-    parsedConfig = getParsedConfig(tsModule, projectPath, tsconfigPath);
+    parsedConfig = getParsedConfig(tsModule, env.getProjectRoot(), env.getTsConfigPath());
     const initialProjectFiles = parsedConfig.fileNames;
     logger.logDebug(
       `Initializing ServiceHost with ${initialProjectFiles.length} files: ${JSON.stringify(initialProjectFiles)}`
@@ -239,7 +238,8 @@ export function getServiceHost(
 
   // External Documents: JS/TS, non Vue documents
   function updateExternalDocument(fileFsPath: string) {
-    if (fileFsPath === tsconfigPath) {
+    // reload `tsconfig.json` or vue version changed
+    if (fileFsPath === env.getTsConfigPath() || vueVersion !== env.getVueVersion()) {
       logger.logInfo(`refresh ts language service when ${fileFsPath} changed.`);
       init();
       return;
@@ -252,7 +252,7 @@ export function getServiceHost(
     if (
       isExcludedFile &&
       configFileSpecs &&
-      isExcludedFile(fileFsPath, configFileSpecs, projectPath, true, projectPath)
+      isExcludedFile(fileFsPath, configFileSpecs, env.getProjectRoot(), true, env.getProjectRoot())
     ) {
       return;
     }
@@ -475,7 +475,7 @@ export function getServiceHost(
           getChangeRange: () => void 0
         };
       },
-      getCurrentDirectory: () => projectPath,
+      getCurrentDirectory: () => env.getProjectRoot(),
       getDefaultLibFileName: tsModule.getDefaultLibFilePath,
       getNewLine: () => NEWLINE,
       useCaseSensitiveFileNames: () => true
@@ -543,19 +543,19 @@ function getScriptKind(tsModule: RuntimeLibrary['typescript'], langId: string): 
 
 function getParsedConfig(
   tsModule: RuntimeLibrary['typescript'],
-  projectPath: string,
+  projectRoot: string,
   tsconfigPath: string | undefined
 ) {
   const configFilename = tsconfigPath;
   const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
     include: ['**/*.vue'],
-    exclude: defaultIgnorePatterns(tsModule, projectPath)
+    exclude: defaultIgnorePatterns(tsModule, projectRoot)
   };
   // existingOptions should be empty since it always takes priority
   return tsModule.parseJsonConfigFileContent(
     configJson,
     tsModule.sys,
-    projectPath,
+    projectRoot,
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,

@@ -31,13 +31,13 @@ import * as Previewer from '../script/previewer';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
 import { RuntimeLibrary } from '../../services/dependencyService';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
 export class VueInterpolationMode implements LanguageMode {
-  private config: VLSFullConfig;
-
   constructor(
     private tsModule: RuntimeLibrary['typescript'],
     private serviceHost: IServiceHost,
+    private env: EnvironmentService,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
     private vueInfoService?: VueInfoService
   ) {}
@@ -46,24 +46,20 @@ export class VueInterpolationMode implements LanguageMode {
     return 'vue-html-interpolation';
   }
 
-  configure(c: any) {
-    this.config = c;
-  }
-
   queryVirtualFileInfo(fileName: string, currFileText: string) {
     return this.serviceHost.queryVirtualFileInfo(fileName, currFileText);
   }
 
   private getChildComponents(document: TextDocument) {
-    return this.config.vetur.validation.templateProps
+    return this.env.getConfig().vetur.validation.templateProps
       ? this.vueInfoService && this.vueInfoService.getInfo(document)?.componentInfo.childComponents
       : [];
   }
 
   async doValidation(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
     if (
-      !_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true) ||
-      !this.config.vetur.validation.interpolation
+      !this.env.getConfig().vetur.experimental.templateInterpolationService ||
+      !this.env.getConfig().vetur.validation.interpolation
     ) {
       return [];
     }
@@ -113,7 +109,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doComplete(document: TextDocument, position: Position): CompletionList {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
       return NULL_COMPLETION;
     }
 
@@ -206,7 +202,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
       return item;
     }
 
@@ -278,7 +274,7 @@ export class VueInterpolationMode implements LanguageMode {
     contents: MarkedString[];
     range?: Range;
   } {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
       return { contents: [] };
     }
 
@@ -336,7 +332,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findDefinition(document: TextDocument, position: Position): Location[] {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
       return [];
     }
 
@@ -387,7 +383,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findReferences(document: TextDocument, position: Position): Location[] {
-    if (!_.get(this.config, ['vetur', 'experimental', 'templateInterpolationService'], true)) {
+    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
       return [];
     }
 

@@ -29,7 +29,6 @@ import {
 } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
-import { BasicComponentInfo, VLSConfig, VLSFullConfig } from '../config';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { LanguageMode, LanguageModes } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
@@ -38,13 +37,12 @@ import { VCancellationToken } from '../utils/cancellationToken';
 import { getFileFsPath } from '../utils/paths';
 import { DependencyService } from './dependencyService';
 import { DocumentService } from './documentService';
+import { EnvironmentService } from './EnvironmentService';
 import { VueInfoService } from './vueInfoService';
 
 export interface ProjectService {
-  readonly rootPathForConfig: string;
-  readonly projectPath: string | undefined;
+  env: EnvironmentService;
   languageModes: LanguageModes;
-  configure(config: VLSFullConfig): void;
   onDocumentFormatting(params: DocumentFormattingParams): Promise<TextEdit[]>;
   onCompletion(params: CompletionParams): Promise<CompletionList>;
   onCompletionResolve(item: CompletionItem): Promise<CompletionItem>;
@@ -65,42 +63,29 @@ export interface ProjectService {
 }
 
 export async function createProjectService(
-  rootPathForConfig: string,
-  projectPath: string,
-  tsconfigPath: string | undefined,
-  packagePath: string | undefined,
-  snippetFolder: string,
-  globalComponentInfos: BasicComponentInfo[],
+  env: EnvironmentService,
   documentService: DocumentService,
-  initialConfig: VLSConfig,
   globalSnippetDir: string | undefined,
   dependencyService: DependencyService
 ): Promise<ProjectService> {
-  let $config = initialConfig;
-
   const vueInfoService = new VueInfoService();
   const languageModes = new LanguageModes();
 
   function getValidationFlags(): Record<string, boolean> {
+    const config = env.getConfig();
     return {
-      'vue-html': $config.vetur.validation.template,
-      css: $config.vetur.validation.style,
-      postcss: $config.vetur.validation.style,
-      scss: $config.vetur.validation.style,
-      less: $config.vetur.validation.style,
-      javascript: $config.vetur.validation.script
+      'vue-html': config.vetur.validation.template,
+      css: config.vetur.validation.style,
+      postcss: config.vetur.validation.style,
+      scss: config.vetur.validation.style,
+      less: config.vetur.validation.style,
+      javascript: config.vetur.validation.script
     };
   }
 
-  const validationFlags = getValidationFlags();
-
   vueInfoService.init(languageModes);
   await languageModes.init(
-    projectPath,
-    tsconfigPath,
-    packagePath,
-    snippetFolder,
-    globalComponentInfos,
+    env,
     {
       infoService: vueInfoService,
       dependencyService
@@ -108,23 +93,11 @@ export async function createProjectService(
     globalSnippetDir
   );
 
-  function configure(config: VLSFullConfig) {
-    $config = config;
-    languageModes.getAllModes().forEach(m => {
-      if (m.configure) {
-        m.configure(config);
-      }
-    });
-  }
-  configure(initialConfig);
-
   return {
-    rootPathForConfig,
-    projectPath,
-    configure,
+    env,
     languageModes,
     async onDocumentFormatting({ textDocument, options }) {
-      if (!$config.vetur.format.enable) {
+      if (!env.getConfig().vetur.format.enable) {
         return [];
       }
 
@@ -239,8 +212,8 @@ export async function createProjectService(
       const doc = documentService.getDocument(textDocument.uri)!;
       const documentContext: DocumentContext = {
         resolveReference: ref => {
-          if (projectPath && ref[0] === '/') {
-            return URI.file(path.resolve(projectPath, ref)).toString();
+          if (ref[0] === '/') {
+            return URI.file(path.resolve(env.getProjectRoot(), ref)).toString();
           }
           const fsPath = getFileFsPath(doc.uri);
           return URI.file(path.resolve(fsPath, '..', ref)).toString();
@@ -321,7 +294,7 @@ export async function createProjectService(
       return result;
     },
     async onCodeAction({ textDocument, range, context }: CodeActionParams) {
-      if (!$config.vetur.languageFeatures.codeActions) {
+      if (!env.getConfig().vetur.languageFeatures.codeActions) {
         return [];
       }
 
@@ -338,13 +311,17 @@ export async function createProjectService(
     async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
       const diagnostics: Diagnostic[] = [];
       if (doc.languageId === 'vue') {
+        const validationFlags = getValidationFlags();
         for (const lmr of languageModes.getAllLanguageModeRangesInDocument(doc)) {
           if (lmr.mode.doValidation) {
             if (validationFlags[lmr.mode.getId()]) {
               diagnostics.push.apply(diagnostics, await lmr.mode.doValidation(doc, cancellationToken));
             }
             // Special case for template type checking
-            else if (lmr.mode.getId() === 'vue-html' && $config.vetur.experimental.templateInterpolationService) {
+            else if (
+              lmr.mode.getId() === 'vue-html' &&
+              env.getConfig().vetur.experimental.templateInterpolationService
+            ) {
               diagnostics.push.apply(diagnostics, await lmr.mode.doValidation(doc, cancellationToken));
             }
           }

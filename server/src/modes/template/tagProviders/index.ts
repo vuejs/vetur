@@ -32,7 +32,7 @@ export interface CompletionConfiguration {
   [provider: string]: boolean;
 }
 
-export function getTagProviderSettings(projectPath: string | null | undefined, packagePath: string | undefined) {
+export function getTagProviderSettings(packagePath: string | undefined) {
   const settings: CompletionConfiguration = {
     '__vetur-workspace': true,
     html5: true,

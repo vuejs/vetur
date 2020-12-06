@@ -3,7 +3,7 @@ import { configs } from 'eslint-plugin-vue';
 import { Diagnostic, Range, DiagnosticSeverity } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { resolve } from 'path';
-import { VueVersion } from '../../../services/typescriptService/vueVersion';
+import { VueVersion } from '../../../utils/vueVersion';
 
 function toDiagnostic(error: Linter.LintMessage): Diagnostic {
   const line = error.line - 1;

@@ -1,12 +1,11 @@
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { SnippetManager, ScaffoldSnippetSources } from './snippets';
 import { Range } from 'vscode-css-languageservice';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
-export function getVueMode(snippetFolder: string, globalSnippetDir?: string): LanguageMode {
-  let config: any = {};
-
-  const snippetManager = new SnippetManager(snippetFolder, globalSnippetDir);
-  let scaffoldSnippetSources: ScaffoldSnippetSources = {
+export function getVueMode(env: EnvironmentService, globalSnippetDir?: string): LanguageMode {
+  const snippetManager = new SnippetManager(env.getSnippetFolder(), globalSnippetDir);
+  const scaffoldSnippetSources: ScaffoldSnippetSources = {
     workspace: '💼',
     user: '🗒️',
     vetur: '✌'
@@ -16,13 +15,9 @@ export function getVueMode(snippetFolder: string, globalSnippetDir?: string): La
     getId() {
       return 'vue';
     },
-    configure(c) {
-      config = c;
-      if (c.vetur.completion['scaffoldSnippetSources']) {
-        scaffoldSnippetSources = c.vetur.completion['scaffoldSnippetSources'];
-      }
-    },
     doComplete(document, position) {
+      const scaffoldSnippetSources: ScaffoldSnippetSources = env.getConfig().vetur.completion.scaffoldSnippetSources;
+
       if (
         scaffoldSnippetSources['workspace'] === '' &&
         scaffoldSnippetSources['user'] === '' &&

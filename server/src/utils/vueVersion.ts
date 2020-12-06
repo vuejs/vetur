@@ -1,6 +1,4 @@
-import { throws } from 'assert';
 import { readFileSync } from 'fs';
-import { findConfigFile } from '../../utils/workspace';
 
 export enum VueVersion {
   VPre25,

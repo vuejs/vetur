@@ -5,19 +5,15 @@ import { prettierPluginPugify } from '../../utils/prettier';
 import { VLSFormatConfig } from '../../config';
 import { getFileFsPath } from '../../utils/paths';
 import { DependencyService } from '../../services/dependencyService';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
-export function getPugMode(dependencyService: DependencyService): LanguageMode {
-  let config: any = {};
-
+export function getPugMode(env: EnvironmentService, dependencyService: DependencyService): LanguageMode {
   return {
     getId() {
       return 'pug';
     },
-    configure(c) {
-      config = c;
-    },
     format(document, currRange, formattingOptions) {
-      if (config.vetur.format.defaultFormatter['pug'] === 'none') {
+      if (env.getConfig().vetur.format.defaultFormatter['pug'] === 'none') {
         return [];
       }
 
@@ -28,7 +24,7 @@ export function getPugMode(dependencyService: DependencyService): LanguageMode {
         value,
         getFileFsPath(document.uri),
         range,
-        config.vetur.format as VLSFormatConfig,
+        env.getConfig().vetur.format as VLSFormatConfig,
         // @ts-expect-error
         'pug',
         false

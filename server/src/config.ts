@@ -78,6 +78,7 @@ export interface VLSFullConfig extends VLSConfig {
   emmet?: any;
   html?: any;
   css?: any;
+  sass?: any;
   javascript?: any;
   typescript?: any;
   prettier?: any;

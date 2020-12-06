@@ -60,6 +60,7 @@ import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
 import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
+import { createEnvironmentService } from './EnvironmentService';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -172,12 +173,12 @@ export class VLS {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
       let isFormatEnable = false;
       this.projects.forEach(project => {
-        const veturConfig = this.workspaces.get(project.rootPathForConfig);
+        const veturConfig = this.workspaces.get(project.env.getRootPathForConfig());
         if (!veturConfig) {
           return;
         }
         const fullConfig = this.getVLSFullConfig(veturConfig.settings, settings);
-        project.configure(fullConfig);
+        project.env.configure(fullConfig);
         isFormatEnable = isFormatEnable || fullConfig.vetur.format.enable;
       });
       this.setupDynamicFormatters(isFormatEnable);
@@ -222,7 +223,9 @@ export class VLS {
 
     const showWarningAndLearnMore = (message: string, url: string) => {
       this.lspConnection.window.showWarningMessage(message, { title: 'Learn More' }).then(action => {
-        if (action) this.openWebsite(url);
+        if (action) {
+          this.openWebsite(url);
+        }
       });
     };
 
@@ -283,14 +286,16 @@ export class VLS {
     );
     this.warnProjectIfNeed(projectConfig);
     const project = await createProjectService(
-      projectConfig.rootPathForConfig,
-      projectConfig.rootFsPath,
-      projectConfig.tsconfigPath,
-      projectConfig.packagePath,
-      projectConfig.snippetFolder,
-      projectConfig.globalComponents,
+      createEnvironmentService(
+        projectConfig.rootPathForConfig,
+        projectConfig.rootFsPath,
+        projectConfig.tsconfigPath,
+        projectConfig.packagePath,
+        projectConfig.snippetFolder,
+        projectConfig.globalComponents,
+        projectConfig.vlsFullConfig
+      ),
       this.documentService,
-      projectConfig.vlsFullConfig,
       this.globalSnippetDir,
       dependencyService
     );
@@ -329,7 +334,10 @@ export class VLS {
         {
           name: 'Vetur doctor info',
           fileName,
-          currentProject: { rootPathForConfig: project?.rootPathForConfig, projectRootFsPath: project?.projectPath },
+          currentProject: {
+            rootPathForConfig: project?.env.getRootPathForConfig(),
+            projectRootFsPath: project?.env.getProjectRoot()
+          },
           activeProjects: Array.from(this.projects.keys()),
           projectConfigs
         },
@@ -379,23 +387,28 @@ export class VLS {
       changes.forEach(async c => {
         if (c.type === FileChangeType.Changed) {
           const fsPath = getFileFsPath(c.uri);
+
+          // when `vetur.config.js` changed
           if (this.workspaces.has(fsPath)) {
             logger.logInfo(`refresh vetur config when ${fsPath} changed.`);
             const name = this.workspaces.get(fsPath)?.name ?? '';
             this.workspaces.delete(fsPath);
             await this.addWorkspace({ name, fsPath });
-            this.projects.forEach((project, projectPath) => {
-              if (project.rootPathForConfig === fsPath) {
+            this.projects.forEach((project, projectRoot) => {
+              if (project.env.getRootPathForConfig() === fsPath) {
                 project.dispose();
-                this.projects.delete(projectPath);
+                this.projects.delete(projectRoot);
               }
             });
             return;
           }
 
           const project = await this.getProjectService(c.uri);
-          const jsMode = project?.languageModes.getMode('javascript');
-          jsMode?.onDocumentChanged!(fsPath);
+          project?.languageModes.getAllModes().forEach(m => {
+            if (m.onDocumentChanged) {
+              m.onDocumentChanged(fsPath);
+            }
+          });
         }
       });
 

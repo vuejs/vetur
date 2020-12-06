@@ -40,6 +40,7 @@ import { SassLanguageMode } from '../modes/style/sass/sassLanguageMode';
 import { getPugMode } from '../modes/pug';
 import { VCancellationToken } from '../utils/cancellationToken';
 import { createAutoImportSfcPlugin } from '../modes/plugins/autoImportSfcPlugin';
+import { EnvironmentService } from '../services/EnvironmentService';
 
 export interface VLSServices {
   dependencyService: DependencyService;
@@ -48,7 +49,6 @@ export interface VLSServices {
 
 export interface LanguageMode {
   getId(): string;
-  configure?(options: VLSFullConfig): void;
   updateFileInfo?(doc: TextDocument): void;
 
   doValidation?(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]>;
@@ -111,15 +111,7 @@ export class LanguageModes {
     this.modelCaches.push(this.documentRegions);
   }
 
-  async init(
-    projectPath: string,
-    tsconfigPath: string | undefined,
-    packagePath: string | undefined,
-    snippetFolder: string,
-    globalComponentInfos: BasicComponentInfo[],
-    services: VLSServices,
-    globalSnippetDir?: string
-  ) {
+  async init(env: EnvironmentService, services: VLSServices, globalSnippetDir?: string) {
     const tsModule = services.dependencyService.get('typescript').module;
 
     /**
@@ -129,7 +121,7 @@ export class LanguageModes {
       const vueDocument = this.documentRegions.refreshAndGet(document);
       return vueDocument.getSingleTypeDocument('script');
     });
-    this.serviceHost = getServiceHost(tsModule, projectPath, tsconfigPath, packagePath, scriptRegionDocuments);
+    this.serviceHost = getServiceHost(tsModule, env, scriptRegionDocuments);
     const autoImportSfcPlugin = createAutoImportSfcPlugin(tsModule, services.infoService);
     autoImportSfcPlugin.setGetTSScriptTarget(() => this.serviceHost.getComplierOptions().target);
     autoImportSfcPlugin.setGetFilesFn(() =>
@@ -139,9 +131,8 @@ export class LanguageModes {
     const vueHtmlMode = new VueHTMLMode(
       tsModule,
       this.serviceHost,
+      env,
       this.documentRegions,
-      projectPath,
-      packagePath,
       autoImportSfcPlugin,
       services.dependencyService,
       services.infoService
@@ -149,22 +140,24 @@ export class LanguageModes {
 
     const jsMode = await getJavascriptMode(
       this.serviceHost,
+      env,
       this.documentRegions,
       services.dependencyService,
-      globalComponentInfos,
+      env.getGlobalComponentInfos(),
       services.infoService
     );
+    autoImportSfcPlugin.setGetConfigure(env.getConfig);
     autoImportSfcPlugin.setGetJSResolve(jsMode.doResolve!);
 
-    this.modes['vue'] = getVueMode(snippetFolder, globalSnippetDir);
+    this.modes['vue'] = getVueMode(env, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
-    this.modes['pug'] = getPugMode(services.dependencyService);
-    this.modes['css'] = getCSSMode(this.documentRegions, services.dependencyService);
-    this.modes['postcss'] = getPostCSSMode(this.documentRegions, services.dependencyService);
-    this.modes['scss'] = getSCSSMode(this.documentRegions, services.dependencyService);
-    this.modes['sass'] = new SassLanguageMode();
-    this.modes['less'] = getLESSMode(this.documentRegions, services.dependencyService);
-    this.modes['stylus'] = getStylusMode(this.documentRegions, services.dependencyService);
+    this.modes['pug'] = getPugMode(env, services.dependencyService);
+    this.modes['css'] = getCSSMode(env, this.documentRegions, services.dependencyService);
+    this.modes['postcss'] = getPostCSSMode(env, this.documentRegions, services.dependencyService);
+    this.modes['scss'] = getSCSSMode(env, this.documentRegions, services.dependencyService);
+    this.modes['sass'] = new SassLanguageMode(env);
+    this.modes['less'] = getLESSMode(env, this.documentRegions, services.dependencyService);
+    this.modes['stylus'] = getStylusMode(env, this.documentRegions, services.dependencyService);
     this.modes['javascript'] = jsMode;
     this.modes['typescript'] = jsMode;
     this.modes['tsx'] = jsMode;
