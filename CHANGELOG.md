@@ -8,9 +8,11 @@
 - Support monorepo
 - Register global components
 - Support `vetur.config.js` for monorepo, global components.
-- Watch more config file changed, Like: `package.json`, `tsconfig.json`
+- Watch config file changed, Like: `package.json`, `tsconfig.json`
 - Warn some probably problem when open project.
-- Add `Vetur: doctor` command.
+- Add `Vetur: doctor` command for debug.
+- Improve docs.
+
 
 ### 0.30.3 | 2020-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.3/vspackage)
 
