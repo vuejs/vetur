@@ -12,6 +12,7 @@ module.exports = {
     nav: [
       { text: 'Guide', link: '/guide/' },
       { text: 'Reference', link: '/reference/' },
+      { text: 'FAQ', link: '/guide/FAQ' },
       { text: 'Roadmap', link: 'https://github.com/vuejs/vetur/issues/873' },
       { text: 'Credits', link: '/credits' },
       { text: 'Contribution Guide', link: 'https://github.com/vuejs/vetur/wiki#contribution-guide' }

@@ -39,10 +39,10 @@ It is out of box.
 Please keep `package.json` and `tsconfig.json`/`jsconfig.json` at opened project root.   
 If you can't do it, please add `vetur.config.js` for set config file path.
 
-- [Read more `tsconfig.json`/`jsconfig.json`]().
-- [Read more `vetur.config.js` doc]().
+- [Read more `tsconfig.json`/`jsconfig.json`](/guide/setup.html#project-setup).
+- [Read more `vetur.config.js` doc](/guide/setup.html#advanced).
 
 ## Monorepo
 please add `vetur.config.js` for define projects.
 
-- [Read more `vetur.config.js` doc]().
+- [Read more `vetur.config.js` doc](/guide/setup.html#advanced).

@@ -1,17 +1,5 @@
 # FAQ
 
-- [Install an old version of Vetur](#install-an-old-version-of-vetur)
-- [No Syntax Highlighting & No Language Features working](#no-syntax-highlighting--no-language-features-working)
-- [Vetur Crash](#vetur-crash)
-- [Vetur can't recognize components imported using webpack's alias](#vetur-cant-recognize-components-imported-using-webpacks-alias)
-- [Property 'xxx' does not exist on type 'CombinedVueInstance'](#property-xxx-does-not-exist-on-type-combinedvueinstance)
-- [Vetur cannot recognize my Vue component import, such as `import Comp from './comp'`](#vetur-cannot-recognize-my-vue-component-import-such-as-import-comp-from-comp)
-- [Template Interpolation auto completion does not work](#template-interpolation-auto-completion-does-not-work)
-- [.vue file cannot be imported in TS file](#vue-file-cannot-be-imported-in-ts-file)
-- [How to build and install from source](#how-to-build-and-install-from-source)
-- [Vetur uses different version of TypeScript in .vue files to what I installed in `node_modules`.](#vetur-uses-different-version-of-typescript-in-vue-files-to-what-i-installed-in-node_modules)
-- [Vetur is slow](#vetur-is-slow)
-
 ## Install an old version of Vetur
 
 Sometimes new releases have bugs that you want to avoid. Here's an easy way to downgrade Vetur to a working version:
@@ -132,3 +120,45 @@ NB: It will use `typescript.tsdk` setting as the path to look for if defined, de
 You can run the command `Vetur: Restart VLS (Vue Language Server)` to restart VLS.
 
 However, we'd appreciate it if you can file a [performance issue report with a profile](https://github.com/vuejs/vetur/blob/master/.github/PERF_ISSUE.md) to help us find the cause of the issue.
+
+## Vetur can't find `tsconfig.json`, `jsconfig.json` in /xxxx/xxxxxx.
+
+If you don't have any `tsconfig.json`, `jsconfig.json` in project,
+Vetur will use fallback settings. Some feature isn't work.
+Like: path alias, decorator, import json.
+
+You can add this config in correct position in project.
+Or use `vetur.config.js` to set file path in project.
+
+- [Read more project setup](/guide/setup.html#project-setup)
+- [Read more `vetur.config.js`](/guide/setup.html#advanced)
+
+If you want debug info, you can use `Vetur: show doctor info` command.
+You can use `vetur.ignoreProjectWarning: false` in vscode setting to close this warning.
+
+## Vetur can't find `package.json` in /xxxx/xxxxxx.
+
+If you don't have any `package.json` in project, Vetur can't know vue version and component data from other libs.
+Vetur assume that vue version is less than 2.5 in your project.
+If the version is wrong, you will get wrong diagnostic from typescript and eslint template validation.
+
+You can add this config in correct position in project.
+Or use `vetur.config.js` to set file path in project.
+
+- [Read more `vetur.config.js`](/guide/setup.html#advanced)
+
+If you want debug info, you can use `Vetur: show doctor info` command.
+You can use `vetur.ignoreProjectWarning: false` in vscode setting to close this warning.
+
+## Vetur find xxx, but they aren\'t in the project root.
+Vetur find the file, but it may not actually be what you want.
+If it is wrong, it will cause same result as the previous two. [ref1](/guide/FAQ.html#vetur-can-t-find-tsconfig-json-jsconfig-json-in-xxxx-xxxxxx), [ref2](/guide/FAQ.html#vetur-can-t-find-package-json-in-xxxx-xxxxxx)
+
+You can add this config in correct position in project.
+Or use `vetur.config.js` to set file path in project.
+
+- [Read more `vetur.config.js`](/guide/setup.html#advanced)
+
+If you want debug info, you can use `Vetur: show doctor info` command.
+You can use `vetur.ignoreProjectWarning: false` in vscode setting to close this warning.
+

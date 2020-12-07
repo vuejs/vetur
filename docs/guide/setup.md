@@ -147,5 +147,5 @@ module.exports = {
 }
 ```
 
-- [Read more `vetur.config.js` reference]().
+- [Read more `vetur.config.js` reference](/reference/).
 - [Read RFC](https://github.com/vuejs/vetur/blob/master/rfcs/001-vetur-config-file.md).
