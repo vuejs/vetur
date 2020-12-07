@@ -22,7 +22,7 @@ export function doComplete(
   position: Position,
   htmlDocument: HTMLDocument,
   tagProviders: IHTMLTagProvider[],
-  emmetConfig: emmet.VSCodeEmmetConfig,
+  emmetConfig: emmet.EmmetConfiguration,
   autoImportCompletions?: CompletionItem[]
 ): CompletionList {
   const modifierProvider = getModifierProvider();
