@@ -16,6 +16,10 @@ function floatVersionToEnum(v: number) {
   }
 }
 
+export function getVueVersionKey(version: VueVersion) {
+  return Object.keys(VueVersion)?.[Object.values(VueVersion).indexOf(version)];
+}
+
 export function inferVueVersion(packagePath: string | undefined): VueVersion {
   const packageJSONPath = packagePath;
   try {

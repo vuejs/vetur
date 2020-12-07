@@ -61,6 +61,7 @@ import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellat
 import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 import { createEnvironmentService } from './EnvironmentService';
+import { getVueVersionKey } from '../utils/vueVersion';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -335,8 +336,9 @@ export class VLS {
           name: 'Vetur doctor info',
           fileName,
           currentProject: {
-            rootPathForConfig: project?.env.getRootPathForConfig(),
-            projectRootFsPath: project?.env.getProjectRoot()
+            vueVersion: project ? getVueVersionKey(project?.env.getVueVersion()) : null,
+            rootPathForConfig: project?.env.getRootPathForConfig() ?? null,
+            projectRootFsPath: project?.env.getProjectRoot() ?? null
           },
           activeProjects: Array.from(this.projects.keys()),
           projectConfigs
