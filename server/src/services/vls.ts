@@ -26,8 +26,7 @@ import {
   CompletionParams,
   ExecuteCommandParams,
   ApplyWorkspaceEditRequest,
-  FoldingRangeParams,
-  DidChangeWorkspaceFoldersNotification
+  FoldingRangeParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -62,6 +61,7 @@ import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
+import { accessSync, constants } from 'fs';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -218,9 +218,14 @@ export class VLS {
     if (projectConfig.vlsFullConfig.vetur.ignoreProjectWarning) {
       return;
     }
-    if (projectConfig.isExistVeturConfig) {
-      return;
-    }
+
+    const showErrorIfCantAccess = (name: string, fsPath: string) => {
+      try {
+        accessSync(fsPath, constants.R_OK);
+      } catch {
+        this.lspConnection.window.showErrorMessage(`Vetur can't access ${projectConfig.tsconfigPath} for ${name}.`);
+      }
+    };
 
     const showWarningAndLearnMore = (message: string, url: string) => {
       this.lspConnection.window.showWarningMessage(message, { title: 'Learn More' }).then(action => {
@@ -235,11 +240,23 @@ export class VLS {
     if (!projectConfig.tsconfigPath) {
       showWarningAndLearnMore(
         getCantFindMessage(['tsconfig.json', 'jsconfig.json']),
-        'https://vuejs.github.io/vetur/setup.html#project-setup'
+        'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-can-t-find-tsconfig-json-jsconfig-json-in-xxxx-xxxxxx'
       );
+    } else {
+      showErrorIfCantAccess('ts/js config', projectConfig.tsconfigPath);
     }
     if (!projectConfig.packagePath) {
-      showWarningAndLearnMore(getCantFindMessage(['package.json']), '');
+      showWarningAndLearnMore(
+        getCantFindMessage(['package.json']),
+        'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-can-t-find-package-json-in-xxxx-xxxxxx'
+      );
+    } else {
+      showErrorIfCantAccess('ts/js config', projectConfig.packagePath);
+    }
+
+    // ignore not in project root warning when vetur config file is exist.
+    if (projectConfig.isExistVeturConfig) {
+      return;
     }
 
     if (
@@ -250,12 +267,15 @@ export class VLS {
     ) {
       showWarningAndLearnMore(
         `Vetur find \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
-        'https://vuejs.github.io/vetur/setup.html#project-setup'
+        'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
       );
     }
 
     if (normalizeFileNameResolve(projectConfig.rootPathForConfig, 'package.json') !== projectConfig.packagePath) {
-      showWarningAndLearnMore(`Vetur find \`package.json\`/, but they aren\'t in the project root.`, '');
+      showWarningAndLearnMore(
+        `Vetur find \`package.json\`/, but they aren\'t in the project root.`,
+        'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
+      );
     }
   }
 
