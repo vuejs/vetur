@@ -24,7 +24,7 @@
   "dependencies": {
     "eslint": "^7.14.0",
     "eslint-plugin-vue": "^7.1.0",
-    "prettier": "^2.2.0",
+    "prettier": "^2.2.1",
     "tslint": "6.1.3",
     "typescript": "^4.1.2"
   },
