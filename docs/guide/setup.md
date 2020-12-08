@@ -97,6 +97,28 @@ import a from 'components/a.vue'
 import b from 'components/b.vue'
 ```
 
+## Typescript
+
+You need to add a shim type file for import vue SFC in typescript file.
+### Vue2
+```typescript
+// shims-vue.d.ts
+declare module '*.vue' {
+  import Vue from 'vue'
+  export default Vue
+}
+```
+### Vue3
+```typescript
+// shims-vue.d.ts
+declare module '*.vue' {
+  import type { DefineComponent } from 'vue'
+  const component: DefineComponent<{}, {}, any>
+  export default component
+}
+```
+
+
 ## Advanced
 If you use monorepo or VTI or not exist `package.json` and `tsconfig.json/jsconfig.json` at project root,
 You can use `vetur.config.js` for advanced setting.
