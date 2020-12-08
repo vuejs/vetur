@@ -171,3 +171,9 @@ module.exports = {
 
 - [Read more `vetur.config.js` reference](/reference/).
 - [Read RFC](https://github.com/vuejs/vetur/blob/master/rfcs/001-vetur-config-file.md).
+
+## Yarn pnp
+Vetur support this project now, but have some limits.
+
+- Don't mix common project and pnp project in multi-root/monorepo
+- Prettier don't support yarn pnp, so can't load plugin automatic.

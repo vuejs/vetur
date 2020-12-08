@@ -52,15 +52,17 @@ Thanks to the following companies for supporting Vetur's development:
 
 ## Features
 
-- Syntax-highlighting
-- Snippet
-- Emmet
-- Linting / Error Checking
-- Formatting
-- Auto Completion
-- [Component Data](https://vuejs.github.io/vetur/component-data.html): auto-completion and hover-information for popular Vue frameworks and your own custom components
-- [Experimental Interpolation Features](https://vuejs.github.io/vetur/interpolation.html): auto-completion, hover information and type-checking in Vue template
-- [VTI](https://vuejs.github.io/vetur/vti.html): Surface template type-checking errors on CLI
+- [Syntax-highlighting](/guide/highlighting.md)
+- [Snippet](/guide/snippet.md)
+- [Emmet](/guide/emmet.md)
+- [Linting / Error Checking](/guide/linting-error.md)
+- [Formatting](/guide/formatting.md)
+- [IntelliSense](/guide/intellisense.md)
+- [Debugging](/guide/debugging.md)
+- [Component Data](/guide/framework.md): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](/guide/interpolation.md): auto-completion, hover information and type-checking in Vue template
+- [VTI](/guide/vti.md): Surface template type-checking errors on CLI
+- [Global components](/guide/global-components.md): support define global components.
 
 ## Quick Start
 
@@ -75,9 +77,8 @@ Thanks to the following companies for supporting Vetur's development:
 
 ## Limitations
 
-- No multi root suppport yet ([#424](https://github.com/vuejs/vetur/issues/424))
-- Cannot handle tsconfig from non-top-level folder ([#815](https://github.com/vuejs/vetur/issues/815))
 - You can restart Vue language service when Vetur slow ([#2192](https://github.com/vuejs/vetur/issues/2192))
+- yarn pnp (https://vuejs.github.io/vetur/guide/setup.html#yarn-pnp)
 
 ## Roadmap
 
