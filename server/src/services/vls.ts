@@ -300,7 +300,6 @@ export class VLS {
     }
 
     // init project
-    const dependencyService = createDependencyService();
     // Yarn Pnp don't need this. https://yarnpkg.com/features/pnp
     const nodeModulePaths = !process.versions.pnp
       ? this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
@@ -309,7 +308,7 @@ export class VLS {
     if (this.nodeModulesMap.has(projectConfig.rootPathForConfig)) {
       this.nodeModulesMap.set(projectConfig.rootPathForConfig, nodeModulePaths);
     }
-    await dependencyService.init(
+    const dependencyService = await createDependencyService(
       projectConfig.rootPathForConfig,
       projectConfig.workspaceFsPath,
       projectConfig.vlsFullConfig.vetur.useWorkspaceDependencies,

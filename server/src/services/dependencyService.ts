@@ -88,137 +88,123 @@ export interface RuntimeLibrary {
 }
 
 export interface DependencyService {
-  useWorkspaceDependencies: boolean;
-  init(
-    rootPathForConfig: string,
-    workspacePath: string,
-    useWorkspaceDependencies: boolean,
-    nodeModulesPaths: string[],
-    tsSDKPath?: string
-  ): Promise<void>;
+  readonly useWorkspaceDependencies: boolean;
+  readonly nodeModulesPaths: string[];
   get<L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]>;
   getBundled<L extends keyof RuntimeLibrary>(lib: L): Dependency<RuntimeLibrary[L]>;
 }
 
-export const createDependencyService = (): DependencyService => {
-  let $useWorkspaceDependencies: boolean;
-  let $rootPathForConfig: string;
-  let $workspacePath: string;
+const bundledModules = {
+  typescript: ts,
+  prettier,
+  '@starptech/prettyhtml': prettyHTML,
+  'prettier-eslint': prettierEslint,
+  'prettier-tslint': prettierTslint,
+  'stylus-supremacy': stylusSupremacy,
+  '@prettier/plugin-pug': prettierPluginPug
+};
+
+export const createDependencyService = async (
+  rootPathForConfig: string,
+  workspacePath: string,
+  useWorkspaceDependencies: boolean,
+  nodeModulesPaths: string[],
+  tsSDKPath?: string
+): Promise<DependencyService> => {
   let loaded: { [K in keyof RuntimeLibrary]: Dependency<RuntimeLibrary[K]>[] };
 
-  const bundledModules = {
-    typescript: ts,
-    prettier,
-    '@starptech/prettyhtml': prettyHTML,
-    'prettier-eslint': prettierEslint,
-    'prettier-tslint': prettierTslint,
-    'stylus-supremacy': stylusSupremacy,
-    '@prettier/plugin-pug': prettierPluginPug
+  const loadTypeScript = async (): Promise<Dependency<typeof ts>[]> => {
+    try {
+      if (useWorkspaceDependencies && tsSDKPath) {
+        const dir = path.isAbsolute(tsSDKPath)
+          ? path.resolve(tsSDKPath, '..')
+          : path.resolve(workspacePath, tsSDKPath, '..');
+        const tsModule = require(dir);
+        logger.logInfo(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
+
+        return [
+          {
+            dir,
+            version: tsModule.version as string,
+            bundled: false,
+            module: tsModule as typeof ts
+          }
+        ];
+      }
+
+      if (useWorkspaceDependencies) {
+        const packages = await findAllPackages(nodeModulesPaths, 'typescript');
+        if (packages.length === 0) {
+          throw new Error(`No find any packages in ${rootPathForConfig}.`);
+        }
+
+        return packages
+          .map(pkg => {
+            logger.logInfo(`Loaded typescript@${pkg.version} from ${pkg.dir}.`);
+
+            return {
+              dir: pkg.dir,
+              version: pkg.version as string,
+              bundled: false,
+              module: pkg.module as typeof ts
+            };
+          })
+          .sort(compareDependency);
+      }
+
+      throw new Error('No useWorkspaceDependencies.');
+    } catch (e) {
+      logger.logDebug(e.message);
+      logger.logInfo(`Loaded bundled typescript@${ts.version}.`);
+      return [
+        {
+          dir: '',
+          version: ts.version,
+          bundled: true,
+          module: ts
+        }
+      ];
+    }
   };
 
-  async function init(
-    rootPathForConfig: string,
-    workspacePath: string,
-    useWorkspaceDependencies: boolean,
-    nodeModulesPaths: string[],
-    tsSDKPath?: string
-  ) {
-    const loadTypeScript = async (): Promise<Dependency<typeof ts>[]> => {
-      try {
-        if (useWorkspaceDependencies && tsSDKPath) {
-          const dir = path.isAbsolute(tsSDKPath)
-            ? path.resolve(tsSDKPath, '..')
-            : path.resolve(workspacePath, tsSDKPath, '..');
-          const tsModule = require(dir);
-          logger.logInfo(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
+  const loadCommonDep = async <N extends string, BM>(name: N, bundleModule: BM): Promise<Dependency<BM>[]> => {
+    try {
+      if (useWorkspaceDependencies) {
+        const packages = await findAllPackages(nodeModulesPaths, name);
+        if (packages.length === 0) {
+          throw new Error(`No find ${name} packages in ${rootPathForConfig}.`);
+        }
 
-          return [
-            {
-              dir,
-              version: tsModule.version as string,
+        return packages
+          .map(pkg => {
+            logger.logInfo(`Loaded ${name}@${pkg.version} from ${pkg.dir}.`);
+
+            return {
+              dir: pkg.dir,
+              version: pkg.version as string,
               bundled: false,
-              module: tsModule as typeof ts
-            }
-          ];
-        }
-
-        if (useWorkspaceDependencies) {
-          const packages = await findAllPackages(nodeModulesPaths, 'typescript');
-          if (packages.length === 0) {
-            throw new Error(`No find any packages in ${rootPathForConfig}.`);
-          }
-
-          return packages
-            .map(pkg => {
-              logger.logInfo(`Loaded typescript@${pkg.version} from ${pkg.dir}.`);
-
-              return {
-                dir: pkg.dir,
-                version: pkg.version as string,
-                bundled: false,
-                module: pkg.module as typeof ts
-              };
-            })
-            .sort(compareDependency);
-        }
-
-        throw new Error('No useWorkspaceDependencies.');
-      } catch (e) {
-        logger.logDebug(e.message);
-        logger.logInfo(`Loaded bundled typescript@${ts.version}.`);
-        return [
-          {
-            dir: '',
-            version: ts.version,
-            bundled: true,
-            module: ts
-          }
-        ];
+              module: pkg.module as BM
+            };
+          })
+          .sort(compareDependency);
       }
-    };
-
-    const loadCommonDep = async <N extends string, BM>(name: N, bundleModule: BM): Promise<Dependency<BM>[]> => {
-      try {
-        if (useWorkspaceDependencies) {
-          const packages = await findAllPackages(nodeModulesPaths, name);
-          if (packages.length === 0) {
-            throw new Error(`No find ${name} packages in ${rootPathForConfig}.`);
-          }
-
-          return packages
-            .map(pkg => {
-              logger.logInfo(`Loaded ${name}@${pkg.version} from ${pkg.dir}.`);
-
-              return {
-                dir: pkg.dir,
-                version: pkg.version as string,
-                bundled: false,
-                module: pkg.module as BM
-              };
-            })
-            .sort(compareDependency);
+      throw new Error('No useWorkspaceDependencies.');
+    } catch (e) {
+      logger.logDebug(e.message);
+      // TODO: Get bundle package version
+      logger.logInfo(`Loaded bundled ${name}.`);
+      return [
+        {
+          dir: '',
+          version: '',
+          bundled: true,
+          module: bundleModule as BM
         }
-        throw new Error('No useWorkspaceDependencies.');
-      } catch (e) {
-        logger.logDebug(e.message);
-        // TODO: Get bundle package version
-        logger.logInfo(`Loaded bundled ${name}.`);
-        return [
-          {
-            dir: '',
-            version: '',
-            bundled: true,
-            module: bundleModule as BM
-          }
-        ];
-      }
-    };
+      ];
+    }
+  };
 
-    $useWorkspaceDependencies = useWorkspaceDependencies;
-    $workspacePath = workspacePath;
-    $rootPathForConfig = rootPathForConfig;
-    // We don't need loaded when yarn pnp. https://yarnpkg.com/features/pnp
-    if (process.versions.pnp) { return; }
+  if (!process.versions.pnp) {
     loaded = {
       typescript: await loadTypeScript(),
       prettier: await loadCommonDep('prettier', bundledModules['prettier']),
@@ -233,7 +219,7 @@ export const createDependencyService = (): DependencyService => {
   const get = <L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]> => {
     // We find it when yarn pnp. https://yarnpkg.com/features/pnp
     if (process.versions.pnp) {
-      const pkgPath = require.resolve(lib, { paths: [filePath ?? $workspacePath] });
+      const pkgPath = require.resolve(lib, { paths: [filePath ?? workspacePath] });
 
       return {
         dir: path.dirname(pkgPath),
@@ -259,8 +245,8 @@ export const createDependencyService = (): DependencyService => {
     const possiblePaths: string[] = [];
     let tempPath = path.dirname(filePath);
     while (
-      $rootPathForConfig === tempPath ||
-      getPathDepth($rootPathForConfig, path.sep) > getPathDepth(tempPath, path.sep)
+      rootPathForConfig === tempPath ||
+      getPathDepth(rootPathForConfig, path.sep) > getPathDepth(tempPath, path.sep)
     ) {
       possiblePaths.push(path.resolve(tempPath, `node_modules/${lib}`));
       tempPath = path.resolve(tempPath, '../');
@@ -280,10 +266,8 @@ export const createDependencyService = (): DependencyService => {
   };
 
   return {
-    get useWorkspaceDependencies() {
-      return $useWorkspaceDependencies;
-    },
-    init,
+    useWorkspaceDependencies,
+    nodeModulesPaths,
     get,
     getBundled
   };
