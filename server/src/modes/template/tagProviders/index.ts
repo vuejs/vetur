@@ -15,7 +15,6 @@ export { IHTMLTagProvider } from './common';
 import fs from 'fs';
 import { join } from 'path';
 import { getNuxtTagProvider } from './nuxtTags';
-import { findConfigFile } from '../../../utils/workspace';
 import { normalizeFileNameResolve } from '../../../utils/paths';
 
 export let allTagProviders: IHTMLTagProvider[] = [
