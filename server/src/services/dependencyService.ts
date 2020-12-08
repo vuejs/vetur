@@ -95,12 +95,23 @@ export interface DependencyService {
   workspacePath: string;
   init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath?: string): Promise<void>;
   get<L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]>;
+  getBundled<L extends keyof RuntimeLibrary>(lib: L): Dependency<RuntimeLibrary[L]>;
 }
 
 export const createDependencyService = () => {
   let useWorkspaceDeps: boolean;
   let rootPath: string;
   let loaded: { [K in keyof RuntimeLibrary]: Dependency<RuntimeLibrary[K]>[] };
+
+  const bundledModules = {
+    typescript: ts,
+    prettier: prettier,
+    '@starptech/prettyhtml': prettyHTML,
+    'prettier-eslint': prettierEslint,
+    'prettier-tslint': prettierTslint,
+    'stylus-supremacy': stylusSupremacy,
+    '@prettier/plugin-pug': prettierPluginPug
+  };
 
   async function init(workspacePath: string, useWorkspaceDependencies: boolean, tsSDKPath?: string) {
     const nodeModulesPaths = useWorkspaceDependencies ? await createNodeModulesPaths(workspacePath) : [];
@@ -200,12 +211,12 @@ export const createDependencyService = () => {
     rootPath = workspacePath;
     loaded = {
       typescript: await loadTypeScript(),
-      prettier: await loadCommonDep('prettier', prettier),
-      '@starptech/prettyhtml': await loadCommonDep('@starptech/prettyhtml', prettyHTML),
-      'prettier-eslint': await loadCommonDep('prettier-eslint', prettierEslint),
-      'prettier-tslint': await loadCommonDep('prettier-tslint', prettierTslint),
-      'stylus-supremacy': await loadCommonDep('stylus-supremacy', stylusSupremacy),
-      '@prettier/plugin-pug': await loadCommonDep('@prettier/plugin-pug', prettierPluginPug)
+      prettier: await loadCommonDep('prettier', bundledModules['prettier']),
+      '@starptech/prettyhtml': await loadCommonDep('@starptech/prettyhtml', bundledModules['@starptech/prettyhtml']),
+      'prettier-eslint': await loadCommonDep('prettier-eslint', bundledModules['prettier-eslint']),
+      'prettier-tslint': await loadCommonDep('prettier-tslint', bundledModules['prettier-tslint']),
+      'stylus-supremacy': await loadCommonDep('stylus-supremacy', bundledModules['stylus-supremacy']),
+      '@prettier/plugin-pug': await loadCommonDep('@prettier/plugin-pug', bundledModules['@prettier/plugin-pug'])
     };
   }
 
@@ -235,6 +246,15 @@ export const createDependencyService = () => {
     return result ?? deps[0];
   };
 
+  const getBundled = <L extends keyof RuntimeLibrary>(lib: L): Dependency<RuntimeLibrary[L]> => {
+    return {
+      dir: '',
+      version: '',
+      bundled: true,
+      module: bundledModules[lib]
+    };
+  };
+
   return {
     get useWorkspaceDependencies() {
       return useWorkspaceDeps;
@@ -243,6 +263,7 @@ export const createDependencyService = () => {
       return rootPath;
     },
     init,
-    get
+    get,
+    getBundled
   };
 };

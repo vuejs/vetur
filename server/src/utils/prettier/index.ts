@@ -113,7 +113,10 @@ export function prettierPluginPugify(
   initialIndent: boolean
 ): TextEdit[] {
   try {
-    const prettier = dependencyService.get('prettier', fileFsPath).module;
+    let prettier = dependencyService.get('prettier', fileFsPath).module;
+    if (prettier.version.startsWith('1')) {
+      prettier = dependencyService.getBundled('prettier').module;
+    }
     const prettierPluginPug = dependencyService.get('@prettier/plugin-pug', fileFsPath).module;
     const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
     prettierOptions.pluginSearchDirs = [];
