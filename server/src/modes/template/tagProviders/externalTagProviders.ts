@@ -52,19 +52,15 @@ export function getDependencyTagProvider(workspacePath: string, depPkgJson: any)
     return null;
   }
 
-  const tagsPath = findConfigFile(workspacePath, path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.tags));
-  const attrsPath = findConfigFile(
-    workspacePath,
-    path.join('node_modules/', depPkgJson.name, depPkgJson.vetur.attributes)
-  );
-
   try {
-    if (tagsPath && attrsPath) {
-      const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
-      const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
-      return getExternalTagProvider(depPkgJson.name, tagsJson, attrsJson);
-    }
-    return null;
+    const tagsPath = require.resolve(path.join(depPkgJson.name, depPkgJson.vetur.tags), { paths: [workspacePath] });
+    const attrsPath = require.resolve(path.join(depPkgJson.name, depPkgJson.vetur.attributes), {
+      paths: [workspacePath]
+    });
+
+    const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
+    const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
+    return getExternalTagProvider(depPkgJson.name, tagsJson, attrsJson);
   } catch (err) {
     return null;
   }

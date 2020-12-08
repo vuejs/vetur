@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import { getFileFsPath, normalizeFileNameToFsPath } from '../utils/paths';
 
 import {
@@ -105,6 +106,15 @@ export class VLS {
     }
 
     this.workspacePath = normalizeFileNameToFsPath(workspacePath);
+
+    // Enable Yarn PnP support https://yarnpkg.com/features/pnp
+    if (!process.versions.pnp) {
+      if (fs.existsSync(path.join(this.workspacePath, '.pnp.js'))) {
+        require(path.join(workspacePath, '.pnp.js')).setup();
+      } else if (fs.existsSync(path.join(this.workspacePath, '.pnp.cjs'))) {
+        require(path.join(workspacePath, '.pnp.cjs')).setup();
+      }
+    }
 
     this.vueInfoService.init(this.languageModes);
     await this.dependencyService.init(
