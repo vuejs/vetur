@@ -61,7 +61,7 @@ import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
-import { accessSync, constants } from 'fs';
+import { accessSync, constants, existsSync } from 'fs';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -144,6 +144,15 @@ export class VLS {
   }
 
   private async addWorkspace(workspace: { name: string; fsPath: string }) {
+    // Enable Yarn PnP support https://yarnpkg.com/features/pnp
+    if (!process.versions.pnp) {
+      if (existsSync(path.join(workspace.fsPath, '.pnp.js'))) {
+        require(path.join(workspace.fsPath, '.pnp.js')).setup();
+      } else if (existsSync(path.join(workspace.fsPath, '.pnp.cjs'))) {
+        require(path.join(workspace.fsPath, '.pnp.cjs')).setup();
+      }
+    }
+
     const veturConfigPath = findConfigFile(workspace.fsPath, 'vetur.config.js');
     const rootPathForConfig = normalizeFileNameToFsPath(
       veturConfigPath ? path.dirname(veturConfigPath) : workspace.fsPath
@@ -292,9 +301,11 @@ export class VLS {
 
     // init project
     const dependencyService = createDependencyService();
-    const nodeModulePaths =
-      this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
-      createNodeModulesPaths(projectConfig.rootPathForConfig);
+    // Yarn Pnp don't need this. https://yarnpkg.com/features/pnp
+    const nodeModulePaths = !process.versions.pnp
+      ? this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
+        createNodeModulesPaths(projectConfig.rootPathForConfig)
+      : [];
     if (this.nodeModulesMap.has(projectConfig.rootPathForConfig)) {
       this.nodeModulesMap.set(projectConfig.rootPathForConfig, nodeModulePaths);
     }

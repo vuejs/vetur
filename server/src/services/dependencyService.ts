@@ -108,7 +108,7 @@ export const createDependencyService = (): DependencyService => {
 
   const bundledModules = {
     typescript: ts,
-    prettier: prettier,
+    prettier,
     '@starptech/prettyhtml': prettyHTML,
     'prettier-eslint': prettierEslint,
     'prettier-tslint': prettierTslint,
@@ -217,6 +217,8 @@ export const createDependencyService = (): DependencyService => {
     $useWorkspaceDependencies = useWorkspaceDependencies;
     $workspacePath = workspacePath;
     $rootPathForConfig = rootPathForConfig;
+    // We don't need loaded when yarn pnp. https://yarnpkg.com/features/pnp
+    if (process.versions.pnp) { return; }
     loaded = {
       typescript: await loadTypeScript(),
       prettier: await loadCommonDep('prettier', bundledModules['prettier']),
@@ -229,6 +231,17 @@ export const createDependencyService = (): DependencyService => {
   }
 
   const get = <L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]> => {
+    // We find it when yarn pnp. https://yarnpkg.com/features/pnp
+    if (process.versions.pnp) {
+      const pkgPath = require.resolve(lib, { paths: [filePath ?? $workspacePath] });
+
+      return {
+        dir: path.dirname(pkgPath),
+        version: '',
+        bundled: false,
+        module: require(pkgPath)
+      };
+    }
     if (!loaded) {
       throw new Error('Please call init function before get dependency.');
     }
