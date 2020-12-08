@@ -9,47 +9,42 @@ import { HTMLMode } from './htmlMode';
 import { VueInterpolationMode } from './interpolationMode';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
-import { inferVueVersion } from '../../services/typescriptService/vueVersion';
+import { inferVueVersion } from '../../utils/vueVersion';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { VCancellationToken } from '../../utils/cancellationToken';
-import { AutoImportVueService } from '../../services/autoImportVueService';
+import { AutoImportSfcPlugin } from '../plugins/autoImportSfcPlugin';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
 type DocumentRegionCache = LanguageModelCache<VueDocumentRegions>;
 
 export class VueHTMLMode implements LanguageMode {
   private htmlMode: HTMLMode;
   private vueInterpolationMode: VueInterpolationMode;
-  private autoImportVueService: AutoImportVueService;
+  private autoImportSfcPlugin: AutoImportSfcPlugin;
 
   constructor(
     tsModule: RuntimeLibrary['typescript'],
     serviceHost: IServiceHost,
+    env: EnvironmentService,
     documentRegions: DocumentRegionCache,
-    workspacePath: string,
-    autoImportVueService: AutoImportVueService,
+    autoImportSfcPlugin: AutoImportSfcPlugin,
     dependencyService: DependencyService,
     vueInfoService?: VueInfoService
   ) {
     const vueDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => parseHTMLDocument(document));
-    const vueVersion = inferVueVersion(workspacePath);
     this.htmlMode = new HTMLMode(
       documentRegions,
-      workspacePath,
-      vueVersion,
+      env,
       dependencyService,
       vueDocuments,
-      autoImportVueService,
+      autoImportSfcPlugin,
       vueInfoService
     );
-    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, vueDocuments, vueInfoService);
-    this.autoImportVueService = autoImportVueService;
+    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, env, vueDocuments, vueInfoService);
+    this.autoImportSfcPlugin = autoImportSfcPlugin;
   }
   getId() {
     return 'vue-html';
-  }
-  configure(c: any) {
-    this.htmlMode.configure(c);
-    this.vueInterpolationMode.configure(c);
   }
   queryVirtualFileInfo(fileName: string, currFileText: string) {
     return this.vueInterpolationMode.queryVirtualFileInfo(fileName, currFileText);
@@ -69,8 +64,8 @@ export class VueHTMLMode implements LanguageMode {
     };
   }
   doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
-    if (this.autoImportVueService.isMyResolve(item)) {
-      return this.autoImportVueService.doResolve(document, item);
+    if (this.autoImportSfcPlugin.isMyResolve(item)) {
+      return this.autoImportSfcPlugin.doResolve(document, item);
     }
     return this.vueInterpolationMode.doResolve(document, item);
   }

@@ -19,39 +19,45 @@ import { NULL_HOVER } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 import { DependencyService } from '../../services/dependencyService';
 import { BuiltInParserName } from 'prettier';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
 export function getCSSMode(
+  env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('css', languageService, documentRegions, dependencyService);
+  return getStyleMode(env, 'css', languageService, documentRegions, dependencyService);
 }
 
 export function getPostCSSMode(
+  env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getCSSLanguageService();
-  return getStyleMode('postcss', languageService, documentRegions, dependencyService);
+  return getStyleMode(env, 'postcss', languageService, documentRegions, dependencyService);
 }
 
 export function getSCSSMode(
+  env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getSCSSLanguageService();
-  return getStyleMode('scss', languageService, documentRegions, dependencyService);
+  return getStyleMode(env, 'scss', languageService, documentRegions, dependencyService);
 }
 export function getLESSMode(
+  env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   dependencyService: DependencyService
 ): LanguageMode {
   const languageService = getLESSLanguageService();
-  return getStyleMode('less', languageService, documentRegions, dependencyService);
+  return getStyleMode(env, 'less', languageService, documentRegions, dependencyService);
 }
 
 function getStyleMode(
+  env: EnvironmentService,
   languageId: LanguageId,
   languageService: LanguageService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
@@ -61,17 +67,22 @@ function getStyleMode(
     documentRegions.refreshAndGet(document).getSingleLanguageDocument(languageId)
   );
   const stylesheets = getLanguageModelCache(10, 60, document => languageService.parseStylesheet(document));
-  let config: any = {};
+
+  let latestConfig = env.getConfig().css;
+  function syncConfig() {
+    if (_.isEqual(latestConfig, env.getConfig().css)) {
+      return;
+    }
+    latestConfig = env.getConfig().css;
+    languageService.configure(env.getConfig().css);
+  }
 
   return {
     getId() {
       return languageId;
     },
-    configure(c) {
-      languageService.configure(c && c.css);
-      config = c;
-    },
     async doValidation(document) {
+      syncConfig();
       if (languageId === 'postcss') {
         return [];
       } else {
@@ -80,6 +91,7 @@ function getStyleMode(
       }
     },
     doComplete(document, position) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       const emmetSyntax = languageId === 'postcss' ? 'css' : languageId;
       const lsCompletions = languageService.doComplete(embedded, position, stylesheets.refreshAndGet(embedded));
@@ -92,7 +104,7 @@ function getStyleMode(
           })
         : [];
 
-      const emmetCompletions = emmet.doComplete(document, position, emmetSyntax, config.emmet);
+      const emmetCompletions = emmet.doComplete(document, position, emmetSyntax, env.getConfig().emmet);
       if (!emmetCompletions) {
         return { isIncomplete: false, items: lsItems };
       } else {
@@ -109,18 +121,22 @@ function getStyleMode(
       }
     },
     doHover(document, position) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.doHover(embedded, position, stylesheets.refreshAndGet(embedded)) || NULL_HOVER;
     },
     findDocumentHighlight(document, position) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.findDocumentHighlights(embedded, position, stylesheets.refreshAndGet(embedded));
     },
     findDocumentSymbols(document) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.findDocumentSymbols(embedded, stylesheets.refreshAndGet(embedded));
     },
     findDefinition(document, position) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       const definition = languageService.findDefinition(embedded, position, stylesheets.refreshAndGet(embedded));
       if (!definition) {
@@ -129,28 +145,33 @@ function getStyleMode(
       return definition;
     },
     findReferences(document, position) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.findReferences(embedded, position, stylesheets.refreshAndGet(embedded));
     },
     findDocumentColors(document) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.findDocumentColors(embedded, stylesheets.refreshAndGet(embedded));
     },
     getFoldingRanges(document) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.getFoldingRanges(embedded);
     },
     getColorPresentations(document, color, range) {
+      syncConfig();
       const embedded = embeddedDocuments.refreshAndGet(document);
       return languageService.getColorPresentations(embedded, stylesheets.refreshAndGet(embedded), color, range);
     },
     format(document, currRange, formattingOptions) {
-      if (config.vetur.format.defaultFormatter[languageId] === 'none') {
+      if (env.getConfig().vetur.format.defaultFormatter[languageId] === 'none') {
         return [];
       }
+      syncConfig();
 
       const { value, range } = getValueAndRange(document, currRange);
-      const needIndent = config.vetur.format.styleInitialIndent;
+      const needIndent = env.getConfig().vetur.format.styleInitialIndent;
       const parserMap: { [k: string]: BuiltInParserName } = {
         css: 'css',
         postcss: 'css',
@@ -162,7 +183,7 @@ function getStyleMode(
         value,
         getFileFsPath(document.uri),
         range,
-        config.vetur.format as VLSFormatConfig,
+        env.getConfig().vetur.format as VLSFormatConfig,
         parserMap[languageId],
         needIndent
       );

@@ -149,7 +149,9 @@ function getPrettierOptions(
     prettierrcOptions.parser = parser;
     if (dependencyService.useWorkspaceDependencies) {
       // For loading plugins such as @prettier/plugin-pug
-      (prettierrcOptions as { pluginSearchDirs: string[] }).pluginSearchDirs = [dependencyService.workspacePath];
+      (prettierrcOptions as {
+        pluginSearchDirs: string[];
+      }).pluginSearchDirs = dependencyService.nodeModulesPaths.map(el => path.dirname(el));
     }
 
     return prettierrcOptions;
@@ -160,7 +162,7 @@ function getPrettierOptions(
     vscodePrettierOptions.parser = parser;
     if (dependencyService.useWorkspaceDependencies) {
       // For loading plugins such as @prettier/plugin-pug
-      vscodePrettierOptions.pluginSearchDirs = [dependencyService.workspacePath];
+      vscodePrettierOptions.pluginSearchDirs = dependencyService.nodeModulesPaths.map(el => path.dirname(el));
     }
 
     return vscodePrettierOptions;

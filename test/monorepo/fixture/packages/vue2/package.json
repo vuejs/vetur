@@ -1,0 +1,10 @@
+{
+  "name": "vue2",
+  "version": "1.0.0",
+  "dependencies": {
+    "vue": "^2.6.11"
+  },
+  "vetur": {
+    "tags": "./tags.json"
+  }
+}

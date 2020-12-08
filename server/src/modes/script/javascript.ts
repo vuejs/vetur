@@ -38,7 +38,7 @@ import type ts from 'typescript';
 import _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
-import { VLSFormatConfig } from '../../config';
+import { BasicComponentInfo, VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
@@ -47,6 +47,7 @@ import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -56,16 +57,12 @@ export const APPLY_REFACTOR_COMMAND = 'vetur.applyRefactorCommand';
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
+  env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
-  workspacePath: string | undefined,
   dependencyService: DependencyService,
+  globalComponentInfos: BasicComponentInfo[],
   vueInfoService?: VueInfoService
 ): Promise<LanguageMode> {
-  if (!workspacePath) {
-    return {
-      ...nullMode
-    };
-  }
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.refreshAndGet(document);
     return vueDocument.getSingleTypeDocument('script');
@@ -80,11 +77,10 @@ export async function getJavascriptMode(
   const tsModule: RuntimeLibrary['typescript'] = dependencyService.get('typescript').module;
 
   const { updateCurrentVueTextDocument } = serviceHost;
-  let config: any = {};
   let supportedCodeFixCodes: Set<number>;
 
   function getUserPreferences(scriptDoc: TextDocument): ts.UserPreferences {
-    const baseConfig = config[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'];
+    const baseConfig = env.getConfig()[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'];
     const preferencesConfig = baseConfig?.preferences;
 
     if (!baseConfig || !preferencesConfig) {
@@ -124,9 +120,6 @@ export async function getJavascriptMode(
     getId() {
       return 'javascript';
     },
-    configure(c) {
-      config = c;
-    },
     updateFileInfo(doc: TextDocument): void {
       if (!vueInfoService) {
         return;
@@ -134,7 +127,7 @@ export async function getJavascriptMode(
 
       const { service } = updateCurrentVueTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(tsModule, service, fileFsPath, config);
+      const info = getComponentInfo(tsModule, service, fileFsPath, globalComponentInfos, env.getConfig());
       if (info) {
         vueInfoService.updateInfo(doc, info);
       }
@@ -207,7 +200,7 @@ export async function getJavascriptMode(
         ...getUserPreferences(scriptDoc),
         triggerCharacter: getTsTriggerCharacter(triggerChar),
         includeCompletionsWithInsertText: true,
-        includeCompletionsForModuleExports: config.vetur.completion.autoImport
+        includeCompletionsForModuleExports: env.getConfig().vetur.completion.autoImport
       });
       if (!completions) {
         return { isIncomplete: false, items: [] };
@@ -298,7 +291,7 @@ export async function getJavascriptMode(
         fileFsPath,
         item.data.offset,
         item.label,
-        getFormatCodeSettings(config),
+        getFormatCodeSettings(env.getConfig()),
         item.data.source,
         getUserPreferences(scriptDoc)
       );
@@ -321,7 +314,7 @@ export async function getJavascriptMode(
           }
         }
 
-        if (details.codeActions && config.vetur.completion.autoImport) {
+        if (details.codeActions && env.getConfig().vetur.completion.autoImport) {
           const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
           item.additionalTextEdits = textEdits;
 
@@ -593,7 +586,7 @@ export async function getJavascriptMode(
         return [];
       }
 
-      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(config);
+      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
 
       const result: CodeAction[] = [];
       const fixes = service.getCodeFixesAtPosition(
@@ -633,16 +626,16 @@ export async function getJavascriptMode(
 
       const defaultFormatter =
         scriptDoc.languageId === 'javascript'
-          ? config.vetur.format.defaultFormatter.js
-          : config.vetur.format.defaultFormatter.ts;
+          ? env.getConfig().vetur.format.defaultFormatter.js
+          : env.getConfig().vetur.format.defaultFormatter.ts;
 
       if (defaultFormatter === 'none') {
         return [];
       }
 
       const parser = scriptDoc.languageId === 'javascript' ? 'babel' : 'typescript';
-      const needInitialIndent = config.vetur.format.scriptInitialIndent;
-      const vlsFormatConfig: VLSFormatConfig = config.vetur.format;
+      const needInitialIndent = env.getConfig().vetur.format.scriptInitialIndent;
+      const vlsFormatConfig: VLSFormatConfig = env.getConfig().vetur.format;
 
       if (
         defaultFormatter === 'prettier' ||
@@ -663,7 +656,7 @@ export async function getJavascriptMode(
       } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =
-          scriptDoc.languageId === 'javascript' ? config.javascript.format : config.typescript.format;
+          scriptDoc.languageId === 'javascript' ? env.getConfig().javascript.format : env.getConfig().typescript.format;
         const convertedFormatSettings = convertOptions(
           formatSettings,
           {

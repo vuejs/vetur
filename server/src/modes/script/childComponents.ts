@@ -9,7 +9,7 @@ import {
 import { kebabCase } from 'lodash';
 import { RuntimeLibrary } from '../../services/dependencyService';
 
-interface InternalChildComponent {
+export interface InternalChildComponent {
   name: string;
   documentation?: string;
   definition?: {

@@ -1,5 +1,10 @@
 import ts from 'typescript';
 
-export function findConfigFile(workspacePath: string, configName: string) {
-  return ts.findConfigFile(workspacePath, ts.sys.fileExists, configName);
+export function findConfigFile(findPath: string, configName: string) {
+  return ts.findConfigFile(findPath, ts.sys.fileExists, configName);
+}
+
+export function requireUncached(module: string) {
+  delete require.cache[require.resolve(module)];
+  return require(module);
 }

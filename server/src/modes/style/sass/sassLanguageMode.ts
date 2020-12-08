@@ -9,22 +9,17 @@ import { SassFormatter, SassFormatterConfig } from 'sass-formatter';
 
 import * as emmet from 'vscode-emmet-helper';
 import { Priority } from '../emmet';
+import { EnvironmentService } from '../../../services/EnvironmentService';
 
 export class SassLanguageMode implements LanguageMode {
-  private config: any = {};
-
-  constructor() {}
+  constructor(private env: EnvironmentService) {}
 
   getId() {
     return 'sass';
   }
 
-  configure(c: any) {
-    this.config = c;
-  }
-
   doComplete(document: TextDocument, position: Position): CompletionList {
-    const emmetCompletions = emmet.doComplete(document, position, 'sass', this.config.emmet);
+    const emmetCompletions = emmet.doComplete(document, position, 'sass', this.env.getConfig().emmet);
     if (!emmetCompletions) {
       return { isIncomplete: false, items: [] };
     } else {
@@ -42,11 +37,11 @@ export class SassLanguageMode implements LanguageMode {
   }
 
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-    if (this.config.vetur.format.defaultFormatter.sass === 'sass-formatter') {
+    if (this.env.getConfig().vetur.format.defaultFormatter.sass === 'sass-formatter') {
       return [
         TextEdit.replace(
           range,
-          SassFormatter.Format(document.getText(range), { ...formattingOptions, ...this.config.sass.format })
+          SassFormatter.Format(document.getText(range), { ...formattingOptions, ...this.env.getConfig().sass.format })
         )
       ];
     }

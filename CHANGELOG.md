@@ -1,9 +1,32 @@
 # Changelog
 
 ### 0.31.0
+
+----
+
+#### 🎉 RFC release 🎉
+
+We support monorepo and multi-root workspace in this version.
+We have also added a new config file called `vetur.config.js`.
+
+See more: https://vetur.github.io/vetur/guide/setup.html#advanced
+Reference: https://vetur.github.io/vetur/reference/
+
+----
+
 - Fix pug format. #2460
 - Fix scss autocompletion. #2522
 - Fix templates in custom blocks are parsed as root elements. #1336
+- Support multi-root workspace
+- Support monorepo
+- Register global components
+- Support `vetur.config.js` for monorepo, global components.
+- Watch config file changed, Like: `package.json`, `tsconfig.json`
+- Warn some probably problem when open project.
+- Add `Vetur: doctor` command for debug.
+- Improve docs.
+- Support yarn PnP support. Thanks to contribution from [@merceyz](https://github.com/merceyz). #2478.
+
 
 ### 0.30.3 | 2020-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.3/vspackage)
 

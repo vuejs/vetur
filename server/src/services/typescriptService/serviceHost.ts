@@ -14,9 +14,10 @@ import { isVirtualVueTemplateFile, isVueFile } from './util';
 import { logger } from '../../log';
 import { ModuleResolutionCache } from './moduleResolutionCache';
 import { globalScope } from './transformTemplate';
-import { inferVueVersion, VueVersion } from './vueVersion';
 import { ChildComponent } from '../vueInfoService';
 import { RuntimeLibrary } from '../dependencyService';
+import { EnvironmentService } from '../EnvironmentService';
+import { VueVersion } from '../../utils/vueVersion';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -85,38 +86,75 @@ export interface IServiceHost {
  */
 export function getServiceHost(
   tsModule: RuntimeLibrary['typescript'],
-  workspacePath: string,
+  env: EnvironmentService,
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ): IServiceHost {
   patchTS(tsModule);
 
   let currentScriptDoc: TextDocument;
 
+  // host variable
+  let vueVersion = env.getVueVersion();
   let projectVersion = 1;
-  const versions = new Map<string, number>();
-  const localScriptRegionDocuments = new Map<string, TextDocument>();
-  const nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
-  const projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
-  const moduleResolutionCache = new ModuleResolutionCache();
+  let versions = new Map<string, number>();
+  let localScriptRegionDocuments = new Map<string, TextDocument>();
+  let nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
+  let projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
+  let moduleResolutionCache = new ModuleResolutionCache();
 
-  const parsedConfig = getParsedConfig(tsModule, workspacePath);
-  /**
-   * Only js/ts files in local project
-   */
-  const initialProjectFiles = parsedConfig.fileNames;
-  logger.logDebug(
-    `Initializing ServiceHost with ${initialProjectFiles.length} files: ${JSON.stringify(initialProjectFiles)}`
-  );
-  const scriptFileNameSet = new Set(initialProjectFiles);
+  let parsedConfig: ts.ParsedCommandLine;
+  let scriptFileNameSet: Set<string>;
 
-  const vueSys = getVueSys(tsModule, scriptFileNameSet);
+  let vueSys: ts.System;
+  let compilerOptions: ts.CompilerOptions;
 
-  const vueVersion = inferVueVersion(workspacePath);
-  const compilerOptions = {
-    ...getDefaultCompilerOptions(tsModule),
-    ...parsedConfig.options
-  };
-  compilerOptions.allowNonTsExtensions = true;
+  let jsHost: ts.LanguageServiceHost;
+  let templateHost: ts.LanguageServiceHost;
+
+  let registry: ts.DocumentRegistry;
+  let jsLanguageService: ts.LanguageService;
+  let templateLanguageService: ts.LanguageService;
+  init();
+
+  function getCompilerOptions() {
+    const compilerOptions = {
+      ...getDefaultCompilerOptions(tsModule),
+      ...parsedConfig.options
+    };
+    compilerOptions.allowNonTsExtensions = true;
+    return compilerOptions;
+  }
+
+  function init() {
+    vueVersion = env.getVueVersion();
+    projectVersion = 1;
+    versions = new Map<string, number>();
+    localScriptRegionDocuments = new Map<string, TextDocument>();
+    nodeModuleSnapshots = new Map<string, ts.IScriptSnapshot>();
+    projectFileSnapshots = new Map<string, ts.IScriptSnapshot>();
+    moduleResolutionCache = new ModuleResolutionCache();
+
+    parsedConfig = getParsedConfig(tsModule, env.getProjectRoot(), env.getTsConfigPath());
+    const initialProjectFiles = parsedConfig.fileNames;
+    logger.logDebug(
+      `Initializing ServiceHost with ${initialProjectFiles.length} files: ${JSON.stringify(initialProjectFiles)}`
+    );
+    scriptFileNameSet = new Set(initialProjectFiles);
+    vueSys = getVueSys(tsModule, scriptFileNameSet);
+    compilerOptions = getCompilerOptions();
+
+    jsHost = createLanguageServiceHost(compilerOptions);
+    templateHost = createLanguageServiceHost({
+      ...compilerOptions,
+      noUnusedLocals: false,
+      noUnusedParameters: false,
+      allowJs: true,
+      checkJs: true
+    });
+    registry = tsModule.createDocumentRegistry(true);
+    jsLanguageService = tsModule.createLanguageService(jsHost, registry);
+    templateLanguageService = patchTemplateService(tsModule.createLanguageService(templateHost, registry));
+  }
 
   function queryVirtualFileInfo(
     fileName: string,
@@ -200,6 +238,13 @@ export function getServiceHost(
 
   // External Documents: JS/TS, non Vue documents
   function updateExternalDocument(fileFsPath: string) {
+    // reload `tsconfig.json` or vue version changed
+    if (fileFsPath === env.getTsConfigPath() || vueVersion !== env.getVueVersion()) {
+      logger.logInfo(`refresh ts language service when ${fileFsPath} changed.`);
+      init();
+      return;
+    }
+
     // respect tsconfig
     // use *internal* function
     const configFileSpecs = (parsedConfig as any).configFileSpecs;
@@ -207,7 +252,7 @@ export function getServiceHost(
     if (
       isExcludedFile &&
       configFileSpecs &&
-      isExcludedFile(fileFsPath, configFileSpecs, workspacePath, true, workspacePath)
+      isExcludedFile(fileFsPath, configFileSpecs, env.getProjectRoot(), true, env.getProjectRoot())
     ) {
       return;
     }
@@ -430,25 +475,12 @@ export function getServiceHost(
           getChangeRange: () => void 0
         };
       },
-      getCurrentDirectory: () => workspacePath,
+      getCurrentDirectory: () => env.getProjectRoot(),
       getDefaultLibFileName: tsModule.getDefaultLibFilePath,
       getNewLine: () => NEWLINE,
       useCaseSensitiveFileNames: () => true
     };
   }
-
-  const jsHost = createLanguageServiceHost(compilerOptions);
-  const templateHost = createLanguageServiceHost({
-    ...compilerOptions,
-    noUnusedLocals: false,
-    noUnusedParameters: false,
-    allowJs: true,
-    checkJs: true
-  });
-
-  const registry = tsModule.createDocumentRegistry(true);
-  let jsLanguageService = tsModule.createLanguageService(jsHost, registry);
-  const templateLanguageService = patchTemplateService(tsModule.createLanguageService(templateHost, registry));
 
   return {
     queryVirtualFileInfo,
@@ -490,9 +522,9 @@ function patchTemplateService(original: ts.LanguageService): ts.LanguageService 
   };
 }
 
-function defaultIgnorePatterns(tsModule: RuntimeLibrary['typescript'], workspacePath: string) {
+function defaultIgnorePatterns(tsModule: RuntimeLibrary['typescript'], projectPath: string) {
   const nodeModules = ['node_modules', '**/node_modules/*'];
-  const gitignore = tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, '.gitignore');
+  const gitignore = tsModule.findConfigFile(projectPath, tsModule.sys.fileExists, '.gitignore');
   if (!gitignore) {
     return nodeModules;
   }
@@ -509,18 +541,21 @@ function getScriptKind(tsModule: RuntimeLibrary['typescript'], langId: string): 
     : tsModule.ScriptKind.JS;
 }
 
-function getParsedConfig(tsModule: RuntimeLibrary['typescript'], workspacePath: string) {
-  const configFilename =
-    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'tsconfig.json') ||
-    tsModule.findConfigFile(workspacePath, tsModule.sys.fileExists, 'jsconfig.json');
+function getParsedConfig(
+  tsModule: RuntimeLibrary['typescript'],
+  projectRoot: string,
+  tsconfigPath: string | undefined
+) {
+  const configFilename = tsconfigPath;
   const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
-    exclude: defaultIgnorePatterns(tsModule, workspacePath)
+    include: ['**/*.vue'],
+    exclude: defaultIgnorePatterns(tsModule, projectRoot)
   };
   // existingOptions should be empty since it always takes priority
   return tsModule.parseJsonConfigFileContent(
     configJson,
     tsModule.sys,
-    workspacePath,
+    projectRoot,
     /*existingOptions*/ {},
     configFilename,
     /*resolutionStack*/ undefined,

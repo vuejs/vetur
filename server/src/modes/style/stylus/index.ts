@@ -14,22 +14,20 @@ import { stylusHover } from './stylus-hover';
 import { getFileFsPath } from '../../../utils/paths';
 import { VLSFormatConfig } from '../../../config';
 import { DependencyService } from '../../../services/dependencyService';
+import { EnvironmentService } from '../../../services/EnvironmentService';
+import { sync } from 'glob';
 
 export function getStylusMode(
+  env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   dependencyService: DependencyService
 ): LanguageMode {
   const embeddedDocuments = getLanguageModelCache(10, 60, document =>
     documentRegions.refreshAndGet(document).getSingleLanguageDocument('stylus')
   );
-  let baseIndentShifted = false;
-  let config: any = {};
+
   return {
     getId: () => 'stylus',
-    configure(c) {
-      baseIndentShifted = _.get(c, 'vetur.format.styleInitialIndent', false);
-      config = c;
-    },
     onDocumentRemoved() {},
     dispose() {},
     doComplete(document, position) {
@@ -43,7 +41,7 @@ export function getStylusMode(
         };
       });
 
-      const emmetCompletions: CompletionList = emmet.doComplete(document, position, 'stylus', config.emmet);
+      const emmetCompletions: CompletionList = emmet.doComplete(document, position, 'stylus', env.getConfig().emmet);
       if (!emmetCompletions) {
         return { isIncomplete: false, items: lsItems };
       } else {
@@ -68,7 +66,7 @@ export function getStylusMode(
       return stylusHover(embedded, position);
     },
     format(document, range, formatParams) {
-      if (config.vetur.format.defaultFormatter.stylus === 'none') {
+      if (env.getConfig().vetur.format.defaultFormatter.stylus === 'none') {
         return [];
       }
 
@@ -77,7 +75,7 @@ export function getStylusMode(
 
       const inputText = document.getText(range);
 
-      const vlsFormatConfig = config.vetur.format as VLSFormatConfig;
+      const vlsFormatConfig = env.getConfig().vetur.format as VLSFormatConfig;
       const tabStopChar = vlsFormatConfig.options.useTabs ? '\t' : ' '.repeat(vlsFormatConfig.options.tabSize);
 
       // Note that this would have been `document.eol` ideally
@@ -93,13 +91,15 @@ export function getStylusMode(
       }
 
       // Add one more indentation when `vetur.format.styleInitialIndent` is set to `true`
-      if (baseIndentShifted) {
+      if (env.getConfig().vetur.format.scriptInitialIndent) {
         baseIndent += tabStopChar;
       }
 
       // Build the formatting options for Stylus Supremacy
       // See https://thisismanta.github.io/stylus-supremacy/#options
-      const stylusSupremacyFormattingOptions = stylusSupremacy.createFormattingOptions(config.stylusSupremacy || {});
+      const stylusSupremacyFormattingOptions = stylusSupremacy.createFormattingOptions(
+        env.getConfig().stylusSupremacy || {}
+      );
       const formattingOptions = {
         ...stylusSupremacyFormattingOptions,
         tabStopChar,

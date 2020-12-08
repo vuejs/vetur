@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import { findConfigFile } from '../../utils/workspace';
 
 export enum VueVersion {
   VPre25,
@@ -17,9 +16,16 @@ function floatVersionToEnum(v: number) {
   }
 }
 
-export function inferVueVersion(workspacePath: string): VueVersion {
-  const packageJSONPath = findConfigFile(workspacePath, 'package.json');
+export function getVueVersionKey(version: VueVersion) {
+  return Object.keys(VueVersion)?.[Object.values(VueVersion).indexOf(version)];
+}
+
+export function inferVueVersion(packagePath: string | undefined): VueVersion {
+  const packageJSONPath = packagePath;
   try {
+    if (!packageJSONPath) {
+      throw new Error(`Can't find package.json in project`);
+    }
     const packageJSON = packageJSONPath && JSON.parse(readFileSync(packageJSONPath, { encoding: 'utf-8' }));
     const vueDependencyVersion = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
 
@@ -30,7 +36,7 @@ export function inferVueVersion(workspacePath: string): VueVersion {
       return floatVersionToEnum(sloppyVersion);
     }
 
-    const nodeModulesVuePackagePath = require.resolve('vue/package.json', { paths: [workspacePath] });
+    const nodeModulesVuePackagePath = require.resolve('vue/package.json', { paths: [packageJSONPath] });
     const nodeModulesVuePackageJSON = JSON.parse(readFileSync(nodeModulesVuePackagePath, { encoding: 'utf-8' })!);
     const nodeModulesVueVersion = parseFloat(nodeModulesVuePackageJSON.version.match(/\d+\.\d+/)[0]);
 

@@ -11,6 +11,7 @@ import {
 } from './commands/virtualFileCommand';
 import { getGlobalSnippetDir } from './userSnippetDir';
 import { generateOpenUserScaffoldSnippetFolderCommand } from './commands/openUserScaffoldSnippetFolderCommand';
+import { generateDoctorCommand } from './commands/doctorCommand';
 
 export async function activate(context: vscode.ExtensionContext) {
   const isInsiders = vscode.env.appName.includes('Insiders');
@@ -86,14 +87,8 @@ function registerRestartVLSCommand(context: vscode.ExtensionContext, client: Lan
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient) {
-  client.onNotification('$/displayInfo', (msg: string) => {
-    vscode.window.showInformationMessage(msg);
-  });
-  client.onNotification('$/displayWarning', (msg: string) => {
-    vscode.window.showWarningMessage(msg);
-  });
-  client.onNotification('$/displayError', (msg: string) => {
-    vscode.window.showErrorMessage(msg);
+  client.onNotification('$/openWebsite', (url: string) => {
+    vscode.env.openExternal(vscode.Uri.parse(url));
   });
   client.onNotification('$/showVirtualFile', (virtualFileSource: string, prettySourceMap: string) => {
     setVirtualContents(virtualFileSource, prettySourceMap);
@@ -102,6 +97,8 @@ function registerCustomClientNotificationHandlers(client: LanguageClient) {
 
 function registerCustomLSPCommands(context: vscode.ExtensionContext, client: LanguageClient) {
   context.subscriptions.push(
-    vscode.commands.registerCommand('vetur.showCorrespondingVirtualFile', generateShowVirtualFileCommand(client))
+    vscode.commands.registerCommand('vetur.showCorrespondingVirtualFile', generateShowVirtualFileCommand(client)),
+    vscode.commands.registerCommand('vetur.showOutputChannel', () => client.outputChannel.show()),
+    vscode.commands.registerCommand('vetur.showDoctorInfo', generateDoctorCommand(client))
   );
 }

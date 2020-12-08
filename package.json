@@ -23,6 +23,7 @@
     "test:int": "node ./dist-test/test/codeTestRunner.js interpolation",
     "test:vue3": "node ./dist-test/test/codeTestRunner.js vue3",
     "test:componentData": "node ./dist-test/test/codeTestRunner.js componentData",
+    "test:monorepo": "node ./dist-test/test/codeTestRunner.js monorepo",
     "test": "run-s test:server test:e2e",
     "docs": "bash ./build/update-docs.sh",
     "prepare-publish": "./build/release-cleanup.sh"
@@ -64,19 +65,33 @@
     "commands": [
       {
         "command": "vetur.restartVLS",
-        "title": "Vetur: Restart VLS (Vue Language Server)"
+        "category": "Vetur",
+        "title": "Restart VLS (Vue Language Server)"
       },
       {
         "command": "vetur.generateGrammar",
-        "title": "Vetur: Generate grammar from `vetur.grammar.customBlocks`"
+        "category": "Vetur",
+        "title": "Generate grammar from `vetur.grammar.customBlocks`"
       },
       {
         "command": "vetur.showCorrespondingVirtualFile",
-        "title": "Vetur: Show corresponding virtual file and sourcemap"
+        "category": "Vetur",
+        "title": "Show corresponding virtual file and sourcemap"
       },
       {
         "command": "vetur.openUserScaffoldSnippetFolder",
-        "title": "Vetur: Open user scaffold snippet folder"
+        "category": "Vetur",
+        "title": "Open user scaffold snippet folder"
+      },
+      {
+        "command": "vetur.showOutputChannel",
+        "category": "Vetur",
+        "title": "Show Output Channel"
+      },
+      {
+        "command": "vetur.showDoctorInfo",
+        "category": "Vetur",
+        "title": "Show Doctor info"
       }
     ],
     "breakpoints": [
@@ -183,6 +198,12 @@
     "configuration": {
       "title": "Vetur",
       "properties": {
+        "vetur.ignoreProjectWarning": {
+          "type": "boolean",
+          "default": false,
+          "description": "Vetur will warn about not setup correctly for the project. You can disable it.",
+          "scope": "application"
+        },
         "vetur.useWorkspaceDependencies": {
           "type": "boolean",
           "default": false,

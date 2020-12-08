@@ -24,47 +24,37 @@ import { DocumentContext } from '../../types';
 import { VLSFormatConfig, VLSFullConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfoTagProvider } from './tagProviders/componentInfoTagProvider';
-import { VueVersion } from '../../services/typescriptService/vueVersion';
 import { doPropValidation } from './services/vuePropValidation';
 import { getFoldingRanges } from './services/htmlFolding';
 import { DependencyService } from '../../services/dependencyService';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
-import { AutoImportVueService } from '../../services/autoImportVueService';
+import { AutoImportSfcPlugin } from '../plugins/autoImportSfcPlugin';
+import { EnvironmentService } from '../../services/EnvironmentService';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;
   private enabledTagProviders: IHTMLTagProvider[];
   private embeddedDocuments: LanguageModelCache<TextDocument>;
-
-  private config: VLSFullConfig;
-
   private lintEngine: any;
 
   constructor(
     documentRegions: LanguageModelCache<VueDocumentRegions>,
-    workspacePath: string | undefined,
-    vueVersion: VueVersion,
+    private env: EnvironmentService,
     private dependencyService: DependencyService,
     private vueDocuments: LanguageModelCache<HTMLDocument>,
-    private autoImportVueService: AutoImportVueService,
+    private autoImportSfcPlugin: AutoImportSfcPlugin,
     private vueInfoService?: VueInfoService
   ) {
-    this.tagProviderSettings = getTagProviderSettings(workspacePath);
+    this.tagProviderSettings = getTagProviderSettings(env.getPackagePath());
     this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
     this.embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
       documentRegions.refreshAndGet(document).getSingleLanguageDocument('vue-html')
     );
-    this.lintEngine = createLintEngine(vueVersion);
+    this.lintEngine = createLintEngine(env.getVueVersion());
   }
 
   getId() {
     return 'html';
-  }
-
-  configure(c: VLSFullConfig) {
-    this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
-    this.config = c;
-    this.autoImportVueService.setGetConfigure(() => c);
   }
 
   async doValidation(document: TextDocument, cancellationToken?: VCancellationToken) {
@@ -73,7 +63,7 @@ export class HTMLMode implements LanguageMode {
     if (await isVCancellationRequested(cancellationToken)) {
       return [];
     }
-    if (this.config.vetur.validation.templateProps) {
+    if (this.env.getConfig().vetur.validation.templateProps) {
       const info = this.vueInfoService ? this.vueInfoService.getInfo(document) : undefined;
       if (info && info.componentInfo.childComponents) {
         diagnostics.push(...doPropValidation(document, this.vueDocuments.refreshAndGet(document), info));
@@ -83,7 +73,7 @@ export class HTMLMode implements LanguageMode {
     if (await isVCancellationRequested(cancellationToken)) {
       return diagnostics;
     }
-    if (this.config.vetur.validation.template) {
+    if (this.env.getConfig().vetur.validation.template) {
       const embedded = this.embeddedDocuments.refreshAndGet(document);
       diagnostics.push(...(await doESLintValidation(embedded, this.lintEngine)));
     }
@@ -104,8 +94,8 @@ export class HTMLMode implements LanguageMode {
       position,
       this.vueDocuments.refreshAndGet(embedded),
       tagProviders,
-      this.config.emmet,
-      this.autoImportVueService.doComplete(document)
+      this.env.getConfig().emmet,
+      this.autoImportSfcPlugin.doComplete(document)
     );
   }
   doHover(document: TextDocument, position: Position) {
@@ -124,7 +114,7 @@ export class HTMLMode implements LanguageMode {
     return findDocumentSymbols(document, this.vueDocuments.refreshAndGet(document));
   }
   format(document: TextDocument, range: Range, formattingOptions: FormattingOptions) {
-    return htmlFormat(this.dependencyService, document, range, this.config.vetur.format as VLSFormatConfig);
+    return htmlFormat(this.dependencyService, document, range, this.env.getConfig().vetur.format as VLSFormatConfig);
   }
   findDefinition(document: TextDocument, position: Position) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);
@@ -134,6 +124,16 @@ export class HTMLMode implements LanguageMode {
   getFoldingRanges(document: TextDocument) {
     const embedded = this.embeddedDocuments.refreshAndGet(document);
     return getFoldingRanges(embedded);
+  }
+  onDocumentChanged(filePath: string) {
+    if (filePath !== this.env.getPackagePath()) {
+      return;
+    }
+
+    // reload package
+    this.tagProviderSettings = getTagProviderSettings(this.env.getPackagePath());
+    this.enabledTagProviders = getEnabledTagProviders(this.tagProviderSettings);
+    this.lintEngine = createLintEngine(this.env.getVueVersion());
   }
   onDocumentRemoved(document: TextDocument) {
     this.vueDocuments.onDocumentRemoved(document);
