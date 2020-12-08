@@ -28,6 +28,7 @@ If no use typescript, please add `jsconfig.json` at opened project root.
   ]
 }
 ```
+[Add shim-types file for import Vue SFC in typescript file.](/guide/setup.html#typescript)
 
 If use typescript, you don't need to do any thing in your project.
 
@@ -37,7 +38,8 @@ It is out of box.
 
 ## Laravel / Custom project
 Please keep `package.json` and `tsconfig.json`/`jsconfig.json` at opened project root.   
-If you can't do it, please add `vetur.config.js` for set config file path.
+If you can't do it, please add `vetur.config.js` for set config file path.   
+[Add shim-types file for import Vue SFC in typescript file.](/guide/setup.html#typescript)
 
 - [Read more `tsconfig.json`/`jsconfig.json`](/guide/setup.html#project-setup).
 - [Read more `vetur.config.js` doc](/guide/setup.html#advanced).

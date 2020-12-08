@@ -1,6 +1,19 @@
 # Changelog
 
 ### 0.31.0
+
+----
+
+#### 🎉 RFC release 🎉
+
+We support monorepo and multi-root workspace in this version.
+We have also added a new config file called `vetur.config.js`.
+
+See more: https://vetur.github.io/vetur/guide/setup.html#advanced
+Reference: https://vetur.github.io/vetur/reference/
+
+----
+
 - Fix pug format. #2460
 - Fix scss autocompletion. #2522
 - Fix templates in custom blocks are parsed as root elements. #1336
