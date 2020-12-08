@@ -647,10 +647,10 @@ prelude-ls@^1.2.1:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
-prettier@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.2.0.tgz#8a03c7777883b29b37fb2c4348c66a78e980418b"
-  integrity sha512-yYerpkvseM4iKD/BXLYUkQV5aKt4tQPqaGW6EsZjzyu0r7sVZZNPJW4Y8MyKmicp6t42XUPcBVA+H6sB3gqndw==
+prettier@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.2.1.tgz#795a1a78dd52f073da0cd42b21f9c91381923ff5"
+  integrity sha512-PqyhM2yCjg/oKkFPtTGUojv7gnZAoG80ttl45O6x2Ug/rMJw4wcc9k6aaf2hibP7BGVCCM33gZoGjyvt9mm16Q==
 
 progress@^2.0.0:
   version "2.0.3"
@@ -847,14 +847,14 @@ v8-compile-cache@^2.0.3:
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.2.0.tgz#9471efa3ef9128d2f7c6a7ca39c4dd6b5055b132"
   integrity sha512-gTpR5XQNKFwOd4clxfnhaqvfqMpqEwr4tOtCyz4MtYZX2JYhfr1JvBFKdS+7K/9rfpZR3VLX+YWBbKoxCgS43Q==
 
-vls@^0.5.10:
-  version "0.5.10"
-  resolved "https://registry.yarnpkg.com/vls/-/vls-0.5.10.tgz#b7cda8f19d1d78322f4825ea2e5e1d7196c6c6b6"
-  integrity sha512-/zXdkUatCptsDGmrEVh0A/LEQ48qEwrKe+7HiIwUOmiz+0DkoHsyf/j6eppXMVRWMcHWopwd9/VTNCRlFf2NFw==
+vls@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/vls/-/vls-0.6.0.tgz#bf2ef43562d34358653ab5d0960cc8affaac2b0f"
+  integrity sha512-9hXcxlbGgf8+wOhk73hWnYQaOo53Hxza1lCZ6zJSTvaEyLPYIqCc20BZ1ZXslypHPazBsaIE1k59fI3nuDxXaA==
   dependencies:
     eslint "^7.14.0"
     eslint-plugin-vue "^7.1.0"
-    prettier "^2.2.0"
+    prettier "^2.2.1"
     tslint "6.1.3"
     typescript "^4.1.2"
 
