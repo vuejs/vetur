@@ -6,10 +6,10 @@
 
 #### 🎉 RFC release 🎉
 
-We support monorepo and multi-root workspace in this version.
-We have also added a new config file called `vetur.config.js`.
+We support monorepo and multi-root workspace in this version.   
+We have also added a new config file called `vetur.config.js`.   
 
-See more: https://vetur.github.io/vetur/guide/setup.html#advanced
+See more: https://vetur.github.io/vetur/guide/setup.html#advanced   
 Reference: https://vetur.github.io/vetur/reference/
 
 ----
