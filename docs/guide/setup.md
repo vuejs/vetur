@@ -126,7 +126,7 @@ You can use `vetur.config.js` for advanced setting.
 Please add `vetur.config.js` at project root or monorepo project root.
 ```javascript
 // vetur.config.js
-/** @type {import('vti').VeturConfig} */
+/** @type {import('vls').VeturConfig} */
 module.exports = {
   // **optional** default: `{}`
   // override vscode settings

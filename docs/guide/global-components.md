@@ -9,7 +9,7 @@ Please add `projects.globalComponents` in `vetur.config.js`.
 When your project isn't a monorepo and `package.json/(ts|js)config.json` at project root.
 ```javascript
 // vetur.config.js
-/** @type {import('vti').VeturConfig} */
+/** @type {import('vls').VeturConfig} */
 module.exports = {
   projects: [
     {

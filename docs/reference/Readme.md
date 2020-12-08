@@ -6,7 +6,7 @@ A new configuration file for Vetur and VTI
 
 ```javascript
 // vetur.config.js
-/** @type {import('vti').VeturConfig} */
+/** @type {import('vls').VeturConfig} */
 module.exports = {
   // **optional** default: `{}`
   // override vscode settings part
