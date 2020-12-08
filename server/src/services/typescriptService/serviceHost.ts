@@ -306,7 +306,7 @@ export function getServiceHost(
             return cachedResolvedModule;
           }
 
-          if (path.isAbsolute(name) || !isVueFile(name)) {
+          if (!isVueFile(name)) {
             const tsResolvedModule = tsModule.resolveModuleName(name, containingFile, options, tsModule.sys)
               .resolvedModule;
 
