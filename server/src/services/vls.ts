@@ -62,6 +62,7 @@ import { createProjectService, ProjectService } from './projectService';
 import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
 import { accessSync, constants, existsSync } from 'fs';
+import { sleep } from '../utils/sleep';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -83,6 +84,7 @@ export class VLS {
   private nodeModulesMap: Map<string, string[]>;
   private documentService: DocumentService;
   private globalSnippetDir: string;
+  private projectLoading: string[];
   private projects: Map<string, ProjectService>;
   private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
   private cancellationTokenValidationRequests: { [uri: string]: VCancellationTokenSource } = {};
@@ -97,6 +99,7 @@ export class VLS {
     this.workspaces = new Map();
     this.projects = new Map();
     this.nodeModulesMap = new Map();
+    this.projectLoading = [];
   }
 
   async init(params: InitializeParams) {
@@ -299,9 +302,19 @@ export class VLS {
     if (this.projects.has(projectConfig.rootFsPath)) {
       return this.projects.get(projectConfig.rootFsPath);
     }
+    // Load project once
+    if (this.projectLoading.includes(projectConfig.rootFsPath)) {
+      while (!this.projects.has(projectConfig.rootFsPath)) {
+        await sleep(500);
+      }
+      return this.projects.get(projectConfig.rootFsPath);
+    }
 
     // init project
     // Yarn Pnp don't need this. https://yarnpkg.com/features/pnp
+    this.projectLoading.push(projectConfig.rootFsPath);
+    const workDoneProgress = await this.lspConnection.window.createWorkDoneProgress();
+    workDoneProgress.begin(`Load project: ${projectConfig.rootFsPath}`, undefined);
     const nodeModulePaths = !process.versions.pnp
       ? this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
         createNodeModulesPaths(projectConfig.rootPathForConfig)
@@ -332,6 +345,7 @@ export class VLS {
       dependencyService
     );
     this.projects.set(projectConfig.rootFsPath, project);
+    workDoneProgress.done();
     return project;
   }
 
