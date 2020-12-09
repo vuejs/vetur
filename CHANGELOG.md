@@ -3,6 +3,9 @@
 ### 0.31.1
 
 - Fix `Vetur` can't format.
+- Fix perf problem when monorepo/multi-root.
+- Add work done progress when load project.
+- Fix wrong loaded dependency when yarn pnp
 
 ### 0.31.0 | 2020-12-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.0/vspackage)
 
