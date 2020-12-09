@@ -18,6 +18,7 @@ const readFileAsync = util.promisify(fs.readFile);
 const accessFileAsync = util.promisify(fs.access);
 
 export function createNodeModulesPaths(rootPath: string) {
+  if (process.versions.pnp) { return []; }
   const startTime = performance.now();
   const nodeModules = fg.sync('**/node_modules', {
     cwd: rootPath.replace(/\\/g, '/'),
@@ -113,23 +114,26 @@ export const createDependencyService = async (
 ): Promise<DependencyService> => {
   let loaded: { [K in keyof RuntimeLibrary]: Dependency<RuntimeLibrary[K]>[] };
 
+  const loadTsSDKPath = () => {
+    if (!tsSDKPath) { throw new Error('No tsSDKPath in settings'); }
+    const dir = path.isAbsolute(tsSDKPath)
+      ? path.resolve(tsSDKPath, '..')
+      : path.resolve(workspacePath, tsSDKPath, '..');
+    const tsModule = require(dir);
+    logger.logInfo(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
+
+    return {
+      dir,
+      version: tsModule.version as string,
+      bundled: false,
+      module: tsModule as typeof ts
+    };
+  };
+
   const loadTypeScript = async (): Promise<Dependency<typeof ts>[]> => {
     try {
       if (useWorkspaceDependencies && tsSDKPath) {
-        const dir = path.isAbsolute(tsSDKPath)
-          ? path.resolve(tsSDKPath, '..')
-          : path.resolve(workspacePath, tsSDKPath, '..');
-        const tsModule = require(dir);
-        logger.logInfo(`Loaded typescript@${tsModule.version} from ${dir} for tsdk.`);
-
-        return [
-          {
-            dir,
-            version: tsModule.version as string,
-            bundled: false,
-            module: tsModule as typeof ts
-          }
-        ];
+        return [loadTsSDKPath()];
       }
 
       if (useWorkspaceDependencies) {
@@ -219,6 +223,12 @@ export const createDependencyService = async (
   const get = <L extends keyof RuntimeLibrary>(lib: L, filePath?: string): Dependency<RuntimeLibrary[L]> => {
     // We find it when yarn pnp. https://yarnpkg.com/features/pnp
     if (process.versions.pnp) {
+      if (!useWorkspaceDependencies) {
+        return getBundled(lib);
+      }
+      if (useWorkspaceDependencies && tsSDKPath && lib === 'typescript') {
+        return loadTsSDKPath();
+      }
       const pkgPath = require.resolve(lib, { paths: [filePath ?? workspacePath] });
 
       return {

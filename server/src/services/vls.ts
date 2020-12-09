@@ -315,10 +315,9 @@ export class VLS {
     this.projectLoading.push(projectConfig.rootFsPath);
     const workDoneProgress = await this.lspConnection.window.createWorkDoneProgress();
     workDoneProgress.begin(`Load project: ${projectConfig.rootFsPath}`, undefined);
-    const nodeModulePaths = !process.versions.pnp
-      ? this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
-        createNodeModulesPaths(projectConfig.rootPathForConfig)
-      : [];
+    const nodeModulePaths =
+      this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
+      createNodeModulesPaths(projectConfig.rootPathForConfig);
     if (this.nodeModulesMap.has(projectConfig.rootPathForConfig)) {
       this.nodeModulesMap.set(projectConfig.rootPathForConfig, nodeModulePaths);
     }
