@@ -181,13 +181,14 @@ export class VLS {
 
   private setupConfigListeners() {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
-      let isFormatEnable = false;
+      this.workspaceConfig = this.getVLSFullConfig({}, settings);
+      let isFormatEnable = (this.workspaceConfig as VLSFullConfig)?.vetur?.format?.enable ?? false;
       this.projects.forEach(project => {
         const veturConfig = this.workspaces.get(project.env.getRootPathForConfig());
         if (!veturConfig) {
           return;
         }
-        const fullConfig = this.getVLSFullConfig(veturConfig.settings, settings);
+        const fullConfig = this.getVLSFullConfig(veturConfig.settings, this.workspaceConfig);
         project.env.configure(fullConfig);
         isFormatEnable = isFormatEnable || fullConfig.vetur.format.enable;
       });
