@@ -1,3 +1,9 @@
+---
+home: true
+actionText: Get Started →
+actionLink: /guide/
+---
+
 # Vetur
 
 [![](https://vsmarketplacebadge.apphb.com/version-short/octref.vetur.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)

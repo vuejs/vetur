@@ -52,23 +52,23 @@ Thanks to the following companies for supporting Vetur's development:
 
 ## Features
 
-- [Syntax-highlighting](/guide/highlighting.md)
-- [Snippet](/guide/snippet.md)
-- [Emmet](/guide/emmet.md)
-- [Linting / Error Checking](/guide/linting-error.md)
-- [Formatting](/guide/formatting.md)
-- [IntelliSense](/guide/intellisense.md)
-- [Debugging](/guide/debugging.md)
-- [Component Data](/guide/framework.md): auto-completion and hover-information for popular Vue frameworks and your own custom components
-- [Experimental Interpolation Features](/guide/interpolation.md): auto-completion, hover information and type-checking in Vue template
-- [VTI](/guide/vti.md): Surface template type-checking errors on CLI
-- [Global components](/guide/global-components.md): support define global components.
+- [Syntax-highlighting](https://vuejs.github.io/vetur/guide/highlighting.md)
+- [Snippet](https://vuejs.github.io/vetur/guide/snippet.md)
+- [Emmet](https://vuejs.github.io/vetur/guide/emmet.md)
+- [Linting / Error Checking](https://vuejs.github.io/vetur/guide/linting-error.md)
+- [Formatting](https://vuejs.github.io/vetur/guide/formatting.md)
+- [IntelliSense](https://vuejs.github.io/vetur/guide/intellisense.md)
+- [Debugging](https://vuejs.github.io/vetur/guide/debugging.md)
+- [Component Data](https://vuejs.github.io/vetur/guide/framework.md): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](https://vuejs.github.io/vetur/guide/interpolation.md): auto-completion, hover information and type-checking in Vue template
+- [VTI](https://vuejs.github.io/vetur/guide/vti.md): Surface template type-checking errors on CLI
+- [Global components](https://vuejs.github.io/vetur/guide/global-components.md): support define global components.
 
 ## Quick Start
 
 - Install [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur).
 - Try it with [Veturpack](https://github.com/octref/veturpack).
-- Refer to [setup](https://vuejs.github.io/vetur/setup.html) page for setting up.
+- Refer to [setup](https://vuejs.github.io/vetur/guide/setup.html) page for setting up.
 - Refer to each feature's own page for setting up specific features.
 
 ## FAQ
