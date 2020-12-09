@@ -136,6 +136,8 @@ Or use `vetur.config.js` to set file path in project.
 If you want debug info, you can use `Vetur: show doctor info` command.   
 You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
 
+⚠️ Notice ⚠️ : If you don't need (path alias/decorator/import json) feature, you can just close it.
+
 ## Vetur can't find `package.json` in /xxxx/xxxxxx.
 
 If you don't have any `package.json` in project, Vetur can't know vue version and component data from other libs.
