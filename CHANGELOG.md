@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.31.1
+
+- Fix `Vetur` can't format.
+
 ### 0.31.0 | 2020-12-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.0/vspackage)
 
 ----
