@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.31.1
+### 0.31.1 | 2020-12-09 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.1/vspackage)
 
 - Fix `Vetur` can't format. #2535 #2538 #2531 #2532
 - Fix perf problem when monorepo/multi-root.
