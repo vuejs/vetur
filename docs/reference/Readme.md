@@ -35,7 +35,7 @@ module.exports = {
       tsconfig: './tsconfig.json',
       // **optional** default: `'./.vscode/vetur/snippets'`
       // Where is vetur custom snippets folders?
-      snippetFolder: './.vscode/vetur/snippets'
+      snippetFolder: './.vscode/vetur/snippets',
       // **optional** default: `[]`
       // Register globally Vue component glob.
       // If you set it, you can get completion by that components.
