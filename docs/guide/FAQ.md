@@ -133,8 +133,8 @@ Or use `vetur.config.js` to set file path in project.
 - [Read more project setup](/guide/setup.html#project-setup)
 - [Read more `vetur.config.js`](/guide/setup.html#advanced)
 
-If you want debug info, you can use `Vetur: show doctor info` command.
-You can use `vetur.ignoreProjectWarning: false` in vscode setting to close this warning.
+If you want debug info, you can use `Vetur: show doctor info` command.   
+You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
 
 ## Vetur can't find `package.json` in /xxxx/xxxxxx.
 
@@ -147,8 +147,8 @@ Or use `vetur.config.js` to set file path in project.
 
 - [Read more `vetur.config.js`](/guide/setup.html#advanced)
 
-If you want debug info, you can use `Vetur: show doctor info` command.
-You can use `vetur.ignoreProjectWarning: false` in vscode setting to close this warning.
+If you want debug info, you can use `Vetur: show doctor info` command.   
+You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
 
 ## Vetur find xxx, but they aren\'t in the project root.
 Vetur find the file, but it may not actually be what you want.
@@ -159,6 +159,6 @@ Or use `vetur.config.js` to set file path in project.
 
 - [Read more `vetur.config.js`](/guide/setup.html#advanced)
 
-If you want debug info, you can use `Vetur: show doctor info` command.
-You can use `vetur.ignoreProjectWarning: false` in vscode setting to close this warning.
+If you want debug info, you can use `Vetur: show doctor info` command.   
+You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
 
