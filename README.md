@@ -73,7 +73,7 @@ Thanks to the following companies for supporting Vetur's development:
 
 ## FAQ
 
-[FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
+[FAQ](https://vuejs.github.io/vetur/guide/FAQ.md)
 
 ## Limitations
 
