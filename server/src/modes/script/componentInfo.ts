@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import type ts from 'typescript';
 import { BasicComponentInfo } from '../../config';
 import { RuntimeLibrary } from '../../services/dependencyService';
 import {
   VueFileInfo,
+  EmitInfo,
   PropInfo,
   ComputedInfo,
   DataInfo,
@@ -87,6 +89,7 @@ export function analyzeDefaultExportExpr(
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
   const insertInOptionAPIPos = getInsertInOptionAPIPos(tsModule, defaultExportType, checker);
+  const emits = getEmits(tsModule, defaultExportType, checker);
   const props = getProps(tsModule, defaultExportType, checker);
   const data = getData(tsModule, defaultExportType, checker);
   const computed = getComputed(tsModule, defaultExportType, checker);
@@ -95,6 +98,7 @@ export function analyzeDefaultExportExpr(
   return {
     componentInfo: {
       insertInOptionAPIPos,
+      emits,
       props,
       data,
       computed,
@@ -135,6 +139,92 @@ function getInsertInOptionAPIPos(
     return defaultExportType.symbol?.valueDeclaration?.getStart() + 1;
   }
   return undefined;
+}
+
+function getEmits(
+  tsModule: RuntimeLibrary['typescript'],
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker
+): EmitInfo[] | undefined {
+  const result: EmitInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassEmits, getObjectEmits);
+
+  return result.length === 0 ? undefined : result;
+
+  function getEmitValidatorInfo(propertyValue: ts.Node): { hasValidator: boolean; typeString?: string } {
+    /**
+     * case `foo: null`
+     */
+    if (propertyValue.kind === tsModule.SyntaxKind.NullKeyword) {
+      return { hasValidator: false };
+    }
+
+    return { hasValidator: true };
+  }
+
+  function getClassEmits(type: ts.Type) {
+    return undefined;
+  }
+
+  function getObjectEmits(type: ts.Type) {
+    const emitsSymbol = checker.getPropertyOfType(type, 'emits');
+    if (!emitsSymbol || !emitsSymbol.valueDeclaration) {
+      return undefined;
+    }
+
+    const emitsDeclaration = getLastChild(emitsSymbol.valueDeclaration);
+    if (!emitsDeclaration) {
+      return undefined;
+    }
+
+    /**
+     * Plain array emits like `emits: ['foo', 'bar']`
+     */
+    if (emitsDeclaration.kind === tsModule.SyntaxKind.ArrayLiteralExpression) {
+      return (emitsDeclaration as ts.ArrayLiteralExpression).elements
+        .filter(expr => expr.kind === tsModule.SyntaxKind.StringLiteral)
+        .map(expr => {
+          return {
+            name: (expr as ts.StringLiteral).text,
+            hasValidator: false,
+            documentation: `\`\`\`js\n${formatJSLikeDocumentation(
+              emitsDeclaration.parent.getFullText().trim()
+            )}\n\`\`\`\n`
+          };
+        });
+    }
+
+    /**
+     * Object literal emits like
+     * ```
+     * {
+     *   emits: {
+     *     foo: () => true,
+     *     bar: (arg1: string, arg2: number) => arg1.startsWith('s') || arg2 > 0,
+     *     car: null
+     *   }
+     * }
+     * ```
+     */
+    if (emitsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
+      const emitsType = checker.getTypeOfSymbolAtLocation(emitsSymbol, emitsDeclaration);
+
+      return checker.getPropertiesOfType(emitsType).map(s => {
+        const node = getNodeFromSymbol(s);
+        const status =
+          node !== undefined && tsModule.isPropertyAssignment(node)
+            ? getEmitValidatorInfo(node.initializer)
+            : { hasValidator: false };
+
+        return {
+          name: s.name,
+          ...status,
+          documentation: buildDocumentation(tsModule, s, checker)
+        };
+      });
+    }
+
+    return undefined;
+  }
 }
 
 function getProps(

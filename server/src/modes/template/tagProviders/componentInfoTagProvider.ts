@@ -16,10 +16,13 @@ export function getComponentInfoTagProvider(childComponents: ChildComponent[]): 
   const tagSet: ITagSet = {};
 
   for (const cc of childComponents) {
-    const props: Attribute[] = [];
-    if (cc.info && cc.info.componentInfo.props) {
-      cc.info.componentInfo.props.forEach(p => {
-        props.push(genAttribute(`:${p.name}`, undefined, { kind: 'markdown', value: p.documentation || '' }));
+    const attributes: Attribute[] = [];
+    if (cc.info) {
+      cc.info.componentInfo.props?.forEach(p => {
+        attributes.push(genAttribute(`:${p.name}`, undefined, { kind: 'markdown', value: p.documentation || '' }));
+      });
+      cc.info.componentInfo.emits?.forEach(e => {
+        attributes.push(genAttribute(`@${e.name}`, 'event', { kind: 'markdown', value: e.documentation || '' }));
       });
     }
     tagSet[cc.name] = new HTMLTagSpecification(
@@ -27,7 +30,7 @@ export function getComponentInfoTagProvider(childComponents: ChildComponent[]): 
         kind: 'markdown',
         value: cc.documentation || ''
       },
-      props
+      attributes
     );
   }
 

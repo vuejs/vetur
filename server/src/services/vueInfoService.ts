@@ -32,6 +32,7 @@ export interface ComponentInfo {
    *   foo: String
    * }
    */
+  emits?: EmitInfo[];
   props?: PropInfo[];
   data?: DataInfo[];
   computed?: ComputedInfo[];
@@ -48,6 +49,22 @@ export interface ChildComponent {
   };
   global: boolean;
   info?: VueFileInfo;
+}
+
+export interface EmitInfo {
+  name: string;
+  /**
+   * `true` if
+   * emits: {
+   *   foo: (...) => {...}
+   * }
+   *
+   * `false` if
+   * - `emits: ['foo']`
+   *
+   */
+  hasValidator: boolean;
+  documentation?: string;
 }
 
 export interface PropInfo {
