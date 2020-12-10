@@ -84,7 +84,7 @@ export class VLS {
   private nodeModulesMap: Map<string, string[]>;
   private documentService: DocumentService;
   private globalSnippetDir: string;
-  private projectLoading: string[];
+  private loadingProjects: string[];
   private projects: Map<string, ProjectService>;
   private pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
   private cancellationTokenValidationRequests: { [uri: string]: VCancellationTokenSource } = {};
@@ -99,7 +99,7 @@ export class VLS {
     this.workspaces = new Map();
     this.projects = new Map();
     this.nodeModulesMap = new Map();
-    this.projectLoading = [];
+    this.loadingProjects = [];
   }
 
   async init(params: InitializeParams) {
@@ -303,7 +303,7 @@ export class VLS {
       return this.projects.get(projectConfig.rootFsPath);
     }
     // Load project once
-    if (this.projectLoading.includes(projectConfig.rootFsPath)) {
+    if (this.loadingProjects.includes(projectConfig.rootFsPath)) {
       while (!this.projects.has(projectConfig.rootFsPath)) {
         await sleep(500);
       }
@@ -312,7 +312,7 @@ export class VLS {
 
     // init project
     // Yarn Pnp don't need this. https://yarnpkg.com/features/pnp
-    this.projectLoading.push(projectConfig.rootFsPath);
+    this.loadingProjects.push(projectConfig.rootFsPath);
     const workDoneProgress = await this.lspConnection.window.createWorkDoneProgress();
     workDoneProgress.begin(`Load project: ${projectConfig.rootFsPath}`, undefined);
     const nodeModulePaths =
