@@ -139,7 +139,7 @@ async function getDiagnostics(workspaceUri: URI) {
         console.log('');
       }
     } catch (err) {
-      console.log(err);
+      console.error(err.stack);
     }
   }
 
@@ -192,6 +192,7 @@ function getVersion(): string {
     console.log('');
   }
 })().catch(err => {
-  console.error(`VTI operation failed with error: ${err}`);
+  console.error(`VTI operation failed with error`);
+  console.error(err.stack);
   process.exit(1);
 });

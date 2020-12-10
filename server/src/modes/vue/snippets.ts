@@ -93,7 +93,9 @@ function loadAllSnippets(rootDir: string, source: SnippetSource): Snippet[] {
         snippets = [...snippets, ...customDirSnippets];
       }
     });
-  } catch (err) {}
+  } catch (err) {
+    console.error(err.stack);
+  }
 
   return snippets;
 }
@@ -116,7 +118,9 @@ function loadSnippetsFromDir(dir: string, source: SnippetSource, type: SnippetTy
           content: fs.readFileSync(path.resolve(dir, p), 'utf-8').replace(/\\t/g, '\t')
         });
       });
-  } catch (err) {}
+  } catch (err) {
+    console.error(err.stack);
+  }
 
   return snippets;
 }

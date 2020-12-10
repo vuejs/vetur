@@ -57,6 +57,7 @@ export async function activate(context: vscode.ExtensionContext) {
       registerRestartVLSCommand(context, client);
     })
     .catch(e => {
+      console.error(e.stack);
       console.log('Client initialization failed');
     });
 

@@ -34,7 +34,7 @@ export function prettierify(
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier format failed');
-    console.error(e.message);
+    console.error(e.stack);
     return [];
   }
 }
@@ -68,7 +68,7 @@ export function prettierEslintify(
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier-Eslint format failed');
-    console.error(e.message);
+    console.error(e.stack);
     return [];
   }
 }
@@ -98,7 +98,7 @@ export function prettierTslintify(
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier-Tslint format failed');
-    console.error(e.message);
+    console.error(e.stack);
     return [];
   }
 }
@@ -129,7 +129,7 @@ export function prettierPluginPugify(
     return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
   } catch (e) {
     console.log('Prettier format failed');
-    console.error(e.message);
+    console.error(e.stack);
     return [];
   }
 }

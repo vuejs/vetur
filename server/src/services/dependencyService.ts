@@ -158,7 +158,7 @@ export const createDependencyService = async (
 
       throw new Error('No useWorkspaceDependencies.');
     } catch (e) {
-      logger.logDebug(e.message);
+      console.error(e.stack);
       logger.logInfo(`Loaded bundled typescript@${ts.version}.`);
       return [
         {
@@ -194,7 +194,7 @@ export const createDependencyService = async (
       }
       throw new Error('No useWorkspaceDependencies.');
     } catch (e) {
-      logger.logDebug(e.message);
+      console.error(e.stack);
       // TODO: Get bundle package version
       logger.logInfo(`Loaded bundled ${name}.`);
       return [

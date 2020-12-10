@@ -40,6 +40,7 @@ export function getWorkspaceTagProvider(packageRoot: string, rootPkgJson: any): 
     }
     return null;
   } catch (err) {
+    console.error(err.stack);
     return null;
   }
 }
@@ -62,6 +63,7 @@ export function getDependencyTagProvider(packageRoot: string, depPkgJson: any): 
     const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
     return getExternalTagProvider(depPkgJson.name, tagsJson, attrsJson);
   } catch (err) {
+    console.error(err.stack);
     return null;
   }
 }

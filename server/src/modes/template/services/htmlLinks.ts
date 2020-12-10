@@ -70,6 +70,7 @@ function isValidURI(uri: string) {
     URI.parse(uri);
     return true;
   } catch (e) {
+    console.error(e.stack);
     return false;
   }
 }
