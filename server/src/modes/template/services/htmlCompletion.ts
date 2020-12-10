@@ -168,12 +168,14 @@ export function doComplete(
         if ((filterPrefix === ':' && codeSnippet[0] === ':') || (filterPrefix === '@' && codeSnippet[0] === '@')) {
           codeSnippet = codeSnippet.slice(1);
         }
+        const trimedName = attribute.replace(/^(?::|@)/, '');
         result.items.push({
           label: attribute,
           kind: type === 'event' ? CompletionItemKind.Function : CompletionItemKind.Value,
           textEdit: TextEdit.replace(range, codeSnippet),
           insertTextFormat: InsertTextFormat.Snippet,
-          sortText: priority + attribute,
+          sortText: priority + trimedName,
+          filterText: trimedName,
           documentation: toMarkupContent(documentation)
         });
       });
