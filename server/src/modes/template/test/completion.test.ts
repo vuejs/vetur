@@ -77,24 +77,21 @@ suite('HTML Completion', () => {
       .become('<input tabindex="$1"');
 
     html`<input t|ype="text"`
-      .has('type')
-      .become('<input type="text"')
+      .hasNo('type')
       .has('tabindex')
       .become('<input tabindex="text"');
 
     html`<input type="text" |`
       .has('style')
       .become('<input type="text" style="$1"')
-      .has('type')
-      .become('<input type="text" type="$1"')
+      .hasNo('type')
       .has('size')
       .become('<input type="text" size="$1"');
 
     html`<input type="text" s|`
       .has('style')
       .become('<input type="text" style="$1"')
-      .has('type')
-      .become('<input type="text" type="$1"')
+      .hasNo('type')
       .has('size')
       .become('<input type="text" size="$1"');
 
@@ -114,7 +111,19 @@ suite('HTML Completion', () => {
 
     html`<input :di| type="text"`.has('dir').become('<input :dir="$1" type="text"');
 
+    html`<input :type="type" |`.hasNo('type');
+
+    html`<input :type.prop="type" |`.hasNo('type');
+
+    // `class` and `:class`, `style` and `:style` can coexist
+    html`<input :class="$style.input" |`.has('class');
+    html`<input style="style" |`.has('style');
+    html`<input :cl|ass="$style.input"`.has('class').become('<input :class="$style.input"');
+
     html`<input @|`.has('mousemove').become('<input @mousemove="$1"');
+
+    // can listen to same event by adding modifiers
+    html`<input @mousemove="mousemove" @|`.has('mousemove').become('<input @mousemove="mousemove" @mousemove="$1"');
   });
 
   test('Complete Value', () => {

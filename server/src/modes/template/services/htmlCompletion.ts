@@ -42,6 +42,7 @@ export function doComplete(
   const scanner = createScanner(text, node.start);
   let currentTag: string;
   let currentAttributeName = '';
+  let currentTagStartOffset: number;
 
   function getReplaceRange(replaceStart: number, replaceEnd: number = offset): Range {
     if (replaceStart > offset) {
@@ -147,7 +148,11 @@ export function doComplete(
     return result;
   }
 
-  function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
+  function collectAttributeNameSuggestions(
+    usedAttributes: Set<string>,
+    nameStart: number,
+    nameEnd: number = offset
+  ): CompletionList {
     const execArray = /^[:@]/.exec(scanner.getTokenText());
     const filterPrefix = execArray ? execArray[0] : '';
     const start = filterPrefix ? nameStart + 1 : nameStart;
@@ -158,6 +163,16 @@ export function doComplete(
     tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectAttributes(currentTag, (attribute, type, documentation) => {
+        if (
+          usedAttributes.has(normalizeAttribute(attribute)) &&
+          // can listen to same event by adding modifiers
+          type !== 'event' &&
+          // `class` and `:class`, `style` and `:style` can coexist
+          attribute !== 'class' &&
+          attribute !== 'style'
+        ) {
+          return;
+        }
         if ((type === 'event' && filterPrefix !== '@') || (type !== 'event' && filterPrefix === '@')) {
           return;
         }
@@ -271,6 +286,23 @@ export function doComplete(
     return offset;
   }
 
+  function collectUsedAttributes(): Set<string> {
+    const attrScanner = createScanner(text, currentTagStartOffset);
+
+    let token = attrScanner.scan();
+    let currentAttributeName!: string;
+    const attrs = new Set<string>();
+    while (token !== TokenType.EOS && token !== TokenType.StartTagClose) {
+      if (token === TokenType.AttributeName) {
+        currentAttributeName = normalizeAttribute(attrScanner.getTokenText());
+      } else if (token === TokenType.AttributeValue) {
+        attrs.add(currentAttributeName);
+      }
+      token = attrScanner.scan();
+    }
+    return attrs;
+  }
+
   let token = scanner.scan();
 
   while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
@@ -280,6 +312,7 @@ export function doComplete(
           const endPos = scanNextForEndPos(TokenType.StartTag);
           return collectTagSuggestions(offset, endPos);
         }
+        currentTagStartOffset = scanner.getTokenOffset();
         break;
       case TokenType.StartTag:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
@@ -289,7 +322,8 @@ export function doComplete(
         break;
       case TokenType.AttributeName:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-          return collectAttributeNameSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
+          const usedAttrs = collectUsedAttributes();
+          return collectAttributeNameSuggestions(usedAttrs, scanner.getTokenOffset(), scanner.getTokenEnd());
         }
         currentAttributeName = scanner.getTokenText();
         break;
@@ -321,7 +355,8 @@ export function doComplete(
               return collectTagSuggestions(startPos, endTagPos);
             case ScannerState.WithinTag:
             case ScannerState.AfterAttributeName:
-              return collectAttributeNameSuggestions(scanner.getTokenEnd());
+              const usedAttrs = collectUsedAttributes();
+              return collectAttributeNameSuggestions(usedAttrs, scanner.getTokenEnd());
             case ScannerState.BeforeAttributeValue:
               return collectAttributeValueSuggestions(currentAttributeName, scanner.getTokenEnd());
             case ScannerState.AfterOpeningEndTag:
@@ -391,4 +426,11 @@ function getWordEnd(s: string, offset: number, limit: number): number {
     offset++;
   }
   return offset;
+}
+
+function normalizeAttribute(attr: string): string {
+  // trim modifiers
+  attr = attr.replace(/\..+$/, '');
+
+  return attr.replace(/^(?:v-bind:|:)/, '').replace(/^v-on:/, '@');
 }
