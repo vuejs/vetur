@@ -61,7 +61,7 @@ import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
-import { accessSync, constants, existsSync } from 'fs';
+import { accessSync, constants, existsSync, fstat } from 'fs';
 import { sleep } from '../utils/sleep';
 
 interface ProjectConfig {
@@ -232,12 +232,16 @@ export class VLS {
       return;
     }
 
-    const showErrorIfCantAccess = (name: string, fsPath: string) => {
+    const isFileCanAccess = (fsPath: string) => {
       try {
         accessSync(fsPath, constants.R_OK);
+        return true;
       } catch {
-        this.lspConnection.window.showErrorMessage(`Vetur can't access ${projectConfig.tsconfigPath} for ${name}.`);
+        return false;
       }
+    };
+    const showErrorIfCantAccess = (name: string, fsPath: string) => {
+      this.lspConnection.window.showErrorMessage(`Vetur can't access ${fsPath} for ${name}.`);
     };
 
     const showWarningAndLearnMore = (message: string, url: string) => {
@@ -255,40 +259,40 @@ export class VLS {
         getCantFindMessage(['tsconfig.json', 'jsconfig.json']),
         'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-can-t-find-tsconfig-json-jsconfig-json-in-xxxx-xxxxxx'
       );
-    } else {
+    } else if (!isFileCanAccess(projectConfig.tsconfigPath)) {
       showErrorIfCantAccess('ts/js config', projectConfig.tsconfigPath);
+    } else {
+      if (
+        !projectConfig.isExistVeturConfig &&
+        ![
+          normalizeFileNameResolve(projectConfig.rootPathForConfig, 'tsconfig.json'),
+          normalizeFileNameResolve(projectConfig.rootPathForConfig, 'jsconfig.json')
+        ].includes(projectConfig.tsconfigPath ?? '')
+      ) {
+        showWarningAndLearnMore(
+          `Vetur find \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
+          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
+        );
+      }
     }
+
     if (!projectConfig.packagePath) {
       showWarningAndLearnMore(
         getCantFindMessage(['package.json']),
         'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-can-t-find-package-json-in-xxxx-xxxxxx'
       );
-    } else {
+    } else if (!isFileCanAccess(projectConfig.packagePath)) {
       showErrorIfCantAccess('ts/js config', projectConfig.packagePath);
-    }
-
-    // ignore not in project root warning when vetur config file is exist.
-    if (projectConfig.isExistVeturConfig) {
-      return;
-    }
-
-    if (
-      ![
-        normalizeFileNameResolve(projectConfig.rootPathForConfig, 'tsconfig.json'),
-        normalizeFileNameResolve(projectConfig.rootPathForConfig, 'jsconfig.json')
-      ].includes(projectConfig.tsconfigPath ?? '')
-    ) {
-      showWarningAndLearnMore(
-        `Vetur find \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
-        'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
-      );
-    }
-
-    if (normalizeFileNameResolve(projectConfig.rootPathForConfig, 'package.json') !== projectConfig.packagePath) {
-      showWarningAndLearnMore(
-        `Vetur find \`package.json\`/, but they aren\'t in the project root.`,
-        'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
-      );
+    } else {
+      if (
+        !projectConfig.isExistVeturConfig &&
+        normalizeFileNameResolve(projectConfig.rootPathForConfig, 'package.json') !== projectConfig.packagePath
+      ) {
+        showWarningAndLearnMore(
+          `Vetur find \`package.json\`/, but they aren\'t in the project root.`,
+          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
+        );
+      }
     }
   }
 
