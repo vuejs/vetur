@@ -52,17 +52,17 @@ Thanks to the following companies for supporting Vetur's development:
 
 ## Features
 
-- [Syntax-highlighting](https://vuejs.github.io/vetur/guide/highlighting.md)
-- [Snippet](https://vuejs.github.io/vetur/guide/snippet.md)
-- [Emmet](https://vuejs.github.io/vetur/guide/emmet.md)
-- [Linting / Error Checking](https://vuejs.github.io/vetur/guide/linting-error.md)
-- [Formatting](https://vuejs.github.io/vetur/guide/formatting.md)
-- [IntelliSense](https://vuejs.github.io/vetur/guide/intellisense.md)
-- [Debugging](https://vuejs.github.io/vetur/guide/debugging.md)
-- [Component Data](https://vuejs.github.io/vetur/guide/framework.md): auto-completion and hover-information for popular Vue frameworks and your own custom components
-- [Experimental Interpolation Features](https://vuejs.github.io/vetur/guide/interpolation.md): auto-completion, hover information and type-checking in Vue template
-- [VTI](https://vuejs.github.io/vetur/guide/vti.md): Surface template type-checking errors on CLI
-- [Global components](https://vuejs.github.io/vetur/guide/global-components.md): support define global components.
+- [Syntax-highlighting](https://vuejs.github.io/vetur/guide/highlighting.html)
+- [Snippet](https://vuejs.github.io/vetur/guide/snippet.html)
+- [Emmet](https://vuejs.github.io/vetur/guide/emmet.html)
+- [Linting / Error Checking](https://vuejs.github.io/vetur/guide/linting-error.html)
+- [Formatting](https://vuejs.github.io/vetur/guide/formatting.html)
+- [IntelliSense](https://vuejs.github.io/vetur/guide/intellisense.html)
+- [Debugging](https://vuejs.github.io/vetur/guide/debugging.html)
+- [Component Data](https://vuejs.github.io/vetur/guide/framework.html): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](https://vuejs.github.io/vetur/guide/interpolation.html): auto-completion, hover information and type-checking in Vue template
+- [VTI](https://vuejs.github.io/vetur/guide/vti.html): Surface template type-checking errors on CLI
+- [Global components](https://vuejs.github.io/vetur/guide/global-components.html): support define global components.
 
 ## Quick Start
 
@@ -73,7 +73,7 @@ Thanks to the following companies for supporting Vetur's development:
 
 ## FAQ
 
-[FAQ](https://vuejs.github.io/vetur/guide/FAQ.md)
+[FAQ](https://vuejs.github.io/vetur/guide/FAQ.html)
 
 ## Limitations
 
