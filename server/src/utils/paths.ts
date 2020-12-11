@@ -1,5 +1,5 @@
 import { platform } from 'os';
-import { resolve } from 'path';
+import { isAbsolute, resolve } from 'path';
 import { URI } from 'vscode-uri';
 
 /**
@@ -74,4 +74,8 @@ export function getPathDepth(filePath: string, sep: string) {
 
 export function getFsPathToUri(fsPath: string) {
   return URI.file(fsPath).toString();
+}
+
+export function normalizeAbsolutePath(fsPath: string, root: string) {
+  return isAbsolute(fsPath) ? normalizeFileNameToFsPath(fsPath) : normalizeFileNameResolve(root, fsPath);
 }

@@ -1,5 +1,10 @@
 import path, { isAbsolute } from 'path';
-import { getPathDepth, normalizeFileNameToFsPath, normalizeFileNameResolve } from './utils/paths';
+import {
+  getPathDepth,
+  normalizeFileNameToFsPath,
+  normalizeFileNameResolve,
+  normalizeAbsolutePath
+} from './utils/paths';
 import fg from 'fast-glob';
 import { findConfigFile } from './utils/workspace';
 import { flatten } from 'lodash';
@@ -200,7 +205,7 @@ export async function getVeturFullConfig(
       };
 
       if (typeof project === 'string') {
-        const projectRoot = isAbsolute(project) ? project : normalizeFileNameResolve(rootPathForConfig, project);
+        const projectRoot = normalizeAbsolutePath(project, rootPathForConfig);
 
         return {
           root: projectRoot,
@@ -211,23 +216,25 @@ export async function getVeturFullConfig(
         } as VeturProject;
       }
 
-      const projectRoot = isAbsolute(project.root)
-        ? project.root
-        : normalizeFileNameResolve(rootPathForConfig, project.root);
+      const projectRoot = normalizeAbsolutePath(project.root, rootPathForConfig);
       return {
         root: projectRoot,
-        package: project.package ?? getFallbackPackagePath(projectRoot),
-        tsconfig: project.tsconfig ?? getFallbackTsconfigPath(projectRoot),
-        snippetFolder: normalizeFileNameResolve(projectRoot, '.vscode/vetur/snippets'),
+        package: project.package
+          ? normalizeAbsolutePath(project.package, projectRoot)
+          : getFallbackPackagePath(projectRoot),
+        tsconfig: project.tsconfig
+          ? normalizeAbsolutePath(project.tsconfig, projectRoot)
+          : getFallbackTsconfigPath(projectRoot),
+        snippetFolder: project.snippetFolder
+          ? normalizeAbsolutePath(project.snippetFolder, projectRoot)
+          : normalizeFileNameResolve(projectRoot, '.vscode/vetur/snippets'),
         globalComponents: flatten(
           project.globalComponents?.map(comp => {
             if (typeof comp === 'string') {
-              return fg
-                .sync(comp, { cwd: normalizeFileNameResolve(rootPathForConfig, projectRoot), absolute: true })
-                .map(fileName => ({
-                  name: path.basename(fileName, path.extname(fileName)),
-                  path: normalizeFileNameToFsPath(fileName)
-                }));
+              return fg.sync(comp, { cwd: projectRoot, absolute: true }).map(fileName => ({
+                name: path.basename(fileName, path.extname(fileName)),
+                path: normalizeFileNameToFsPath(fileName)
+              }));
             }
             return comp;
           }) ?? []

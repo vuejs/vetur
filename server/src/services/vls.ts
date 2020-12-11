@@ -186,6 +186,7 @@ export class VLS {
     this.lspConnection.onDidChangeConfiguration(async ({ settings }: DidChangeConfigurationParams) => {
       this.workspaceConfig = this.getVLSFullConfig({}, settings);
       let isFormatEnable = (this.workspaceConfig as VLSFullConfig)?.vetur?.format?.enable ?? false;
+      logger.setLevel((this.workspaceConfig as VLSFullConfig)?.vetur?.dev.logLevel);
       this.projects.forEach(project => {
         const veturConfig = this.workspaces.get(project.env.getRootPathForConfig());
         if (!veturConfig) {
@@ -253,7 +254,7 @@ export class VLS {
     };
 
     const getCantFindMessage = (fileNames: string[]) =>
-      `Vetur can't find ${fileNames.map(el => `\`${el}\``).join(' or ')} in ${projectConfig.rootPathForConfig}.`;
+      `Vetur can't find ${fileNames.map(el => `\`${el}\``).join(' or ')} in ${projectConfig.rootFsPath}.`;
     if (!projectConfig.tsconfigPath) {
       showWarningAndLearnMore(
         getCantFindMessage(['tsconfig.json', 'jsconfig.json']),
@@ -265,8 +266,8 @@ export class VLS {
       if (
         !projectConfig.isExistVeturConfig &&
         ![
-          normalizeFileNameResolve(projectConfig.rootPathForConfig, 'tsconfig.json'),
-          normalizeFileNameResolve(projectConfig.rootPathForConfig, 'jsconfig.json')
+          normalizeFileNameResolve(projectConfig.rootFsPath, 'tsconfig.json'),
+          normalizeFileNameResolve(projectConfig.rootFsPath, 'jsconfig.json')
         ].includes(projectConfig.tsconfigPath ?? '')
       ) {
         showWarningAndLearnMore(
@@ -286,7 +287,7 @@ export class VLS {
     } else {
       if (
         !projectConfig.isExistVeturConfig &&
-        normalizeFileNameResolve(projectConfig.rootPathForConfig, 'package.json') !== projectConfig.packagePath
+        normalizeFileNameResolve(projectConfig.rootFsPath, 'package.json') !== projectConfig.packagePath
       ) {
         showWarningAndLearnMore(
           `Vetur find \`package.json\`/, but they aren\'t in the project root.`,
