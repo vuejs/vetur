@@ -177,7 +177,48 @@ function getEmits(
   }
 
   function getClassEmits(type: ts.Type) {
-    return undefined;
+    const emitDecoratorNames = ['Emit'];
+    const emitsSymbols = type
+      .getProperties()
+      .filter(
+        property =>
+          validPropertySyntaxKind(property, tsModule.SyntaxKind.MethodDeclaration) &&
+          getPropertyDecoratorNames(property).some(decoratorName => emitDecoratorNames.includes(decoratorName))
+      );
+    if (emitsSymbols.length === 0) {
+      return undefined;
+    }
+
+    return emitsSymbols.map(emitSymbol => {
+      const emit = emitSymbol.valueDeclaration as ts.MethodDeclaration;
+      const decoratorExpr = emit.decorators?.find(decorator =>
+        tsModule.isCallExpression(decorator.expression)
+          ? emitDecoratorNames.includes(decorator.expression.expression.getText())
+          : false
+      )?.expression as ts.CallExpression;
+      const decoratorArgs = decoratorExpr.arguments;
+
+      let name = _.kebabCase(emitSymbol.name);
+      if (decoratorArgs.length > 0) {
+        const firstNode = decoratorArgs[0];
+        if (tsModule.isStringLiteral(firstNode)) {
+          name = firstNode.text;
+        }
+      }
+
+      let typeString: string | undefined = undefined;
+      const signature = checker.getSignatureFromDeclaration(emit);
+      if (signature) {
+        const returnType = checker.getReturnTypeOfSignature(signature);
+        typeString = `(arg: ${checker.typeToString(returnType)}) => any`;
+      }
+      return {
+        name,
+        hasValidator: false,
+        typeString,
+        documentation: buildDocumentation(tsModule, emitSymbol, checker)
+      };
+    });
   }
 
   function getObjectEmits(type: ts.Type) {
