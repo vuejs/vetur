@@ -218,7 +218,7 @@ export class VLS {
         isExistVeturConfig: project.isExistVeturConfig,
         rootPathForConfig: project.rootPathForConfig,
         workspaceFsPath: project.workspaceFsPath,
-        rootFsPath: normalizeFileNameResolve(project.rootPathForConfig, project.root),
+        rootFsPath: project.root,
         tsconfigPath: project.tsconfig,
         packagePath: project.package,
         snippetFolder: project.snippetFolder,
