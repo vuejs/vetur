@@ -124,8 +124,7 @@ However, we'd appreciate it if you can file a [performance issue report with a p
 ## Vetur can't find `tsconfig.json`, `jsconfig.json` in /xxxx/xxxxxx.
 
 If you don't have any `tsconfig.json`, `jsconfig.json` in project,
-Vetur will use fallback settings. Some feature isn't work.
-Like: path alias, decorator, import json.
+Vetur will use fallback settings. Some features won't work, including path alias, decorator, import json.
 
 You can add this config in correct position in project.
 Or use `vetur.config.js` to set file path in project.
