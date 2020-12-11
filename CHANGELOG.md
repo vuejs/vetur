@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.31.2
+### 0.31.2 | 2020-12-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.2/vspackage)
 
 - Fix project warning logic
 - Fix project root error when corner case in windows
