@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { isAbsolute } from 'path';
 import { getPathDepth, normalizeFileNameToFsPath, normalizeFileNameResolve } from './utils/paths';
 import fg from 'fast-glob';
 import { findConfigFile } from './utils/workspace';
@@ -200,7 +200,7 @@ export async function getVeturFullConfig(
       };
 
       if (typeof project === 'string') {
-        const projectRoot = normalizeFileNameResolve(rootPathForConfig, project);
+        const projectRoot = isAbsolute(project) ? project : normalizeFileNameResolve(rootPathForConfig, project);
 
         return {
           root: projectRoot,
@@ -211,7 +211,9 @@ export async function getVeturFullConfig(
         } as VeturProject;
       }
 
-      const projectRoot = normalizeFileNameResolve(rootPathForConfig, project.root);
+      const projectRoot = isAbsolute(project.root)
+        ? project.root
+        : normalizeFileNameResolve(rootPathForConfig, project.root);
       return {
         root: projectRoot,
         package: project.package ?? getFallbackPackagePath(projectRoot),
