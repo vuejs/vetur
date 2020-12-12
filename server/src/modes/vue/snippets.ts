@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { CompletionItem, InsertTextFormat, CompletionItemKind, MarkupContent } from 'vscode-languageserver-types';
+import { logger } from '../../log';
 
 type SnippetSource = 'workspace' | 'user' | 'vetur';
 type SnippetType = 'file' | 'template' | 'style' | 'script' | 'custom';
@@ -94,7 +95,7 @@ function loadAllSnippets(rootDir: string, source: SnippetSource): Snippet[] {
       }
     });
   } catch (err) {
-    console.error(err.stack);
+    logger.logDebug(err.message);
   }
 
   return snippets;
@@ -119,7 +120,7 @@ function loadSnippetsFromDir(dir: string, source: SnippetSource, type: SnippetTy
         });
       });
   } catch (err) {
-    console.error(err.stack);
+    logger.logDebug(err.message);
   }
 
   return snippets;

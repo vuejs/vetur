@@ -18,7 +18,9 @@ const readFileAsync = util.promisify(fs.readFile);
 const accessFileAsync = util.promisify(fs.access);
 
 export function createNodeModulesPaths(rootPath: string) {
-  if (process.versions.pnp) { return []; }
+  if (process.versions.pnp) {
+    return [];
+  }
   const startTime = performance.now();
   const nodeModules = fg.sync('**/node_modules', {
     cwd: rootPath.replace(/\\/g, '/'),
@@ -115,7 +117,9 @@ export const createDependencyService = async (
   let loaded: { [K in keyof RuntimeLibrary]: Dependency<RuntimeLibrary[K]>[] };
 
   const loadTsSDKPath = () => {
-    if (!tsSDKPath) { throw new Error('No tsSDKPath in settings'); }
+    if (!tsSDKPath) {
+      throw new Error('No tsSDKPath in settings');
+    }
     const dir = path.isAbsolute(tsSDKPath)
       ? path.resolve(tsSDKPath, '..')
       : path.resolve(workspacePath, tsSDKPath, '..');
@@ -158,7 +162,7 @@ export const createDependencyService = async (
 
       throw new Error('No useWorkspaceDependencies.');
     } catch (e) {
-      console.error(e.stack);
+      logger.logDebug(e.message);
       logger.logInfo(`Loaded bundled typescript@${ts.version}.`);
       return [
         {
@@ -194,7 +198,7 @@ export const createDependencyService = async (
       }
       throw new Error('No useWorkspaceDependencies.');
     } catch (e) {
-      console.error(e.stack);
+      logger.logDebug(e.message);
       // TODO: Get bundle package version
       logger.logInfo(`Loaded bundled ${name}.`);
       return [
