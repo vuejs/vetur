@@ -104,9 +104,11 @@ export class VLS {
 
   async init(params: InitializeParams) {
     const workspaceFolders =
-      !Array.isArray(params.workspaceFolders) && params.rootPath
+      Array.isArray(params.workspaceFolders) && params.capabilities.workspace?.workspaceFolders
+        ? params.workspaceFolders.map(el => ({ name: el.name, fsPath: getFileFsPath(el.uri) }))
+        : params.rootPath
         ? [{ name: '', fsPath: normalizeFileNameToFsPath(params.rootPath) }]
-        : params.workspaceFolders?.map(el => ({ name: el.name, fsPath: getFileFsPath(el.uri) })) ?? [];
+        : [];
 
     if (workspaceFolders.length === 0) {
       console.error('No workspace path found. Vetur initialization failed.');
