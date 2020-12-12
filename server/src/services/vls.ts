@@ -495,6 +495,7 @@ export class VLS {
   }
 
   async onCompletionResolve(item: CompletionItem): Promise<CompletionItem> {
+    if (!item.data) return item;
     const project = await this.getProjectService(item.data.uri);
 
     return project?.onCompletionResolve(item) ?? item;
