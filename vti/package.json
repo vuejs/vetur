@@ -1,13 +1,13 @@
 {
   "name": "vti",
   "description": "Vetur Terminal Interface",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "main": "./dist/cli.js",
   "bin": "./bin/vti",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "vls": "^0.6.2"
+    "vls": "^0.6.4"
   },
   "scripts": {
     "compile": "rollup -c rollup.config.js",
