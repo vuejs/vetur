@@ -11,19 +11,21 @@ import { Emit, Component } from 'vue-property-decorator'
  */
 @Component()
 export default class BasicPropertyClass extends Vue {
-  /**
-   * My foo
-   */
   @Emit('foo')
   foo() {
     return true
   }
 
-  /**
-   * My foo2
-   */
   @Emit('foo')
   foo2() {
+    return 0
+  }
+
+  @Emit('bar')
+  bar() {}
+
+  @Emit('bar')
+  bar2() {
     return 0
   }
 }

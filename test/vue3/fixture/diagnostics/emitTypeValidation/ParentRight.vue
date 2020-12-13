@@ -1,7 +1,7 @@
 <template>
   <js-child @null="onNull" @non="onNon" @one="onOne" @two="onTwo" @rest="onRest" />
   <ts-child @null="onNull" @non="onNon" @one="onOne" @two="onTwo" @rest="onRest" />
-  <property-child @foo="onFoo" />
+  <property-child @foo="onFoo" @bar="onBar" />
 </template>
 
 <script lang="ts">
@@ -23,6 +23,7 @@ export default defineComponent({
     const onTwo = (a: boolean, b: string[]) => {}
     const onRest = (a: string, ...args: number[]) => {}
     const onFoo = (a: number | boolean) => {}
+    const onBar = (a?: number) => {}
 
     return {
       onNull,
@@ -30,7 +31,8 @@ export default defineComponent({
       onOne,
       onTwo,
       onRest,
-      onFoo
+      onFoo,
+      onBar
     };
   }
 });

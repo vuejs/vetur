@@ -83,6 +83,14 @@ describe('Should find emit type valiation errors', () => {
         range: sameLineRange(3, 19, 22),
         source: 'Vetur',
         code: 2322
+      },
+      {
+        severity: DiagnosticSeverity.Error,
+        message:
+          "Type '($event: any) => (a: number) => void' is not assignable to type '($event: any) => (arg: number | undefined) => any'.\n  Type '(a: number) => void' is not assignable to type '(arg: number | undefined) => any'.\n    Types of parameters 'a' and 'arg' are incompatible.\n      Type 'number | undefined' is not assignable to type 'number'.\n        Type 'undefined' is not assignable to type 'number'.",
+        range: sameLineRange(3, 32, 35),
+        source: 'Vetur',
+        code: 2322
       }
     ]);
   });

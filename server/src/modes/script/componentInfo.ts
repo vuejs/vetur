@@ -221,6 +221,9 @@ function getEmits(
       if (signature) {
         const returnType = checker.getReturnTypeOfSignature(signature);
         typeString = `(${checker.typeToString(returnType)})`;
+        if (typeString === '(void)') {
+          typeString = '(undefined)';
+        }
       }
 
       if (emitInfoMap.has(name)) {
