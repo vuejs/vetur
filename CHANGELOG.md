@@ -1,11 +1,11 @@
 # Changelog
 
-### 0.31.3
+### 0.31.3 | 2020-12-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.3/vspackage)
 
 - Console error only message when unimportant.
-- Fix compatibility with atom-languageclient.
+- Fix compatibility with atom-languageclient. #2561
 - Fix no completion/resolve language error.
-- Fix hang with `EACCES: permission denied` error.
+- Fix hang with `EACCES: permission denied` error. #2559
 
 ### 0.31.2 | 2020-12-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.2/vspackage)
 
