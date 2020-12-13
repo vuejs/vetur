@@ -28,8 +28,9 @@ export function createNodeModulesPaths(rootPath: string) {
     unique: true,
     onlyFiles: false,
     onlyDirectories: true,
+    suppressErrors: true,
     deep: 6,
-    followSymbolicLinks: false,
+    followSymbolicLinks: true,
     ignore: ['**/node_modules/**/node_modules']
   });
 
