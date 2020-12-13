@@ -61,7 +61,8 @@ export interface EmitInfo {
    *
    * `false` if
    * - `emits: ['foo']`
-   *
+   * - `@Emit()`
+   * - `emits: { foo: null }`
    */
   hasValidator: boolean;
   documentation?: string;

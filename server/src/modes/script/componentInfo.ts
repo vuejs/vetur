@@ -189,7 +189,9 @@ function getEmits(
       return undefined;
     }
 
-    return emitsSymbols.map(emitSymbol => {
+    // There maybe same emit name because @Emit can be put on multiple methods.
+    const emitInfoMap = new Map<string, EmitInfo>();
+    emitsSymbols.forEach(emitSymbol => {
       const emit = emitSymbol.valueDeclaration as ts.MethodDeclaration;
       const decoratorExpr = emit.decorators?.find(decorator =>
         tsModule.isCallExpression(decorator.expression)
@@ -210,15 +212,38 @@ function getEmits(
       const signature = checker.getSignatureFromDeclaration(emit);
       if (signature) {
         const returnType = checker.getReturnTypeOfSignature(signature);
-        typeString = `(arg: ${checker.typeToString(returnType)}) => any`;
+        typeString = `(${checker.typeToString(returnType)})`;
       }
-      return {
-        name,
-        hasValidator: false,
-        typeString,
-        documentation: buildDocumentation(tsModule, emitSymbol, checker)
-      };
+
+      if (emitInfoMap.has(name)) {
+        const oldEmitInfo = emitInfoMap.get(name)!;
+        if (typeString) {
+          // create union type
+          oldEmitInfo.typeString += ` | ${typeString}`;
+        } else {
+          // remove type (because it failed to obtain the type)
+          oldEmitInfo.typeString = undefined;
+        }
+        oldEmitInfo.documentation += `\n\n${buildDocumentation(tsModule, emitSymbol, checker)}`;
+        emitInfoMap.set(name, oldEmitInfo);
+      } else {
+        emitInfoMap.set(name, {
+          name,
+          hasValidator: false,
+          typeString,
+          documentation: buildDocumentation(tsModule, emitSymbol, checker)
+        });
+      }
     });
+
+    const emitInfo = [...emitInfoMap.values()];
+    emitInfo.forEach(info => {
+      if (info.typeString) {
+        info.typeString = `(arg: ${info.typeString}) => any`;
+      }
+    });
+
+    return emitInfo;
   }
 
   function getObjectEmits(type: ts.Type) {

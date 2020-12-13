@@ -75,6 +75,14 @@ describe('Should find emit type valiation errors', () => {
         range: sameLineRange(2, 67, 71),
         source: 'Vetur',
         code: 2322
+      },
+      {
+        severity: DiagnosticSeverity.Error,
+        message:
+          "Type '($event: any) => (a: number) => void' is not assignable to type '($event: any) => (arg: number | boolean) => any'.\n  Type '(a: number) => void' is not assignable to type '(arg: number | boolean) => any'.\n    Types of parameters 'a' and 'arg' are incompatible.\n      Type 'number | boolean' is not assignable to type 'number'.\n        Type 'boolean' is not assignable to type 'number'.",
+        range: sameLineRange(3, 19, 22),
+        source: 'Vetur',
+        code: 2322
       }
     ]);
   });

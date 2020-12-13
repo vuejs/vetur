@@ -15,18 +15,16 @@ export default class BasicPropertyClass extends Vue {
    * My foo
    */
   @Emit('foo')
-  foo() {}
-
-  /**
-   * My fooBar
-   */
-  @Emit()
-  fooBar() {}
+  foo() {
+    return true
+  }
 
   /**
    * My foo2
    */
   @Emit('foo')
-  foo2() {}
+  foo2() {
+    return 0
+  }
 }
 </script>

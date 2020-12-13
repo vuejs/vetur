@@ -12,11 +12,19 @@ describe('Should autocomplete interpolation for <template> in property class com
         {
           label: '@foo',
           kind: CompletionItemKind.Function,
-          documentation: new MarkdownString('My foo').appendCodeblock(
-            `@Emit('foo')
+          documentation: new MarkdownString('My foo')
+            .appendCodeblock(
+              `@Emit('foo')
 foo() {}`,
-            'js'
-          )
+              'js'
+            )
+            .appendText('\n')
+            .appendMarkdown('My foo2')
+            .appendCodeblock(
+              `@Emit('foo')
+foo2() {}`,
+              'js'
+            )
         },
         {
           label: '@foo-bar',
