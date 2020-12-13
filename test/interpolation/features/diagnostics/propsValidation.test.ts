@@ -86,22 +86,22 @@ describe('Should find common diagnostics for all regions', () => {
   it('shows errors or warnings for passing wrong props to child component when using class component', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [
       {
-        message: '<class-child> misses props: bar, ear, far, name, checked, foo',
+        message: '<class-child> misses props: foo, bar, ear, far, name, checked',
         severity: vscode.DiagnosticSeverity.Error,
         range: sameLineRange(15, 4, 19)
       },
       {
-        message: '<class-child> misses props: bar, far, name, checked, foo',
+        message: '<class-child> misses props: foo, bar, far, name, checked',
         severity: vscode.DiagnosticSeverity.Error,
         range: sameLineRange(16, 4, 29)
       },
       {
-        message: '<class-child> misses props: bar, far, name, foo',
+        message: '<class-child> misses props: foo, bar, far, name',
         severity: vscode.DiagnosticSeverity.Warning,
         range: sameLineRange(17, 4, 45)
       },
       {
-        message: '<class-child> misses props: bar, far, name, foo',
+        message: '<class-child> misses props: foo, bar, far, name',
         severity: vscode.DiagnosticSeverity.Warning,
         range: sameLineRange(18, 4, 51)
       }
