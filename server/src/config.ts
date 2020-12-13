@@ -231,7 +231,7 @@ export async function getVeturFullConfig(
         globalComponents: flatten(
           project.globalComponents?.map(comp => {
             if (typeof comp === 'string') {
-              return fg.sync(comp, { cwd: projectRoot, absolute: true }).map(fileName => ({
+              return fg.sync(comp, { cwd: projectRoot, absolute: true, suppressErrors: true }).map(fileName => ({
                 name: path.basename(fileName, path.extname(fileName)),
                 path: normalizeFileNameToFsPath(fileName)
               }));
