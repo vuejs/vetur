@@ -37,5 +37,15 @@ fooBar() {}`,
         }
       ]);
     });
+
+    it(`completes child component's emits only with emits option`, async () => {
+      await testCompletion(parentTemplateDocUri, position(2, 36), [
+        {
+          label: '@foo',
+          kind: CompletionItemKind.Function,
+          documentation: new MarkdownString('My foo emits').appendCodeblock(`foo: () => true`, 'js')
+        }
+      ]);
+    });
   });
 });

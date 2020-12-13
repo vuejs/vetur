@@ -146,7 +146,15 @@ function getEmits(
   defaultExportType: ts.Type,
   checker: ts.TypeChecker
 ): EmitInfo[] | undefined {
-  const result: EmitInfo[] = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassEmits, getObjectEmits);
+  // When there is @Emit and emits option both, use only emits option.
+  const result: EmitInfo[] = getClassAndObjectInfo(
+    tsModule,
+    defaultExportType,
+    checker,
+    getClassEmits,
+    getObjectEmits,
+    true
+  );
 
   return result.length === 0 ? undefined : result;
 
@@ -817,14 +825,17 @@ function getClassAndObjectInfo<C, O>(
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
   getClassResult: (type: ts.Type) => C[] | undefined,
-  getObjectResult: (type: ts.Type) => O[] | undefined
+  getObjectResult: (type: ts.Type) => O[] | undefined,
+  onlyUseObjectResultIfExists = false
 ) {
   const result: Array<C | O> = [];
   if (isClassType(tsModule, defaultExportType)) {
-    result.push.apply(result, getClassResult(defaultExportType) || []);
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
     if (decoratorArgumentType) {
       result.push.apply(result, getObjectResult(decoratorArgumentType) || []);
+    }
+    if (result.length === 0 || !onlyUseObjectResultIfExists) {
+      result.push.apply(result, getClassResult(defaultExportType) || []);
     }
   } else {
     result.push.apply(result, getObjectResult(defaultExportType) || []);
