@@ -26,13 +26,13 @@ export interface ComponentInfo {
   };
   childComponents?: ChildComponent[];
 
+  emits?: EmitInfo[];
   /**
    * Todo: Extract type info in cases like
    * props: {
    *   foo: String
    * }
    */
-  emits?: EmitInfo[];
   props?: PropInfo[];
   data?: DataInfo[];
   computed?: ComputedInfo[];
