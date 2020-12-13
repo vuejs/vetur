@@ -1,9 +1,16 @@
 # Changelog
 
+### 0.31.3
+
+- Console error only message when unimportant.
+- Fix compatibility with atom-languageclient.
+- Fix no completion/resolve language error.
+- Fix hang with `EACCES: permission denied` error.
+
 ### 0.31.2 | 2020-12-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.2/vspackage)
 
-- Fix project warning logic
-- Fix project root error when corner case in windows
+- Fix project warning logic.
+- Fix project root error when corner case in windows.
 
 ### 0.31.1 | 2020-12-09 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.1/vspackage)
 
