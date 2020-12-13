@@ -65,6 +65,7 @@ export interface EmitInfo {
    */
   hasValidator: boolean;
   documentation?: string;
+  typeString?: string;
 }
 
 export interface PropInfo {

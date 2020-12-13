@@ -158,7 +158,22 @@ function getEmits(
       return { hasValidator: false };
     }
 
-    return { hasValidator: true };
+    /**
+     * case `foo: function() {}` or `foo: () => {}`
+     */
+    if (tsModule.isFunctionExpression(propertyValue) || tsModule.isArrowFunction(propertyValue)) {
+      let typeParameterText = '';
+      if (propertyValue.typeParameters) {
+        typeParameterText = `<${propertyValue.typeParameters.map(tp => tp.getText()).join(', ')}>`;
+      }
+      const parameterText = `(${propertyValue.parameters
+        .map(p => `${p.getText()}${p.type ? '' : ': any'}`)
+        .join(', ')})`;
+      const typeString = `${typeParameterText}${parameterText} => any`;
+      return { hasValidator: true, typeString };
+    }
+
+    return { hasValidator: false };
   }
 
   function getClassEmits(type: ts.Type) {
