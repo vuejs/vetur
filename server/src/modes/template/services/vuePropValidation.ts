@@ -4,6 +4,7 @@ import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { kebabCase } from 'lodash';
 import { getSameTagInSet } from '../tagProviders/common';
+import { normalizeAttributeNameToKebabCase } from './htmlCompletion';
 
 export function doPropValidation(document: TextDocument, htmlDocument: HTMLDocument, info: VueFileInfo): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
@@ -50,7 +51,7 @@ function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDoc
   const seenProps = n.attributeNames.map(attr => {
     return {
       name: attr,
-      normalized: normalizeHtmlAttributeNameToKebabCase(
+      normalized: normalizeHtmlAttributeNameToKebabCaseAndReplaceVModel(
         attr,
         definedProps.find(prop => prop.isBoundToModel)?.name ?? 'value'
       )
@@ -86,31 +87,10 @@ function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDoc
   };
 }
 
-function normalizeHtmlAttributeNameToKebabCase(attr: string, modelProp: string) {
-  let result = attr;
-
+function normalizeHtmlAttributeNameToKebabCaseAndReplaceVModel(attr: string, modelProp: string) {
   // v-model.trim
-  if (!result.startsWith('v-model:') && result.startsWith('v-model')) {
+  if (!attr.startsWith('v-model:') && attr.startsWith('v-model')) {
     return kebabCase(modelProp);
   }
-
-  // Allow `v-model:prop` in vue 3
-  if (result.startsWith('v-model:')) {
-    result = attr.slice('v-model:'.length);
-  }
-
-  if (result.startsWith('v-bind:')) {
-    result = attr.slice('v-bind:'.length);
-  } else if (result.startsWith(':')) {
-    result = attr.slice(':'.length);
-  }
-
-  // Remove modifiers
-  if (result.includes('.')) {
-    result = result.slice(0, result.indexOf('.'));
-  }
-
-  result = kebabCase(result);
-
-  return result;
+  return normalizeAttributeNameToKebabCase(attr);
 }

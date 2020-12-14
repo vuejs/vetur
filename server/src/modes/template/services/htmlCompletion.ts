@@ -16,6 +16,7 @@ import { NULL_COMPLETION } from '../../nullMode';
 import { getModifierProvider, Modifier } from '../modifierProvider';
 import { toMarkupContent } from '../../../utils/strings';
 import { Priority } from '../tagProviders/common';
+import { kebabCase } from 'lodash';
 
 export function doComplete(
   document: TextDocument,
@@ -42,7 +43,6 @@ export function doComplete(
   const scanner = createScanner(text, node.start);
   let currentTag: string;
   let currentAttributeName = '';
-  let currentTagStartOffset: number;
 
   function getReplaceRange(replaceStart: number, replaceEnd: number = offset): Range {
     if (replaceStart > offset) {
@@ -148,12 +148,15 @@ export function doComplete(
     return result;
   }
 
-  function collectAttributeNameSuggestions(
-    usedAttributes: Set<string>,
-    nameStart: number,
-    nameEnd: number = offset
-  ): CompletionList {
-    const execArray = /^[:@]/.exec(scanner.getTokenText());
+  function getUsedAttributes(offset: number) {
+    const node = htmlDocument.findNodeBefore(offset);
+    return node.attributeNames.map(normalizeAttributeNameToKebabCase);
+  }
+
+  function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
+    const usedAttributes = getUsedAttributes(nameStart);
+    const currentAttribute = scanner.getTokenText();
+    const execArray = /^[:@]/.exec(currentAttribute);
     const filterPrefix = execArray ? execArray[0] : '';
     const start = filterPrefix ? nameStart + 1 : nameStart;
     const range = getReplaceRange(start, nameEnd);
@@ -164,12 +167,14 @@ export function doComplete(
       const priority = provider.priority;
       provider.collectAttributes(currentTag, (attribute, type, documentation) => {
         if (
-          usedAttributes.has(normalizeAttribute(attribute)) &&
+          // include current typing attribute for completing `="$1"`
+          !(attribute === currentAttribute && text[nameEnd] !== '=') &&
           // can listen to same event by adding modifiers
           type !== 'event' &&
           // `class` and `:class`, `style` and `:style` can coexist
           attribute !== 'class' &&
-          attribute !== 'style'
+          attribute !== 'style' &&
+          usedAttributes.includes(normalizeAttributeNameToKebabCase(attribute))
         ) {
           return;
         }
@@ -286,23 +291,6 @@ export function doComplete(
     return offset;
   }
 
-  function collectUsedAttributes(): Set<string> {
-    const attrScanner = createScanner(text, currentTagStartOffset);
-
-    let token = attrScanner.scan();
-    let currentAttributeName!: string;
-    const attrs = new Set<string>();
-    while (token !== TokenType.EOS && token !== TokenType.StartTagClose) {
-      if (token === TokenType.AttributeName) {
-        currentAttributeName = normalizeAttribute(attrScanner.getTokenText());
-      } else if (token === TokenType.AttributeValue) {
-        attrs.add(currentAttributeName);
-      }
-      token = attrScanner.scan();
-    }
-    return attrs;
-  }
-
   let token = scanner.scan();
 
   while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
@@ -312,7 +300,6 @@ export function doComplete(
           const endPos = scanNextForEndPos(TokenType.StartTag);
           return collectTagSuggestions(offset, endPos);
         }
-        currentTagStartOffset = scanner.getTokenOffset();
         break;
       case TokenType.StartTag:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
@@ -322,8 +309,7 @@ export function doComplete(
         break;
       case TokenType.AttributeName:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-          const usedAttrs = collectUsedAttributes();
-          return collectAttributeNameSuggestions(usedAttrs, scanner.getTokenOffset(), scanner.getTokenEnd());
+          return collectAttributeNameSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
         }
         currentAttributeName = scanner.getTokenText();
         break;
@@ -355,8 +341,7 @@ export function doComplete(
               return collectTagSuggestions(startPos, endTagPos);
             case ScannerState.WithinTag:
             case ScannerState.AfterAttributeName:
-              const usedAttrs = collectUsedAttributes();
-              return collectAttributeNameSuggestions(usedAttrs, scanner.getTokenEnd());
+              return collectAttributeNameSuggestions(scanner.getTokenEnd());
             case ScannerState.BeforeAttributeValue:
               return collectAttributeValueSuggestions(currentAttributeName, scanner.getTokenEnd());
             case ScannerState.AfterOpeningEndTag:
@@ -428,9 +413,25 @@ function getWordEnd(s: string, offset: number, limit: number): number {
   return offset;
 }
 
-function normalizeAttribute(attr: string): string {
-  // trim modifiers
-  attr = attr.replace(/\..+$/, '');
+export function normalizeAttributeNameToKebabCase(attr: string): string {
+  let result = attr;
 
-  return attr.replace(/^(?:v-bind:|:)/, '').replace(/^v-on:/, '@');
+  if (result.startsWith('v-model:')) {
+    result = attr.slice('v-model:'.length);
+  }
+
+  if (result.startsWith('v-bind:')) {
+    result = attr.slice('v-bind:'.length);
+  } else if (result.startsWith(':')) {
+    result = attr.slice(':'.length);
+  }
+
+  // Remove modifiers
+  if (result.includes('.')) {
+    result = result.slice(0, result.indexOf('.'));
+  }
+
+  result = kebabCase(result);
+
+  return result;
 }
