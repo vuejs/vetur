@@ -891,10 +891,10 @@ vscode-languageserver@^6.1.1:
   dependencies:
     vscode-languageserver-protocol "^3.15.3"
 
-vscode-uri@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-2.1.2.tgz#c8d40de93eb57af31f3c715dd650e2ca2c096f1c"
-  integrity sha512-8TEXQxlldWAuIODdukIb+TR5s+9Ds40eSJrw+1iDDA9IFORPjMELarNQE3myz5XIkWWpdprmJjm1/SxMlWOC8A==
+vscode-uri@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-3.0.1.tgz#c36502fcf6fa57e63441d3804b5826018e26062e"
+  integrity sha512-LnMgm97uZM2JDjX/vKbbCk+phm++Ih31e5Ao3lqokawhDRocp2ZAVMRiIhPZx6fS5Sqnquyhxh8ABn9TWCvHoA==
 
 vue-eslint-parser@^7.2.0:
   version "7.2.0"
