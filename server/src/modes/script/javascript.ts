@@ -171,6 +171,9 @@ export async function getJavascriptMode(
         if (diag.reportsUnnecessary) {
           tags.push(DiagnosticTag.Unnecessary);
         }
+        if (diag.reportsDeprecated) {
+          tags.push(DiagnosticTag.Deprecated);
+        }
 
         // syntactic/semantic diagnostic always has start and length
         // so we can safely cast diag to TextSpan
