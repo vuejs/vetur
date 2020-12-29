@@ -150,7 +150,7 @@ export function doComplete(
 
   function getUsedAttributes(offset: number) {
     const node = htmlDocument.findNodeBefore(offset);
-    return node.attributeNames.map(normalizeAttributeNameToKebabCase);
+    return new Set(node.attributeNames.map(normalizeAttributeNameToKebabCase));
   }
 
   function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
@@ -174,7 +174,7 @@ export function doComplete(
           // `class` and `:class`, `style` and `:style` can coexist
           attribute !== 'class' &&
           attribute !== 'style' &&
-          usedAttributes.includes(normalizeAttributeNameToKebabCase(attribute))
+          usedAttributes.has(normalizeAttributeNameToKebabCase(attribute))
         ) {
           return;
         }
