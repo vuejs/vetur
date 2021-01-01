@@ -13,6 +13,7 @@ import prettierEslint from 'prettier-eslint';
 import * as prettierTslint from 'prettier-tslint';
 import stylusSupremacy from 'stylus-supremacy';
 import * as prettierPluginPug from '@prettier/plugin-pug';
+import * as stylelintPrettier from 'stylelint-prettier';
 
 const readFileAsync = util.promisify(fs.readFile);
 const accessFileAsync = util.promisify(fs.access);
@@ -89,6 +90,7 @@ export interface RuntimeLibrary {
   'prettier-tslint': typeof prettierTslint;
   'stylus-supremacy': typeof stylusSupremacy;
   '@prettier/plugin-pug': typeof prettierPluginPug;
+  'stylelint-prettier': typeof stylelintPrettier;
 }
 
 export interface DependencyService {
@@ -105,7 +107,8 @@ const bundledModules = {
   'prettier-eslint': prettierEslint,
   'prettier-tslint': prettierTslint,
   'stylus-supremacy': stylusSupremacy,
-  '@prettier/plugin-pug': prettierPluginPug
+  '@prettier/plugin-pug': prettierPluginPug,
+  'stylelint-prettier': stylelintPrettier
 };
 
 export const createDependencyService = async (
@@ -221,7 +224,8 @@ export const createDependencyService = async (
       'prettier-eslint': await loadCommonDep('prettier-eslint', bundledModules['prettier-eslint']),
       'prettier-tslint': await loadCommonDep('prettier-tslint', bundledModules['prettier-tslint']),
       'stylus-supremacy': await loadCommonDep('stylus-supremacy', bundledModules['stylus-supremacy']),
-      '@prettier/plugin-pug': await loadCommonDep('@prettier/plugin-pug', bundledModules['@prettier/plugin-pug'])
+      '@prettier/plugin-pug': await loadCommonDep('@prettier/plugin-pug', bundledModules['@prettier/plugin-pug']),
+      'stylelint-prettier': await loadCommonDep('stylelint-prettier', bundledModules['stylelint-prettier'])
     };
   }
 

@@ -72,6 +72,37 @@ export function prettierEslintify(
     return [];
   }
 }
+
+export function prettierStylelintify(
+  dependencyService: DependencyService,
+  code: string,
+  fileFsPath: string,
+  range: Range,
+  vlsFormatConfig: VLSFormatConfig,
+  parser: any,
+  initialIndent: boolean
+): TextEdit[] {
+  try {
+    const prettier = dependencyService.get('prettier', fileFsPath).module;
+    const prettierStylelint = dependencyService.get('stylelint-prettier', fileFsPath).module.format;
+
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
+    logger.logDebug(`Using stylelint-prettier. Options\n${JSON.stringify(prettierOptions)}`);
+
+    const prettierifiedCode = prettierStylelint({
+      filePath: fileFsPath,
+      prettierOptions: { parser },
+      text: code,
+      fallbackPrettierOptions: prettierOptions
+    });
+    return [toReplaceTextedit(prettierifiedCode, range, vlsFormatConfig, initialIndent)];
+  } catch (e) {
+    console.log('Stylelint-Prettier format failed');
+    console.error(e.message);
+    return [];
+  }
+}
+
 export function prettierTslintify(
   dependencyService: DependencyService,
   code: string,

@@ -30,7 +30,7 @@ import {
 } from 'vscode-languageserver-types';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
-import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/prettier';
+import { prettierify, prettierEslintify, prettierTslintify, prettierStylelintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
 import { URI } from 'vscode-uri';
@@ -640,7 +640,8 @@ export async function getJavascriptMode(
       if (
         defaultFormatter === 'prettier' ||
         defaultFormatter === 'prettier-eslint' ||
-        defaultFormatter === 'prettier-tslint'
+        defaultFormatter === 'prettier-tslint' ||
+        defaultFormatter === 'stylelint-prettier'
       ) {
         const code = doc.getText(range);
         const filePath = getFileFsPath(scriptDoc.uri);
@@ -649,6 +650,8 @@ export async function getJavascriptMode(
           doFormat = prettierEslintify;
         } else if (defaultFormatter === 'prettier-tslint') {
           doFormat = prettierTslintify;
+        } else if (defaultFormatter === 'stylelint-prettier') {
+          doFormat = prettierStylelintify;
         } else {
           doFormat = prettierify;
         }

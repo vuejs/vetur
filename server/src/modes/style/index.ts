@@ -14,7 +14,7 @@ import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageId } from '../../embeddedSupport/embeddedSupport';
 import { getFileFsPath } from '../../utils/paths';
-import { prettierify } from '../../utils/prettier';
+import { prettierify, prettierStylelintify } from '../../utils/prettier';
 import { NULL_HOVER } from '../nullMode';
 import { VLSFormatConfig } from '../../config';
 import { DependencyService } from '../../services/dependencyService';
@@ -165,7 +165,8 @@ function getStyleMode(
       return languageService.getColorPresentations(embedded, stylesheets.refreshAndGet(embedded), color, range);
     },
     format(document, currRange, formattingOptions) {
-      if (env.getConfig().vetur.format.defaultFormatter[languageId] === 'none') {
+      const defaultFormatter = env.getConfig().vetur.format.defaultFormatter[languageId];
+      if (defaultFormatter === 'none') {
         return [];
       }
       syncConfig();
@@ -178,7 +179,14 @@ function getStyleMode(
         scss: 'scss',
         less: 'less'
       };
-      return prettierify(
+
+      let doFormat;
+      if (defaultFormatter === 'stylelint-prettier') {
+        doFormat = prettierStylelintify;
+      } else {
+        doFormat = prettierify;
+      }
+      return doFormat(
         dependencyService,
         value,
         getFileFsPath(document.uri),

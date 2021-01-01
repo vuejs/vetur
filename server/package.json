@@ -63,6 +63,8 @@
     "rollup": "^2.34.2",
     "sass-formatter": "^0.5.2",
     "source-map-support": "^0.5.19",
+    "stylelint": "^13.8.0",
+    "stylelint-prettier": "^1.1.2",
     "stylus": "^0.54.8",
     "stylus-supremacy": "^2.14.5",
     "vscode-css-languageservice": "4.4.0",
