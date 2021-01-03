@@ -99,7 +99,7 @@ import b from 'components/b.vue'
 
 ## Typescript
 
-You need to add a shim type file for import vue SFC in typescript file.
+You need to add a shim type file to import a Vue SFC in a Typescript file.
 ### Vue2
 ```typescript
 // shims-vue.d.ts
@@ -120,8 +120,7 @@ declare module '*.vue' {
 
 
 ## Advanced
-If you use monorepo or VTI or not exist `package.json` and `tsconfig.json/jsconfig.json` at project root,
-You can use `vetur.config.js` for advanced setting.
+If you use monorepo or VTI or `package.json` and `tsconfig.json/jsconfig.json` do not exist at project root, you can use `vetur.config.js` for advanced setting.
 
 Please add `vetur.config.js` at project root or monorepo project root.
 ```javascript
@@ -172,8 +171,8 @@ module.exports = {
 - [Read more `vetur.config.js` reference](/reference/).
 - [Read RFC](https://github.com/vuejs/vetur/blob/master/rfcs/001-vetur-config-file.md).
 
-## Yarn pnp
-Vetur support this project now, but have some limits.
+## Yarn PnP
+Vetur supports this feature now, but has some limits.
 
 - Don't mix common project and pnp project in multi-root/monorepo
-- Prettier don't support yarn pnp, so can't load plugin automatic.
+- Prettier doesn't support Yarn PnP, so can't load plugin automatically.
