@@ -112,7 +112,7 @@ Now you'll find `vetur-{version}.vsix`, you can install it by editor command "In
 
 ## Vetur uses different version of TypeScript in .vue files to what I installed in `node_modules`.
 
-You can enable `Vetur: Use Workspace Dependencies` setting so that it uses the same version of TypeScript in your workspace.
+You can enable the `Vetur: Use Workspace Dependencies` setting so that Vetur uses the same version of TypeScript in your workspace.
 NB: It will use `typescript.tsdk` setting as the path to look for if defined, defaulting to `node_modules/typescript`. This enables tools like Yarn PnP to set their own custom resolver.
 
 ## Vetur is slow
@@ -123,11 +123,10 @@ However, we'd appreciate it if you can file a [performance issue report with a p
 
 ## Vetur can't find `tsconfig.json`, `jsconfig.json` in /xxxx/xxxxxx.
 
-If you don't have any `tsconfig.json`, `jsconfig.json` in project,
-Vetur will use fallback settings. Some features won't work, including path alias, decorator, import json.
+If you don't have any `tsconfig.json`, `jsconfig.json` in your project,
+Vetur will use fallback settings. Some features such as including path alias, decorator, and import json won't work.
 
-You can add this config in correct position in project.
-Or use `vetur.config.js` to set file path in project.
+You can add this config in correct position in your project or use `vetur.config.js` to set the file path.
 
 - [Read more project setup](/guide/setup.html#project-setup)
 - [Read more `vetur.config.js`](/guide/setup.html#advanced)
@@ -139,12 +138,11 @@ You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this w
 
 ## Vetur can't find `package.json` in /xxxx/xxxxxx.
 
-If you don't have any `package.json` in project, Vetur can't know vue version and component data from other libs.
-Vetur assume that vue version is less than 2.5 in your project.
-If the version is wrong, you will get wrong diagnostic from typescript and eslint template validation.
+If you don't have any `package.json` in your project, Vetur can't know the Vue version and component data from other libs.
+Vetur assumes that the version of Vue is less than 2.5.
+If the version is wrong, you will get wrong diagnostics from typescript and eslint template validation.
 
-You can add this config in correct position in project.
-Or use `vetur.config.js` to set file path in project.
+You can add this config at the correct position in your project or use `vetur.config.js` to set file path.
 
 - [Read more `vetur.config.js`](/guide/setup.html#advanced)
 
@@ -155,11 +153,10 @@ You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this w
 Vetur find the file, but it may not actually be what you want.
 If it is wrong, it will cause same result as the previous two. [ref1](/guide/FAQ.html#vetur-can-t-find-tsconfig-json-jsconfig-json-in-xxxx-xxxxxx), [ref2](/guide/FAQ.html#vetur-can-t-find-package-json-in-xxxx-xxxxxx)
 
-You can add this config in correct position in project.
-Or use `vetur.config.js` to set file path in project.
+You can add this config at the correct position in your project or use `vetur.config.js` to set file path.
 
 - [Read more `vetur.config.js`](/guide/setup.html#advanced)
 
-If you want debug info, you can use `Vetur: show doctor info` command.   
-You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
+If you want debugging info, you can use the `Vetur: show doctor info` command.   
+You can use `vetur.ignoreProjectWarning: true` in vscode settings to close this warning.
 
