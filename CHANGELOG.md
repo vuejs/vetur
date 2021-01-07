@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.32.0
+
+- Show deprecated hint in script block.
+
 ### 0.31.3 | 2020-12-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.3/vspackage)
 
 - Console error only message when unimportant.
