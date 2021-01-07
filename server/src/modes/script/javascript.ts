@@ -154,7 +154,8 @@ export async function getJavascriptMode(
 
       let rawScriptDiagnostics = [
         ...program.getSyntacticDiagnostics(sourceFile, cancellationToken?.tsToken),
-        ...program.getSemanticDiagnostics(sourceFile, cancellationToken?.tsToken)
+        ...program.getSemanticDiagnostics(sourceFile, cancellationToken?.tsToken),
+        ...service.getSuggestionDiagnostics(fileFsPath)
       ];
 
       const compilerOptions = program.getCompilerOptions();
@@ -170,6 +171,9 @@ export async function getJavascriptMode(
 
         if (diag.reportsUnnecessary) {
           tags.push(DiagnosticTag.Unnecessary);
+        }
+        if (diag.reportsDeprecated) {
+          tags.push(DiagnosticTag.Deprecated);
         }
 
         // syntactic/semantic diagnostic always has start and length
@@ -893,6 +897,8 @@ function convertTSDiagnosticCategoryToDiagnosticSeverity(
       return DiagnosticSeverity.Information;
     case tsModule.DiagnosticCategory.Suggestion:
       return DiagnosticSeverity.Hint;
+    default:
+      return DiagnosticSeverity.Error;
   }
 }
 
