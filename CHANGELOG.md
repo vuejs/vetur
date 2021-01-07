@@ -1,5 +1,7 @@
 # Changelog
 
+- 🙌 Fix `<transition>`'s boolean attributes were triggering completion with `=""`. Thanks to contribution from [@sapphi-red](https://github.com/sapphi-red).
+
 ### 0.32.0
 
 - Show deprecated hint in script block.
