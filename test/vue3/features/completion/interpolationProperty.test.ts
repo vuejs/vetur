@@ -10,7 +10,7 @@ describe('Should autocomplete interpolation for <template> in property class com
     it(`completes child component's emits`, async () => {
       await testCompletion(parentTemplateDocUri, position(1, 25), [
         {
-          label: '@foo',
+          label: 'foo',
           kind: CompletionItemKind.Function,
           documentation: new MarkdownString('My foo')
             .appendCodeblock(
@@ -27,7 +27,7 @@ foo2() {}`,
             )
         },
         {
-          label: '@foo-bar',
+          label: 'foo-bar',
           kind: CompletionItemKind.Function,
           documentation: new MarkdownString('My fooBar').appendCodeblock(
             `@Emit()
@@ -41,7 +41,7 @@ fooBar() {}`,
     it(`completes child component's emits only with emits option`, async () => {
       await testCompletion(parentTemplateDocUri, position(2, 36), [
         {
-          label: '@foo',
+          label: 'foo',
           kind: CompletionItemKind.Function,
           documentation: new MarkdownString('My foo emits').appendCodeblock(`foo: () => true`, 'js')
         }

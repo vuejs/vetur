@@ -22,7 +22,7 @@ export function getComponentInfoTagProvider(childComponents: ChildComponent[]): 
         attributes.push(genAttribute(`:${p.name}`, undefined, { kind: 'markdown', value: p.documentation || '' }));
       });
       cc.info.componentInfo.emits?.forEach(e => {
-        attributes.push(genAttribute(`@${e.name}`, 'event', { kind: 'markdown', value: e.documentation || '' }));
+        attributes.push(genAttribute(e.name, 'event', { kind: 'markdown', value: e.documentation || '' }));
       });
     }
     tagSet[cc.name] = new HTMLTagSpecification(

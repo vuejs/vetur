@@ -10,7 +10,7 @@ describe('Should autocomplete interpolation for <template> in class component', 
     it(`completes child component's emits`, async () => {
       await testCompletion(parentTemplateDocUri, position(1, 16), [
         {
-          label: '@foo',
+          label: 'foo',
           kind: CompletionItemKind.Function,
           documentation: new MarkdownString('My foo').appendCodeblock(`foo: () => true`, 'js')
         }
