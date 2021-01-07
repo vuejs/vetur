@@ -4,12 +4,12 @@
 
 <script>
 import Vue from 'vue'
-import Component from 'vue-class-component'
+import { Options } from 'vue-class-component'
 
 /**
  * My basic tag
  */
-@Component({
+@Options({
   emits: {
     /**
      * My foo

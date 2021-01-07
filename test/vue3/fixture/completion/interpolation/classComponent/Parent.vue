@@ -5,9 +5,9 @@
 <script>
 import Vue from 'vue'
 import BasicClass from './Child.vue'
-import Component from 'vue-class-component'
+import { Options } from 'vue-class-component'
 
-@Component({
+@Options({
   components: {
     BasicClass
   }
