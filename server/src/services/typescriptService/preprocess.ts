@@ -340,7 +340,7 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
     src += `
 interface ${componentDataInterfaceName}<T> extends ${componentDataName}<T> {
   props: { ${propTypeStrings.join(', ')} }
-  on: { ${onTypeStrings.join(',')} } & { [K in keyof T]?: ($event: T[K]) => any; }
+  on: { ${onTypeStrings.join(', ')} } & { [K in keyof T]?: ($event: T[K]) => any; }
 }
 declare const ${componentHelperInterfaceName}: {
   <T>(
