@@ -1405,15 +1405,15 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
-eslint-plugin-vue@^7.2.0:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-7.2.0.tgz#dd8323fe7ca28fe9377ce3f5f6cf17afe2686f2a"
-  integrity sha512-4mt0yIv6rBDNtvis/g22a0ozJ12GfcdEzX77u0ICYjKlxOVtGrKGEvo0cbOObHaKDg9a9kJcoaNodqE4TPfS2A==
+eslint-plugin-vue@^7.4.1:
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-7.4.1.tgz#2526ef0c010c218824a89423dbe6ddbe76f04fd6"
+  integrity sha512-W/xPNHYIkGJphLUM2UIYYGKbRw3BcDoMIPY9lu1TTa2YLiZoxurddfnmOP+UOVywxb5vi438ejzwvKdZqydtIw==
   dependencies:
     eslint-utils "^2.1.0"
     natural-compare "^1.4.0"
     semver "^7.3.2"
-    vue-eslint-parser "^7.2.0"
+    vue-eslint-parser "^7.3.0"
 
 eslint-scope@^5.0.0, eslint-scope@^5.1.1:
   version "5.1.1"
@@ -4704,7 +4704,7 @@ vscode-web-custom-data@^0.3.2:
   resolved "https://registry.yarnpkg.com/vscode-web-custom-data/-/vscode-web-custom-data-0.3.2.tgz#62a5a924397d8056c5524ff0ff8f14eb815b7066"
   integrity sha512-GGZ99dJbARyh6rv03dXZImGlP5WvNG382A3nIt0yX1uyqBa558L/klHWcgEJzcVkG4t16OQWwPedMR3JkeD2Qg==
 
-vue-eslint-parser@^7.2.0, vue-eslint-parser@^7.3.0:
+vue-eslint-parser@^7.3.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-7.3.0.tgz#894085839d99d81296fa081d19643733f23d7559"
   integrity sha512-n5PJKZbyspD0+8LnaZgpEvNCrjQx1DyDHw8JdWwoxhhC+yRip4TAvSDpXGf9SWX6b0umeB5aR61gwUo6NVvFxw==
