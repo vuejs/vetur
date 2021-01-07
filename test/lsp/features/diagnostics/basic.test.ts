@@ -17,7 +17,7 @@ describe('Should find common diagnostics for all regions', () => {
       {
         range: sameLineRange(7, 9, 12),
         severity: vscode.DiagnosticSeverity.Error,
-        message: "Argument of type '\"5\"' is not assignable to parameter of type 'number'"
+        message: "Argument of type 'string' is not assignable to parameter of type 'number'."
       },
       {
         range: sameLineRange(8, 0, 29),

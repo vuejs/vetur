@@ -50,7 +50,7 @@ describe('Should import vue component to script in template', () => {
         {
           label: 'two-stylus',
           additionalTextEdits: [
-            textEdit(sameLineRange(9, 0, 0), `import TwoStylus from '../../formatting/TwoStylus.vue'${NEW_LINE}`),
+            textEdit(sameLineRange(8, 0, 0), `import TwoStylus from '../../formatting/TwoStylus.vue'${NEW_LINE}`),
             textEdit(sameLineRange(10, 20, 20), ', TwoStylus')
           ]
         },
@@ -58,7 +58,7 @@ describe('Should import vue component to script in template', () => {
           label: 'two-stylus-expected',
           additionalTextEdits: [
             textEdit(
-              sameLineRange(9, 0, 0),
+              sameLineRange(8, 0, 0),
               `import TwoStylusExpected from '../../formatting/TwoStylus.Expected.vue'${NEW_LINE}`
             ),
             textEdit(sameLineRange(10, 20, 20), ', TwoStylusExpected')
@@ -95,7 +95,7 @@ describe('Should import vue component to script in template', () => {
           label: 'child',
           additionalTextEdits: [
             textEdit(
-              sameLineRange(9, 0, 0),
+              sameLineRange(8, 0, 0),
               `import Child1 from '../../diagnostics/noScriptRegion/Child.vue'${NEW_LINE}`
             ),
             textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    Child1`)
@@ -117,7 +117,7 @@ describe('Should import vue component to script in template', () => {
         {
           label: 'es-lint',
           additionalTextEdits: [
-            textEdit(sameLineRange(9, 0, 0), `import ESLint from '../../diagnostics/ESLint.vue'${NEW_LINE}`),
+            textEdit(sameLineRange(8, 0, 0), `import ESLint from '../../diagnostics/ESLint.vue'${NEW_LINE}`),
             textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    ESLint`)
           ]
         }
