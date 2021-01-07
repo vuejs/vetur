@@ -1,5 +1,7 @@
 # Changelog
 
+- 🙌 Remove used attributes from suggestions. Thanks to contribution from [@sapphi-red](https://github.com/sapphi-red).
+
 ### 0.31.3 | 2020-12-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.3/vspackage)
 
 - Console error only message when unimportant.
