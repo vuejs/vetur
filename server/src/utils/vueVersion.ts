@@ -27,7 +27,7 @@ export function inferVueVersion(packagePath: string | undefined): VueVersion {
       throw new Error(`Can't find package.json in project`);
     }
     const packageJSON = packageJSONPath && JSON.parse(readFileSync(packageJSONPath, { encoding: 'utf-8' }));
-    const vueDependencyVersion = packageJSON.dependencies.vue || packageJSON.devDependencies.vue;
+    const vueDependencyVersion = packageJSON.dependencies?.vue || packageJSON.devDependencies?.vue;
 
     if (vueDependencyVersion) {
       // use a sloppy method to infer version, to reduce dep on semver or so

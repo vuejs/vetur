@@ -1,7 +1,7 @@
 {
   "name": "vue3",
   "version": "1.0.0",
-  "dependencies": {
+  "devDependencies": {
     "vue": "^3.0.0"
   }
 }
