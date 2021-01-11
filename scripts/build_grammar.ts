@@ -1,5 +1,5 @@
 import glob from 'glob';
-import { safeLoad } from 'js-yaml';
+import { load } from 'js-yaml';
 import { writeFileSync, readFileSync } from 'fs';
 import { parse } from 'path';
 import { getGeneratedGrammar } from '../client/grammar';
@@ -9,7 +9,7 @@ glob('syntaxes/**/*.yaml', { nocase: true }, (_, files) => {
     const pathData = parse(file);
     writeFileSync(
       pathData.dir + '/' + pathData.name + '.tmLanguage.json',
-      JSON.stringify(safeLoad(readFileSync(file).toString()), null, 2)
+      JSON.stringify(load(readFileSync(file).toString()), null, 2)
     );
   }
 
