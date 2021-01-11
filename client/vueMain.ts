@@ -1,5 +1,5 @@
 import vscode from 'vscode';
-import { LanguageClient } from 'vscode-languageclient';
+import { LanguageClient } from 'vscode-languageclient/node';
 import { generateGrammarCommandHandler } from './commands/generateGrammarCommand';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
@@ -56,7 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
       registerCustomLSPCommands(context, client);
       registerRestartVLSCommand(context, client);
     })
-    .catch(e => {
+    .catch((e: Error) => {
       console.error(e.stack);
       console.log('Client initialization failed');
     });

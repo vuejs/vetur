@@ -41,7 +41,7 @@ export class SassLanguageMode implements LanguageMode {
       return [
         TextEdit.replace(
           range,
-          SassFormatter.Format(document.getText(range), { ...formattingOptions, ...this.env.getConfig().sass.format })
+          SassFormatter.Format(document.getText(range), { ...formattingOptions, ...this.env.getConfig()?.sass?.format })
         )
       ];
     }
