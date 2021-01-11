@@ -69,7 +69,7 @@
     "vscode-emmet-helper": "2.0.9",
     "vscode-languageserver": "7.0.0-next.11",
     "vscode-languageserver-textdocument": "^1.0.1",
-    "vscode-languageserver-types": "3.16.0-next.5",
+    "vscode-languageserver-types": "3.16.0",
     "vscode-uri": "^2.1.2",
     "vscode-web-custom-data": "^0.3.2",
     "vue-eslint-parser": "^7.3.0",
