@@ -1,16 +1,36 @@
+import { LanguageId } from './embeddedSupport/embeddedSupport';
+
 export interface DocumentContext {
   resolveReference(ref: string, base?: string): string;
 }
 
-export interface RefactorAction {
-  fileName: string;
-  formatOptions: any;
-  textRange: {
-    pos: number;
-    end: number;
-  };
+export enum CodeActionDataKind {
+  CombinedCodeFix,
+  RefactorAction,
+  OrganizeImports
+}
+
+export interface BaseCodeActionData {
+  uri: string;
+  languageId: LanguageId;
+  kind: CodeActionDataKind;
+  textRange: { pos: number; end: number };
+}
+
+export interface RefactorActionData extends BaseCodeActionData {
+  kind: CodeActionDataKind.RefactorAction;
   refactorName: string;
   actionName: string;
-  preferences: {};
   description: string;
 }
+
+export interface CombinedFixActionData extends BaseCodeActionData {
+  kind: CodeActionDataKind.CombinedCodeFix;
+  fixId: {};
+}
+
+export interface OrganizeImportsActionData extends BaseCodeActionData {
+  kind: CodeActionDataKind.OrganizeImports;
+}
+
+export type CodeActionData = RefactorActionData | CombinedFixActionData | OrganizeImportsActionData;

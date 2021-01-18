@@ -32,7 +32,7 @@ import { URI } from 'vscode-uri';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { LanguageMode, LanguageModes } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
-import { DocumentContext, RefactorAction } from '../types';
+import { DocumentContext, CodeActionData } from '../types';
 import { VCancellationToken } from '../utils/cancellationToken';
 import { getFileFsPath } from '../utils/paths';
 import { DependencyService } from './dependencyService';
@@ -57,8 +57,8 @@ export interface ProjectService {
   onSignatureHelp(params: TextDocumentPositionParams): Promise<SignatureHelp | null>;
   onFoldingRanges(params: FoldingRangeParams): Promise<FoldingRange[]>;
   onCodeAction(params: CodeActionParams): Promise<CodeAction[]>;
+  onCodeActionResolve(action: CodeAction): Promise<CodeAction>;
   doValidate(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[] | null>;
-  getRefactorEdits(refactorAction: RefactorAction): Promise<WorkspaceEdit | undefined>;
   dispose(): Promise<void>;
 }
 
@@ -308,6 +308,23 @@ export async function createProjectService(
       }
       return [];
     },
+    async onCodeActionResolve(action) {
+      const data = action.data as CodeActionData | undefined;
+      if (data) {
+        const uri: string = data.uri;
+        const languageId: LanguageId = data.languageId;
+
+        if (uri && languageId) {
+          const doc = documentService.getDocument(uri);
+          const mode = languageModes.getMode(languageId);
+          if (doc && mode && mode.doCodeActionResolve) {
+            return mode.doCodeActionResolve(doc, action);
+          }
+        }
+      }
+
+      return action;
+    },
     async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
       const diagnostics: Diagnostic[] = [];
       if (doc.languageId === 'vue') {
@@ -331,16 +348,6 @@ export async function createProjectService(
         return null;
       }
       return diagnostics;
-    },
-    async getRefactorEdits(refactorAction: RefactorAction) {
-      const uri = URI.file(refactorAction.fileName).toString();
-      const doc = documentService.getDocument(uri)!;
-      const startPos = doc.positionAt(refactorAction.textRange.pos);
-      const mode = languageModes.getModeAtPosition(doc, startPos);
-      if (mode && mode.getRefactorEdits) {
-        return mode.getRefactorEdits(doc, refactorAction);
-      }
-      return undefined;
     },
     async dispose() {
       languageModes.dispose();
