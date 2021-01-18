@@ -114,6 +114,9 @@ export function getServiceHost(
   let registry: ts.DocumentRegistry;
   let jsLanguageService: ts.LanguageService;
   let templateLanguageService: ts.LanguageService;
+
+  let docVersionMap = new Map<string, number>();
+
   init();
 
   function getCompilerOptions() {
@@ -154,6 +157,8 @@ export function getServiceHost(
     registry = tsModule.createDocumentRegistry(true);
     jsLanguageService = tsModule.createLanguageService(jsHost, registry);
     templateLanguageService = patchTemplateService(tsModule.createLanguageService(templateHost, registry));
+
+    docVersionMap = new Map();
   }
 
   function queryVirtualFileInfo(
@@ -191,12 +196,13 @@ export function getServiceHost(
       }
     }
 
-    if (isVirtualVueTemplateFile(fileFsPath)) {
+    if (isVirtualVueTemplateFile(fileFsPath) && docVersionMap.get(fileFsPath) !== doc.version) {
       localScriptRegionDocuments.set(fileFsPath, doc);
       scriptFileNameSet.add(filePath);
       if (childComponents) {
         allChildComponentsInfo.set(filePath, childComponents);
       }
+      docVersionMap.set(fileFsPath, doc.version);
       versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
       projectVersion++;
     }
