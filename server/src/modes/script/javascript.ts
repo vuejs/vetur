@@ -39,7 +39,7 @@ import _ from 'lodash';
 
 import { nullMode, NULL_SIGNATURE } from '../nullMode';
 import { BasicComponentInfo, VLSFormatConfig } from '../../config';
-import { VueInfoService } from '../../services/vueInfoService';
+import { VueFileInfo, VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { RefactorAction } from '../../types';
@@ -120,17 +120,14 @@ export async function getJavascriptMode(
     getId() {
       return 'javascript';
     },
-    updateFileInfo(doc: TextDocument): void {
+    getFileInfo(doc: TextDocument): VueFileInfo | undefined {
       if (!vueInfoService) {
         return;
       }
 
       const { service } = updateCurrentVueTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(tsModule, service, fileFsPath, globalComponentInfos, env.getConfig());
-      if (info) {
-        vueInfoService.updateInfo(doc, info);
-      }
+      return getComponentInfo(tsModule, service, fileFsPath, globalComponentInfos, env.getConfig());
     },
 
     async doValidation(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {

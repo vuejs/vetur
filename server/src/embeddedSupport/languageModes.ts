@@ -31,7 +31,7 @@ import { getJavascriptMode } from '../modes/script/javascript';
 import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext, RefactorAction } from '../types';
-import { VueInfoService } from '../services/vueInfoService';
+import { VueFileInfo, VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
@@ -49,7 +49,7 @@ export interface VLSServices {
 
 export interface LanguageMode {
   getId(): string;
-  updateFileInfo?(doc: TextDocument): void;
+  getFileInfo?(doc: TextDocument): VueFileInfo | undefined;
 
   doValidation?(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]>;
   getCodeActions?(
