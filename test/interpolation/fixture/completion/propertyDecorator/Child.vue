@@ -7,7 +7,7 @@
 
 <script>
 import Vue from 'vue'
-import { Prop, Component } from 'vue-property-decorator'
+import { Prop, Component, Emit } from 'vue-property-decorator'
 
 /**
  * My basic tag
@@ -57,5 +57,23 @@ export default class BasicPropertyClass extends Vue {
   hello () {
     console.log(this.msg)
   }
+
+  /**
+   * My baz
+   */
+  @Emit('baz')
+  baz() {}
+
+  /**
+   * My fooBar
+   */
+  @Emit()
+  fooBar() {}
+
+  /**
+   * My baz2
+   */
+  @Emit('baz')
+  baz2() {}
 }
 </script>

@@ -94,6 +94,11 @@ to-fast-properties@^2.0.0:
   resolved "https://registry.yarnpkg.com/to-fast-properties/-/to-fast-properties-2.0.0.tgz#dc5e698cbd079265bc73e0377681a4e4e83f616e"
   integrity sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=
 
+vue-class-component@^8.0.0-rc.1:
+  version "8.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-8.0.0-rc.1.tgz#db692cd97656eb9a08206c03d0b7398cdb1d9420"
+  integrity sha512-w1nMzsT/UdbDAXKqhwTmSoyuJzUXKrxLE77PCFVuC6syr8acdFDAq116xgvZh9UCuV0h+rlCtxXolr3Hi3HyPQ==
+
 vue@^3.0.0-rc.13:
   version "3.0.0-rc.13"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.0.0-rc.13.tgz#b3aa1c3e8a5122ce7b5a02e003dbac3d83987eee"

@@ -210,7 +210,7 @@ export function getTemplateTransformFunctions(
         const newScope = scope.concat(vOnScope);
         const statements =
           !vOnExp || vOnExp.type !== 'VOnExpression'
-            ? [tsModule.createExpressionStatement(transformExpressionContainer(vOn.value, code, newScope))]
+            ? [tsModule.createReturn(transformExpressionContainer(vOn.value, code, newScope))]
             : vOnExp.body.map(st => transformStatement(st, code, newScope));
 
         exp = tsModule.createFunctionExpression(
