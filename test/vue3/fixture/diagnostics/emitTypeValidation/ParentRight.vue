@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from "vue";
+import { defineComponent } from "vue";
 import JSChild from "./JSChild.vue";
 import TSChild from "./TSChild.vue";
 import PropertyChild from "./PropertyChild.vue"

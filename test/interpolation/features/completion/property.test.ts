@@ -101,7 +101,7 @@ describe('Should autocomplete interpolation for <template> in property class com
     });
 
     it(`completes child component's emits`, async () => {
-      await testCompletion(parentTemplateDocUri, position(2, 35), [
+      await testCompletion(parentTemplateDocUri, position(2, 27), [
         {
           label: 'baz',
           kind: CompletionItemKind.Function,
