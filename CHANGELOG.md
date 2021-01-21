@@ -2,6 +2,14 @@
 
 ### 0.32.0
 
+- Upgrade LSP to 3.16
+  - Upgrade `vscode-css-languageservice`
+  - Upgrade `vscode-languageserver/vscode-languageclient`
+- Using `codeaction/resolve`
+  - Combined fix in quickfix
+  - Organize Imports
+  - Better refactor
+- Fix arbitrary code actions. #2574.
 - Show deprecated hint in script block.
 - Infer wrong vue version when no `dependencies` field in package.json. #2632
 - 🙌 Fix building in directory that has space in the path when development. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2641.
