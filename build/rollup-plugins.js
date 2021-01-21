@@ -31,7 +31,7 @@ function generateTypingsVls() {
     buildStart() {
       return new Promise((resolve, reject) => {
         const tsc = spawn(
-          getServerPath('node_modules/.bin/tsc'),
+          path.join('node_modules', '.bin', 'tsc'),
           ['--declaration', '--declarationDir', './typings', '--emitDeclarationOnly', '--pretty', '--incremental'],
           { cwd: getServerPath('./'), shell: true }
         );
