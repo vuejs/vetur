@@ -17,13 +17,13 @@ export default defineComponent({
     PropertyChild
   },
   setup() {
-    const onNull = (a: any) => {}
+    const onNull = (_a: any) => {}
     const onNon = () => {}
-    const onOne = (a: string) => {}
-    const onTwo = (a: boolean, b: string[]) => {}
-    const onRest = (a: string, ...args: number[]) => {}
-    const onFoo = (a: number | boolean) => {}
-    const onBar = (a?: number) => {}
+    const onOne = (_a: string) => {}
+    const onTwo = (_a: boolean, _b: string[]) => {}
+    const onRest = (_a: string, ..._args: number[]) => {}
+    const onFoo = (_a: number | boolean) => {}
+    const onBar = (_a?: number) => {}
 
     return {
       onNull,
