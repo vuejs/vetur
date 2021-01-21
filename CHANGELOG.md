@@ -4,6 +4,7 @@
 
 - Show deprecated hint in script block.
 - Infer wrong vue version when no `dependencies` field in package.json. #2632
+- Fix building in directory that has space in the path when development. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2641.
 
 ### 0.31.3 | 2020-12-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.3/vspackage)
 
