@@ -8,7 +8,6 @@ import {
   ParameterInformation,
   Definition,
   TextEdit,
-  TextDocument,
   Diagnostic,
   DiagnosticSeverity,
   Range,
@@ -26,10 +25,12 @@ import {
   CodeActionKind,
   WorkspaceEdit,
   FoldingRangeKind,
-  CompletionItemTag
+  CompletionItemTag,
+  CodeActionContext
 } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
-import { VueDocumentRegions, LanguageRange } from '../../embeddedSupport/embeddedSupport';
+import { VueDocumentRegions, LanguageRange, LanguageId } from '../../embeddedSupport/embeddedSupport';
 import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/prettier';
 import { getFileFsPath, getFilePath } from '../../utils/paths';
 
@@ -42,18 +43,17 @@ import { BasicComponentInfo, VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
-import { RefactorAction } from '../../types';
+import { CodeActionData, CodeActionDataKind, OrganizeImportsActionData, RefactorActionData } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { EnvironmentService } from '../../services/EnvironmentService';
+import { getCodeActionKind } from './CodeActionKindConverter';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
-
-export const APPLY_REFACTOR_COMMAND = 'vetur.applyRefactorCommand';
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
@@ -577,6 +577,8 @@ export async function getJavascriptMode(
       const fileName = getFileFsPath(scriptDoc.uri);
       const start = scriptDoc.offsetAt(range.start);
       const end = scriptDoc.offsetAt(range.end);
+      const textRange = { pos: start, end };
+      const preferences = getUserPreferences(scriptDoc);
       if (!supportedCodeFixCodes) {
         supportedCodeFixCodes = new Set(
           tsModule
@@ -585,45 +587,77 @@ export async function getJavascriptMode(
             .filter(x => !isNaN(x))
         );
       }
-      const fixableDiagnosticCodes = context.diagnostics.map(d => +d.code!).filter(c => supportedCodeFixCodes.has(c));
-      if (!fixableDiagnosticCodes) {
-        return [];
-      }
-
       const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
 
       const result: CodeAction[] = [];
-      const fixes = service.getCodeFixesAtPosition(
+      provideQuickFixCodeActions(
+        doc.uri,
+        scriptDoc.languageId as LanguageId,
         fileName,
-        start,
-        end,
-        fixableDiagnosticCodes,
+        textRange,
+        context,
+        supportedCodeFixCodes,
         formatSettings,
-        getUserPreferences(scriptDoc)
+        preferences,
+        service,
+        result
       );
-      collectQuickFixCommands(fixes, service, result);
-
-      const textRange = { pos: start, end };
-      const refactorings = service.getApplicableRefactors(fileName, textRange, getUserPreferences(scriptDoc));
-      collectRefactoringCommands(refactorings, fileName, formatSettings, textRange, result);
+      provideRefactoringCodeActions(
+        doc.uri,
+        scriptDoc.languageId as LanguageId,
+        fileName,
+        textRange,
+        context,
+        preferences,
+        service,
+        result
+      );
+      provideOrganizeImports(doc.uri, scriptDoc.languageId as LanguageId, textRange, context, result);
 
       return result;
     },
-    getRefactorEdits(doc: TextDocument, args: RefactorAction): WorkspaceEdit {
-      const { service } = updateCurrentVueTextDocument(doc);
-      const response = service.getEditsForRefactor(
-        args.fileName,
-        args.formatOptions,
-        args.textRange,
-        args.refactorName,
-        args.actionName,
-        args.preferences
-      );
-      if (!response) {
-        // TODO: What happens when there's no response?
-        return {};
+    doCodeActionResolve(doc, action) {
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
+      if (!languageServiceIncludesFile(service, doc.uri)) {
+        return action;
       }
-      return { changes: createUriMappingForEdits(response.edits, service) };
+
+      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
+      const preferences = getUserPreferences(scriptDoc);
+
+      const fileFsPath = getFileFsPath(doc.uri);
+      const data = action.data as CodeActionData;
+
+      if (data.kind === CodeActionDataKind.CombinedCodeFix) {
+        const combinedFix = service.getCombinedCodeFix(
+          { type: 'file', fileName: fileFsPath },
+          data.fixId,
+          formatSettings,
+          preferences
+        );
+
+        action.edit = { changes: createUriMappingForEdits(combinedFix.changes.slice(), service) };
+      }
+      if (data.kind === CodeActionDataKind.RefactorAction) {
+        const refactor = service.getEditsForRefactor(
+          fileFsPath,
+          formatSettings,
+          data.textRange,
+          data.refactorName,
+          data.actionName,
+          preferences
+        );
+        if (refactor) {
+          action.edit = { changes: createUriMappingForEdits(refactor.edits, service) };
+        }
+      }
+      if (data.kind === CodeActionDataKind.OrganizeImports) {
+        const response = service.organizeImports({ type: 'file', fileName: fileFsPath }, formatSettings, preferences);
+        action.edit = { changes: createUriMappingForEdits(response.slice(), service) };
+      }
+
+      delete action.data;
+      return action;
     },
     format(doc: TextDocument, range: Range, formatParams: FormattingOptions): TextEdit[] {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
@@ -702,36 +736,61 @@ export async function getJavascriptMode(
   };
 }
 
-function collectRefactoringCommands(
-  refactorings: ts.ApplicableRefactorInfo[],
+function provideRefactoringCodeActions(
+  uri: string,
+  languageId: LanguageId,
   fileName: string,
-  formatSettings: any,
   textRange: { pos: number; end: number },
+  context: CodeActionContext,
+  preferences: ts.UserPreferences,
+  service: ts.LanguageService,
   result: CodeAction[]
 ) {
-  const actions: RefactorAction[] = [];
+  if (
+    context.only &&
+    !context.only.some(el =>
+      [
+        CodeActionKind.Refactor,
+        CodeActionKind.RefactorExtract,
+        CodeActionKind.RefactorInline,
+        CodeActionKind.RefactorRewrite
+      ].includes(el)
+    )
+  ) {
+    return;
+  }
+
+  const refactorings = service.getApplicableRefactors(
+    fileName,
+    textRange,
+    preferences,
+    !context.only ? undefined : 'invoked'
+  );
+
+  const actions: RefactorActionData[] = [];
   for (const refactoring of refactorings) {
     const refactorName = refactoring.name;
     if (refactoring.inlineable) {
       actions.push({
-        fileName,
-        formatOptions: formatSettings,
+        uri,
+        kind: CodeActionDataKind.RefactorAction,
+        languageId,
         textRange,
         refactorName,
         actionName: refactorName,
-        preferences: {},
         description: refactoring.description
       });
     } else {
       actions.push(
         ...refactoring.actions.map(action => ({
-          fileName,
-          formatOptions: formatSettings,
+          uri,
+          kind: CodeActionDataKind.RefactorAction as const,
+          languageId,
           textRange,
           refactorName,
           actionName: action.name,
-          preferences: {},
-          description: action.description
+          description: action.description,
+          notApplicableReason: action.notApplicableReason
         }))
       );
     }
@@ -739,39 +798,95 @@ function collectRefactoringCommands(
   for (const action of actions) {
     result.push({
       title: action.description,
-      kind: CodeActionKind.Refactor,
-      command: {
-        title: action.description,
-        command: APPLY_REFACTOR_COMMAND,
-        arguments: [action]
-      }
+      kind: getCodeActionKind(action),
+      disabled: action.notApplicableReason ? { reason: action.notApplicableReason } : undefined,
+      data: action
     });
   }
 }
 
-function collectQuickFixCommands(
-  fixes: ReadonlyArray<ts.CodeFixAction>,
+function provideQuickFixCodeActions(
+  uri: string,
+  languageId: LanguageId,
+  fileName: string,
+  textRange: { pos: number; end: number },
+  context: CodeActionContext,
+  supportedCodeFixCodes: Set<number>,
+  formatSettings: ts.FormatCodeSettings,
+  preferences: ts.UserPreferences,
   service: ts.LanguageService,
   result: CodeAction[]
 ) {
+  if (context.only && !context.only.includes(CodeActionKind.QuickFix)) {
+    return;
+  }
+
+  const fixableDiagnosticCodes = context.diagnostics.map(d => +d.code!).filter(c => supportedCodeFixCodes.has(c));
+  if (!fixableDiagnosticCodes) {
+    return;
+  }
+
+  const fixes = service.getCodeFixesAtPosition(
+    fileName,
+    textRange.pos,
+    textRange.end,
+    fixableDiagnosticCodes,
+    formatSettings,
+    preferences
+  );
+
   for (const fix of fixes) {
     const uriTextEditMapping = createUriMappingForEdits(fix.changes, service);
-    result.push(createApplyCodeAction(CodeActionKind.QuickFix, fix.description, uriTextEditMapping));
+    result.push({
+      title: fix.description,
+      kind: CodeActionKind.QuickFix,
+      diagnostics: context.diagnostics,
+      edit: {
+        changes: uriTextEditMapping
+      }
+    });
+
+    if (fix.fixAllDescription && fix.fixId) {
+      result.push({
+        title: fix.fixAllDescription,
+        kind: CodeActionKind.QuickFix,
+        diagnostics: context.diagnostics,
+        data: {
+          uri,
+          languageId,
+          kind: CodeActionDataKind.CombinedCodeFix,
+          textRange,
+          fixId: fix.fixId
+        }
+      });
+    }
   }
 }
 
-function createApplyCodeAction(
-  kind: CodeActionKind,
-  title: string,
-  uriTextEditMapping: Record<string, TextEdit[]>
-): CodeAction {
-  return {
-    title,
-    kind,
-    edit: {
-      changes: uriTextEditMapping
-    }
-  };
+function provideOrganizeImports(
+  uri: string,
+  languageId: LanguageId,
+  textRange: { pos: number; end: number },
+  context: CodeActionContext,
+  result: CodeAction[]
+) {
+  if (
+    !context.only ||
+    (!context.only.includes(CodeActionKind.SourceOrganizeImports) && !context.only.includes(CodeActionKind.Source))
+  ) {
+    return;
+  }
+
+  result.push({
+    title: 'Organize Imports',
+    kind: CodeActionKind.SourceOrganizeImports,
+    data: {
+      uri,
+      languageId,
+      textRange,
+      kind: CodeActionDataKind.OrganizeImports
+    } as OrganizeImportsActionData
+  });
 }
 
 function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.LanguageService) {
@@ -827,7 +942,8 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   return {
     tabSize: config.vetur.format.options.tabSize,
     indentSize: config.vetur.format.options.tabSize,
-    convertTabsToSpaces: !config.vetur.format.options.useTabs
+    convertTabsToSpaces: !config.vetur.format.options.useTabs,
+    insertSpaceAfterCommaDelimiter: true
   };
 }
 

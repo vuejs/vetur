@@ -21,6 +21,11 @@ describe('Should do codeAction', function () {
     const codeActions: CodeAction[] = [{ title: `Remove unused declaration for: 'foo'` }];
     await testCodeAction(docUri, sameLineRange(7, 6, 6), codeActions);
   });
+
+  it('finds fixAll codeAction for unused import', async () => {
+    const codeActions = [{ title: `Delete all unused declarations` }];
+    await testCodeAction(docUri, sameLineRange(5, 6, 6), codeActions);
+  });
 });
 
 async function testCodeAction(docUri: vscode.Uri, range: vscode.Range, expectedActions: CodeAction[]) {

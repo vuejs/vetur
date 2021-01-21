@@ -6,7 +6,7 @@ import {
   TransportKind,
   LanguageClientOptions,
   DocumentFilter
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 import { resolve } from 'path';
 import { existsSync } from 'fs';
 

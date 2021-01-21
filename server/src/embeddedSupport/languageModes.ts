@@ -30,7 +30,7 @@ import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from '../modes/s
 import { getJavascriptMode } from '../modes/script/javascript';
 import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
-import { DocumentContext, RefactorAction } from '../types';
+import { DocumentContext, CodeActionData } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
@@ -58,7 +58,7 @@ export interface LanguageMode {
     formatParams: FormattingOptions,
     context: CodeActionContext
   ): CodeAction[];
-  getRefactorEdits?(doc: TextDocument, args: RefactorAction): WorkspaceEdit;
+  doCodeActionResolve?(document: TextDocument, action: CodeAction): CodeAction;
   doComplete?(document: TextDocument, position: Position): CompletionList;
   doResolve?(document: TextDocument, item: CompletionItem): CompletionItem;
   doHover?(document: TextDocument, position: Position): Hover;

@@ -1,4 +1,4 @@
-import { Diagnostic, Position, Range } from 'vscode-languageserver-types';
+import { CompletionItem, Diagnostic, Position, Range } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import {
   getCSSLanguageService,
@@ -100,7 +100,7 @@ function getStyleMode(
             return {
               ...i,
               sortText: Priority.Platform + i.label
-            };
+            } as CompletionItem;
           })
         : [];
 
@@ -112,7 +112,7 @@ function getStyleMode(
           return {
             ...i,
             sortText: Priority.Emmet + i.label
-          };
+          } as CompletionItem;
         });
         return {
           isIncomplete: emmetCompletions.isIncomplete,
