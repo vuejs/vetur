@@ -16,6 +16,7 @@ import { NULL_COMPLETION } from '../../nullMode';
 import { getModifierProvider, Modifier } from '../modifierProvider';
 import { toMarkupContent } from '../../../utils/strings';
 import { Priority } from '../tagProviders/common';
+import { kebabCase } from 'lodash';
 
 export function doComplete(
   document: TextDocument,
@@ -147,8 +148,15 @@ export function doComplete(
     return result;
   }
 
+  function getUsedAttributes(offset: number) {
+    const node = htmlDocument.findNodeBefore(offset);
+    return new Set(node.attributeNames.map(normalizeAttributeNameToKebabCase));
+  }
+
   function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
-    const execArray = /^[:@]/.exec(scanner.getTokenText());
+    const usedAttributes = getUsedAttributes(nameStart);
+    const currentAttribute = scanner.getTokenText();
+    const execArray = /^[:@]/.exec(currentAttribute);
     const filterPrefix = execArray ? execArray[0] : '';
     const start = filterPrefix ? nameStart + 1 : nameStart;
     const range = getReplaceRange(start, nameEnd);
@@ -158,6 +166,18 @@ export function doComplete(
     tagProviders.forEach(provider => {
       const priority = provider.priority;
       provider.collectAttributes(currentTag, (attribute, type, documentation) => {
+        if (
+          // include current typing attribute for completing `="$1"`
+          !(attribute === currentAttribute && text[nameEnd] !== '=') &&
+          // can listen to same event by adding modifiers
+          type !== 'event' &&
+          // `class` and `:class`, `style` and `:style` can coexist
+          attribute !== 'class' &&
+          attribute !== 'style' &&
+          usedAttributes.has(normalizeAttributeNameToKebabCase(attribute))
+        ) {
+          return;
+        }
         if ((type === 'event' && filterPrefix !== '@') || (type !== 'event' && filterPrefix === '@')) {
           return;
         }
@@ -391,4 +411,27 @@ function getWordEnd(s: string, offset: number, limit: number): number {
     offset++;
   }
   return offset;
+}
+
+export function normalizeAttributeNameToKebabCase(attr: string): string {
+  let result = attr;
+
+  if (result.startsWith('v-model:')) {
+    result = attr.slice('v-model:'.length);
+  }
+
+  if (result.startsWith('v-bind:')) {
+    result = attr.slice('v-bind:'.length);
+  } else if (result.startsWith(':')) {
+    result = attr.slice(':'.length);
+  }
+
+  // Remove modifiers
+  if (result.includes('.')) {
+    result = result.slice(0, result.indexOf('.'));
+  }
+
+  result = kebabCase(result);
+
+  return result;
 }

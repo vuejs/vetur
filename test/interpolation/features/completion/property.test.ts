@@ -93,7 +93,7 @@ describe('Should autocomplete interpolation for <template> in property class com
     ];
 
     it(`completes child component's props`, async () => {
-      await testCompletion(parentTemplateDocUri, position(2, 27), propsList);
+      await testCompletion(parentTemplateDocUri, position(2, 26), propsList);
     });
 
     it(`completes child component's props when camel case component name`, async () => {
