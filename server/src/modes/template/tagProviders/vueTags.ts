@@ -54,10 +54,10 @@ const vueDirectives = [
 
 const transitionProps = [
   getAttribute('name', undefined, 'Used to automatically generate transition CSS class names. Default: "v"'),
-  getAttribute('appear', 'b', 'Whether to apply transition on initial render. Default: false'),
+  getAttribute('appear', 'v', 'Whether to apply transition on initial render. Default: false'),
   getAttribute(
     'css',
-    'b',
+    'v',
     'Whether to apply CSS transition classes. Defaults: true. If set to false, will only trigger JavaScript hooks registered via component events.'
   ),
   getAttribute(
@@ -133,7 +133,7 @@ const vueTags = {
 const valueSets = {
   transMode: ['out-in', 'in-out'],
   transType: ['transition', 'animation'],
-  b: ['true', 'false']
+  v: ['true', 'false']
 };
 
 export function getVueTagProvider(): IHTMLTagProvider {
