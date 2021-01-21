@@ -43,7 +43,7 @@ import { BasicComponentInfo, VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
-import { CodeActionData, CodeActionDataKind, RefactorActionData } from '../../types';
+import { CodeActionData, CodeActionDataKind, OrganizeImportsActionData, RefactorActionData } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
@@ -612,6 +612,7 @@ export async function getJavascriptMode(
         service,
         result
       );
+      provideOrganizeImports(doc.uri, scriptDoc.languageId as LanguageId, textRange, context, result);
 
       return result;
     },
@@ -649,6 +650,10 @@ export async function getJavascriptMode(
         if (refactor) {
           action.edit = { changes: createUriMappingForEdits(refactor.edits, service) };
         }
+      }
+      if (data.kind === CodeActionDataKind.OrganizeImports) {
+        const response = service.organizeImports({ type: 'file', fileName: fileFsPath }, formatSettings, preferences);
+        action.edit = { changes: createUriMappingForEdits(response.slice(), service) };
       }
 
       delete action.data;
@@ -858,6 +863,32 @@ function provideQuickFixCodeActions(
   }
 }
 
+function provideOrganizeImports(
+  uri: string,
+  languageId: LanguageId,
+  textRange: { pos: number; end: number },
+  context: CodeActionContext,
+  result: CodeAction[]
+) {
+  if (
+    !context.only ||
+    (!context.only.includes(CodeActionKind.SourceOrganizeImports) && !context.only.includes(CodeActionKind.Source))
+  ) {
+    return;
+  }
+
+  result.push({
+    title: 'Organize Imports',
+    kind: CodeActionKind.SourceOrganizeImports,
+    data: {
+      uri,
+      languageId,
+      textRange,
+      kind: CodeActionDataKind.OrganizeImports
+    } as OrganizeImportsActionData
+  });
+}
+
 function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.LanguageService) {
   const program = service.getProgram()!;
   const result: Record<string, TextEdit[]> = {};
@@ -911,7 +942,8 @@ function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   return {
     tabSize: config.vetur.format.options.tabSize,
     indentSize: config.vetur.format.options.tabSize,
-    convertTabsToSpaces: !config.vetur.format.options.useTabs
+    convertTabsToSpaces: !config.vetur.format.options.useTabs,
+    insertSpaceAfterCommaDelimiter: true
   };
 }
 

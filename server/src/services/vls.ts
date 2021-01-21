@@ -658,6 +658,7 @@ export class VLS {
           CodeActionKind.RefactorExtract,
           CodeActionKind.RefactorInline,
           CodeActionKind.RefactorRewrite,
+          CodeActionKind.Source,
           CodeActionKind.SourceOrganizeImports
         ],
         resolveProvider: true
