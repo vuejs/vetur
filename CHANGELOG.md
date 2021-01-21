@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.32.0
+### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
 
 - Upgrade LSP to 3.16
   - Upgrade `vscode-css-languageservice`
