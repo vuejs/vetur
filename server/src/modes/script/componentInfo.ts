@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import type ts from 'typescript';
 import { BasicComponentInfo } from '../../config';
 import { RuntimeLibrary } from '../../services/dependencyService';
 import {
   VueFileInfo,
+  EmitInfo,
   PropInfo,
   ComputedInfo,
   DataInfo,
@@ -87,6 +89,7 @@ export function analyzeDefaultExportExpr(
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
   const insertInOptionAPIPos = getInsertInOptionAPIPos(tsModule, defaultExportType, checker);
+  const emits = getEmits(tsModule, defaultExportType, checker);
   const props = getProps(tsModule, defaultExportType, checker);
   const data = getData(tsModule, defaultExportType, checker);
   const computed = getComputed(tsModule, defaultExportType, checker);
@@ -95,6 +98,7 @@ export function analyzeDefaultExportExpr(
   return {
     componentInfo: {
       insertInOptionAPIPos,
+      emits,
       props,
       data,
       computed,
@@ -135,6 +139,184 @@ function getInsertInOptionAPIPos(
     return defaultExportType.symbol?.valueDeclaration?.getStart() + 1;
   }
   return undefined;
+}
+
+function getEmits(
+  tsModule: RuntimeLibrary['typescript'],
+  defaultExportType: ts.Type,
+  checker: ts.TypeChecker
+): EmitInfo[] | undefined {
+  // When there is @Emit and emits option both, use only emits option.
+  const result: EmitInfo[] = getClassAndObjectInfo(
+    tsModule,
+    defaultExportType,
+    checker,
+    getClassEmits,
+    getObjectEmits,
+    true
+  );
+
+  return result.length === 0 ? undefined : result;
+
+  function getEmitValidatorInfo(propertyValue: ts.Node): { hasValidator: boolean; typeString?: string } {
+    /**
+     * case `foo: null`
+     */
+    if (propertyValue.kind === tsModule.SyntaxKind.NullKeyword) {
+      return { hasValidator: false };
+    }
+
+    /**
+     * case `foo: function() {}` or `foo: () => {}`
+     */
+    if (tsModule.isFunctionExpression(propertyValue) || tsModule.isArrowFunction(propertyValue)) {
+      let typeParameterText = '';
+      if (propertyValue.typeParameters) {
+        typeParameterText = `<${propertyValue.typeParameters.map(tp => tp.getText()).join(', ')}>`;
+      }
+      const parameterText = `(${propertyValue.parameters
+        .map(p => `${p.getText()}${p.type ? '' : ': any'}`)
+        .join(', ')})`;
+      const typeString = `${typeParameterText}${parameterText} => any`;
+      return { hasValidator: true, typeString };
+    }
+
+    return { hasValidator: false };
+  }
+
+  function getClassEmits(type: ts.Type) {
+    const emitDecoratorNames = ['Emit'];
+    const emitsSymbols = type
+      .getProperties()
+      .filter(
+        property =>
+          validPropertySyntaxKind(property, tsModule.SyntaxKind.MethodDeclaration) &&
+          getPropertyDecoratorNames(property).some(decoratorName => emitDecoratorNames.includes(decoratorName))
+      );
+    if (emitsSymbols.length === 0) {
+      return undefined;
+    }
+
+    // There maybe same emit name because @Emit can be put on multiple methods.
+    const emitInfoMap = new Map<string, EmitInfo>();
+    emitsSymbols.forEach(emitSymbol => {
+      const emit = emitSymbol.valueDeclaration as ts.MethodDeclaration;
+      const decoratorExpr = emit.decorators?.find(decorator =>
+        tsModule.isCallExpression(decorator.expression)
+          ? emitDecoratorNames.includes(decorator.expression.expression.getText())
+          : false
+      )?.expression as ts.CallExpression;
+      const decoratorArgs = decoratorExpr.arguments;
+
+      let name = _.kebabCase(emitSymbol.name);
+      if (decoratorArgs.length > 0) {
+        const firstNode = decoratorArgs[0];
+        if (tsModule.isStringLiteral(firstNode)) {
+          name = firstNode.text;
+        }
+      }
+
+      let typeString: string | undefined = undefined;
+      const signature = checker.getSignatureFromDeclaration(emit);
+      if (signature) {
+        const returnType = checker.getReturnTypeOfSignature(signature);
+        typeString = `(${checker.typeToString(returnType)})`;
+        if (typeString === '(void)') {
+          typeString = '(undefined)';
+        }
+      }
+
+      if (emitInfoMap.has(name)) {
+        const oldEmitInfo = emitInfoMap.get(name)!;
+        if (typeString) {
+          // create union type
+          oldEmitInfo.typeString += ` | ${typeString}`;
+        } else {
+          // remove type (because it failed to obtain the type)
+          oldEmitInfo.typeString = undefined;
+        }
+        oldEmitInfo.documentation += `\n\n${buildDocumentation(tsModule, emitSymbol, checker)}`;
+        emitInfoMap.set(name, oldEmitInfo);
+      } else {
+        emitInfoMap.set(name, {
+          name,
+          hasValidator: false,
+          typeString,
+          documentation: buildDocumentation(tsModule, emitSymbol, checker)
+        });
+      }
+    });
+
+    const emitInfo = [...emitInfoMap.values()];
+    emitInfo.forEach(info => {
+      if (info.typeString) {
+        info.typeString = `(arg: ${info.typeString}) => any`;
+      }
+    });
+
+    return emitInfo;
+  }
+
+  function getObjectEmits(type: ts.Type) {
+    const emitsSymbol = checker.getPropertyOfType(type, 'emits');
+    if (!emitsSymbol || !emitsSymbol.valueDeclaration) {
+      return undefined;
+    }
+
+    const emitsDeclaration = getLastChild(emitsSymbol.valueDeclaration);
+    if (!emitsDeclaration) {
+      return undefined;
+    }
+
+    /**
+     * Plain array emits like `emits: ['foo', 'bar']`
+     */
+    if (emitsDeclaration.kind === tsModule.SyntaxKind.ArrayLiteralExpression) {
+      return (emitsDeclaration as ts.ArrayLiteralExpression).elements
+        .filter(expr => expr.kind === tsModule.SyntaxKind.StringLiteral)
+        .map(expr => {
+          return {
+            name: (expr as ts.StringLiteral).text,
+            hasValidator: false,
+            documentation: `\`\`\`js\n${formatJSLikeDocumentation(
+              emitsDeclaration.parent.getFullText().trim()
+            )}\n\`\`\`\n`
+          };
+        });
+    }
+
+    /**
+     * Object literal emits like
+     * ```
+     * {
+     *   emits: {
+     *     foo: () => true,
+     *     bar: (arg1: string, arg2: number) => arg1.startsWith('s') || arg2 > 0,
+     *     car: null
+     *   }
+     * }
+     * ```
+     */
+    if (emitsDeclaration.kind === tsModule.SyntaxKind.ObjectLiteralExpression) {
+      const emitsType = checker.getTypeOfSymbolAtLocation(emitsSymbol, emitsDeclaration);
+
+      return checker.getPropertiesOfType(emitsType).map(s => {
+        const node = getNodeFromSymbol(s);
+        const status =
+          node !== undefined && tsModule.isPropertyAssignment(node)
+            ? getEmitValidatorInfo(node.initializer)
+            : { hasValidator: false };
+
+        return {
+          name: s.name,
+          ...status,
+          documentation: buildDocumentation(tsModule, s, checker)
+        };
+      });
+    }
+
+    return undefined;
+  }
 }
 
 function getProps(
@@ -646,14 +828,17 @@ function getClassAndObjectInfo<C, O>(
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
   getClassResult: (type: ts.Type) => C[] | undefined,
-  getObjectResult: (type: ts.Type) => O[] | undefined
+  getObjectResult: (type: ts.Type) => O[] | undefined,
+  onlyUseObjectResultIfExists = false
 ) {
   const result: Array<C | O> = [];
   if (isClassType(tsModule, defaultExportType)) {
-    result.push.apply(result, getClassResult(defaultExportType) || []);
     const decoratorArgumentType = getClassDecoratorArgumentType(tsModule, defaultExportType, checker);
     if (decoratorArgumentType) {
       result.push.apply(result, getObjectResult(decoratorArgumentType) || []);
+    }
+    if (result.length === 0 || !onlyUseObjectResultIfExists) {
+      result.push.apply(result, getClassResult(defaultExportType) || []);
     }
   } else {
     result.push.apply(result, getObjectResult(defaultExportType) || []);
