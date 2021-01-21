@@ -49,6 +49,7 @@ import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptSer
 import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { EnvironmentService } from '../../services/EnvironmentService';
+import { getCodeActionKind } from './CodeActionKindConverter';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -747,15 +748,19 @@ function provideRefactoringCodeActions(
         CodeActionKind.Refactor,
         CodeActionKind.RefactorExtract,
         CodeActionKind.RefactorInline,
-        CodeActionKind.RefactorRewrite,
-        CodeActionKind.Source
+        CodeActionKind.RefactorRewrite
       ].includes(el)
     )
   ) {
     return;
   }
 
-  const refactorings = service.getApplicableRefactors(fileName, textRange, preferences);
+  const refactorings = service.getApplicableRefactors(
+    fileName,
+    textRange,
+    preferences,
+    !context.only ? undefined : 'invoked'
+  );
 
   const actions: RefactorActionData[] = [];
   for (const refactoring of refactorings) {
@@ -779,7 +784,8 @@ function provideRefactoringCodeActions(
           textRange,
           refactorName,
           actionName: action.name,
-          description: action.description
+          description: action.description,
+          notApplicableReason: action.notApplicableReason
         }))
       );
     }
@@ -787,7 +793,8 @@ function provideRefactoringCodeActions(
   for (const action of actions) {
     result.push({
       title: action.description,
-      kind: CodeActionKind.Refactor,
+      kind: getCodeActionKind(action),
+      disabled: action.notApplicableReason ? { reason: action.notApplicableReason } : undefined,
       data: action
     });
   }
@@ -833,10 +840,6 @@ function provideQuickFixCodeActions(
         changes: uriTextEditMapping
       }
     });
-
-    if (context.only && !context.only.includes(CodeActionKind.SourceFixAll)) {
-      continue;
-    }
 
     if (fix.fixAllDescription && fix.fixId) {
       result.push({

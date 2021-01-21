@@ -22,6 +22,7 @@ export interface RefactorActionData extends BaseCodeActionData {
   refactorName: string;
   actionName: string;
   description: string;
+  notApplicableReason?: string;
 }
 
 export interface CombinedFixActionData extends BaseCodeActionData {

@@ -569,7 +569,9 @@ export class VLS {
   }
 
   async onCodeActionResolve(action: CodeAction) {
-    if (!action.data) return action;
+    if (!action.data) {
+      return action;
+    }
     const project = await this.getProjectService((action.data as { uri: string })?.uri);
 
     return project?.onCodeActionResolve(action) ?? action;
@@ -656,9 +658,7 @@ export class VLS {
           CodeActionKind.RefactorExtract,
           CodeActionKind.RefactorInline,
           CodeActionKind.RefactorRewrite,
-          CodeActionKind.Source,
-          CodeActionKind.SourceOrganizeImports,
-          CodeActionKind.SourceFixAll
+          CodeActionKind.SourceOrganizeImports
         ],
         resolveProvider: true
       },
