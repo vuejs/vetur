@@ -1,4 +1,3 @@
-import path from 'path';
 import type ts from 'typescript';
 import { URI } from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -196,15 +195,17 @@ export function getServiceHost(
       }
     }
 
-    if (isVirtualVueTemplateFile(fileFsPath) && docVersionMap.get(fileFsPath) !== doc.version) {
+    if (isVirtualVueTemplateFile(fileFsPath)) {
       localScriptRegionDocuments.set(fileFsPath, doc);
       scriptFileNameSet.add(filePath);
       if (childComponents) {
         allChildComponentsInfo.set(filePath, childComponents);
       }
-      docVersionMap.set(fileFsPath, doc.version);
-      versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
-      projectVersion++;
+      if (docVersionMap.get(fileFsPath) !== doc.version) {
+        docVersionMap.set(fileFsPath, doc.version);
+        versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
+        projectVersion++;
+      }
     }
 
     return {
