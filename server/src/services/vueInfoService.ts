@@ -26,6 +26,7 @@ export interface ComponentInfo {
   };
   childComponents?: ChildComponent[];
 
+  emits?: EmitInfo[];
   /**
    * Todo: Extract type info in cases like
    * props: {
@@ -48,6 +49,24 @@ export interface ChildComponent {
   };
   global: boolean;
   info?: VueFileInfo;
+}
+
+export interface EmitInfo {
+  name: string;
+  /**
+   * `true` if
+   * emits: {
+   *   foo: (...) => {...}
+   * }
+   *
+   * `false` if
+   * - `emits: ['foo']`
+   * - `@Emit()`
+   * - `emits: { foo: null }`
+   */
+  hasValidator: boolean;
+  documentation?: string;
+  typeString?: string;
 }
 
 export interface PropInfo {

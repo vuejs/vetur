@@ -9,6 +9,7 @@ on:
       - asset
       - .vscode
       - .github
+      - CHANGELOG.md
 
   pull_request:
     branches:
@@ -18,6 +19,7 @@ on:
       - asset
       - .vscode
       - .github
+      - CHANGELOG.md
 
   workflow_dispatch:
 
@@ -70,15 +72,8 @@ jobs:
           yarn --frozen-lockfile
           yarn compile
 
-      - name: Start xvfb
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          set -e
-          /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
-          disown -ar
-          echo "Started xvfb"
-
+      # https://github.com/microsoft/vscode/issues/106569#issuecomment-717450642
       - name: Server and E2E test
-        run: yarn test
-        env:
-          DISPLAY: :10
+        uses: GabrielBB/xvfb-action@v1.4
+        with:
+          run: yarn test

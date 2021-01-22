@@ -93,11 +93,42 @@ describe('Should autocomplete interpolation for <template> in property class com
     ];
 
     it(`completes child component's props`, async () => {
-      await testCompletion(parentTemplateDocUri, position(2, 27), propsList);
+      await testCompletion(parentTemplateDocUri, position(2, 26), propsList);
     });
 
     it(`completes child component's props when camel case component name`, async () => {
       await testCompletion(parentTemplateDocUri, position(4, 24), propsList);
+    });
+
+    it(`completes child component's emits`, async () => {
+      await testCompletion(parentTemplateDocUri, position(2, 27), [
+        {
+          label: 'baz',
+          kind: CompletionItemKind.Function,
+          documentation: new MarkdownString('My baz')
+            .appendCodeblock(
+              `@Emit('baz')
+baz() {}`,
+              'js'
+            )
+            .appendText('\n')
+            .appendMarkdown('My baz2')
+            .appendCodeblock(
+              `@Emit('baz')
+baz2() {}`,
+              'js'
+            )
+        },
+        {
+          label: 'foo-bar',
+          kind: CompletionItemKind.Function,
+          documentation: new MarkdownString('My fooBar').appendCodeblock(
+            `@Emit()
+fooBar() {}`,
+            'js'
+          )
+        }
+      ]);
     });
 
     it('completes inside v-if=""', async () => {

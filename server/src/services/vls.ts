@@ -25,7 +25,6 @@ import {
   CodeActionParams,
   CompletionParams,
   ExecuteCommandParams,
-  ApplyWorkspaceEditRequest,
   FoldingRangeParams
 } from 'vscode-languageserver';
 import {
@@ -42,26 +41,25 @@ import {
   TextEdit,
   ColorPresentation,
   FoldingRange,
-  DocumentUri
+  DocumentUri,
+  CodeAction,
+  CodeActionKind
 } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { URI } from 'vscode-uri';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { createDependencyService, createNodeModulesPaths } from './dependencyService';
 import _ from 'lodash';
-import { RefactorAction } from '../types';
 import { DocumentService } from './documentService';
 import { VueHTMLMode } from '../modes/template';
 import { logger } from '../log';
 import { getDefaultVLSConfig, VLSFullConfig, getVeturFullConfig, VeturFullConfig, BasicComponentInfo } from '../config';
-import { APPLY_REFACTOR_COMMAND } from '../modes/script/javascript';
 import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellationToken';
 import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
-import { accessSync, constants, existsSync, fstat } from 'fs';
+import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
 
 interface ProjectConfig {
@@ -369,6 +367,7 @@ export class VLS {
     this.lspConnection.onSignatureHelp(this.onSignatureHelp.bind(this));
     this.lspConnection.onFoldingRanges(this.onFoldingRanges.bind(this));
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
+    this.lspConnection.onCodeActionResolve(this.onCodeActionResolve.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
@@ -495,7 +494,9 @@ export class VLS {
   }
 
   async onCompletionResolve(item: CompletionItem): Promise<CompletionItem> {
-    if (!item.data) return item;
+    if (!item.data) {
+      return item;
+    }
     const project = await this.getProjectService(item.data.uri);
 
     return project?.onCompletionResolve(item) ?? item;
@@ -567,10 +568,13 @@ export class VLS {
     return project?.onCodeAction(params) ?? [];
   }
 
-  async getRefactorEdits(refactorAction: RefactorAction) {
-    const project = await this.getProjectService(URI.file(refactorAction.fileName).toString());
+  async onCodeActionResolve(action: CodeAction) {
+    if (!action.data) {
+      return action;
+    }
+    const project = await this.getProjectService((action.data as { uri: string })?.uri);
 
-    return project?.getRefactorEdits(refactorAction) ?? undefined;
+    return project?.onCodeActionResolve(action) ?? action;
   }
 
   private triggerValidation(textDocument: TextDocument): void {
@@ -618,15 +622,6 @@ export class VLS {
   }
 
   async executeCommand(arg: ExecuteCommandParams) {
-    if (arg.command === APPLY_REFACTOR_COMMAND && arg.arguments) {
-      const edit = this.getRefactorEdits(arg.arguments[0] as RefactorAction);
-      if (edit) {
-        // @ts-expect-error
-        this.lspConnection.sendRequest(ApplyWorkspaceEditRequest.type, { edit });
-      }
-      return;
-    }
-
     logger.logInfo(`Unknown command ${arg.command}.`);
   }
 
@@ -656,10 +651,21 @@ export class VLS {
       documentSymbolProvider: true,
       definitionProvider: true,
       referencesProvider: true,
-      codeActionProvider: true,
+      codeActionProvider: {
+        codeActionKinds: [
+          CodeActionKind.QuickFix,
+          CodeActionKind.Refactor,
+          CodeActionKind.RefactorExtract,
+          CodeActionKind.RefactorInline,
+          CodeActionKind.RefactorRewrite,
+          CodeActionKind.Source,
+          CodeActionKind.SourceOrganizeImports
+        ],
+        resolveProvider: true
+      },
       colorProvider: true,
       executeCommandProvider: {
-        commands: [APPLY_REFACTOR_COMMAND]
+        commands: []
       },
       foldingRangeProvider: true
     };

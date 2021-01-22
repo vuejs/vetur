@@ -31,8 +31,8 @@ function generateTypingsVls() {
     buildStart() {
       return new Promise((resolve, reject) => {
         const tsc = spawn(
-          getServerPath('node_modules/.bin/tsc'),
-          ['--declaration', '--declarationDir', './typings', '--emitDeclarationOnly', '--pretty'],
+          path.join('node_modules', '.bin', 'tsc'),
+          ['--declaration', '--declarationDir', './typings', '--emitDeclarationOnly', '--pretty', '--incremental'],
           { cwd: getServerPath('./'), shell: true }
         );
         tsc.stdout.on('data', data => {
@@ -59,6 +59,60 @@ function bundleVlsWithEsbuild() {
    * @type {import('esbuild').Service | null}
    */
   let service = null;
+  /**
+   * @type {import('esbuild').BuildIncremental | null}
+   */
+  let rebuildService = null;
+
+  const options = {
+    entryPoints: [getServerPath('src/main.ts')],
+    outfile: getServerPath('dist/vls.js'),
+    /**
+     * No minify when watch
+     * reason: https://github.com/microsoft/vscode/issues/12066
+     */
+    minify: !process.env.ROLLUP_WATCH,
+    keepNames: true,
+    bundle: true,
+    sourcemap: true,
+    platform: 'node',
+    // UMD module isn't support in esbuild.
+    mainFields: ['module', 'main'],
+    // vscode 1.47.0 node version
+    target: ['node12.8.1'],
+    define: {
+      /**
+       * `process.env.STYLUS_COV ? require('./lib-cov/stylus') : require('./lib/stylus');`
+       */
+      'process.env.STYLUS_COV': 'false'
+    },
+    external: [
+      /**
+       * The `require.resolve` function is used in eslint config.
+       */
+      'eslint-plugin-vue',
+      /**
+       * The VLS is crash when bundle it.
+       */
+      'eslint',
+      /**
+       * prettier-eslint and prettier-tslint need it.
+       */
+      'prettier',
+      /**
+       * prettier-tslint need it.
+       */
+      'tslint',
+      /**
+       * tslint need it.
+       */
+      'typescript'
+    ],
+    format: 'cjs',
+    tsconfig: getServerPath('tsconfig.json'),
+    color: true,
+    incremental: !!process.env.ROLLUP_WATCH
+  };
 
   return {
     name: 'bundle-vls-with-esbuild',
@@ -67,54 +121,7 @@ function bundleVlsWithEsbuild() {
         service = await startService();
       }
       console.log(`bundles ${getServerPath('src/main.ts')} with esbuild`);
-      await service.build({
-        entryPoints: [getServerPath('src/main.ts')],
-        outfile: getServerPath('dist/vls.js'),
-        /**
-         * No minify when watch
-         * reason: https://github.com/microsoft/vscode/issues/12066
-         */
-        minify: !process.env.ROLLUP_WATCH,
-        keepNames: true,
-        bundle: true,
-        sourcemap: true,
-        platform: 'node',
-        // UMD module isn't support in esbuild.
-        mainFields: ['module', 'main'],
-        // vscode 1.47.0 node version
-        target: ['node12.8.1'],
-        define: {
-          /**
-           * `process.env.STYLUS_COV ? require('./lib-cov/stylus') : require('./lib/stylus');`
-           */
-          'process.env.STYLUS_COV': 'false'
-        },
-        external: [
-          /**
-           * The `require.resolve` function is used in eslint config.
-           */
-          'eslint-plugin-vue',
-          /**
-           * The VLS is crash when bundle it.
-           */
-          'eslint',
-          /**
-           * prettier-eslint and prettier-tslint need it.
-           */
-          'prettier',
-          /**
-           * prettier-tslint need it.
-           */
-          'tslint',
-          /**
-           * tslint need it.
-           */
-          'typescript'
-        ],
-        format: 'cjs',
-        tsconfig: getServerPath('tsconfig.json'),
-        color: true
-      });
+      rebuildService = rebuildService ? await rebuildService.rebuild() : await service.build(options);
       console.log(`✨ success with esbuild`);
     },
     async buildEnd() {

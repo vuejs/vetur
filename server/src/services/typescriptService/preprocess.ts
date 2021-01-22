@@ -322,9 +322,25 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
     });
     propTypeStrings.push('[other: string]: any');
 
+    const onTypeStrings: string[] = [];
+    c.info?.componentInfo.emits?.forEach(e => {
+      let typeKey = kebabCase(e.name);
+      if (typeKey.includes('-')) {
+        typeKey = `'` + typeKey + `'`;
+      }
+      typeKey += '?';
+
+      if (e.typeString) {
+        onTypeStrings.push(`${typeKey}: ($event: any) => (${e.typeString})`);
+      } else {
+        onTypeStrings.push(`${typeKey}: ($event: any) => any`);
+      }
+    });
+
     src += `
 interface ${componentDataInterfaceName}<T> extends ${componentDataName}<T> {
   props: { ${propTypeStrings.join(', ')} }
+  on: { ${onTypeStrings.join(', ')} } & { [K in keyof T]?: ($event: T[K]) => any; }
 }
 declare const ${componentHelperInterfaceName}: {
   <T>(

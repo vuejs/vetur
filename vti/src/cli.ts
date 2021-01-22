@@ -11,7 +11,7 @@ import {
   DiagnosticSeverity,
   createConnection,
   ServerCapabilities
-} from 'vscode-languageserver';
+} from 'vscode-languageserver/node';
 
 import { Duplex } from 'stream';
 import { VLS } from 'vls';

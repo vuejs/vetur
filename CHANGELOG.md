@@ -1,9 +1,20 @@
 # Changelog
 
-### 0.32.0
+### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
 
+- Upgrade LSP to 3.16
+  - Upgrade `vscode-css-languageservice`
+  - Upgrade `vscode-languageserver/vscode-languageclient`
+- Using `codeaction/resolve`
+  - Combined fix in quickfix
+  - Organize Imports
+  - Better refactor
+- Fix arbitrary code actions. #2574.
 - Show deprecated hint in script block.
 - Infer wrong vue version when no `dependencies` field in package.json. #2632
+- 🙌 Fix building in directory that has space in the path when development. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2641.
+- 🙌 Remove used attributes from suggestions. Thanks to contribution from [@sapphi-red](https://github.com/sapphi-red). #2565
+- 🙌 Autocomplete for custom events. Thanks to contribution from [@sapphi-red](https://github.com/sapphi-red). #2392.
 
 ### 0.31.3 | 2020-12-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.3/vspackage)
 
