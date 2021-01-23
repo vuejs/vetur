@@ -1,5 +1,7 @@
 # Changelog
 
+🙌 Improve performance of template interpolation features. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123).
+
 ### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
 
 - Upgrade LSP to 3.16
