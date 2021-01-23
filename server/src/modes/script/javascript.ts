@@ -26,13 +26,15 @@ import {
   WorkspaceEdit,
   FoldingRangeKind,
   CompletionItemTag,
-  CodeActionContext
+  CodeActionContext,
+  TextDocumentEdit,
+  VersionedTextDocumentIdentifier
 } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageRange, LanguageId } from '../../embeddedSupport/embeddedSupport';
 import { prettierify, prettierEslintify, prettierTslintify } from '../../utils/prettier';
-import { getFileFsPath, getFilePath } from '../../utils/paths';
+import { getFileFsPath, getFilePath, normalizeFileNameToFsPath } from '../../utils/paths';
 
 import { URI } from 'vscode-uri';
 import type ts from 'typescript';
@@ -45,11 +47,12 @@ import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { CodeActionData, CodeActionDataKind, OrganizeImportsActionData, RefactorActionData } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
-import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
+import { isVirtualVueTemplateFile, toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { EnvironmentService } from '../../services/EnvironmentService';
 import { getCodeActionKind } from './CodeActionKindConverter';
+import { FileRename } from 'vscode-languageserver';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -729,6 +732,34 @@ export async function getJavascriptMode(
     },
     onDocumentChanged(filePath: string) {
       serviceHost.updateExternalDocument(filePath);
+    },
+    getRenameFileEdit(rename: FileRename): TextDocumentEdit[] {
+      const service = serviceHost.getLanguageService();
+      const oldPath = getFileFsPath(rename.oldUri);
+      const newPath = getFileFsPath(rename.newUri);
+      const isWindows = oldPath.includes('\\');
+
+      const edits = service.getEditsForFileRename(oldPath.replace(/\\/g, '/'), newPath.replace(/\\/g, '/'), {}, {});
+
+      const textDocumentEdit: TextDocumentEdit[] = [];
+      for (const { fileName, textChanges } of edits) {
+        if (isVirtualVueTemplateFile(fileName)) {
+          continue;
+        }
+        const doc = serviceHost.getScriptDoc(isWindows ? fileName.replace(/\//g, '\\') : fileName);
+        if (!doc) {
+          continue;
+        }
+        const docIdentifier = VersionedTextDocumentIdentifier.create(doc.uri, doc.version);
+        textDocumentEdit.push(
+          ...textChanges.map(({ span, newText }) => {
+            const range = Range.create(doc.positionAt(span.start), doc.positionAt(span.start + span.length));
+            return TextDocumentEdit.create(docIdentifier, [TextEdit.replace(range, newText)]);
+          })
+        );
+      }
+
+      return textDocumentEdit;
     },
     dispose() {
       jsDocuments.dispose();

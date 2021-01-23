@@ -70,6 +70,8 @@ export interface IServiceHost {
     service: ts.LanguageService;
     scriptDoc: TextDocument;
   };
+  getLanguageService(): ts.LanguageService;
+  getScriptDoc(fileName: string): TextDocument | undefined;
   updateExternalDocument(filePath: string): void;
   getFileNames(): string[];
   getComplierOptions(): ts.CompilerOptions;
@@ -489,6 +491,8 @@ export function getServiceHost(
     updateExternalDocument,
     getFileNames,
     getComplierOptions: () => compilerOptions,
+    getLanguageService: () => jsLanguageService,
+    getScriptDoc: (fileName: string) => localScriptRegionDocuments.get(fileName),
     dispose: () => {
       jsLanguageService.dispose();
     }

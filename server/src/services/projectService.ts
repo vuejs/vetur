@@ -17,12 +17,14 @@ import {
   DocumentLink,
   DocumentLinkParams,
   DocumentSymbolParams,
+  FileRename,
   FoldingRange,
   FoldingRangeParams,
   Hover,
   Location,
   SignatureHelp,
   SymbolInformation,
+  TextDocumentEdit,
   TextDocumentPositionParams,
   TextEdit,
   WorkspaceEdit
@@ -58,6 +60,7 @@ export interface ProjectService {
   onFoldingRanges(params: FoldingRangeParams): Promise<FoldingRange[]>;
   onCodeAction(params: CodeActionParams): Promise<CodeAction[]>;
   onCodeActionResolve(action: CodeAction): Promise<CodeAction>;
+  onWillRenameFile(fileRename: FileRename): Promise<TextDocumentEdit[]>;
   doValidate(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[] | null>;
   dispose(): Promise<void>;
 }
@@ -324,6 +327,15 @@ export async function createProjectService(
       }
 
       return action;
+    },
+    async onWillRenameFile(fileRename: FileRename) {
+      const doc = documentService.getDocument(fileRename.oldUri)!;
+      const textDocumentEdit: TextDocumentEdit[] = [];
+      languageModes.getAllLanguageModeRangesInDocument(doc).forEach(modeRange => {
+        textDocumentEdit.push(...(modeRange.mode.getRenameFileEdit?.(fileRename) ?? []));
+      });
+
+      return textDocumentEdit;
     },
     async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
       const diagnostics: Diagnostic[] = [];

@@ -25,7 +25,8 @@ import {
   CodeActionParams,
   CompletionParams,
   ExecuteCommandParams,
-  FoldingRangeParams
+  FoldingRangeParams,
+  RenameFilesParams
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -43,7 +44,8 @@ import {
   FoldingRange,
   DocumentUri,
   CodeAction,
-  CodeActionKind
+  CodeActionKind,
+  WorkspaceEdit
 } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -297,10 +299,20 @@ export class VLS {
     }
   }
 
-  private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
+  getProjectRootPath(uri: DocumentUri): string | undefined {
+    return this.getProjectConfig(uri)?.rootFsPath;
+  }
+
+  private getProjectConfig(uri: DocumentUri): ProjectConfig | undefined {
     const projectConfigs = this.getAllProjectConfigs();
     const docFsPath = getFileFsPath(uri);
     const projectConfig = projectConfigs.find(projectConfig => docFsPath.startsWith(projectConfig.rootFsPath));
+
+    return projectConfig;
+  }
+
+  private async getProjectService(uri: DocumentUri): Promise<ProjectService | undefined> {
+    const projectConfig = this.getProjectConfig(uri);
     if (!projectConfig) {
       return undefined;
     }
@@ -368,6 +380,7 @@ export class VLS {
     this.lspConnection.onFoldingRanges(this.onFoldingRanges.bind(this));
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
     this.lspConnection.onCodeActionResolve(this.onCodeActionResolve.bind(this));
+    this.lspConnection.workspace.onWillRenameFiles(this.onWillRenameFiles.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
@@ -577,6 +590,29 @@ export class VLS {
     return project?.onCodeActionResolve(action) ?? action;
   }
 
+  async onWillRenameFiles({ files }: RenameFilesParams) {
+    const inTheSameProject = files.filter(file => {
+      const oldFileProject = this.getProjectRootPath(file.oldUri);
+      const newFileProject = this.getProjectRootPath(file.newUri);
+
+      return oldFileProject && newFileProject && oldFileProject === newFileProject;
+    });
+
+    const documentChanges = _.flatten(
+      await Promise.all(
+        inTheSameProject.map(async rename => {
+          const projectService = await this.getProjectService(rename.newUri);
+
+          return projectService?.onWillRenameFile(rename) ?? [];
+        })
+      )
+    );
+
+    return {
+      documentChanges
+    };
+  }
+
   private triggerValidation(textDocument: TextDocument): void {
     if (textDocument.uri.includes('node_modules')) {
       return;
@@ -639,7 +675,10 @@ export class VLS {
   get capabilities(): ServerCapabilities {
     return {
       textDocumentSync: TextDocumentSyncKind.Incremental,
-      workspace: { workspaceFolders: { supported: true, changeNotifications: true } },
+      workspace: {
+        workspaceFolders: { supported: true, changeNotifications: true },
+        fileOperations: { willRename: { filters: [{ pattern: { glob: '**/*.{ts,js,vue}' } }] } }
+      },
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },
       documentFormattingProvider: false,
