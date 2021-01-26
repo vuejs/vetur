@@ -329,13 +329,9 @@ export async function createProjectService(
       return action;
     },
     async onWillRenameFile(fileRename: FileRename) {
-      const doc = documentService.getDocument(fileRename.oldUri)!;
-      const textDocumentEdit: TextDocumentEdit[] = [];
-      languageModes.getAllLanguageModeRangesInDocument(doc).forEach(modeRange => {
-        textDocumentEdit.push(...(modeRange.mode.getRenameFileEdit?.(fileRename) ?? []));
-      });
+      const textDocumentEdit = languageModes.getMode('typescript')?.getRenameFileEdit?.(fileRename);
 
-      return textDocumentEdit;
+      return textDocumentEdit ?? [];
     },
     async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
       const diagnostics: Diagnostic[] = [];
