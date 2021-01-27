@@ -63,6 +63,7 @@ import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
 import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
+import { getUpdateImportAnnotation } from '../modes/script/javascript';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -380,7 +381,7 @@ export class VLS {
     this.lspConnection.onFoldingRanges(this.onFoldingRanges.bind(this));
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
     this.lspConnection.onCodeActionResolve(this.onCodeActionResolve.bind(this));
-    this.lspConnection.workspace.onWillRenameFiles(this.onWillRenameFiles.bind(this));
+    this.lspConnection.workspace.onDidRenameFiles(this.onDidRenameFiles.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
@@ -590,7 +591,7 @@ export class VLS {
     return project?.onCodeActionResolve(action) ?? action;
   }
 
-  async onWillRenameFiles({ files }: RenameFilesParams) {
+  async onDidRenameFiles({ files }: RenameFilesParams): Promise<void> {
     const inTheSameProject = files.filter(file => {
       const oldFileProject = this.getProjectRootPath(file.oldUri);
       const newFileProject = this.getProjectRootPath(file.newUri);
@@ -608,9 +609,10 @@ export class VLS {
       )
     );
 
-    return {
+    this.lspConnection.workspace.applyEdit({
+      changeAnnotations: getUpdateImportAnnotation(),
       documentChanges
-    };
+    });
   }
 
   private triggerValidation(textDocument: TextDocument): void {
@@ -677,7 +679,7 @@ export class VLS {
       textDocumentSync: TextDocumentSyncKind.Incremental,
       workspace: {
         workspaceFolders: { supported: true, changeNotifications: true },
-        fileOperations: { willRename: { filters: [{ pattern: { glob: '**/*.{ts,js,vue}' } }] } }
+        fileOperations: { didRename: { filters: [{ pattern: { glob: '**/*.{ts,js,vue}' } }] } }
       },
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },

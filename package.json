@@ -510,6 +510,17 @@
           "default": true,
           "description": "Whether to enable codeActions"
         },
+        "vetur.languageFeatures.updateImportOnFileMove": {
+          "type": "string",
+          "enum": ["prompt", "always", "never"],
+          "default": "prompt",
+          "description": "Whether to automatic updating import path when rename or move a file",
+          "enumDescriptions": [
+            "Prompt on each rename",
+            "Always update paths automatically",
+            "Never rename paths and don't prompt"
+          ]
+        },
         "vetur.trace.server": {
           "type": "string",
           "enum": [

@@ -23,12 +23,13 @@ import {
   MarkupContent,
   CodeAction,
   CodeActionKind,
-  WorkspaceEdit,
   FoldingRangeKind,
   CompletionItemTag,
   CodeActionContext,
   TextDocumentEdit,
-  VersionedTextDocumentIdentifier
+  VersionedTextDocumentIdentifier,
+  ChangeAnnotation,
+  AnnotatedTextEdit
 } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -57,6 +58,8 @@ import { FileRename } from 'vscode-languageserver';
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
+
+const UPDATE_IMPORT_ANNOTATION_ID = 'JAVASCRIPT_UPDATE_IMPORT';
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
@@ -741,6 +744,7 @@ export async function getJavascriptMode(
 
       const edits = service.getEditsForFileRename(oldPath.replace(/\\/g, '/'), newPath.replace(/\\/g, '/'), {}, {});
 
+      const askConfirmation = env.getConfig().vetur.languageFeatures.updateImportOnFileMove === 'prompt';
       const textDocumentEdit: TextDocumentEdit[] = [];
       for (const { fileName, textChanges } of edits) {
         if (isVirtualVueTemplateFile(fileName)) {
@@ -754,7 +758,11 @@ export async function getJavascriptMode(
         textDocumentEdit.push(
           ...textChanges.map(({ span, newText }) => {
             const range = Range.create(doc.positionAt(span.start), doc.positionAt(span.start + span.length));
-            return TextDocumentEdit.create(docIdentifier, [TextEdit.replace(range, newText)]);
+            return TextDocumentEdit.create(docIdentifier, [
+              askConfirmation
+                ? AnnotatedTextEdit.replace(range, newText, UPDATE_IMPORT_ANNOTATION_ID)
+                : TextEdit.replace(range, newText)
+            ]);
           })
         );
       }
@@ -1086,4 +1094,13 @@ function getFoldingRangeKind(span: ts.OutliningSpan): FoldingRangeKind | undefin
     default:
       return undefined;
   }
+}
+
+export function getUpdateImportAnnotation(): Record<string, ChangeAnnotation> {
+  return {
+    [UPDATE_IMPORT_ANNOTATION_ID]: {
+      label: 'Update imports for the file',
+      needsConfirmation: true
+    }
+  };
 }
