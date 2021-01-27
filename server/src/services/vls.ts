@@ -44,8 +44,7 @@ import {
   FoldingRange,
   DocumentUri,
   CodeAction,
-  CodeActionKind,
-  WorkspaceEdit
+  CodeActionKind
 } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 

@@ -26,8 +26,7 @@ import {
   SymbolInformation,
   TextDocumentEdit,
   TextDocumentPositionParams,
-  TextEdit,
-  WorkspaceEdit
+  TextEdit
 } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
