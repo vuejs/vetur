@@ -741,12 +741,19 @@ export async function getJavascriptMode(
       const oldPath = getFileFsPath(rename.oldUri);
       const newPath = getFileFsPath(rename.newUri);
       const isWindows = oldPath.includes('\\');
+      const normalizedOldPath = oldPath.replace(/\\/g, '/');
+      const normalizedNewPath = newPath.replace(/\\/g, '/');
 
-      const edits = service.getEditsForFileRename(oldPath.replace(/\\/g, '/'), newPath.replace(/\\/g, '/'), {}, {});
+      const edits = service.getEditsForFileRename(normalizedOldPath, normalizedNewPath, {}, {});
 
       const askConfirmation = env.getConfig().vetur.languageFeatures.updateImportOnFileMove === 'prompt';
+
+      const redirectOldFileNameToNew = (fileName: string) =>
+        fileName === normalizedOldPath ? normalizedNewPath : fileName;
+
       const textDocumentEdit: TextDocumentEdit[] = [];
-      for (const { fileName, textChanges } of edits) {
+      for (const edit of edits) {
+        const fileName = redirectOldFileNameToNew(edit.fileName);
         if (isVirtualVueTemplateFile(fileName)) {
           continue;
         }
@@ -756,7 +763,7 @@ export async function getJavascriptMode(
         }
         const docIdentifier = VersionedTextDocumentIdentifier.create(doc.uri, doc.version);
         textDocumentEdit.push(
-          ...textChanges.map(({ span, newText }) => {
+          ...edit.textChanges.map(({ span, newText }) => {
             const range = Range.create(doc.positionAt(span.start), doc.positionAt(span.start + span.length));
             return TextDocumentEdit.create(docIdentifier, [
               askConfirmation
