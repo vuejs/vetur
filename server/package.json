@@ -71,7 +71,7 @@
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-languageserver-types": "3.16.0",
     "vscode-uri": "^3.0.2",
-    "vscode-web-custom-data": "^0.3.2",
+    "vscode-web-custom-data": "^0.3.3",
     "vue-eslint-parser": "^7.4.1",
     "vue-onsenui-helper-json": "^1.0.2"
   },
