@@ -103,6 +103,7 @@ export interface MethodInfo {
 
 export class VueInfoService {
   private languageModes: LanguageModes;
+  private vueFileInfo: Map<string, VueFileInfo> = new Map();
 
   constructor() {}
 
@@ -110,13 +111,16 @@ export class VueInfoService {
     this.languageModes = languageModes;
   }
 
+  updateInfo(doc: TextDocument, info: VueFileInfo) {
+    this.vueFileInfo.set(getFileFsPath(doc.uri), info);
+  }
+
   getInfo(doc: TextDocument) {
-    let info: VueFileInfo | undefined;
     this.languageModes.getAllLanguageModeRangesInDocument(doc).forEach(m => {
-      if (m.mode.getFileInfo) {
-        info = m.mode.getFileInfo(doc);
+      if (m.mode.updateFileInfo) {
+        m.mode.updateFileInfo(doc);
       }
     });
-    return info;
+    return this.vueFileInfo.get(getFileFsPath(doc.uri));
   }
 }

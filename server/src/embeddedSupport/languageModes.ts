@@ -48,7 +48,7 @@ export interface VLSServices {
 
 export interface LanguageMode {
   getId(): string;
-  getFileInfo?(doc: TextDocument): VueFileInfo | undefined;
+  updateFileInfo?(doc: TextDocument): void;
 
   doValidation?(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]>;
   getCodeActions?(
