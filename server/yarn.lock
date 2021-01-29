@@ -2498,10 +2498,10 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-js-beautify@^1.13.4:
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.13.4.tgz#1cad80b9e89cfc455b3a14f0eaf4dc10b6ae1206"
-  integrity sha512-M5yEWwonlEO3kPcCZ3K3KBSpFRZAEO3FAWC6wtbIGeyg7dusStxvF0WG+HRLBoMZqREXSRSxkkqClDE865x1sg==
+js-beautify@^1.13.5:
+  version "1.13.5"
+  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.13.5.tgz#a08a97890cae55daf1d758d3f6577bd4a64d7014"
+  integrity sha512-MsXlH6Z/BiRYSkSRW3clNDqDjSpiSNOiG8xYVUBXt4k0LnGvDhlTGOlHX1VFtAdoLmtwjxMG5qiWKy/g+Ipv5w==
   dependencies:
     config-chain "^1.1.12"
     editorconfig "^0.15.3"
