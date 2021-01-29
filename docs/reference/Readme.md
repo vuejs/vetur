@@ -155,16 +155,16 @@ It's the key to helping us support JavaScript and TypeScript.
 We also use it for support template interpolation.
 
 #### Why isn't array?
-If you are familiar with typescript, You know TypeScript allow support multiple discrete `tsconfig`.
+If you are familiar with Typescript, you know that TypeScript allows support for multiple discrete `tsconfig.json` files.
 But in the vue ecosystem, It's almost completely unsupported.
-For example, We often use webpack to compile Vue projects.
-The `vue-loader` call `ts-loader` for support typescript.
-But `ts-loader` is only support only one `tsconfig.json`.
+For example, we often use webpack to compile Vue projects.
+The `vue-loader` calls `ts-loader` for Typescript support.
+But `ts-loader` only supports one `tsconfig.json` file.
 
 For these reasons, we also don't support it.
 It can reduce development and maintenance costs.
 
-PS. `jsconfig.json` is also support it.
+PS. `jsconfig.json` is also supported.
 
 ### `projects[].snippetFolder`
 Vetur Custom snippets folder path
