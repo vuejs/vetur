@@ -192,12 +192,12 @@ export function getServiceHost(
 
     if (isVirtualVueTemplateFile(fileFsPath)) {
       const oldDocVersion = localScriptRegionDocuments.get(fileFsPath)?.version;
-      localScriptRegionDocuments.set(fileFsPath, doc);
       scriptFileNameSet.add(filePath);
       if (childComponents) {
         allChildComponentsInfo.set(filePath, childComponents);
       }
       if (oldDocVersion !== doc.version) {
+        localScriptRegionDocuments.set(fileFsPath, doc);
         versions.set(fileFsPath, (versions.get(fileFsPath) || 0) + 1);
         projectVersion++;
       }
