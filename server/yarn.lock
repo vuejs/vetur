@@ -3732,13 +3732,13 @@ safer-buffer@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-sass-formatter@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.5.2.tgz#601251982f3b264f40a2848e3decd9f4b083ed13"
-  integrity sha512-CEiuWZ4K3wPvVsuud83pE0igkpgvfeGBD66ZGyW5fzNDg1lUeLf/xxmAGvExLrO3h4xzfoEBTEK+iBfEc2XnLg==
+sass-formatter@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/sass-formatter/-/sass-formatter-0.7.0.tgz#d7c93d4152a7e6870f1bebacbe489a1f42432382"
+  integrity sha512-51HGr2OT1tbRkSZhzvVFaKKu7p8FMUvnxu6JJCnQCYgdR2CD7AFzYEs3vaUpvds07ZgFKlbpVYooqao2wDK6nw==
   dependencies:
-    suf-log "^2.2.0"
-    suf-regex "^0.0.25"
+    suf-log "^2.5.3"
+    suf-regex "^0.2.1"
 
 sax@~1.2.4:
   version "1.2.4"
@@ -4149,17 +4149,17 @@ stylus@^0.54.7, stylus@^0.54.8:
     semver "^6.3.0"
     source-map "^0.7.3"
 
-suf-log@^2.2.0:
+suf-log@^2.5.3:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/suf-log/-/suf-log-2.5.3.tgz#0919a7fceea532a99b578c97814c4e335b2d64d1"
   integrity sha512-KvC8OPjzdNOe+xQ4XWJV2whQA0aM1kGVczMQ8+dStAO6KfEB140JEVQ9dE76ONZ0/Ylf67ni4tILPJB41U0eow==
   dependencies:
     s.color "0.0.15"
 
-suf-regex@^0.0.25:
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.25.tgz#ff0009851c1bb7655d00df6867f4026893c9d963"
-  integrity sha512-0hd6oSzoeqwFgFLtXRoA6lMndzTpgPZCSU+/sCoin0HyKnqni/GX/BkUe9Qgs4uRIV1pxsZzE2pEIbaiFX61AQ==
+suf-regex@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.2.1.tgz#a2fc8a541d49490a39759df23d78186c1455b4c9"
+  integrity sha512-xOkNNVPnLZ4NFe3Nn+FPtF4QGUkDphrKjQZagl7t4gaRt0izQwX0Agd4koxL/J7TQK4LfyZmrkVVGdxNlHNjuw==
   dependencies:
     del-cli "^3.0.0"
 
