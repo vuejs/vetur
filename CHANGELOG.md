@@ -1,5 +1,8 @@
 # Changelog
 
+### 0.32.1
+
+- Upgrade `stylus-supremacy` to 2.15.0
 🙌 Improve performance of template interpolation features. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123).
 
 ### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
@@ -43,10 +46,10 @@
 
 #### 🎉 RFC release 🎉
 
-We support monorepo and multi-root workspace in this version.   
-We have also added a new config file called `vetur.config.js`.   
+We support monorepo and multi-root workspace in this version.
+We have also added a new config file called `vetur.config.js`.
 
-See more: https://vuejs.github.io/vetur/guide/setup.html#advanced   
+See more: https://vuejs.github.io/vetur/guide/setup.html#advanced
 Reference: https://vuejs.github.io/vetur/reference/
 
 ----
@@ -90,10 +93,10 @@ Reference: https://vuejs.github.io/vetur/reference/
 ----
 
 #### ⚠️  Breaking change: ⚠️
-The `vetur.useWorkspaceDependencies` option affect all runtime dependencies now.   
+The `vetur.useWorkspaceDependencies` option affect all runtime dependencies now.
 Like `prettier`, `@prettier/plugin-pug`.
 
-In this version, we try to bundle extension and reduce size. (70MB -> 9MB)   
+In this version, we try to bundle extension and reduce size. (70MB -> 9MB)
 But it's a huge change, so please open an issue if you find any problems.
 
 ----
@@ -646,11 +649,11 @@ Read updated doc at: https://vuejs.github.io/vetur/formatting.html#formatters.
 - Always ignore `end_with_newline` option in js-beautify so the template formats properly. #544.
 
 
-### 0.11.3 | 2017-11-13 
+### 0.11.3 | 2017-11-13
 
 - Hot fix for a bug in formatting `<template>` with js-beautify where it adds `</template>` to the end. #539.
 
-### 0.11.2 | 2017-11-13 
+### 0.11.2 | 2017-11-13
 
 - Workaround a js-beautify bug which indents multi-line comment. #535.
 - Docs for generating grammar for custom blocks: https://vuejs.github.io/vetur/highlighting.html.
@@ -658,7 +661,7 @@ Read updated doc at: https://vuejs.github.io/vetur/formatting.html#formatters.
 - Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
 - Pretty print generated gramamr so it's readable. (You can find it at `~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json`).
 
-### 0.11.1 | 2017-11-10 
+### 0.11.1 | 2017-11-10
 
 - Syntax highlighting for Custom Block. #210.
   - Added setting `vetur.grammar.customBlocks`.
