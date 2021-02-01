@@ -14,7 +14,8 @@ export type LanguageId =
   | 'stylus'
   | 'javascript'
   | 'typescript'
-  | 'tsx';
+  | 'tsx'
+  | 'unknown';
 
 export interface LanguageRange extends Range {
   languageId: LanguageId;

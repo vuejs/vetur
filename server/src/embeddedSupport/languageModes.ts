@@ -94,7 +94,8 @@ export class LanguageModes {
     stylus: nullMode,
     javascript: nullMode,
     typescript: nullMode,
-    tsx: nullMode
+    tsx: nullMode,
+    unknown: nullMode
   };
 
   private documentRegions: LanguageModelCache<VueDocumentRegions>;
@@ -164,7 +165,7 @@ export class LanguageModes {
 
   getModeAtPosition(document: TextDocument, position: Position): LanguageMode | undefined {
     const languageId = this.documentRegions.refreshAndGet(document).getLanguageAtPosition(position);
-    return this.modes[languageId];
+    return this.modes?.[languageId];
   }
 
   getAllLanguageModeRangesInDocument(document: TextDocument): LanguageModeRange[] {

@@ -1,12 +1,13 @@
 import { position } from '../../../util';
-import { testCompletion } from '../../../completionHelper';
+import { testCompletion, testNoSuchCompletion } from '../../../completionHelper';
 import { getDocUri } from '../../path';
 
 describe('Should autocomplete scaffold snippets', () => {
-  const scriptDocUri = getDocUri('completion/script/Scaffold.vue');
+  const vueDocUri = getDocUri('completion/vue/Scaffold.vue');
+  const vueCustomDocUri = getDocUri('completion/vue/Custom.vue');
 
   it('completes all scaffold snippets', async () => {
-    await testCompletion(scriptDocUri, position(0, 1), [
+    await testCompletion(vueDocUri, position(0, 1), [
       '<vue> with default.vue ✌',
       '<template> html.vue ✌',
       '<template> pug.vue ✌',
@@ -28,10 +29,14 @@ describe('Should autocomplete scaffold snippets', () => {
   });
 
   it('completes project wide scaffold snippets', async () => {
-    await testCompletion(scriptDocUri, position(0, 1), [
+    await testCompletion(vueDocUri, position(0, 1), [
       {
         label: '<vue> with foo.vue 💼'
       }
     ]);
+  });
+
+  it('No completes snippets in custom block', async () => {
+    await testNoSuchCompletion(vueCustomDocUri, position(15, 1), ['<vue> with default.vue ✌']);
   });
 });

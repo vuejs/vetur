@@ -56,6 +56,11 @@ export function parseVueDocumentRegions(document: TextDocument) {
           if (templateRegion) {
             regions.push(templateRegion);
           }
+        } else if (!['style', 'script'].includes(tagName) && stakes === 1) {
+          const customRegion = scanCustomRegion(tagName, scanner, text);
+          if (customRegion) {
+            regions.push(customRegion);
+          }
         }
         lastTagName = tagName;
         lastAttributeName = '';
@@ -181,6 +186,78 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
     start,
     end,
     type: 'template'
+  };
+}
+
+function scanCustomRegion(tagName: string, scanner: Scanner, text: string): EmbeddedRegion | null {
+  let languageId: LanguageId = 'unknown';
+
+  let token = -1;
+  let start = 0;
+  let end: number;
+
+  // Scan until finding matching template EndTag
+  // Also record immediate next StartTagClose to find start
+  let unClosedTag = 1;
+  let lastAttributeName = null;
+  while (unClosedTag !== 0) {
+    token = scanner.scan();
+
+    if (token === TokenType.EOS) {
+      return null;
+    }
+
+    if (start === 0) {
+      if (token === TokenType.AttributeName) {
+        lastAttributeName = scanner.getTokenText();
+      } else if (token === TokenType.AttributeValue) {
+        if (lastAttributeName === 'lang') {
+          languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
+        }
+        lastAttributeName = null;
+      } else if (token === TokenType.StartTagClose) {
+        start = scanner.getTokenEnd();
+      }
+    } else {
+      if (token === TokenType.StartTag && scanner.getTokenText() === tagName) {
+        unClosedTag++;
+      } else if (token === TokenType.EndTag && scanner.getTokenText() === tagName) {
+        unClosedTag--;
+        // test leading </${tagName}>
+        const charPosBeforeEndTag = scanner.getTokenOffset() - 3;
+        if (text[charPosBeforeEndTag] === '\n') {
+          break;
+        }
+      } else if (token === TokenType.Unknown) {
+        if (scanner.getTokenText().charAt(0) === '<') {
+          const offset = scanner.getTokenOffset();
+          const unknownText = text.substr(offset, `</${tagName}>`.length);
+          if (unknownText === `</${tagName}>`) {
+            unClosedTag--;
+            // test leading </${tagName}>
+            if (text[offset - 1] === '\n') {
+              return {
+                languageId,
+                start,
+                end: offset,
+                type: 'custom'
+              };
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // In EndTag, find end
+  // -2 for </
+  end = scanner.getTokenOffset() - 2;
+
+  return {
+    languageId,
+    start,
+    end,
+    type: 'custom'
   };
 }
 
