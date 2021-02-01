@@ -2,8 +2,9 @@
 
 ### 0.32.1
 
-- Upgrade `stylus-supremacy` to 2.15.0
-🙌 Improve performance of template interpolation features. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123).
+- Disable Vue completion in custom blocks. #2111
+- Upgrade `stylus-supremacy` to 2.15.0.
+- 🙌 Improve performance of template interpolation features. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123).
 
 ### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
 
