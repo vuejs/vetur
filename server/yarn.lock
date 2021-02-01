@@ -2517,6 +2517,14 @@ js-yaml@3.14.0, js-yaml@^3.13.1, js-yaml@^3.6.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
+js-yaml@^3.14.1:
+  version "3.14.1"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.1.tgz#dae812fdb3825fa306609a8717383c50c36a0537"
+  integrity sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==
+  dependencies:
+    argparse "^1.0.7"
+    esprima "^4.0.0"
+
 jsesc@^2.5.1:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
@@ -4122,15 +4130,15 @@ stylint@^2.0.0:
     user-home "2.0.0"
     yargs "4.7.1"
 
-stylus-supremacy@^2.14.5:
-  version "2.14.5"
-  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.14.5.tgz#47b723d160768d3679aeaa195e94cc85f34f51fa"
-  integrity sha512-JZjCn4GxPhghgAZ7cdYOKjbo9LIU42BcksNCeLgWQa2FtjyEz44mKKnaXVgUYw+AQIm+x/MblV+VJ04Yk5DSqw==
+stylus-supremacy@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/stylus-supremacy/-/stylus-supremacy-2.15.0.tgz#d802ea3c3f8aa1d0f1fcaf6fd4aeda2a461bb29d"
+  integrity sha512-XXfA33wxC8xQ0rW9WpA0MOuLOLuzmVsDUmdI1qyKiafJmg1+oqn/efMbtTxUKDgk13DGqNqUgCPhkS16g5T7Qw==
   dependencies:
     glob "^7.1.6"
-    js-yaml "^3.13.1"
+    js-yaml "^3.14.1"
     json5 "^2.1.3"
-    lodash "^4.17.15"
+    lodash "^4.17.20"
     minimatch "^3.0.4"
     stylint "^2.0.0"
     stylus "^0.54.7"
