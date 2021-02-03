@@ -44,9 +44,8 @@ async function testRename(docUri: vscode.Uri, beforeRename: string, afterRename:
       } finally {
         const renameEdit = new WorkspaceEdit();
         renameEdit.renameFile(afterRenameUri, beforeRenameUri);
-        vscode.workspace.applyEdit(renameEdit);
+        vscode.workspace.applyEdit(renameEdit).then(() => resolve());
       }
-      resolve();
     };
 
     setTimeout(finishTest, timeout);
