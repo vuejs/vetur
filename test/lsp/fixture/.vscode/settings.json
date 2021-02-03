@@ -1,3 +1,4 @@
 {
-  "vetur.format.defaultFormatter.html": "prettyhtml"
+  "vetur.format.defaultFormatter.html": "prettyhtml",
+  "vetur.languageFeatures.updateImportOnFileMove": "always"
 }
