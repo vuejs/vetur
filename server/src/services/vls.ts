@@ -380,7 +380,7 @@ export class VLS {
     this.lspConnection.onFoldingRanges(this.onFoldingRanges.bind(this));
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
     this.lspConnection.onCodeActionResolve(this.onCodeActionResolve.bind(this));
-    this.lspConnection.workspace.onDidRenameFiles(this.onDidRenameFiles.bind(this));
+    this.lspConnection.workspace.onWillRenameFiles(this.onWillRenameFiles.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
@@ -590,7 +590,7 @@ export class VLS {
     return project?.onCodeActionResolve(action) ?? action;
   }
 
-  async onDidRenameFiles({ files }: RenameFilesParams): Promise<void> {
+  async onWillRenameFiles({ files }: RenameFilesParams) {
     const inTheSameProject = files.filter(file => {
       const oldFileProject = this.getProjectRootPath(file.oldUri);
       const newFileProject = this.getProjectRootPath(file.newUri);
@@ -608,10 +608,14 @@ export class VLS {
       )
     );
 
-    this.lspConnection.workspace.applyEdit({
+    if (!documentChanges.length) {
+      return null;
+    }
+
+    return {
       changeAnnotations: getUpdateImportAnnotation(),
       documentChanges
-    });
+    };
   }
 
   private triggerValidation(textDocument: TextDocument): void {
@@ -678,7 +682,7 @@ export class VLS {
       textDocumentSync: TextDocumentSyncKind.Incremental,
       workspace: {
         workspaceFolders: { supported: true, changeNotifications: true },
-        fileOperations: { didRename: { filters: [{ pattern: { glob: '**/*.{ts,js,vue}' } }] } }
+        fileOperations: { willRename: { filters: [{ pattern: { glob: '**/*.{ts,js,vue}' } }] } }
       },
       completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', "'", '/', '@', '*', ' '] },
       signatureHelpProvider: { triggerCharacters: ['('] },
