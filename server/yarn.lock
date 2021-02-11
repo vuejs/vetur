@@ -1374,9 +1374,10 @@ element-helper-json@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/element-helper-json/-/element-helper-json-2.0.6.tgz#cd1c4b14b29d8515c3e86ea36da3a1dc44330934"
 
-"emmet@https://github.com/rzhao271/emmet.git#1b2df677d8925ef5ea6da9df8845968403979a0a":
+"emmet@git+https://github.com/rzhao271/emmet.git#1b2df677d8925ef5ea6da9df8845968403979a0a":
   version "2.3.0"
-  resolved "https://github.com/rzhao271/emmet.git#1b2df677d8925ef5ea6da9df8845968403979a0a"
+  uid "1b2df677d8925ef5ea6da9df8845968403979a0a"
+  resolved "git+https://github.com/rzhao271/emmet.git#1b2df677d8925ef5ea6da9df8845968403979a0a"
   dependencies:
     "@emmetio/abbreviation" "^2.2.0"
     "@emmetio/css-abbreviation" "^2.1.2"
@@ -4704,12 +4705,12 @@ vscode-css-languageservice@5.0.3:
     vscode-nls "^5.0.0"
     vscode-uri "^3.0.2"
 
-vscode-emmet-helper@2.2.4-2:
-  version "2.2.4-2"
-  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-2.2.4-2.tgz#8019188077a91dbe9a8d8c10c0b79369bb5c24d6"
-  integrity sha512-7UTZXwt9M1xwaV72o2YgSBVoghtDtscTgYTOl1kiPkXN9OKiM4N52hcHFA1LlRtdTvIQd4PEkgaz57F9ZT/4kg==
+vscode-emmet-helper@2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-2.2.4.tgz#8ab86d2b7fe9e6270b4c77c9fd8d1eb8f3f4c401"
+  integrity sha512-1N6bMzP1ZzkDGzamvsKxQ/lOmBc4+OQdj0dA2C9A5PSeYV9gh5xbJ061sm+VyFHOGZE+VyUQq5m/WFmFsLbKnA==
   dependencies:
-    emmet "https://github.com/rzhao271/emmet.git#1b2df677d8925ef5ea6da9df8845968403979a0a"
+    emmet "git+https://github.com/rzhao271/emmet.git#1b2df677d8925ef5ea6da9df8845968403979a0a"
     jsonc-parser "^2.3.0"
     vscode-languageserver-textdocument "^1.0.1"
     vscode-languageserver-types "^3.15.1"
