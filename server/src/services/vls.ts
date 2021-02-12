@@ -61,6 +61,7 @@ import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
 import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
+import { URI } from 'vscode-uri';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -474,7 +475,7 @@ export class VLS {
    * Custom Notifications
    */
   openWebsite(url: string): void {
-    this.lspConnection.sendNotification('$/openWebsite', url);
+    this.lspConnection.window.showDocument({ uri: URI.parse(url).toString(), external: true });
   }
 
   /**

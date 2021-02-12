@@ -88,9 +88,6 @@ function registerRestartVLSCommand(context: vscode.ExtensionContext, client: Lan
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient) {
-  client.onNotification('$/openWebsite', (url: string) => {
-    vscode.env.openExternal(vscode.Uri.parse(url));
-  });
   client.onNotification('$/showVirtualFile', (virtualFileSource: string, prettySourceMap: string) => {
     setVirtualContents(virtualFileSource, prettySourceMap);
   });
