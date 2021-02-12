@@ -1,6 +1,6 @@
 # Quick start
 
-Here are five common case.
+Here are five common use cases.
 
 - [Vue CLI](#vue-cli)
 - [Veturpack]($veturpack)
@@ -11,7 +11,7 @@ Here are five common case.
 ## Vue CLI
 [Offical Website](https://cli.vuejs.org/)   
 When you create project with Vue CLI,   
-If no use typescript, please add `jsconfig.json` at opened project root.
+If you are not using typescript, please add `jsconfig.json` at opened project root.
 ```json
 {
   "compilerOptions": {
@@ -30,11 +30,11 @@ If no use typescript, please add `jsconfig.json` at opened project root.
 ```
 [Add shim-types file for import Vue SFC in typescript file.](/guide/setup.html#typescript)
 
-If use typescript, you don't need to do any thing in your project.
+If you use typescript, you don't need to do anything in your project.
 
 ## Veturpack
 [Github](https://github.com/octref/veturpack)   
-It is out of box.
+It works out of the box.
 
 ## Laravel / Custom project
 Please keep `package.json` and `tsconfig.json`/`jsconfig.json` at opened project root.   
@@ -45,6 +45,6 @@ If you can't do it, please add `vetur.config.js` for set config file path.
 - [Read more `vetur.config.js` doc](/guide/setup.html#advanced).
 
 ## Monorepo
-please add `vetur.config.js` for define projects.
+Please add `vetur.config.js` for define projects.
 
 - [Read more `vetur.config.js` doc](/guide/setup.html#advanced).
