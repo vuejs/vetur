@@ -157,7 +157,10 @@ export class VLS {
       }
     }
 
-    const veturConfigPath = findConfigFile(workspace.fsPath, 'vetur.config.js');
+    let veturConfigPath = findConfigFile(workspace.fsPath, 'vetur.config.js');
+    if (!veturConfigPath) {
+      veturConfigPath = findConfigFile(workspace.fsPath, 'vetur.config.cjs');
+    }
     const rootPathForConfig = normalizeFileNameToFsPath(
       veturConfigPath ? path.dirname(veturConfigPath) : workspace.fsPath
     );
