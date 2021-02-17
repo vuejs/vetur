@@ -11,7 +11,7 @@ assignees: ''
 
 - [ ] I have searched through existing issues
 - [ ] I have read through [docs](https://vuejs.github.io/vetur)
-- [ ] I have read [FAQ](https://github.com/vuejs/vetur/blob/master/docs/FAQ.md)
+- [ ] I have read [FAQ](https://vuejs.github.io/vetur/guide/FAQ.html)
 - [ ] I have tried restarting VS Code or running `Vetur: Restart VLS`
 
 ## Info

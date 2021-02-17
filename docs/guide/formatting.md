@@ -16,7 +16,7 @@ These formatters are available:
 - [`stylus-supremacy`](https://github.com/ThisIsManta/stylus-supremacy): For stylus.
 - [`vscode-typescript`](https://github.com/Microsoft/TypeScript): For js/ts. The same js/ts formatter for VS Code.
 - [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter): For the .sass section of the files.
-- ~~[`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): 🚧 [DEPREACATED] For html.~~
+- ~~[`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): 🚧 [DEPRECATED] For html.~~
 
 Vetur bundles all the above formatters. When Vetur observes a local install of the formatter, it'll prefer to use the local version.
 
