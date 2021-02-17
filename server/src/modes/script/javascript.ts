@@ -737,19 +737,31 @@ export async function getJavascriptMode(
       serviceHost.updateExternalDocument(filePath);
     },
     getRenameFileEdit(rename: FileRename): TextDocumentEdit[] {
-      const service = serviceHost.getLanguageService();
       const oldPath = getFileFsPath(rename.oldUri);
       const newPath = getFileFsPath(rename.newUri);
-      const isWindows = oldPath.includes('\\');
-      const normalizedOldPath = oldPath.replace(/\\/g, '/');
-      const normalizedNewPath = newPath.replace(/\\/g, '/');
 
-      const edits = service.getEditsForFileRename(normalizedOldPath, normalizedNewPath, {}, {});
+      const service = serviceHost.getLanguageService();
+      const program = service.getProgram();
+      if (!program) {
+        return [];
+      }
+
+      const sourceFile = program.getSourceFile(oldPath);
+      if (!sourceFile) {
+        return [];
+      }
+      const { scriptDoc } = updateCurrentVueTextDocument(sourceFileToSourceDoc(oldPath, sourceFile));
+      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
+      const preferences = getUserPreferences(scriptDoc);
+
+      // typescript use the filename of the source file to check for update
+      // match it or it may not work on windows
+      const normalizedOldPath = sourceFile.fileName;
+      const edits = service.getEditsForFileRename(normalizedOldPath, newPath, formatSettings, preferences);
 
       const askConfirmation = env.getConfig().vetur.languageFeatures.updateImportOnFileMove === 'prompt';
 
-      const redirectOldFileNameToNew = (fileName: string) =>
-        fileName === normalizedOldPath ? normalizedNewPath : fileName;
+      const redirectOldFileNameToNew = (fileName: string) => (fileName === normalizedOldPath ? newPath : fileName);
 
       const textDocumentEdit: TextDocumentEdit[] = [];
       for (const edit of edits) {
@@ -757,11 +769,11 @@ export async function getJavascriptMode(
         if (isVirtualVueTemplateFile(fileName)) {
           continue;
         }
-        const doc = serviceHost.getScriptDoc(isWindows ? fileName.replace(/\//g, '\\') : fileName);
+        const doc = getSourceDoc(fileName, program);
         if (!doc) {
           continue;
         }
-        const docIdentifier = VersionedTextDocumentIdentifier.create(doc.uri, doc.version);
+        const docIdentifier = VersionedTextDocumentIdentifier.create(URI.file(doc.uri).toString(), 0);
         textDocumentEdit.push(
           ...edit.textChanges.map(({ span, newText }) => {
             const range = Range.create(doc.positionAt(span.start), doc.positionAt(span.start + span.length));
@@ -956,6 +968,10 @@ function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.Lan
 
 function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
   const sourceFile = program.getSourceFile(fileName)!;
+  return sourceFileToSourceDoc(fileName, sourceFile);
+}
+
+function sourceFileToSourceDoc(fileName: string, sourceFile: ts.SourceFile) {
   return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
 }
 
