@@ -328,6 +328,10 @@ export async function createProjectService(
       return action;
     },
     async onWillRenameFile(fileRename: FileRename) {
+      if (env.getConfig().vetur.languageFeatures.updateImportOnFileMove === 'never') {
+        return [];
+      }
+
       const textDocumentEdit = languageModes.getMode('typescript')?.getRenameFileEdit?.(fileRename);
 
       return textDocumentEdit ?? [];
