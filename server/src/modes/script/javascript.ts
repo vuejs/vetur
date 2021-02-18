@@ -27,9 +27,7 @@ import {
   CompletionItemTag,
   CodeActionContext,
   TextDocumentEdit,
-  VersionedTextDocumentIdentifier,
-  ChangeAnnotation,
-  AnnotatedTextEdit
+  VersionedTextDocumentIdentifier
 } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -58,8 +56,6 @@ import { FileRename } from 'vscode-languageserver';
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
-
-const UPDATE_IMPORT_ANNOTATION_ID = 'JAVASCRIPT_UPDATE_IMPORT';
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
@@ -759,8 +755,6 @@ export async function getJavascriptMode(
       const normalizedOldPath = sourceFile.fileName;
       const edits = service.getEditsForFileRename(normalizedOldPath, newPath, formatSettings, preferences);
 
-      const askConfirmation = env.getConfig().vetur.languageFeatures.updateImportOnFileMove === 'prompt';
-
       const redirectOldFileNameToNew = (fileName: string) => (fileName === normalizedOldPath ? newPath : fileName);
 
       const textDocumentEdit: TextDocumentEdit[] = [];
@@ -777,11 +771,7 @@ export async function getJavascriptMode(
         textDocumentEdit.push(
           ...edit.textChanges.map(({ span, newText }) => {
             const range = Range.create(doc.positionAt(span.start), doc.positionAt(span.start + span.length));
-            return TextDocumentEdit.create(docIdentifier, [
-              askConfirmation
-                ? AnnotatedTextEdit.replace(range, newText, UPDATE_IMPORT_ANNOTATION_ID)
-                : TextEdit.replace(range, newText)
-            ]);
+            return TextDocumentEdit.create(docIdentifier, [TextEdit.replace(range, newText)]);
           })
         );
       }
@@ -1117,13 +1107,4 @@ function getFoldingRangeKind(span: ts.OutliningSpan): FoldingRangeKind | undefin
     default:
       return undefined;
   }
-}
-
-export function getUpdateImportAnnotation(): Record<string, ChangeAnnotation> {
-  return {
-    [UPDATE_IMPORT_ANNOTATION_ID]: {
-      label: 'Update imports for the file',
-      needsConfirmation: true
-    }
-  };
 }

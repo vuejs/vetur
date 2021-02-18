@@ -62,7 +62,6 @@ import { createEnvironmentService } from './EnvironmentService';
 import { getVueVersionKey } from '../utils/vueVersion';
 import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
-import { getUpdateImportAnnotation } from '../modes/script/javascript';
 import { URI } from 'vscode-uri';
 
 interface ProjectConfig {
@@ -614,7 +613,6 @@ export class VLS {
     }
 
     return {
-      changeAnnotations: getUpdateImportAnnotation(),
       documentChanges
     };
   }

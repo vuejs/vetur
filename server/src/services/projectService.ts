@@ -328,7 +328,7 @@ export async function createProjectService(
       return action;
     },
     async onWillRenameFile(fileRename: FileRename) {
-      if (env.getConfig().vetur.languageFeatures.updateImportOnFileMove === 'never') {
+      if (!env.getConfig().vetur.languageFeatures.updateImportOnFileMove) {
         return [];
       }
 
