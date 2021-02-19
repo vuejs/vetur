@@ -46,7 +46,12 @@ import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { CodeActionData, CodeActionDataKind, OrganizeImportsActionData, RefactorActionData } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
-import { isVirtualVueTemplateFile, toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
+import {
+  isVirtualVueTemplateFile,
+  isVueFile,
+  toCompletionItemKind,
+  toSymbolKind
+} from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { EnvironmentService } from '../../services/EnvironmentService';
@@ -82,7 +87,10 @@ export async function getJavascriptMode(
   let supportedCodeFixCodes: Set<number>;
 
   function getUserPreferences(scriptDoc: TextDocument): ts.UserPreferences {
-    const baseConfig = env.getConfig()[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'];
+    return getUserPreferencesByLanguageId(scriptDoc.languageId);
+  }
+  function getUserPreferencesByLanguageId(languageId: string): ts.UserPreferences {
+    const baseConfig = env.getConfig()[languageId === 'javascript' ? 'javascript' : 'typescript'];
     const preferencesConfig = baseConfig?.preferences;
 
     if (!baseConfig || !preferencesConfig) {
@@ -746,9 +754,12 @@ export async function getJavascriptMode(
       if (!sourceFile) {
         return [];
       }
-      const { scriptDoc } = updateCurrentVueTextDocument(sourceFileToSourceDoc(oldPath, sourceFile));
+
+      const oldFileIsVue = isVueFile(oldPath);
       const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
-      const preferences = getUserPreferences(scriptDoc);
+      const preferences = oldFileIsVue
+        ? getUserPreferences(updateCurrentVueTextDocument(sourceFileToSourceDoc(oldPath, sourceFile)).scriptDoc)
+        : getUserPreferencesByLanguageId(oldPath.endsWith('.js') ? 'javascript' : 'typescript');
 
       // typescript use the filename of the source file to check for update
       // match it or it may not work on windows
