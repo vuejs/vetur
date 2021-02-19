@@ -775,7 +775,8 @@ export async function getJavascriptMode(
           continue;
         }
         const doc = getSourceDoc(fileName, program);
-        if (!doc) {
+        const bothNotVueFile = !oldFileIsVue && !isVueFile(fileName);
+        if (bothNotVueFile) {
           continue;
         }
         const docIdentifier = VersionedTextDocumentIdentifier.create(URI.file(doc.uri).toString(), 0);
