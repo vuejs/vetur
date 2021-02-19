@@ -1,7 +1,7 @@
 import assert from 'assert';
-import vscode, { Range, WorkspaceEdit } from 'vscode';
-import { showFile } from '../../../editorHelper';
-import { sameLineRange } from '../../../util';
+import vscode from 'vscode';
+import { RenameFilesParams, WillRenameFilesRequest } from 'vscode-languageclient';
+import { sendLSRequest, showFile } from '../../../editorHelper';
 import { getDocUri } from '../../path';
 
 describe('Should update import when rename files', () => {
@@ -13,51 +13,39 @@ describe('Should update import when rename files', () => {
   });
 });
 
-interface DocumentEdit {
-  range: Range;
-  uri: string;
-  text: string;
-}
-
 async function testRename(docUri: vscode.Uri, beforeRename: string, afterRename: string) {
   await showFile(docUri);
 
-  const renameEdit = new WorkspaceEdit();
   const beforeRenameUri = getDocUri(beforeRename);
   const afterRenameUri = getDocUri(afterRename);
-  renameEdit.renameFile(beforeRenameUri, afterRenameUri);
-  vscode.workspace.applyEdit(renameEdit);
 
-  return new Promise<void>(resolve => {
-    const timeout = 5000;
-    const result: DocumentEdit[] = [];
-    const expected: DocumentEdit[] = [
+  const res = await sendLSRequest(WillRenameFilesRequest.type, {
+    files: [{ newUri: afterRenameUri.toString(), oldUri: beforeRenameUri.toString() }]
+  } as RenameFilesParams);
+
+  assert.deepStrictEqual(res, {
+    documentChanges: [
       {
-        range: sameLineRange(5, 32, 32),
-        text: '2',
-        uri: docUri.toString()
+        textDocument: {
+          uri: docUri.toString(),
+          version: 0
+        },
+        edits: [
+          {
+            newText: './Imported2.vue',
+            range: {
+              start: {
+                line: 5,
+                character: 22
+              },
+              end: {
+                line: 5,
+                character: 36
+              }
+            }
+          }
+        ]
       }
-    ];
-    const finishTest = () => {
-      try {
-        assert.deepStrictEqual(result, expected);
-      } finally {
-        const renameEdit = new WorkspaceEdit();
-        renameEdit.renameFile(afterRenameUri, beforeRenameUri);
-        vscode.workspace.applyEdit(renameEdit).then(() => resolve());
-      }
-    };
-
-    setTimeout(finishTest, timeout);
-
-    vscode.workspace.onDidChangeTextDocument(e => {
-      result.push(
-        ...e.contentChanges.map(change => ({ range: change.range, uri: e.document.uri.toString(), text: change.text }))
-      );
-
-      if (result.length === expected.length) {
-        finishTest();
-      }
-    });
+    ]
   });
 }
