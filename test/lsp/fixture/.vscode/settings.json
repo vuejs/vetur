@@ -1,4 +1,3 @@
 {
-  "vetur.format.defaultFormatter.html": "prettyhtml",
-  "editor.rename.enablePreview": false
+  "vetur.format.defaultFormatter.html": "prettyhtml"
 }
