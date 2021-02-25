@@ -44,7 +44,7 @@
 
 ### 0.31.0 | 2020-12-08 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.31.0/vspackage)
 
----
+----
 
 #### 🎉 RFC release 🎉
 
@@ -54,7 +54,7 @@ We have also added a new config file called `vetur.config.js`.
 See more: https://vuejs.github.io/vetur/guide/setup.html#advanced
 Reference: https://vuejs.github.io/vetur/reference/
 
----
+----
 
 - Fix pug format. #2460
 - Fix scss autocompletion. #2522
@@ -69,6 +69,7 @@ Reference: https://vuejs.github.io/vetur/reference/
 - Improve docs.
 - Support yarn PnP support. Thanks to contribution from [@merceyz](https://github.com/merceyz). #2478.
 
+
 ### 0.30.3 | 2020-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.3/vspackage)
 
 - Fix prettier-eslint and prettier-tslint
@@ -82,24 +83,25 @@ Reference: https://vuejs.github.io/vetur/reference/
 - Fix high CPU usage when template tag self closed. Thanks to help from [@Shinigami92](https://github.com/Shinigami92). #2468
 - Fix formatting css problem with prettier. #2467
 
+
 ### 0.30.1 | 2020-11-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.1/vspackage)
 
 - Fix corner case when auto import component failed. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2461.
 - Fix the `template lang='pug'` node will be cleared when formatting the vue file. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2460.
 
+
 ### 0.30.0 | 2020-11-11 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.0/vspackage)
 
----
+----
 
-#### ⚠️ Breaking change: ⚠️
-
+#### ⚠️  Breaking change: ⚠️
 The `vetur.useWorkspaceDependencies` option affect all runtime dependencies now.
 Like `prettier`, `@prettier/plugin-pug`.
 
 In this version, we try to bundle extension and reduce size. (70MB -> 9MB)
 But it's a huge change, so please open an issue if you find any problems.
 
----
+----
 
 - 🙌 Fix v-bind modifiers causing TypeScript to not find type-checked template props correctly. Thanks to contribution from [@andrewisaburden](https://github.com/andrewisaburden). #2430.
 - 🙌 Fix "File name X differs from already included file name Y only in casing" on Windows. Thanks to contribution from [@rchl](https://github.com/rchl). #2433 and #2444.
@@ -165,7 +167,7 @@ But it's a huge change, so please open an issue if you find any problems.
 
 - Add `foldingRange` support to support dynamic folding ranges such as `#region`. #899.
 - Add setting `vetur.validation.interpolation` so interpolation diagnostics and `eslint-plugin-vue` diagnostics can be configed separately. #2131.
-- Fix VLS crash for \*.vue files in node_modules. #2006.
+- Fix VLS crash for *.vue files in node_modules. #2006.
 - Upgrade to TypeScript 4.0.2 and fix symbol outline issue. #1849.
 - Improve JSDoc presentation in hover/completion in interpolation mode. #1337.
 - Improve JSDoc presentation in hover/completion/signatureHelp. #2193.
@@ -444,15 +446,15 @@ export default {
       default: 0
     }
   },
-  data() {
+  data () {
     return {
       /**
        * My msg
        */
-      msg: 'Vetur get much better completion'
-    };
+      msg: 'Vetur get much better completion',
+    }
   }
-};
+}
 </script>
 ```
 
@@ -548,7 +550,6 @@ Read updated doc at: https://vuejs.github.io/vetur/formatting.html#formatters.
     "vetur.format.options.tabSize": 2
   }
   ```
-
 - Vetur no longer reads settings from `prettier.*`. All settings must be specified in a local configuration file. #982.
 - `prettier-eslint` is added as an option for `vetur.format.defaultFormatter.js`. #982.
 - Various bug fixes for `prettier-eslint` not reading config correctly. Thanks to contribution form [@Coder-256](https://github.com/Coder-256). #934 and #942.
@@ -648,6 +649,7 @@ Read updated doc at: https://vuejs.github.io/vetur/formatting.html#formatters.
 - Fix a vue-html grammar rule that does not highlight Vue templates after `</template>`. #548.
 - Upgrade grammar so broken syntax in each region will not affect syntax highlighting outside that specific region. #174.
 - Always ignore `end_with_newline` option in js-beautify so the template formats properly. #544.
+
 
 ### 0.11.3 | 2017-11-13
 
@@ -920,7 +922,6 @@ Shoutout to @HerringtonDarkholme who helped implementing many new features!
 - Improve `sass` syntax highlighting based on grammar from [robinbentley/vscode-sass-indented](https://github.com/robinbentley/vscode-sass-indented). #41.
 
 Thanks to [@sandersn](https://github.com/sandersn)'s [PR](https://github.com/octref/vetur/pull/94):
-
 - Preliminary TypeScript support (try `<script lang="ts">`)
 - Improved IntelliSense for `js/ts` in Vue SFC.
 - Correct Module Resolution (try `npm i lodash @types/lodash` and use lodash in your Vue SFC).
