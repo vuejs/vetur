@@ -13,8 +13,8 @@ function getVersion(): string {
   program
     .command('diagnostics [workspace]')
     .description('Print all diagnostics')
-    .action(workspace => {
-      diagnostics(workspace);
+    .action(async workspace => {
+      await diagnostics(workspace);
     });
 
   program.parse(process.argv);
