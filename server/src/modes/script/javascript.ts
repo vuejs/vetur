@@ -766,11 +766,9 @@ export async function getJavascriptMode(
       const normalizedOldPath = sourceFile.fileName;
       const edits = service.getEditsForFileRename(normalizedOldPath, newPath, formatSettings, preferences);
 
-      const redirectOldFileNameToNew = (fileName: string) => (fileName === normalizedOldPath ? newPath : fileName);
-
       const textDocumentEdit: TextDocumentEdit[] = [];
       for (const edit of edits) {
-        const fileName = redirectOldFileNameToNew(edit.fileName);
+        const fileName = edit.fileName;
         if (isVirtualVueTemplateFile(fileName)) {
           continue;
         }
