@@ -14,7 +14,7 @@
     "watch": "rollup -c rollup.config.js -w"
   },
   "devDependencies": {
-    "@babel/code-frame": "^7.12.11",
+    "@babel/code-frame": "^7.12.13",
     "@types/babel__code-frame": "^7.0.2",
     "@types/glob": "^7.1.3",
     "chalk": "^4.1.0",
