@@ -585,6 +585,6 @@
     "typescript": "^4.2.2",
     "vscode-languageclient": "^7.0.0",
     "vscode-languageserver-types": "^3.16.0",
-    "vscode-test": "^1.5.0"
+    "vscode-test": "^1.5.1"
   }
 }
