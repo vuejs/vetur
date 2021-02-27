@@ -31,7 +31,7 @@ export function inferVueVersion(packagePath: string | undefined): VueVersion {
 
     if (vueDependencyVersion) {
       // use a sloppy method to infer version, to reduce dep on semver or so
-      const vueDep = vueDependencyVersion.match(/\d+\.\d+/)[0];
+      const vueDep = vueDependencyVersion.match(/\d+(\.\d+)?/)[0];
       const sloppyVersion = parseFloat(vueDep);
       return floatVersionToEnum(sloppyVersion);
     }
