@@ -372,7 +372,7 @@ export function doComplete(
         break;
       case TokenType.Content:
         if (offset <= scanner.getTokenEnd()) {
-          return emmet.doComplete(document, position, 'html', emmetConfig);
+          return emmet.doComplete(document, position, 'html', emmetConfig) ?? NULL_COMPLETION;
         }
         break;
       default:

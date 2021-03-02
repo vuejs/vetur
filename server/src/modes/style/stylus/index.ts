@@ -16,6 +16,7 @@ import { VLSFormatConfig } from '../../../config';
 import { DependencyService } from '../../../services/dependencyService';
 import { EnvironmentService } from '../../../services/EnvironmentService';
 import { sync } from 'glob';
+import { NULL_COMPLETION } from '../../nullMode';
 
 export function getStylusMode(
   env: EnvironmentService,
@@ -41,7 +42,7 @@ export function getStylusMode(
         };
       });
 
-      const emmetCompletions: CompletionList = emmet.doComplete(document, position, 'stylus', env.getConfig().emmet);
+      const emmetCompletions = emmet.doComplete(document, position, 'stylus', env.getConfig().emmet);
       if (!emmetCompletions) {
         return { isIncomplete: false, items: lsItems };
       } else {
