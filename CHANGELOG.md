@@ -1,12 +1,16 @@
 # Changelog
 
-### 0.32.1
+### 0.33.0
 
 - Disable Vue completion in custom blocks. #2111
 - Upgrade `stylus-supremacy` to 2.15.0.
-- 🙌 Improve performance of template interpolation features. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123).
-- Improve VTI command structure. See `vti --help`. #2722.
+- 🙌 Improve performance of template interpolation features. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123) #2645.
+- 🙌 Improve VTI command structure. See `vti --help`. #2722.Thanks to contribution from [@Monchi](https://github.com/Monchi).
 - 🙌 Fix `v-model` usage in Vue 3 where default prop name is `modelValue` instead of `value`. Thanks to contribution from [@yassipad](https://github.com/yassipad). #2647.
+- Upgrade `typescript` to 4.2.2.
+- Improve vue version detection. Thanks to contribution from [@visualfanatic](https://github.com/visualfanatic). #2740.
+- allow `vetur.config.cjs` for project config. Thanks to contribution from [@vitaliytv](https://github.com/vitaliytv).
+- Update import on file rename when typescript and javascript. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2651 #820.
 
 ### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
 
