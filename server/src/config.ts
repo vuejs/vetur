@@ -64,6 +64,7 @@ export interface VLSConfig {
     };
     languageFeatures: {
       codeActions: boolean;
+      updateImportOnFileMove: boolean;
     };
     trace: {
       server: 'off' | 'messages' | 'verbose';
@@ -126,7 +127,8 @@ export function getDefaultVLSConfig(): VLSFullConfig {
         styleInitialIndent: false
       },
       languageFeatures: {
-        codeActions: true
+        codeActions: true,
+        updateImportOnFileMove: true
       },
       trace: {
         server: 'off'

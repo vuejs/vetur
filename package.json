@@ -510,6 +510,11 @@
           "default": true,
           "description": "Whether to enable codeActions"
         },
+        "vetur.languageFeatures.updateImportOnFileMove": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to automatic updating import path when rename or move a file"
+        },
         "vetur.trace.server": {
           "type": "string",
           "enum": [

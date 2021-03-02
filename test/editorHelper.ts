@@ -1,4 +1,5 @@
 import vscode from 'vscode';
+import type { BaseLanguageClient } from 'vscode-languageclient';
 
 const EXT_IDENTIFIER = 'octref.vetur';
 const ext = vscode.extensions.getExtension(EXT_IDENTIFIER);
@@ -25,3 +26,5 @@ export async function setEditorContent(editor: vscode.TextEditor, content: strin
   const all = new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length));
   return editor.edit(eb => eb.replace(all, content));
 }
+
+export const sendLSRequest: BaseLanguageClient['sendRequest'] = (...args: any[]) => ext!.exports.sendRequest(...args);

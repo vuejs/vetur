@@ -17,15 +17,16 @@ import {
   DocumentLink,
   DocumentLinkParams,
   DocumentSymbolParams,
+  FileRename,
   FoldingRange,
   FoldingRangeParams,
   Hover,
   Location,
   SignatureHelp,
   SymbolInformation,
+  TextDocumentEdit,
   TextDocumentPositionParams,
-  TextEdit,
-  WorkspaceEdit
+  TextEdit
 } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
@@ -58,6 +59,7 @@ export interface ProjectService {
   onFoldingRanges(params: FoldingRangeParams): Promise<FoldingRange[]>;
   onCodeAction(params: CodeActionParams): Promise<CodeAction[]>;
   onCodeActionResolve(action: CodeAction): Promise<CodeAction>;
+  onWillRenameFile(fileRename: FileRename): Promise<TextDocumentEdit[]>;
   doValidate(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[] | null>;
   dispose(): Promise<void>;
 }
@@ -324,6 +326,15 @@ export async function createProjectService(
       }
 
       return action;
+    },
+    async onWillRenameFile(fileRename: FileRename) {
+      if (!env.getConfig().vetur.languageFeatures.updateImportOnFileMove) {
+        return [];
+      }
+
+      const textDocumentEdit = languageModes.getMode('typescript')?.getRenameFileEdit?.(fileRename);
+
+      return textDocumentEdit ?? [];
     },
     async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
       const diagnostics: Diagnostic[] = [];

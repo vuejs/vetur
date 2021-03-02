@@ -55,6 +55,13 @@ export async function activate(context: vscode.ExtensionContext) {
       registerCustomClientNotificationHandlers(client);
       registerCustomLSPCommands(context, client);
       registerRestartVLSCommand(context, client);
+
+      if (context.extensionMode === vscode.ExtensionMode.Test) {
+        return {
+          /**@internal expose only for testing */
+          sendRequest: client.sendRequest.bind(client)
+        };
+      }
     })
     .catch((e: Error) => {
       console.error(e.stack);
@@ -64,7 +71,7 @@ export async function activate(context: vscode.ExtensionContext) {
   return displayInitProgress(promise);
 }
 
-async function displayInitProgress(promise: Promise<void>) {
+async function displayInitProgress<T = void>(promise: Promise<T>) {
   return vscode.window.withProgress(
     {
       title: 'Vetur initialization',

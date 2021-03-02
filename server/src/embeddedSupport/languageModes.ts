@@ -19,7 +19,8 @@ import {
   ColorPresentation,
   CodeAction,
   WorkspaceEdit,
-  FoldingRange
+  FoldingRange,
+  TextDocumentEdit
 } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -31,7 +32,7 @@ import { getJavascriptMode } from '../modes/script/javascript';
 import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
 import { DocumentContext } from '../types';
-import { VueInfoService, VueFileInfo } from '../services/vueInfoService';
+import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
 import { getServiceHost, IServiceHost } from '../services/typescriptService/serviceHost';
@@ -40,6 +41,7 @@ import { getPugMode } from '../modes/pug';
 import { VCancellationToken } from '../utils/cancellationToken';
 import { createAutoImportSfcPlugin } from '../modes/plugins/autoImportSfcPlugin';
 import { EnvironmentService } from '../services/EnvironmentService';
+import { FileRename } from 'vscode-languageserver';
 
 export interface VLSServices {
   dependencyService: DependencyService;
@@ -71,6 +73,7 @@ export interface LanguageMode {
   findDocumentColors?(document: TextDocument): ColorInformation[];
   getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
   getFoldingRanges?(document: TextDocument): FoldingRange[];
+  getRenameFileEdit?(renames: FileRename): TextDocumentEdit[];
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;

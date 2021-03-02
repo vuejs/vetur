@@ -23,10 +23,11 @@ import {
   MarkupContent,
   CodeAction,
   CodeActionKind,
-  WorkspaceEdit,
   FoldingRangeKind,
   CompletionItemTag,
-  CodeActionContext
+  CodeActionContext,
+  TextDocumentEdit,
+  VersionedTextDocumentIdentifier
 } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
@@ -45,11 +46,17 @@ import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { CodeActionData, CodeActionDataKind, OrganizeImportsActionData, RefactorActionData } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
-import { toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
+import {
+  isVirtualVueTemplateFile,
+  isVueFile,
+  toCompletionItemKind,
+  toSymbolKind
+} from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { EnvironmentService } from '../../services/EnvironmentService';
 import { getCodeActionKind } from './CodeActionKindConverter';
+import { FileRename } from 'vscode-languageserver';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -80,7 +87,10 @@ export async function getJavascriptMode(
   let supportedCodeFixCodes: Set<number>;
 
   function getUserPreferences(scriptDoc: TextDocument): ts.UserPreferences {
-    const baseConfig = env.getConfig()[scriptDoc.languageId === 'javascript' ? 'javascript' : 'typescript'];
+    return getUserPreferencesByLanguageId(scriptDoc.languageId);
+  }
+  function getUserPreferencesByLanguageId(languageId: string): ts.UserPreferences {
+    const baseConfig = env.getConfig()[languageId === 'javascript' ? 'javascript' : 'typescript'];
     const preferencesConfig = baseConfig?.preferences;
 
     if (!baseConfig || !preferencesConfig) {
@@ -729,6 +739,54 @@ export async function getJavascriptMode(
     },
     onDocumentChanged(filePath: string) {
       serviceHost.updateExternalDocument(filePath);
+    },
+    getRenameFileEdit(rename: FileRename): TextDocumentEdit[] {
+      const oldPath = getFileFsPath(rename.oldUri);
+      const newPath = getFileFsPath(rename.newUri);
+
+      const service = serviceHost.getLanguageService();
+      const program = service.getProgram();
+      if (!program) {
+        return [];
+      }
+
+      const sourceFile = program.getSourceFile(oldPath);
+      if (!sourceFile) {
+        return [];
+      }
+
+      const oldFileIsVue = isVueFile(oldPath);
+      const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
+      const preferences = getUserPreferencesByLanguageId(
+        (sourceFile as any).scriptKind === tsModule.ScriptKind.JS ? 'javascript' : 'typescript'
+      );
+
+      // typescript use the filename of the source file to check for update
+      // match it or it may not work on windows
+      const normalizedOldPath = sourceFile.fileName;
+      const edits = service.getEditsForFileRename(normalizedOldPath, newPath, formatSettings, preferences);
+
+      const textDocumentEdit: TextDocumentEdit[] = [];
+      for (const edit of edits) {
+        const fileName = edit.fileName;
+        if (isVirtualVueTemplateFile(fileName)) {
+          continue;
+        }
+        const doc = getSourceDoc(fileName, program);
+        const bothNotVueFile = !oldFileIsVue && !isVueFile(fileName);
+        if (bothNotVueFile) {
+          continue;
+        }
+        const docIdentifier = VersionedTextDocumentIdentifier.create(URI.file(doc.uri).toString(), 0);
+        textDocumentEdit.push(
+          ...edit.textChanges.map(({ span, newText }) => {
+            const range = Range.create(doc.positionAt(span.start), doc.positionAt(span.start + span.length));
+            return TextDocumentEdit.create(docIdentifier, [TextEdit.replace(range, newText)]);
+          })
+        );
+      }
+
+      return textDocumentEdit;
     },
     dispose() {
       jsDocuments.dispose();
