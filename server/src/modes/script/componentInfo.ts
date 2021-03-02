@@ -64,7 +64,12 @@ export function getComponentInfo(
     vueFileInfo.componentInfo.componentsDefine = defineInfo;
   }
 
-  const globalComponents = getGlobalComponents(tsModule, service, globalComponentInfos);
+  const globalComponents = getGlobalComponents(
+    tsModule,
+    service,
+    globalComponentInfos,
+    config.vetur.completion.tagCasing
+  );
   if (globalComponents.length > 0) {
     vueFileInfo.componentInfo.childComponents = [
       ...(vueFileInfo.componentInfo.childComponents ?? []),
