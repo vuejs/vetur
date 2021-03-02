@@ -11,6 +11,7 @@
 - Improve vue version detection. Thanks to contribution from [@visualfanatic](https://github.com/visualfanatic). #2740.
 - allow `vetur.config.cjs` for project config. Thanks to contribution from [@vitaliytv](https://github.com/vitaliytv).
 - Update import on file rename when typescript and javascript. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2651 #820.
+- Fix `vetur.completion.tagCasing` when global components.
 
 ### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
 
