@@ -53,7 +53,7 @@
     "glob": "^7.1.6",
     "gridsome-helper-json": "^1.0.3",
     "js-beautify": "^1.13.5",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "mocha": "^8.2.1",
     "nuxt-helper-json": "^1.0.0",
     "nyc": "^15.1.0",
