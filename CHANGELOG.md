@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.33.0
+### 0.33.0 | 2021-03-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.33.0/vspackage)
 
 - Disable Vue completion in custom blocks. #2111
 - Upgrade `stylus-supremacy` to 2.15.0.
@@ -657,11 +657,11 @@ Read updated doc at: https://vuejs.github.io/vetur/formatting.html#formatters.
 - Always ignore `end_with_newline` option in js-beautify so the template formats properly. #544.
 
 
-### 0.11.3 | 2017-11-13
+### 0.11.3 | 2017-11-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.3/vspackage)
 
 - Hot fix for a bug in formatting `<template>` with js-beautify where it adds `</template>` to the end. #539.
 
-### 0.11.2 | 2017-11-13
+### 0.11.2 | 2017-11-13 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.2/vspackage)
 
 - Workaround a js-beautify bug which indents multi-line comment. #535.
 - Docs for generating grammar for custom blocks: https://vuejs.github.io/vetur/highlighting.html.
@@ -669,7 +669,7 @@ Read updated doc at: https://vuejs.github.io/vetur/formatting.html#formatters.
 - Disallow longer version of `lang` in custom block setting (`js` over `javascript`, `md` over `markdown`).
 - Pretty print generated gramamr so it's readable. (You can find it at `~/.vscode/extensions/octref.vetur-<version>./syntaxes/vue-generated.json`).
 
-### 0.11.1 | 2017-11-10
+### 0.11.1 | 2017-11-10 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.11.1/vspackage)
 
 - Syntax highlighting for Custom Block. #210.
   - Added setting `vetur.grammar.customBlocks`.
