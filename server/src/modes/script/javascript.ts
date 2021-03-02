@@ -757,9 +757,9 @@ export async function getJavascriptMode(
 
       const oldFileIsVue = isVueFile(oldPath);
       const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
-      const preferences = oldFileIsVue
-        ? getUserPreferences(updateCurrentVueTextDocument(sourceFileToSourceDoc(oldPath, sourceFile)).scriptDoc)
-        : getUserPreferencesByLanguageId(oldPath.endsWith('.js') ? 'javascript' : 'typescript');
+      const preferences = getUserPreferencesByLanguageId(
+        (sourceFile as any).scriptKind === tsModule.ScriptKind.JS ? 'javascript' : 'typescript'
+      );
 
       // typescript use the filename of the source file to check for update
       // match it or it may not work on windows
@@ -968,10 +968,6 @@ function createUriMappingForEdits(changes: ts.FileTextChanges[], service: ts.Lan
 
 function getSourceDoc(fileName: string, program: ts.Program): TextDocument {
   const sourceFile = program.getSourceFile(fileName)!;
-  return sourceFileToSourceDoc(fileName, sourceFile);
-}
-
-function sourceFileToSourceDoc(fileName: string, sourceFile: ts.SourceFile) {
   return TextDocument.create(fileName, 'vue', 0, sourceFile.getFullText());
 }
 
