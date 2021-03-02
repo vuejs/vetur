@@ -5,8 +5,14 @@ import { HTMLDocument, Node } from '../parser/htmlParser';
 import { kebabCase } from 'lodash';
 import { getSameTagInSet } from '../tagProviders/common';
 import { normalizeAttributeNameToKebabCase } from './htmlCompletion';
+import { VueVersion } from '../../../utils/vueVersion';
 
-export function doPropValidation(document: TextDocument, htmlDocument: HTMLDocument, info: VueFileInfo): Diagnostic[] {
+export function doPropValidation(
+  document: TextDocument,
+  htmlDocument: HTMLDocument,
+  info: VueFileInfo,
+  vueVersion: VueVersion
+): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
 
   const childComponentToProps: { [n: string]: PropInfo[] } = {};
@@ -20,7 +26,7 @@ export function doPropValidation(document: TextDocument, htmlDocument: HTMLDocum
     if (n.tag) {
       const foundTag = getSameTagInSet(childComponentToProps, n.tag);
       if (foundTag) {
-        const d = generateDiagnostic(n, foundTag, document);
+        const d = generateDiagnostic(n, foundTag, document, vueVersion);
         if (d) {
           diagnostics.push(d);
         }
@@ -42,18 +48,25 @@ function traverseNodes(nodes: Node[], f: (n: Node) => any) {
   }
 }
 
-function generateDiagnostic(n: Node, definedProps: PropInfo[], document: TextDocument): Diagnostic | undefined {
+function generateDiagnostic(
+  n: Node,
+  definedProps: PropInfo[],
+  document: TextDocument,
+  vueVersion: VueVersion
+): Diagnostic | undefined {
   // Ignore diagnostic when have `v-bind`, `v-bind:[key]`, `:[key]`
   if (n.attributeNames.some(prop => prop === 'v-bind' || prop.startsWith('v-bind:[') || prop.startsWith(':['))) {
     return undefined;
   }
+
+  const vModelPropName = vueVersion === VueVersion.V30 ? 'modelValue' : 'value';
 
   const seenProps = n.attributeNames.map(attr => {
     return {
       name: attr,
       normalized: normalizeHtmlAttributeNameToKebabCaseAndReplaceVModel(
         attr,
-        definedProps.find(prop => prop.isBoundToModel)?.name ?? 'value'
+        definedProps.find(prop => prop.isBoundToModel)?.name ?? vModelPropName
       )
     };
   });

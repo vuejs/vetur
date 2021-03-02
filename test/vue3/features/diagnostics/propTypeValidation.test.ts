@@ -3,7 +3,7 @@ import { testDiagnostics, testNoDiagnostics } from '../../../diagnosticHelper';
 import { sameLineRange } from '../../../util';
 import { DiagnosticSeverity } from 'vscode';
 
-describe('Should find prop type valiation errors', () => {
+describe('Should find prop type validation errors', () => {
   const rightUri = getDocUri('diagnostics/propTypeValidation/ParentRight.vue');
   const wrongUri = getDocUri('diagnostics/propTypeValidation/ParentWrong.vue');
 

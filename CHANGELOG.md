@@ -6,6 +6,7 @@
 - Upgrade `stylus-supremacy` to 2.15.0.
 - 🙌 Improve performance of template interpolation features. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123).
 - Improve VTI command structure. See `vti --help`. #2722.
+- 🙌 Fix `v-model` usage in Vue 3 where default prop name is `modelValue` instead of `value`. Thanks to contribution from [@yassipad](https://github.com/yassipad). #2647.
 
 ### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
 
