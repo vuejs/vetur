@@ -24,7 +24,7 @@ import chalk from 'chalk';
 import { codeFrameColumns, SourceLocation } from '@babel/code-frame';
 import { Range } from 'vscode-languageclient';
 
-export async function diagnostics(workspace: string | null) {
+export async function diagnostics(workspace: string | null, onlyError: boolean) {
   console.log('====================================');
   console.log('Getting Vetur diagnostics');
   let workspaceUri;
@@ -38,7 +38,7 @@ export async function diagnostics(workspace: string | null) {
     workspaceUri = URI.file(process.cwd());
   }
 
-  const errCount = await getDiagnostics(workspaceUri);
+  const errCount = await getDiagnostics(workspaceUri, onlyError);
   console.log('====================================');
 
   if (errCount === 0) {
@@ -112,7 +112,7 @@ function range2Location(range: Range): SourceLocation {
   };
 }
 
-async function getDiagnostics(workspaceUri: URI) {
+async function getDiagnostics(workspaceUri: URI, onlyError: boolean) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
   const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
@@ -148,6 +148,9 @@ async function getDiagnostics(workspaceUri: URI) {
        * Ignore eslint errors for now
        */
       res = res.filter(r => r.source !== 'eslint-plugin-vue');
+      if (onlyError) {
+        res = res.filter(r => r.severity === DiagnosticSeverity.Error);
+      }
       if (res.length > 0) {
         res.forEach(d => {
           const location = range2Location(d.range);
