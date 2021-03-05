@@ -75,7 +75,8 @@ function getDefaultVLSConfig() {
       },
       experimental: {
         templateInterpolationService: false
-      }
+      },
+      extentions: []
     },
     css: {},
     html: {

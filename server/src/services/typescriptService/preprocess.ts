@@ -14,10 +14,11 @@ import {
 } from './transformTemplate';
 import { templateSourceMap } from './serviceHost';
 import { generateSourceMap } from './sourceMap';
-import { isVirtualVueTemplateFile, isVueFile } from './util';
+import { isVirtualVueTemplateFile } from './util';
 import { ChildComponent } from '../vueInfoService';
 import { kebabCase, snakeCase } from 'lodash';
 import { RuntimeLibrary } from '../dependencyService';
+import { EnvironmentService } from '../EnvironmentService';
 
 const importedComponentName = '__vlsComponent';
 
@@ -52,7 +53,8 @@ export function parseVueTemplate(text: string): string {
 
 export function createUpdater(
   tsModule: RuntimeLibrary['typescript'],
-  allChildComponentsInfo: Map<string, ChildComponent[]>
+  allChildComponentsInfo: Map<string, ChildComponent[]>,
+  env: EnvironmentService
 ) {
   const clssf = tsModule.createLanguageServiceSourceFile;
   const ulssf = tsModule.updateLanguageServiceSourceFile;
@@ -71,7 +73,7 @@ export function createUpdater(
       return;
     }
 
-    if (isVueFile(fileName)) {
+    if (env.isVueFile(fileName)) {
       modifyVueScript(tsModule, sourceFile);
       modificationTracker.add(sourceFile);
       return;

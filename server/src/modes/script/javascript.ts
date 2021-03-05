@@ -46,12 +46,7 @@ import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { CodeActionData, CodeActionDataKind, OrganizeImportsActionData, RefactorActionData } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
-import {
-  isVirtualVueTemplateFile,
-  isVueFile,
-  toCompletionItemKind,
-  toSymbolKind
-} from '../../services/typescriptService/util';
+import { isVirtualVueTemplateFile, toCompletionItemKind, toSymbolKind } from '../../services/typescriptService/util';
 import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { EnvironmentService } from '../../services/EnvironmentService';
@@ -755,7 +750,7 @@ export async function getJavascriptMode(
         return [];
       }
 
-      const oldFileIsVue = isVueFile(oldPath);
+      const oldFileIsVue = env.isVueFile(oldPath);
       const formatSettings: ts.FormatCodeSettings = getFormatCodeSettings(env.getConfig());
       const preferences = getUserPreferencesByLanguageId(
         (sourceFile as any).scriptKind === tsModule.ScriptKind.JS ? 'javascript' : 'typescript'
@@ -773,7 +768,7 @@ export async function getJavascriptMode(
           continue;
         }
         const doc = getSourceDoc(fileName, program);
-        const bothNotVueFile = !oldFileIsVue && !isVueFile(fileName);
+        const bothNotVueFile = !oldFileIsVue && !env.isVueFile(fileName);
         if (bothNotVueFile) {
           continue;
         }

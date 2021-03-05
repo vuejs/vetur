@@ -77,6 +77,7 @@ export interface VLSConfig {
     experimental: {
       templateInterpolationService: boolean;
     };
+    extensions: string[];
   };
 }
 
