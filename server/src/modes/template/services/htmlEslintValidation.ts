@@ -27,7 +27,7 @@ export async function doESLintValidation(document: TextDocument, engine: ESLint)
   const text = rawText.replace(/ {10}/, '<template>') + '</template>';
   const report = await engine.lintText(text, { filePath: document.uri });
 
-  return report?.[0].messages.map(toDiagnostic) ?? [];
+  return report?.[0]?.messages?.map(toDiagnostic) ?? [];
 }
 
 export function createLintEngine(vueVersion: VueVersion) {
