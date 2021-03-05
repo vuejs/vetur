@@ -141,7 +141,8 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       },
       experimental: {
         templateInterpolationService: false
-      }
+      },
+      extensions: []
     },
     css: {},
     html: {
