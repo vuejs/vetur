@@ -1,14 +1,14 @@
 {
   "name": "vti",
   "description": "Vetur Terminal Interface",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./dist/cli.js",
   "bin": "./bin/vti",
   "author": "Pine Wu <octref@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "commander": "^7.1.0",
-    "vls": "^0.7.1"
+    "vls": "^0.7.2"
   },
   "scripts": {
     "compile": "rollup -c rollup.config.js",
@@ -21,7 +21,7 @@
     "chalk": "^4.1.0",
     "glob": "^7.1.2",
     "rollup": "^2.40.0",
-    "typescript": "^4.2.2",
+    "typescript": "^4.2.3",
     "vscode-languageclient": "^7.0.0",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-protocol": "^3.16.0",
