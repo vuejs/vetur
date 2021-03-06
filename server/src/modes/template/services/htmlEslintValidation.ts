@@ -35,10 +35,13 @@ export function createLintEngine(vueVersion: VueVersion) {
 
   const versionSpecificConfig = vueVersion === VueVersion.V30 ? configs['vue3-essential'] : configs.essential;
 
+  const baseConfig: Linter.Config = configs.base;
+  baseConfig.ignorePatterns = ['!.*'];
+
   return new ESLint({
     useEslintrc: false,
     cwd: SERVER_ROOT,
-    baseConfig: configs.base,
+    baseConfig,
     overrideConfig: versionSpecificConfig
   });
 }
