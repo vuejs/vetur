@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.33.1
+### 0.33.1 | 2021-03-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.33.1/vspackage)
 - Added new ts and js snippets for the Composition API. Thanks to contribution from [@Namchee](https://github.com/Namchee). #2741
 - Fix prefix dot folder or file name with eslint, and effect other diagnostics. #2717
 
