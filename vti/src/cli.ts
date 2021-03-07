@@ -1,5 +1,5 @@
-import { Command } from 'commander';
-import { diagnostics } from './commands/diagnostics';
+import { Command, Option } from 'commander';
+import { diagnostics, logLevels } from './commands/diagnostics';
 
 function getVersion(): string {
   const { version }: { version: string } = require('../package.json');
@@ -13,7 +13,12 @@ function getVersion(): string {
   program
     .command('diagnostics [workspace]')
     .description('Print all diagnostics')
-    .option('-l, --log-level <logLevel>', 'Log level to print', 'WARN')
+    .addOption(
+      new Option('-l, --log-level <logLevel>', 'Log level to print')
+        .default('WARN')
+        // logLevels is readonly array but .choices need read-write array (because of weak typing)
+        .choices((logLevels as unknown) as string[])
+    )
     .action(async (workspace, options) => {
       const logLevelOption: unknown = options.logLevel;
       if (

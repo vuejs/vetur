@@ -24,7 +24,8 @@ import chalk from 'chalk';
 import { codeFrameColumns, SourceLocation } from '@babel/code-frame';
 import { Range } from 'vscode-languageclient';
 
-export type LogLevel = 'ERROR' | 'WARN' | 'INFO' | 'HINT';
+export type LogLevel = typeof logLevels[number];
+export const logLevels = ['ERROR', 'WARN', 'INFO', 'HINT'] as const;
 
 export async function diagnostics(workspace: string | null, logLevel: LogLevel) {
   console.log('====================================');
