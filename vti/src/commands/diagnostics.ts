@@ -24,7 +24,9 @@ import chalk from 'chalk';
 import { codeFrameColumns, SourceLocation } from '@babel/code-frame';
 import { Range } from 'vscode-languageclient';
 
-export async function diagnostics(workspace: string | null, onlyError: boolean) {
+export type LogLevel = 'ERROR' | 'WARN' | 'INFO' | 'HINT';
+
+export async function diagnostics(workspace: string | null, logLevel: LogLevel) {
   console.log('====================================');
   console.log('Getting Vetur diagnostics');
   let workspaceUri;
@@ -38,7 +40,7 @@ export async function diagnostics(workspace: string | null, onlyError: boolean) 
     workspaceUri = URI.file(process.cwd());
   }
 
-  const errCount = await getDiagnostics(workspaceUri, onlyError);
+  const errCount = await getDiagnostics(workspaceUri, logLevel2Severity(logLevel));
   console.log('====================================');
 
   if (errCount === 0) {
@@ -112,7 +114,20 @@ function range2Location(range: Range): SourceLocation {
   };
 }
 
-async function getDiagnostics(workspaceUri: URI, onlyError: boolean) {
+function logLevel2Severity(logLevel: LogLevel): DiagnosticSeverity {
+  switch (logLevel) {
+    case 'ERROR':
+      return DiagnosticSeverity.Error;
+    case 'WARN':
+      return DiagnosticSeverity.Warning;
+    case 'INFO':
+      return DiagnosticSeverity.Information;
+    case 'HINT':
+      return DiagnosticSeverity.Hint;
+  }
+}
+
+async function getDiagnostics(workspaceUri: URI, severity: DiagnosticSeverity) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
   const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
@@ -147,10 +162,7 @@ async function getDiagnostics(workspaceUri: URI, onlyError: boolean) {
       /**
        * Ignore eslint errors for now
        */
-      res = res.filter(r => r.source !== 'eslint-plugin-vue');
-      if (onlyError) {
-        res = res.filter(r => r.severity === DiagnosticSeverity.Error);
-      }
+      res = res.filter(r => r.source !== 'eslint-plugin-vue').filter(r => r.severity && r.severity <= severity);
       if (res.length > 0) {
         res.forEach(d => {
           const location = range2Location(d.range);

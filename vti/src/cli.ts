@@ -13,9 +13,18 @@ function getVersion(): string {
   program
     .command('diagnostics [workspace]')
     .description('Print all diagnostics')
-    .option('-e, --error-only', 'Print only errors', false)
+    .option('-l, --log-level <logLevel>', 'Log level to print', 'WARN')
     .action(async (workspace, options) => {
-      await diagnostics(workspace, options.errorOnly);
+      const logLevelOption: unknown = options.logLevel;
+      if (
+        logLevelOption !== 'ERROR' &&
+        logLevelOption !== 'WARN' &&
+        logLevelOption !== 'INFO' &&
+        logLevelOption !== 'HINT'
+      ) {
+        throw new Error(`Invalid log level: ${logLevelOption}`);
+      }
+      await diagnostics(workspace, logLevelOption);
     });
 
   program.parse(process.argv);
