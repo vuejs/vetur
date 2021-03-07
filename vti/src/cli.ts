@@ -15,7 +15,6 @@ function getVersion(): string {
     .description('Print all diagnostics')
     .option('-e, --error-only', 'Print only errors', false)
     .action(async (workspace, options) => {
-      console.log(options);
       await diagnostics(workspace, options.errorOnly);
     });
 
