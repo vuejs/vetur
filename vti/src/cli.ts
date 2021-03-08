@@ -1,9 +1,13 @@
 import { Command, Option } from 'commander';
-import { diagnostics, logLevels } from './commands/diagnostics';
+import { diagnostics, LogLevel, logLevels } from './commands/diagnostics';
 
 function getVersion(): string {
   const { version }: { version: string } = require('../package.json');
   return `v${version}`;
+}
+
+function validateLogLevel(logLevelInput: unknown): logLevelInput is LogLevel {
+  return typeof logLevelInput === 'string' && (logLevels as ReadonlyArray<string>).includes(logLevelInput);
 }
 
 (async () => {
@@ -21,12 +25,7 @@ function getVersion(): string {
     )
     .action(async (workspace, options) => {
       const logLevelOption: unknown = options.logLevel;
-      if (
-        logLevelOption !== 'ERROR' &&
-        logLevelOption !== 'WARN' &&
-        logLevelOption !== 'INFO' &&
-        logLevelOption !== 'HINT'
-      ) {
+      if (!validateLogLevel(logLevelOption)) {
         throw new Error(`Invalid log level: ${logLevelOption}`);
       }
       await diagnostics(workspace, logLevelOption);
