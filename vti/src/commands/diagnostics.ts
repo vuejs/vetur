@@ -24,7 +24,16 @@ import chalk from 'chalk';
 import { codeFrameColumns, SourceLocation } from '@babel/code-frame';
 import { Range } from 'vscode-languageclient';
 
-export async function diagnostics(workspace: string | null) {
+export type LogLevel = typeof logLevels[number];
+export const logLevels = ['ERROR', 'WARN', 'INFO', 'HINT'] as const;
+const logLevel2Severity = {
+  ERROR: DiagnosticSeverity.Error,
+  WARN: DiagnosticSeverity.Warning,
+  INFO: DiagnosticSeverity.Information,
+  HINT: DiagnosticSeverity.Hint
+};
+
+export async function diagnostics(workspace: string | null, logLevel: LogLevel) {
   console.log('====================================');
   console.log('Getting Vetur diagnostics');
   let workspaceUri;
@@ -38,7 +47,7 @@ export async function diagnostics(workspace: string | null) {
     workspaceUri = URI.file(process.cwd());
   }
 
-  const errCount = await getDiagnostics(workspaceUri);
+  const errCount = await getDiagnostics(workspaceUri, logLevel2Severity[logLevel]);
   console.log('====================================');
 
   if (errCount === 0) {
@@ -112,7 +121,7 @@ function range2Location(range: Range): SourceLocation {
   };
 }
 
-async function getDiagnostics(workspaceUri: URI) {
+async function getDiagnostics(workspaceUri: URI, severity: DiagnosticSeverity) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
   const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
@@ -147,7 +156,7 @@ async function getDiagnostics(workspaceUri: URI) {
       /**
        * Ignore eslint errors for now
        */
-      res = res.filter(r => r.source !== 'eslint-plugin-vue');
+      res = res.filter(r => r.source !== 'eslint-plugin-vue').filter(r => r.severity && r.severity <= severity);
       if (res.length > 0) {
         res.forEach(d => {
           const location = range2Location(d.range);

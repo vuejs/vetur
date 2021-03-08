@@ -1,5 +1,9 @@
 # Changelog
 
+### Not Released Yet
+
+- Add `--log-level` option for `vti diagnostics` to configure log level to print. #2752.
+
 ### 0.33.1 | 2021-03-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.33.1/vspackage)
 
 - Added new ts and js snippets for the Composition API. Thanks to contribution from [@Namchee](https://github.com/Namchee). #2741
