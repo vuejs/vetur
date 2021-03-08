@@ -26,6 +26,12 @@ import { Range } from 'vscode-languageclient';
 
 export type LogLevel = typeof logLevels[number];
 export const logLevels = ['ERROR', 'WARN', 'INFO', 'HINT'] as const;
+const logLevel2Severity = {
+  ERROR: DiagnosticSeverity.Error,
+  WARN: DiagnosticSeverity.Warning,
+  INFO: DiagnosticSeverity.Information,
+  HINT: DiagnosticSeverity.Hint
+};
 
 export async function diagnostics(workspace: string | null, logLevel: LogLevel) {
   console.log('====================================');
@@ -41,7 +47,7 @@ export async function diagnostics(workspace: string | null, logLevel: LogLevel) 
     workspaceUri = URI.file(process.cwd());
   }
 
-  const errCount = await getDiagnostics(workspaceUri, logLevel2Severity(logLevel));
+  const errCount = await getDiagnostics(workspaceUri, logLevel2Severity[logLevel]);
   console.log('====================================');
 
   if (errCount === 0) {
@@ -113,19 +119,6 @@ function range2Location(range: Range): SourceLocation {
       column: range.end.character + 1
     }
   };
-}
-
-function logLevel2Severity(logLevel: LogLevel): DiagnosticSeverity {
-  switch (logLevel) {
-    case 'ERROR':
-      return DiagnosticSeverity.Error;
-    case 'WARN':
-      return DiagnosticSeverity.Warning;
-    case 'INFO':
-      return DiagnosticSeverity.Information;
-    case 'HINT':
-      return DiagnosticSeverity.Hint;
-  }
 }
 
 async function getDiagnostics(workspaceUri: URI, severity: DiagnosticSeverity) {
