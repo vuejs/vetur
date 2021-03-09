@@ -3,7 +3,7 @@
 - Reference Issues: https://github.com/vuejs/vetur/issues/2325, https://github.com/vuejs/vetur/issues/2243, https://github.com/vuejs/vetur/issues/1635, https://github.com/vuejs/vetur/issues/815, https://github.com/vuejs/vetur/issues/424
 - Implementation PR: (leave this empty)
 
-# Summery
+# Summary
 A new configuration file for Vetur and VTI
 
 # Basic example
