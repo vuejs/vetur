@@ -22,6 +22,10 @@ import {
   FoldingRangeParams,
   Hover,
   Location,
+  SemanticTokens,
+  SemanticTokensBuilder,
+  SemanticTokensParams,
+  SemanticTokensRangeParams,
   SignatureHelp,
   SymbolInformation,
   TextDocumentEdit,
@@ -33,7 +37,7 @@ import { URI } from 'vscode-uri';
 import { LanguageId } from '../embeddedSupport/embeddedSupport';
 import { LanguageMode, LanguageModes } from '../embeddedSupport/languageModes';
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
-import { DocumentContext, CodeActionData } from '../types';
+import { DocumentContext, CodeActionData, SemanticTokenData } from '../types';
 import { VCancellationToken } from '../utils/cancellationToken';
 import { getFileFsPath } from '../utils/paths';
 import { DependencyService } from './dependencyService';
@@ -60,6 +64,7 @@ export interface ProjectService {
   onCodeAction(params: CodeActionParams): Promise<CodeAction[]>;
   onCodeActionResolve(action: CodeAction): Promise<CodeAction>;
   onWillRenameFile(fileRename: FileRename): Promise<TextDocumentEdit[]>;
+  onSemanticTokens(params: SemanticTokensParams | SemanticTokensRangeParams): Promise<SemanticTokens | null>;
   doValidate(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[] | null>;
   dispose(): Promise<void>;
 }
@@ -335,6 +340,32 @@ export async function createProjectService(
       const textDocumentEdit = languageModes.getMode('typescript')?.getRenameFileEdit?.(fileRename);
 
       return textDocumentEdit ?? [];
+    },
+    async onSemanticTokens(params: SemanticTokensParams | SemanticTokensRangeParams) {
+      const { textDocument } = params;
+      const range = 'range' in params ? params.range : undefined;
+      const doc = documentService.getDocument(textDocument.uri)!;
+      const modes = languageModes.getAllLanguageModeRangesInDocument(doc);
+      const data: SemanticTokenData[] = [];
+
+      for (const mode of modes) {
+        const tokenData = mode.mode.getSemanticTokens?.(doc, range);
+        // all or nothing
+        if (tokenData === null) {
+          return null;
+        }
+        data.push(...(tokenData ?? []));
+      }
+
+      const builder = new SemanticTokensBuilder();
+      const sorted = data.sort((a, b) => {
+        return a.line - b.line || a.character - b.character;
+      });
+      sorted.forEach(token =>
+        builder.push(token.line, token.character, token.length, token.classificationType, token.modifierSet)
+      );
+
+      return builder.build();
     },
     async doValidate(doc: TextDocument, cancellationToken?: VCancellationToken) {
       const diagnostics: Diagnostic[] = [];
