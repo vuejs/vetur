@@ -452,10 +452,10 @@
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
 
-"@types/prettier@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.2.2.tgz#e2280c89ddcbeef340099d6968d8c86ba155fdf6"
-  integrity sha512-i99hy7Ki19EqVOl77WplDrvgNugHnsSjECVR/wUrzw2TJXz1zlUfT2ngGckR6xN7yFYaijsMAqPkOLx9HgUqHg==
+"@types/prettier@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.2.3.tgz#ef65165aea2924c9359205bf748865b8881753c0"
+  integrity sha512-PijRCG/K3s3w1We6ynUKdxEc5AcuuH3NBmMDP8uvKVp6X43UY7NQlTzczakXP3DJR0F4dfNQIGjU2cUeRYs2AA==
 
 "@types/read-pkg-up@^6.0.0":
   version "6.0.0"
