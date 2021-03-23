@@ -1,5 +1,8 @@
 import { createConnection, InitializeParams, InitializeResult } from 'vscode-languageserver/node';
 import { VLS } from './services/vls';
+import { startSentry } from './utils/sentry';
+
+startSentry();
 
 const connection = process.argv.length <= 2 ? createConnection(process.stdin, process.stdout) : createConnection();
 
