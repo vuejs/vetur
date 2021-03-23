@@ -342,6 +342,12 @@ export async function createProjectService(
       return textDocumentEdit ?? [];
     },
     async onSemanticTokens(params: SemanticTokensParams | SemanticTokensRangeParams) {
+      if (!env.getConfig().vetur.languageFeatures.semanticTokens) {
+        return {
+          data: []
+        };
+      }
+
       const { textDocument } = params;
       const range = 'range' in params ? params.range : undefined;
       const doc = documentService.getDocument(textDocument.uri)!;
