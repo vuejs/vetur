@@ -1,7 +1,7 @@
 import assert from 'assert';
 import vscode from 'vscode';
-import { SemanticTokensRequest, SemanticTokensParams, SemanticTokens, SemanticTokenModifiers, SemanticTokenTypes } from 'vscode-languageserver-protocol';
-import { sendLSRequest, showFile } from '../../../editorHelper';
+import { SemanticTokensParams, SemanticTokenModifiers, SemanticTokenTypes } from 'vscode-languageserver-protocol';
+import { showFile } from '../../../editorHelper';
 import { sameLineRange } from '../../../util';
 import { getDocUri } from '../../path';
 
@@ -13,21 +13,21 @@ describe('Should update import when rename files', () => {
   const docPath = 'semanticTokens/Basic.vue';
   const docUri = getDocUri(docPath);
   it('provide semantic tokens', async () => {
-    await testSemanticTokens(docUri, encodeExpected([
+    await testSemanticTokens(docUri, [
       {
         type: SemanticTokenTypes.variable,
         range: getTokenRange(7, 6, 'aConst'),
-        modifiers: [SemanticTokenModifiers.declaration, SemanticTokenModifiers.readonly],
+        modifiers: [SemanticTokenModifiers.declaration, SemanticTokenModifiers.readonly]
       },
       {
         type: SemanticTokenTypes.class,
         range: getTokenRange(9, 15, 'Vue'),
-        modifiers: [],
+        modifiers: []
       },
       {
         type: SemanticTokenTypes.method,
         range: getTokenRange(9, 19, 'extend'),
-        modifiers: [],
+        modifiers: []
       },
       {
         type: SemanticTokenTypes.property,
@@ -74,32 +74,31 @@ describe('Should update import when rename files', () => {
         range: getTokenRange(15, 18, 'str'),
         modifiers: []
       }
-    ]));
+    ]);
   });
 
-  async function testSemanticTokens(uri: vscode.Uri, expected: number[], range?: vscode.Range) {
+  async function testSemanticTokens(uri: vscode.Uri, expected: UnEncodedSemanticTokenData[]) {
     await showFile(docUri);
 
-    const result = await sendLSRequest<SemanticTokens>(SemanticTokensRequest.method, {
-      textDocument: {
-        uri: uri.toString(),
-      }
-    } as SemanticTokensParams);
-    assertResult(result!.data, expected);
+    const result = await vscode.commands.executeCommand<vscode.SemanticTokens>(
+      'vscode.provideDocumentSemanticTokens',
+      uri
+    );
+    assertResult(result!.data, encodeExpected(await getLegend(uri), expected));
   }
 });
 
 /**
  *  group result by tokens to better distinguish
  */
-function assertResult(actual: number[], expected: number[]) {
+function assertResult(actual: Uint32Array, expected: number[]) {
   const actualGrouped = group(actual);
   const expectedGrouped = group(expected);
 
   assert.deepStrictEqual(actualGrouped, expectedGrouped);
 }
 
-function group(tokens: number[]) {
+function group(tokens: Uint32Array | number[]) {
   const result: number[][] = [];
 
   let index = 0;
@@ -116,44 +115,21 @@ interface UnEncodedSemanticTokenData {
   modifiers: string[];
 }
 
-function encodeExpected(tokens: UnEncodedSemanticTokenData[]) {
-  const builder = new vscode.SemanticTokensBuilder(getLegend());
+function encodeExpected(legend: vscode.SemanticTokensLegend, tokens: UnEncodedSemanticTokenData[]) {
+  const builder = new vscode.SemanticTokensBuilder(legend);
 
-  for (const token of tokens) {    
-    builder.push(
-      token.range,
-      token.type,
-      token.modifiers
-    );
+  for (const token of tokens) {
+    builder.push(token.range, token.type, token.modifiers);
   }
 
   return Array.from(builder.build().data);
 }
 
-// TODO: change to use built in command once test target is vscode 1.53
-function getLegend(): vscode.SemanticTokensLegend {
-  return {
-    tokenModifiers: [
-      SemanticTokenModifiers.declaration,
-      SemanticTokenModifiers.static,
-      SemanticTokenModifiers.async,
-      SemanticTokenModifiers.readonly,
-      SemanticTokenModifiers.defaultLibrary,
-      'local'
-    ],
-    tokenTypes: [
-      SemanticTokenTypes.class,
-      SemanticTokenTypes.enum,
-      SemanticTokenTypes.interface,
-      SemanticTokenTypes.namespace,
-      SemanticTokenTypes.typeParameter,
-      SemanticTokenTypes.type,
-      SemanticTokenTypes.parameter,
-      SemanticTokenTypes.variable,
-      SemanticTokenTypes.enumMember,
-      SemanticTokenTypes.property,
-      SemanticTokenTypes.function,
-      SemanticTokenTypes.method
-    ]
-  };
+async function getLegend(uri: vscode.Uri): Promise<vscode.SemanticTokensLegend> {
+  const res = await vscode.commands.executeCommand<vscode.SemanticTokensLegend>(
+    'vscode.provideDocumentSemanticTokensLegend',
+    uri
+  );
+
+  return res!;
 }
