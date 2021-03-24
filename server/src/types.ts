@@ -1,4 +1,3 @@
-import ts from 'typescript';
 import { LanguageId } from './embeddedSupport/embeddedSupport';
 
 export interface DocumentContext {
@@ -48,4 +47,7 @@ export interface SemanticTokenData extends SemanticTokenClassification {
   length: number;
 }
 
-export interface SemanticTokenOffsetData extends SemanticTokenClassification, ts.TextSpan {}
+export interface SemanticTokenOffsetData extends SemanticTokenClassification {
+  start: number;
+  length: number;
+}
