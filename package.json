@@ -560,7 +560,14 @@
           "description": "Enable template interpolation service that offers hover / definition / references in Vue interpolations."
         }
       }
-    }
+    },
+    "semanticTokenScopes": [
+      {
+        "scopes": {
+          "property.refValue": ["entity.name.function"]
+        }
+      }
+    ]
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.1.0",

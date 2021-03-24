@@ -1,3 +1,4 @@
+import ts from 'typescript';
 import { LanguageId } from './embeddedSupport/embeddedSupport';
 
 export interface DocumentContext {
@@ -36,10 +37,15 @@ export interface OrganizeImportsActionData extends BaseCodeActionData {
 
 export type CodeActionData = RefactorActionData | CombinedFixActionData | OrganizeImportsActionData;
 
-export interface SemanticTokenData {
-  line: number;
-  character: number;
-  length: number;
+interface SemanticTokenClassification {
   classificationType: number;
   modifierSet: number;
 }
+
+export interface SemanticTokenData extends SemanticTokenClassification {
+  line: number;
+  character: number;
+  length: number;
+}
+
+export interface SemanticTokenOffsetData extends SemanticTokenClassification, ts.TextSpan {}

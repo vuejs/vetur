@@ -49,7 +49,7 @@ import {
   CodeActionDataKind,
   OrganizeImportsActionData,
   RefactorActionData,
-  SemanticTokenData
+  SemanticTokenOffsetData
 } from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import {
@@ -62,7 +62,12 @@ import * as Previewer from './previewer';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { EnvironmentService } from '../../services/EnvironmentService';
 import { getCodeActionKind } from './CodeActionKindConverter';
-import { FileRename, SemanticTokensBuilder } from 'vscode-languageserver';
+import { FileRename } from 'vscode-languageserver';
+import {
+  addCompositionApiRefTokens,
+  getTokenModifierFromClassification,
+  getTokenTypeFromClassification
+} from './semanticToken';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -816,12 +821,12 @@ export async function getJavascriptMode(
         tsModule.SemanticClassificationFormat.TwentyTwenty
       );
 
-      const data: SemanticTokenData[] = [];
+      const data: SemanticTokenOffsetData[] = [];
       let index = 0;
 
       while (index < spans.length) {
         // [start, length, encodedClassification, start2, length2, encodedClassification2]
-        const offset = spans[index++];
+        const start = spans[index++];
         const length = spans[index++];
         const encodedClassification = spans[index++];
         const classificationType = getTokenTypeFromClassification(encodedClassification);
@@ -830,18 +835,29 @@ export async function getJavascriptMode(
         }
 
         const modifierSet = getTokenModifierFromClassification(encodedClassification);
-        const startPosition = scriptDoc.positionAt(offset);
 
         data.push({
-          line: startPosition.line,
-          character: startPosition.character,
+          start,
           length,
           classificationType,
           modifierSet
         });
       }
 
-      return data;
+      const program = service.getProgram();
+      if (program) {
+        addCompositionApiRefTokens(tsModule, program, fileFsPath, data);
+      }
+
+      return data.map(({ start, ...rest }) => {
+        const startPosition = scriptDoc.positionAt(start);
+
+        return {
+          ...rest,
+          line: startPosition.line,
+          character: startPosition.character
+        };
+      });
     },
     dispose() {
       jsDocuments.dispose();
@@ -1178,17 +1194,4 @@ function convertTextSpan(range: Range, doc: TextDocument): ts.TextSpan {
     start,
     length: end - start
   };
-}
-
-function getTokenTypeFromClassification(tsClassification: number): number {
-  return (tsClassification >> TokenEncodingConsts.typeOffset) - 1;
-}
-
-function getTokenModifierFromClassification(tsClassification: number) {
-  return tsClassification & TokenEncodingConsts.modifierMask;
-}
-
-const enum TokenEncodingConsts {
-  typeOffset = 8,
-  modifierMask = (1 << typeOffset) - 1
 }

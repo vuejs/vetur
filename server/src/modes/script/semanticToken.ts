@@ -79,3 +79,79 @@ export function getSemanticTokenLegends(): SemanticTokensLegend {
     tokenTypes
   };
 }
+
+export function getTokenTypeFromClassification(tsClassification: number): number {
+  return (tsClassification >> TokenEncodingConsts.typeOffset) - 1;
+}
+
+export function getTokenModifierFromClassification(tsClassification: number) {
+  return tsClassification & TokenEncodingConsts.modifierMask;
+}
+
+const enum TokenEncodingConsts {
+  typeOffset = 8,
+  modifierMask = (1 << typeOffset) - 1
+}
+
+export function addCompositionApiRefTokens(
+  tsModule: RuntimeLibrary['typescript'],
+  program: ts.Program,
+  fileFsPath: string,
+  exists: SemanticTokenOffsetData[]
+): void {
+  const sourceFile = program.getSourceFile(fileFsPath);
+
+  if (!sourceFile) {
+    return;
+  }
+
+  const typeChecker = program.getTypeChecker();
+
+  walk(sourceFile, node => {
+    const possiblyRefValue =
+      ts.isIdentifier(node) && node.text === 'value' && ts.isPropertyAccessExpression(node.parent);
+    if (!possiblyRefValue) {
+      return;
+    }
+    const propertyAccess = node.parent;
+    if (!ts.isPropertyAccessExpression(propertyAccess)) {
+      return;
+    }
+
+    let parentSymbol = typeChecker.getTypeAtLocation(propertyAccess.expression).symbol;
+    if (!parentSymbol) {
+      return;
+    }
+
+    if (parentSymbol.flags & tsModule.SymbolFlags.Alias) {
+      parentSymbol = typeChecker.getAliasedSymbol(parentSymbol);
+    }
+
+    if (parentSymbol.name !== 'Ref') {
+      return;
+    }
+
+    const start = node.getStart();
+    const length = node.getWidth();
+    const exist = exists.find(token => token.start === start && token.length === length);
+    const encodedModifier = 1 << TokenModifier.refValue;
+
+    if (exist) {
+      exist.modifierSet |= encodedModifier;
+    } else {
+      exists.push({
+        classificationType: TokenType.property,
+        length: node.getEnd() - node.getStart(),
+        modifierSet: encodedModifier,
+        start: node.getStart()
+      });
+    }
+  });
+}
+
+function walk(node: ts.Node, callback: (node: ts.Node) => void) {
+  node.forEachChild(child => {
+    callback(child);
+    walk(child, callback);
+  });
+}
