@@ -69,7 +69,7 @@ import { getVueVersionKey } from '../utils/vueVersion';
 import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
 import { URI } from 'vscode-uri';
-import { getSemanticTokenLegends } from '../modes/script/semanticTokenLegend';
+import { getSemanticTokenLegends } from '../modes/script/semanticToken';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;

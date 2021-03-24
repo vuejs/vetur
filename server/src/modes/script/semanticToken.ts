@@ -1,4 +1,7 @@
+import ts from 'typescript';
 import { SemanticTokensLegend, SemanticTokenModifiers, SemanticTokenTypes } from 'vscode-languageserver';
+import { RuntimeLibrary } from '../../services/dependencyService';
+import { SemanticTokenOffsetData } from '../../types';
 
 /* tslint:disable:max-line-length */
 /**
@@ -31,7 +34,10 @@ export const enum TokenModifier {
   async,
   readonly,
   defaultLibrary,
-  local
+  local,
+
+  // vue composition api
+  refValue
 }
 
 export function getSemanticTokenLegends(): SemanticTokensLegend {
@@ -43,7 +49,10 @@ export function getSemanticTokenLegends(): SemanticTokensLegend {
     [TokenModifier.async, SemanticTokenModifiers.async],
     [TokenModifier.readonly, SemanticTokenModifiers.readonly],
     [TokenModifier.defaultLibrary, SemanticTokenModifiers.defaultLibrary],
-    [TokenModifier.local, 'local']
+    [TokenModifier.local, 'local'],
+
+    // vue
+    [TokenModifier.refValue, 'refValue']
   ] as const).forEach(([tsModifier, legend]) => (tokenModifiers[tsModifier] = legend));
 
   const tokenTypes: string[] = [];
