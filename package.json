@@ -570,7 +570,7 @@
     "@types/node": "^14.14.35",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.52.0",
-    "esbuild": "^0.8.55",
+    "esbuild": "^0.10.0",
     "fs-extra": "^9.1.0",
     "glob": "^7.1.6",
     "husky": "^5.1.3",
