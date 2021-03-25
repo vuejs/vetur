@@ -108,20 +108,12 @@ export function addCompositionApiRefTokens(
   const typeChecker = program.getTypeChecker();
 
   walk(sourceFile, node => {
-    const possiblyRefValue =
-      ts.isIdentifier(node) && node.text === 'value' && ts.isPropertyAccessExpression(node.parent);
-    if (!possiblyRefValue) {
+    if (!ts.isIdentifier(node) || node.text !== 'value' || !ts.isPropertyAccessExpression(node.parent)) {
       return;
     }
     const propertyAccess = node.parent;
-    if (!ts.isPropertyAccessExpression(propertyAccess)) {
-      return;
-    }
 
     let parentSymbol = typeChecker.getTypeAtLocation(propertyAccess.expression).symbol;
-    if (!parentSymbol) {
-      return;
-    }
 
     if (parentSymbol.flags & tsModule.SymbolFlags.Alias) {
       parentSymbol = typeChecker.getAliasedSymbol(parentSymbol);
