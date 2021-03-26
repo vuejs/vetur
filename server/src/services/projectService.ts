@@ -79,6 +79,7 @@ export async function createProjectService(
       'vue-html': config.vetur.validation.template,
       css: config.vetur.validation.style,
       postcss: config.vetur.validation.style,
+      sss: config.vetur.validation.style,
       scss: config.vetur.validation.style,
       less: config.vetur.validation.style,
       javascript: config.vetur.validation.script

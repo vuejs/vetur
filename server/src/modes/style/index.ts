@@ -39,6 +39,15 @@ export function getPostCSSMode(
   return getStyleMode(env, 'postcss', languageService, documentRegions, dependencyService);
 }
 
+export function getSugarSSMode(
+  env: EnvironmentService,
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
+): LanguageMode {
+  const languageService = getCSSLanguageService();
+  return getStyleMode(env, 'sss', languageService, documentRegions, dependencyService);
+}
+
 export function getSCSSMode(
   env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
@@ -83,7 +92,7 @@ function getStyleMode(
     },
     async doValidation(document) {
       syncConfig();
-      if (languageId === 'postcss') {
+      if (languageId === 'postcss' || 'sss') {
         return [];
       } else {
         const embedded = embeddedDocuments.refreshAndGet(document);
@@ -175,6 +184,7 @@ function getStyleMode(
       const parserMap: { [k: string]: BuiltInParserName } = {
         css: 'css',
         postcss: 'css',
+        sss: 'css',
         scss: 'scss',
         less: 'less'
       };
