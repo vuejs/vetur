@@ -13,6 +13,7 @@ const SCOPES: { [lang: string]: string } = {
   scss: 'source.css.scss',
   less: 'source.css.less',
   postcss: 'source.css.postcss',
+  sss: 'source.css.sugarss',
   sass: 'source.sass',
   stylus: 'source.stylus',
   js: 'source.js',
