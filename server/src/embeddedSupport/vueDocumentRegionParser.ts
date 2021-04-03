@@ -30,7 +30,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
     switch (token) {
       case TokenType.Styles:
         regions.push({
-          languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType)
+          languageId: /^(sass|scss|less|postcss|stylus|sss)$/.test(languageIdFromType)
             ? (languageIdFromType as LanguageId)
             : defaultCSSLang,
           start: scanner.getTokenOffset(),

@@ -39,6 +39,15 @@ export function getPostCSSMode(
   return getStyleMode(env, 'postcss', languageService, documentRegions, dependencyService);
 }
 
+export function getSugarSSMode(
+  env: EnvironmentService,
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  dependencyService: DependencyService
+): LanguageMode {
+  const languageService = getCSSLanguageService();
+  return getStyleMode(env, 'sss', languageService, documentRegions, dependencyService);
+}
+
 export function getSCSSMode(
   env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
