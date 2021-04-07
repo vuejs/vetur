@@ -804,7 +804,7 @@ export async function getJavascriptMode(
     getSemanticTokens(doc: TextDocument, range?: Range) {
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       const scriptText = scriptDoc.getText();
-      if (scriptText.trim().length > SEMANTIC_TOKEN_CONTENT_LENGTH_LIMIT) {
+      if (!range && scriptText.trim().length > SEMANTIC_TOKEN_CONTENT_LENGTH_LIMIT) {
         return null;
       }
 
