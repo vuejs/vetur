@@ -149,8 +149,8 @@ You can add this config at the correct position in your project or use `vetur.co
 If you want debug info, you can use `Vetur: show doctor info` command.   
 You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
 
-## Vetur find xxx, but they aren\'t in the project root.
-Vetur find the file, but it may not actually be what you want.
+## Vetur found xxx, but they aren\'t in the project root.
+Vetur found the file, but it may not actually be what you want.
 If it is wrong, it will cause same result as the previous two. [ref1](/guide/FAQ.html#vetur-can-t-find-tsconfig-json-jsconfig-json-in-xxxx-xxxxxx), [ref2](/guide/FAQ.html#vetur-can-t-find-package-json-in-xxxx-xxxxxx)
 
 You can add this config at the correct position in your project or use `vetur.config.js` to set file path.

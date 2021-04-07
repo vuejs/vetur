@@ -276,8 +276,8 @@ export class VLS {
         ].includes(projectConfig.tsconfigPath ?? '')
       ) {
         showWarningAndLearnMore(
-          `Vetur find \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
-          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
+          `Vetur found \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
+          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-found-xxx-but-they-aren-t-in-the-project-root'
         );
       }
     }
@@ -295,8 +295,8 @@ export class VLS {
         normalizeFileNameResolve(projectConfig.rootFsPath, 'package.json') !== projectConfig.packagePath
       ) {
         showWarningAndLearnMore(
-          `Vetur find \`package.json\`/, but they aren\'t in the project root.`,
-          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
+          `Vetur found \`package.json\`/, but it isn\'t in the project root.`,
+          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-found-xxx-but-they-aren-t-in-the-project-root'
         );
       }
     }
