@@ -4618,10 +4618,10 @@ vscode-css-languageservice@5.1.0:
     vscode-nls "^5.0.0"
     vscode-uri "^3.0.2"
 
-vscode-emmet-helper@2.4.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-2.4.2.tgz#98dc3275a22668f0e0ef9f2ee1fa76653d71e78f"
-  integrity sha512-j6N6xBn0NOigk2RYWESFlsnMQNJm5B10UUgOeHxRpm66Kck9Bq1nxwy6qT9eqKvzxz4hpC29Xv4aPGlOzsKw3w==
+vscode-emmet-helper@2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-2.6.2.tgz#777b471a7851ba0ca8e4151533be7f92511f39b0"
+  integrity sha512-SkL1WjZZsA+bfTo52QH4PgqXCQAJSqzOmJtAY3rOl17MKbY6iJhVv2T26PshjmUnHoXnXMNa7PcLMCS75RsQDQ==
   dependencies:
     emmet "^2.3.0"
     jsonc-parser "^2.3.0"
