@@ -516,6 +516,11 @@
           "default": true,
           "description": "Whether to automatic updating import path when rename or move a file"
         },
+        "vetur.languageFeatures.semanticTokens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to enable semantic highlighting. Currently only works for typescript"
+        },
         "vetur.trace.server": {
           "type": "string",
           "enum": [
@@ -555,7 +560,14 @@
           "description": "Enable template interpolation service that offers hover / definition / references in Vue interpolations."
         }
       }
-    }
+    },
+    "semanticTokenScopes": [
+      {
+        "scopes": {
+          "property.refValue": ["entity.name.function"]
+        }
+      }
+    ]
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.1.0",

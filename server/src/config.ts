@@ -65,6 +65,7 @@ export interface VLSConfig {
     languageFeatures: {
       codeActions: boolean;
       updateImportOnFileMove: boolean;
+      semanticTokens: boolean;
     };
     trace: {
       server: 'off' | 'messages' | 'verbose';
@@ -128,7 +129,8 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       },
       languageFeatures: {
         codeActions: true,
-        updateImportOnFileMove: true
+        updateImportOnFileMove: true,
+        semanticTokens: true
       },
       trace: {
         server: 'off'

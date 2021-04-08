@@ -35,3 +35,19 @@ export interface OrganizeImportsActionData extends BaseCodeActionData {
 }
 
 export type CodeActionData = RefactorActionData | CombinedFixActionData | OrganizeImportsActionData;
+
+interface SemanticTokenClassification {
+  classificationType: number;
+  modifierSet: number;
+}
+
+export interface SemanticTokenData extends SemanticTokenClassification {
+  line: number;
+  character: number;
+  length: number;
+}
+
+export interface SemanticTokenOffsetData extends SemanticTokenClassification {
+  start: number;
+  length: number;
+}
