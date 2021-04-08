@@ -3,10 +3,11 @@
 ### Not Released Yet
 
 - Add `--log-level` option for `vti diagnostics` to configure log level to print. #2752.
+- 🙌 Semantic tokens for typescript and highlight `.value` if using composition API. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2802 #1904 # 2434
 
 ### 0.33.1 | 2021-03-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.33.1/vspackage)
 
-- Added new ts and js snippets for the Composition API. Thanks to contribution from [@Namchee](https://github.com/Namchee). #2741
+- 🙌 Added new ts and js snippets for the Composition API. Thanks to contribution from [@Namchee](https://github.com/Namchee). #2741
 - Fix prefix dot folder or file name with eslint, and effect other diagnostics. #2717
 
 ### 0.33.0 | 2021-03-02 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.33.0/vspackage)
@@ -18,8 +19,8 @@
 - 🙌 Fix `v-model` usage in Vue 3 where default prop name is `modelValue` instead of `value`. Thanks to contribution from [@yassipad](https://github.com/yassipad). #2647.
 - Upgrade `typescript` to 4.2.2.
 - Improve vue version detection. Thanks to contribution from [@visualfanatic](https://github.com/visualfanatic). #2740.
-- allow `vetur.config.cjs` for project config. Thanks to contribution from [@vitaliytv](https://github.com/vitaliytv).
-- Update import on file rename when typescript and javascript. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2651 #820.
+- 🙌 allow `vetur.config.cjs` for project config. Thanks to contribution from [@vitaliytv](https://github.com/vitaliytv).
+- 🙌 Update import on file rename when typescript and javascript. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2651 #820.
 - Fix `vetur.completion.tagCasing` when global components.
 
 ### 0.32.0 | 2021-01-21 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.32.0/vspackage)
@@ -82,7 +83,7 @@ Reference: https://vuejs.github.io/vetur/reference/
 - Warn some probably problem when open project.
 - Add `Vetur: doctor` command for debug.
 - Improve docs.
-- Support yarn PnP support. Thanks to contribution from [@merceyz](https://github.com/merceyz). #2478.
+- 🙌 Support yarn PnP support. Thanks to contribution from [@merceyz](https://github.com/merceyz). #2478.
 
 
 ### 0.30.3 | 2020-11-26 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.3/vspackage)
@@ -95,14 +96,14 @@ Reference: https://vuejs.github.io/vetur/reference/
 ### 0.30.2 | 2020-11-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.2/vspackage)
 
 - Fix high CPU usage when huge project. #2468
-- Fix high CPU usage when template tag self closed. Thanks to help from [@Shinigami92](https://github.com/Shinigami92). #2468
+- 🙌 Fix high CPU usage when template tag self closed. Thanks to help from [@Shinigami92](https://github.com/Shinigami92). #2468
 - Fix formatting css problem with prettier. #2467
 
 
 ### 0.30.1 | 2020-11-12 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.1/vspackage)
 
-- Fix corner case when auto import component failed. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2461.
-- Fix the `template lang='pug'` node will be cleared when formatting the vue file. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2460.
+- 🙌 Fix corner case when auto import component failed. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2461.
+- 🙌 Fix the `template lang='pug'` node will be cleared when formatting the vue file. Thanks to contribution from [@yoyo930021](https://github.com/yoyo930021). #2460.
 
 
 ### 0.30.0 | 2020-11-11 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.30.0/vspackage)
