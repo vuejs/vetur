@@ -21,7 +21,7 @@
     "chalk": "^4.1.0",
     "glob": "^7.1.2",
     "rollup": "^2.44.0",
-    "typescript": "^4.2.3",
+    "typescript": "^4.2.4",
     "vscode-languageclient": "^7.0.0",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-protocol": "^3.16.0",
