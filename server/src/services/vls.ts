@@ -391,8 +391,8 @@ export class VLS {
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
     this.lspConnection.onCodeActionResolve(this.onCodeActionResolve.bind(this));
     this.lspConnection.workspace.onWillRenameFiles(this.onWillRenameFiles.bind(this));
-    this.lspConnection.onRequest(SemanticTokensRequest.type, this.onSemanticToken.bind(this));
-    this.lspConnection.onRequest(SemanticTokensRangeRequest.type, this.onSemanticToken.bind(this));
+    this.lspConnection.languages.semanticTokens.on(this.onSemanticToken.bind(this));
+    this.lspConnection.languages.semanticTokens.onRange(this.onSemanticToken.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
@@ -629,10 +629,10 @@ export class VLS {
     };
   }
 
-  async onSemanticToken(params: SemanticTokensParams | SemanticTokensRangeParams): Promise<SemanticTokens | null> {
+  async onSemanticToken(params: SemanticTokensParams | SemanticTokensRangeParams): Promise<SemanticTokens> {
     const project = await this.getProjectService(params.textDocument.uri);
 
-    return project?.onSemanticTokens(params) ?? null;
+    return project?.onSemanticTokens(params) ?? { data: [] as number[] };
   }
 
   private triggerValidation(textDocument: TextDocument): void {

@@ -64,7 +64,7 @@ export interface ProjectService {
   onCodeAction(params: CodeActionParams): Promise<CodeAction[]>;
   onCodeActionResolve(action: CodeAction): Promise<CodeAction>;
   onWillRenameFile(fileRename: FileRename): Promise<TextDocumentEdit[]>;
-  onSemanticTokens(params: SemanticTokensParams | SemanticTokensRangeParams): Promise<SemanticTokens | null>;
+  onSemanticTokens(params: SemanticTokensParams | SemanticTokensRangeParams): Promise<SemanticTokens>;
   doValidate(doc: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[] | null>;
   dispose(): Promise<void>;
 }
@@ -356,10 +356,7 @@ export async function createProjectService(
 
       for (const mode of modes) {
         const tokenData = mode.mode.getSemanticTokens?.(doc, range);
-        // all or nothing
-        if (tokenData === null) {
-          return null;
-        }
+
         data.push(...(tokenData ?? []));
       }
 

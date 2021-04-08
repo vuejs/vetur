@@ -74,7 +74,7 @@ export interface LanguageMode {
   getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
   getFoldingRanges?(document: TextDocument): FoldingRange[];
   getRenameFileEdit?(renames: FileRename): TextDocumentEdit[];
-  getSemanticTokens?(document: TextDocument, range?: Range): SemanticTokenData[] | null;
+  getSemanticTokens?(document: TextDocument, range?: Range): SemanticTokenData[];
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;
