@@ -269,5 +269,8 @@ function getLanguageIdFromLangAttr(lang: string): LanguageId {
   if (languageIdFromType === 'ts') {
     languageIdFromType = 'typescript';
   }
+  if (languageIdFromType === 'vucript') {
+    languageIdFromType = 'typescript';
+  }
   return languageIdFromType as LanguageId;
 }
