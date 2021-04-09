@@ -47,7 +47,7 @@
     "@types/resolve": "1.20.0",
     "bootstrap-vue-helper-json": "^1.1.1",
     "codecov": "^3.8.1",
-    "core-js": "^3.10.0",
+    "core-js": "^3.10.1",
     "element-helper-json": "^2.0.6",
     "fast-glob": "^3.2.5",
     "glob": "^7.1.6",
