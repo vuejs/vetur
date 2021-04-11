@@ -59,7 +59,7 @@ Thanks to the following companies for supporting Vetur's development:
 - [Formatting](https://vuejs.github.io/vetur/guide/formatting.html)
 - [IntelliSense](https://vuejs.github.io/vetur/guide/intellisense.html)
 - [Debugging](https://vuejs.github.io/vetur/guide/debugging.html)
-- [Component Data](https://vuejs.github.io/vetur/guide/framework.html): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Component Data](https://vuejs.github.io/vetur/guide/component-data.html): auto-completion and hover-information for popular Vue frameworks and your own custom components
 - [Experimental Interpolation Features](https://vuejs.github.io/vetur/guide/interpolation.html): auto-completion, hover information and type-checking in Vue template
 - [VTI](https://vuejs.github.io/vetur/guide/vti.html): Surface template type-checking errors on CLI
 - [Global components](https://vuejs.github.io/vetur/guide/global-components.html): support define global components.
