@@ -26,7 +26,12 @@ import {
   CompletionParams,
   ExecuteCommandParams,
   FoldingRangeParams,
-  RenameFilesParams
+  RenameFilesParams,
+  SemanticTokensParams,
+  SemanticTokens,
+  SemanticTokensRangeParams,
+  SemanticTokensRequest,
+  SemanticTokensRangeRequest
 } from 'vscode-languageserver';
 import {
   ColorInformation,
@@ -44,9 +49,10 @@ import {
   FoldingRange,
   DocumentUri,
   CodeAction,
-  CodeActionKind
+  CodeActionKind,
+  TextDocumentIdentifier
 } from 'vscode-languageserver-types';
-import type { TextDocument } from 'vscode-languageserver-textdocument';
+import type { Range, TextDocument } from 'vscode-languageserver-textdocument';
 
 import { NULL_COMPLETION, NULL_HOVER, NULL_SIGNATURE } from '../modes/nullMode';
 import { createDependencyService, createNodeModulesPaths } from './dependencyService';
@@ -63,6 +69,7 @@ import { getVueVersionKey } from '../utils/vueVersion';
 import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
 import { URI } from 'vscode-uri';
+import { getSemanticTokenLegends } from '../modes/script/semanticToken';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -276,8 +283,8 @@ export class VLS {
         ].includes(projectConfig.tsconfigPath ?? '')
       ) {
         showWarningAndLearnMore(
-          `Vetur find \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
-          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
+          `Vetur found \`tsconfig.json\`/\`jsconfig.json\`, but they aren\'t in the project root.`,
+          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-found-xxx-but-they-aren-t-in-the-project-root'
         );
       }
     }
@@ -295,8 +302,8 @@ export class VLS {
         normalizeFileNameResolve(projectConfig.rootFsPath, 'package.json') !== projectConfig.packagePath
       ) {
         showWarningAndLearnMore(
-          `Vetur find \`package.json\`/, but they aren\'t in the project root.`,
-          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-find-xxx-but-they-aren-t-in-the-project-root'
+          `Vetur found \`package.json\`/, but it isn\'t in the project root.`,
+          'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-found-xxx-but-they-aren-t-in-the-project-root'
         );
       }
     }
@@ -384,6 +391,8 @@ export class VLS {
     this.lspConnection.onCodeAction(this.onCodeAction.bind(this));
     this.lspConnection.onCodeActionResolve(this.onCodeActionResolve.bind(this));
     this.lspConnection.workspace.onWillRenameFiles(this.onWillRenameFiles.bind(this));
+    this.lspConnection.languages.semanticTokens.on(this.onSemanticToken.bind(this));
+    this.lspConnection.languages.semanticTokens.onRange(this.onSemanticToken.bind(this));
 
     this.lspConnection.onDocumentColor(this.onDocumentColors.bind(this));
     this.lspConnection.onColorPresentation(this.onColorPresentations.bind(this));
@@ -620,6 +629,12 @@ export class VLS {
     };
   }
 
+  async onSemanticToken(params: SemanticTokensParams | SemanticTokensRangeParams): Promise<SemanticTokens> {
+    const project = await this.getProjectService(params.textDocument.uri);
+
+    return project?.onSemanticTokens(params) ?? { data: [] as number[] };
+  }
+
   private triggerValidation(textDocument: TextDocument): void {
     if (textDocument.uri.includes('node_modules')) {
       return;
@@ -713,7 +728,12 @@ export class VLS {
       executeCommandProvider: {
         commands: []
       },
-      foldingRangeProvider: true
+      foldingRangeProvider: true,
+      semanticTokensProvider: {
+        range: true,
+        full: true,
+        legend: getSemanticTokenLegends()
+      }
     };
   }
 }

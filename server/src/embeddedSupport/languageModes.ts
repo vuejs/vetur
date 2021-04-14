@@ -31,7 +31,7 @@ import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode, getSugarSSMode } 
 import { getJavascriptMode } from '../modes/script/javascript';
 import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
-import { DocumentContext } from '../types';
+import { DocumentContext, SemanticTokenData } from '../types';
 import { VueInfoService } from '../services/vueInfoService';
 import { DependencyService } from '../services/dependencyService';
 import { nullMode } from '../modes/nullMode';
@@ -74,6 +74,7 @@ export interface LanguageMode {
   getColorPresentations?(document: TextDocument, color: Color, range: Range): ColorPresentation[];
   getFoldingRanges?(document: TextDocument): FoldingRange[];
   getRenameFileEdit?(renames: FileRename): TextDocumentEdit[];
+  getSemanticTokens?(document: TextDocument, range?: Range): SemanticTokenData[];
 
   onDocumentChanged?(filePath: string): void;
   onDocumentRemoved(document: TextDocument): void;

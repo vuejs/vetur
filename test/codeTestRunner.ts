@@ -25,7 +25,7 @@ async function run(execPath: string, testWorkspaceRelativePath: string, mochaArg
 
   return await runTests({
     vscodeExecutablePath: execPath,
-    version: '1.52.1',
+    version: '1.53.2',
     extensionDevelopmentPath: EXT_ROOT,
     extensionTestsPath: extTestPath,
     extensionTestsEnv: mochaArgs,
@@ -81,7 +81,7 @@ function installMissingDependencies(fixturePath: string) {
 }
 
 async function go() {
-  const execPath = await downloadAndUnzipVSCode('1.52.1');
+  const execPath = await downloadAndUnzipVSCode('1.53.2');
   await runAllTests(execPath);
 }
 

@@ -44,7 +44,13 @@ import { BasicComponentInfo, VLSFormatConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
 import { getComponentInfo } from './componentInfo';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
-import { CodeActionData, CodeActionDataKind, OrganizeImportsActionData, RefactorActionData } from '../../types';
+import {
+  CodeActionData,
+  CodeActionDataKind,
+  OrganizeImportsActionData,
+  RefactorActionData,
+  SemanticTokenOffsetData
+} from '../../types';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import {
   isVirtualVueTemplateFile,
@@ -57,10 +63,17 @@ import { isVCancellationRequested, VCancellationToken } from '../../utils/cancel
 import { EnvironmentService } from '../../services/EnvironmentService';
 import { getCodeActionKind } from './CodeActionKindConverter';
 import { FileRename } from 'vscode-languageserver';
+import {
+  addCompositionApiRefTokens,
+  getTokenModifierFromClassification,
+  getTokenTypeFromClassification
+} from './semanticToken';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
 const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
+
+const SEMANTIC_TOKEN_CONTENT_LENGTH_LIMIT = 80000;
 
 export async function getJavascriptMode(
   serviceHost: IServiceHost,
@@ -788,6 +801,64 @@ export async function getJavascriptMode(
 
       return textDocumentEdit;
     },
+    getSemanticTokens(doc: TextDocument, range?: Range) {
+      const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
+      const scriptText = scriptDoc.getText();
+      if (scriptText.trim().length > SEMANTIC_TOKEN_CONTENT_LENGTH_LIMIT) {
+        return [];
+      }
+
+      const fileFsPath = getFileFsPath(doc.uri);
+      const textSpan = range
+        ? convertTextSpan(range, scriptDoc)
+        : {
+            start: 0,
+            length: scriptText.length
+          };
+      const { spans } = service.getEncodedSemanticClassifications(
+        fileFsPath,
+        textSpan,
+        tsModule.SemanticClassificationFormat.TwentyTwenty
+      );
+
+      const data: SemanticTokenOffsetData[] = [];
+      let index = 0;
+
+      while (index < spans.length) {
+        // [start, length, encodedClassification, start2, length2, encodedClassification2]
+        const start = spans[index++];
+        const length = spans[index++];
+        const encodedClassification = spans[index++];
+        const classificationType = getTokenTypeFromClassification(encodedClassification);
+        if (classificationType < 0) {
+          continue;
+        }
+
+        const modifierSet = getTokenModifierFromClassification(encodedClassification);
+
+        data.push({
+          start,
+          length,
+          classificationType,
+          modifierSet
+        });
+      }
+
+      const program = service.getProgram();
+      if (program) {
+        addCompositionApiRefTokens(tsModule, program, fileFsPath, data);
+      }
+
+      return data.map(({ start, ...rest }) => {
+        const startPosition = scriptDoc.positionAt(start);
+
+        return {
+          ...rest,
+          line: startPosition.line,
+          character: startPosition.character
+        };
+      });
+    },
     dispose() {
       jsDocuments.dispose();
     }
@@ -1113,4 +1184,14 @@ function getFoldingRangeKind(span: ts.OutliningSpan): FoldingRangeKind | undefin
     default:
       return undefined;
   }
+}
+
+function convertTextSpan(range: Range, doc: TextDocument): ts.TextSpan {
+  const start = doc.offsetAt(range.start);
+  const end = doc.offsetAt(range.end);
+
+  return {
+    start,
+    length: end - start
+  };
 }
