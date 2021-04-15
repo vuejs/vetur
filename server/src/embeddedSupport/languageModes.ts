@@ -27,7 +27,7 @@ import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { getLanguageModelCache, LanguageModelCache } from './languageModelCache';
 import { getVueDocumentRegions, VueDocumentRegions, LanguageId, LanguageRange } from './embeddedSupport';
 import { getVueMode } from '../modes/vue';
-import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode, getSugarSSMode } from '../modes/style';
+import { getCSSMode, getSCSSMode, getLESSMode, getPostCSSMode } from '../modes/style';
 import { getJavascriptMode } from '../modes/script/javascript';
 import { VueHTMLMode } from '../modes/template';
 import { getStylusMode } from '../modes/style/stylus';
@@ -92,7 +92,6 @@ export class LanguageModes {
     'vue-html': nullMode,
     css: nullMode,
     postcss: nullMode,
-    sss: nullMode,
     scss: nullMode,
     less: nullMode,
     sass: nullMode,
@@ -159,7 +158,6 @@ export class LanguageModes {
     this.modes['pug'] = getPugMode(env, services.dependencyService);
     this.modes['css'] = getCSSMode(env, this.documentRegions, services.dependencyService);
     this.modes['postcss'] = getPostCSSMode(env, this.documentRegions, services.dependencyService);
-    this.modes['sss'] = getSugarSSMode(env, this.documentRegions, services.dependencyService);
     this.modes['scss'] = getSCSSMode(env, this.documentRegions, services.dependencyService);
     this.modes['sass'] = new SassLanguageMode(env);
     this.modes['less'] = getLESSMode(env, this.documentRegions, services.dependencyService);

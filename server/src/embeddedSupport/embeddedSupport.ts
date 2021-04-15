@@ -8,7 +8,6 @@ export type LanguageId =
   | 'pug'
   | 'css'
   | 'postcss'
-  | 'sss'
   | 'scss'
   | 'sass'
   | 'less'
