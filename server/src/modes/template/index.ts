@@ -9,7 +9,6 @@ import { HTMLMode } from './htmlMode';
 import { VueInterpolationMode } from './interpolationMode';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { HTMLDocument, parseHTMLDocument } from './parser/htmlParser';
-import { inferVueVersion } from '../../utils/vueVersion';
 import { DependencyService, RuntimeLibrary } from '../../services/dependencyService';
 import { VCancellationToken } from '../../utils/cancellationToken';
 import { AutoImportSfcPlugin } from '../plugins/autoImportSfcPlugin';
@@ -70,8 +69,38 @@ export class VueHTMLMode implements LanguageMode {
     return this.vueInterpolationMode.doResolve(document, item);
   }
   doHover(document: TextDocument, position: Position): Hover {
+    // Return concatanated results from both vueInterpolationMode and htmlMode.
     const interpolationHover = this.vueInterpolationMode.doHover(document, position);
-    return interpolationHover.contents.length !== 0 ? interpolationHover : this.htmlMode.doHover(document, position);
+    let markdownContent = '';
+    if (interpolationHover.contents.length > 0) {
+      for (const content of interpolationHover.contents) {
+        if (typeof content === 'string') {
+          markdownContent += `${content}\n`;
+        } else {
+          markdownContent += `\`\`\`${content.language}\n${content.value}\n\`\`\`\n`;
+        }
+      }
+    }
+    const htmlResult = this.htmlMode.doHover(document, position);
+    if (htmlResult.contents && Array.isArray(htmlResult.contents)) {
+      for (const content of htmlResult.contents) {
+        if (typeof content === 'string') {
+          markdownContent += `${content}\n`;
+        } else {
+          markdownContent += `\`\`\`${content.language}\n${content.value}\n\`\`\`\n`;
+        }
+      }
+    } else if (typeof htmlResult.contents === 'string') {
+      markdownContent += `${htmlResult.contents}\n`;
+    } else if ('kind' in htmlResult.contents) {
+      markdownContent += `${htmlResult.contents.value}\n`;
+    } else {
+      markdownContent += `\`\`\`${htmlResult.contents.language}\n${htmlResult.contents.value}\n\`\`\`\n`;
+    }
+    return {
+      contents: { kind: 'markdown', value: markdownContent },
+      range: interpolationHover.range || htmlResult.range
+    };
   }
   findDocumentHighlight(document: TextDocument, position: Position) {
     return this.htmlMode.findDocumentHighlight(document, position);
