@@ -235,10 +235,10 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@prettier/plugin-pug@^1.13.5":
-  version "1.13.5"
-  resolved "https://registry.yarnpkg.com/@prettier/plugin-pug/-/plugin-pug-1.13.5.tgz#e269dd33e9721ba652046a99f3fe52606993f170"
-  integrity sha512-6t9cDDm2aPn6Q8Q8i8DLf9KkyqcrFV3zGA9t88kobLTdZOFV5f2aSJVKap1oz0Lhyo7PilrjtxndiP1DBVzRjg==
+"@prettier/plugin-pug@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@prettier/plugin-pug/-/plugin-pug-1.14.0.tgz#c00f3aedd9c1f8ab223e916052242b1d8662ed9c"
+  integrity sha512-BtSsN2vL57w9oq9q/1hUT649dRrsTvb9w3JXs6kEd+TNCsf6/bFzRK3rYb+rgFk7s3af7/dr0ibj3YQkHyGDMw==
   dependencies:
     pug-lexer "^5.0.0"
 
@@ -2435,10 +2435,10 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-js-beautify@^1.13.5:
-  version "1.13.5"
-  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.13.5.tgz#a08a97890cae55daf1d758d3f6577bd4a64d7014"
-  integrity sha512-MsXlH6Z/BiRYSkSRW3clNDqDjSpiSNOiG8xYVUBXt4k0LnGvDhlTGOlHX1VFtAdoLmtwjxMG5qiWKy/g+Ipv5w==
+js-beautify@^1.13.13:
+  version "1.13.13"
+  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.13.13.tgz#756907d1728f329f2b84c42efd56ad17514620bf"
+  integrity sha512-oH+nc0U5mOAqX8M5JO1J0Pw/7Q35sAdOsM5W3i87pir9Ntx6P/5Gx1xLNoK+MGyvHk4rqqRCE4Oq58H6xl2W7A==
   dependencies:
     config-chain "^1.1.12"
     editorconfig "^0.15.3"
