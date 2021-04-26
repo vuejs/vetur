@@ -8,7 +8,7 @@
     "element-ui": "^2.13.2"
   },
   "vetur": {
-    "tags": "./tags.json",
-    "attributes": "./attributes.json"
+    "attributes": "./attributes.json",
+    "tags": "./tags.json"
   }
 }
