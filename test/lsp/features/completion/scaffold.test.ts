@@ -21,6 +21,8 @@ describe('Should autocomplete scaffold snippets', () => {
       '<style> sass.vue ✌',
       '<style> scss-scoped.vue ✌',
       '<style> scss.vue ✌',
+      '<style> sss-scoped.vue ✌',
+      '<style> sss.vue ✌',
       '<style> stylus-scoped.vue ✌',
       '<style> stylus.vue ✌',
       '<script> javascript.vue ✌',

@@ -47,6 +47,7 @@ export function getSCSSMode(
   const languageService = getSCSSLanguageService();
   return getStyleMode(env, 'scss', languageService, documentRegions, dependencyService);
 }
+
 export function getLESSMode(
   env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,

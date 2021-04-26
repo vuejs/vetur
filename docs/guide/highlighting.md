@@ -15,7 +15,8 @@ Vetur supports syntax highlighting for the following languages:
 | `<style lang="scss">`    | `scss`    |
 | `<style lang="sass">`    | `sass`    | [Sass](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented)                                                                             |
 | `<style lang="less">`    | `less`    |
-| `<style lang="stylus">`  | `stylus`  | [language-stylus](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus)                                                                      |
+| `<style lang="stylus">`  | `stylus`  | [language-stylus](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus)
+| `<style lang="sss">`     | `sss`     |                                                           |
 | `<script>`               | `js`      |
 | `<script lang="ts">`     | `ts`      |
 | `<script lang="coffee">` | `coffee`  |

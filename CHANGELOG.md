@@ -4,6 +4,7 @@
 
 - Add `--log-level` option for `vti diagnostics` to configure log level to print. #2752.
 - 🙌 Semantic tokens for typescript and highlight `.value` if using composition API. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2802 #1904 # 2434
+- 🙌 Syntax Highlighting for SugarSS. Thanks to contribution from [@softwaredeveloptam](https://github.com/softwaredeveloptam). #2828.
 
 ### 0.33.1 | 2021-03-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.33.1/vspackage)
 
