@@ -33,6 +33,8 @@
   },
   "devDependencies": {
     "@prettier/plugin-pug": "^1.13.5",
+    "@sentry/node": "^6.2.3",
+    "@sentry/tracing": "^6.2.3",
     "@starptech/prettyhtml": "^0.10.0",
     "@types/eslint": "7.2.2",
     "@types/eslint-scope": "^3.7.0",
