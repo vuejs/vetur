@@ -120,10 +120,10 @@ suite('HTML Completion', () => {
     html`<input style="style" |`.has('style');
     html`<input :cl|ass="$style.input"`.has('class').become('<input :class="$style.input"');
 
-    html`<input @|`.has('mousemove').become('<input @mousemove="$1"');
+    html`<input @|`.has('@mousemove').become('<input @mousemove="$1"');
 
     // can listen to same event by adding modifiers
-    html`<input @mousemove="mousemove" @|`.has('mousemove').become('<input @mousemove="mousemove" @mousemove="$1"');
+    html`<input @mousemove="mousemove" @|`.has('@mousemove').become('<input @mousemove="mousemove" @mousemove="$1"');
   });
 
   test('Complete Value', () => {

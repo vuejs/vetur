@@ -27,4 +27,18 @@ describe('Should show hover info with component data', () => {
       range: sameLineRange(3, 14, 22)
     });
   });
+
+  it('shows attribute description for attribute with same name as html event', async () => {
+    await testHover(docUri, position(4, 15), {
+      contents: ['Custom error'],
+      range: sameLineRange(4, 13, 18)
+    });
+  });
+
+  it('shows attribute description for html event handler', async () => {
+    await testHover(docUri, position(4, 26), {
+      contents: ['```ts\n(property) "error": ($event: any) => () => void\n```'],
+      range: sameLineRange(4, 26, 31)
+    });
+  });
 });
