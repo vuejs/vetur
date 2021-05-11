@@ -36,7 +36,7 @@ To start using them, type:
 
 Three sources supplement Vetur with scaffold snippets:
 
-![Snippet Main](/images/snippet-main.png)
+![Snippet Main](../images/snippet-main.png)
 
 - 💼 Workspace. Located at `<WORKSPACE>/.vscode/vetur/snippets`. These scaffold snippets are only available in the workspace.
 - 🗒️ User data directory. You can open the folder with the command `Vetur: Open user scaffold snippet folder`. These scaffold snippets are available in all workspaces.
@@ -68,7 +68,7 @@ You can customize the suffix and turn sources on/off with `vetur.completion.scaf
 }
 ```
 
-![Snippet Partial](/images/snippet-partial.png)
+![Snippet Partial](../images/snippet-partial.png)
 
 #### Snippet Syntax
 
