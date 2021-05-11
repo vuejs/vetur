@@ -18,6 +18,9 @@ import { EnvironmentService } from '../../../services/EnvironmentService';
 import { sync } from 'glob';
 import { NULL_COMPLETION } from '../../nullMode';
 
+import fs from 'fs';
+import path from 'path';
+
 export function getStylusMode(
   env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
@@ -101,8 +104,22 @@ export function getStylusMode(
       const stylusSupremacyFormattingOptions = stylusSupremacy.createFormattingOptions(
         env.getConfig().stylusSupremacy || {}
       );
+
+      // read .stylintrc file if it exists and give it priority over VS Code settings
+      const stylintrcPath = path.join(env.getProjectRoot(), '.stylintrc');
+      let stylusStylintOptions = {};
+      if (fs.existsSync(stylintrcPath)) {
+        try {
+          const stylintOptions = JSON.parse(fs.readFileSync(stylintrcPath, 'utf-8'));
+          stylusStylintOptions = stylusSupremacy.createFormattingOptionsFromStylint(stylintOptions);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
       const formattingOptions = {
         ...stylusSupremacyFormattingOptions,
+        ...stylusStylintOptions,
         tabStopChar,
         newLineChar: '\n'
       };
