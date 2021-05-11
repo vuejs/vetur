@@ -2,7 +2,7 @@
   "dependencies": {
     "buefy": "^0.8.16",
     "element-ui": "^2.4.5",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "quasar": "^1.0.0-beta.0",
     "vue": "^2.6.11",
     "vue-router": "^3.0.1",
