@@ -515,8 +515,8 @@ export class VLS {
 
   async onCompletion(params: CompletionParams): Promise<CompletionList> {
     const project = await this.getProjectService(params.textDocument.uri);
-    const result = project?.onCompletion(params) ?? NULL_COMPLETION;
-    return result;
+
+    return project?.onCompletion(params) ?? NULL_COMPLETION;
   }
 
   async onCompletionResolve(item: CompletionItem): Promise<CompletionItem> {
