@@ -30,6 +30,7 @@ export interface VLSConfig {
     useWorkspaceDependencies: boolean;
     completion: {
       autoImport: boolean;
+      fileExtensionCompletion: boolean;
       tagCasing: 'initial' | 'kebab';
       scaffoldSnippetSources: {
         workspace: string;
@@ -106,6 +107,7 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       },
       completion: {
         autoImport: false,
+        fileExtensionCompletion: true,
         tagCasing: 'initial',
         scaffoldSnippetSources: {
           workspace: '💼',

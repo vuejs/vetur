@@ -50,7 +50,8 @@ import {
   DocumentUri,
   CodeAction,
   CodeActionKind,
-  TextDocumentIdentifier
+  TextDocumentIdentifier,
+  CompletionItemKind
 } from 'vscode-languageserver-types';
 import type { Range, TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -514,8 +515,8 @@ export class VLS {
 
   async onCompletion(params: CompletionParams): Promise<CompletionList> {
     const project = await this.getProjectService(params.textDocument.uri);
-
-    return project?.onCompletion(params) ?? NULL_COMPLETION;
+    const result = project?.onCompletion(params) ?? NULL_COMPLETION;
+    return result;
   }
 
   async onCompletionResolve(item: CompletionItem): Promise<CompletionItem> {
@@ -523,7 +524,12 @@ export class VLS {
       return item;
     }
     const project = await this.getProjectService(item.data.uri);
-
+    if (
+      item.kind === CompletionItemKind.File &&
+      (this.workspaceConfig as VLSFullConfig).vetur.completion.fileExtensionCompletion
+    ) {
+      item.insertText = item.detail;
+    }
     return project?.onCompletionResolve(item) ?? item;
   }
 
