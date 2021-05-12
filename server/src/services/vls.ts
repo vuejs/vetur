@@ -524,7 +524,7 @@ export class VLS {
       return item;
     }
     const project = await this.getProjectService(item.data.uri);
-    if (item.kind === CompletionItemKind.File && item.detail?.endsWith('.vue')) {
+    if (item.kind === CompletionItemKind.File && !item.detail?.endsWith('.js') && !item.detail?.endsWith('.ts')) {
       item.insertText = item.detail;
     }
     return project?.onCompletionResolve(item) ?? item;
