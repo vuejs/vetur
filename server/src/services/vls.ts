@@ -524,10 +524,7 @@ export class VLS {
       return item;
     }
     const project = await this.getProjectService(item.data.uri);
-    if (
-      item.kind === CompletionItemKind.File &&
-      (this.workspaceConfig as VLSFullConfig).vetur.completion.fileExtensionCompletion
-    ) {
+    if (item.kind === CompletionItemKind.File && item.detail?.endsWith('.vue')) {
       item.insertText = item.detail;
     }
     return project?.onCompletionResolve(item) ?? item;

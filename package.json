@@ -231,11 +231,6 @@
           "default": true,
           "description": "Include completion for module export and auto import them"
         },
-        "vetur.completion.fileExtensionCompletion": {
-          "type": "boolean",
-          "default": true,
-          "description": "Add file extension when you accept the path completion"
-        },
         "vetur.completion.scaffoldSnippetSources": {
           "type": "object",
           "default": {
