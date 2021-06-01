@@ -880,7 +880,7 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
     collectAttributes: (tag: string, collector: AttributeCollector) => {
       collectAttributesDefault(tag, collector, HTML_TAGS, globalAttributes);
       eventHandlers.forEach(handler => {
-        collector(handler, 'event');
+        collector('@' + handler, 'event');
       });
     },
     priority: Priority.Platform,

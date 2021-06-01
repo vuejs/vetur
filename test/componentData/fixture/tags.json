@@ -1,6 +1,6 @@
 {
   "foo-tag": {
     "description": "A foo tag",
-    "attributes": ["foo-attr", "handle-foo"]
+    "attributes": ["error", "foo-attr", "handle-foo"]
   }
 }
