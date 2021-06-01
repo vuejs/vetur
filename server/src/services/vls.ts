@@ -523,6 +523,7 @@ export class VLS {
       return item;
     }
     const project = await this.getProjectService(item.data.uri);
+
     return project?.onCompletionResolve(item) ?? item;
   }
 
