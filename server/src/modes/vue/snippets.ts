@@ -152,7 +152,7 @@ function computeDetailsForFileIcon(s: Snippet) {
       return s.name + ' | .html';
     case 'style':
       return s.name + ' | .css';
-    case 'template':
+    case 'script':
       return s.name + ' | .js';
     case 'custom':
       return s.name;
