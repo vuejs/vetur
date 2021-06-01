@@ -594,7 +594,7 @@
     "@types/lodash": "^4.14.168",
     "@types/minimist": "^1.2.1",
     "@types/mocha": "^8.2.2",
-    "@types/node": "^15.0.2",
+    "@types/node": "^15.6.1",
     "@types/shelljs": "^0.8.8",
     "@types/vscode": "^1.52.0",
     "esbuild": "^0.8.55",
@@ -615,7 +615,7 @@
     "shelljs": "^0.8.4",
     "ts-node": "^9.1.1",
     "tslint": "^6.1.3",
-    "typescript": "^4.2.4",
+    "typescript": "^4.3.2",
     "vscode-languageclient": "^7.0.0",
     "vscode-languageserver-types": "^3.16.0",
     "vscode-test": "^1.5.2"
