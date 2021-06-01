@@ -43,6 +43,7 @@ import { getFileFsPath } from '../utils/paths';
 import { DependencyService } from './dependencyService';
 import { DocumentService } from './documentService';
 import { EnvironmentService } from './EnvironmentService';
+import { RefTokensService } from './RefTokenService';
 import { VueInfoService } from './vueInfoService';
 
 export interface ProjectService {
@@ -73,7 +74,8 @@ export async function createProjectService(
   env: EnvironmentService,
   documentService: DocumentService,
   globalSnippetDir: string | undefined,
-  dependencyService: DependencyService
+  dependencyService: DependencyService,
+  refTokensService: RefTokensService
 ): Promise<ProjectService> {
   const vueInfoService = new VueInfoService();
   const languageModes = new LanguageModes();
@@ -95,7 +97,8 @@ export async function createProjectService(
     env,
     {
       infoService: vueInfoService,
-      dependencyService
+      dependencyService,
+      refTokensService
     },
     globalSnippetDir
   );

@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import { SemanticTokensLegend, SemanticTokenModifiers, SemanticTokenTypes } from 'vscode-languageserver';
 import { RuntimeLibrary } from '../../services/dependencyService';
+import { RefTokensService } from '../../services/RefTokenService';
 import { SemanticTokenOffsetData } from '../../types';
 
 /* tslint:disable:max-line-length */
@@ -97,16 +98,18 @@ export function addCompositionApiRefTokens(
   tsModule: RuntimeLibrary['typescript'],
   program: ts.Program,
   fileFsPath: string,
-  exists: SemanticTokenOffsetData[]
-): void {
+  exists: SemanticTokenOffsetData[],
+  refTokensService: RefTokensService
+): [number, number][] {
   const sourceFile = program.getSourceFile(fileFsPath);
 
   if (!sourceFile) {
-    return;
+    return [];
   }
 
   const typeChecker = program.getTypeChecker();
 
+  const tokens: [number, number][] = [];
   walk(sourceFile, node => {
     if (!ts.isIdentifier(node) || node.text !== 'value' || !ts.isPropertyAccessExpression(node.parent)) {
       return;
@@ -125,6 +128,7 @@ export function addCompositionApiRefTokens(
 
     const start = node.getStart();
     const length = node.getWidth();
+    tokens.push([start, start + length]);
     const exist = exists.find(token => token.start === start && token.length === length);
     const encodedModifier = 1 << TokenModifier.refValue;
 
@@ -139,6 +143,8 @@ export function addCompositionApiRefTokens(
       });
     }
   });
+
+  return tokens;
 }
 
 function walk(node: ts.Node, callback: (node: ts.Node) => void) {

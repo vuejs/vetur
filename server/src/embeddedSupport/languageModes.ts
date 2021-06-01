@@ -42,10 +42,12 @@ import { VCancellationToken } from '../utils/cancellationToken';
 import { createAutoImportSfcPlugin } from '../modes/plugins/autoImportSfcPlugin';
 import { EnvironmentService } from '../services/EnvironmentService';
 import { FileRename } from 'vscode-languageserver';
+import { RefTokensService } from '../services/RefTokenService';
 
 export interface VLSServices {
   dependencyService: DependencyService;
-  infoService?: VueInfoService;
+  infoService: VueInfoService;
+  refTokensService: RefTokensService;
 }
 
 export interface LanguageMode {
@@ -148,7 +150,8 @@ export class LanguageModes {
       this.documentRegions,
       services.dependencyService,
       env.getGlobalComponentInfos(),
-      services.infoService
+      services.infoService,
+      services.refTokensService
     );
     autoImportSfcPlugin.setGetConfigure(env.getConfig);
     autoImportSfcPlugin.setGetJSResolve(jsMode.doResolve!);

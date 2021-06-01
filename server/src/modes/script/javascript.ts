@@ -68,6 +68,7 @@ import {
   getTokenModifierFromClassification,
   getTokenTypeFromClassification
 } from './semanticToken';
+import { RefTokensService } from '../../services/RefTokenService';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -81,7 +82,8 @@ export async function getJavascriptMode(
   documentRegions: LanguageModelCache<VueDocumentRegions>,
   dependencyService: DependencyService,
   globalComponentInfos: BasicComponentInfo[],
-  vueInfoService?: VueInfoService
+  vueInfoService: VueInfoService,
+  refTokensService: RefTokensService
 ): Promise<LanguageMode> {
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.refreshAndGet(document);
@@ -846,7 +848,11 @@ export async function getJavascriptMode(
 
       const program = service.getProgram();
       if (program) {
-        addCompositionApiRefTokens(tsModule, program, fileFsPath, data);
+        const refTokens = addCompositionApiRefTokens(tsModule, program, fileFsPath, data, refTokensService);
+        refTokensService.send(
+          doc.uri,
+          refTokens.map(t => Range.create(scriptDoc.positionAt(t[0]), scriptDoc.positionAt(t[1])))
+        );
       }
 
       return data.map(({ start, ...rest }) => {

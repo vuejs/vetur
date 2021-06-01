@@ -1,5 +1,5 @@
 import vscode from 'vscode';
-import { LanguageClient } from 'vscode-languageclient/node';
+import { LanguageClient, Range } from 'vscode-languageclient/node';
 import { generateGrammarCommandHandler } from './commands/generateGrammarCommand';
 import { registerLanguageConfigurations } from './languages';
 import { initializeLanguageClient } from './client';
@@ -97,6 +97,14 @@ function registerRestartVLSCommand(context: vscode.ExtensionContext, client: Lan
 function registerCustomClientNotificationHandlers(client: LanguageClient) {
   client.onNotification('$/showVirtualFile', (virtualFileSource: string, prettySourceMap: string) => {
     setVirtualContents(virtualFileSource, prettySourceMap);
+  });
+
+  // underline with ref value
+  const refTokenDecorationType = vscode.window.createTextEditorDecorationType({ textDecoration: 'underline' });
+  client.onNotification('$/refTokens', ({ uri, tokens }) => {
+    vscode.window.visibleTextEditors
+      .find(editor => editor.document.uri.toString() === client.protocol2CodeConverter.asUri(uri).toString())
+      ?.setDecorations(refTokenDecorationType, client.protocol2CodeConverter.asRanges(tokens));
   });
 }
 

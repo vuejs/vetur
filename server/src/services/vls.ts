@@ -70,6 +70,7 @@ import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
 import { URI } from 'vscode-uri';
 import { getSemanticTokenLegends } from '../modes/script/semanticToken';
+import { createRefTokensService } from './RefTokenService';
 
 interface ProjectConfig {
   vlsFullConfig: VLSFullConfig;
@@ -368,7 +369,8 @@ export class VLS {
       ),
       this.documentService,
       this.globalSnippetDir,
-      dependencyService
+      dependencyService,
+      createRefTokensService(this.lspConnection)
     );
     this.projects.set(projectConfig.rootFsPath, project);
     workDoneProgress.done();
