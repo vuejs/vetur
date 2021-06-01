@@ -50,7 +50,7 @@
     "core-js": "^3.13.0",
     "element-helper-json": "^2.0.6",
     "fast-glob": "^3.2.5",
-    "glob": "^7.1.6",
+    "glob": "^7.1.7",
     "gridsome-helper-json": "^1.0.3",
     "js-beautify": "^1.13.13",
     "lodash": "^4.17.21",
