@@ -50,8 +50,7 @@ import {
   DocumentUri,
   CodeAction,
   CodeActionKind,
-  TextDocumentIdentifier,
-  CompletionItemKind
+  TextDocumentIdentifier
 } from 'vscode-languageserver-types';
 import type { Range, TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -524,9 +523,6 @@ export class VLS {
       return item;
     }
     const project = await this.getProjectService(item.data.uri);
-    if (item.kind === CompletionItemKind.File && !item.detail?.endsWith('.js') && !item.detail?.endsWith('.ts')) {
-      item.insertText = item.detail;
-    }
     return project?.onCompletionResolve(item) ?? item;
   }
 
