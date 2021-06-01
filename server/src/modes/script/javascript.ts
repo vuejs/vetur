@@ -260,7 +260,10 @@ export async function getJavascriptMode(
               source: entry.source
             }
           } as CompletionItem;
-
+          // fix: https://github.com/vuejs/vetur/issues/2908
+          if (item.kind === CompletionItemKind.File && !item.detail?.endsWith('.js') && !item.detail?.endsWith('.ts')) {
+            item.insertText = item.detail;
+          }
           if (entry.kindModifiers) {
             const kindModifiers = parseKindModifier(entry.kindModifiers ?? '');
             if (kindModifiers.optional) {
