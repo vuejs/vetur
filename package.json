@@ -604,7 +604,7 @@
     "glob": "^7.1.6",
     "husky": "^6.0.0",
     "js-yaml": "^4.1.0",
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^11.0.0",
     "minimist": "^1.2.5",
     "mocha": "^8.4.0",
     "npm-run-all": "^4.1.5",
