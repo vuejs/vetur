@@ -7,7 +7,8 @@
 - 🙌 Syntax Highlighting for SugarSS. Thanks to contribution from [@softwaredeveloptam](https://github.com/softwaredeveloptam). #2828.
 - 🙌 Fix component data not shown in hover when template interpolation is on. Thanks to contribution from [@rchl](https://github.com/rchl). #2879 #2878.
 - 🙌 Look for a `.stylintrc` file when formatting stylus code. Thanks to contribution from [@ntraut](https://github.com/ntraut). #2689.
-- Add paths option for `vti diagnostics` to diagnose only sub files or directories. #2455.
+- 🙌 Add paths option for `vti diagnostics` to diagnose only sub files or directories. Thanks to contribution from [@gregoirechauvet](https://github.com/gregoirechauvet). #2455.
+- 🙌 Fix attribute description not showing if its name matches html event. Thanks to contribution from [@rchl](https://github.com/rchl). #2901
 
 ### 0.33.1 | 2021-03-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.33.1/vspackage)
 
