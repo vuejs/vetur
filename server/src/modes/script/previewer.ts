@@ -49,26 +49,26 @@ function getTagBodyText(tag: ts.JSDocTagInfo): string | undefined {
   switch (tag.name) {
     case 'example':
       // check for caption tags, fix for #79704
-      const captionTagMatches = tag.text.match(/<caption>(.*?)<\/caption>\s*(\r\n|\n)/);
+      const captionTagMatches = plain(tag.text).match(/<caption>(.*?)<\/caption>\s*(\r\n|\n)/);
       if (captionTagMatches && captionTagMatches.index === 0) {
-        return captionTagMatches[1] + '\n\n' + makeCodeblock(tag.text.substr(captionTagMatches[0].length));
+        return captionTagMatches[1] + '\n\n' + makeCodeblock(plain(tag.text).substr(captionTagMatches[0].length));
       } else {
-        return makeCodeblock(tag.text);
+        return makeCodeblock(plain(tag.text));
       }
     case 'author':
       // fix obsucated email address, #80898
-      const emailMatch = tag.text.match(/(.+)\s<([-.\w]+@[-.\w]+)>/);
+      const emailMatch = plain(tag.text).match(/(.+)\s<([-.\w]+@[-.\w]+)>/);
 
       if (emailMatch === null) {
-        return tag.text;
+        return plain(tag.text);
       } else {
         return `${emailMatch[1]} ${emailMatch[2]}`;
       }
     case 'default':
-      return makeCodeblock(tag.text);
+      return makeCodeblock(plain(tag.text));
   }
 
-  return processInlineTags(tag.text);
+  return processInlineTags(plain(tag.text));
 }
 
 export function getTagDocumentation(tag: ts.JSDocTagInfo): string | undefined {
@@ -77,7 +77,7 @@ export function getTagDocumentation(tag: ts.JSDocTagInfo): string | undefined {
     case 'extends':
     case 'param':
     case 'template':
-      const body = (tag.text || '').split(/^(\S+)\s*-?\s*/);
+      const body = plain(tag.text || '').split(/^(\S+)\s*-?\s*/);
       if (body?.length === 3) {
         const param = body[1];
         const doc = body[2];

@@ -257,7 +257,8 @@ export async function getJavascriptMode(
               languageId: scriptDoc.languageId,
               uri: doc.uri,
               offset,
-              source: entry.source
+              source: entry.source,
+              tsData: entry.data
             }
           } as CompletionItem;
           // fix: https://github.com/vuejs/vetur/issues/2908
@@ -325,7 +326,8 @@ export async function getJavascriptMode(
         item.label,
         getFormatCodeSettings(env.getConfig()),
         item.data.source,
-        getUserPreferences(scriptDoc)
+        getUserPreferences(scriptDoc),
+        item.data.tsData
       );
 
       if (details && item.kind !== CompletionItemKind.File && item.kind !== CompletionItemKind.Folder) {
@@ -1076,7 +1078,7 @@ function convertOptions(
   });
 }
 
-function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
+export function getFormatCodeSettings(config: any): ts.FormatCodeSettings {
   return {
     tabSize: config.vetur.format.options.tabSize,
     indentSize: config.vetur.format.options.tabSize,

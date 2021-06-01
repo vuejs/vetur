@@ -140,8 +140,8 @@ function getInsertInOptionAPIPos(
     if (decoratorArgumentType && decoratorArgumentType.symbol.valueDeclaration) {
       return decoratorArgumentType.symbol.valueDeclaration.getStart() + 1;
     }
-  } else {
-    return defaultExportType.symbol?.valueDeclaration?.getStart() + 1;
+  } else if (defaultExportType.symbol?.valueDeclaration) {
+    return defaultExportType.symbol.valueDeclaration.getStart() + 1;
   }
   return undefined;
 }
@@ -811,7 +811,7 @@ export function getClassDecoratorArgumentType(
   defaultExportNode: ts.Type,
   checker: ts.TypeChecker
 ) {
-  const decorators = defaultExportNode.symbol.valueDeclaration.decorators;
+  const decorators = defaultExportNode.symbol.valueDeclaration?.decorators;
   if (!decorators || decorators.length === 0) {
     return undefined;
   }

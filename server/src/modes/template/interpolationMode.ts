@@ -26,7 +26,7 @@ import { VueInfoService } from '../../services/vueInfoService';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { getFileFsPath } from '../../utils/paths';
 import { NULL_COMPLETION } from '../nullMode';
-import { languageServiceIncludesFile } from '../script/javascript';
+import { getFormatCodeSettings, languageServiceIncludesFile } from '../script/javascript';
 import * as Previewer from '../script/previewer';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
@@ -190,7 +190,8 @@ export class VueInterpolationMode implements LanguageMode {
           languageId: 'vue-html',
           uri: templateDoc.uri,
           offset: position,
-          source: entry.source
+          source: entry.source,
+          tsData: entry.data
         }
       };
     });
@@ -237,6 +238,7 @@ export class VueInterpolationMode implements LanguageMode {
       templateFileFsPath,
       mappedOffset,
       item.label,
+      undefined,
       undefined,
       undefined,
       undefined
