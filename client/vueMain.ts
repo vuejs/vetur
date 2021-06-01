@@ -101,11 +101,27 @@ function registerCustomClientNotificationHandlers(client: LanguageClient) {
 
   // underline with ref value
   const refTokenDecorationType = vscode.window.createTextEditorDecorationType({ textDecoration: 'underline' });
+  const refTokenFiles = new Map<string, vscode.Range[]>();
+
+  function underlineRefTokens() {
+    if (!vscode.window.activeTextEditor) {
+      return;
+    }
+    const tokens = refTokenFiles.get(vscode.window.activeTextEditor?.document.uri.toString());
+    if (!tokens) {
+      return;
+    }
+    vscode.window.activeTextEditor.setDecorations(refTokenDecorationType, tokens);
+  }
+
   client.onNotification('$/refTokens', ({ uri, tokens }) => {
-    vscode.window.visibleTextEditors
-      .find(editor => editor.document.uri.toString() === client.protocol2CodeConverter.asUri(uri).toString())
-      ?.setDecorations(refTokenDecorationType, client.protocol2CodeConverter.asRanges(tokens));
+    refTokenFiles.set(
+      client.protocol2CodeConverter.asUri(uri).toString(),
+      client.protocol2CodeConverter.asRanges(tokens)
+    );
+    underlineRefTokens();
   });
+  vscode.window.onDidChangeActiveTextEditor(() => underlineRefTokens());
 }
 
 function registerCustomLSPCommands(context: vscode.ExtensionContext, client: LanguageClient) {
