@@ -38,11 +38,7 @@ export class CompletionAsserter {
   has(label: string) {
     const items = this.items;
     const matches = items.filter(completion => completion.label === label);
-    assert.equal(
-      matches.length,
-      1,
-      label + ' should only existing once: Actual: ' + items.map(c => c.label).join(', ')
-    );
+    assert.equal(matches.length, 1, label + ' should exist once: Actual: ' + items.map(c => c.label).join(', '));
     this.lastMatch = matches[0];
     return this;
   }

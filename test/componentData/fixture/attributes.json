@@ -1,4 +1,7 @@
 {
+  "foo-tag/error": {
+    "description": "Custom error"
+  },
   "foo-tag/foo-attr": {
     "description": "An foo-attr description"
   },
