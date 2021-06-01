@@ -13,7 +13,7 @@ VTI catches type-errors in Vue templates that's not catchable by either Vue or T
 
 - Vue compiler: do not understand types.
 - TypeScript compiler: do not understand Vue templates.
-- VLS: Understand both to do [TS type-checking on Vue templates](https://vuejs.github.io/vetur/interpolation.html).
+- VLS: Understand both to do [TS type-checking on Vue templates](https://vuejs.github.io/vetur/guide/interpolation.html).
 - VTI: Surfaces VLS's errors on CLI for CI.
 
 ## Usage
