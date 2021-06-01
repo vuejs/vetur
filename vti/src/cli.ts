@@ -15,7 +15,7 @@ function validateLogLevel(logLevelInput: unknown): logLevelInput is LogLevel {
   program.name('vti').description('Vetur Terminal Interface').version(getVersion());
 
   program
-    .command('diagnostics [workspace]')
+    .command('diagnostics [workspace] [paths...]')
     .description('Print all diagnostics')
     .addOption(
       new Option('-l, --log-level <logLevel>', 'Log level to print')
@@ -23,12 +23,12 @@ function validateLogLevel(logLevelInput: unknown): logLevelInput is LogLevel {
         // logLevels is readonly array but .choices need read-write array (because of weak typing)
         .choices((logLevels as unknown) as string[])
     )
-    .action(async (workspace, options) => {
+    .action(async (workspace, paths, options) => {
       const logLevelOption: unknown = options.logLevel;
       if (!validateLogLevel(logLevelOption)) {
         throw new Error(`Invalid log level: ${logLevelOption}`);
       }
-      await diagnostics(workspace, logLevelOption);
+      await diagnostics(workspace, paths, logLevelOption);
     });
 
   program.parse(process.argv);

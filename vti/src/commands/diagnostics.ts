@@ -33,7 +33,7 @@ const logLevel2Severity = {
   HINT: DiagnosticSeverity.Hint
 };
 
-export async function diagnostics(workspace: string | null, logLevel: LogLevel) {
+export async function diagnostics(workspace: string | null, paths: string[], logLevel: LogLevel) {
   console.log('====================================');
   console.log('Getting Vetur diagnostics');
   let workspaceUri;
@@ -47,7 +47,7 @@ export async function diagnostics(workspace: string | null, logLevel: LogLevel) 
     workspaceUri = URI.file(process.cwd());
   }
 
-  const errCount = await getDiagnostics(workspaceUri, logLevel2Severity[logLevel]);
+  const errCount = await getDiagnostics(workspaceUri, paths, logLevel2Severity[logLevel]);
   console.log('====================================');
 
   if (errCount === 0) {
@@ -121,10 +121,28 @@ function range2Location(range: Range): SourceLocation {
   };
 }
 
-async function getDiagnostics(workspaceUri: URI, severity: DiagnosticSeverity) {
+async function getDiagnostics(workspaceUri: URI, paths: string[], severity: DiagnosticSeverity) {
   const clientConnection = await prepareClientConnection(workspaceUri);
 
-  const files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
+  let files: string[];
+  if (paths.length === 0) {
+    files = glob.sync('**/*.vue', { cwd: workspaceUri.fsPath, ignore: ['node_modules/**'] });
+  } else {
+    // Could use `flatMap` once available:
+    const listOfPaths = paths.map(inputPath => {
+      const absPath = path.resolve(workspaceUri.fsPath, inputPath);
+
+      if (fs.lstatSync(absPath).isFile()) {
+        return [inputPath];
+      }
+
+      const directory = URI.file(absPath);
+      const directoryFiles = glob.sync('**/*.vue', { cwd: directory.fsPath, ignore: ['node_modules/**'] });
+      return directoryFiles.map(f => path.join(inputPath, f));
+    });
+
+    files = listOfPaths.reduce((acc: string[], paths) => [...acc, ...paths], []);
+  }
 
   if (files.length === 0) {
     console.log('No input files');
