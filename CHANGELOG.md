@@ -3,8 +3,11 @@
 ### Not Released Yet
 
 - Add `--log-level` option for `vti diagnostics` to configure log level to print. #2752.
-- 🙌 Semantic tokens for typescript and highlight `.value` if using composition API. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2802 #1904 # 2434
 - Underline with ref `.value`, based on Semantic tokens.
+- Upgrade `typescript` to 4.3.2.
+- Upgrade `prettier` to 2.3.0.
+- Upgrade `@prettier/plugin-pug` to 1.15.2.
+- 🙌 Semantic tokens for typescript and highlight `.value` if using composition API. Thanks to contribution from [@jasonlyu123](https://github.com/jasonlyu123). #2802 #1904 # 2434
 - 🙌 Syntax Highlighting for SugarSS. Thanks to contribution from [@softwaredeveloptam](https://github.com/softwaredeveloptam). #2828.
 - 🙌 Fix component data not shown in hover when template interpolation is on. Thanks to contribution from [@rchl](https://github.com/rchl). #2879 #2878.
 - 🙌 Look for a `.stylintrc` file when formatting stylus code. Thanks to contribution from [@ntraut](https://github.com/ntraut). #2689.
