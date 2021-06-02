@@ -22,6 +22,7 @@ You can [open an issue](https://github.com/vuejs/vetur/issues/new) for bugs or f
 ## Features
 
 - [Syntax-highlighting](/guide/highlighting.md)
+- [Semantic-highlighting](/guide/semantic-highlighting.md)
 - [Snippet](/guide/snippet.md)
 - [Emmet](/guide/emmet.md)
 - [Linting / Error Checking](/guide/linting-error.md)

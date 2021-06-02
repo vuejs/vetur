@@ -26,6 +26,7 @@ module.exports = {
           collapsable: false,
           children: [
             'highlighting',
+            'semantic-highlighting',
             'snippet',
             'emmet',
             'linting-error',

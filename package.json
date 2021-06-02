@@ -573,6 +573,11 @@
           "type": "boolean",
           "default": false,
           "description": "Enable template interpolation service that offers hover / definition / references in Vue interpolations."
+        },
+        "vetur.underline.refValue": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable underline `.value` when using composition API."
         }
       }
     },

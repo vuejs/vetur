@@ -104,6 +104,9 @@ function registerCustomClientNotificationHandlers(client: LanguageClient) {
   const refTokenFiles = new Map<string, vscode.Range[]>();
 
   function underlineRefTokens() {
+    if (!vscode.workspace.getConfiguration().get('vetur.underline.refValue')) {
+      return;
+    }
     if (!vscode.window.activeTextEditor) {
       return;
     }

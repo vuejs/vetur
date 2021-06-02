@@ -53,6 +53,7 @@ Thanks to the following companies for supporting Vetur's development:
 ## Features
 
 - [Syntax-highlighting](https://vuejs.github.io/vetur/guide/highlighting.html)
+- [Semantic-highlighting](https://vuejs.github.io/vetur/guide/semantic-highlighting.md)
 - [Snippet](https://vuejs.github.io/vetur/guide/snippet.html)
 - [Emmet](https://vuejs.github.io/vetur/guide/emmet.html)
 - [Linting / Error Checking](https://vuejs.github.io/vetur/guide/linting-error.html)
