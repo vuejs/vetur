@@ -33,7 +33,17 @@ export async function doESLintValidation(document: TextDocument, engine: ESLint)
 export function createLintEngine(vueVersion: VueVersion) {
   const SERVER_ROOT = __dirname;
 
-  const versionSpecificConfig = vueVersion === VueVersion.V30 ? configs['vue3-essential'] : configs.essential;
+  const versionSpecificConfig: Linter.Config =
+    vueVersion === VueVersion.V30 ? configs['vue3-essential'] : configs.essential;
+  if (vueVersion === VueVersion.V30) {
+    versionSpecificConfig.parserOptions = {
+      ...versionSpecificConfig.parserOptions,
+      vueFeatures: {
+        ...versionSpecificConfig.parserOptions?.vueFeatures,
+        interpolationAsNonHTML: true
+      }
+    };
+  }
 
   const baseConfig: Linter.Config = configs.base;
   baseConfig.ignorePatterns = ['!.*'];

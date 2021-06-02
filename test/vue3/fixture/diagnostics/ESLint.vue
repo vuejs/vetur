@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>{{ 3 < 5 }}</div>
   <div></div>
 </template>
 
