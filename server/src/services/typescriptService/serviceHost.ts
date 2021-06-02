@@ -9,7 +9,7 @@ import { getFileFsPath, getFilePath, normalizeFileNameToFsPath } from '../../uti
 import * as bridge from './bridge';
 import { getVueSys } from './vueSys';
 import { TemplateSourceMap, stringifySourceMapNodes } from './sourceMap';
-import { isVirtualVueTemplateFile, isVueFile } from './util';
+import { isVirtualVueTemplateFile } from './util';
 import { logger } from '../../log';
 import { ModuleResolutionCache } from './moduleResolutionCache';
 import { globalScope } from './transformTemplate';
@@ -25,12 +25,13 @@ const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
  */
 const allChildComponentsInfo = new Map<string, ChildComponent[]>();
 
-function patchTS(tsModule: RuntimeLibrary['typescript']) {
+function patchTS(tsModule: RuntimeLibrary['typescript'], env: EnvironmentService) {
   // Patch typescript functions to insert `import Vue from 'vue'` and `new Vue` around export default.
   // NOTE: this is a global hack that all ts instances after is changed
   const { createLanguageServiceSourceFile, updateLanguageServiceSourceFile } = createUpdater(
     tsModule,
-    allChildComponentsInfo
+    allChildComponentsInfo,
+    env
   );
   (tsModule as any).createLanguageServiceSourceFile = createLanguageServiceSourceFile;
   (tsModule as any).updateLanguageServiceSourceFile = updateLanguageServiceSourceFile;
@@ -89,7 +90,7 @@ export function getServiceHost(
   env: EnvironmentService,
   updatedScriptRegionDocuments: LanguageModelCache<TextDocument>
 ): IServiceHost {
-  patchTS(tsModule);
+  patchTS(tsModule, env);
 
   let currentScriptDoc: TextDocument;
 
@@ -298,7 +299,7 @@ export function getServiceHost(
           return (tsModule as any).getScriptKindFromFileName(fileName);
         }
 
-        if (isVueFile(fileName)) {
+        if (env.isVueFile(fileName)) {
           const uri = URI.file(fileName);
           const fileFsPath = normalizeFileNameToFsPath(fileName);
           let doc = localScriptRegionDocuments.get(fileFsPath);
@@ -354,7 +355,7 @@ export function getServiceHost(
             return cachedResolvedModule;
           }
 
-          if (!isVueFile(name)) {
+          if (!env.isVueFile(name)) {
             const tsResolvedModule = tsModule.resolveModuleName(name, containingFile, options, tsModule.sys)
               .resolvedModule;
 
@@ -446,7 +447,7 @@ export function getServiceHost(
         }
 
         // js/ts files in workspace
-        if (!isVueFile(fileFsPath)) {
+        if (!env.isVueFile(fileFsPath)) {
           if (projectFileSnapshots.has(fileFsPath)) {
             return projectFileSnapshots.get(fileFsPath);
           }

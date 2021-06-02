@@ -11,6 +11,7 @@ export interface EnvironmentService {
   getVueVersion(): VueVersion;
   getSnippetFolder(): string;
   getGlobalComponentInfos(): BasicComponentInfo[];
+  isVueFile(path: string): boolean;
 }
 
 export function createEnvironmentService(
@@ -35,6 +36,7 @@ export function createEnvironmentService(
     getPackagePath: () => packagePath,
     getVueVersion: () => inferVueVersion(packagePath),
     getSnippetFolder: () => snippetFolder,
-    getGlobalComponentInfos: () => globalComponentInfos
+    getGlobalComponentInfos: () => globalComponentInfos,
+    isVueFile: (path: string) => ['.vue', ...$config.vetur.extensions].some(ext => path.endsWith(ext))
   };
 }

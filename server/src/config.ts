@@ -78,6 +78,7 @@ export interface VLSConfig {
     experimental: {
       templateInterpolationService: boolean;
     };
+    extensions: string[];
   };
 }
 
@@ -142,7 +143,8 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       },
       experimental: {
         templateInterpolationService: false
-      }
+      },
+      extensions: []
     },
     css: {},
     html: {
