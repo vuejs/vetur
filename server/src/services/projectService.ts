@@ -83,7 +83,7 @@ export async function createProjectService(
   function getValidationFlags(): Record<string, boolean> {
     const config = env.getConfig();
     return {
-      'vue-html': config.vetur.validation.template,
+      'vue-html': config.vetur.validation.template || config.vetur.validation.templateProps,
       css: config.vetur.validation.style,
       postcss: config.vetur.validation.style,
       scss: config.vetur.validation.style,
