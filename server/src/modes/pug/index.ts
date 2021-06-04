@@ -23,10 +23,9 @@ export function getPugMode(env: EnvironmentService, dependencyService: Dependenc
         dependencyService,
         value,
         getFileFsPath(document.uri),
+        'pug',
         range,
         env.getConfig().vetur.format as VLSFormatConfig,
-        // @ts-expect-error
-        'pug',
         false
       );
     },

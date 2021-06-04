@@ -720,7 +720,15 @@ export async function getJavascriptMode(
         } else {
           doFormat = prettierify;
         }
-        return doFormat(dependencyService, code, filePath, range, vlsFormatConfig, parser, needInitialIndent);
+        return doFormat(
+          dependencyService,
+          code,
+          filePath,
+          scriptDoc.languageId,
+          range,
+          vlsFormatConfig,
+          needInitialIndent
+        );
       } else {
         const initialIndentLevel = needInitialIndent ? 1 : 0;
         const formatSettings: ts.FormatCodeSettings =

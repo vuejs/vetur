@@ -1,6 +1,6 @@
 import { TextEdit, Range } from 'vscode-languageserver-types';
 
-import type { BuiltInParserName, CustomParser } from 'prettier';
+import type { BuiltInParserName, CustomParser, Options as PrettierOptions } from 'prettier';
 import { indentSection } from '../strings';
 
 import { VLSFormatConfig } from '../../config';
@@ -16,14 +16,14 @@ export function prettierify(
   dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
+  languageId: string,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
-  parser: PrettierParserOption,
   initialIndent: boolean
 ): TextEdit[] {
   try {
     const prettier = dependencyService.get('prettier', fileFsPath).module;
-    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, languageId, vlsFormatConfig);
     logger.logDebug(`Using prettier. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettier.format(code, prettierOptions);
@@ -43,21 +43,23 @@ export function prettierEslintify(
   dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
+  languageId: string,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
-  parser: PrettierParserOption,
   initialIndent: boolean
 ): TextEdit[] {
   try {
     const prettier = dependencyService.get('prettier', fileFsPath).module;
     const prettierEslint = dependencyService.get('prettier-eslint', fileFsPath).module;
 
-    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, languageId, vlsFormatConfig);
     logger.logDebug(`Using prettier-eslint. Options\n${JSON.stringify(prettierOptions)}`);
 
+    const ext = languageId === 'javascript' ? '.js' : '.ts';
+
     const prettierifiedCode = prettierEslint({
-      filePath: fileFsPath,
-      prettierOptions: { parser },
+      filePath: fileFsPath + ext,
+      prettierOptions: { parser: prettierOptions.parser },
       text: code,
       fallbackPrettierOptions: prettierOptions
     });
@@ -76,20 +78,20 @@ export function prettierTslintify(
   dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
+  languageId: string,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
-  parser: PrettierParserOption,
   initialIndent: boolean
 ): TextEdit[] {
   try {
     const prettier = dependencyService.get('prettier', fileFsPath).module;
     const prettierTslint = dependencyService.get('prettier-tslint', fileFsPath).module.format;
 
-    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, languageId, vlsFormatConfig);
     logger.logDebug(`Using prettier-tslint. Options\n${JSON.stringify(prettierOptions)}`);
 
     const prettierifiedCode = prettierTslint({
-      prettierOptions: { parser },
+      prettierOptions: { parser: prettierOptions.parser },
       text: code,
       filePath: fileFsPath,
       fallbackPrettierOptions: prettierOptions
@@ -107,9 +109,9 @@ export function prettierPluginPugify(
   dependencyService: DependencyService,
   code: string,
   fileFsPath: string,
+  languageId: string,
   range: Range,
   vlsFormatConfig: VLSFormatConfig,
-  parser: PrettierParserOption,
   initialIndent: boolean
 ): TextEdit[] {
   try {
@@ -118,8 +120,8 @@ export function prettierPluginPugify(
       prettier = dependencyService.getBundled('prettier').module;
     }
     const prettierPluginPug = dependencyService.get('@prettier/plugin-pug', fileFsPath).module;
-    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, parser, vlsFormatConfig);
-    prettierOptions.pluginSearchDirs = [];
+    const prettierOptions = getPrettierOptions(dependencyService, prettier, fileFsPath, languageId, vlsFormatConfig);
+    (prettierOptions as { pluginSearchDirs: string[] }).pluginSearchDirs = [];
     prettierOptions.plugins = Array.isArray(prettierOptions.plugins)
       ? [...prettierOptions.plugins, prettierPluginPug]
       : [prettierPluginPug];
@@ -138,20 +140,36 @@ function getPrettierOptions(
   dependencyService: DependencyService,
   prettierModule: RuntimeLibrary['prettier'],
   fileFsPath: string,
-  parser: PrettierParserOption,
+  languageId: string,
   vlsFormatConfig: VLSFormatConfig
-) {
+): PrettierOptions {
   const prettierrcOptions = prettierModule.resolveConfig.sync(fileFsPath, { useCache: false });
+
+  const getParser = () => {
+    const table = {
+      javascript: 'babel',
+      typescript: 'pug',
+      pug: 'pug',
+      vue: 'vue',
+      css: 'css',
+      postcss: 'css',
+      scss: 'scss',
+      less: 'less'
+    };
+    return table?.[languageId as 'javascript'] ?? 'babel';
+  };
 
   if (prettierrcOptions) {
     prettierrcOptions.tabWidth = prettierrcOptions.tabWidth || vlsFormatConfig.options.tabSize;
     prettierrcOptions.useTabs = prettierrcOptions.useTabs || vlsFormatConfig.options.useTabs;
-    prettierrcOptions.parser = parser;
+    prettierrcOptions.parser = getParser();
     if (dependencyService.useWorkspaceDependencies) {
       // For loading plugins such as @prettier/plugin-pug
-      (prettierrcOptions as {
-        pluginSearchDirs: string[];
-      }).pluginSearchDirs = dependencyService.nodeModulesPaths.map(el => path.dirname(el));
+      (
+        prettierrcOptions as {
+          pluginSearchDirs: string[];
+        }
+      ).pluginSearchDirs = dependencyService.nodeModulesPaths.map(el => path.dirname(el));
     }
 
     return prettierrcOptions;
@@ -159,7 +177,7 @@ function getPrettierOptions(
     const vscodePrettierOptions = vlsFormatConfig.defaultFormatterOptions.prettier || {};
     vscodePrettierOptions.tabWidth = vscodePrettierOptions.tabWidth || vlsFormatConfig.options.tabSize;
     vscodePrettierOptions.useTabs = vscodePrettierOptions.useTabs || vlsFormatConfig.options.useTabs;
-    vscodePrettierOptions.parser = parser;
+    vscodePrettierOptions.parser = getParser();
     if (dependencyService.useWorkspaceDependencies) {
       // For loading plugins such as @prettier/plugin-pug
       vscodePrettierOptions.pluginSearchDirs = dependencyService.nodeModulesPaths.map(el => path.dirname(el));

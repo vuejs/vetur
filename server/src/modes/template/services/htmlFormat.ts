@@ -101,7 +101,7 @@ function formatWithPrettier(
   vlsFormatConfig: VLSFormatConfig,
   initialIndent: boolean
 ) {
-  return prettierify(dependencyService, code, fileFsPath, range, vlsFormatConfig, 'vue', initialIndent);
+  return prettierify(dependencyService, code, fileFsPath, 'vue', range, vlsFormatConfig, initialIndent);
 }
 
 function getPrettyHtmlOptions(
