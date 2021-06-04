@@ -17,6 +17,7 @@ import { ChildComponent } from '../vueInfoService';
 import { RuntimeLibrary } from '../dependencyService';
 import { EnvironmentService } from '../EnvironmentService';
 import { VueVersion } from '../../utils/vueVersion';
+import { dirname } from 'path';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -63,9 +64,7 @@ export interface IServiceHost {
     templateService: ts.LanguageService;
     templateSourceMap: TemplateSourceMap;
   };
-  updateCurrentVueTextDocument(
-    doc: TextDocument
-  ): {
+  updateCurrentVueTextDocument(doc: TextDocument): {
     service: ts.LanguageService;
     scriptDoc: TextDocument;
   };
@@ -355,8 +354,12 @@ export function getServiceHost(
           }
 
           if (!isVueFile(name)) {
-            const tsResolvedModule = tsModule.resolveModuleName(name, containingFile, options, tsModule.sys)
-              .resolvedModule;
+            const tsResolvedModule = tsModule.resolveModuleName(
+              name,
+              containingFile,
+              options,
+              tsModule.sys
+            ).resolvedModule;
 
             if (tsResolvedModule) {
               moduleResolutionCache.setCache(name, containingFile, tsResolvedModule);
@@ -550,18 +553,18 @@ function getParsedConfig(
   projectRoot: string,
   tsconfigPath: string | undefined
 ) {
-  const configFilename = tsconfigPath;
-  const configJson = (configFilename && tsModule.readConfigFile(configFilename, tsModule.sys.readFile).config) || {
+  const currentProjectPath = tsconfigPath ? dirname(tsconfigPath) : projectRoot;
+  const configJson = (tsconfigPath && tsModule.readConfigFile(tsconfigPath, tsModule.sys.readFile).config) || {
     include: ['**/*.vue'],
-    exclude: defaultIgnorePatterns(tsModule, projectRoot)
+    exclude: defaultIgnorePatterns(tsModule, currentProjectPath)
   };
   // existingOptions should be empty since it always takes priority
   return tsModule.parseJsonConfigFileContent(
     configJson,
     tsModule.sys,
-    projectRoot,
+    currentProjectPath,
     /*existingOptions*/ {},
-    configFilename,
+    tsconfigPath,
     /*resolutionStack*/ undefined,
     [
       {
