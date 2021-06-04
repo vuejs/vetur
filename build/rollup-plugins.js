@@ -32,7 +32,16 @@ function generateTypingsVls() {
       return new Promise((resolve, reject) => {
         const tsc = spawn(
           path.join('node_modules', '.bin', 'tsc'),
-          ['--declaration', '--declarationDir', './typings', '--emitDeclarationOnly', '--pretty', '--incremental'],
+          [
+            '-p',
+            'tsconfig.json',
+            '--declaration',
+            '--declarationDir',
+            './typings',
+            '--emitDeclarationOnly',
+            '--pretty',
+            '--incremental'
+          ],
           { cwd: getServerPath('./'), shell: true }
         );
         tsc.stdout.on('data', data => {
