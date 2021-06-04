@@ -1,6 +1,6 @@
 # Changelog
 
-### Not Released Yet
+### 0.34.0 | 2021-06-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.34.0/vspackage)
 
 - Add `--log-level` option for `vti diagnostics` to configure log level to print. #2752.
 - Upgrade `typescript` to 4.3.2.
