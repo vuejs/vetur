@@ -148,7 +148,7 @@ function getPrettierOptions(
   const getParser = () => {
     const table = {
       javascript: 'babel',
-      typescript: 'pug',
+      typescript: 'typescript',
       pug: 'pug',
       vue: 'vue',
       css: 'css',
