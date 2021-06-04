@@ -3,6 +3,7 @@
 ### 0.34.1 | 2021-06-04
 
 - Fix formatting failed when typescript block with prettier. #2982
+- Respect project baseURL relative to tsconfig.json. #2952
 
 ### 0.34.0 | 2021-06-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.34.0/vspackage)
 
