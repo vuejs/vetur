@@ -833,7 +833,7 @@ export async function getJavascriptMode(
       const { spans } = service.getEncodedSemanticClassifications(
         fileFsPath,
         textSpan,
-        tsModule.SemanticClassificationFormat.TwentyTwenty
+        tsModule.SemanticClassificationFormat?.TwentyTwenty
       );
 
       const data: SemanticTokenOffsetData[] = [];
