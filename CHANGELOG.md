@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.34.2 | 2021-06-07 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.34.2/vspackage)
+
+- Fix: delete 'docs' in some links in FAQ page. #2987
+
 ### 0.34.1 | 2021-06-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.34.1/vspackage)
 
 - Fix formatting failed when typescript block with prettier. #2982
