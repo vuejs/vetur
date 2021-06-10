@@ -20,7 +20,7 @@
     "@types/glob": "^7.1.3",
     "chalk": "^4.1.1",
     "glob": "^7.1.7",
-    "rollup": "^2.50.6",
+    "rollup": "^2.51.1",
     "typescript": "^4.3.2",
     "vscode-languageclient": "^7.0.0",
     "vscode-languageserver": "^7.0.0",
