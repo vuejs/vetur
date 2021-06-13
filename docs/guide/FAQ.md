@@ -129,7 +129,7 @@ Vetur will use fallback settings. Some features such as including path alias, de
 You can add this config in correct position in your project or use `vetur.config.js` to set the file path.
 
 - [Read more project setup](/docs/guide/setup.md#project-setup)
-- [Read more `vetur.config.js`](/docs/guide/setup.md#advanced)
+- [Read more `vetur.config.js`](/guide/setup.md#advanced)
 
 If you want debug info, you can use `Vetur: show doctor info` command.   
 You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
@@ -144,7 +144,7 @@ If the version is wrong, you will get wrong diagnostics from typescript and esli
 
 You can add this config at the correct position in your project or use `vetur.config.js` to set file path.
 
-- [Read more `vetur.config.js`](/docs/guide/setup.md#advanced)
+- [Read more `vetur.config.js`](/guide/setup.md#advanced)
 
 If you want debug info, you can use `Vetur: show doctor info` command.   
 You can use `vetur.ignoreProjectWarning: true` in vscode setting to close this warning.
@@ -155,7 +155,7 @@ If it is wrong, it will cause same result as the previous two. [ref1](/docs/guid
 
 You can add this config at the correct position in your project or use `vetur.config.js` to set file path.
 
-- [Read more `vetur.config.js`](/docs/guide/setup.md#advanced)
+- [Read more `vetur.config.js`](/guide/setup.md#advanced)
 
 If you want debugging info, you can use the `Vetur: show doctor info` command.   
 You can use `vetur.ignoreProjectWarning: true` in vscode settings to close this warning.
