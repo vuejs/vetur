@@ -77,9 +77,7 @@ export function parse(text: string): HTMLDocument {
   let endTagStart = -1;
   let pendingAttribute = '';
   let token = scanner.scan();
-  let startPos = -1;
-  let endPos = -1;
-  let attributes: { [name: string]: string } | undefined = {};
+  let attributes: { [k: string]: string } | undefined = {};
   while (token !== TokenType.EOS) {
     switch (token) {
       case TokenType.StartTagOpen:
@@ -139,8 +137,6 @@ export function parse(text: string): HTMLDocument {
         break;
       case TokenType.AttributeName:
         pendingAttribute = scanner.getTokenText();
-        startPos = scanner.getTokenOffset();
-        endPos = scanner.getTokenEnd();
         attributes = curr.attributes;
         if (!attributes) {
           curr.attributes = attributes = {};
@@ -149,8 +145,6 @@ export function parse(text: string): HTMLDocument {
         break;
       case TokenType.AttributeValue:
         const value = scanner.getTokenText();
-        startPos = scanner.getTokenOffset();
-        endPos = scanner.getTokenEnd();
         if (attributes && pendingAttribute) {
           attributes[pendingAttribute] = value;
           pendingAttribute = '';
