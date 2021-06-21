@@ -91,7 +91,7 @@ Global config: Same as `prettier` global config.
 
 #### ~~[prettyhtml](https://github.com/Prettyhtml/prettyhtml)~~
 
-**🚧 DEPREACATED as [no longer in active development](https://github.com/Prettyhtml/prettyhtml).**
+**🚧 DEPRECATED as [no longer in active development](https://github.com/Prettyhtml/prettyhtml).**
 
 Settings include:
 
