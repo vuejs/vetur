@@ -45,7 +45,6 @@ export function doHover(
 
   function getAttributeHover(tag: string, attribute: string, range: Range): Hover {
     tag = kebabCase(tag);
-    attribute = attribute;
     const isEventAttribute = attribute.startsWith('@');
 
     let hover: Hover | null = null;
