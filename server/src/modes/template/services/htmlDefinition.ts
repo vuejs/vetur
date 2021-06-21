@@ -26,7 +26,7 @@ export function findDefinition(
   function getTagDefinition(tag: string, range: Range, open: boolean): Location[] {
     if (vueFileInfo && vueFileInfo.componentInfo.childComponents) {
       for (const cc of vueFileInfo.componentInfo.childComponents) {
-        if (![tag, tag.toLowerCase(), kebabCase(tag)].includes(kebabCase(cc.name))) {
+        if (![tag, tag.toLowerCase(), kebabCase(tag)].includes(cc.name.toLowerCase())) {
           continue;
         }
         if (!cc.definition) {
@@ -78,7 +78,9 @@ export function findDefinition(
 
         if (attributeName.startsWith('@')) {
           attributeName = attributeName.slice(1);
-          const emitData = cc.info.componentInfo.emits?.filter(x => kebabCase(x.name) === kebabCase(attributeName))[0];
+          const emitData = cc.info.componentInfo.emits?.filter(
+            x => x.name.toLowerCase() === attributeName.toLowerCase() || kebabCase(x.name) === kebabCase(attributeName)
+          )[0];
           if (!emitData || !emitData.location) {
             continue;
           }

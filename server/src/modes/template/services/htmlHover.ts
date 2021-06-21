@@ -45,13 +45,23 @@ export function doHover(
 
   function getAttributeHover(tag: string, attribute: string, range: Range): Hover {
     tag = kebabCase(tag);
-    attribute = normalizeAttributeNameToKebabCase(attribute);
+    attribute = attribute;
+    const isEventAttribute = attribute.startsWith('@');
 
     let hover: Hover | null = null;
     const attributeCollector: AttributeCollector = (attr, type?, documentation?) => {
-      if (attribute !== normalizeAttributeNameToKebabCase(attr)) {
+      if (type === 'event' && !isEventAttribute) {
         return;
       }
+
+      if (type !== 'event' && isEventAttribute) {
+        return;
+      }
+
+      if (normalizeAttributeNameToKebabCase(attribute) !== normalizeAttributeNameToKebabCase(attr)) {
+        return;
+      }
+
       hover = { contents: toMarkupContent(documentation), range };
     };
 

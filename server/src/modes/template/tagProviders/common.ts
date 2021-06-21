@@ -53,10 +53,7 @@ export interface IValueSets {
 
 export function getSameTagInSet<T>(tagSet: Record<string, T>, tag: string): T | undefined {
   for (const tagInTagSet in tagSet) {
-    const normalizedTagName = kebabCase(tag);
-    const normaliedtagInTagSetName = kebabCase(tagInTagSet);
-
-    if (normalizedTagName === normaliedtagInTagSetName) {
+    if (tagInTagSet.toLowerCase() === tag.toLowerCase() || kebabCase(tag) === kebabCase(tagInTagSet)) {
       return tagSet[tagInTagSet];
     }
   }
