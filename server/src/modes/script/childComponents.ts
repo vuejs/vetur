@@ -98,10 +98,7 @@ export function analyzeComponentsDefine(
         };
 
         // If export node is equal to '{}' it means that the vue file doesn't have <script> component.
-        if (
-          defaultExportNode.kind !== tsModule.SyntaxKind.ObjectLiteralExpression ||
-          defaultExportNode.getText() !== '{}'
-        ) {
+        if (!tsModule.isObjectLiteralExpression(defaultExportNode) || defaultExportNode.properties.length > 0) {
           definition.start = defaultExportNode.getStart(sourceFile, true);
           definition.end = defaultExportNode.getEnd();
         }

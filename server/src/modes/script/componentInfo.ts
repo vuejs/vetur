@@ -240,8 +240,8 @@ function getEmits(
       };
 
       if (emit.decorators && emit.decorators.length > 0) {
-        location.end = emit.decorators[0].expression.end ?? 0;
-        location.start = emit.decorators[0].expression.pos ?? 0;
+        location.end = emit.decorators[0].expression.getEnd() ?? 0;
+        location.start = emit.decorators[0].expression.getStart() ?? 0;
       }
 
       let typeString: string | undefined = undefined;
@@ -311,8 +311,8 @@ function getEmits(
               emitsDeclaration.parent.getFullText().trim()
             )}\n\`\`\`\n`,
             location: {
-              start: emitsDeclaration.pos,
-              end: emitsDeclaration.end
+              start: emitsDeclaration.getStart(),
+              end: emitsDeclaration.getEnd()
             }
           };
         });
@@ -345,8 +345,8 @@ function getEmits(
           ...status,
           documentation: buildDocumentation(tsModule, s, checker),
           location: {
-            start: node?.pos ?? 0,
-            end: node?.end ?? 0
+            start: node?.getStart() ?? 0,
+            end: node?.getEnd() ?? 0
           }
         };
       });
@@ -535,8 +535,8 @@ function getProps(
       };
 
       if (prop.decorators && prop.decorators.length > 0) {
-        location.end = prop.decorators[0].expression.end ?? 0;
-        location.start = prop.decorators[0].expression.pos ?? 0;
+        location.end = prop.decorators[0].expression.getEnd() ?? 0;
+        location.start = prop.decorators[0].expression.getStart() ?? 0;
       }
 
       if (decoratorName === 'PropSync' && tsModule.isStringLiteral(firstNode)) {
@@ -586,8 +586,8 @@ function getProps(
               propsDeclaration.parent.getFullText().trim()
             )}\n\`\`\`\n`,
             location: {
-              start: expr.pos,
-              end: expr.end
+              start: expr.getStart(),
+              end: expr.getEnd()
             }
           };
         });
@@ -621,8 +621,8 @@ function getProps(
           isBoundToModel: false,
           documentation: buildDocumentation(tsModule, s, checker),
           location: {
-            start: node?.pos ?? -1,
-            end: node?.end ?? -1
+            start: node?.getStart() ?? -1,
+            end: node?.getEnd() ?? -1
           }
         };
       });
