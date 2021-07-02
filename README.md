@@ -48,6 +48,17 @@ Thanks to the following companies for supporting Vetur's development:
       <a title="Try CodeStream" href="https://sponsorlink.codestream.com/?utm_source=vscmarket&amp;utm_campaign=vetur&amp;utm_medium=banner">Try it free</a>.
     </td>
   </tr>
+  <tr>
+    <td>
+      <a href="https://bit.ly/3dlKf2Z">
+        <img src="https://assets.website-files.com/5f922f81cc30586744dc7122/5fac1e88dc66fc1c2fdc98e6_logo-color.svg" width="250"/>
+      </a>
+    </td>
+    <td>
+      Track and prioritise tech debt and maintenance issues, straight from your IDE. Bookmark code while you work, organise TODOs and share codebase knowledge with your team.
+      <a title="Try Stepsize" href="https://bit.ly/3dlKf2Z">Try it out for free today</a>.
+    </td>
+  </tr>
 </table>
 
 ## Features
