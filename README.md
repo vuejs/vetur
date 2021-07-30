@@ -59,6 +59,16 @@ Thanks to the following companies for supporting Vetur's development:
       <a title="Try Stepsize" href="https://bit.ly/3dlKf2Z">Try it out for free today</a>.
     </td>
   </tr>
+  <tr>
+    <td>
+      <a href="https://bloop.ai/?utm_source=vscmarket&utm_campaign=vetur&utm_medium=banner">
+        <img src="bloop-banner.png" width="250"/>
+      </a>
+    </td>
+    <td>
+      Bored of trawling through the docs? Get JS and TS code examples from documentation and Open Source right in your IDE <a href="https://bloop.ai/?utm_source=vscmarket&utm_campaign=vetur&utm_medium=banner">Learn more</a>
+    </td>
+  </tr>
 </table>
 
 ## Features
