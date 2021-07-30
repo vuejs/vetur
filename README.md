@@ -62,7 +62,7 @@ Thanks to the following companies for supporting Vetur's development:
   <tr>
     <td>
       <a href="https://bloop.ai/?utm_source=vscmarket&utm_campaign=vetur&utm_medium=banner">
-        <img src="bloop-banner.png" width="250"/>
+        <img src="https://user-images.githubusercontent.com/4033249/127679577-daf35b06-3458-4b2d-9772-03afdfaa088b.png" width="250"/>
       </a>
     </td>
     <td>
