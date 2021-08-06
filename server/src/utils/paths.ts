@@ -60,6 +60,10 @@ export function getFilePath(documentUri: string): string {
   }
 }
 
+export function normalizeUriToFsPath(documentUri: string): string {
+  return normalizeFileNameToFsPath(getFileFsPath(documentUri));
+}
+
 export function normalizeFileNameToFsPath(fileName: string) {
   return URI.file(fileName).fsPath;
 }
