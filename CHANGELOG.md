@@ -2,6 +2,7 @@
 
 ### Un release
 
+- Fix corner case when same monorepo folder start with.
 - Fix: delete 'docs' in some links in FAQ page. #2987. Thanks to contribution from [@cristianpoleyJS](https://github.com/cristianpoleyJS).
 
 ### 0.34.1 | 2021-06-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.34.1/vspackage)
