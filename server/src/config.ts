@@ -245,7 +245,11 @@ export async function getVeturFullConfig(
         )
       } as VeturProject<BasicComponentInfo>;
     })
-    .sort((a, b) => getPathDepth(b.root, '/') - getPathDepth(a.root, '/'));
+    .sort((a, b) => {
+      const r = getPathDepth(b.root, '/') - getPathDepth(a.root, '/');
+      if (r !== 0) return r;
+      return b.root.length - a.root.length;
+    });
 
   return {
     settings: veturConfig.settings ?? {},
