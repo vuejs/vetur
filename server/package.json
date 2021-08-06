@@ -54,7 +54,7 @@
     "gridsome-helper-json": "^1.0.3",
     "js-beautify": "^1.14.0",
     "lodash": "^4.17.21",
-    "mocha": "^9.0.1",
+    "mocha": "^9.0.3",
     "nuxt-helper-json": "^1.0.0",
     "nyc": "^15.1.0",
     "parse-gitignore": "^1.0.1",
