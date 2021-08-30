@@ -72,7 +72,7 @@ Thanks to the following companies for supporting Vetur's development:
   <tr>
     <td>
       <a href="http://wd5a.2.vu/Vetur">
-        <img src="https://user-images.githubusercontent.com/4033249/130775727-67e7bde2-f2bb-4573-b03f-d250fd094226.png" width="250"/>
+        <img src="https://user-images.githubusercontent.com/4033249/131348490-ba952c01-c4de-414a-b13a-cbe17014fc07.png" width="250"/>
       </a>
     </td>
     <td>
