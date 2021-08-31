@@ -69,6 +69,16 @@ Thanks to the following companies for supporting Vetur's development:
       Bored of trawling through the docs? Get JS and TS code examples from documentation and Open Source right in your IDE. <a href="https://bloop.ai/?utm_source=vscmarket&utm_campaign=vetur&utm_medium=banner">Learn more</a>.
     </td>
   </tr>
+  <tr>
+    <td>
+      <a href="http://wd5a.2.vu/Vetur">
+        <img src="https://user-images.githubusercontent.com/4033249/131348490-ba952c01-c4de-414a-b13a-cbe17014fc07.png" width="250"/>
+      </a>
+    </td>
+    <td>
+      <a href="http://wd5a.2.vu/Vetur">Tabnine</a> - Code Faster with the All-Language AI Assistant for Code Completion.
+    </td>
+  </tr>
 </table>
 
 ## Features
