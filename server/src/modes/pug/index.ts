@@ -6,12 +6,24 @@ import { VLSFormatConfig } from '../../config';
 import { getFileFsPath } from '../../utils/paths';
 import { DependencyService } from '../../services/dependencyService';
 import { EnvironmentService } from '../../services/EnvironmentService';
+import { findTokenAtPosition } from './languageService';
+import { getLanguageModelCache, LanguageModelCache } from '../../embeddedSupport/languageModelCache';
+import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
+import { VueInfoService } from '../../services/vueInfoService';
+import { getTagDefinition } from '../template-common/tagDefinition';
 
-export function getPugMode(env: EnvironmentService, dependencyService: DependencyService): LanguageMode {
+export function getPugMode(
+  env: EnvironmentService,
+  dependencyService: DependencyService,
+  documentRegions: LanguageModelCache<VueDocumentRegions>,
+  vueInfoService?: VueInfoService
+): LanguageMode {
+  const embeddedDocuments = getLanguageModelCache<TextDocument>(10, 60, document =>
+    documentRegions.refreshAndGet(document).getSingleLanguageDocument('pug')
+  );
+
   return {
-    getId() {
-      return 'pug';
-    },
+    getId: () => 'pug',
     format(document, currRange, formattingOptions) {
       if (env.getConfig().vetur.format.defaultFormatter['pug'] === 'none') {
         return [];
@@ -28,6 +40,21 @@ export function getPugMode(env: EnvironmentService, dependencyService: Dependenc
         env.getConfig().vetur.format as VLSFormatConfig,
         false
       );
+    },
+    findDefinition(document, position) {
+      const embedded = embeddedDocuments.refreshAndGet(document);
+
+      const token = findTokenAtPosition(embedded.getText(), position);
+      if (!token || token.type !== 'tag') {
+        return [];
+      }
+
+      const info = vueInfoService?.getInfo(document);
+      if (!info) {
+        return [];
+      }
+
+      return getTagDefinition(info, token.val);
     },
     onDocumentRemoved() {},
     dispose() {}
