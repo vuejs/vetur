@@ -270,6 +270,11 @@
           ],
           "description": "Casing conversion for tag completion"
         },
+        "vetur.completion.stylusSeparator": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable colon separator between property and value in stylus."
+        },
         "vetur.grammar.customBlocks": {
           "type": "object",
           "default": {

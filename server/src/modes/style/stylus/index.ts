@@ -37,7 +37,11 @@ export function getStylusMode(
     doComplete(document, position) {
       const embedded = embeddedDocuments.refreshAndGet(document);
 
-      const lsCompletions = provideCompletionItems(embedded, position);
+      const lsCompletions = provideCompletionItems(
+        embedded,
+        position,
+        env.getConfig().vetur.completion.stylusSeparator
+      );
       const lsItems = _.map(lsCompletions.items, i => {
         return {
           ...i,
@@ -74,8 +78,10 @@ export function getStylusMode(
         return [];
       }
 
-      const stylusSupremacy: IStylusSupremacy = dependencyService.get('stylus-supremacy', getFileFsPath(document.uri))
-        .module;
+      const stylusSupremacy: IStylusSupremacy = dependencyService.get(
+        'stylus-supremacy',
+        getFileFsPath(document.uri)
+      ).module;
 
       const inputText = document.getText(range);
 
