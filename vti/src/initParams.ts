@@ -46,8 +46,7 @@ function getDefaultVLSConfig() {
           workspace: '💼',
           user: '🗒️',
           vetur: '✌'
-        },
-        stylusSeparator: false
+        }
       },
       grammar: {
         customBlocks: {}
@@ -90,6 +89,7 @@ function getDefaultVLSConfig() {
       format: {}
     },
     emmet: {},
-    stylusSupremacy: {}
+    stylusSupremacy: {},
+    languageStylus: {}
   };
 }

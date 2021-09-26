@@ -49,7 +49,8 @@ export function initializeLanguageClient(vlsModulePath: string, globalSnippetDir
         'javascript',
         'typescript',
         'prettier',
-        'stylusSupremacy'
+        'stylusSupremacy',
+        'languageStylus'
       ],
       fileEvents: vscode.workspace.createFileSystemWatcher('{**/*.js,**/*.ts,**/*.json}', false, false, true)
     },

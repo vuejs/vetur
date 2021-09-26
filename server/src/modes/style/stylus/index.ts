@@ -37,11 +37,12 @@ export function getStylusMode(
     doComplete(document, position) {
       const embedded = embeddedDocuments.refreshAndGet(document);
 
-      const lsCompletions = provideCompletionItems(
-        embedded,
-        position,
-        env.getConfig().vetur.completion.stylusSeparator
-      );
+      const useSeparator =
+        typeof env.getConfig().languageStylus.useSeparator === 'undefined'
+          ? true
+          : env.getConfig().languageStylus.useSeparator;
+
+      const lsCompletions = provideCompletionItems(embedded, position, useSeparator);
       const lsItems = _.map(lsCompletions.items, i => {
         return {
           ...i,

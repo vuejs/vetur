@@ -4,7 +4,7 @@
 
 - Fix corner case when same monorepo folder start with.
 - Fix: delete 'docs' in some links in FAQ page. #2987. Thanks to contribution from [@cristianpoleyJS](https://github.com/cristianpoleyJS).
-- Add `vetur.completion.stylusSeparator` option to enable separator for stylus. Thanks to contribution from [@euaaaio](https://github.com/euaaaio). #931.
+- Respect `languageStylus.useSeparator` option to enable separator for stylus. Thanks to contribution from [@euaaaio](https://github.com/euaaaio). #931.
 
 ### 0.34.1 | 2021-06-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.34.1/vspackage)
 
