@@ -177,7 +177,7 @@ Vetur supports this feature now, but has some limits.
 - Don't mix common project and pnp project in multi-root/monorepo
 - Prettier doesn't support Yarn PnP, so can't load plugin automatically.
 
-If you're using the editor SDKs with typescript and you want to use the typescript server wrapper created by yarn you'll need to set the `typescript.tsdk` to the directory of the editor sdk's tsserver:
+If you're using the editor SDKs ([Yarn Editor SDKs](https://yarnpkg.com/getting-started/editor-sdks)) with typescript and you want to use the typescript server wrapper created by yarn you'll need to set the `typescript.tsdk` to the directory of the editor sdk's tsserver:
 ```javascript
 const path = require('path')
 
