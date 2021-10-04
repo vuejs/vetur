@@ -317,7 +317,11 @@ export class VLS {
   private getProjectConfig(uri: DocumentUri): ProjectConfig | undefined {
     const projectConfigs = this.getAllProjectConfigs();
     const docFsPath = getFileFsPath(uri);
-    const projectConfig = projectConfigs.find(projectConfig => docFsPath.startsWith(projectConfig.rootFsPath));
+    const projectConfig = projectConfigs.find(
+      projectConfig =>
+        docFsPath.startsWith(projectConfig.rootFsPath) &&
+        ['/', '\\'].includes(docFsPath.substring(projectConfig.rootFsPath.length, projectConfig.rootFsPath.length + 1))
+    );
 
     return projectConfig;
   }

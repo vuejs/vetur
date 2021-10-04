@@ -417,7 +417,7 @@ export async function getJavascriptMode(
       signatureHelpItems.items.forEach(item => {
         let sigLabel = '';
         let sigMdDoc = '';
-        const sigParamemterInfos: ParameterInformation[] = [];
+        const sigParameterInfos: ParameterInformation[] = [];
 
         sigLabel += tsModule.displayPartsToString(item.prefixDisplayParts);
         item.parameters.forEach((p, i, a) => {
@@ -427,7 +427,7 @@ export async function getJavascriptMode(
             documentation: tsModule.displayPartsToString(p.documentation)
           };
           sigLabel += label;
-          sigParamemterInfos.push(parameter);
+          sigParameterInfos.push(parameter);
           if (i < a.length - 1) {
             sigLabel += tsModule.displayPartsToString(item.separatorDisplayParts);
           }
@@ -449,7 +449,7 @@ export async function getJavascriptMode(
             kind: 'markdown',
             value: sigMdDoc
           },
-          parameters: sigParamemterInfos
+          parameters: sigParameterInfos
         });
       });
 

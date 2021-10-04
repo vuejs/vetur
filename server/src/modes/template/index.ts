@@ -69,7 +69,7 @@ export class VueHTMLMode implements LanguageMode {
     return this.vueInterpolationMode.doResolve(document, item);
   }
   doHover(document: TextDocument, position: Position): Hover {
-    // Return concatanated results from both vueInterpolationMode and htmlMode.
+    // Return concatenated results from both vueInterpolationMode and htmlMode.
     const interpolationHover = this.vueInterpolationMode.doHover(document, position);
     let markdownContent = '';
     if (interpolationHover.contents.length > 0) {
