@@ -109,7 +109,7 @@ function testcase(description: string) {
               return;
             }
           }
-          assert(false, 'fail to match langauge id');
+          assert(false, 'fail to match language id');
         }
       });
     }
