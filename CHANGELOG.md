@@ -4,6 +4,8 @@
 
 - Fix corner case when same monorepo folder start with.
 - Fix: delete 'docs' in some links in FAQ page. #2987. Thanks to contribution from [@cristianpoleyJS](https://github.com/cristianpoleyJS).
+- Add editor sdk setup notes to Yarn PnP section. Thanks to contribution from [@Jaden-Giordano](https://github.com/Jaden-Giordano).
+- Bracket pair colorization support for VSCode 1.60+. Thanks to contribution from [@lorand-horvath](https://github.com/lorand-horvath).
 
 ### 0.34.1 | 2021-06-04 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.34.1/vspackage)
 
