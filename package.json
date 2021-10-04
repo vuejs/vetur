@@ -223,7 +223,7 @@
         "vetur.useWorkspaceDependencies": {
           "type": "boolean",
           "default": false,
-          "description": "Use dependencies from workspace. Currently only for TypeScript.",
+          "description": "Use dependencies from workspace. Support for TypeScript, Prettier, @starptech/prettyhtml, prettier-eslint, prettier-tslint, stylus-supremacy, @prettier/plugin-pug.",
           "scope": "application"
         },
         "vetur.completion.autoImport": {
