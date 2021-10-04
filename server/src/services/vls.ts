@@ -320,7 +320,7 @@ export class VLS {
     const projectConfig = projectConfigs.find(
       projectConfig =>
         docFsPath.startsWith(projectConfig.rootFsPath) &&
-        docFsPath.substring(projectConfig.rootFsPath.length, projectConfig.rootFsPath.length + 1) === '/'
+        ['/', '\\'].includes(docFsPath.substring(projectConfig.rootFsPath.length, projectConfig.rootFsPath.length + 1))
     );
 
     return projectConfig;
