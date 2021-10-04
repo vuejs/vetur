@@ -32,7 +32,7 @@
     "typescript": "^4.3.2"
   },
   "devDependencies": {
-    "@prettier/plugin-pug": "^1.15.2",
+    "@prettier/plugin-pug": "^1.16.7",
     "@starptech/prettyhtml": "^0.10.0",
     "@types/eslint": "7.2.2",
     "@types/eslint-scope": "^3.7.0",
