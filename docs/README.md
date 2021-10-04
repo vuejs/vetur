@@ -21,18 +21,18 @@ You can [open an issue](https://github.com/vuejs/vetur/issues/new) for bugs or f
 
 ## Features
 
-- [Syntax-highlighting](/guide/highlighting.md)
-- [Semantic-highlighting](/guide/semantic-highlighting.md)
-- [Snippet](/guide/snippet.md)
-- [Emmet](/guide/emmet.md)
-- [Linting / Error Checking](/guide/linting-error.md)
-- [Formatting](/guide/formatting.md)
-- [IntelliSense](/guide/intellisense.md)
-- [Debugging](/guide/debugging.md)
-- [Component Data](/guide/component-data.md): auto-completion and hover-information for popular Vue frameworks and your own custom components
-- [Experimental Interpolation Features](/guide/interpolation.md): auto-completion, hover information and type-checking in Vue template
-- [VTI](/guide/vti.md): Surface template type-checking errors on CLI
-- [Global components](/guide/global-components.md): support define global components.
+- [Syntax-highlighting](./guide/highlighting.md)
+- [Semantic-highlighting](./guide/semantic-highlighting.md)
+- [Snippet](./guide/snippet.md)
+- [Emmet](./guide/emmet.md)
+- [Linting / Error Checking](./guide/linting-error.md)
+- [Formatting](./guide/formatting.md)
+- [IntelliSense](./guide/intellisense.md)
+- [Debugging](./guide/debugging.md)
+- [Component Data](./guide/component-data.md): auto-completion and hover-information for popular Vue frameworks and your own custom components
+- [Experimental Interpolation Features](./guide/interpolation.md): auto-completion, hover information and type-checking in Vue template
+- [VTI](./guide/vti.md): Surface template type-checking errors on CLI
+- [Global components](./guide/global-components.md): support define global components.
 
 ## Quick Start
 
