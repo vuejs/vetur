@@ -19,7 +19,7 @@
     "@types/babel__code-frame": "^7.0.3",
     "@types/glob": "^7.1.4",
     "chalk": "^4.1.2",
-    "glob": "^7.1.7",
+    "glob": "^7.2.0",
     "rollup": "^2.58.0",
     "typescript": "^4.3.5",
     "vscode-languageclient": "^7.0.0",
