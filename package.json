@@ -602,7 +602,7 @@
     "@types/minimist": "^1.2.1",
     "@types/mocha": "^8.2.2",
     "@types/node": "^16.4.13",
-    "@types/shelljs": "^0.8.8",
+    "@types/shelljs": "^0.8.9",
     "@types/vscode": "^1.52.0",
     "@vscode/test-electron": "^1.6.1",
     "esbuild": "^0.12.18",
