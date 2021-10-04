@@ -1,6 +1,6 @@
 import path from 'path';
 import {
-  normalizeUriToFsPath,
+  getFileFsPath,
   getFsPathToUri,
   getPathDepth,
   normalizeFileNameToFsPath,
@@ -113,10 +113,7 @@ export class VLS {
   async init(params: InitializeParams) {
     const workspaceFolders =
       Array.isArray(params.workspaceFolders) && params.capabilities.workspace?.workspaceFolders
-        ? params.workspaceFolders.map(el => ({
-            name: el.name,
-            fsPath: normalizeUriToFsPath(el.uri)
-          }))
+        ? params.workspaceFolders.map(el => ({ name: el.name, fsPath: getFileFsPath(el.uri) }))
         : params.rootPath
         ? [{ name: '', fsPath: normalizeFileNameToFsPath(params.rootPath) }]
         : [];
@@ -193,9 +190,7 @@ export class VLS {
   private setupWorkspaceListeners() {
     this.lspConnection.onInitialized(() => {
       this.lspConnection.workspace.onDidChangeWorkspaceFolders(async e => {
-        await Promise.all(
-          e.added.map(el => this.addWorkspace({ name: el.name, fsPath: normalizeUriToFsPath(el.uri) }))
-        );
+        await Promise.all(e.added.map(el => this.addWorkspace({ name: el.name, fsPath: getFileFsPath(el.uri) })));
       });
     });
   }
@@ -321,7 +316,7 @@ export class VLS {
 
   private getProjectConfig(uri: DocumentUri): ProjectConfig | undefined {
     const projectConfigs = this.getAllProjectConfigs();
-    const docFsPath = normalizeUriToFsPath(uri);
+    const docFsPath = getFileFsPath(uri);
     const projectConfig = projectConfigs.find(
       projectConfig =>
         docFsPath.startsWith(projectConfig.rootFsPath) &&
@@ -474,7 +469,7 @@ export class VLS {
     this.lspConnection.onDidChangeWatchedFiles(({ changes }) => {
       changes.forEach(async c => {
         if (c.type === FileChangeType.Changed) {
-          const fsPath = normalizeUriToFsPath(c.uri);
+          const fsPath = getFileFsPath(c.uri);
 
           // when `vetur.config.js` changed
           if (this.workspaces.has(fsPath)) {
