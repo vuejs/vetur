@@ -20,8 +20,8 @@
 
 ## Project Setup
 
-- At project root exist `package.json` file, Vetur use it for infer vue version and get component date.
-- At project root create a `jsconfig.json` or `tsconfig.json` that `include` all vue files and files that they import from, for example:
+- `package.json` must exist in the project root, Vetur uses it to determine the installed Vue version.
+- Next, create a `jsconfig.json` or `tsconfig.json`, which will `include` all Vue files and files that they import from, for example:
 
 - `jsconfig.json`
 
@@ -52,11 +52,11 @@
 - [What is a tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
 - [Reference](https://www.typescriptlang.org/tsconfig)
 
-#### jsconfig vs tsconfig
+#### jsconfig.json vs. tsconfig.json
 
-- Use `tsconfig` for pure TS project.
-- Use `jsconfig` for pure JS project.
-- Use `jsconfig` or `tsconfig` with `allowJs: true` for mixed JS / TS project.
+- Use `tsconfig.json` for a pure TS project.
+- Use `jsconfig.json` for a pure JS project.
+- Use both with `allowJs: true` for a mixed JS / TS project.
 
 ### Path mapping
 
@@ -99,7 +99,7 @@ import b from 'components/b.vue'
 
 ## Typescript
 
-You need to add a shim type file to import a Vue SFC in a Typescript file.
+You need to add a shim type file to import a Vue SFC in a TypeScript file.
 ### Vue2
 ```typescript
 // shims-vue.d.ts
@@ -120,7 +120,7 @@ declare module '*.vue' {
 
 
 ## Advanced
-If you use monorepo or VTI or `package.json` and `tsconfig.json/jsconfig.json` do not exist at project root, you can use `vetur.config.js` for advanced setting.
+If you use a monorepo, VTI or `package.json` and `tsconfig.json/jsconfig.json` does not exist at project root, you can use `vetur.config.js` for advanced settings.
 
 Please add `vetur.config.js` at project root or monorepo project root.
 ```javascript
@@ -172,7 +172,22 @@ module.exports = {
 - [Read RFC](https://github.com/vuejs/vetur/blob/master/rfcs/001-vetur-config-file.md).
 
 ## Yarn PnP
-Vetur supports this feature now, but has some limits.
+Vetur supports this feature now, but it has some limits.
 
 - Don't mix common project and pnp project in multi-root/monorepo
-- Prettier doesn't support Yarn PnP, so can't load plugin automatically.
+- Prettier doesn't support Yarn PnP, so we can't load plugin automatically.
+
+If you're using the editor SDKs ([Yarn Editor SDKs](https://yarnpkg.com/getting-started/editor-sdks)) with typescript and you want to use the typescript server wrapper created by yarn you'll need to set the `typescript.tsdk` to the directory of the editor sdk's tsserver:
+```javascript
+const path = require('path')
+
+// vetur.config.js
+/** @type {import('vls').VeturConfig} */
+module.exports = {
+  // **optional** default: `{}`
+  settings: {
+    "vetur.useWorkspaceDependencies": true,
+    "typescript.tsdk": path.resolve(__dirname, '.yarn/sdks/typescript/bin'),
+  },
+}
+```

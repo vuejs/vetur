@@ -9,7 +9,7 @@ import { LanguageModes } from '../embeddedSupport/languageModes';
  */
 export interface VueFileInfo {
   /**
-   * The defualt export component info from script section
+   * The default export component info from script section
    */
   componentInfo: ComponentInfo;
 }

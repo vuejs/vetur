@@ -18,7 +18,7 @@ These formatters are available:
 - [`sass-formatter`](https://github.com/TheRealSyler/sass-formatter): For the .sass section of the files.
 - ~~[`prettyhtml`](https://github.com/Prettyhtml/prettyhtml): 🚧 [DEPRECATED] For html.~~
 
-Vetur bundles all the above formatters. When Vetur observes a local install of the formatter, it'll prefer to use the local version.
+Vetur bundles all the above formatters, but `vetur.useWorkspaceDependencies: true`, it'll prefer to use the local version in your project.
 
 You can choose each language's default formatter in VS Code config, `vetur.format.defaultFormatter`.
 **Setting a language's formatter to `none` disables formatter for that language.**
