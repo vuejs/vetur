@@ -4,6 +4,7 @@
 
 - Fix corner case when same monorepo folder start with.
 - Fix: delete 'docs' in some links in FAQ page. #2987. Thanks to contribution from [@cristianpoleyJS](https://github.com/cristianpoleyJS).
+- 🙌 Add support for Ctrl+Click (Go to Definition) for Pug templates. Thanks to contribution from [@Shifu462](https://github.com/Shifu462). #2482.
 - Add editor sdk setup notes to Yarn PnP section. Thanks to contribution from [@Jaden-Giordano](https://github.com/Jaden-Giordano).
 - Bracket pair colorization support for VSCode 1.60+. Thanks to contribution from [@lorand-horvath](https://github.com/lorand-horvath).
 
