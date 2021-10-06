@@ -48,20 +48,24 @@ export function getWorkspaceTagProvider(packageRoot: string, rootPkgJson: any): 
 /**
  * Get tag providers specified in packaage.json's `vetur` key
  */
-export function getDependencyTagProvider(packageRoot: string, depPkgJson: any): IHTMLTagProvider | null {
+export function getDependencyTagProvider(
+  packageRoot: string,
+  depName: string,
+  depPkgJson: any
+): IHTMLTagProvider | null {
   if (!depPkgJson.vetur) {
     return null;
   }
 
   try {
-    const tagsPath = require.resolve(path.join(depPkgJson.name, depPkgJson.vetur.tags), { paths: [packageRoot] });
-    const attrsPath = require.resolve(path.join(depPkgJson.name, depPkgJson.vetur.attributes), {
+    const tagsPath = require.resolve(path.join(depName, depPkgJson.vetur.tags), { paths: [packageRoot] });
+    const attrsPath = require.resolve(path.join(depName, depPkgJson.vetur.attributes), {
       paths: [packageRoot]
     });
 
     const tagsJson = JSON.parse(fs.readFileSync(tagsPath, 'utf-8'));
     const attrsJson = JSON.parse(fs.readFileSync(attrsPath, 'utf-8'));
-    return getExternalTagProvider(depPkgJson.name, tagsJson, attrsJson);
+    return getExternalTagProvider(depName, tagsJson, attrsJson);
   } catch (err) {
     console.error(err.stack);
     return null;

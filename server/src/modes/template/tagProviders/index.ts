@@ -125,7 +125,7 @@ export function getTagProviderSettings(packagePath: string | undefined) {
         continue;
       }
 
-      const depTagProvider = getDependencyTagProvider(packageRoot, runtimePkgJson);
+      const depTagProvider = getDependencyTagProvider(packageRoot, dep, runtimePkgJson);
       if (!depTagProvider) {
         continue;
       }
