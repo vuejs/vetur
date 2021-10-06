@@ -77,6 +77,7 @@ const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
 const SEMANTIC_TOKEN_CONTENT_LENGTH_LIMIT = 80000;
 
 export async function getJavascriptMode(
+  tsModule: RuntimeLibrary['typescript'],
   serviceHost: IServiceHost,
   env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
@@ -95,8 +96,6 @@ export async function getJavascriptMode(
     const scriptRegions = vueDocument.getLanguageRangesOfType('script');
     return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
-
-  const tsModule: RuntimeLibrary['typescript'] = dependencyService.get('typescript').module;
 
   const { updateCurrentVueTextDocument } = serviceHost;
   let supportedCodeFixCodes: Set<number>;

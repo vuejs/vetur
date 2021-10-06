@@ -118,7 +118,7 @@ export class LanguageModes {
   }
 
   async init(env: EnvironmentService, services: VLSServices, globalSnippetDir?: string) {
-    const tsModule = services.dependencyService.get('typescript').module;
+    const tsModule = services.dependencyService.get('typescript', env.getPackagePath()).module;
 
     /**
      * Documents where everything outside `<script>` is replaced with whitespace
@@ -145,6 +145,7 @@ export class LanguageModes {
     );
 
     const jsMode = await getJavascriptMode(
+      tsModule,
       this.serviceHost,
       env,
       this.documentRegions,
