@@ -1,5 +1,5 @@
 <template>
-  <ts-child v-model="state.isZeroCount" :str="`count: ${state.count}`" :bool="state.isZeroCount" :callback="increment" :arr="['a', 'b']" />
+  <ts-child v-model="state.isZeroCount" :value="state.count" :str="`count: ${state.count}`" :bool="state.isZeroCount" :callback="increment" :arr="['a', 'b']" />
 </template>
 
 <script lang="ts">

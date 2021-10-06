@@ -151,7 +151,14 @@ export async function getJavascriptMode(
 
       const { service } = updateCurrentVueTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(tsModule, service, fileFsPath, globalComponentInfos, env.getConfig());
+      const info = getComponentInfo(
+        tsModule,
+        service,
+        fileFsPath,
+        globalComponentInfos,
+        env.getVueVersion(),
+        env.getConfig()
+      );
       if (info) {
         vueInfoService.updateInfo(doc, info);
       }
