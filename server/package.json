@@ -40,7 +40,7 @@
     "@types/eslint-visitor-keys": "^1.0.0",
     "@types/glob": "^7.1.3",
     "@types/js-beautify": "1.13.2",
-    "@types/lodash": "^4.14.170",
+    "@types/lodash": "^4.14.175",
     "@types/mocha": "^8.2.2",
     "@types/node": "^16.10.2",
     "@types/prettier": "^2.2.3",
