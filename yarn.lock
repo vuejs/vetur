@@ -246,10 +246,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@vscode/test-electron@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@vscode/test-electron/-/test-electron-1.6.1.tgz#2b282154097e250ee9b94b6a284eb5804e53a3d7"
-  integrity sha512-WTs+OK9YrKSVJNZ9IjytNibHSJG2YslZXuS3pw9gedF25TgYF/+FQhQYL0ZPX4uupS0SGAPKzMnhYDkjPDxowA==
+"@vscode/test-electron@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@vscode/test-electron/-/test-electron-1.6.2.tgz#f639cab19a0013949015079dcfd2ff0c1aa88a1b"
+  integrity sha512-W01ajJEMx6223Y7J5yaajGjVs1QfW3YGkkOJHVKfAMEqNB1ZHN9wCcViehv5ZwVSSJnjhu6lYEYgwBdHtCxqhQ==
   dependencies:
     http-proxy-agent "^4.0.1"
     https-proxy-agent "^5.0.0"

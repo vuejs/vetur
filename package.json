@@ -604,7 +604,7 @@
     "@types/node": "^16.4.13",
     "@types/shelljs": "^0.8.9",
     "@types/vscode": "^1.52.0",
-    "@vscode/test-electron": "^1.6.1",
+    "@vscode/test-electron": "^1.6.2",
     "esbuild": "^0.12.18",
     "fs-extra": "^10.0.0",
     "glob": "^7.1.7",
