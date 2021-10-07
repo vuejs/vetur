@@ -63,7 +63,7 @@
     "prettier-tslint": "^0.4.2",
     "rollup": "^2.52.2",
     "sass-formatter": "^0.7.2",
-    "source-map-support": "^0.5.19",
+    "source-map-support": "^0.5.20",
     "stylus": "^0.54.8",
     "stylus-supremacy": "^2.15.0",
     "vscode-css-languageservice": "5.1.3",
