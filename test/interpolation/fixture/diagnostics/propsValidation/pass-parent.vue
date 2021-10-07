@@ -6,6 +6,7 @@
     <class-child v-bind="{}" />
     <class-child v-bind:[bar]="{}" />
     <class-child :[bar]="{}" />
+    <class-child v-bind.sync="foo" />
     <class-child v-model="foo" :foo="foo" :bar="1" ear="ear" far="far" name="name" />
   </div>
 </template>

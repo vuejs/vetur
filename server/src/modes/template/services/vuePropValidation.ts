@@ -54,8 +54,12 @@ function generateDiagnostic(
   document: TextDocument,
   vueVersion: VueVersion
 ): Diagnostic | undefined {
-  // Ignore diagnostic when have `v-bind`, `v-bind:[key]`, `:[key]`
-  if (n.attributeNames.some(prop => prop === 'v-bind' || prop.startsWith('v-bind:[') || prop.startsWith(':['))) {
+  // Ignore diagnostic when have `v-bind`, `v-bind:[key]`, `:[key]`, `v-bind.sync`
+  if (
+    n.attributeNames.some(
+      prop => prop === 'v-bind' || prop.startsWith('v-bind:[') || prop.startsWith(':[') || prop.startsWith('v-bind.')
+    )
+  ) {
     return undefined;
   }
 
