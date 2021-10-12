@@ -331,8 +331,12 @@ export class VLS {
     if (!projectConfig) {
       return undefined;
     }
+    const useWorkspaceDependencies = projectConfig.vlsFullConfig.vetur.useWorkspaceDependencies;
     if (this.projects.has(projectConfig.rootFsPath)) {
-      return this.projects.get(projectConfig.rootFsPath);
+      const project = this.projects.get(projectConfig.rootFsPath);
+      if (project?.env.getConfig().vetur.useWorkspaceDependencies === useWorkspaceDependencies) {
+        return project;
+      }
     }
     // Load project once
     if (this.loadingProjects.includes(projectConfig.rootFsPath)) {
@@ -347,10 +351,11 @@ export class VLS {
     this.loadingProjects.push(projectConfig.rootFsPath);
     const workDoneProgress = await this.lspConnection.window.createWorkDoneProgress();
     workDoneProgress.begin(`Load project: ${projectConfig.rootFsPath}`, undefined);
-    const nodeModulePaths =
-      this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
-      createNodeModulesPaths(projectConfig.rootPathForConfig);
-    if (this.nodeModulesMap.has(projectConfig.rootPathForConfig)) {
+    const nodeModulePaths = useWorkspaceDependencies
+      ? this.nodeModulesMap.get(projectConfig.rootPathForConfig) ??
+        createNodeModulesPaths(projectConfig.rootPathForConfig)
+      : [];
+    if (useWorkspaceDependencies) {
       this.nodeModulesMap.set(projectConfig.rootPathForConfig, nodeModulePaths);
     }
     const dependencyService = await createDependencyService(
