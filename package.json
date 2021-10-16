@@ -55,6 +55,11 @@
   "categories": [
     "Programming Languages"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
   "engines": {
     "vscode": "^1.52.0"
   },
