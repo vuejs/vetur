@@ -31,6 +31,7 @@ function validateLogLevel(logLevelInput: unknown): logLevelInput is LogLevel {
       await diagnostics(workspace, paths, logLevelOption);
     });
 
+  program.showHelpAfterError();
   program.parse(process.argv);
 })().catch(err => {
   console.error(`VTI operation failed with error`);
