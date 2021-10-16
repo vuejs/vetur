@@ -264,7 +264,8 @@ describe('Should find template-diagnostics in <template> region', () => {
     'issue-1745-duplicate-event-with-modifiers.vue',
     'issue-2254.vue',
     'issue-2258.vue',
-    'optional-in-template.vue'
+    'optional-in-template.vue',
+    'issue-3107.vue'
   ];
 
   noErrorTests.forEach(t => {

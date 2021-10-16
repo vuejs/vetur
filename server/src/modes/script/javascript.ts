@@ -77,6 +77,7 @@ const NON_SCRIPT_TRIGGERS = ['<', '*', ':'];
 const SEMANTIC_TOKEN_CONTENT_LENGTH_LIMIT = 80000;
 
 export async function getJavascriptMode(
+  tsModule: RuntimeLibrary['typescript'],
   serviceHost: IServiceHost,
   env: EnvironmentService,
   documentRegions: LanguageModelCache<VueDocumentRegions>,
@@ -95,8 +96,6 @@ export async function getJavascriptMode(
     const scriptRegions = vueDocument.getLanguageRangesOfType('script');
     return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
-
-  const tsModule: RuntimeLibrary['typescript'] = dependencyService.get('typescript').module;
 
   const { updateCurrentVueTextDocument } = serviceHost;
   let supportedCodeFixCodes: Set<number>;
@@ -152,7 +151,14 @@ export async function getJavascriptMode(
 
       const { service } = updateCurrentVueTextDocument(doc);
       const fileFsPath = getFileFsPath(doc.uri);
-      const info = getComponentInfo(tsModule, service, fileFsPath, globalComponentInfos, env.getConfig());
+      const info = getComponentInfo(
+        tsModule,
+        service,
+        fileFsPath,
+        globalComponentInfos,
+        env.getVueVersion(),
+        env.getConfig()
+      );
       if (info) {
         vueInfoService.updateInfo(doc, info);
       }
@@ -817,6 +823,9 @@ export async function getJavascriptMode(
       return textDocumentEdit;
     },
     getSemanticTokens(doc: TextDocument, range?: Range) {
+      if (!tsModule.SemanticClassificationFormat?.TwentyTwenty) {
+        return [];
+      }
       const { scriptDoc, service } = updateCurrentVueTextDocument(doc);
       const scriptText = scriptDoc.getText();
       if (scriptText.trim().length > SEMANTIC_TOKEN_CONTENT_LENGTH_LIMIT) {

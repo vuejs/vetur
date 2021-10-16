@@ -21,7 +21,7 @@ function validateLogLevel(logLevelInput: unknown): logLevelInput is LogLevel {
       new Option('-l, --log-level <logLevel>', 'Log level to print')
         .default('WARN')
         // logLevels is readonly array but .choices need read-write array (because of weak typing)
-        .choices((logLevels as unknown) as string[])
+        .choices(logLevels as unknown as string[])
     )
     .action(async (workspace, paths, options) => {
       const logLevelOption: unknown = options.logLevel;
@@ -31,9 +31,10 @@ function validateLogLevel(logLevelInput: unknown): logLevelInput is LogLevel {
       await diagnostics(workspace, paths, logLevelOption);
     });
 
+  program.showHelpAfterError();
   program.parse(process.argv);
 })().catch(err => {
   console.error(`VTI operation failed with error`);
-  console.error(err.stack);
+  console.error((err as Error).stack);
   process.exit(1);
 });

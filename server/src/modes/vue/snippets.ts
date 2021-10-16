@@ -95,7 +95,7 @@ function loadAllSnippets(rootDir: string, source: SnippetSource): Snippet[] {
       }
     });
   } catch (err) {
-    logger.logDebug(err.message);
+    logger.logDebug((err as Error).message);
   }
 
   return snippets;
@@ -120,7 +120,7 @@ function loadSnippetsFromDir(dir: string, source: SnippetSource, type: SnippetTy
         });
       });
   } catch (err) {
-    logger.logDebug(err.message);
+    logger.logDebug((err as Error).message);
   }
 
   return snippets;

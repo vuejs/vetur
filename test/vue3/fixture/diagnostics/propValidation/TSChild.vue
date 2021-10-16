@@ -10,7 +10,8 @@ export default defineComponent({
     },
     arr: Array as PropType<string[]>,
     camelCase: { type: Boolean, default: false },
-    modelValue: { type: Boolean, required: true }
+    modelValue: { type: Boolean, required: true },
+    value: { type: Boolean, required: true }
   }
 });
 </script>

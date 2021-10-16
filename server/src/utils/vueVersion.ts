@@ -42,7 +42,7 @@ export function inferVueVersion(packagePath: string | undefined): VueVersion {
 
     return floatVersionToEnum(nodeModulesVueVersion);
   } catch (e) {
-    console.error(e.stack);
+    console.error((e as Error).stack);
     return VueVersion.VPre25;
   }
 }

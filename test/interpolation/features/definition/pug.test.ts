@@ -2,8 +2,8 @@ import { position, sameLineLocation } from '../../../util';
 import { getDocUri } from '../../path';
 import { testDefinition } from '../../../definitionHelper';
 
-describe('Should find definition in html template', () => {
-  const docUri = getDocUri('definition/Basic.vue');
+describe('Should find definition in pug template', () => {
+  const docUri = getDocUri('definition/BasicPug.vue');
 
   it('finds definition for child tag', async () => {
     const tagUri = getDocUri('definition/Child.vue');

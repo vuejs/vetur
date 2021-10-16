@@ -163,7 +163,7 @@ export const createDependencyService = async (
 
       throw new Error('No useWorkspaceDependencies.');
     } catch (e) {
-      logger.logDebug(e.message);
+      logger.logDebug((e as Error).message);
       logger.logInfo(`Loaded bundled typescript@${ts.version}.`);
       return [
         {
@@ -199,7 +199,7 @@ export const createDependencyService = async (
       }
       throw new Error('No useWorkspaceDependencies.');
     } catch (e) {
-      logger.logDebug(e.message);
+      logger.logDebug((e as Error).message);
       // TODO: Get bundle package version
       logger.logInfo(`Loaded bundled ${name}.`);
       return [
@@ -261,7 +261,7 @@ export const createDependencyService = async (
     let tempPath = path.dirname(filePath);
     while (
       rootPathForConfig === tempPath ||
-      getPathDepth(rootPathForConfig, path.sep) > getPathDepth(tempPath, path.sep)
+      getPathDepth(rootPathForConfig, path.sep) < getPathDepth(tempPath, path.sep)
     ) {
       possiblePaths.push(path.resolve(tempPath, `node_modules/${lib}`));
       tempPath = path.resolve(tempPath, '../');

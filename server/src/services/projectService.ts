@@ -126,7 +126,7 @@ export async function createProjectService(
               allEdits.push(edit);
             }
           } catch (err) {
-            errMessages.push(err.toString());
+            errMessages.push((err as Error).toString());
           }
         }
       });

@@ -310,7 +310,7 @@ export function getServiceHost(
           }
           return getScriptKind(tsModule, doc.languageId);
         } else if (isVirtualVueTemplateFile(fileName)) {
-          return tsModule.ScriptKind.JS;
+          return tsModule.ScriptKind.TS;
         } else {
           if (fileName === bridge.fileName) {
             return tsModule.ScriptKind.TS;

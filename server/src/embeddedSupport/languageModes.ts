@@ -118,7 +118,7 @@ export class LanguageModes {
   }
 
   async init(env: EnvironmentService, services: VLSServices, globalSnippetDir?: string) {
-    const tsModule = services.dependencyService.get('typescript').module;
+    const tsModule = services.dependencyService.get('typescript', env.getPackagePath()).module;
 
     /**
      * Documents where everything outside `<script>` is replaced with whitespace
@@ -145,6 +145,7 @@ export class LanguageModes {
     );
 
     const jsMode = await getJavascriptMode(
+      tsModule,
       this.serviceHost,
       env,
       this.documentRegions,
@@ -158,7 +159,7 @@ export class LanguageModes {
 
     this.modes['vue'] = getVueMode(env, globalSnippetDir);
     this.modes['vue-html'] = vueHtmlMode;
-    this.modes['pug'] = getPugMode(env, services.dependencyService);
+    this.modes['pug'] = getPugMode(env, services.dependencyService, this.documentRegions, services.infoService);
     this.modes['css'] = getCSSMode(env, this.documentRegions, services.dependencyService);
     this.modes['postcss'] = getPostCSSMode(env, this.documentRegions, services.dependencyService);
     this.modes['scss'] = getSCSSMode(env, this.documentRegions, services.dependencyService);

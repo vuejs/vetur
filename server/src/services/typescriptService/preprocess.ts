@@ -104,7 +104,7 @@ export function createUpdater(
       injectVueTemplate(tsModule, sourceFile, expressions, scriptSrc);
     } catch (err) {
       console.log(`Failed to transform template of ${vueTemplateFileName}`);
-      console.error(err.stack);
+      console.error((err as Error).stack);
     }
 
     let newText = printer.printFile(sourceFile);
@@ -119,7 +119,7 @@ export function createUpdater(
       newText,
       sourceFile.languageVersion,
       true /* setParentNodes: Need this to walk the AST */,
-      tsModule.ScriptKind.JS
+      tsModule.ScriptKind.TS
     );
     // Assign version to the new template sourceFile to avoid re-processing
     // *internal* property
@@ -338,15 +338,15 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
     });
 
     src += `
-interface ${componentDataInterfaceName}<T> extends ${componentDataName}<T> {
+interface ${componentDataInterfaceName}<T, TH> extends ${componentDataName}<T, TH> {
   props: { ${propTypeStrings.join(', ')} }
-  on: { ${onTypeStrings.join(', ')} } & { [K in keyof T]?: ($event: T[K]) => any; }
+  on: { ${onTypeStrings.join(', ')} } & { [K in keyof T]?: (this: TH, $event: T[K]) => any; }
 }
 declare const ${componentHelperInterfaceName}: {
   <T>(
     vm: T,
     tag: string,
-    data: ${componentDataInterfaceName}<Record<string, any>> & ThisType<T>,
+    data: ${componentDataInterfaceName}<Record<string, any>, T> & ThisType<T>,
     children: any[]
   ): any
 }`;

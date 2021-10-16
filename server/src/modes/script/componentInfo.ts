@@ -11,6 +11,7 @@ import {
   MethodInfo,
   ChildComponent
 } from '../../services/vueInfoService';
+import { VueVersion } from '../../utils/vueVersion';
 import { analyzeComponentsDefine } from './childComponents';
 import { getGlobalComponents } from './globalComponents';
 
@@ -19,6 +20,7 @@ export function getComponentInfo(
   service: ts.LanguageService,
   fileFsPath: string,
   globalComponentInfos: BasicComponentInfo[],
+  vueVersion: VueVersion,
   config: any
 ): VueFileInfo | undefined {
   const program = service.getProgram();
@@ -38,7 +40,7 @@ export function getComponentInfo(
     return undefined;
   }
 
-  const vueFileInfo = analyzeDefaultExportExpr(tsModule, defaultExportNode, checker);
+  const vueFileInfo = analyzeDefaultExportExpr(tsModule, defaultExportNode, checker, vueVersion);
 
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
   const componentsDefineInfo = analyzeComponentsDefine(
@@ -57,7 +59,9 @@ export function getComponentInfo(
         documentation: c.documentation,
         definition: c.definition,
         global: false,
-        info: c.defaultExportNode ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker) : undefined
+        info: c.defaultExportNode
+          ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker, vueVersion)
+          : undefined
       });
     });
     vueFileInfo.componentInfo.childComponents = childComponents;
@@ -78,7 +82,9 @@ export function getComponentInfo(
         documentation: c.documentation,
         definition: c.definition,
         global: true,
-        info: c.defaultExportNode ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker) : undefined
+        info: c.defaultExportNode
+          ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker, vueVersion)
+          : undefined
       }))
     ];
   }
@@ -89,13 +95,14 @@ export function getComponentInfo(
 export function analyzeDefaultExportExpr(
   tsModule: RuntimeLibrary['typescript'],
   defaultExportNode: ts.Node,
-  checker: ts.TypeChecker
+  checker: ts.TypeChecker,
+  vueVersion: VueVersion
 ): VueFileInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
 
   const insertInOptionAPIPos = getInsertInOptionAPIPos(tsModule, defaultExportType, checker);
   const emits = getEmits(tsModule, defaultExportType, checker);
-  const props = getProps(tsModule, defaultExportType, checker);
+  const props = getProps(tsModule, defaultExportType, checker, vueVersion);
   const data = getData(tsModule, defaultExportType, checker);
   const computed = getComputed(tsModule, defaultExportType, checker);
   const methods = getMethods(tsModule, defaultExportType, checker);
@@ -327,7 +334,8 @@ function getEmits(
 function getProps(
   tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
-  checker: ts.TypeChecker
+  checker: ts.TypeChecker,
+  vueVersion: VueVersion
 ): PropInfo[] | undefined {
   const result: PropInfo[] = markPropBoundToModel(
     defaultExportType,
@@ -337,9 +345,11 @@ function getProps(
   return result.length === 0 ? undefined : result;
 
   function markPropBoundToModel(type: ts.Type, props: PropInfo[]) {
+    const vModelPropName = vueVersion === VueVersion.V30 ? 'modelValue' : 'value';
+
     function markValuePropBoundToModel() {
       return props.map(prop => {
-        if (prop.name === 'value') {
+        if (prop.name === vModelPropName) {
           prop.isBoundToModel = true;
         }
         return prop;
@@ -368,9 +378,11 @@ function getProps(
     });
   }
 
-  function getPropValidatorInfo(
-    propertyValue: ts.Node | undefined
-  ): { hasObjectValidator: boolean; required: boolean; typeString?: string } {
+  function getPropValidatorInfo(propertyValue: ts.Node | undefined): {
+    hasObjectValidator: boolean;
+    required: boolean;
+    typeString?: string;
+  } {
     if (!propertyValue) {
       return { hasObjectValidator: false, required: true };
     }

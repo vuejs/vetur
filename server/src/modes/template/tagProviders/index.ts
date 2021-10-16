@@ -125,7 +125,7 @@ export function getTagProviderSettings(packagePath: string | undefined) {
         continue;
       }
 
-      const depTagProvider = getDependencyTagProvider(packageRoot, runtimePkgJson);
+      const depTagProvider = getDependencyTagProvider(packageRoot, dep, runtimePkgJson);
       if (!depTagProvider) {
         continue;
       }
@@ -134,7 +134,7 @@ export function getTagProviderSettings(packagePath: string | undefined) {
       settings[dep] = true;
     }
   } catch (e) {
-    console.error(e.stack);
+    console.error((e as Error).stack);
   }
   return settings;
 }

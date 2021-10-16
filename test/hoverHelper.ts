@@ -1,4 +1,4 @@
-import vscode from 'vscode';
+import vscode, { MarkdownString, MarkedString } from 'vscode';
 import assert from 'assert';
 import { showFile } from './editorHelper';
 
@@ -27,6 +27,6 @@ export async function testHover(docUri: vscode.Uri, position: vscode.Position, e
   }
 }
 
-function markedStringToSTring(s: vscode.MarkedString) {
+function markedStringToSTring(s: MarkdownString | MarkedString) {
   return typeof s === 'string' ? s : s.value;
 }
