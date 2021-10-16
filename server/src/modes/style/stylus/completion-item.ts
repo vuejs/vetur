@@ -261,7 +261,11 @@ export function getValues(data: LoadedCSSData, currentWord: string): CompletionI
   });
 }
 
-export function provideCompletionItems(document: TextDocument, position: Position): CompletionList {
+export function provideCompletionItems(
+  document: TextDocument,
+  position: Position,
+  useSeparator = false
+): CompletionList {
   const start = document.offsetAt(Position.create(position.line, 0));
   const end = document.offsetAt(position);
   const text = document.getText();
@@ -278,7 +282,7 @@ export function provideCompletionItems(document: TextDocument, position: Positio
     completions = completions.concat(values, symbols, builtIn);
   } else {
     const atRules = getAtRules(cssData, currentWord);
-    const properties = getProperties(cssData, currentWord, false);
+    const properties = getProperties(cssData, currentWord, useSeparator);
     const symbols = getAllSymbols(text, currentWord, position).filter(
       item => item.kind !== CompletionItemKind.Variable
     );

@@ -2,6 +2,16 @@
 
 ### Un release
 
+----
+
+#### ⚠️  Breaking change: ⚠️
+This version uses separator between property and value for Stylus language 
+by default, since this is the default behavior for `language-stylus`.
+
+You can disable the separator with the `languageStylus.useSeparator` option.
+
+----
+
 - Fix corner case when same monorepo folder start with.
 - Fix template interpolation broken when typescript > 4.0. #3107
 - Fix load project too slow. #3166
@@ -14,6 +24,7 @@
 - 🙌 Add support for Ctrl+Click (Go to Definition) for Pug templates. Thanks to contribution from [@Shifu462](https://github.com/Shifu462). #2482.
 - 🙌 Add editor sdk setup notes to Yarn PnP section. Thanks to contribution from [@Jaden-Giordano](https://github.com/Jaden-Giordano).
 - 🙌 Bracket pair colorization support for VSCode 1.60+. Thanks to contribution from [@lorand-horvath](https://github.com/lorand-horvath).
+- Respect `languageStylus.useSeparator` option that defines the separator style for Stylus. Thanks to contribution from [@euaaaio](https://github.com/euaaaio). #931.
 - Upgrade typescript to 4.4.
 - Upgrade `prettier` to 2.4.1.
 - Upgrade `@prettier/plugin-pug` to 1.16.7.

@@ -14,7 +14,9 @@ UI Libraries such as Element UI and Onsen UI often include a list of ready-to-us
 
 ## `<style>`
 
-Vetur offers IntelliSense for CSS properties & values in `css/scss/less/postcss/stylus`.  
+Vetur offers IntelliSense for CSS properties & values in `css/scss/less/postcss/stylus`.
+
+For `stylus` you can choose a separator style with the `languageStylus.useSeparator` option.
 
 ## `<script>`
 

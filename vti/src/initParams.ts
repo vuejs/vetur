@@ -89,6 +89,7 @@ function getDefaultVLSConfig() {
       format: {}
     },
     emmet: {},
-    stylusSupremacy: {}
+    stylusSupremacy: {},
+    languageStylus: {}
   };
 }

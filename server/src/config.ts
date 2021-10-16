@@ -90,6 +90,7 @@ export interface VLSFullConfig extends VLSConfig {
   typescript?: any;
   prettier?: any;
   stylusSupremacy?: any;
+  languageStylus?: any;
 }
 
 export function getDefaultVLSConfig(): VLSFullConfig {
@@ -156,7 +157,8 @@ export function getDefaultVLSConfig(): VLSFullConfig {
       format: {}
     },
     emmet: {},
-    stylusSupremacy: {}
+    stylusSupremacy: {},
+    languageStylus: {}
   };
 }
 
@@ -247,7 +249,9 @@ export async function getVeturFullConfig(
     })
     .sort((a, b) => {
       const r = getPathDepth(b.root, '/') - getPathDepth(a.root, '/');
-      if (r !== 0) return r;
+      if (r !== 0) {
+        return r;
+      }
       return b.root.length - a.root.length;
     });
 
