@@ -8,12 +8,12 @@ export const moduleName = 'vue-editor-bridge';
 export const fileName = 'vue-temp/vue-editor-bridge.ts';
 
 const renderHelpers = `
-type ComponentListeners<T> = {
-  [K in keyof T]?: ($event: T[K]) => any;
+type ComponentListeners<T, TH> = {
+  [K in keyof T]?: (this: TH, $event: T[K]) => any;
 };
-export interface ${componentDataName}<T> {
+export interface ${componentDataName}<T, TH> {
   props: Record<string, any>;
-  on: ComponentListeners<T>;
+  on: ComponentListeners<T, TH>;
   directives: any[];
 }
 export declare const ${renderHelperName}: {
@@ -23,7 +23,7 @@ export declare const ${componentHelperName}: {
   <T>(
     vm: T,
     tag: string,
-    data: ${componentDataName}<Record<string, any>> & ThisType<T>,
+    data: ${componentDataName}<Record<string, any>, T> & ThisType<T>,
     children: any[]
   ): any;
 };

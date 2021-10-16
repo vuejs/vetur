@@ -8,7 +8,7 @@ describe('Should show hover info with component data', () => {
   it('shows element description', async () => {
     await testHover(docUri, position(2, 5), {
       contents: [
-        '```ts\n(property) __vlsComponentData<Record<string, any>>.props: Record<string, any>\n```\nA foo tag'
+        '```ts\n(property) __vlsComponentData<Record<string, any>, CombinedVueInstance<{ noop(): void; } & Record<never, any> & Vue, object, object, object, Record<never, any>>>.props: Record<string, any>\n```\nA foo tag'
       ],
       range: sameLineRange(2, 5, 12)
     });
@@ -37,7 +37,9 @@ describe('Should show hover info with component data', () => {
 
   it('shows attribute description for html event handler', async () => {
     await testHover(docUri, position(4, 26), {
-      contents: ['```ts\n(property) "error": ($event: any) => () => void\n```'],
+      contents: [
+        '```ts\n(property) "error": (this: CombinedVueInstance<{\n    noop(): void;\n} & Record<never, any> & Vue, object, object, object, Record<never, any>>, $event: any) => () => void\n```'
+      ],
       range: sameLineRange(4, 26, 31)
     });
   });
