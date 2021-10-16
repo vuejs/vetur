@@ -261,7 +261,7 @@ export const createDependencyService = async (
     let tempPath = path.dirname(filePath);
     while (
       rootPathForConfig === tempPath ||
-      getPathDepth(rootPathForConfig, path.sep) > getPathDepth(tempPath, path.sep)
+      getPathDepth(rootPathForConfig, path.sep) < getPathDepth(tempPath, path.sep)
     ) {
       possiblePaths.push(path.resolve(tempPath, `node_modules/${lib}`));
       tempPath = path.resolve(tempPath, '../');
