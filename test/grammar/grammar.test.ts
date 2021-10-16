@@ -54,10 +54,10 @@ async function assertUnchangedTokens(testFixurePath: string, done: (err?: Error)
       }
       done();
     } catch (e) {
-      done(e);
+      done(e as Error);
     }
   } catch (e) {
-    return done(e);
+    return done(e as Error);
   }
 }
 

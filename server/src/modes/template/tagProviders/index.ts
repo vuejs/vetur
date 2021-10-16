@@ -134,7 +134,7 @@ export function getTagProviderSettings(packagePath: string | undefined) {
       settings[dep] = true;
     }
   } catch (e) {
-    console.error(e.stack);
+    console.error((e as Error).stack);
   }
   return settings;
 }

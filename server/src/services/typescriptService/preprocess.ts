@@ -104,7 +104,7 @@ export function createUpdater(
       injectVueTemplate(tsModule, sourceFile, expressions, scriptSrc);
     } catch (err) {
       console.log(`Failed to transform template of ${vueTemplateFileName}`);
-      console.error(err.stack);
+      console.error((err as Error).stack);
     }
 
     let newText = printer.printFile(sourceFile);

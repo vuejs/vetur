@@ -168,7 +168,7 @@ export class VueInterpolationMode implements LanguageMode {
       });
     } catch (err) {
       console.log('Interpolation completion failed');
-      console.error(err.stack);
+      console.error((err as Error).stack);
     }
 
     if (!completions) {

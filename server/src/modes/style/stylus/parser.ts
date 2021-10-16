@@ -114,7 +114,7 @@ export function buildAst(text: string): StylusNode | null {
     addScope(ret, 0, []);
     return ret;
   } catch (error) {
-    console.error(error.stack);
+    console.error((error as Error).stack);
     return null;
   }
 }

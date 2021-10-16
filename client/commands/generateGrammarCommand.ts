@@ -15,7 +15,7 @@ export function generateGrammarCommandHandler(extensionPath: string) {
       writeFileSync(resolve(extensionPath, 'syntaxes/vue-generated.json'), generatedGrammar, 'utf-8');
       vscode.window.showInformationMessage('Successfully generated vue grammar. Reload VS Code to enable it.');
     } catch (e) {
-      console.error(e.stack);
+      console.error((e as Error).stack);
       vscode.window.showErrorMessage(
         'Failed to generate vue grammar. `vetur.grammar.customBlocks` contain invalid language values'
       );

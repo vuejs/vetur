@@ -85,18 +85,16 @@ async function prepareClientConnection(workspaceUri: URI) {
   const serverConnection = createConnection(new StreamMessageReader(up), new StreamMessageWriter(down));
   const vls = new VLS(serverConnection as any);
 
-  serverConnection.onInitialize(
-    async (params: InitializeParams): Promise<InitializeResult> => {
-      await vls.init(params);
+  serverConnection.onInitialize(async (params: InitializeParams): Promise<InitializeResult> => {
+    await vls.init(params);
 
-      console.log('Vetur initialized');
-      console.log('====================================');
+    console.log('Vetur initialized');
+    console.log('====================================');
 
-      return {
-        capabilities: vls.capabilities as ServerCapabilities
-      };
-    }
-  );
+    return {
+      capabilities: vls.capabilities as ServerCapabilities
+    };
+  });
 
   vls.listen();
   clientConnection.listen();
@@ -192,7 +190,7 @@ async function getDiagnostics(workspaceUri: URI, paths: string[], severity: Diag
         console.log('');
       }
     } catch (err) {
-      console.error(err.stack);
+      console.error((err as Error).stack);
     }
   }
 
