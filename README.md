@@ -51,7 +51,7 @@ Thanks to the following companies for supporting Vetur's development:
   <tr>
     <td>
       <a href="https://bit.ly/3dlKf2Z">
-        <img src="https://assets.website-files.com/5f922f81cc30586744dc7122/5fac1e88dc66fc1c2fdc98e6_logo-color.svg" width="250"/>
+        <img src="https://raw.githubusercontent.com/vuejs/vetur/master/asset/stepsize.png" width="250"/>
       </a>
     </td>
     <td>
