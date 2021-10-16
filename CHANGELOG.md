@@ -1,6 +1,6 @@
 # Changelog
 
-### Un release
+### 0.35.0 | 2021-10-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.35.0/vspackage)
 
 ----
 
