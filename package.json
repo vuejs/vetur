@@ -609,7 +609,7 @@
     "@types/shelljs": "^0.8.9",
     "@types/vscode": "^1.52.0",
     "@vscode/test-electron": "^1.6.2",
-    "esbuild": "^0.13.7",
+    "esbuild": "^0.13.12",
     "fs-extra": "^10.0.0",
     "glob": "^7.2.0",
     "husky": "^7.0.2",
