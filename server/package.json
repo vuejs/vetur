@@ -48,7 +48,7 @@
     "@types/resolve": "1.20.1",
     "bootstrap-vue-helper-json": "^1.1.1",
     "codecov": "^3.8.3",
-    "core-js": "^3.18.3",
+    "core-js": "^3.19.0",
     "element-helper-json": "^2.0.6",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
@@ -73,7 +73,7 @@
     "vscode-languageserver-types": "3.16.0",
     "vscode-uri": "^3.0.2",
     "vscode-web-custom-data": "^0.3.6",
-    "vue-eslint-parser": "^7.11.0",
+    "vue-eslint-parser": "^8.0.0",
     "vue-onsenui-helper-json": "^1.0.2"
   },
   "scripts": {
