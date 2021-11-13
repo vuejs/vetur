@@ -30,7 +30,7 @@ export declare const ${componentHelperName}: {
 export declare const ${iterationHelperName}: {
   <T>(list: readonly T[], fn: (value: T, index: number) => any): any;
   <T>(obj: { [key: string]: T }, fn: (value: T, key: string, index: number) => any): any;
-  (num: number, fn: (value: number) => any): any;
+  (num: number, fn: (value: number, index: number) => any): any;
   <T>(obj: object, fn: (value: any, key: string, index: number) => any): any;
 };
 `;
