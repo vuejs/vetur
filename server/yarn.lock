@@ -410,10 +410,10 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
 
-"@types/eslint@*", "@types/eslint@7.2.2":
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.2.tgz#c88426b896efeb0b2732a92431ce8aa7ec0dee61"
-  integrity sha512-psWuwNXuKR2e6vMU5d2qH0Kqzrb2Zxwk+uBCF2LsyEph+Nex3lFIPMJXwxfGesdtJM2qtjKoCYsyh76K3x9wLg==
+"@types/eslint@*", "@types/eslint@8.2.1":
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-8.2.1.tgz#13f3d69bac93c2ae008019c28783868d0a1d6605"
+  integrity sha512-UP9rzNn/XyGwb5RQ2fok+DzcIRIYwc16qTXse5+Smsy8MOIccCChT15KAwnsgQx4PzJkaMq4myFyZ4CL5TjhIQ==
   dependencies:
     "@types/estree" "*"
     "@types/json-schema" "*"
