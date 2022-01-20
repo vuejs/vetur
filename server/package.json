@@ -35,7 +35,7 @@
   "devDependencies": {
     "@prettier/plugin-pug": "^1.17.2",
     "@starptech/prettyhtml": "^0.10.0",
-    "@types/eslint": "7.2.2",
+    "@types/eslint": "8.4.0",
     "@types/eslint-scope": "^3.7.1",
     "@types/eslint-visitor-keys": "^1.0.0",
     "@types/glob": "^7.2.0",
