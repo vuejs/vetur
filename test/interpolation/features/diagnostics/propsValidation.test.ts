@@ -64,17 +64,17 @@ describe('Should find common diagnostics for all regions', () => {
   it('shows errors for passing wrong props to child component when using object validators', async () => {
     const expectedDiagnostics: vscode.Diagnostic[] = [
       {
-        message: '<object-validator-child> misses props: foo, bar',
+        message: '<object-validator-child> misses props: foo, bar, with-required, no-default-required',
         severity: vscode.DiagnosticSeverity.Error,
         range: sameLineRange(12, 4, 30)
       },
       {
-        message: '<object-validator-child> misses props: bar',
+        message: '<object-validator-child> misses props: bar, with-required, no-default-required',
         severity: vscode.DiagnosticSeverity.Error,
         range: sameLineRange(13, 4, 41)
       },
       {
-        message: '<object-validator-child> misses props: foo',
+        message: '<object-validator-child> misses props: foo, with-required, no-default-required',
         severity: vscode.DiagnosticSeverity.Error,
         range: sameLineRange(14, 4, 40)
       }

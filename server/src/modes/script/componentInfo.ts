@@ -457,7 +457,10 @@ function getProps(
       }
     }
 
-    if (!propertyValue || !tsModule.isObjectLiteralExpression(propertyValue)) {
+    if (
+      !propertyValue ||
+      (!tsModule.isObjectLiteralExpression(propertyValue) && !tsModule.isIdentifier(propertyValue))
+    ) {
       return { hasObjectValidator: false, required: true, typeString };
     }
 
