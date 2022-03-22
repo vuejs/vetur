@@ -111,11 +111,17 @@ export class VLS {
   }
 
   async init(params: InitializeParams) {
+    let rootFsPath = '';
+    if (params.rootPath) {
+      rootFsPath = normalizeFileNameToFsPath(params.rootPath);
+    } else if (params.rootUri) {
+      rootFsPath = getFileFsPath(params.rootUri);
+    }
     const workspaceFolders =
       Array.isArray(params.workspaceFolders) && params.capabilities.workspace?.workspaceFolders
         ? params.workspaceFolders.map(el => ({ name: el.name, fsPath: getFileFsPath(el.uri) }))
-        : params.rootPath
-        ? [{ name: '', fsPath: normalizeFileNameToFsPath(params.rootPath) }]
+        : rootFsPath
+        ? [{ name: '', fsPath: rootFsPath }]
         : [];
 
     if (workspaceFolders.length === 0) {
