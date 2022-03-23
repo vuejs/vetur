@@ -102,7 +102,7 @@ class MultiLineStream {
   }
 
   public advanceIfRegExp(regex: RegExp): string {
-    const str = this.source.substr(this.position);
+    const str = this.source.slice(this.position);
     const match = str.match(regex);
     if (match) {
       this.position = this.position + match.index! + match[0].length;
@@ -112,7 +112,7 @@ class MultiLineStream {
   }
 
   public advanceUntilRegExp(regex: RegExp): string {
-    const str = this.source.substr(this.position);
+    const str = this.source.slice(this.position);
     const match = str.match(regex);
     if (match) {
       this.position = this.position + match.index!;

@@ -86,7 +86,7 @@ function testcase(description: string) {
       let content = generateContent();
       const offset = content.indexOf('|');
       if (offset >= 0) {
-        content = content.substr(0, offset) + content.substr(offset + 1);
+        content = content.slice(0, offset) + content.slice(offset + 1);
       }
       const doc = TextDocument.create('test://test/test.vue', 'vue', 0, content);
 

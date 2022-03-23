@@ -23,7 +23,7 @@ suite('HTML Scanner', () => {
       while (tokenType !== TokenType.EOS) {
         const actualToken: Token = { offset: scanner.getTokenOffset(), type: tokenType };
         if (tokenType === TokenType.StartTag || tokenType === TokenType.EndTag) {
-          actualToken.content = t.input.substr(scanner.getTokenOffset(), scanner.getTokenLength());
+          actualToken.content = t.input.slice(scanner.getTokenOffset(), scanner.getTokenOffset() + scanner.getTokenLength());
         }
         actual.push(actualToken);
         tokenType = scanner.scan();

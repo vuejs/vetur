@@ -51,7 +51,7 @@ function getTagBodyText(tag: ts.JSDocTagInfo): string | undefined {
       // check for caption tags, fix for #79704
       const captionTagMatches = plain(tag.text).match(/<caption>(.*?)<\/caption>\s*(\r\n|\n)/);
       if (captionTagMatches && captionTagMatches.index === 0) {
-        return captionTagMatches[1] + '\n\n' + makeCodeblock(plain(tag.text).substr(captionTagMatches[0].length));
+        return captionTagMatches[1] + '\n\n' + makeCodeblock(plain(tag.text).slice(captionTagMatches[0].length));
       } else {
         return makeCodeblock(plain(tag.text));
       }

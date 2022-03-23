@@ -159,7 +159,7 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
       } else if (token === TokenType.Unknown) {
         if (scanner.getTokenText().charAt(0) === '<') {
           const offset = scanner.getTokenOffset();
-          const unknownText = text.substr(offset, 11);
+          const unknownText = text.slice(offset, offset + 11);
           if (unknownText === '</template>') {
             unClosedTemplate--;
             // test leading </template>
@@ -231,7 +231,7 @@ function scanCustomRegion(tagName: string, scanner: Scanner, text: string): Embe
       } else if (token === TokenType.Unknown) {
         if (scanner.getTokenText().charAt(0) === '<') {
           const offset = scanner.getTokenOffset();
-          const unknownText = text.substr(offset, `</${tagName}>`.length);
+          const unknownText = text.slice(offset, offset + `</${tagName}>`.length);
           if (unknownText === `</${tagName}>`) {
             unClosedTag--;
             // test leading </${tagName}>
