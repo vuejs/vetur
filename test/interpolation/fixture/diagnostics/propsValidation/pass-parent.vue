@@ -2,7 +2,7 @@
   <div>
     <array-child :foo="foo" :bar="bar" :bAz="bar"></array-child>
     <array-child :foo="foo" :bar="bar" :b-az="bar"></array-child>
-    <object-validator-child v-model="foo" :bar="bar" />
+    <object-validator-child v-model="foo" :bar="bar" :no-default-required="true" :with-required="true" />
     <class-child v-bind="{}" />
     <class-child v-bind:[bar]="{}" />
     <class-child :[bar]="{}" />

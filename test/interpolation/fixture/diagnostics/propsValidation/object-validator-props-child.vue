@@ -1,4 +1,18 @@
 <script>
+const propertyAssignmentDefault = {
+  type: Boolean,
+  default: false,
+};
+
+const propertyAssignmentRequired = {
+  type: Boolean,
+  required: true,
+};
+
+const propertyAssignmentNoDefaultRequired = {
+  type: Boolean,
+};
+
 export default {
   model: {
     prop: 'foo'
@@ -19,7 +33,10 @@ export default {
     dar: {
       type: String,
       default: 'dar'
-    }
+    },
+    withDefault: propertyAssignmentDefault,
+    withRequired: propertyAssignmentRequired,
+    noDefaultRequired: propertyAssignmentNoDefaultRequired
   }
 }
 </script>
