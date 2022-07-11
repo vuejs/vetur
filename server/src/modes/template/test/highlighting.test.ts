@@ -12,7 +12,7 @@ import { findDocumentHighlights } from '../services/htmlHighlighting';
 suite('HTML Highlighting', () => {
   function assertHighlights(value: string, expectedMatches: number[], elementName: string | null): void {
     const offset = value.indexOf('|');
-    value = value.substring(0, offset) + value.slice(offset + 1);
+    value = value.slice(0, offset) + value.slice(offset + 1);
 
     const document = TextDocument.create('test://test/test.html', 'html', 0, value);
 
