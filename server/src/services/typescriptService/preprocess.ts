@@ -245,6 +245,15 @@ export function injectVueTemplate(
     tsModule.createLiteral(componentFilePath)
   );
 
+  const createImportSpecifier = (name: string) => {
+    const [major, minor] = tsModule.version.split('.');
+    if ((Number(major) === 4 && Number(minor) >= 5) || Number(major) > 4) {
+      // @ts-expect-error
+      return tsModule.createImportSpecifier(undefined, undefined, tsModule.createIdentifier(renderHelperName));
+    }
+    return tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(name));
+  };
+
   // import helper type to handle Vue's private methods
   const helperImport = tsModule.createImportDeclaration(
     undefined,
@@ -252,10 +261,10 @@ export function injectVueTemplate(
     tsModule.createImportClause(
       undefined,
       tsModule.createNamedImports([
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(renderHelperName)),
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentHelperName)),
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(iterationHelperName)),
-        tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(componentDataName))
+        createImportSpecifier(renderHelperName),
+        createImportSpecifier(componentHelperName),
+        createImportSpecifier(iterationHelperName),
+        createImportSpecifier(componentDataName)
       ])
     ),
     tsModule.createLiteral('vue-editor-bridge')
