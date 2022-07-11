@@ -63,7 +63,7 @@ module.exports = [
   },
   // bundle typings
   {
-    input: getVLSPath('typings/main.d.ts'),
+    input: getVLSPath('typings/index.d.ts'),
     output: {
       file: getVLSPath('dist/vls.d.ts'),
       format: 'es'
