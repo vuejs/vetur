@@ -2,6 +2,14 @@
   <h1 align="center">Vetur</h1>
 </p>
 
+## Project status
+https://github.com/vuejs/vetur/issues/3476
+
+New official vue editor support: Volar   
+VSCode extension: https://marketplace.visualstudio.com/items?itemName=Vue.volar   
+Project: https://github.com/johnsoncodehk/volar   
+LSP: https://github.com/johnsoncodehk/volar
+
 <p align="center">
   <a href="https://github.com/vuejs/vetur/actions?query=workflow%3A%22Node+CI%22">
     <img src="https://img.shields.io/github/workflow/status/vuejs/vetur/Node%20CI?label=%20&logo=github&style=flat-square&logoColor=white&color=42b883">
