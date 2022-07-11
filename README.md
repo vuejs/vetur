@@ -3,7 +3,7 @@
 </p>
 
 ## Project status
-https://github.com/vuejs/vetur/issues/3476
+issue: https://github.com/vuejs/vetur/issues/3476
 
 New official vue editor support: Volar   
 VSCode extension: https://marketplace.visualstudio.com/items?itemName=Vue.volar   
