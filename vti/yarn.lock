@@ -1003,10 +1003,10 @@ v8-compile-cache@^2.0.3:
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
 
-vls@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/vls/-/vls-0.8.0.tgz#18b9d91a584dfbbd80361aef294a528230816daa"
-  integrity sha512-Ca9WQmvjgd8GTjEZB4rfsxgsmquinuwDXHXHVLN0u7V+Iy3xEzlmaK7JN7AFKr+ORD5xB+17dn7tskqY+kln/Q==
+vls@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/vls/-/vls-0.8.1.tgz#51f0b9c9838535c400591f92f826f18cd4712982"
+  integrity sha512-Oja3mdxnFxrnSWu3igDyq/vuaeLPd1tU+ZSgVNYvnXcAHwjw2El4iUxhSwJqf6synDl0P8cX41xbiutb0OUoHg==
   dependencies:
     eslint "^7.32.0"
     eslint-plugin-vue "^7.19.1"
