@@ -2,8 +2,14 @@
 
 ### Un release
 
+- Fix template type-checking when typescript >= 4.5. #3323,#3424.
+- Export all component for volar together.
 - 🙌 Add support to interpolation service for index parameter with number iteration. Thanks to contribution from [@thebanjomatic](https://github.com/thebanjomatic). #3222
 - 🙌 Add support for checking `default` and `required` state of props set by variables (`Identifier`). Thanks to contribution from [@lordeleto]<https://github.com/lordeleto>.
+- 🙌 refactor: replace deprecated String.prototype.substr(). Thanks to contribution from [@CommanderRoot]<https://github.com/CommanderRoot>.
+- 🙌 fixed: modify vls readme. Thanks to contribution from [@FoxDaxian]<https://github.com/FoxDaxian>.
+- 🙌 docs: add BalmUI for supported framework. Thanks to contribution from [@elf-mouse]<https://github.com/elf-mouse>.
+- 🙌 support rootUri. Thanks to contribution from [@phil294]<https://github.com/phil294>.
 
 ### 0.35.0 | 2021-10-16 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.35.0/vspackage)
 
