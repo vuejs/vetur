@@ -1,6 +1,6 @@
 # Changelog
 
-### Un release
+### 0.36.0 | 2022-07-11 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.36.0/vspackage)
 
 - Fix template type-checking when typescript >= 4.5. #3323,#3424.
 - Export all component for volar together.
