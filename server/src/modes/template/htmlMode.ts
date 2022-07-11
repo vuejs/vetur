@@ -14,12 +14,7 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { htmlFormat } from './services/htmlFormat';
 import { doESLintValidation, createLintEngine } from './services/htmlEslintValidation';
 import { findDefinition } from './services/htmlDefinition';
-import {
-  getTagProviderSettings,
-  IHTMLTagProvider,
-  CompletionConfiguration,
-  getEnabledTagProviders
-} from './tagProviders';
+import { getTagProviderSettings, CompletionConfiguration, getEnabledTagProviders } from './tagProviders';
 import { DocumentContext } from '../../types';
 import { VLSFormatConfig, VLSFullConfig } from '../../config';
 import { VueInfoService } from '../../services/vueInfoService';
@@ -30,6 +25,7 @@ import { DependencyService } from '../../services/dependencyService';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { AutoImportSfcPlugin } from '../plugins/autoImportSfcPlugin';
 import { EnvironmentService } from '../../services/EnvironmentService';
+import { IHTMLTagProvider } from './tagProviders/common';
 
 export class HTMLMode implements LanguageMode {
   private tagProviderSettings: CompletionConfiguration;

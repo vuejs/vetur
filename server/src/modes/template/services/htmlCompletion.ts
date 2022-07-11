@@ -10,7 +10,7 @@ import {
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument } from '../parser/htmlParser';
 import { HtmlTokenType, createScanner, ScannerState } from '../parser/htmlScanner';
-import { IHTMLTagProvider } from '../tagProviders';
+import { IHTMLTagProvider } from '../tagProviders/common';
 import * as emmet from 'vscode-emmet-helper';
 import { NULL_COMPLETION } from '../../nullMode';
 import { getModifierProvider, Modifier } from '../modifierProvider';

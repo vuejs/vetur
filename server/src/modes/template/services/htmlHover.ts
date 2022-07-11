@@ -2,7 +2,7 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { HtmlTokenType, createScanner } from '../parser/htmlScanner';
 import { Range, Position, Hover } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import { IHTMLTagProvider } from '../tagProviders';
+import { IHTMLTagProvider } from '../tagProviders/common';
 import { NULL_HOVER } from '../../nullMode';
 import { toMarkupContent } from '../../../utils/strings';
 
