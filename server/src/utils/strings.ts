@@ -10,7 +10,7 @@ export function getWordAtText(text: string, offset: number, wordDefinition: RegE
     lineStart--;
   }
   const offsetInLine = offset - lineStart;
-  const lineText = text.substr(lineStart);
+  const lineText = text.slice(lineStart);
 
   // make a copy of the regex as to not keep the state
   const flags = wordDefinition.ignoreCase ? 'gi' : 'g';

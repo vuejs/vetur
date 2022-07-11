@@ -34,7 +34,7 @@ export class HoverAsserter {
 export function hoverDSL(setup: HoverTestSetup) {
   return function test([value]: TemplateStringsArray) {
     const offset = value.indexOf('|');
-    value = value.substr(0, offset) + value.substr(offset + 1);
+    value = value.slice(0, offset) + value.slice(offset + 1);
     const document = TextDocument.create(setup.docUri, setup.langId, 0, value);
 
     const position = document.positionAt(offset);
