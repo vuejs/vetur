@@ -249,7 +249,7 @@ export function injectVueTemplate(
     const [major, minor] = tsModule.version.split('.');
     if ((Number(major) === 4 && Number(minor) >= 5) || Number(major) > 4) {
       // @ts-expect-error
-      return tsModule.createImportSpecifier(undefined, undefined, tsModule.createIdentifier(renderHelperName));
+      return tsModule.createImportSpecifier(undefined, undefined, tsModule.createIdentifier(name));
     }
     return tsModule.createImportSpecifier(undefined, tsModule.createIdentifier(name));
   };

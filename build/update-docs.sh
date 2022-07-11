@@ -3,7 +3,7 @@ cd docs
 rm -rf .vuepress/dist
 
 # Build
-npx vuepress build
+vuepress build
 
 # Publish to GitHub Pages
 cd .vuepress/dist
