@@ -24,6 +24,7 @@ Vetur currently bundles Component Data for the following vue libraries:
 - [Quasar Framework](https://quasar.dev/)
 - [Gridsome](https://gridsome.org/)
 - [Ionic Framework](https://ionicframework.com/)
+- [BalmUI](https://material.balmjs.com/)
 
 Vetur reads the `package.json` **in your project root** to determine if it should offer tags & attributes completions. Here are the exact `dependencies`/`devDependencies` used to determine which Component Data to load.
 
@@ -40,6 +41,7 @@ Vetur reads the `package.json` **in your project root** to determine if it shoul
 | `nuxt-edge` | `nuxt-edge` | Bundled in [@nuxt/vue-app-edge](https://www.npmjs.com/package/@nuxt/vue-app-edge) package, or fallback to [nuxt-helper-json](https://github.com/nuxt-community/nuxt-helper-json) with [@nuxt/components](https://github.com/nuxt/components) integration |
 | `quasar` / `quasar-framework` | `quasar` / `quasar-cli` | Bundled in [quasar](https://www.npmjs.com/package/quasar) (v1+) and [quasar-framework](https://www.npmjs.com/package/quasar-framework) (pre v1) packages |
 | `@ionic/vue` | `@ionic/vue` | Bundled in [@ionic/vue](https://www.npmjs.com/package/@ionic/vue) (v5.5.0+) |
+| `balm-ui` | `balm-ui` | Bundled in [balm-ui](https://www.npmjs.com/package/balm-ui) (v8.49.0+) |
 
 Getting `element-ui`'s completions is as easy as running `yarn add element-ui` and reloading VS Code.
 
