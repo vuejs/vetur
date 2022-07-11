@@ -1,5 +1,5 @@
 import { HTMLDocument } from '../parser/htmlParser';
-import { TokenType, createScanner } from '../parser/htmlScanner';
+import { HtmlTokenType, createScanner } from '../parser/htmlScanner';
 import { Range, Position, DocumentHighlightKind, DocumentHighlight } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -14,9 +14,9 @@ export function findDocumentHighlights(
     return [];
   }
   const result = [];
-  const startTagRange = getTagNameRange(TokenType.StartTag, document, node.start);
+  const startTagRange = getTagNameRange(HtmlTokenType.StartTag, document, node.start);
   const endTagRange =
-    typeof node.endTagStart === 'number' && getTagNameRange(TokenType.EndTag, document, node.endTagStart);
+    typeof node.endTagStart === 'number' && getTagNameRange(HtmlTokenType.EndTag, document, node.endTagStart);
   if ((startTagRange && covers(startTagRange, position)) || (endTagRange && covers(endTagRange, position))) {
     if (startTagRange) {
       result.push({ kind: DocumentHighlightKind.Read, range: startTagRange });
@@ -36,13 +36,13 @@ function covers(range: Range, position: Position) {
   return isBeforeOrEqual(range.start, position) && isBeforeOrEqual(position, range.end);
 }
 
-function getTagNameRange(tokenType: TokenType, document: TextDocument, startOffset: number): Range | null {
+function getTagNameRange(tokenType: HtmlTokenType, document: TextDocument, startOffset: number): Range | null {
   const scanner = createScanner(document.getText(), startOffset);
   let token = scanner.scan();
-  while (token !== TokenType.EOS && token !== tokenType) {
+  while (token !== HtmlTokenType.EOS && token !== tokenType) {
     token = scanner.scan();
   }
-  if (token !== TokenType.EOS) {
+  if (token !== HtmlTokenType.EOS) {
     return { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) };
   }
   return null;

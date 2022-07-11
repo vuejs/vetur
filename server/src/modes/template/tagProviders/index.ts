@@ -10,7 +10,6 @@ import {
   getDependencyTagProvider,
   getWorkspaceTagProvider
 } from './externalTagProviders';
-export { IHTMLTagProvider } from './common';
 
 import fs from 'fs';
 import { join } from 'path';

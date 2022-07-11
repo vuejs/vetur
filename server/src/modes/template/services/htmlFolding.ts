@@ -6,7 +6,7 @@
 import { FoldingRange, FoldingRangeKind } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { TokenType, createScanner } from '../parser/htmlScanner';
+import { HtmlTokenType, createScanner } from '../parser/htmlScanner';
 import { isVoidElement } from '../tagProviders/htmlTags';
 
 export function getFoldingRanges(document: TextDocument): FoldingRange[] {
@@ -22,26 +22,26 @@ export function getFoldingRanges(document: TextDocument): FoldingRange[] {
     prevStart = range.startLine;
   }
 
-  while (token !== TokenType.EOS) {
+  while (token !== HtmlTokenType.EOS) {
     switch (token) {
-      case TokenType.StartTag: {
+      case HtmlTokenType.StartTag: {
         const tagName = scanner.getTokenText();
         const startLine = document.positionAt(scanner.getTokenOffset()).line;
         stack.push({ startLine, tagName });
         lastTagName = tagName;
         break;
       }
-      case TokenType.EndTag: {
+      case HtmlTokenType.EndTag: {
         lastTagName = scanner.getTokenText();
         break;
       }
-      case TokenType.StartTagClose:
+      case HtmlTokenType.StartTagClose:
         if (!lastTagName || !isVoidElement(lastTagName)) {
           break;
         }
       // fallthrough
-      case TokenType.EndTagClose:
-      case TokenType.StartTagSelfClose: {
+      case HtmlTokenType.EndTagClose:
+      case HtmlTokenType.StartTagSelfClose: {
         let i = stack.length - 1;
         while (i >= 0 && stack[i].tagName !== lastTagName) {
           i--;
@@ -58,7 +58,7 @@ export function getFoldingRanges(document: TextDocument): FoldingRange[] {
         }
         break;
       }
-      case TokenType.Comment: {
+      case HtmlTokenType.Comment: {
         let startLine = document.positionAt(scanner.getTokenOffset()).line;
         const text = scanner.getTokenText();
         const m = text.match(/^\s*#(region\b)|(endregion\b)/);

@@ -9,13 +9,13 @@ import {
 } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument } from '../parser/htmlParser';
-import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
+import { HtmlTokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { IHTMLTagProvider } from '../tagProviders';
 import * as emmet from 'vscode-emmet-helper';
 import { NULL_COMPLETION } from '../../nullMode';
 import { getModifierProvider, Modifier } from '../modifierProvider';
 import { toMarkupContent } from '../../../utils/strings';
-import { Priority } from '../tagProviders/common';
+import { TagProviderPriority } from '../tagProviders/common';
 import { kebabCase } from 'lodash';
 
 export function doComplete(
@@ -71,7 +71,7 @@ export function doComplete(
         ...item,
         kind: CompletionItemKind.Property,
         textEdit: TextEdit.replace(range, item.label),
-        sortText: Priority.UserCode + item.label,
+        sortText: TagProviderPriority.UserCode + item.label,
         insertTextFormat: InsertTextFormat.PlainText
       });
     });
@@ -99,7 +99,7 @@ export function doComplete(
     tagNameEnd: number = offset
   ): CompletionList {
     const range = getReplaceRange(afterOpenBracket, tagNameEnd);
-    const closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
+    const closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, HtmlTokenType.EndTagClose) ? '' : '>';
     let curr = node;
     while (curr) {
       const tag = curr.tag;
@@ -160,7 +160,7 @@ export function doComplete(
     const filterPrefix = execArray ? execArray[0] : '';
     const start = filterPrefix ? nameStart + 1 : nameStart;
     const range = getReplaceRange(start, nameEnd);
-    const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)
+    const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, HtmlTokenType.DelimiterAssign)
       ? ''
       : '="$1"';
     tagProviders.forEach(provider => {
@@ -281,7 +281,7 @@ export function doComplete(
     return result;
   }
 
-  function scanNextForEndPos(nextToken: TokenType): number {
+  function scanNextForEndPos(nextToken: HtmlTokenType): number {
     if (offset === scanner.getTokenEnd()) {
       token = scanner.scan();
       if (token === nextToken && scanner.getTokenOffset() === offset) {
@@ -293,32 +293,32 @@ export function doComplete(
 
   let token = scanner.scan();
 
-  while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
+  while (token !== HtmlTokenType.EOS && scanner.getTokenOffset() <= offset) {
     switch (token) {
-      case TokenType.StartTagOpen:
+      case HtmlTokenType.StartTagOpen:
         if (scanner.getTokenEnd() === offset) {
-          const endPos = scanNextForEndPos(TokenType.StartTag);
+          const endPos = scanNextForEndPos(HtmlTokenType.StartTag);
           return collectTagSuggestions(offset, endPos);
         }
         break;
-      case TokenType.StartTag:
+      case HtmlTokenType.StartTag:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
           return collectOpenTagSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
         }
         currentTag = scanner.getTokenText();
         break;
-      case TokenType.AttributeName:
+      case HtmlTokenType.AttributeName:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
           return collectAttributeNameSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
         }
         currentAttributeName = scanner.getTokenText();
         break;
-      case TokenType.DelimiterAssign:
+      case HtmlTokenType.DelimiterAssign:
         if (scanner.getTokenEnd() === offset) {
           return collectAttributeValueSuggestions(currentAttributeName, scanner.getTokenEnd());
         }
         break;
-      case TokenType.AttributeValue:
+      case HtmlTokenType.AttributeValue:
         if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
           if (currentAttributeName === 'style') {
             const emmetCompletions = emmet.doComplete(document, position, 'css', emmetConfig);
@@ -332,12 +332,12 @@ export function doComplete(
           }
         }
         break;
-      case TokenType.Whitespace:
+      case HtmlTokenType.Whitespace:
         if (offset <= scanner.getTokenEnd()) {
           switch (scanner.getScannerState()) {
             case ScannerState.AfterOpeningStartTag:
               const startPos = scanner.getTokenOffset();
-              const endTagPos = scanNextForEndPos(TokenType.StartTag);
+              const endTagPos = scanNextForEndPos(HtmlTokenType.StartTag);
               return collectTagSuggestions(startPos, endTagPos);
             case ScannerState.WithinTag:
             case ScannerState.AfterAttributeName:
@@ -349,14 +349,14 @@ export function doComplete(
           }
         }
         break;
-      case TokenType.EndTagOpen:
+      case HtmlTokenType.EndTagOpen:
         if (offset <= scanner.getTokenEnd()) {
           const afterOpenBracket = scanner.getTokenOffset() + 1;
-          const endOffset = scanNextForEndPos(TokenType.EndTag);
+          const endOffset = scanNextForEndPos(HtmlTokenType.EndTag);
           return collectCloseTagSuggestions(afterOpenBracket, false, endOffset);
         }
         break;
-      case TokenType.EndTag:
+      case HtmlTokenType.EndTag:
         if (offset <= scanner.getTokenEnd()) {
           let start = scanner.getTokenOffset() - 1;
           while (start >= 0) {
@@ -370,7 +370,7 @@ export function doComplete(
           }
         }
         break;
-      case TokenType.Content:
+      case HtmlTokenType.Content:
         if (offset <= scanner.getTokenEnd()) {
           return emmet.doComplete(document, position, 'html', emmetConfig) ?? NULL_COMPLETION;
         }
@@ -390,10 +390,10 @@ function isWhiteSpace(s: string): boolean {
   return /^\s*$/.test(s);
 }
 
-function isFollowedBy(s: string, offset: number, intialState: ScannerState, expectedToken: TokenType) {
+function isFollowedBy(s: string, offset: number, intialState: ScannerState, expectedToken: HtmlTokenType) {
   const scanner = createScanner(s, offset, intialState);
   let token = scanner.scan();
-  while (token === TokenType.Whitespace) {
+  while (token === HtmlTokenType.Whitespace) {
     token = scanner.scan();
   }
   return token === expectedToken;

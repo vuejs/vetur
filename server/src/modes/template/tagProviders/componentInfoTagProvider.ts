@@ -6,7 +6,7 @@ import {
   collectAttributesDefault,
   collectValuesDefault,
   genAttribute,
-  Priority,
+  TagProviderPriority,
   Attribute
 } from './common';
 import { ChildComponent } from '../../../services/vueInfoService';
@@ -36,7 +36,7 @@ export function getComponentInfoTagProvider(childComponents: ChildComponent[]): 
 
   return {
     getId: () => 'component',
-    priority: Priority.UserCode,
+    priority: TagProviderPriority.UserCode,
     collectTags: collector => collectTagsDefault(collector, tagSet),
     collectAttributes: (
       tag: string,

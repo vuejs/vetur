@@ -65,7 +65,7 @@ function generateTypingsVls() {
 
 function bundleVlsWithEsbuild() {
   const options = {
-    entryPoints: [getServerPath('src/main.ts')],
+    entryPoints: [getServerPath('src/index.ts')],
     outfile: getServerPath('dist/vls.js'),
     /**
      * No minify when watch

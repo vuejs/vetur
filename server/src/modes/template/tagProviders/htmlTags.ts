@@ -29,7 +29,7 @@ import {
   collectTagsDefault,
   collectAttributesDefault,
   collectValuesDefault,
-  Priority
+  TagProviderPriority
 } from './common';
 import { MarkupContent } from 'vscode-languageserver-types';
 
@@ -883,7 +883,7 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
         collector('@' + handler, 'event');
       });
     },
-    priority: Priority.Platform,
+    priority: TagProviderPriority.Platform,
     collectValues: (tag: string, attribute: string, collector: (value: string) => void) =>
       collectValuesDefault(tag, attribute, collector, HTML_TAGS, globalAttributes, valueSets)
   };

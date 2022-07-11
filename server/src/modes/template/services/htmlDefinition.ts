@@ -1,11 +1,11 @@
 import { HTMLDocument } from '../parser/htmlParser';
-import { TokenType, createScanner } from '../parser/htmlScanner';
+import { HtmlTokenType, createScanner } from '../parser/htmlScanner';
 import { Position, Location } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { VueFileInfo } from '../../../services/vueInfoService';
 import { getTagDefinition } from '../../template-common/tagDefinition';
 
-const TRIVIAL_TOKEN = [TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace];
+const TRIVIAL_TOKEN = [HtmlTokenType.StartTagOpen, HtmlTokenType.EndTagOpen, HtmlTokenType.Whitespace];
 
 export function findDefinition(
   document: TextDocument,
@@ -29,7 +29,7 @@ export function findDefinition(
   let token = scanner.scan();
 
   function shouldAdvance() {
-    if (token === TokenType.EOS) {
+    if (token === HtmlTokenType.EOS) {
       return false;
     }
     const tokenEnd = scanner.getTokenEnd();
@@ -52,8 +52,8 @@ export function findDefinition(
   }
 
   switch (token) {
-    case TokenType.StartTag:
-    case TokenType.EndTag:
+    case HtmlTokenType.StartTag:
+    case HtmlTokenType.EndTag:
       return getTagDefinition(vueFileInfo, node.tag);
   }
 

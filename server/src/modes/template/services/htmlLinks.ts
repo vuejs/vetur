@@ -1,4 +1,4 @@
-import { TokenType, createScanner } from '../parser/htmlScanner';
+import { HtmlTokenType, createScanner } from '../parser/htmlScanner';
 import { Range, DocumentLink } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
@@ -83,19 +83,19 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
   let afterHrefOrSrc = false;
   let afterBase = false;
   let base: string | undefined = undefined;
-  while (token !== TokenType.EOS) {
+  while (token !== HtmlTokenType.EOS) {
     switch (token) {
-      case TokenType.StartTag:
+      case HtmlTokenType.StartTag:
         if (!base) {
           const tagName = scanner.getTokenText().toLowerCase();
           afterBase = tagName === 'base';
         }
         break;
-      case TokenType.AttributeName:
+      case HtmlTokenType.AttributeName:
         const attributeName = scanner.getTokenText().toLowerCase();
         afterHrefOrSrc = attributeName === 'src' || attributeName === 'href';
         break;
-      case TokenType.AttributeValue:
+      case HtmlTokenType.AttributeValue:
         if (afterHrefOrSrc) {
           const attributeValue = scanner.getTokenText();
           const link = createLink(

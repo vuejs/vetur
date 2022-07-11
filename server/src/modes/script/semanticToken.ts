@@ -9,7 +9,7 @@ import { SemanticTokenOffsetData } from '../../types';
  * extended from https://github.com/microsoft/TypeScript/blob/35c8df04ad959224fad9037e340c1e50f0540a49/src/services/classifier2020.ts#L9
  * so that we don't have to map it into our own legend
  */
-export const enum TokenType {
+export const enum TsTokenType {
   class,
   enum,
   interface,
@@ -44,36 +44,40 @@ export const enum TokenModifier {
 export function getSemanticTokenLegends(): SemanticTokensLegend {
   const tokenModifiers: string[] = [];
 
-  ([
-    [TokenModifier.declaration, SemanticTokenModifiers.declaration],
-    [TokenModifier.static, SemanticTokenModifiers.static],
-    [TokenModifier.async, SemanticTokenModifiers.async],
-    [TokenModifier.readonly, SemanticTokenModifiers.readonly],
-    [TokenModifier.defaultLibrary, SemanticTokenModifiers.defaultLibrary],
-    [TokenModifier.local, 'local'],
+  (
+    [
+      [TokenModifier.declaration, SemanticTokenModifiers.declaration],
+      [TokenModifier.static, SemanticTokenModifiers.static],
+      [TokenModifier.async, SemanticTokenModifiers.async],
+      [TokenModifier.readonly, SemanticTokenModifiers.readonly],
+      [TokenModifier.defaultLibrary, SemanticTokenModifiers.defaultLibrary],
+      [TokenModifier.local, 'local'],
 
-    // vue
-    [TokenModifier.refValue, 'refValue']
-  ] as const).forEach(([tsModifier, legend]) => (tokenModifiers[tsModifier] = legend));
+      // vue
+      [TokenModifier.refValue, 'refValue']
+    ] as const
+  ).forEach(([tsModifier, legend]) => (tokenModifiers[tsModifier] = legend));
 
   const tokenTypes: string[] = [];
 
-  ([
-    [TokenType.class, SemanticTokenTypes.class],
-    [TokenType.enum, SemanticTokenTypes.enum],
-    [TokenType.interface, SemanticTokenTypes.interface],
-    [TokenType.namespace, SemanticTokenTypes.namespace],
-    [TokenType.typeParameter, SemanticTokenTypes.typeParameter],
-    [TokenType.type, SemanticTokenTypes.type],
-    [TokenType.parameter, SemanticTokenTypes.parameter],
-    [TokenType.variable, SemanticTokenTypes.variable],
-    [TokenType.enumMember, SemanticTokenTypes.enumMember],
-    [TokenType.property, SemanticTokenTypes.property],
-    [TokenType.function, SemanticTokenTypes.function],
+  (
+    [
+      [TsTokenType.class, SemanticTokenTypes.class],
+      [TsTokenType.enum, SemanticTokenTypes.enum],
+      [TsTokenType.interface, SemanticTokenTypes.interface],
+      [TsTokenType.namespace, SemanticTokenTypes.namespace],
+      [TsTokenType.typeParameter, SemanticTokenTypes.typeParameter],
+      [TsTokenType.type, SemanticTokenTypes.type],
+      [TsTokenType.parameter, SemanticTokenTypes.parameter],
+      [TsTokenType.variable, SemanticTokenTypes.variable],
+      [TsTokenType.enumMember, SemanticTokenTypes.enumMember],
+      [TsTokenType.property, SemanticTokenTypes.property],
+      [TsTokenType.function, SemanticTokenTypes.function],
 
-    // member is renamed to method in vscode codebase to match LSP default
-    [TokenType.member, SemanticTokenTypes.method]
-  ] as const).forEach(([tokenType, legend]) => (tokenTypes[tokenType] = legend));
+      // member is renamed to method in vscode codebase to match LSP default
+      [TsTokenType.member, SemanticTokenTypes.method]
+    ] as const
+  ).forEach(([tokenType, legend]) => (tokenTypes[tokenType] = legend));
 
   return {
     tokenModifiers,
@@ -136,7 +140,7 @@ export function addCompositionApiRefTokens(
       exist.modifierSet |= encodedModifier;
     } else {
       exists.push({
-        classificationType: TokenType.property,
+        classificationType: TsTokenType.property,
         length: node.getEnd() - node.getStart(),
         modifierSet: encodedModifier,
         start: node.getStart()

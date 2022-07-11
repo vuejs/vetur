@@ -3,7 +3,7 @@ import * as emmet from 'vscode-emmet-helper';
 import { CompletionList, TextEdit } from 'vscode-languageserver-types';
 import { IStylusSupremacy } from './stylus-supremacy';
 
-import { Priority } from '../emmet';
+import { StylePriority } from '../emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../../embeddedSupport/languageModes';
 import { VueDocumentRegions } from '../../../embeddedSupport/embeddedSupport';
@@ -46,7 +46,7 @@ export function getStylusMode(
       const lsItems = _.map(lsCompletions.items, i => {
         return {
           ...i,
-          sortText: Priority.Platform + i.label
+          sortText: StylePriority.Platform + i.label
         };
       });
 
@@ -57,7 +57,7 @@ export function getStylusMode(
         const emmetItems = emmetCompletions.items.map(i => {
           return {
             ...i,
-            sortText: Priority.Emmet + i.label
+            sortText: StylePriority.Emmet + i.label
           };
         });
         return {

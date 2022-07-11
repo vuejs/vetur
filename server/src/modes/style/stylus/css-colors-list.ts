@@ -1,4 +1,4 @@
-export default [
+const cssColors = [
   'aliceblue',
   'antiquewhite',
   'aqua',
@@ -148,3 +148,5 @@ export default [
   'yellow',
   'yellowgreen'
 ];
+
+export default cssColors;

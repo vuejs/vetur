@@ -1,4 +1,4 @@
-import { TokenType, createScanner } from './htmlScanner';
+import { HtmlTokenType, createScanner } from './htmlScanner';
 import { isVoidElement } from '../tagProviders/htmlTags';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -78,27 +78,27 @@ export function parse(text: string): HTMLDocument {
   let pendingAttribute = '';
   let token = scanner.scan();
   let attributes: { [k: string]: string } | undefined = {};
-  while (token !== TokenType.EOS) {
+  while (token !== HtmlTokenType.EOS) {
     switch (token) {
-      case TokenType.StartTagOpen:
+      case HtmlTokenType.StartTagOpen:
         const child = new Node(scanner.getTokenOffset(), text.length, [], curr);
         curr.children.push(child);
         curr = child;
         break;
-      case TokenType.StartTag:
+      case HtmlTokenType.StartTag:
         curr.tag = scanner.getTokenText();
         break;
-      case TokenType.StartTagClose:
+      case HtmlTokenType.StartTagClose:
         curr.end = scanner.getTokenEnd(); // might be later set to end tag position
         if (isVoidElement(curr.tag) && curr !== htmlDocument) {
           curr.closed = true;
           curr = curr.parent;
         }
         break;
-      case TokenType.EndTagOpen:
+      case HtmlTokenType.EndTagOpen:
         endTagStart = scanner.getTokenOffset();
         break;
-      case TokenType.EndTag:
+      case HtmlTokenType.EndTag:
         const closeTag = scanner.getTokenText().toLowerCase();
         while (!curr.isSameTag(closeTag) && curr !== htmlDocument) {
           curr.end = endTagStart;
@@ -110,32 +110,32 @@ export function parse(text: string): HTMLDocument {
           curr.endTagStart = endTagStart;
         }
         break;
-      case TokenType.StartTagSelfClose:
+      case HtmlTokenType.StartTagSelfClose:
         if (curr !== htmlDocument) {
           curr.closed = true;
           curr.end = scanner.getTokenEnd();
           curr = curr.parent;
         }
         break;
-      case TokenType.EndTagClose:
+      case HtmlTokenType.EndTagClose:
         if (curr !== htmlDocument) {
           curr.end = scanner.getTokenEnd();
           curr = curr.parent;
         }
         break;
-      case TokenType.StartInterpolation: {
+      case HtmlTokenType.StartInterpolation: {
         const child = new Node(scanner.getTokenOffset(), text.length, [], curr);
         child.isInterpolation = true;
         curr.children.push(child);
         curr = child;
         break;
       }
-      case TokenType.EndInterpolation:
+      case HtmlTokenType.EndInterpolation:
         curr.end = scanner.getTokenEnd();
         curr.closed = true;
         curr = curr.parent;
         break;
-      case TokenType.AttributeName:
+      case HtmlTokenType.AttributeName:
         pendingAttribute = scanner.getTokenText();
         attributes = curr.attributes;
         if (!attributes) {
@@ -143,7 +143,7 @@ export function parse(text: string): HTMLDocument {
         }
         attributes[pendingAttribute] = ''; // Support valueless attributes such as 'checked'
         break;
-      case TokenType.AttributeValue:
+      case HtmlTokenType.AttributeValue:
         const value = scanner.getTokenText();
         if (attributes && pendingAttribute) {
           attributes[pendingAttribute] = value;

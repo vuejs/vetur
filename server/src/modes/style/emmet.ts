@@ -1,4 +1,4 @@
-export enum Priority {
+export enum StylePriority {
   Emmet,
   Platform
 }

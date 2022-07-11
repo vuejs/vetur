@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { kebabCase } from 'lodash';
 
-import { IHTMLTagProvider, Priority, getSameTagInSet } from './common';
+import { IHTMLTagProvider, TagProviderPriority, getSameTagInSet } from './common';
 
 import elementTags from 'element-helper-json/element-tags.json';
 import elementAttributes from 'element-helper-json/element-attributes.json';
@@ -84,7 +84,7 @@ export function getExternalTagProvider(id: string, tags: any, attributes: any): 
 
   return {
     getId: () => id,
-    priority: Priority.Library,
+    priority: TagProviderPriority.Library,
     collectTags(collector) {
       for (const tagName in tags) {
         collector(tagName, tags[tagName].description || '');

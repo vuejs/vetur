@@ -9,7 +9,7 @@ import {
 import _ from 'lodash';
 import * as emmet from 'vscode-emmet-helper';
 
-import { Priority } from './emmet';
+import { StylePriority } from './emmet';
 import { LanguageModelCache, getLanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { VueDocumentRegions, LanguageId } from '../../embeddedSupport/embeddedSupport';
@@ -100,7 +100,7 @@ function getStyleMode(
         ? _.map(lsCompletions.items, i => {
             return {
               ...i,
-              sortText: Priority.Platform + i.label
+              sortText: StylePriority.Platform + i.label
             } as CompletionItem;
           })
         : [];
@@ -112,7 +112,7 @@ function getStyleMode(
         const emmetItems = emmetCompletions.items.map(i => {
           return {
             ...i,
-            sortText: Priority.Emmet + i.label
+            sortText: StylePriority.Emmet + i.label
           } as CompletionItem;
         });
         return {

@@ -1,12 +1,12 @@
 import { HTMLDocument } from '../parser/htmlParser';
-import { TokenType, createScanner } from '../parser/htmlScanner';
+import { HtmlTokenType, createScanner } from '../parser/htmlScanner';
 import { Range, Position, Hover } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { IHTMLTagProvider } from '../tagProviders';
 import { NULL_HOVER } from '../../nullMode';
 import { toMarkupContent } from '../../../utils/strings';
 
-const TRIVIAL_TOKEN = [TokenType.StartTagOpen, TokenType.EndTagOpen, TokenType.Whitespace];
+const TRIVIAL_TOKEN = [HtmlTokenType.StartTagOpen, HtmlTokenType.EndTagOpen, HtmlTokenType.Whitespace];
 
 export function doHover(
   document: TextDocument,
@@ -59,7 +59,7 @@ export function doHover(
   let token = scanner.scan();
 
   function shouldAdvance() {
-    if (token === TokenType.EOS) {
+    if (token === HtmlTokenType.EOS) {
       return false;
     }
     const tokenEnd = scanner.getTokenEnd();
@@ -85,11 +85,11 @@ export function doHover(
     end: document.positionAt(scanner.getTokenEnd())
   };
   switch (token) {
-    case TokenType.StartTag:
+    case HtmlTokenType.StartTag:
       return getTagHover(node.tag, tagRange, true);
-    case TokenType.EndTag:
+    case HtmlTokenType.EndTag:
       return getTagHover(node.tag, tagRange, false);
-    case TokenType.AttributeName:
+    case HtmlTokenType.AttributeName:
       // TODO: treat : as special bind
       const attribute = scanner.getTokenText().replace(/^:/, '');
       return getAttributeHover(node.tag, attribute, tagRange);

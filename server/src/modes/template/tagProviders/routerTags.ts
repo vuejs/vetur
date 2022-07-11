@@ -7,7 +7,7 @@ import {
   collectValuesDefault,
   genAttribute,
   AttributeCollector,
-  Priority
+  TagProviderPriority
 } from './common';
 
 const routerTags = {
@@ -80,7 +80,7 @@ const valueSets = {
 export function getRouterTagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'vue-router',
-    priority: Priority.Framework,
+    priority: TagProviderPriority.Framework,
     collectTags: collector => collectTagsDefault(collector, routerTags),
     collectAttributes: (tag: string, collector: AttributeCollector) => {
       collectAttributesDefault(tag, collector, routerTags, []);

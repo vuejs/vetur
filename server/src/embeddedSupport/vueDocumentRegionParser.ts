@@ -1,5 +1,5 @@
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import { createScanner, TokenType, Scanner } from '../modes/template/parser/htmlScanner';
+import { createScanner, HtmlTokenType, Scanner } from '../modes/template/parser/htmlScanner';
 import { removeQuotes } from '../utils/strings';
 import { LanguageId } from './embeddedSupport';
 
@@ -26,9 +26,9 @@ export function parseVueDocumentRegions(document: TextDocument) {
   let stakes = 0;
 
   let token = scanner.scan();
-  while (token !== TokenType.EOS) {
+  while (token !== HtmlTokenType.EOS) {
     switch (token) {
-      case TokenType.Styles:
+      case HtmlTokenType.Styles:
         regions.push({
           languageId: /^(sass|scss|less|postcss|stylus)$/.test(languageIdFromType)
             ? (languageIdFromType as LanguageId)
@@ -39,7 +39,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
         });
         languageIdFromType = '';
         break;
-      case TokenType.Script:
+      case HtmlTokenType.Script:
         regions.push({
           languageId: languageIdFromType ? languageIdFromType : defaultScriptLang,
           start: scanner.getTokenOffset(),
@@ -48,7 +48,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
         });
         languageIdFromType = '';
         break;
-      case TokenType.StartTag:
+      case HtmlTokenType.StartTag:
         stakes++;
         const tagName = scanner.getTokenText();
         if (tagName === 'template' && stakes === 1) {
@@ -65,10 +65,10 @@ export function parseVueDocumentRegions(document: TextDocument) {
         lastTagName = tagName;
         lastAttributeName = '';
         break;
-      case TokenType.AttributeName:
+      case HtmlTokenType.AttributeName:
         lastAttributeName = scanner.getTokenText();
         break;
-      case TokenType.AttributeValue:
+      case HtmlTokenType.AttributeValue:
         if (lastAttributeName === 'lang') {
           languageIdFromType = getLanguageIdFromLangAttr(scanner.getTokenText());
         } else {
@@ -82,8 +82,8 @@ export function parseVueDocumentRegions(document: TextDocument) {
         }
         lastAttributeName = '';
         break;
-      case TokenType.StartTagSelfClose:
-      case TokenType.EndTagClose:
+      case HtmlTokenType.StartTagSelfClose:
+      case HtmlTokenType.EndTagClose:
         stakes--;
         lastAttributeName = '';
         languageIdFromType = '';
@@ -111,19 +111,19 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
   let lastAttributeName = null;
   while (unClosedTemplate !== 0) {
     // skip parsing on non html syntax, just search terminator
-    if (token === TokenType.AttributeValue && languageId !== 'vue-html') {
-      while (![TokenType.StartTagClose, TokenType.StartTagSelfClose].includes(token)) {
+    if (token === HtmlTokenType.AttributeValue && languageId !== 'vue-html') {
+      while (![HtmlTokenType.StartTagClose, HtmlTokenType.StartTagSelfClose].includes(token)) {
         token = scanner.scan();
       }
       start = scanner.getTokenEnd();
 
       token = scanner.scanForRegexp(/<\/template>/);
-      if (token === TokenType.EOS) {
+      if (token === HtmlTokenType.EOS) {
         return null;
       }
 
       // scan to `EndTag`, past `</` to `template`
-      while (token !== TokenType.EndTag) {
+      while (token !== HtmlTokenType.EndTag) {
         token = scanner.scan();
       }
       break;
@@ -131,32 +131,32 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
 
     token = scanner.scan();
 
-    if (token === TokenType.EOS) {
+    if (token === HtmlTokenType.EOS) {
       return null;
     }
 
     if (start === 0) {
-      if (token === TokenType.AttributeName) {
+      if (token === HtmlTokenType.AttributeName) {
         lastAttributeName = scanner.getTokenText();
-      } else if (token === TokenType.AttributeValue) {
+      } else if (token === HtmlTokenType.AttributeValue) {
         if (lastAttributeName === 'lang') {
           languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
         }
         lastAttributeName = null;
-      } else if (token === TokenType.StartTagClose) {
+      } else if (token === HtmlTokenType.StartTagClose) {
         start = scanner.getTokenEnd();
       }
     } else {
-      if (token === TokenType.StartTag && scanner.getTokenText() === 'template') {
+      if (token === HtmlTokenType.StartTag && scanner.getTokenText() === 'template') {
         unClosedTemplate++;
-      } else if (token === TokenType.EndTag && scanner.getTokenText() === 'template') {
+      } else if (token === HtmlTokenType.EndTag && scanner.getTokenText() === 'template') {
         unClosedTemplate--;
         // test leading </template>
         const charPosBeforeEndTag = scanner.getTokenOffset() - 3;
         if (text[charPosBeforeEndTag] === '\n') {
           break;
         }
-      } else if (token === TokenType.Unknown) {
+      } else if (token === HtmlTokenType.Unknown) {
         if (scanner.getTokenText().charAt(0) === '<') {
           const offset = scanner.getTokenOffset();
           const unknownText = text.substr(offset, 11);
@@ -203,32 +203,32 @@ function scanCustomRegion(tagName: string, scanner: Scanner, text: string): Embe
   while (unClosedTag !== 0) {
     token = scanner.scan();
 
-    if (token === TokenType.EOS) {
+    if (token === HtmlTokenType.EOS) {
       return null;
     }
 
     if (start === 0) {
-      if (token === TokenType.AttributeName) {
+      if (token === HtmlTokenType.AttributeName) {
         lastAttributeName = scanner.getTokenText();
-      } else if (token === TokenType.AttributeValue) {
+      } else if (token === HtmlTokenType.AttributeValue) {
         if (lastAttributeName === 'lang') {
           languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
         }
         lastAttributeName = null;
-      } else if (token === TokenType.StartTagClose) {
+      } else if (token === HtmlTokenType.StartTagClose) {
         start = scanner.getTokenEnd();
       }
     } else {
-      if (token === TokenType.StartTag && scanner.getTokenText() === tagName) {
+      if (token === HtmlTokenType.StartTag && scanner.getTokenText() === tagName) {
         unClosedTag++;
-      } else if (token === TokenType.EndTag && scanner.getTokenText() === tagName) {
+      } else if (token === HtmlTokenType.EndTag && scanner.getTokenText() === tagName) {
         unClosedTag--;
         // test leading </${tagName}>
         const charPosBeforeEndTag = scanner.getTokenOffset() - 3;
         if (text[charPosBeforeEndTag] === '\n') {
           break;
         }
-      } else if (token === TokenType.Unknown) {
+      } else if (token === HtmlTokenType.Unknown) {
         if (scanner.getTokenText().charAt(0) === '<') {
           const offset = scanner.getTokenOffset();
           const unknownText = text.substr(offset, `</${tagName}>`.length);

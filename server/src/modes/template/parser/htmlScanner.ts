@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-export enum TokenType {
+export enum HtmlTokenType {
   StartCommentTag,
   Comment,
   EndCommentTag,
@@ -193,9 +193,9 @@ export enum ScannerState {
 }
 
 export interface Scanner {
-  scan(): TokenType;
-  scanForRegexp(regexp: RegExp): TokenType;
-  getTokenType(): TokenType;
+  scan(): HtmlTokenType;
+  scanForRegexp(regexp: RegExp): HtmlTokenType;
+  getTokenType(): HtmlTokenType;
   getTokenOffset(): number;
   getTokenLength(): number;
   getTokenEnd(): number;
@@ -232,31 +232,31 @@ export function createScanner(
     return stream.advanceIfRegExp(/^[^\s"'<>/=\x00-\x0F\x7F\x80-\x9F]*/).toLowerCase();
   }
 
-  function finishToken(offset: number, type: TokenType, errorMessage?: string): TokenType {
+  function finishToken(offset: number, type: HtmlTokenType, errorMessage?: string): HtmlTokenType {
     tokenType = type;
     tokenOffset = offset;
     tokenError = errorMessage || '';
     return type;
   }
 
-  function scan(): TokenType {
+  function scan(): HtmlTokenType {
     const offset = stream.pos();
     const oldState = state;
     const token = internalScan();
-    if (token !== TokenType.EOS && offset === stream.pos()) {
+    if (token !== HtmlTokenType.EOS && offset === stream.pos()) {
       console.log(
         'Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state
       );
       stream.advance(1);
-      return finishToken(offset, TokenType.Unknown);
+      return finishToken(offset, HtmlTokenType.Unknown);
     }
     return token;
   }
 
-  function internalScan(): TokenType {
+  function internalScan(): HtmlTokenType {
     const offset = stream.pos();
     if (stream.eos()) {
-      return finishToken(offset, TokenType.EOS);
+      return finishToken(offset, HtmlTokenType.EOS);
     }
     let errorMessage;
 
@@ -265,17 +265,17 @@ export function createScanner(
         if (stream.advanceIfChars([_MIN, _MIN, _RAN])) {
           // -->
           state = ScannerState.WithinContent;
-          return finishToken(offset, TokenType.EndCommentTag);
+          return finishToken(offset, HtmlTokenType.EndCommentTag);
         }
         stream.advanceUntilChars([_MIN, _MIN, _RAN]); // -->
-        return finishToken(offset, TokenType.Comment);
+        return finishToken(offset, HtmlTokenType.Comment);
       case ScannerState.WithinDoctype:
         if (stream.advanceIfChar(_RAN)) {
           state = ScannerState.WithinContent;
-          return finishToken(offset, TokenType.EndDoctypeTag);
+          return finishToken(offset, HtmlTokenType.EndDoctypeTag);
         }
         stream.advanceUntilChar(_RAN); // >
-        return finishToken(offset, TokenType.Doctype);
+        return finishToken(offset, HtmlTokenType.Doctype);
       case ScannerState.WithinContent:
         if (stream.advanceIfChar(_LAN)) {
           // <
@@ -284,59 +284,59 @@ export function createScanner(
             if (stream.advanceIfChars([_BNG, _MIN, _MIN])) {
               // <!--
               state = ScannerState.WithinComment;
-              return finishToken(offset, TokenType.StartCommentTag);
+              return finishToken(offset, HtmlTokenType.StartCommentTag);
             }
             if (stream.advanceIfRegExp(/^!doctype/i)) {
               state = ScannerState.WithinDoctype;
-              return finishToken(offset, TokenType.StartDoctypeTag);
+              return finishToken(offset, HtmlTokenType.StartDoctypeTag);
             }
           }
           if (stream.advanceIfChar(_FSL)) {
             // /
             state = ScannerState.AfterOpeningEndTag;
-            return finishToken(offset, TokenType.EndTagOpen);
+            return finishToken(offset, HtmlTokenType.EndTagOpen);
           }
           state = ScannerState.AfterOpeningStartTag;
-          return finishToken(offset, TokenType.StartTagOpen);
+          return finishToken(offset, HtmlTokenType.StartTagOpen);
         }
         if (stream.advanceIfChars([_LCR, _LCR])) {
           state = ScannerState.WithinInterpolation;
-          return finishToken(offset, TokenType.StartInterpolation);
+          return finishToken(offset, HtmlTokenType.StartInterpolation);
         }
         stream.advanceUntilRegExp(/<|{{/);
-        return finishToken(offset, TokenType.Content);
+        return finishToken(offset, HtmlTokenType.Content);
       case ScannerState.WithinInterpolation:
         if (stream.advanceIfChars([_RCR, _RCR])) {
           state = ScannerState.WithinContent;
-          return finishToken(offset, TokenType.EndInterpolation);
-         }
+          return finishToken(offset, HtmlTokenType.EndInterpolation);
+        }
         stream.advanceUntilChars([_RCR, _RCR]);
-        return finishToken(offset, TokenType.InterpolationContent);
+        return finishToken(offset, HtmlTokenType.InterpolationContent);
       case ScannerState.AfterOpeningEndTag:
         const tagName = nextElementName();
         if (tagName.length > 0) {
           state = ScannerState.WithinEndTag;
-          return finishToken(offset, TokenType.EndTag);
+          return finishToken(offset, HtmlTokenType.EndTag);
         }
         if (stream.skipWhitespace()) {
           // white space is not valid here
-          return finishToken(offset, TokenType.Whitespace, 'Tag name must directly follow the open bracket.');
+          return finishToken(offset, HtmlTokenType.Whitespace, 'Tag name must directly follow the open bracket.');
         }
         state = ScannerState.WithinEndTag;
         stream.advanceUntilChar(_RAN);
         if (offset < stream.pos()) {
-          return finishToken(offset, TokenType.Unknown, 'End tag name expected.');
+          return finishToken(offset, HtmlTokenType.Unknown, 'End tag name expected.');
         }
         return internalScan();
       case ScannerState.WithinEndTag:
         if (stream.skipWhitespace()) {
           // white space is valid here
-          return finishToken(offset, TokenType.Whitespace);
+          return finishToken(offset, HtmlTokenType.Whitespace);
         }
         if (stream.advanceIfChar(_RAN)) {
           // >
           state = ScannerState.WithinContent;
-          return finishToken(offset, TokenType.EndTagClose);
+          return finishToken(offset, HtmlTokenType.EndTagClose);
         }
         errorMessage = 'Closing bracket expected.';
         break;
@@ -347,35 +347,35 @@ export function createScanner(
         if (lastTag.length > 0) {
           hasSpaceAfterTag = false;
           state = ScannerState.WithinTag;
-          return finishToken(offset, TokenType.StartTag);
+          return finishToken(offset, HtmlTokenType.StartTag);
         }
         if (stream.skipWhitespace()) {
           // white space is not valid here
-          return finishToken(offset, TokenType.Whitespace, 'Tag name must directly follow the open bracket.');
+          return finishToken(offset, HtmlTokenType.Whitespace, 'Tag name must directly follow the open bracket.');
         }
         state = ScannerState.WithinTag;
         stream.advanceUntilChar(_RAN);
         if (offset < stream.pos()) {
-          return finishToken(offset, TokenType.Unknown, 'Start tag name expected.');
+          return finishToken(offset, HtmlTokenType.Unknown, 'Start tag name expected.');
         }
         return internalScan();
       case ScannerState.WithinTag:
         if (stream.skipWhitespace()) {
           hasSpaceAfterTag = true; // remember that we have seen a whitespace
-          return finishToken(offset, TokenType.Whitespace);
+          return finishToken(offset, HtmlTokenType.Whitespace);
         }
         if (hasSpaceAfterTag) {
           lastAttributeName = nextAttributeName();
           if (lastAttributeName.length > 0) {
             state = ScannerState.AfterAttributeName;
             hasSpaceAfterTag = false;
-            return finishToken(offset, TokenType.AttributeName);
+            return finishToken(offset, HtmlTokenType.AttributeName);
           }
         }
         if (stream.advanceIfChars([_FSL, _RAN])) {
           // />
           state = ScannerState.WithinContent;
-          return finishToken(offset, TokenType.StartTagSelfClose);
+          return finishToken(offset, HtmlTokenType.StartTagSelfClose);
         }
         if (stream.advanceIfChar(_RAN)) {
           // >
@@ -391,25 +391,25 @@ export function createScanner(
           } else {
             state = ScannerState.WithinContent;
           }
-          return finishToken(offset, TokenType.StartTagClose);
+          return finishToken(offset, HtmlTokenType.StartTagClose);
         }
         stream.advance(1);
-        return finishToken(offset, TokenType.Unknown, 'Unexpected character in tag.');
+        return finishToken(offset, HtmlTokenType.Unknown, 'Unexpected character in tag.');
       case ScannerState.AfterAttributeName:
         if (stream.skipWhitespace()) {
           hasSpaceAfterTag = true;
-          return finishToken(offset, TokenType.Whitespace);
+          return finishToken(offset, HtmlTokenType.Whitespace);
         }
 
         if (stream.advanceIfChar(_EQS)) {
           state = ScannerState.BeforeAttributeValue;
-          return finishToken(offset, TokenType.DelimiterAssign);
+          return finishToken(offset, HtmlTokenType.DelimiterAssign);
         }
         state = ScannerState.WithinTag;
         return internalScan(); // no advance yet - jump to WithinTag
       case ScannerState.BeforeAttributeValue:
         if (stream.skipWhitespace()) {
-          return finishToken(offset, TokenType.Whitespace);
+          return finishToken(offset, HtmlTokenType.Whitespace);
         }
         const attributeValue = stream.advanceIfRegExp(/^[^\s"'`=<>\/]+/);
         if (attributeValue.length > 0) {
@@ -418,7 +418,7 @@ export function createScanner(
           }
           state = ScannerState.WithinTag;
           hasSpaceAfterTag = false;
-          return finishToken(offset, TokenType.AttributeValue);
+          return finishToken(offset, HtmlTokenType.AttributeValue);
         }
         const ch = stream.peekChar();
         if (ch === _SQO || ch === _DQO) {
@@ -431,7 +431,7 @@ export function createScanner(
           }
           state = ScannerState.WithinTag;
           hasSpaceAfterTag = false;
-          return finishToken(offset, TokenType.AttributeValue);
+          return finishToken(offset, HtmlTokenType.AttributeValue);
         }
         state = ScannerState.WithinTag;
         hasSpaceAfterTag = false;
@@ -443,7 +443,7 @@ export function createScanner(
           const match = stream.advanceIfRegExp(/<!--|-->|<\/?script\s*\/?>?/i);
           if (match.length === 0) {
             stream.goToEnd();
-            return finishToken(offset, TokenType.Script);
+            return finishToken(offset, HtmlTokenType.Script);
           } else if (match === '<!--') {
             if (sciptState === 1) {
               sciptState = 2;
@@ -467,30 +467,30 @@ export function createScanner(
         }
         state = ScannerState.WithinContent;
         if (offset < stream.pos()) {
-          return finishToken(offset, TokenType.Script);
+          return finishToken(offset, HtmlTokenType.Script);
         }
         return internalScan(); // no advance yet - jump to content
       case ScannerState.WithinStyleContent:
         stream.advanceUntilRegExp(/<\/style/i);
         state = ScannerState.WithinContent;
         if (offset < stream.pos()) {
-          return finishToken(offset, TokenType.Styles);
+          return finishToken(offset, HtmlTokenType.Styles);
         }
         return internalScan(); // no advance yet - jump to content
     }
 
     stream.advance(1);
     state = ScannerState.WithinContent;
-    return finishToken(offset, TokenType.Unknown, errorMessage);
+    return finishToken(offset, HtmlTokenType.Unknown, errorMessage);
   }
 
-  function scanForRegexp(regexp: RegExp): TokenType {
+  function scanForRegexp(regexp: RegExp): HtmlTokenType {
     const offset = stream.pos();
     state = ScannerState.WithinContent;
     if (stream.advanceUntilRegExp(regexp)) {
-      return finishToken(offset, TokenType.Unknown);
+      return finishToken(offset, HtmlTokenType.Unknown);
     }
-    return finishToken(offset, TokenType.EOS);
+    return finishToken(offset, HtmlTokenType.EOS);
   }
 
   return {

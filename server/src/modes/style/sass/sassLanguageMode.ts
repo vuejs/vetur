@@ -8,7 +8,7 @@ import { TextEdit, Position } from 'vscode-css-languageservice';
 import { SassFormatter, SassFormatterConfig } from 'sass-formatter';
 
 import * as emmet from 'vscode-emmet-helper';
-import { Priority } from '../emmet';
+import { StylePriority } from '../emmet';
 import { EnvironmentService } from '../../../services/EnvironmentService';
 
 export class SassLanguageMode implements LanguageMode {
@@ -26,7 +26,7 @@ export class SassLanguageMode implements LanguageMode {
       const emmetItems = emmetCompletions.items.map(i => {
         return {
           ...i,
-          sortText: Priority.Emmet + i.label
+          sortText: StylePriority.Emmet + i.label
         };
       });
       return {

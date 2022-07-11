@@ -5,12 +5,12 @@
 'use strict';
 
 import assert from 'assert';
-import { TokenType, ScannerState, createScanner } from '../parser/htmlScanner';
+import { HtmlTokenType, ScannerState, createScanner } from '../parser/htmlScanner';
 
 suite('HTML Scanner', () => {
   interface Token {
     offset: number;
-    type: TokenType;
+    type: HtmlTokenType;
     content?: string;
   }
 
@@ -20,9 +20,9 @@ suite('HTML Scanner', () => {
       const scanner = createScanner(t.input, 0, scannerState);
       let tokenType = scanner.scan();
       const actual: Token[] = [];
-      while (tokenType !== TokenType.EOS) {
+      while (tokenType !== HtmlTokenType.EOS) {
         const actualToken: Token = { offset: scanner.getTokenOffset(), type: tokenType };
-        if (tokenType === TokenType.StartTag || tokenType === TokenType.EndTag) {
+        if (tokenType === HtmlTokenType.StartTag || tokenType === HtmlTokenType.EndTag) {
           actualToken.content = t.input.substr(scanner.getTokenOffset(), scanner.getTokenLength());
         }
         actual.push(actualToken);
@@ -38,8 +38,8 @@ suite('HTML Scanner', () => {
       {
         input: '<abc',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' }
         ]
       }
     ]);
@@ -50,8 +50,8 @@ suite('HTML Scanner', () => {
       {
         input: '<input',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'input' }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'input' }
         ]
       }
     ]);
@@ -62,9 +62,9 @@ suite('HTML Scanner', () => {
       {
         input: '< abc',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.Whitespace },
-          { offset: 2, type: TokenType.StartTag, content: 'abc' }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.Whitespace },
+          { offset: 2, type: HtmlTokenType.StartTag, content: 'abc' }
         ]
       }
     ]);
@@ -75,10 +75,10 @@ suite('HTML Scanner', () => {
       {
         input: '< abc>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.Whitespace },
-          { offset: 2, type: TokenType.StartTag, content: 'abc' },
-          { offset: 5, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.Whitespace },
+          { offset: 2, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 5, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -89,10 +89,10 @@ suite('HTML Scanner', () => {
       {
         input: 'i <len;',
         tokens: [
-          { offset: 0, type: TokenType.Content },
-          { offset: 2, type: TokenType.StartTagOpen },
-          { offset: 3, type: TokenType.StartTag, content: 'len' },
-          { offset: 6, type: TokenType.Unknown }
+          { offset: 0, type: HtmlTokenType.Content },
+          { offset: 2, type: HtmlTokenType.StartTagOpen },
+          { offset: 3, type: HtmlTokenType.StartTag, content: 'len' },
+          { offset: 6, type: HtmlTokenType.Unknown }
         ]
       }
     ]);
@@ -102,7 +102,7 @@ suite('HTML Scanner', () => {
     assertTokens([
       {
         input: '<',
-        tokens: [{ offset: 0, type: TokenType.StartTagOpen }]
+        tokens: [{ offset: 0, type: HtmlTokenType.StartTagOpen }]
       }
     ]);
   });
@@ -112,8 +112,8 @@ suite('HTML Scanner', () => {
       {
         input: '</a',
         tokens: [
-          { offset: 0, type: TokenType.EndTagOpen },
-          { offset: 2, type: TokenType.EndTag, content: 'a' }
+          { offset: 0, type: HtmlTokenType.EndTagOpen },
+          { offset: 2, type: HtmlTokenType.EndTag, content: 'a' }
         ]
       }
     ]);
@@ -124,9 +124,9 @@ suite('HTML Scanner', () => {
       {
         input: '<abc>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -137,10 +137,10 @@ suite('HTML Scanner', () => {
       {
         input: '<abc >',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -151,9 +151,9 @@ suite('HTML Scanner', () => {
       {
         input: '<foo:bar>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'foo:bar' },
-          { offset: 8, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'foo:bar' },
+          { offset: 8, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -164,9 +164,9 @@ suite('HTML Scanner', () => {
       {
         input: '</abc>',
         tokens: [
-          { offset: 0, type: TokenType.EndTagOpen },
-          { offset: 2, type: TokenType.EndTag, content: 'abc' },
-          { offset: 5, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.EndTagOpen },
+          { offset: 2, type: HtmlTokenType.EndTag, content: 'abc' },
+          { offset: 5, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -177,10 +177,10 @@ suite('HTML Scanner', () => {
       {
         input: '</abc  >',
         tokens: [
-          { offset: 0, type: TokenType.EndTagOpen },
-          { offset: 2, type: TokenType.EndTag, content: 'abc' },
-          { offset: 5, type: TokenType.Whitespace },
-          { offset: 7, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.EndTagOpen },
+          { offset: 2, type: HtmlTokenType.EndTag, content: 'abc' },
+          { offset: 5, type: HtmlTokenType.Whitespace },
+          { offset: 7, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -191,10 +191,10 @@ suite('HTML Scanner', () => {
       {
         input: '<abc />',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.StartTagSelfClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.StartTagSelfClose }
         ]
       }
     ]);
@@ -205,17 +205,17 @@ suite('HTML Scanner', () => {
       {
         input: '<script type="text/javascript">var i= 10;</script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.Whitespace },
-          { offset: 8, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.DelimiterAssign },
-          { offset: 13, type: TokenType.AttributeValue },
-          { offset: 30, type: TokenType.StartTagClose },
-          { offset: 31, type: TokenType.Script },
-          { offset: 41, type: TokenType.EndTagOpen },
-          { offset: 43, type: TokenType.EndTag, content: 'script' },
-          { offset: 49, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.Whitespace },
+          { offset: 8, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.DelimiterAssign },
+          { offset: 13, type: HtmlTokenType.AttributeValue },
+          { offset: 30, type: HtmlTokenType.StartTagClose },
+          { offset: 31, type: HtmlTokenType.Script },
+          { offset: 41, type: HtmlTokenType.EndTagOpen },
+          { offset: 43, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 49, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -226,25 +226,25 @@ suite('HTML Scanner', () => {
       {
         input: '<script type="text/javascript">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.Whitespace },
-          { offset: 8, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.DelimiterAssign },
-          { offset: 13, type: TokenType.AttributeValue },
-          { offset: 30, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.Whitespace },
+          { offset: 8, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.DelimiterAssign },
+          { offset: 13, type: HtmlTokenType.AttributeValue },
+          { offset: 30, type: HtmlTokenType.StartTagClose }
         ]
       },
       {
         input: 'var i= 10;',
-        tokens: [{ offset: 0, type: TokenType.Script }]
+        tokens: [{ offset: 0, type: HtmlTokenType.Script }]
       },
       {
         input: '</script>',
         tokens: [
-          { offset: 0, type: TokenType.EndTagOpen },
-          { offset: 2, type: TokenType.EndTag, content: 'script' },
-          { offset: 8, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.EndTagOpen },
+          { offset: 2, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 8, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -255,22 +255,22 @@ suite('HTML Scanner', () => {
       {
         input: '<script type="text/javascript">var i= 10;',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.Whitespace },
-          { offset: 8, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.DelimiterAssign },
-          { offset: 13, type: TokenType.AttributeValue },
-          { offset: 30, type: TokenType.StartTagClose },
-          { offset: 31, type: TokenType.Script }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.Whitespace },
+          { offset: 8, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.DelimiterAssign },
+          { offset: 13, type: HtmlTokenType.AttributeValue },
+          { offset: 30, type: HtmlTokenType.StartTagClose },
+          { offset: 31, type: HtmlTokenType.Script }
         ]
       },
       {
         input: '</script>',
         tokens: [
-          { offset: 0, type: TokenType.EndTagOpen },
-          { offset: 2, type: TokenType.EndTag, content: 'script' },
-          { offset: 8, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.EndTagOpen },
+          { offset: 2, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 8, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -281,22 +281,22 @@ suite('HTML Scanner', () => {
       {
         input: '<script type="text/javascript">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.Whitespace },
-          { offset: 8, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.DelimiterAssign },
-          { offset: 13, type: TokenType.AttributeValue },
-          { offset: 30, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.Whitespace },
+          { offset: 8, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.DelimiterAssign },
+          { offset: 13, type: HtmlTokenType.AttributeValue },
+          { offset: 30, type: HtmlTokenType.StartTagClose }
         ]
       },
       {
         input: 'var i= 10;</script>',
         tokens: [
-          { offset: 0, type: TokenType.Script },
-          { offset: 10, type: TokenType.EndTagOpen },
-          { offset: 12, type: TokenType.EndTag, content: 'script' },
-          { offset: 18, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.Script },
+          { offset: 10, type: HtmlTokenType.EndTagOpen },
+          { offset: 12, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 18, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -307,17 +307,17 @@ suite('HTML Scanner', () => {
       {
         input: '<script type="text/plain">a\n<a</script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.Whitespace },
-          { offset: 8, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.DelimiterAssign },
-          { offset: 13, type: TokenType.AttributeValue },
-          { offset: 25, type: TokenType.StartTagClose },
-          { offset: 26, type: TokenType.Script },
-          { offset: 30, type: TokenType.EndTagOpen },
-          { offset: 32, type: TokenType.EndTag, content: 'script' },
-          { offset: 38, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.Whitespace },
+          { offset: 8, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.DelimiterAssign },
+          { offset: 13, type: HtmlTokenType.AttributeValue },
+          { offset: 25, type: HtmlTokenType.StartTagClose },
+          { offset: 26, type: HtmlTokenType.Script },
+          { offset: 30, type: HtmlTokenType.EndTagOpen },
+          { offset: 32, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 38, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -328,20 +328,20 @@ suite('HTML Scanner', () => {
       {
         input: '<script>a</script><script>b</script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.StartTagClose },
-          { offset: 8, type: TokenType.Script },
-          { offset: 9, type: TokenType.EndTagOpen },
-          { offset: 11, type: TokenType.EndTag, content: 'script' },
-          { offset: 17, type: TokenType.EndTagClose },
-          { offset: 18, type: TokenType.StartTagOpen },
-          { offset: 19, type: TokenType.StartTag, content: 'script' },
-          { offset: 25, type: TokenType.StartTagClose },
-          { offset: 26, type: TokenType.Script },
-          { offset: 27, type: TokenType.EndTagOpen },
-          { offset: 29, type: TokenType.EndTag, content: 'script' },
-          { offset: 35, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.StartTagClose },
+          { offset: 8, type: HtmlTokenType.Script },
+          { offset: 9, type: HtmlTokenType.EndTagOpen },
+          { offset: 11, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 17, type: HtmlTokenType.EndTagClose },
+          { offset: 18, type: HtmlTokenType.StartTagOpen },
+          { offset: 19, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 25, type: HtmlTokenType.StartTagClose },
+          { offset: 26, type: HtmlTokenType.Script },
+          { offset: 27, type: HtmlTokenType.EndTagOpen },
+          { offset: 29, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 35, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -352,16 +352,16 @@ suite('HTML Scanner', () => {
       {
         input: '<script type="text/javascript"></script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.Whitespace },
-          { offset: 8, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.DelimiterAssign },
-          { offset: 13, type: TokenType.AttributeValue },
-          { offset: 30, type: TokenType.StartTagClose },
-          { offset: 31, type: TokenType.EndTagOpen },
-          { offset: 33, type: TokenType.EndTag, content: 'script' },
-          { offset: 39, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.Whitespace },
+          { offset: 8, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.DelimiterAssign },
+          { offset: 13, type: HtmlTokenType.AttributeValue },
+          { offset: 30, type: HtmlTokenType.StartTagClose },
+          { offset: 31, type: HtmlTokenType.EndTagOpen },
+          { offset: 33, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 39, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -372,13 +372,13 @@ suite('HTML Scanner', () => {
       {
         input: '<script>var i= 10;</script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.StartTagClose },
-          { offset: 8, type: TokenType.Script },
-          { offset: 18, type: TokenType.EndTagOpen },
-          { offset: 20, type: TokenType.EndTag, content: 'script' },
-          { offset: 26, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.StartTagClose },
+          { offset: 8, type: HtmlTokenType.Script },
+          { offset: 18, type: HtmlTokenType.EndTagOpen },
+          { offset: 20, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 26, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -389,20 +389,20 @@ suite('HTML Scanner', () => {
       {
         input: '<script type="text/javascript" src="main.js"></script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.Whitespace },
-          { offset: 8, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.DelimiterAssign },
-          { offset: 13, type: TokenType.AttributeValue },
-          { offset: 30, type: TokenType.Whitespace },
-          { offset: 31, type: TokenType.AttributeName },
-          { offset: 34, type: TokenType.DelimiterAssign },
-          { offset: 35, type: TokenType.AttributeValue },
-          { offset: 44, type: TokenType.StartTagClose },
-          { offset: 45, type: TokenType.EndTagOpen },
-          { offset: 47, type: TokenType.EndTag, content: 'script' },
-          { offset: 53, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.Whitespace },
+          { offset: 8, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.DelimiterAssign },
+          { offset: 13, type: HtmlTokenType.AttributeValue },
+          { offset: 30, type: HtmlTokenType.Whitespace },
+          { offset: 31, type: HtmlTokenType.AttributeName },
+          { offset: 34, type: HtmlTokenType.DelimiterAssign },
+          { offset: 35, type: HtmlTokenType.AttributeValue },
+          { offset: 44, type: HtmlTokenType.StartTagClose },
+          { offset: 45, type: HtmlTokenType.EndTagOpen },
+          { offset: 47, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 53, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -413,13 +413,13 @@ suite('HTML Scanner', () => {
       {
         input: '<script><!-- alert("<script></script>"); --></script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.StartTagClose },
-          { offset: 8, type: TokenType.Script },
-          { offset: 44, type: TokenType.EndTagOpen },
-          { offset: 46, type: TokenType.EndTag, content: 'script' },
-          { offset: 52, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.StartTagClose },
+          { offset: 8, type: HtmlTokenType.Script },
+          { offset: 44, type: HtmlTokenType.EndTagOpen },
+          { offset: 46, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 52, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -430,13 +430,13 @@ suite('HTML Scanner', () => {
       {
         input: '<script><!-- alert("<script></script>"); </script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.StartTagClose },
-          { offset: 8, type: TokenType.Script },
-          { offset: 41, type: TokenType.EndTagOpen },
-          { offset: 43, type: TokenType.EndTag, content: 'script' },
-          { offset: 49, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.StartTagClose },
+          { offset: 8, type: HtmlTokenType.Script },
+          { offset: 41, type: HtmlTokenType.EndTagOpen },
+          { offset: 43, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 49, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -447,17 +447,17 @@ suite('HTML Scanner', () => {
       {
         input: '<script><!-- alert("</script>"); </script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.StartTagClose },
-          { offset: 8, type: TokenType.Script },
-          { offset: 20, type: TokenType.EndTagOpen },
-          { offset: 22, type: TokenType.EndTag, content: 'script' },
-          { offset: 28, type: TokenType.EndTagClose },
-          { offset: 29, type: TokenType.Content },
-          { offset: 33, type: TokenType.EndTagOpen },
-          { offset: 35, type: TokenType.EndTag, content: 'script' },
-          { offset: 41, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.StartTagClose },
+          { offset: 8, type: HtmlTokenType.Script },
+          { offset: 20, type: HtmlTokenType.EndTagOpen },
+          { offset: 22, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 28, type: HtmlTokenType.EndTagClose },
+          { offset: 29, type: HtmlTokenType.Content },
+          { offset: 33, type: HtmlTokenType.EndTagOpen },
+          { offset: 35, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 41, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -468,17 +468,17 @@ suite('HTML Scanner', () => {
       {
         input: '<script> alert("<script></script>"); </script>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.StartTagClose },
-          { offset: 8, type: TokenType.Script },
-          { offset: 24, type: TokenType.EndTagOpen },
-          { offset: 26, type: TokenType.EndTag, content: 'script' },
-          { offset: 32, type: TokenType.EndTagClose },
-          { offset: 33, type: TokenType.Content },
-          { offset: 37, type: TokenType.EndTagOpen },
-          { offset: 39, type: TokenType.EndTag, content: 'script' },
-          { offset: 45, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.StartTagClose },
+          { offset: 8, type: HtmlTokenType.Script },
+          { offset: 24, type: HtmlTokenType.EndTagOpen },
+          { offset: 26, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 32, type: HtmlTokenType.EndTagClose },
+          { offset: 33, type: HtmlTokenType.Content },
+          { offset: 37, type: HtmlTokenType.EndTagOpen },
+          { offset: 39, type: HtmlTokenType.EndTag, content: 'script' },
+          { offset: 45, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -489,13 +489,13 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo="bar">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.AttributeValue },
-          { offset: 14, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.AttributeValue },
+          { offset: 14, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -506,13 +506,13 @@ suite('HTML Scanner', () => {
       {
         input: '<abc :foo="bar">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 9, type: TokenType.DelimiterAssign },
-          { offset: 10, type: TokenType.AttributeValue },
-          { offset: 15, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 9, type: HtmlTokenType.DelimiterAssign },
+          { offset: 10, type: HtmlTokenType.AttributeValue },
+          { offset: 15, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -523,13 +523,13 @@ suite('HTML Scanner', () => {
       {
         input: "<abc foo='bar'>",
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.AttributeValue },
-          { offset: 14, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.AttributeValue },
+          { offset: 14, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -540,13 +540,13 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo="">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.AttributeValue },
-          { offset: 11, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.AttributeValue },
+          { offset: 11, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -557,17 +557,17 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo="bar" bar=\'foo\'>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.AttributeValue },
-          { offset: 14, type: TokenType.Whitespace },
-          { offset: 15, type: TokenType.AttributeName },
-          { offset: 18, type: TokenType.DelimiterAssign },
-          { offset: 19, type: TokenType.AttributeValue },
-          { offset: 24, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.AttributeValue },
+          { offset: 14, type: HtmlTokenType.Whitespace },
+          { offset: 15, type: HtmlTokenType.AttributeName },
+          { offset: 18, type: HtmlTokenType.DelimiterAssign },
+          { offset: 19, type: HtmlTokenType.AttributeValue },
+          { offset: 24, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -578,17 +578,17 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo=bar bar=help-me>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.AttributeValue },
-          { offset: 12, type: TokenType.Whitespace },
-          { offset: 13, type: TokenType.AttributeName },
-          { offset: 16, type: TokenType.DelimiterAssign },
-          { offset: 17, type: TokenType.AttributeValue },
-          { offset: 24, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.AttributeValue },
+          { offset: 12, type: HtmlTokenType.Whitespace },
+          { offset: 13, type: HtmlTokenType.AttributeName },
+          { offset: 16, type: HtmlTokenType.DelimiterAssign },
+          { offset: 17, type: HtmlTokenType.AttributeValue },
+          { offset: 24, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -599,13 +599,13 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo=bar/>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.AttributeValue },
-          { offset: 12, type: TokenType.StartTagSelfClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.AttributeValue },
+          { offset: 12, type: HtmlTokenType.StartTagSelfClose }
         ]
       }
     ]);
@@ -616,14 +616,14 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo=  "bar">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.Whitespace },
-          { offset: 11, type: TokenType.AttributeValue },
-          { offset: 16, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.Whitespace },
+          { offset: 11, type: HtmlTokenType.AttributeValue },
+          { offset: 16, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -634,15 +634,15 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo = "bar">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.Whitespace },
-          { offset: 9, type: TokenType.DelimiterAssign },
-          { offset: 10, type: TokenType.Whitespace },
-          { offset: 11, type: TokenType.AttributeValue },
-          { offset: 16, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.Whitespace },
+          { offset: 9, type: HtmlTokenType.DelimiterAssign },
+          { offset: 10, type: HtmlTokenType.Whitespace },
+          { offset: 11, type: HtmlTokenType.AttributeValue },
+          { offset: 16, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -653,11 +653,11 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -668,13 +668,13 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo bar>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.Whitespace },
-          { offset: 9, type: TokenType.AttributeName },
-          { offset: 12, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.Whitespace },
+          { offset: 9, type: HtmlTokenType.AttributeName },
+          { offset: 12, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -685,13 +685,13 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo!@#="bar">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 11, type: TokenType.DelimiterAssign },
-          { offset: 12, type: TokenType.AttributeValue },
-          { offset: 17, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 11, type: HtmlTokenType.DelimiterAssign },
+          { offset: 12, type: HtmlTokenType.AttributeValue },
+          { offset: 17, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -702,23 +702,23 @@ suite('HTML Scanner', () => {
       {
         input: '<abc #myinput (click)="bar" [value]="someProperty" *ngIf="someCondition">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 13, type: TokenType.Whitespace },
-          { offset: 14, type: TokenType.AttributeName },
-          { offset: 21, type: TokenType.DelimiterAssign },
-          { offset: 22, type: TokenType.AttributeValue },
-          { offset: 27, type: TokenType.Whitespace },
-          { offset: 28, type: TokenType.AttributeName },
-          { offset: 35, type: TokenType.DelimiterAssign },
-          { offset: 36, type: TokenType.AttributeValue },
-          { offset: 50, type: TokenType.Whitespace },
-          { offset: 51, type: TokenType.AttributeName },
-          { offset: 56, type: TokenType.DelimiterAssign },
-          { offset: 57, type: TokenType.AttributeValue },
-          { offset: 72, type: TokenType.StartTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 13, type: HtmlTokenType.Whitespace },
+          { offset: 14, type: HtmlTokenType.AttributeName },
+          { offset: 21, type: HtmlTokenType.DelimiterAssign },
+          { offset: 22, type: HtmlTokenType.AttributeValue },
+          { offset: 27, type: HtmlTokenType.Whitespace },
+          { offset: 28, type: HtmlTokenType.AttributeName },
+          { offset: 35, type: HtmlTokenType.DelimiterAssign },
+          { offset: 36, type: HtmlTokenType.AttributeValue },
+          { offset: 50, type: HtmlTokenType.Whitespace },
+          { offset: 51, type: HtmlTokenType.AttributeName },
+          { offset: 56, type: HtmlTokenType.DelimiterAssign },
+          { offset: 57, type: HtmlTokenType.AttributeValue },
+          { offset: 72, type: HtmlTokenType.StartTagClose }
         ]
       }
     ]);
@@ -729,12 +729,12 @@ suite('HTML Scanner', () => {
       {
         input: '<abc foo=">',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'abc' },
-          { offset: 4, type: TokenType.Whitespace },
-          { offset: 5, type: TokenType.AttributeName },
-          { offset: 8, type: TokenType.DelimiterAssign },
-          { offset: 9, type: TokenType.AttributeValue }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'abc' },
+          { offset: 4, type: HtmlTokenType.Whitespace },
+          { offset: 5, type: HtmlTokenType.AttributeName },
+          { offset: 8, type: HtmlTokenType.DelimiterAssign },
+          { offset: 9, type: HtmlTokenType.AttributeValue }
         ]
       }
     ]);
@@ -745,9 +745,9 @@ suite('HTML Scanner', () => {
       {
         input: '<!--a-->',
         tokens: [
-          { offset: 0, type: TokenType.StartCommentTag },
-          { offset: 4, type: TokenType.Comment },
-          { offset: 5, type: TokenType.EndCommentTag }
+          { offset: 0, type: HtmlTokenType.StartCommentTag },
+          { offset: 4, type: HtmlTokenType.Comment },
+          { offset: 5, type: HtmlTokenType.EndCommentTag }
         ]
       }
     ]);
@@ -758,9 +758,9 @@ suite('HTML Scanner', () => {
       {
         input: '<!--a>foo bar</a -->',
         tokens: [
-          { offset: 0, type: TokenType.StartCommentTag },
-          { offset: 4, type: TokenType.Comment },
-          { offset: 17, type: TokenType.EndCommentTag }
+          { offset: 0, type: HtmlTokenType.StartCommentTag },
+          { offset: 4, type: HtmlTokenType.Comment },
+          { offset: 17, type: HtmlTokenType.EndCommentTag }
         ]
       }
     ]);
@@ -771,9 +771,9 @@ suite('HTML Scanner', () => {
       {
         input: '<!--a>\nfoo \nbar</a -->',
         tokens: [
-          { offset: 0, type: TokenType.StartCommentTag },
-          { offset: 4, type: TokenType.Comment },
-          { offset: 19, type: TokenType.EndCommentTag }
+          { offset: 0, type: HtmlTokenType.StartCommentTag },
+          { offset: 4, type: HtmlTokenType.Comment },
+          { offset: 19, type: HtmlTokenType.EndCommentTag }
         ]
       }
     ]);
@@ -784,9 +784,9 @@ suite('HTML Scanner', () => {
       {
         input: '<!Doctype a>',
         tokens: [
-          { offset: 0, type: TokenType.StartDoctypeTag },
-          { offset: 9, type: TokenType.Doctype },
-          { offset: 11, type: TokenType.EndDoctypeTag }
+          { offset: 0, type: HtmlTokenType.StartDoctypeTag },
+          { offset: 9, type: HtmlTokenType.Doctype },
+          { offset: 11, type: HtmlTokenType.EndDoctypeTag }
         ]
       }
     ]);
@@ -797,9 +797,9 @@ suite('HTML Scanner', () => {
       {
         input: '<!doctype a>',
         tokens: [
-          { offset: 0, type: TokenType.StartDoctypeTag },
-          { offset: 9, type: TokenType.Doctype },
-          { offset: 11, type: TokenType.EndDoctypeTag }
+          { offset: 0, type: HtmlTokenType.StartDoctypeTag },
+          { offset: 9, type: HtmlTokenType.Doctype },
+          { offset: 11, type: HtmlTokenType.EndDoctypeTag }
         ]
       }
     ]);
@@ -810,9 +810,9 @@ suite('HTML Scanner', () => {
       {
         input: '<!DOCTYPE a\n"foo" \'bar\'>',
         tokens: [
-          { offset: 0, type: TokenType.StartDoctypeTag },
-          { offset: 9, type: TokenType.Doctype },
-          { offset: 23, type: TokenType.EndDoctypeTag }
+          { offset: 0, type: HtmlTokenType.StartDoctypeTag },
+          { offset: 9, type: HtmlTokenType.Doctype },
+          { offset: 23, type: HtmlTokenType.EndDoctypeTag }
         ]
       }
     ]);
@@ -822,15 +822,15 @@ suite('HTML Scanner', () => {
     assertTokens([
       {
         input: '    ',
-        tokens: [{ offset: 0, type: TokenType.Content }]
+        tokens: [{ offset: 0, type: HtmlTokenType.Content }]
       }
     ]);
     assertTokens([
       {
         input: '<!---   ',
         tokens: [
-          { offset: 0, type: TokenType.StartCommentTag },
-          { offset: 4, type: TokenType.Comment }
+          { offset: 0, type: HtmlTokenType.StartCommentTag },
+          { offset: 4, type: HtmlTokenType.Comment }
         ]
       }
     ]);
@@ -838,10 +838,10 @@ suite('HTML Scanner', () => {
       {
         input: '<style>color:red',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'style' },
-          { offset: 6, type: TokenType.StartTagClose },
-          { offset: 7, type: TokenType.Styles }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'style' },
+          { offset: 6, type: HtmlTokenType.StartTagClose },
+          { offset: 7, type: HtmlTokenType.Styles }
         ]
       }
     ]);
@@ -849,10 +849,10 @@ suite('HTML Scanner', () => {
       {
         input: '<script>alert("!!")',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'script' },
-          { offset: 7, type: TokenType.StartTagClose },
-          { offset: 8, type: TokenType.Script }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'script' },
+          { offset: 7, type: HtmlTokenType.StartTagClose },
+          { offset: 8, type: HtmlTokenType.Script }
         ]
       }
     ]);
@@ -862,28 +862,28 @@ suite('HTML Scanner', () => {
       {
         input: '{{interpolation}}',
         tokens: [
-          { offset: 0, type: TokenType.StartInterpolation },
-          { offset: 2, type: TokenType.InterpolationContent },
-          { offset: 15, type: TokenType.EndInterpolation }
+          { offset: 0, type: HtmlTokenType.StartInterpolation },
+          { offset: 2, type: HtmlTokenType.InterpolationContent },
+          { offset: 15, type: HtmlTokenType.EndInterpolation }
         ]
       },
       {
         input: 'div{{interpolation}}',
         tokens: [
-          { offset: 0, type: TokenType.Content },
-          { offset: 3, type: TokenType.StartInterpolation },
-          { offset: 5, type: TokenType.InterpolationContent },
-          { offset: 18, type: TokenType.EndInterpolation }
+          { offset: 0, type: HtmlTokenType.Content },
+          { offset: 3, type: HtmlTokenType.StartInterpolation },
+          { offset: 5, type: HtmlTokenType.InterpolationContent },
+          { offset: 18, type: HtmlTokenType.EndInterpolation }
         ]
       },
       {
         input: 'div{{interpolation}}div',
         tokens: [
-          { offset: 0, type: TokenType.Content },
-          { offset: 3, type: TokenType.StartInterpolation },
-          { offset: 5, type: TokenType.InterpolationContent },
-          { offset: 18, type: TokenType.EndInterpolation },
-          { offset: 20, type: TokenType.Content }
+          { offset: 0, type: HtmlTokenType.Content },
+          { offset: 3, type: HtmlTokenType.StartInterpolation },
+          { offset: 5, type: HtmlTokenType.InterpolationContent },
+          { offset: 18, type: HtmlTokenType.EndInterpolation },
+          { offset: 20, type: HtmlTokenType.Content }
         ]
       }
     ]);
@@ -891,29 +891,29 @@ suite('HTML Scanner', () => {
       {
         input: '<div>{{interpolation}}</div>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'div' },
-          { offset: 4, type: TokenType.StartTagClose },
-          { offset: 5, type: TokenType.StartInterpolation },
-          { offset: 7, type: TokenType.InterpolationContent },
-          { offset: 20, type: TokenType.EndInterpolation },
-          { offset: 22, type: TokenType.EndTagOpen },
-          { offset: 24, type: TokenType.EndTag, content: 'div' },
-          { offset: 27, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'div' },
+          { offset: 4, type: HtmlTokenType.StartTagClose },
+          { offset: 5, type: HtmlTokenType.StartInterpolation },
+          { offset: 7, type: HtmlTokenType.InterpolationContent },
+          { offset: 20, type: HtmlTokenType.EndInterpolation },
+          { offset: 22, type: HtmlTokenType.EndTagOpen },
+          { offset: 24, type: HtmlTokenType.EndTag, content: 'div' },
+          { offset: 27, type: HtmlTokenType.EndTagClose }
         ]
       },
       {
         input: '<div>{{interpolation}}</div>',
         tokens: [
-          { offset: 0, type: TokenType.StartTagOpen },
-          { offset: 1, type: TokenType.StartTag, content: 'div' },
-          { offset: 4, type: TokenType.StartTagClose },
-          { offset: 5, type: TokenType.StartInterpolation },
-          { offset: 7, type: TokenType.InterpolationContent },
-          { offset: 20, type: TokenType.EndInterpolation },
-          { offset: 22, type: TokenType.EndTagOpen },
-          { offset: 24, type: TokenType.EndTag, content: 'div' },
-          { offset: 27, type: TokenType.EndTagClose }
+          { offset: 0, type: HtmlTokenType.StartTagOpen },
+          { offset: 1, type: HtmlTokenType.StartTag, content: 'div' },
+          { offset: 4, type: HtmlTokenType.StartTagClose },
+          { offset: 5, type: HtmlTokenType.StartInterpolation },
+          { offset: 7, type: HtmlTokenType.InterpolationContent },
+          { offset: 20, type: HtmlTokenType.EndInterpolation },
+          { offset: 22, type: HtmlTokenType.EndTagOpen },
+          { offset: 24, type: HtmlTokenType.EndTag, content: 'div' },
+          { offset: 27, type: HtmlTokenType.EndTagClose }
         ]
       }
     ]);
@@ -921,8 +921,8 @@ suite('HTML Scanner', () => {
       {
         input: '{{interpolation',
         tokens: [
-          { offset: 0, type: TokenType.StartInterpolation },
-          { offset: 2, type: TokenType.InterpolationContent }
+          { offset: 0, type: HtmlTokenType.StartInterpolation },
+          { offset: 2, type: HtmlTokenType.InterpolationContent }
         ]
       }
     ]);

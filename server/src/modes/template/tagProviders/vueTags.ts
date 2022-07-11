@@ -7,7 +7,7 @@ import {
   collectValuesDefault,
   genAttribute,
   AttributeCollector,
-  Priority,
+  TagProviderPriority,
   Attribute
 } from './common';
 
@@ -139,7 +139,7 @@ const valueSets = {
 export function getVueTagProvider(): IHTMLTagProvider {
   return {
     getId: () => 'vue',
-    priority: Priority.Framework,
+    priority: TagProviderPriority.Framework,
     collectTags: collector => collectTagsDefault(collector, vueTags),
     collectAttributes: (tag: string, collector: AttributeCollector) => {
       collectAttributesDefault(tag, collector, vueTags, vueDirectives);
