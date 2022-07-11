@@ -48,7 +48,7 @@ There are two ways to integrate `vls` into editors:
   ```ts
   class VueLanguageClient extends AutoLanguageClient {
     startServerProcess () {
-      return cp.spawn('node', [require.resolve('vls/dist/htmlServerMain')])
+      return cp.spawn('node', [require.resolve('vls/dist/vueServerMain')])
     }
   }
   ```
