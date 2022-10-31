@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.36.1
+### 0.36.1 | 2022-10-31 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.36.1/vspackage)
 
 - Fix crash when typescript >= 4.8 and enable template type-checking. #3520
 
