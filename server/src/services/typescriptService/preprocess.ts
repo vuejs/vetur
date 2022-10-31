@@ -238,7 +238,20 @@ export function injectVueTemplate(
     componentFilePath = './' + path.basename(sourceFile.fileName.slice(0, -'.template'.length));
   }
 
-  const componentImport = tsModule.createImportDeclaration(
+  const createImportDeclaration = (
+    decorators: readonly ts.Decorator[] | undefined,
+    modifiers: readonly ts.Modifier[] | undefined,
+    importClause: ts.ImportClause | undefined,
+    moduleSpecifier: ts.Expression
+  ) => {
+    const [major, minor] = tsModule.version.split('.');
+    if ((Number(major) === 4 && Number(minor) >= 8) || Number(major) > 4) {
+      return tsModule.factory.createImportDeclaration(decorators, modifiers, importClause, moduleSpecifier);
+    }
+    return tsModule.createImportDeclaration(decorators, modifiers, importClause, moduleSpecifier);
+  };
+
+  const componentImport = createImportDeclaration(
     undefined,
     undefined,
     tsModule.createImportClause(tsModule.createIdentifier(importedComponentName), undefined),
@@ -255,7 +268,7 @@ export function injectVueTemplate(
   };
 
   // import helper type to handle Vue's private methods
-  const helperImport = tsModule.createImportDeclaration(
+  const helperImport = createImportDeclaration(
     undefined,
     undefined,
     tsModule.createImportClause(

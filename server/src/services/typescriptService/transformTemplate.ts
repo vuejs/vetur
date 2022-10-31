@@ -213,12 +213,21 @@ export function getTemplateTransformFunctions(
             ? [tsModule.createReturn(transformExpressionContainer(vOn.value, code, newScope))]
             : vOnExp.body.map(st => transformStatement(st, code, newScope));
 
+        const createParameter = (name: string) => {
+          const [major, minor] = tsModule.version.split('.');
+          if ((Number(major) === 4 && Number(minor) >= 8) || Number(major) > 4) {
+            // @ts-expect-error
+            return tsModule.createParameter(undefined, undefined, name);
+          }
+          return tsModule.createParameter(undefined, undefined, undefined, name);
+        };
+
         exp = tsModule.createFunctionExpression(
           undefined,
           undefined,
           undefined,
           undefined,
-          [tsModule.createParameter(undefined, undefined, undefined, '$event')],
+          [createParameter('$event')],
           undefined,
           tsModule.createBlock(statements)
         );
