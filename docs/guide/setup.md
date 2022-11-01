@@ -8,6 +8,7 @@
 
 ## VS Code Config
 
+- Navigate to your VS Code settings. On Windows/Linux - File > Preferences > Settings. On macOS - Code > Preferences > Settings.
 - Add `vue` to your `eslint.validate` setting, for example:
 
   ```json
