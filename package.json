@@ -608,7 +608,7 @@
     "@types/node": "^18.11.7",
     "@types/shelljs": "^0.8.9",
     "@types/vscode": "^1.52.0",
-    "@vscode/test-electron": "^1.6.2",
+    "@vscode/test-electron": "^2.2.0",
     "esbuild": "^0.13.13",
     "fs-extra": "^10.0.0",
     "glob": "^7.2.0",
