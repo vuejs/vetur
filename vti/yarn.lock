@@ -834,10 +834,10 @@ rimraf@^3.0.2:
   dependencies:
     glob "^7.1.3"
 
-rollup@^2.58.0:
-  version "2.58.0"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.58.0.tgz#a643983365e7bf7f5b7c62a8331b983b7c4c67fb"
-  integrity sha512-NOXpusKnaRpbS7ZVSzcEXqxcLDOagN6iFS8p45RkoiMqPHDLwJm758UF05KlMoCRbLBTZsPOIa887gZJ1AiXvw==
+rollup@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.3.0.tgz#ae8dc84808a9c75d775d8b2ed8db1adada31a581"
+  integrity sha512-wqOV/vUJCYEbWsXvwCkgGWvgaEnsbn4jxBQWKpN816CqsmCimDmCNJI83c6if7QVD4v/zlyRzxN7U2yDT5rfoA==
   optionalDependencies:
     fsevents "~2.3.2"
 
