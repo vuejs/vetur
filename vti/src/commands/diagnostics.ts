@@ -101,7 +101,7 @@ async function prepareClientConnection(workspaceUri: URI) {
 
   const init = getInitParams(workspaceUri);
 
-  await clientConnection.sendRequest(InitializeRequest.type, init);
+  await clientConnection.sendRequest(InitializeRequest.type as unknown as string, init);
 
   return clientConnection;
 }
