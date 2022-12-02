@@ -61,7 +61,7 @@
     "parse-gitignore": "^2.0.0",
     "prettier-eslint": "^13.0.0",
     "prettier-tslint": "^0.4.2",
-    "rollup": "^2.52.2",
+    "rollup": "^3.5.1",
     "sass-formatter": "^0.7.2",
     "source-map-support": "^0.5.20",
     "stylus": "^0.59.0",
