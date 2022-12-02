@@ -216,7 +216,6 @@ export function getTemplateTransformFunctions(
         const createParameter = (name: string) => {
           const [major, minor] = tsModule.version.split('.');
           if ((Number(major) === 4 && Number(minor) >= 8) || Number(major) > 4) {
-            // @ts-expect-error
             return tsModule.createParameter(undefined, undefined, name);
           }
           return tsModule.createParameter(undefined, undefined, undefined, name);

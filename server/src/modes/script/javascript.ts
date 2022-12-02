@@ -133,7 +133,6 @@ export async function getJavascriptMode(
       allowTextChangesInNewFiles: true,
       providePrefixAndSuffixTextForRename:
         preferencesConfig.renameShorthandProperties === false ? false : preferencesConfig.useAliasesForRenames,
-      // @ts-expect-error
       allowRenameOfImportPath: true,
       includeAutomaticOptionalChainCompletions: baseConfig.suggest?.includeAutomaticOptionalChainCompletions ?? true,
       provideRefactorNotApplicableReason: true

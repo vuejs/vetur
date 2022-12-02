@@ -153,6 +153,14 @@ function getInsertInOptionAPIPos(
   return undefined;
 }
 
+function getDecorators(
+  tsModule: RuntimeLibrary['typescript'],
+  node: ts.MethodDeclaration | ts.PropertyDeclaration | undefined
+) {
+  if (!node) return undefined;
+  return tsModule.getDecorators?.(node) ?? node.decorators;
+}
+
 function getEmits(
   tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
@@ -203,7 +211,9 @@ function getEmits(
       .filter(
         property =>
           validPropertySyntaxKind(property, tsModule.SyntaxKind.MethodDeclaration) &&
-          getPropertyDecoratorNames(property).some(decoratorName => emitDecoratorNames.includes(decoratorName))
+          getPropertyDecoratorNames(tsModule, property).some(decoratorName =>
+            emitDecoratorNames.includes(decoratorName)
+          )
       );
     if (emitsSymbols.length === 0) {
       return undefined;
@@ -213,7 +223,7 @@ function getEmits(
     const emitInfoMap = new Map<string, EmitInfo>();
     emitsSymbols.forEach(emitSymbol => {
       const emit = emitSymbol.valueDeclaration as ts.MethodDeclaration;
-      const decoratorExpr = emit.decorators?.find(decorator =>
+      const decoratorExpr = getDecorators(tsModule, emit)?.find(decorator =>
         tsModule.isCallExpression(decorator.expression)
           ? emitDecoratorNames.includes(decorator.expression.expression.getText())
           : false
@@ -487,7 +497,9 @@ function getProps(
       .filter(
         property =>
           validPropertySyntaxKind(property, tsModule.SyntaxKind.PropertyDeclaration) &&
-          getPropertyDecoratorNames(property).some(decoratorName => propDecoratorNames.includes(decoratorName))
+          getPropertyDecoratorNames(tsModule, property).some(decoratorName =>
+            propDecoratorNames.includes(decoratorName)
+          )
       );
     if (propsSymbols.length === 0) {
       return undefined;
@@ -495,7 +507,7 @@ function getProps(
 
     return propsSymbols.map(propSymbol => {
       const prop = propSymbol.valueDeclaration as ts.PropertyDeclaration;
-      const decoratorExpr = prop.decorators?.find(decorator =>
+      const decoratorExpr = getDecorators(tsModule, prop)?.find(decorator =>
         tsModule.isCallExpression(decorator.expression)
           ? propDecoratorNames.includes(decorator.expression.expression.getText())
           : false
@@ -613,7 +625,9 @@ function getData(
       .filter(
         property =>
           validPropertySyntaxKind(property, tsModule.SyntaxKind.PropertyDeclaration) &&
-          !getPropertyDecoratorNames(property).some(decoratorName => noDataDecoratorNames.includes(decoratorName)) &&
+          !getPropertyDecoratorNames(tsModule, property).some(decoratorName =>
+            noDataDecoratorNames.includes(decoratorName)
+          ) &&
           !property.name.startsWith('_') &&
           !property.name.startsWith('$')
       );
@@ -750,7 +764,7 @@ function getMethods(
       .filter(
         property =>
           validPropertySyntaxKind(property, tsModule.SyntaxKind.MethodDeclaration) &&
-          !getPropertyDecoratorNames(property).some(decoratorName => decoratorName === 'Watch') &&
+          !getPropertyDecoratorNames(tsModule, property).some(decoratorName => decoratorName === 'Watch') &&
           !isInternalHook(property.name)
       );
     if (methodSymbols.length === 0) {
@@ -826,7 +840,7 @@ export function getClassDecoratorArgumentType(
   defaultExportNode: ts.Type,
   checker: ts.TypeChecker
 ) {
-  const decorators = defaultExportNode.symbol.valueDeclaration?.decorators;
+  const decorators = getDecorators(tsModule, defaultExportNode.symbol.valueDeclaration as ts.PropertyDeclaration);
   if (!decorators || decorators.length === 0) {
     return undefined;
   }
@@ -874,8 +888,8 @@ function validPropertySyntaxKind(property: ts.Symbol, checkSyntaxKind: ts.Syntax
   return getNodeFromSymbol(property)?.kind === checkSyntaxKind;
 }
 
-function getPropertyDecoratorNames(property: ts.Symbol): string[] {
-  const decorators = getNodeFromSymbol(property)?.decorators;
+function getPropertyDecoratorNames(tsModule: RuntimeLibrary['typescript'], property: ts.Symbol): string[] {
+  const decorators = getDecorators(tsModule, getNodeFromSymbol(property) as ts.PropertyDeclaration);
   if (decorators === undefined) {
     return [];
   }
