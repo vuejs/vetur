@@ -10,6 +10,7 @@ import {
   IPseudoClassData,
   IPseudoElementData
 } from 'vscode-css-languageservice';
+// @ts-ignore
 import CssData from 'vscode-web-custom-data/data/browsers.css-data.json';
 
 export interface LoadedCSSData {

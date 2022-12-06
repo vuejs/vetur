@@ -10,7 +10,7 @@ const getRootPath = root => relative => path.resolve(__dirname, '../', root, rel
 
 const clearDist = dist => {
   if (fs.existsSync(dist)) {
-    fs.rmdirSync(dist, { recursive: true });
+    fs.rmSync(dist, { recursive: true });
   }
 };
 

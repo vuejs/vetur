@@ -4,16 +4,24 @@ import { kebabCase } from 'lodash';
 
 import { IHTMLTagProvider, TagProviderPriority, getSameTagInSet } from './common';
 
+// @ts-ignore
 import elementTags from 'element-helper-json/element-tags.json';
+// @ts-ignore
 import elementAttributes from 'element-helper-json/element-attributes.json';
 
+// @ts-ignore
 import onsenTags from 'vue-onsenui-helper-json/vue-onsenui-tags.json';
+// @ts-ignore
 import onsenAttributes from 'vue-onsenui-helper-json/vue-onsenui-attributes.json';
 
+// @ts-ignore
 import bootstrapTags from 'bootstrap-vue-helper-json/tags.json';
+// @ts-ignore
 import bootstrapAttributes from 'bootstrap-vue-helper-json/attributes.json';
 
+// @ts-ignore
 import gridsomeTags from 'gridsome-helper-json/gridsome-tags.json';
+// @ts-ignore
 import gridsomeAttributes from 'gridsome-helper-json/gridsome-attributes.json';
 import { findConfigFile } from '../../../utils/workspace';
 
