@@ -23,6 +23,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  NODE_OPTIONS: --max_old_space_size=4096
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
