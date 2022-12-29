@@ -23,6 +23,8 @@ describe('Should do hover', () => {
     const hoverText = `
 Specifies the width of the content area, padding area or border area \\(depending on 'box\\-sizing'\\) of certain boxes\\.
 
+(Edge 12, Firefox 1, Safari 1, Chrome 1, IE 4, Opera 3)
+
 Syntax: &lt;viewport\\-length&gt;\\{1,2\\}
 
 [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/width)
