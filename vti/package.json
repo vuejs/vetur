@@ -22,7 +22,7 @@
     "glob": "^8.0.3",
     "rollup": "^3.9.0",
     "typescript": "^4.9.4",
-    "vscode-languageclient": "^7.0.0",
+    "vscode-languageclient": "^8.0.2",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-protocol": "^3.16.0",
     "vscode-languageserver-types": "^3.17.2",
