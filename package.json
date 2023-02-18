@@ -597,7 +597,7 @@
     ]
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/glob": "^8.0.1",
@@ -609,7 +609,7 @@
     "@types/shelljs": "^0.8.9",
     "@types/vscode": "^1.52.0",
     "@vscode/test-electron": "2.2.3",
-    "esbuild": "^0.16.10",
+    "esbuild": "^0.17.8",
     "fs-extra": "^11.1.0",
     "glob": "^8.1.0",
     "husky": "^8.0.3",
@@ -619,7 +619,7 @@
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.4",
-    "rollup": "^3.9.0",
+    "rollup": "^3.17.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^5.2.0",
     "rollup-plugin-terser": "^7.0.2",

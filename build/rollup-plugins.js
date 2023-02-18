@@ -1,4 +1,4 @@
-const { build } = require('esbuild');
+const esbuild = require('esbuild');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -110,16 +110,30 @@ function bundleVlsWithEsbuild() {
     ],
     format: 'cjs',
     tsconfig: getServerPath('tsconfig.json'),
-    color: true,
-    incremental: !!process.env.ROLLUP_WATCH
+    color: true
+  };
+
+  let context = null;
+  const build = async () => {
+    if (!!process.env.ROLLUP_WATCH) {
+      await esbuild.build(options);
+    } else {
+      if (!context) {
+        context = await esbuild.context(options);
+      }
+      await context.watch();
+    }
   };
 
   return {
     name: 'bundle-vls-with-esbuild',
     async buildStart() {
       console.log(`bundles ${getServerPath('src/main.ts')} with esbuild`);
-      build(options);
+      await build(options);
       console.log(`✨ success with esbuild`);
+    },
+    async buildEnd() {
+      context?.dispose();
     }
   };
 }
