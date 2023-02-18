@@ -36,7 +36,7 @@
     "@prettier/plugin-pug": "^2.4.1",
     "@starptech/prettyhtml": "^0.10.0",
     "@types/eslint": "7.2.2",
-    "@types/eslint-scope": "^3.7.1",
+    "@types/eslint-scope": "^3.7.4",
     "@types/eslint-visitor-keys": "^1.0.0",
     "@types/glob": "^8.0.1",
     "@types/js-beautify": "1.13.3",
