@@ -82,7 +82,13 @@ export function createAutoImportSfcPlugin(
 
   function getNoDuplicateComponentName(childComponents: ChildComponent[], componentCompletionName: string) {
     let index = 1;
-    while (childComponents.some(el => el.name.toLowerCase() === componentCompletionName.toLowerCase())) {
+    while (
+      childComponents.some(el =>
+        [componentCompletionName, componentCompletionName.toLowerCase(), kebabCase(componentCompletionName)].includes(
+          el.name
+        )
+      )
+    ) {
       componentCompletionName = `${componentCompletionName}${index++}`;
     }
     return upperFirst(componentCompletionName);

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import ChildComp from './Child.vue'
+import ChildComp from './ChildComp.vue'
 
 export default {
   components: {

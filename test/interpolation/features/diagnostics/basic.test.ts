@@ -255,8 +255,8 @@ describe('Should find template-diagnostics in <template> region', () => {
   });
 
   const noErrorTests: string[] = [
-    'class.vue',
-    'style.vue',
+    'class-in-template.vue',
+    'style-in-template.vue',
     'hyphen-attrs.vue',
     'template-literal.vue',
     'no-implicit-any-parameters.vue',

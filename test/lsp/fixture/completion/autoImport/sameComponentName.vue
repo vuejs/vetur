@@ -1,16 +1,16 @@
 <template>
   <div>
-    <child />
+    <child-comp />
     <
   </div>
 </template>
 
 <script>
-import Child from '../template/childComponent/Child.vue'
+import ChildComp from '../template/childComponent/ChildComp.vue'
 
 export default {
   components: {
-    Child,
+    ChildComp,
     
   }
 }

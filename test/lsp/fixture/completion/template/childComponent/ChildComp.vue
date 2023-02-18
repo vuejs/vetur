@@ -7,7 +7,7 @@
  * child component description
  */
 export default {
-  name: 'child',
+  name: 'childComp',
   props: {
     /**
      * First attr

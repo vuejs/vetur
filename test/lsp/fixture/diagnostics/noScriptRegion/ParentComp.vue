@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import Child from './Child.vue'
+import ChildComp from './ChildComp.vue'
 
 export default {
   components: {
-    Child
+    ChildComp
   }
 }
 </script>

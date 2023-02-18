@@ -17,12 +17,12 @@ describe('Should import vue component to script in template', () => {
       position(3, 5),
       [
         {
-          label: 'child',
+          label: 'child-comp',
           documentationStart: 'child component description'
         },
         {
-          label: 'child',
-          documentationStart: '\n```typescript\nimport Child from'
+          label: 'child-comp',
+          documentationStart: '\n```typescript\nimport ChildComp from'
         }
       ],
       ei => result => {
@@ -75,10 +75,13 @@ describe('Should import vue component to script in template', () => {
       position(2, 5),
       [
         {
-          label: 'child',
+          label: 'child-comp',
           additionalTextEdits: [
-            textEdit(sameLineRange(7, 0, 0), `import Child from '../template/childComponent/Child.vue'${NEW_LINE}`),
-            textEdit(sameLineRange(7, 16, 16), `${NEW_LINE}  components: { Child },`)
+            textEdit(
+              sameLineRange(7, 0, 0),
+              `import ChildComp from '../template/childComponent/ChildComp.vue'${NEW_LINE}`
+            ),
+            textEdit(sameLineRange(7, 16, 16), `${NEW_LINE}  components: { ChildComp },`)
           ]
         }
       ],
@@ -92,13 +95,13 @@ describe('Should import vue component to script in template', () => {
       position(3, 5),
       [
         {
-          label: 'child',
+          label: 'child-comp',
           additionalTextEdits: [
             textEdit(
               sameLineRange(8, 0, 0),
-              `import Child1 from '../../diagnostics/noScriptRegion/Child.vue'${NEW_LINE}`
+              `import ChildComp1 from '../../diagnostics/noScriptRegion/ChildComp.vue'${NEW_LINE}`
             ),
-            textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    Child1`)
+            textEdit(sameLineRange(12, 13, 13), `,${NEW_LINE}    ChildComp1`)
           ]
         }
       ],
@@ -118,7 +121,7 @@ describe('Should import vue component to script in template', () => {
           label: 'es-lint',
           additionalTextEdits: [
             textEdit(sameLineRange(8, 0, 0), `import ESLint from '../../diagnostics/ESLint.vue'${NEW_LINE}`),
-            textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    ESLint`)
+            textEdit(sameLineRange(12, 13, 13), `,${NEW_LINE}    ESLint`)
           ]
         }
       ],
@@ -138,7 +141,7 @@ describe('Should import vue component to script in template', () => {
           label: 'kebab-case',
           additionalTextEdits: [
             textEdit(sameLineRange(9, 0, 0), `import KebabCase from './kebab-case.vue'${NEW_LINE}`),
-            textEdit(sameLineRange(12, 9, 9), `,${NEW_LINE}    KebabCase`)
+            textEdit(sameLineRange(12, 13, 13), `,${NEW_LINE}    KebabCase`)
           ]
         }
       ],
