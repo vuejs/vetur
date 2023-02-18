@@ -626,7 +626,7 @@ ajv@^6.10.0, ajv@^6.12.4:
 
 ajv@^8.0.1:
   version "8.5.0"
-  resolved "https://packages.golden168.win/ajv/-/ajv-8.5.0.tgz#695528274bcb5afc865446aa275484049a18ae4b"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.5.0.tgz#695528274bcb5afc865446aa275484049a18ae4b"
   integrity sha512-Y2l399Tt1AguU3BPRP9Fn4eN+Or+StUGWCUpbnFyXSo8NZ9S4uj+AG2pjs5apK+ZMOwYOz1+a+VKvKH7CudXgQ==
   dependencies:
     fast-deep-equal "^3.1.1"
@@ -1462,7 +1462,7 @@ escalade@^3.1.1:
 
 escape-string-regexp@4.0.0, escape-string-regexp@^4.0.0:
   version "4.0.0"
-  resolved "https://packages.golden168.win/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
@@ -1565,7 +1565,7 @@ eslint@^7.32.0:
 
 eslint@^7.9.0:
   version "7.27.0"
-  resolved "https://packages.golden168.win/eslint/-/eslint-7.27.0.tgz#665a1506d8f95655c9274d84bd78f7166b07e9c7"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.27.0.tgz#665a1506d8f95655c9274d84bd78f7166b07e9c7"
   integrity sha512-JZuR6La2ZF0UD384lcbnd0Cgg6QJjiCwhMD6eU4h/VGPcVGwawNNzKU41tgokGXnfjOOyI6QIffthhJTPzzuRA==
   dependencies:
     "@babel/code-frame" "7.12.11"
@@ -1728,7 +1728,7 @@ fast-deep-equal@^3.1.1:
 
 fast-deep-equal@^3.1.3:
   version "3.1.3"
-  resolved "https://packages.golden168.win/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 
 fast-glob@^2.0.2:
@@ -2230,7 +2230,7 @@ http-proxy-agent@^4.0.0:
 
 https-proxy-agent@^5.0.0:
   version "5.0.0"
-  resolved "https://packages.golden168.win/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
+  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
   integrity sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==
   dependencies:
     agent-base "6"
@@ -2807,7 +2807,7 @@ lodash.assign@^4.0.3, lodash.assign@^4.0.6:
 
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
-  resolved "https://packages.golden168.win/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
+  resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
 lodash.defaults@4.2.0:
@@ -2825,12 +2825,12 @@ lodash.iteratee@^4.5.0:
 
 lodash.merge@^4.6.0, lodash.merge@^4.6.2:
   version "4.6.2"
-  resolved "https://packages.golden168.win/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
 lodash.truncate@^4.4.2:
   version "4.4.2"
-  resolved "https://packages.golden168.win/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
+  resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
 lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.21:
@@ -4364,7 +4364,7 @@ symbol@^0.2.1:
 
 table@^6.0.9:
   version "6.7.1"
-  resolved "https://packages.golden168.win/table/-/table-6.7.1.tgz#ee05592b7143831a8c94f3cee6aae4c1ccef33e2"
+  resolved "https://registry.yarnpkg.com/table/-/table-6.7.1.tgz#ee05592b7143831a8c94f3cee6aae4c1ccef33e2"
   integrity sha512-ZGum47Yi6KOOFDE8m223td53ath2enHcYLgOCjGr5ngu8bdIARQk6mN/wRMv4yMRcHnCSnHbCEha4sobQx5yWg==
   dependencies:
     ajv "^8.0.1"
@@ -4776,7 +4776,7 @@ uuid@^3.3.3:
 
 uuid@^8.0.0:
   version "8.3.2"
-  resolved "https://packages.golden168.win/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3:
@@ -4873,7 +4873,7 @@ vscode-css-languageservice@6.2.1:
 
 vscode-emmet-helper@2.6.4:
   version "2.6.4"
-  resolved "https://packages.golden168.win/vscode-emmet-helper/-/vscode-emmet-helper-2.6.4.tgz#bea47f17649bba26b412f3d1fac18aaee43eba25"
+  resolved "https://registry.yarnpkg.com/vscode-emmet-helper/-/vscode-emmet-helper-2.6.4.tgz#bea47f17649bba26b412f3d1fac18aaee43eba25"
   integrity sha512-fP0nunW1RUWEKGf4gqiYLOVNFFGXSRHjCl0pikxtwCFlty8WwimM+RBJ5o0aIiwerrYD30HqeaVyvDW027Sseg==
   dependencies:
     emmet "^2.3.0"
