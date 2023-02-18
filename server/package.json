@@ -73,7 +73,7 @@
     "vscode-languageserver-types": "3.16.0",
     "vscode-uri": "^3.0.7",
     "vscode-web-custom-data": "^0.3.6",
-    "vue-eslint-parser": "^8.0.1",
+    "vue-eslint-parser": "^9.1.0",
     "vue-onsenui-helper-json": "^1.0.2"
   },
   "scripts": {
