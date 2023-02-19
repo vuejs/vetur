@@ -213,6 +213,14 @@ function modifyVueScript(tsModule: RuntimeLibrary['typescript'], sourceFile: ts.
     });
     (exportDefaultObject as any).expression = setObjPos(tsModule.createCall(vue, undefined, [objectLiteral]));
     setObjPos((exportDefaultObject.expression as ts.CallExpression).arguments!);
+  } else {
+    // @ts-expect-error
+    sourceFile.externalModuleIndicator = createExportAssignment(
+      tsModule,
+      undefined,
+      undefined,
+      tsModule.createCall(tsModule.createIdentifier('__vueEditorBridge'), undefined, [tsModule.createObjectLiteral([])])
+    );
   }
 }
 
@@ -314,6 +322,20 @@ function createImportDeclaration(
     return tsModule.factory.createImportDeclaration(decorators, modifiers, importClause, moduleSpecifier);
   }
   return tsModule.createImportDeclaration(decorators, modifiers, importClause, moduleSpecifier);
+}
+
+function createExportAssignment(
+  tsModule: RuntimeLibrary['typescript'],
+  modifiers: readonly ts.Modifier[] | undefined,
+  isExportEquals: boolean | undefined,
+  expression: ts.Expression
+) {
+  const [major, minor] = tsModule.version.split('.');
+  if ((Number(major) === 4 && Number(minor) >= 8) || Number(major) > 4) {
+    return tsModule.factory.createExportAssignment(modifiers, isExportEquals, expression);
+  }
+  // @ts-expect-error
+  return tsModule.createExportAssignment(modifiers, isExportEquals, undefined, expression);
 }
 
 /** Create a function that calls setTextRange on synthetic wrapper nodes that need a valid range */

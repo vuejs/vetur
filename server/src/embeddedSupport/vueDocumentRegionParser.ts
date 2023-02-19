@@ -4,12 +4,16 @@ import { removeQuotes } from '../utils/strings';
 import { LanguageId } from './embeddedSupport';
 
 export type RegionType = 'template' | 'script' | 'style' | 'custom';
+export type RegionAttrKey = 'setup' | 'module' | 'scoped' | 'lang';
+
+export type RegionAttrs = Partial<Record<RegionAttrKey, boolean | string>> & Partial<Record<string, boolean | string>>;
 
 export interface EmbeddedRegion {
   languageId: LanguageId;
   start: number;
   end: number;
   type: RegionType;
+  attrs: RegionAttrs;
 }
 
 const defaultScriptLang = 'javascript';
@@ -22,6 +26,7 @@ export function parseVueDocumentRegions(document: TextDocument) {
   let lastTagName = '';
   let lastAttributeName = '';
   let languageIdFromType: LanguageId | '' = '';
+  let attrs: Partial<Record<string, boolean | string>> = {};
   const importedScripts: string[] = [];
   let stakes = 0;
 
@@ -35,7 +40,8 @@ export function parseVueDocumentRegions(document: TextDocument) {
             : defaultCSSLang,
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd(),
-          type: 'style'
+          type: 'style',
+          attrs
         });
         languageIdFromType = '';
         break;
@@ -44,7 +50,8 @@ export function parseVueDocumentRegions(document: TextDocument) {
           languageId: languageIdFromType ? languageIdFromType : defaultScriptLang,
           start: scanner.getTokenOffset(),
           end: scanner.getTokenEnd(),
-          type: 'script'
+          type: 'script',
+          attrs
         });
         languageIdFromType = '';
         break;
@@ -67,23 +74,24 @@ export function parseVueDocumentRegions(document: TextDocument) {
         break;
       case HtmlTokenType.AttributeName:
         lastAttributeName = scanner.getTokenText();
+        attrs[lastAttributeName] = true;
         break;
       case HtmlTokenType.AttributeValue:
+        const attrValue = removeQuotes(scanner.getTokenText());
         if (lastAttributeName === 'lang') {
-          languageIdFromType = getLanguageIdFromLangAttr(scanner.getTokenText());
+          languageIdFromType = getLanguageIdFromLangAttr(attrValue);
         } else {
           if (lastAttributeName === 'src' && lastTagName.toLowerCase() === 'script') {
-            let value = scanner.getTokenText();
-            if (value[0] === "'" || value[0] === '"') {
-              value = value.slice(1, value.length - 1);
-            }
+            const value = attrValue;
             importedScripts.push(value);
           }
         }
+        attrs[lastAttributeName] = attrValue;
         lastAttributeName = '';
         break;
       case HtmlTokenType.StartTagSelfClose:
       case HtmlTokenType.EndTagClose:
+        attrs = {};
         stakes--;
         lastAttributeName = '';
         languageIdFromType = '';
@@ -104,6 +112,7 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
   let token = -1;
   let start = 0;
   let end: number;
+  const attrs: Partial<Record<string, boolean | string>> = {};
 
   // Scan until finding matching template EndTag
   // Also record immediate next StartTagClose to find start
@@ -138,9 +147,14 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
     if (start === 0) {
       if (token === HtmlTokenType.AttributeName) {
         lastAttributeName = scanner.getTokenText();
+        attrs[lastAttributeName] = true;
       } else if (token === HtmlTokenType.AttributeValue) {
+        const attrValue = removeQuotes(scanner.getTokenText());
         if (lastAttributeName === 'lang') {
-          languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
+          languageId = getLanguageIdFromLangAttr(attrValue);
+        }
+        if (lastAttributeName) {
+          attrs[lastAttributeName] = attrValue;
         }
         lastAttributeName = null;
       } else if (token === HtmlTokenType.StartTagClose) {
@@ -168,7 +182,8 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
                 languageId,
                 start,
                 end: offset,
-                type: 'template'
+                type: 'template',
+                attrs
               };
             }
           }
@@ -185,7 +200,8 @@ function scanTemplateRegion(scanner: Scanner, text: string): EmbeddedRegion | nu
     languageId,
     start,
     end,
-    type: 'template'
+    type: 'template',
+    attrs
   };
 }
 
@@ -195,11 +211,12 @@ function scanCustomRegion(tagName: string, scanner: Scanner, text: string): Embe
   let token = -1;
   let start = 0;
   let end: number;
+  const attrs: Partial<Record<string, boolean | string>> = {};
 
   // Scan until finding matching template EndTag
   // Also record immediate next StartTagClose to find start
   let unClosedTag = 1;
-  let lastAttributeName = null;
+  let lastAttributeName: string | null = null;
   while (unClosedTag !== 0) {
     token = scanner.scan();
 
@@ -210,9 +227,14 @@ function scanCustomRegion(tagName: string, scanner: Scanner, text: string): Embe
     if (start === 0) {
       if (token === HtmlTokenType.AttributeName) {
         lastAttributeName = scanner.getTokenText();
+        attrs[lastAttributeName] = true;
       } else if (token === HtmlTokenType.AttributeValue) {
+        const attrValue = removeQuotes(scanner.getTokenText());
         if (lastAttributeName === 'lang') {
-          languageId = getLanguageIdFromLangAttr(scanner.getTokenText());
+          languageId = getLanguageIdFromLangAttr(attrValue);
+        }
+        if (lastAttributeName) {
+          attrs[lastAttributeName] = attrValue;
         }
         lastAttributeName = null;
       } else if (token === HtmlTokenType.StartTagClose) {
@@ -240,7 +262,8 @@ function scanCustomRegion(tagName: string, scanner: Scanner, text: string): Embe
                 languageId,
                 start,
                 end: offset,
-                type: 'custom'
+                type: 'custom',
+                attrs
               };
             }
           }
@@ -257,12 +280,12 @@ function scanCustomRegion(tagName: string, scanner: Scanner, text: string): Embe
     languageId,
     start,
     end,
-    type: 'custom'
+    type: 'custom',
+    attrs
   };
 }
 
-function getLanguageIdFromLangAttr(lang: string): LanguageId {
-  let languageIdFromType = removeQuotes(lang);
+function getLanguageIdFromLangAttr(languageIdFromType: string): LanguageId {
   if (languageIdFromType === 'jade') {
     languageIdFromType = 'pug';
   }

@@ -39,7 +39,14 @@ export class VueHTMLMode implements LanguageMode {
       autoImportSfcPlugin,
       vueInfoService
     );
-    this.vueInterpolationMode = new VueInterpolationMode(tsModule, serviceHost, env, vueDocuments, vueInfoService);
+    this.vueInterpolationMode = new VueInterpolationMode(
+      documentRegions,
+      tsModule,
+      serviceHost,
+      env,
+      vueDocuments,
+      vueInfoService
+    );
     this.autoImportSfcPlugin = autoImportSfcPlugin;
   }
   getId() {

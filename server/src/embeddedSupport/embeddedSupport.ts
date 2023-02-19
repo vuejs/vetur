@@ -1,6 +1,6 @@
 import { Position, Range } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { parseVueDocumentRegions, EmbeddedRegion } from './vueDocumentRegionParser';
+import { parseVueDocumentRegions, EmbeddedRegion, RegionAttrs } from './vueDocumentRegionParser';
 
 export type LanguageId =
   | 'vue'
@@ -19,7 +19,7 @@ export type LanguageId =
 
 export interface LanguageRange extends Range {
   languageId: LanguageId;
-  attributeValue?: boolean;
+  attrs: RegionAttrs;
 }
 
 export interface VueDocumentRegions {
@@ -49,6 +49,7 @@ export interface VueDocumentRegions {
    * Get language for determining
    */
   getLanguageAtPosition(position: Position): LanguageId;
+  getLanguageRangeAtPosition(position: Position): LanguageRange | null;
 
   getImportedScripts(): string[];
 }
@@ -72,6 +73,7 @@ export function getVueDocumentRegions(document: TextDocument): VueDocumentRegion
 
     getAllLanguageRanges: () => getAllLanguageRanges(document, regions),
     getLanguageAtPosition: (position: Position) => getLanguageAtPosition(document, regions, position),
+    getLanguageRangeAtPosition: (position: Position) => getLanguageRangeAtPosition(document, regions, position),
     getImportedScripts: () => importedScripts
   };
 }
@@ -81,7 +83,8 @@ function getAllLanguageRanges(document: TextDocument, regions: EmbeddedRegion[])
     return {
       languageId: r.languageId,
       start: document.positionAt(r.start),
-      end: document.positionAt(r.end)
+      end: document.positionAt(r.end),
+      attrs: r.attrs
     };
   });
 }
@@ -98,6 +101,29 @@ function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[]
     }
   }
   return 'vue';
+}
+
+function getLanguageRangeAtPosition(
+  document: TextDocument,
+  regions: EmbeddedRegion[],
+  position: Position
+): LanguageRange | null {
+  const offset = document.offsetAt(position);
+  for (const region of regions) {
+    if (region.start <= offset) {
+      if (offset <= region.end) {
+        return {
+          start: document.positionAt(region.start),
+          end: document.positionAt(region.end),
+          languageId: region.languageId,
+          attrs: region.attrs
+        };
+      }
+    } else {
+      break;
+    }
+  }
+  return null;
 }
 
 export function getSingleLanguageDocument(
@@ -159,7 +185,8 @@ export function getLanguageRangesOfType(
       result.push({
         start: document.positionAt(r.start),
         end: document.positionAt(r.end),
-        languageId: r.languageId
+        languageId: r.languageId,
+        attrs: r.attrs
       });
     }
   }

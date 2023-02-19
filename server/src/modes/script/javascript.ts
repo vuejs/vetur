@@ -69,6 +69,7 @@ import {
   getTokenTypeFromClassification
 } from './semanticToken';
 import { RefTokensService } from '../../services/RefTokenService';
+import { createScriptSetupDiagnosticFilter } from '../../services/typescriptService/diagnosticFilter';
 
 // Todo: After upgrading to LS server 4.0, use CompletionContext for filtering trigger chars
 // https://microsoft.github.io/language-server-protocol/specification#completion-request-leftwards_arrow_with_hook
@@ -89,12 +90,6 @@ export async function getJavascriptMode(
   const jsDocuments = getLanguageModelCache(10, 60, document => {
     const vueDocument = documentRegions.refreshAndGet(document);
     return vueDocument.getSingleTypeDocument('script');
-  });
-
-  const firstScriptRegion = getLanguageModelCache(10, 60, document => {
-    const vueDocument = documentRegions.refreshAndGet(document);
-    const scriptRegions = vueDocument.getLanguageRangesOfType('script');
-    return scriptRegions.length > 0 ? scriptRegions[0] : undefined;
   });
 
   const { updateCurrentVueTextDocument } = serviceHost;
@@ -196,6 +191,26 @@ export async function getJavascriptMode(
         ];
       }
 
+      const scriptSetupRange = documentRegions
+        .refreshAndGet(doc)
+        .getLanguageRangesOfType('script')
+        .find(range => range.attrs.setup);
+      if (scriptSetupRange) {
+        const scriptSetupDiagnosticsFilters = createScriptSetupDiagnosticFilter(tsModule);
+        const scriptSetupRangeStart = doc.offsetAt(scriptSetupRange.start);
+        const scriptSetupRangeEnd = doc.offsetAt(scriptSetupRange.end);
+        rawScriptDiagnostics = rawScriptDiagnostics.filter(diag => {
+          if (diag.start) {
+            const range = convertRange(doc, diag as ts.TextSpan);
+            const start = doc.offsetAt(range.start);
+            if (start >= scriptSetupRangeStart && start <= scriptSetupRangeEnd) {
+              return scriptSetupDiagnosticsFilters(diag);
+            }
+          }
+          return true;
+        });
+      }
+
       return rawScriptDiagnostics.map(diag => {
         const tags: DiagnosticTag[] = [];
 
@@ -248,7 +263,6 @@ export async function getJavascriptMode(
 
           const item: CompletionItem = {
             uri: doc.uri,
-            position,
             preselect: entry.isRecommended ? true : undefined,
             label,
             detail,
@@ -262,6 +276,7 @@ export async function getJavascriptMode(
               languageId: scriptDoc.languageId,
               uri: doc.uri,
               offset,
+              position,
               source: entry.source,
               tsData: entry.data
             }
@@ -353,8 +368,12 @@ export async function getJavascriptMode(
           }
         }
 
-        if (details.codeActions && env.getConfig().vetur.completion.autoImport) {
-          const textEdits = convertCodeAction(doc, details.codeActions, firstScriptRegion);
+        const vueDocument = documentRegions.refreshAndGet(doc);
+        const languageRange = item.data.position
+          ? vueDocument.getLanguageRangeAtPosition(item.data.position)
+          : vueDocument.getLanguageRangesOfType('script')[0];
+        if (details.codeActions && env.getConfig().vetur.completion.autoImport && languageRange) {
+          const textEdits = convertCodeAction(doc, details.codeActions, languageRange);
           item.additionalTextEdits = textEdits;
 
           details.codeActions.forEach(action => {
@@ -813,7 +832,7 @@ export async function getJavascriptMode(
         const docIdentifier = VersionedTextDocumentIdentifier.create(URI.file(doc.uri).toString(), 0);
         textDocumentEdit.push(
           ...edit.textChanges.map(({ span, newText }) => {
-            const range = Range.create(doc.positionAt(span.start), doc.positionAt(span.start + span.length));
+            const range = convertRange(doc, span);
             return TextDocumentEdit.create(docIdentifier, [TextEdit.replace(range, newText)]);
           })
         );
@@ -1112,12 +1131,8 @@ function getTsTriggerCharacter(triggerChar: string) {
   return undefined;
 }
 
-function convertCodeAction(
-  doc: TextDocument,
-  codeActions: ts.CodeAction[],
-  regionStart: LanguageModelCache<LanguageRange | undefined>
-): TextEdit[] {
-  const scriptStartOffset = doc.offsetAt(regionStart.refreshAndGet(doc)!.start);
+function convertCodeAction(doc: TextDocument, codeActions: ts.CodeAction[], regionStart: LanguageRange): TextEdit[] {
+  const scriptStartOffset = doc.offsetAt(regionStart.start);
   const textEdits: TextEdit[] = [];
   for (const action of codeActions) {
     for (const change of action.changes) {
@@ -1126,9 +1141,8 @@ function convertCodeAction(
           // currently, only import codeAction is available
           // change start of doc to start of script region
           if (tc.span.start <= scriptStartOffset && tc.span.length === 0) {
-            const region = regionStart.refreshAndGet(doc);
-            if (region) {
-              const line = region.start.line;
+            if (regionStart) {
+              const line = regionStart.start.line;
               return {
                 range: Range.create(line + 1, 0, line + 1, 0),
                 newText: tc.newText

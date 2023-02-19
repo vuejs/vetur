@@ -1,7 +1,7 @@
 <template>
   <div>
     <child />
-    <two-
+    <two-s
   </div>
 </template>
 

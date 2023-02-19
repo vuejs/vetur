@@ -71,6 +71,33 @@ export function createTemplateDiagnosticFilter(tsModule: RuntimeLibrary['typescr
   return mergeFilter([ignorePrivateProtectedViolation, ignoreNoImplicitAnyViolationInNativeEvent]);
 }
 
+export function createScriptSetupDiagnosticFilter(tsModule: RuntimeLibrary['typescript']): DiagnosticFilter {
+  const ignoreUnusedVariableViolation: DiagnosticFilter = diag => {
+    const unusedVariableViolation = [6133];
+    const ignoreNodeFns = [tsModule.isVariableStatement, tsModule.isFunctionDeclaration, tsModule.isImportDeclaration];
+
+    if (!unusedVariableViolation.includes(diag.code)) {
+      return true;
+    }
+
+    const source = diag.file;
+    if (!source) {
+      return true;
+    }
+
+    const target = findNodeFromDiagnostic(diag, source);
+
+    const node = findXXXFromNodeParent(target, ignoreNodeFns);
+    if (node && tsModule.isSourceFile(node.parent)) {
+      return false;
+    }
+
+    return true;
+  };
+
+  return ignoreUnusedVariableViolation;
+}
+
 /**
  * Merge an array of filter to create a filter function.
  */
@@ -97,4 +124,17 @@ function findNodeFromDiagnostic(diag: ts.Diagnostic, node: ts.Node): ts.Node | u
   }, undefined);
 
   return childMatch ? childMatch : node;
+}
+
+function findXXXFromNodeParent<T extends ts.Node>(
+  node: ts.Node | undefined,
+  fns: Array<(node: ts.Node) => boolean>
+): ts.Node | undefined {
+  if (!node) {
+    return undefined;
+  }
+  if (fns.some(fn => fn(node))) {
+    return node as T;
+  }
+  return findXXXFromNodeParent(node.parent, fns);
 }

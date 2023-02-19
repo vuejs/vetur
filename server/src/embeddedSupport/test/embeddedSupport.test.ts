@@ -205,3 +205,32 @@ suite('Embedded <template> ', () => {
     );
   });
 });
+
+suite('Embedded region attrs', () => {
+  const src = `
+<template other other-string="other">
+
+</template>
+<script setup lang="ts">
+export default {
+}
+</script>
+<style lang="scss" scoped>
+</style>
+<style lang="less" module>
+</style>
+`;
+
+  test('Basic', () => {
+    const { regions } = parseVueDocumentRegions(TextDocument.create('test://test.vue', 'vue', 0, src));
+
+    assert.equal(regions[0].attrs['other'], true);
+    assert.equal(regions[0].attrs['other-string'], 'other');
+    assert.equal(regions[1].attrs.setup, true);
+    assert.equal(regions[1].attrs.lang, 'ts');
+    assert.equal(regions[2].attrs['lang'], 'scss');
+    assert.equal(regions[2].attrs['scoped'], true);
+    assert.equal(regions[3].attrs['lang'], 'less');
+    assert.equal(regions[3].attrs['module'], true);
+  });
+});

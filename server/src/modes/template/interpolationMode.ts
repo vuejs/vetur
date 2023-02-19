@@ -13,28 +13,29 @@ import {
 } from 'vscode-languageserver-types';
 import { URI } from 'vscode-uri';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { VLSFullConfig } from '../../config';
 import { LanguageModelCache } from '../../embeddedSupport/languageModelCache';
 import { LanguageMode } from '../../embeddedSupport/languageModes';
 import { IServiceHost } from '../../services/typescriptService/serviceHost';
 import { mapBackRange, mapFromPositionToOffset } from '../../services/typescriptService/sourceMap';
 import type ts from 'typescript';
 import _ from 'lodash';
-import { createTemplateDiagnosticFilter } from '../../services/typescriptService/templateDiagnosticFilter';
+import { createTemplateDiagnosticFilter } from '../../services/typescriptService/diagnosticFilter';
 import { toCompletionItemKind } from '../../services/typescriptService/util';
 import { VueInfoService } from '../../services/vueInfoService';
 import { isVCancellationRequested, VCancellationToken } from '../../utils/cancellationToken';
 import { getFileFsPath } from '../../utils/paths';
 import { NULL_COMPLETION } from '../nullMode';
-import { getFormatCodeSettings, languageServiceIncludesFile } from '../script/javascript';
+import { languageServiceIncludesFile } from '../script/javascript';
 import * as Previewer from '../script/previewer';
 import { HTMLDocument } from './parser/htmlParser';
 import { isInsideInterpolation } from './services/isInsideInterpolation';
 import { RuntimeLibrary } from '../../services/dependencyService';
 import { EnvironmentService } from '../../services/EnvironmentService';
+import { VueDocumentRegions } from '../../embeddedSupport/embeddedSupport';
 
 export class VueInterpolationMode implements LanguageMode {
   constructor(
+    private documentRegions: LanguageModelCache<VueDocumentRegions>,
     private tsModule: RuntimeLibrary['typescript'],
     private serviceHost: IServiceHost,
     private env: EnvironmentService,
@@ -56,15 +57,22 @@ export class VueInterpolationMode implements LanguageMode {
       : [];
   }
 
+  private isInterpolationMode(document: TextDocument) {
+    return (
+      this.env.getConfig().vetur.experimental.templateInterpolationService &&
+      !this.documentRegions
+        .refreshAndGet(document)
+        .getLanguageRangesOfType('script')
+        .some(region => region.attrs.setup)
+    );
+  }
+
   async doValidation(document: TextDocument, cancellationToken?: VCancellationToken): Promise<Diagnostic[]> {
-    if (
-      !this.env.getConfig().vetur.experimental.templateInterpolationService ||
-      !this.env.getConfig().vetur.validation.interpolation
-    ) {
+    if (await isVCancellationRequested(cancellationToken)) {
       return [];
     }
 
-    if (await isVCancellationRequested(cancellationToken)) {
+    if (!this.isInterpolationMode(document) || !this.env.getConfig().vetur.validation.interpolation) {
       return [];
     }
 
@@ -109,7 +117,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doComplete(document: TextDocument, position: Position): CompletionList {
-    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
+    if (!this.isInterpolationMode(document)) {
       return NULL_COMPLETION;
     }
 
@@ -203,7 +211,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   doResolve(document: TextDocument, item: CompletionItem): CompletionItem {
-    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
+    if (!this.isInterpolationMode(document)) {
       return item;
     }
 
@@ -276,7 +284,7 @@ export class VueInterpolationMode implements LanguageMode {
     contents: MarkedString[];
     range?: Range;
   } {
-    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
+    if (!this.isInterpolationMode(document)) {
       return { contents: [] };
     }
 
@@ -334,7 +342,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findDefinition(document: TextDocument, position: Position): Location[] {
-    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
+    if (!this.isInterpolationMode(document)) {
       return [];
     }
 
@@ -385,7 +393,7 @@ export class VueInterpolationMode implements LanguageMode {
   }
 
   findReferences(document: TextDocument, position: Position): Location[] {
-    if (!this.env.getConfig().vetur.experimental.templateInterpolationService) {
+    if (!this.isInterpolationMode(document)) {
       return [];
     }
 

@@ -141,7 +141,7 @@ export {
   printSourceMap,
   stringifySourceMapNodes
 } from './services/typescriptService/sourceMap';
-export { createTemplateDiagnosticFilter } from './services/typescriptService/templateDiagnosticFilter';
+export { createTemplateDiagnosticFilter as createTemplateDiagnosticFilter } from './services/typescriptService/diagnosticFilter';
 export {
   getTemplateTransformFunctions,
   renderHelperName,

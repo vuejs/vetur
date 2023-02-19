@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "vue": "^3.0.0-rc.13",
+    "vue": "^3.2.47",
     "vue-class-component": "^8.0.0-rc.1"
   }
 }
