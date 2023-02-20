@@ -1,6 +1,6 @@
 # Changelog
 
-### Unrelease
+### 0.37.0 | 2023-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.37.0/vspackage)
 
 - Upgrade to typescript 4.9 and support it.
 - Upgrade prettier and prettier-eslint.
