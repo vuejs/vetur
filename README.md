@@ -15,13 +15,13 @@ LSP: https://github.com/johnsoncodehk/volar
     <img src="https://img.shields.io/github/workflow/status/vuejs/vetur/Node%20CI?label=%20&logo=github&style=flat-square&logoColor=white&color=42b883">
   </a>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadges.dev/version-short/octref.vetur.svg?label=%20&style=flat-square&color=42b883">
+    <img src="https://vsmarketplacebadges.dev/version-short/octref.vetur.png?label=%20&style=flat-square&color=42b883">
   </a>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadges.dev/installs-short/octref.vetur.svg?label=%20&style=flat-square&color=35495e">
+    <img src="https://vsmarketplacebadges.dev/installs-short/octref.vetur.png?label=%20&style=flat-square&color=35495e">
   </a>
   <a href="https://marketplace.visualstudio.com/items?itemName=octref.vetur">
-    <img src="https://vsmarketplacebadges.dev/rating-short/octref.vetur.svg?label=%20&style=flat-square&color=35495e">
+    <img src="https://vsmarketplacebadges.dev/rating-short/octref.vetur.png?label=%20&style=flat-square&color=35495e">
   </a>
   <br>
 </p>
