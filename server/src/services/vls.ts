@@ -65,7 +65,7 @@ import { VCancellationToken, VCancellationTokenSource } from '../utils/cancellat
 import { findConfigFile, requireUncached } from '../utils/workspace';
 import { createProjectService, ProjectService } from './projectService';
 import { createEnvironmentService } from './EnvironmentService';
-import { getVueVersionKey } from '../utils/vueVersion';
+import { getVueVersionKey, inferVueVersion, VueVersion } from '../utils/vueVersion';
 import { accessSync, constants, existsSync } from 'fs';
 import { sleep } from '../utils/sleep';
 import { URI } from 'vscode-uri';
@@ -311,6 +311,12 @@ export class VLS {
         showWarningAndLearnMore(
           `Vetur found \`package.json\`/, but it isn\'t in the project root.`,
           'https://vuejs.github.io/vetur/guide/FAQ.html#vetur-found-xxx-but-they-aren-t-in-the-project-root'
+        );
+      }
+      if (inferVueVersion(projectConfig.packagePath) === VueVersion.V30) {
+        showWarningAndLearnMore(
+          `In the vue 3 project, The Vue Language Features (Volar) is new recommended extension in VSCode.`,
+          'https://marketplace.visualstudio.com/items?itemName=Vue.volar'
         );
       }
     }
