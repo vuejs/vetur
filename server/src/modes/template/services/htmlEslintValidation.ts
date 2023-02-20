@@ -44,6 +44,10 @@ export function createLintEngine(vueVersion: VueVersion) {
       }
     };
   }
+  versionSpecificConfig.rules = {
+    ...versionSpecificConfig.rules,
+    'vue/multi-word-component-names': 0
+  };
 
   const baseConfig: Linter.Config = configs.base;
   baseConfig.ignorePatterns = ['!.*'];
