@@ -7,7 +7,7 @@
 - Upgrade ESLint and eslint-plugin-vue.
 - Upgrade many deps.
 - Recommend new official extension in vue 3 project.
-- Basic support `<script setup>`
+- Basic support `<script setup>`. #2296
 > Vetur will only basic support `<script setup>`. If you want full support, please to use `Vue Language Features (Volar)` (volar).
 
 
