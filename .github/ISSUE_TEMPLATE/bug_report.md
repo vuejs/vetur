@@ -20,6 +20,16 @@ assignees: ''
 - Vetur version:
 - VS Code version:
 - TypeScript version:
+- Vetur output:
+<details><summary>Output</summary>
+<p>
+
+```
+<!-- Run VSCode command `Vetur: Show output panel` -->
+```
+
+</p>
+</details>
 - Vetur doctor output
 <details><summary>Doctor output</summary>
 <p>
