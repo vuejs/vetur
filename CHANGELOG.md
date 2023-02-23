@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.37.3
+### 0.37.3 | 2023-02-23 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.37.3/vspackage)
 - Ignore vue/multi-word-component-names in template validation. #3649
 - Fix vetur hang any request when project have .gitignore. #3657
 
