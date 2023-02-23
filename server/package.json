@@ -71,7 +71,7 @@
     "stylus-supremacy": "^2.17.5",
     "vscode-css-languageservice": "6.2.1",
     "vscode-emmet-helper": "2.6.4",
-    "vscode-languageserver": "7.0.0",
+    "vscode-languageserver": "8.1.0",
     "vscode-languageserver-textdocument": "^1.0.2",
     "vscode-languageserver-types": "3.16.0",
     "vscode-uri": "^3.0.7",
