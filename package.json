@@ -600,7 +600,7 @@
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@types/glob": "^8.0.1",
+    "@types/glob": "^8.1.0",
     "@types/js-yaml": "^4.0.4",
     "@types/lodash": "^4.14.176",
     "@types/minimist": "^1.2.2",
