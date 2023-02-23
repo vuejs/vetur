@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.37.3
+- Ignore vue/multi-word-component-names in template validation. #3649
+- Fix vetur hang any request when project have .gitignore. #3657
+
 ### 0.37.0 | 2023-02-20 | [VSIX](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/octref/vsextensions/vetur/0.37.0/vspackage)
 
 - Upgrade to typescript 4.9 and support it.
