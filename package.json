@@ -605,7 +605,7 @@
     "@types/lodash": "^4.14.176",
     "@types/minimist": "^1.2.2",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.14.0",
+    "@types/node": "^18.14.1",
     "@types/shelljs": "^0.8.9",
     "@types/vscode": "^1.52.0",
     "@vscode/test-electron": "2.2.3",
