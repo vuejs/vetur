@@ -83,10 +83,10 @@
   resolved "https://registry.yarnpkg.com/@types/babel__code-frame/-/babel__code-frame-7.0.3.tgz#eda94e1b7c9326700a4b69c485ebbc9498a0b63f"
   integrity sha512-2TN6oiwtNjOezilFVl77zwdNPwQWaDBBCCWWxyo1ctiO3vAtd7H/aB/CBJdw9+kqq3+latD0SXoedIuHySSZWw==
 
-"@types/glob@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@types/glob/-/glob-8.0.1.tgz#6e3041640148b7764adf21ce5c7138ad454725b0"
-  integrity sha512-8bVUjXZvJacUFkJXHdyZ9iH1Eaj5V7I8c4NdH5sQJsdXkqT4CA5Dhb4yb4VE/3asyx4L9ayZr1NIhTsWHczmMw==
+"@types/glob@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@types/glob/-/glob-8.1.0.tgz#b63e70155391b0584dce44e7ea25190bbc38f2fc"
+  integrity sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==
   dependencies:
     "@types/minimatch" "^5.1.2"
     "@types/node" "*"
