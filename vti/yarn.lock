@@ -1055,10 +1055,10 @@ util-deprecate@^1.0.2:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
-vls@^0.8.4:
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/vls/-/vls-0.8.4.tgz#84a1a265fdc7505c612174ef3c3ba59de55495dc"
-  integrity sha512-eqrygySQJvTK03lMzvFhFEQ6rrTOl+PbweR9/8yKw2vbBxsTKQiVPHsbb7qFJEiLnqCa8wbDSt3QMcdT8LZvzg==
+vls@^0.8.5:
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/vls/-/vls-0.8.5.tgz#083ac88bea52bab47180bc001d85890edf771246"
+  integrity sha512-61kbdO2COZWBMC4wq59QfDdev9ruXd0226f57DFJTFpFXv85S+qnHakQlAmbSYFFLGKcx95HB2UjnuQh4YRwFA==
   dependencies:
     eslint "^8.34.0"
     eslint-plugin-vue "^9.9.0"
