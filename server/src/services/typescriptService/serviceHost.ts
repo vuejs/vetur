@@ -18,6 +18,7 @@ import { RuntimeLibrary } from '../dependencyService';
 import { EnvironmentService } from '../EnvironmentService';
 import { VueVersion } from '../../utils/vueVersion';
 import { dirname } from 'path';
+import { flatten } from 'lodash';
 
 const NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
 
@@ -535,9 +536,18 @@ function defaultIgnorePatterns(tsModule: RuntimeLibrary['typescript'], projectPa
   if (!gitignore) {
     return nodeModules;
   }
-  const parsed: string[] = parseGitIgnore(gitignore);
-  const filtered = parsed.filter(s => !s.startsWith('!'));
-  return nodeModules.concat(filtered);
+  try {
+    const parsedGlobs = parseGitIgnore.globs(gitignore);
+    const ignoreGlobs: string[] = flatten(
+      parsedGlobs
+        .filter((r: { type: 'ignore' | 'unignore' }) => r.type === 'ignore')
+        .map((r: { patterns: string[] }) => r.patterns)
+    );
+    const filtered = ignoreGlobs.filter(s => !s.startsWith('!'));
+    return nodeModules.concat(filtered);
+  } catch (_) {
+    return nodeModules;
+  }
 }
 
 function getScriptKind(tsModule: RuntimeLibrary['typescript'], langId: string): ts.ScriptKind {
