@@ -628,7 +628,7 @@
     "ts-node": "^10.4.0",
     "tslint": "^6.1.3",
     "typescript": "^4.9.5",
-    "vscode-languageclient": "^7.0.0",
+    "vscode-languageclient": "^8.1.0",
     "vscode-languageserver-types": "^3.16.0"
   }
 }
