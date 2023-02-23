@@ -69,7 +69,7 @@
     "source-map-support": "^0.5.20",
     "stylus": "^0.59.0",
     "stylus-supremacy": "^2.17.5",
-    "vscode-css-languageservice": "6.2.1",
+    "vscode-css-languageservice": "6.2.4",
     "vscode-emmet-helper": "2.6.4",
     "vscode-languageserver": "7.0.0",
     "vscode-languageserver-textdocument": "^1.0.2",
