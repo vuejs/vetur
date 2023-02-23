@@ -41,7 +41,7 @@
     "@types/eslint-scope": "^3.7.4",
     "@types/eslint-visitor-keys": "^3.3.0",
     "@types/estree": "1.0.0",
-    "@types/glob": "^8.0.1",
+    "@types/glob": "^8.1.0",
     "@types/js-beautify": "1.13.3",
     "@types/lodash": "^4.14.176",
     "@types/mocha": "^10.0.0",
