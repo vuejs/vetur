@@ -1,5 +1,5 @@
 <p>
-  <h1 align="center">Vetur</h1>
+  <h1 align="center">Bojkav</h1>
 </p>
 
 ## Project status
