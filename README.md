@@ -2,7 +2,7 @@
   <h1 align="center">Vetur</h1>
 </p>
 
-## Project status
+Project Status ⚙️ 
 issue: https://github.com/vuejs/vetur/issues/3476
 
 New official vue editor support: Volar   
@@ -26,23 +26,23 @@ LSP: https://github.com/johnsoncodehk/volar
   <br>
 </p>
 
-Vue tooling for VS Code.
-
+🛠️ Vue Tooling for VS Code 🚀
 - [vls](./server): Vue Language Server
 - [vti](./vti): Vetur Terminal Interface
 - [Docs](https://vuejs.github.io/vetur)
 
 🎉 VueConf 2017 [Slide](https://www.dropbox.com/sh/eb4w8k3orh0j391/AAB3HaJexbGLa2tCP14BI8oJa?dl=0) & [Video](https://www.youtube.com/watch?v=05tNXJ-Kric) 🎉
 
-## Sponsors
-
-I quit my job to travel nomadically, to work on Open Source and to conduct independent study/research.
+💼 Sponsors
+I quit my job to travel nomadically, to work on Open Source, and to conduct independent study/research.
 
 Vetur is my main focus in Open Source. Your help will alleviate my financial burden and allow me to spend more time working on Vetur. Thank you 🙏
 
+This should add a more personal and appreciative touch to your message.
+
 https://github.com/sponsors/octref
 
-Thanks to the following companies for supporting Vetur's development:
+Thanks🙏 to the following companies for supporting Vetur's development:
 
 <table width="100%">
   <tr>
@@ -89,7 +89,7 @@ Thanks to the following companies for supporting Vetur's development:
   </tr>
 </table>
 
-## Features
+## Features ✨
 
 - [Syntax-highlighting](https://vuejs.github.io/vetur/guide/highlighting.html)
 - [Semantic-highlighting](https://vuejs.github.io/vetur/guide/semantic-highlighting.html)
@@ -104,30 +104,30 @@ Thanks to the following companies for supporting Vetur's development:
 - [VTI](https://vuejs.github.io/vetur/guide/vti.html): Surface template type-checking errors on CLI
 - [Global components](https://vuejs.github.io/vetur/guide/global-components.html): support define global components.
 
-## Quick Start
+## 🚀 Quick Start
 
 - Install [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur).
 - Try it with [Veturpack](https://github.com/octref/veturpack).
 - Refer to [setup](https://vuejs.github.io/vetur/guide/setup.html) page for setting up.
 - Refer to each feature's own page for setting up specific features.
 
-## FAQ
+❓ Frequently Asked Questions
 
 [FAQ](https://vuejs.github.io/vetur/guide/FAQ.html)
 
-## Limitations
+🚫 Limitations
 
 - You can restart Vue language service when Vetur slow ([#2192](https://github.com/vuejs/vetur/issues/2192))
 - yarn pnp (https://vuejs.github.io/vetur/guide/setup.html#yarn-pnp)
 
-## Roadmap
+🛣️ Roadmap
 
 See [#873](https://github.com/vuejs/vetur/issues/873).
 
-## Contribution
+🤝 Contribution
 
 See [CONTRIBUTING.md](https://github.com/vuejs/vetur/blob/master/.github/CONTRIBUTING.md)
 
-## License
+📜 License
 
 MIT © [Pine Wu](https://github.com/octref) 
