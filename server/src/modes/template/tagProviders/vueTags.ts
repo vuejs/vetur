@@ -22,12 +22,12 @@ const vueDirectives = [
   getAttribute(
     'v-show',
     undefined,
-    'Toggle’s the element’s `display` CSS property based on the truthy-ness of the expression value.'
+    'Toggles the element’s `display` CSS property based on the truthiness of the expression value.'
   ),
   getAttribute(
     'v-if',
     undefined,
-    'Conditionally renders the element based on the truthy-ness of the expression value.'
+    'Conditionally renders the element based on the truthiness of the expression value.'
   ),
   getAttribute('v-else', 'v', 'Denotes the “else block” for `v-if` or a `v-if`/`v-else-if` chain.'),
   getAttribute('v-else-if', undefined, 'Denotes the “else if block” for `v-if`. Can be chained.'),
@@ -38,7 +38,7 @@ const vueDirectives = [
   getAttribute('v-pre', 'v', 'Skips compilation for this element and all its children.'),
   getAttribute('v-cloak', 'v', 'Indicates Vue instance for this element has NOT finished compilation.'),
   getAttribute('v-once', 'v', 'Render the element and component once only.'),
-  getAttribute('key', undefined, 'Hint at VNodes identity for VDom diffing, e.g. list rendering'),
+  getAttribute('key', undefined, 'Hints at VNode’s identity for VDom diffing, e.g. list rendering'),
   getAttribute('ref', undefined, 'Register a reference to an element or a child component.'),
   getAttribute(
     'slot',
@@ -48,7 +48,7 @@ const vueDirectives = [
   getAttribute(
     'slot-scope',
     undefined,
-    'the name of a temporary variable that holds the props object passed from the child'
+    'The name of a temporary variable that holds the props object passed from the child.'
   )
 ];
 
@@ -58,7 +58,7 @@ const transitionProps = [
   getAttribute(
     'css',
     'b',
-    'Whether to apply CSS transition classes. Defaults: true. If set to false, will only trigger JavaScript hooks registered via component events.'
+    'Whether to apply CSS transition classes. Default: true. If set to false, will only trigger JavaScript hooks registered via component events.'
   ),
   getAttribute(
     'type',
@@ -68,7 +68,7 @@ const transitionProps = [
   getAttribute(
     'mode',
     'transMode',
-    'Controls the timing sequence of leaving/entering transitions. Available modes are "out-in" and "in-out"; Defaults to simultaneous.'
+    'Controls the timing sequence of leaving/entering transitions. Available modes are "out-in" and "in-out"; defaults to simultaneous.'
   )
 ].concat(
   [
@@ -99,12 +99,12 @@ const vueTags = {
   ),
   transition: genTag(
     'transition',
-    '<transition> serves as transition effects for single element/component. It applies the transition behavior to the wrapped content inside.',
+    '<transition> serves as transition effects for a single element/component. It applies the transition behavior to the wrapped content inside.',
     transitionProps
   ),
   'transition-group': genTag(
     'transition-group',
-    'transition group serves as transition effects for multiple elements/components. It renders a <span> by default and can render user specified element via `tag` attribute.',
+    'Transition group serves as transition effects for multiple elements/components. It renders a `<span>` by default and can render user-specified elements via the `tag` attribute.',
     transitionProps.concat(genAttribute('tag'), genAttribute('move-class'))
   ),
   'keep-alive': genTag(
@@ -114,7 +114,7 @@ const vueTags = {
   ),
   slot: genTag(
     'slot',
-    '<slot> serve as content distribution outlets in component templates. <slot> itself will be replaced.',
+    '<slot> serves as content distribution outlets in component templates. <slot> itself will be replaced.',
     [genAttribute('name', undefined, 'Used for named slot')]
   ),
   template: new HTMLTagSpecification(
@@ -123,7 +123,7 @@ const vueTags = {
       genAttribute(
         'scope',
         undefined,
-        '(deprecated) a temporary variable that holds the props object passed from the child'
+        '(deprecated) A temporary variable that holds the props object passed from the child.'
       ),
       genAttribute('slot', undefined, 'the name of scoped slot')
     ]
