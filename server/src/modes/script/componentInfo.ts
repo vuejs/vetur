@@ -157,7 +157,7 @@ function getDecorators(
   tsModule: RuntimeLibrary['typescript'],
   node: ts.MethodDeclaration | ts.PropertyDeclaration | undefined
 ) {
-  if (!node) return undefined;
+  if (!node) { return undefined; }
   return tsModule.getDecorators?.(node) ?? node.decorators;
 }
 
@@ -347,9 +347,10 @@ function getProps(
   checker: ts.TypeChecker,
   vueVersion: VueVersion
 ): PropInfo[] | undefined {
+  const props = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
   const result: PropInfo[] = markPropBoundToModel(
     defaultExportType,
-    getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps)
+    props.length > 0 ? props : getComponentInstanceProps(defaultExportType)
   );
 
   return result.length === 0 ? undefined : result;
@@ -594,6 +595,37 @@ function getProps(
     }
 
     return undefined;
+  }
+
+  function getComponentInstanceProps(type: ts.Type) {
+    const constructSignatures = checker.getSignaturesOfType(type, tsModule.SignatureKind.Construct);
+    const instanceType = constructSignatures[0] ? checker.getReturnTypeOfSignature(constructSignatures[0]) : type;
+    const propsSymbol = instanceType && checker.getPropertyOfType(instanceType, '$props');
+    const propsDeclaration = propsSymbol && getNodeFromSymbol(propsSymbol);
+
+    if (!propsSymbol || !propsDeclaration) {
+      return [];
+    }
+
+    const propsType = checker.getTypeOfSymbolAtLocation(propsSymbol, propsDeclaration);
+
+    if (propsType.getStringIndexType()) {
+      return [];
+    }
+
+    return checker.getPropertiesOfType(propsType).map(propSymbol => {
+      const node = getNodeFromSymbol(propSymbol) ?? propsDeclaration;
+      const propType = checker.getTypeOfSymbolAtLocation(propSymbol, node);
+
+      return {
+        name: propSymbol.name,
+        hasObjectValidator: false,
+        required: (propSymbol.flags & tsModule.SymbolFlags.Optional) === 0,
+        isBoundToModel: false,
+        typeString: checker.typeToString(propType),
+        documentation: buildDocumentation(tsModule, propSymbol, checker)
+      };
+    });
   }
 }
 
