@@ -60,7 +60,7 @@ export function getComponentInfo(
         definition: c.definition,
         global: false,
         info: c.defaultExportNode
-          ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker, vueVersion)
+          ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker, vueVersion, c.defaultExportType)
           : undefined
       });
     });
@@ -83,7 +83,7 @@ export function getComponentInfo(
         definition: c.definition,
         global: true,
         info: c.defaultExportNode
-          ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker, vueVersion)
+          ? analyzeDefaultExportExpr(tsModule, c.defaultExportNode, checker, vueVersion, c.defaultExportType)
           : undefined
       }))
     ];
@@ -96,13 +96,15 @@ export function analyzeDefaultExportExpr(
   tsModule: RuntimeLibrary['typescript'],
   defaultExportNode: ts.Node,
   checker: ts.TypeChecker,
-  vueVersion: VueVersion
+  vueVersion: VueVersion,
+  defaultExportTypeFromSymbol?: ts.Type
 ): VueFileInfo {
   const defaultExportType = checker.getTypeAtLocation(defaultExportNode);
+  const componentExportType = defaultExportTypeFromSymbol ?? defaultExportType;
 
   const insertInOptionAPIPos = getInsertInOptionAPIPos(tsModule, defaultExportType, checker);
   const emits = getEmits(tsModule, defaultExportType, checker);
-  const props = getProps(tsModule, defaultExportType, checker, vueVersion);
+  const props = getProps(tsModule, defaultExportType, checker, vueVersion, componentExportType);
   const data = getData(tsModule, defaultExportType, checker);
   const computed = getComputed(tsModule, defaultExportType, checker);
   const methods = getMethods(tsModule, defaultExportType, checker);
@@ -157,7 +159,9 @@ function getDecorators(
   tsModule: RuntimeLibrary['typescript'],
   node: ts.MethodDeclaration | ts.PropertyDeclaration | undefined
 ) {
-  if (!node) return undefined;
+  if (!node) {
+    return undefined;
+  }
   return tsModule.getDecorators?.(node) ?? node.decorators;
 }
 
@@ -345,14 +349,110 @@ function getProps(
   tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
-  vueVersion: VueVersion
+  vueVersion: VueVersion,
+  componentExportType: ts.Type
 ): PropInfo[] | undefined {
+  const declaredProps = getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps);
+  const componentTypeProps = getPropsFromComponentType(componentExportType);
   const result: PropInfo[] = markPropBoundToModel(
     defaultExportType,
-    getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps)
+    mergeDeclaredAndTypedProps(declaredProps, componentTypeProps)
   );
 
   return result.length === 0 ? undefined : result;
+
+  function mergeDeclaredAndTypedProps(declaredProps: PropInfo[], typedProps: PropInfo[]) {
+    if (typedProps.length === 0) {
+      return declaredProps;
+    }
+
+    const typedPropsByName = new Map(typedProps.map(prop => [prop.name, prop]));
+    const declaredPropNames = new Set(declaredProps.map(prop => prop.name));
+
+    return [
+      ...declaredProps.map(prop => {
+        const typedProp = typedPropsByName.get(prop.name);
+        if (!typedProp) {
+          return prop;
+        }
+
+        return {
+          ...prop,
+          required: prop.hasObjectValidator ? prop.required : typedProp.required,
+          typeString: prop.typeString ?? typedProp.typeString,
+          documentation: prop.documentation ?? typedProp.documentation
+        };
+      }),
+      ...typedProps.filter(prop => !declaredPropNames.has(prop.name))
+    ];
+  }
+
+  function getPropsFromComponentType(componentType: ts.Type): PropInfo[] {
+    const propType =
+      getVue2ExtendedVuePropsType(componentType) ??
+      getVue3DefineComponentPropsType(componentType) ??
+      getVueConstructorPropsType(componentType) ??
+      getVue3ComponentPublicInstancePropsType(componentType);
+
+    if (!propType) {
+      return [];
+    }
+
+    return checker
+      .getPropertiesOfType(propType)
+      .filter(prop => prop.name !== '__isFragment' && prop.name !== '__isTeleport' && prop.name !== '__isSuspense')
+      .map(prop => {
+        const propNode =
+          getNodeFromSymbol(prop) ??
+          componentType.symbol?.valueDeclaration ??
+          defaultExportType.symbol?.valueDeclaration;
+        const type = propNode ? checker.getTypeOfSymbolAtLocation(prop, propNode) : undefined;
+        const optional = Boolean(prop.flags & tsModule.SymbolFlags.Optional);
+        const typeString = type ? checker.typeToString(type) : undefined;
+
+        return {
+          name: prop.name,
+          hasObjectValidator: false,
+          required: !optional,
+          isBoundToModel: false,
+          typeString: typeString === 'any' ? undefined : typeString,
+          documentation: buildDocumentation(tsModule, prop, checker)
+        };
+      });
+  }
+
+  function getVue2ExtendedVuePropsType(componentType: ts.Type) {
+    if (componentType.aliasSymbol?.name === 'ExtendedVue' && componentType.aliasTypeArguments?.[4]) {
+      return componentType.aliasTypeArguments[4];
+    }
+  }
+
+  function getVue3DefineComponentPropsType(componentType: ts.Type) {
+    if (componentType.aliasSymbol?.name === 'DefineComponent' && componentType.aliasTypeArguments?.[0]) {
+      return componentType.aliasTypeArguments[0];
+    }
+  }
+
+  function getVueConstructorPropsType(componentType: ts.Type) {
+    const typeArguments = checker.getTypeArguments?.(componentType as ts.TypeReference) ?? [];
+    const instanceType = typeArguments[0];
+    if (instanceType?.aliasSymbol?.name === 'CombinedVueInstance' && instanceType.aliasTypeArguments?.[4]) {
+      return instanceType.aliasTypeArguments[4];
+    }
+  }
+
+  /**
+   * Vue 3 `ComponentPublicInstance<Props, ...>` — Props is the 1st type parameter
+   * (also mirrored at indices 7/8 on some Vue versions).
+   */
+  function getVue3ComponentPublicInstancePropsType(componentType: ts.Type) {
+    const candidates = [componentType, ...(checker.getTypeArguments?.(componentType as ts.TypeReference) ?? [])];
+    for (const candidate of candidates) {
+      if (candidate?.aliasSymbol?.name === 'ComponentPublicInstance' && candidate.aliasTypeArguments?.[0]) {
+        return candidate.aliasTypeArguments[0];
+      }
+    }
+  }
 
   function markPropBoundToModel(type: ts.Type, props: PropInfo[]) {
     const vModelPropName = vueVersion === VueVersion.V30 ? 'modelValue' : 'value';
