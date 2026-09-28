@@ -35,7 +35,7 @@ export function getComponentInfo(
 
   const checker = program.getTypeChecker();
 
-  const defaultExportNode = getDefaultExportNode(tsModule, sourceFile);
+  const defaultExportNode = getDefaultExportNode(tsModule, sourceFile, checker);
   if (!defaultExportNode) {
     return undefined;
   }
@@ -102,7 +102,7 @@ export function analyzeDefaultExportExpr(
 
   const insertInOptionAPIPos = getInsertInOptionAPIPos(tsModule, defaultExportType, checker);
   const emits = getEmits(tsModule, defaultExportType, checker);
-  const props = getProps(tsModule, defaultExportType, checker, vueVersion);
+  const props = getProps(tsModule, defaultExportType, checker, vueVersion, defaultExportNode);
   const data = getData(tsModule, defaultExportType, checker);
   const computed = getComputed(tsModule, defaultExportType, checker);
   const methods = getMethods(tsModule, defaultExportType, checker);
@@ -121,10 +121,13 @@ export function analyzeDefaultExportExpr(
 
 export function getDefaultExportNode(
   tsModule: RuntimeLibrary['typescript'],
-  sourceFile: ts.SourceFile
+  sourceFile: ts.SourceFile,
+  checker?: ts.TypeChecker
 ): ts.Node | undefined {
   const exportStmts = sourceFile.statements.filter(
-    st => st.kind === tsModule.SyntaxKind.ExportAssignment || st.kind === tsModule.SyntaxKind.ClassDeclaration
+    st =>
+      st.kind === tsModule.SyntaxKind.ExportAssignment ||
+      (tsModule.isClassDeclaration(st) && !!(tsModule.getCombinedModifierFlags(st) & tsModule.ModifierFlags.Default))
   );
   if (exportStmts.length === 0) {
     return undefined;
@@ -134,7 +137,7 @@ export function getDefaultExportNode(
       ? (exportStmts[0] as ts.ExportAssignment).expression
       : (exportStmts[0] as ts.ClassDeclaration);
 
-  return getNodeFromExportNode(tsModule, exportNode);
+  return getNodeFromExportNode(tsModule, exportNode, checker);
 }
 
 function getInsertInOptionAPIPos(
@@ -157,7 +160,9 @@ function getDecorators(
   tsModule: RuntimeLibrary['typescript'],
   node: ts.MethodDeclaration | ts.PropertyDeclaration | undefined
 ) {
-  if (!node) return undefined;
+  if (!node) {
+    return undefined;
+  }
   return tsModule.getDecorators?.(node) ?? node.decorators;
 }
 
@@ -345,11 +350,17 @@ function getProps(
   tsModule: RuntimeLibrary['typescript'],
   defaultExportType: ts.Type,
   checker: ts.TypeChecker,
-  vueVersion: VueVersion
+  vueVersion: VueVersion,
+  defaultExportNode: ts.Node
 ): PropInfo[] | undefined {
   const result: PropInfo[] = markPropBoundToModel(
     defaultExportType,
-    getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps)
+    getInstanceProps(
+      tsModule,
+      defaultExportNode,
+      checker,
+      getClassAndObjectInfo(tsModule, defaultExportType, checker, getClassProps, getObjectProps)
+    )
   );
 
   return result.length === 0 ? undefined : result;
@@ -597,6 +608,62 @@ function getProps(
   }
 }
 
+/** Preserve the component's module scope, including non-exported prop types and inherited props. */
+function getInstanceProps(
+  tsModule: RuntimeLibrary['typescript'],
+  node: ts.Node,
+  checker: ts.TypeChecker,
+  declaredProps: PropInfo[]
+): PropInfo[] {
+  const moduleSymbol = checker.getSymbolAtLocation(node.getSourceFile());
+  let componentSymbol = moduleSymbol && checker.getExportsOfModule(moduleSymbol).find(s => s.name === 'default');
+  if (!componentSymbol) {
+    return declaredProps;
+  }
+  if (componentSymbol.flags & tsModule.SymbolFlags.Alias) {
+    componentSymbol = checker.getAliasedSymbol(componentSymbol);
+  }
+  const componentType = checker.getTypeOfSymbolAtLocation(componentSymbol, node);
+  const signatures = componentType.getConstructSignatures();
+  const instance = signatures[signatures.length - 1]?.getReturnType();
+  if (!instance) {
+    return declaredProps;
+  }
+
+  const propsSymbol = instance.getProperty('$props');
+  const propsType = propsSymbol && checker.getTypeOfSymbolAtLocation(propsSymbol, node);
+  // Vue 2.6 and older expose $props as Record<string, any>. Its ExtendedVue
+  // parameter still identifies props, and the instance retains their actual types.
+  const typedProps =
+    propsType && !(propsType.flags & tsModule.TypeFlags.Any) && !propsType.getStringIndexType()
+      ? propsType
+      : componentType.aliasSymbol?.name === 'ExtendedVue'
+      ? componentType.aliasTypeArguments?.[4]
+      : undefined;
+  const props = new Map(declaredProps.map(prop => [prop.name, { ...prop }]));
+  typedProps?.getProperties().forEach(symbol => {
+    if (!props.has(symbol.name)) {
+      props.set(symbol.name, {
+        name: symbol.name,
+        required: !(symbol.flags & tsModule.SymbolFlags.Optional),
+        hasObjectValidator: true,
+        isBoundToModel: false,
+        documentation: tsModule.displayPartsToString(symbol.getDocumentationComment(checker))
+      });
+    }
+  });
+  props.forEach(prop => {
+    const publicProp = propsType?.getProperty(prop.name);
+    const instanceProp = instance.getProperty(prop.name);
+    const symbol = publicProp || instanceProp;
+    if (symbol) {
+      prop.typeSource = publicProp ? '$props' : 'instance';
+      prop.typeString = checker.typeToString(checker.getTypeOfSymbolAtLocation(symbol, node));
+    }
+  });
+  return [...props.values()];
+}
+
 /**
  * In SFC, data can only be a function
  * ```
@@ -803,7 +870,16 @@ function getMethods(
   }
 }
 
-function getNodeFromExportNode(tsModule: RuntimeLibrary['typescript'], exportExpr: ts.Node): ts.Node | undefined {
+function getNodeFromExportNode(
+  tsModule: RuntimeLibrary['typescript'],
+  exportExpr: ts.Node,
+  checker?: ts.TypeChecker,
+  visited = new Set<ts.Node>()
+): ts.Node | undefined {
+  if (visited.has(exportExpr)) {
+    return undefined;
+  }
+  visited.add(exportExpr);
   switch (exportExpr.kind) {
     case tsModule.SyntaxKind.CallExpression:
       // Vue.extend or synthetic __vueEditorBridge
@@ -812,6 +888,21 @@ function getNodeFromExportNode(tsModule: RuntimeLibrary['typescript'], exportExp
       return exportExpr as ts.ObjectLiteralExpression;
     case tsModule.SyntaxKind.ClassDeclaration:
       return exportExpr as ts.ClassDeclaration;
+    case tsModule.SyntaxKind.Identifier: {
+      let symbol = checker?.getSymbolAtLocation(exportExpr);
+      if (symbol && symbol.flags & tsModule.SymbolFlags.Alias) {
+        symbol = checker!.getAliasedSymbol(symbol);
+      }
+      const declaration = symbol?.valueDeclaration;
+      if (declaration && tsModule.isVariableDeclaration(declaration) && declaration.initializer) {
+        return getNodeFromExportNode(tsModule, declaration.initializer, checker, visited);
+      }
+      return declaration && tsModule.isClassDeclaration(declaration) ? declaration : undefined;
+    }
+    case tsModule.SyntaxKind.ParenthesizedExpression:
+    case tsModule.SyntaxKind.AsExpression:
+    case tsModule.SyntaxKind.TypeAssertionExpression:
+      return getNodeFromExportNode(tsModule, (exportExpr as ts.AsExpression).expression, checker, visited);
   }
   return undefined;
 }
