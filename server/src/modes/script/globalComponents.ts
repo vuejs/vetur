@@ -25,7 +25,7 @@ export function getGlobalComponents(
       return;
     }
 
-    const defaultExportNode = getDefaultExportNode(tsModule, sourceFile);
+    const defaultExportNode = getDefaultExportNode(tsModule, sourceFile, checker);
     if (!defaultExportNode) {
       return;
     }

@@ -5,7 +5,9 @@ import path from 'path';
 import fs from 'fs';
 import { getTemplateTransformFunctions } from '../transformTemplate';
 import { injectVueTemplate, parseVueTemplate } from '../preprocess';
-import { generateSourceMap } from '../sourceMap';
+import { generateSourceMap, mapBackRange } from '../sourceMap';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { URI } from 'vscode-uri';
 import { trim } from 'lodash';
 
 const printer = ts.createPrinter();
@@ -149,6 +151,20 @@ suite('Source Map generation', () => {
   });
 
   suite('Individual mappings', () => {
+    test('nested object prop diagnostics map to the original property key', () => {
+      const template = `<template><child :payload="{ id: 'bad' }" /></template>`;
+      const { sourceMapNodes, validSourceFile } = processVueTemplate(template);
+      const uri = URI.file(path.resolve('typed-props.vue'));
+      const document = TextDocument.create(uri.toString(), 'vue', 0, template);
+      const start = validSourceFile.getFullText().indexOf('id:');
+      assert.ok(start > 0);
+      const range = mapBackRange(document, { start, length: 2 }, { [uri.fsPath]: sourceMapNodes });
+      assert.deepEqual(range, {
+        start: { line: 0, character: template.indexOf('id:') },
+        end: { line: 0, character: template.indexOf('id:') + 2 }
+      });
+    });
+
     test('regular text interpolation', () => {
       testTemplateMapping(`<template>{{ a.b.c }}</template>`, [
         {

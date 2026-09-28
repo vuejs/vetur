@@ -676,6 +676,23 @@ export function getTemplateTransformFunctions(
       end: offset + range.getEnd()
     });
 
+    if (tsModule.isObjectLiteralExpression(exp) && tsModule.isObjectLiteralExpression(range)) {
+      exp.properties.forEach((property, index) => {
+        const original = range.properties[index];
+        if (
+          tsModule.isPropertyAssignment(property) &&
+          tsModule.isPropertyAssignment(original) &&
+          !tsModule.isComputedPropertyName(property.name)
+        ) {
+          // A nested prop mismatch is reported on this key, not on its value.
+          tsModule.setSourceMapRange(property.name, {
+            pos: offset + original.name.getStart(source),
+            end: offset + original.name.getEnd()
+          });
+        }
+      });
+    }
+
     if (tsModule.isPropertyAccessExpression(exp)) {
       // May be transformed from Identifier by injecting `this`
       const r = tsModule.isPropertyAccessExpression(range) ? range.name : range;

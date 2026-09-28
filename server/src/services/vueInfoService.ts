@@ -87,6 +87,8 @@ export interface PropInfo {
   isBoundToModel: boolean;
   documentation?: string;
   typeString?: string;
+  /** Index the exported component instance instead of copying a type into another module. */
+  typeSource?: '$props' | 'instance';
 }
 export interface DataInfo {
   name: string;

@@ -111,7 +111,7 @@ export function createUpdater(
 
     if (allChildComponentsInfo.has(vueTemplateFileName)) {
       const childComponents = allChildComponentsInfo.get(vueTemplateFileName)!;
-      newText += convertChildComponentsInfoToSource(childComponents);
+      newText += convertChildComponentsInfoToSource(childComponents, vueTemplateFileName);
     }
 
     const newSourceFile = tsModule.createSourceFile(
@@ -346,7 +346,7 @@ function getWrapperRangeSetter(
   return wrapperNode => tsModule.setTextRange(wrapperNode, wrapped);
 }
 
-function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
+function convertChildComponentsInfoToSource(childComponents: ChildComponent[], vueTemplateFileName: string) {
   let src = '';
   childComponents.forEach(c => {
     const componentDataInterfaceName = componentDataName + '__' + snakeCase(c.name);
@@ -362,7 +362,18 @@ function convertChildComponentsInfoToSource(childComponents: ChildComponent[]) {
         typeKey += '?';
       }
 
-      if (p.typeString) {
+      if (p.typeSource && c.definition) {
+        let componentPath = path
+          .relative(path.dirname(vueTemplateFileName), c.definition.path)
+          .replace(/\\/g, '/')
+          .replace(/(\.d)?\.[jt]sx?$/, '');
+        if (!componentPath.startsWith('.')) {
+          componentPath = './' + componentPath;
+        }
+        const instance = `InstanceType<typeof import(${JSON.stringify(componentPath)})["default"]>`;
+        const props = p.typeSource === '$props' ? `${instance}["$props"]` : instance;
+        propTypeStrings.push(`${typeKey}: ${props}[${JSON.stringify(p.name)}]`);
+      } else if (p.typeString) {
         propTypeStrings.push(`${typeKey}: ${p.typeString}`);
       } else {
         propTypeStrings.push(`${typeKey}: any`);

@@ -86,7 +86,7 @@ export function analyzeComponentsDefine(
         }
 
         const sourceFile = definitionSymbol.valueDeclaration.getSourceFile();
-        const defaultExportNode = getDefaultExportNode(tsModule, sourceFile);
+        const defaultExportNode = getDefaultExportNode(tsModule, sourceFile, checker);
         if (!defaultExportNode) {
           return;
         }
