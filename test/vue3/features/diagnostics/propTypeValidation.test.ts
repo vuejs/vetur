@@ -6,6 +6,8 @@ import { DiagnosticSeverity } from 'vscode';
 describe('Should find prop type validation errors', () => {
   const rightUri = getDocUri('diagnostics/propTypeValidation/ParentRight.vue');
   const wrongUri = getDocUri('diagnostics/propTypeValidation/ParentWrong.vue');
+  const propsParameterRightUri = getDocUri('diagnostics/propTypeValidation/PropsParameterParentRight.vue');
+  const propsParameterWrongUri = getDocUri('diagnostics/propTypeValidation/PropsParameterParentWrong.vue');
 
   it('Shows no error for correct types', async () => {
     await testNoDiagnostics(rightUri);
@@ -61,6 +63,37 @@ describe('Should find prop type validation errors', () => {
         message:
           "Type 'number[]' is not assignable to type 'string[]'.\n  Type 'number' is not assignable to type 'string'.",
         range: sameLineRange(2, 76, 79),
+        source: 'Vetur',
+        code: 2322
+      }
+    ]);
+  });
+
+  it('Uses defineComponent Props type parameter for correct prop types', async () => {
+    await testNoDiagnostics(propsParameterRightUri);
+  });
+
+  it('Uses defineComponent Props type parameter for incorrect prop types', async () => {
+    await testDiagnostics(propsParameterWrongUri, [
+      {
+        severity: DiagnosticSeverity.Error,
+        message: "Type 'number' is not assignable to type 'string'.",
+        range: sameLineRange(1, 26, 31),
+        source: 'Vetur',
+        code: 2322
+      },
+      {
+        severity: DiagnosticSeverity.Error,
+        message: "Type 'number' is not assignable to type 'boolean | undefined'.",
+        range: sameLineRange(1, 41, 48),
+        source: 'Vetur',
+        code: 2322
+      },
+      {
+        severity: DiagnosticSeverity.Error,
+        message:
+          "Type 'number[]' is not assignable to type 'string[]'.\n  Type 'number' is not assignable to type 'string'.",
+        range: sameLineRange(1, 58, 63),
         source: 'Vetur',
         code: 2322
       }
