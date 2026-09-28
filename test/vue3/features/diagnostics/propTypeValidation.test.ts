@@ -22,7 +22,7 @@ describe('Should find prop type validation errors', () => {
       {
         severity: DiagnosticSeverity.Error,
         message:
-          "Type '{ count: number; isZeroCount: boolean; zeroToCount: number[]; }' is not assignable to type 'boolean'.",
+          "Type '{ count: number; isZeroCount: boolean; zeroToCount: number[]; }' is not assignable to type 'boolean | undefined'.",
         range: sameLineRange(1, 32, 36),
         source: 'Vetur',
         code: 2322
@@ -44,7 +44,7 @@ describe('Should find prop type validation errors', () => {
       {
         severity: DiagnosticSeverity.Error,
         message:
-          "Type '{ count: number; isZeroCount: boolean; zeroToCount: number[]; }' is not assignable to type 'boolean'.",
+          "Type '{ count: number; isZeroCount: boolean; zeroToCount: number[]; }' is not assignable to type 'boolean | undefined'.",
         range: sameLineRange(2, 32, 36),
         source: 'Vetur',
         code: 2322
