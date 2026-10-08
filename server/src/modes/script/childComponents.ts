@@ -17,6 +17,7 @@ export interface InternalChildComponent {
     start: number;
     end: number;
   };
+  defaultExportType?: ts.Type;
   defaultExportNode?: ts.Node;
 }
 
@@ -99,6 +100,7 @@ export function analyzeComponentsDefine(
             start: defaultExportNode.getStart(sourceFile, true),
             end: defaultExportNode.getEnd()
           },
+          defaultExportType: checker.getTypeOfSymbolAtLocation(definitionSymbol, definitionSymbol.valueDeclaration),
           defaultExportNode
         });
       }

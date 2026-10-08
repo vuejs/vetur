@@ -35,6 +35,13 @@ export function getGlobalComponents(
       return;
     }
 
+    const moduleSymbol = checker.getSymbolAtLocation(sourceFile);
+    const exportedDefaultSymbol = moduleSymbol?.exports?.get('default' as ts.__String);
+    const defaultExportType =
+      exportedDefaultSymbol?.valueDeclaration
+        ? checker.getTypeOfSymbolAtLocation(exportedDefaultSymbol, exportedDefaultSymbol.valueDeclaration)
+        : undefined;
+
     const name = tagCasing === 'kebab' ? kebabCase(info.name) : info.name;
 
     result.push({
@@ -45,6 +52,7 @@ export function getGlobalComponents(
         start: defaultExportNode.getStart(sourceFile, true),
         end: defaultExportNode.getEnd()
       },
+      defaultExportType,
       defaultExportNode
     });
   });
